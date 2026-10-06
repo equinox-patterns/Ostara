@@ -54,6 +54,14 @@ struct VAbstractOperationInitData : VDrawToolInitData
     QVector<SourceItem> source{};
     QVector<DestinationItem> destination{};
     QVector<OOperationLine> lines{};
+
+    /** Objects of the source list the layer must leave where they are.
+     *
+     *  A tool that folds the fabric, or turns it, may build itself ON some of the objects it was given — the
+     *  departure line of a pleat is the fold the whole pleat is taken on. Hiding those with the originals would take
+     *  them away from the figure the tool draws, so they are never moved into the new layer. */
+    QSet<quint32> keptInPlace{};
+
     QString visibilityGroupName{};
     QStringList visibilityGroupTags{};
     bool hasLinkedVisibilityGroup{false};

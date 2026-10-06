@@ -4,22 +4,8 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
- **  @brief  The objects a pleat draws: the prise and its copies, the fold line, and the cap of each end.
- **
- **          A pleat produces no geometry of its own — the objects that travel are copies like any other — but it
- **          does draw a figure: the prise it was taken on, the same line carried to where the fabric lands, the
- **          fold line in between, and, wherever the piece's edge breaks across the fold, a cap: the V whose point
- **          sits on the fold line and whose two sides follow the edge.
- **
- **          What it draws it owns. Each end has its own checkbox, the fold line can be turned off, and the whole
- **          figure can be hidden: none of that is possible on an object the pattern also holds for itself, which is
- **          why every one of them is a point or a line of the operation, created and placed by every parse. The
- **          file carries their ids so they keep them, exactly as the rotation display of a slash-and-spread does.
- **
- **          The prise itself is not created: its two points are the ones the user drew. Their copies are created
- **          only when they do not already travel with the operation — a copy the operation makes of a source point
- **          is the same object, and making a second one on top of it would leave two points where the pattern only
- **          needs one (see Endpoint).
+ **  @brief  The objects a pleat draws: the departure lines and their copies, the fold lines, and the cap of each
+ **          end of each pleat.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -58,7 +44,10 @@ class VContainer;
  *
  * @a point is the apex of the V — or the middle of the opening when the edge is parallel to the move and there is
  * no V to draw, in which case @a side1 and @a side2 stay NULL_ID and the point stands alone. @a side1 joins the
- * apex to the prise point, @a side2 to the same point carried by the move: those are the two tracés of a dart cap.
+ * apex to the departure line, @a side2 to that line carried by the move: those are the two tracés of a dart cap.
+ *
+ * @a pleat is the index of the pleat among all the pleats of the operation, and @a end 0 for the first point of
+ * its departure line, 1 for the other: the plan numbers its marks the same way.
  */
 struct OPleatMarkDisplay
 {
@@ -71,22 +60,29 @@ struct OPleatMarkDisplay
 };
 
 /**
- * @brief The copy of one prise point at one place the prise went to: the point the display created, and the name it
- *  carries in the dependency tree. @a point is NULL_ID when the operation already copies that prise point by itself,
- *  because it travels with the other objects — there is then nothing to create, and nothing to name.
+ * @brief The copy of one end of a departure line at one place that line went to: the point the display created,
+ *  and the name it carries in the dependency tree.
+ *
+ * @a departure is the index of the departure line among the ones the user gave, @a line the place on that line —
+ * 0 for the line itself once the pleats before it have carried it, 1 for its first copy, and so on — and @a end
+ * which of the two points of the line it is. @a point is NULL_ID when the operation already carries that place by
+ * itself: the departure line as the user drew it, and the copy the operation made of a point that travels.
  */
 struct OPleatCopy
 {
+    int departure{0};
+    int line{0};
+    int end{0};
     quint32 point{NULL_ID};
     QString name{};
 };
 
 /**
- * @brief The figure of a pleat, as the operation and the file carry it.
+ * @brief The figure of the pleats, as the operation and the file carry it.
  *
- * The lines are read by position, the marks by pleat and end: a position is one place the prise went to, and every
- * prise line is drawn there. A double pleat has three of them — the prise, the shared line where the two folds
- * meet, and the copy — and two fold lines.
+ * The lines are read by place — one per departure line, and one per pleat that line is taken on — and the marks
+ * by pleat and end. A simple pleat of a single line has two places and one fold line; a double one has three
+ * places and two fold lines, the middle place being the line the two folds share.
  */
 struct OPleatDisplay
 {
@@ -99,66 +95,84 @@ struct OPleatDisplay
     static const QString AttrLine;
     static const QString AttrFoldLine;
     static const QString AttrCopy;
+    static const QString AttrDeparture;
+    static const QString AttrPlace;
+    static const QString AttrEnd;
     static const QString AttrPoint;
     static const QString AttrSide1;
     static const QString AttrSide2;
 
     bool show{true};
 
-    /** @brief The pen of the lines of the fold — the prise, its copies and the sides of the caps — and their
-     *  colour. A solid orange line, which is what a file written before the display existed gets. */
+    /** @brief The pen of the lines of the fold — the departure lines, their copies and the sides of the caps —
+     *  and their colour. A solid orange line, which is what a file written before the display existed gets. */
     QString lineTypeLine{TypeLineLine};
     QString lineColor{ColorOrange};
 
-    /** @brief The pen and the colour of the fold line itself: what the pleat is pressed along. A dotted light
+    /** @brief The pen and the colour of the fold line itself: what each pleat is pressed along. A dotted light
      *  green, so that it never reads as a line of the pattern. */
     QString foldTypeLine{TypeLineDotLine};
     QString foldColor{ColorLightGreen};
 
-    /** @brief The line drawn at each position the prise went to: @c pleats + 1 of them, from the prise to the
-     *  copy. The middle one of a double pleat is the line the two folds share. */
+    /** @brief The line drawn at each place of each departure line, in the order of @a LineIndex. */
     QVector<quint32> lines{};
 
-    /** @brief The fold line of each pleat: @c pleats of them, from the mark of one end to the mark of the other. */
+    /** @brief The fold line of each pleat, in the order of the pleats: one per pleat of the operation. */
     QVector<quint32> foldLines{};
 
-    /** @brief The copies of the prise points the display has to create, two per position beyond the first, in
-     *  position order and, in each position, first end then second. NULL_ID where the operation already copies
-     *  that prise point by itself (see Endpoint). */
+    /** @brief The copies the display has to create, in the order of @a CopyIndex. NULL_ID where the operation
+     *  already carries that place by itself (see Endpoint). */
     QVector<OPleatCopy> copies{};
 
-    /** @brief One entry per cap the pleat draws, in the order of the plan. Empty for a disabled cap. */
+    /** @brief One entry per cap the pleats draw, in the order of the plan. Empty for a disabled cap. */
     QVector<OPleatMarkDisplay> marks{};
 
-    /** @brief How many pleats a kind is made of: one, or two side by side. */
-    static auto PleatCount(OPleatKind kind) -> int;
+    /** @brief How many pleats one departure line is taken on: one, or two side by side. */
+    static auto PleatCount(const OPleatDeparture &departure) -> int;
 
-    /** @brief The number of places the prise goes to: the prise itself, and one more per pleat. */
-    static auto PositionCount(OPleatKind kind) -> int;
+    /** @brief How many places one departure line is drawn at: the line itself, carried, and one more per pleat. */
+    static auto LineCount(const OPleatDeparture &departure) -> int;
 
-    /** @brief The id of one endpoint of one position.
+    /** @brief How many lines the whole figure holds: the places of every departure line, one after the other. */
+    static auto LineCount(const QVector<OPleatDeparture> &departures) -> int;
+
+    /** @brief How many copies the whole figure holds: two per place, one per end of the departure line. */
+    static auto CopyCount(const QVector<OPleatDeparture> &departures) -> int;
+
+    /** @brief The index, in @a lines, of one place of one departure line. */
+    static auto LineIndex(const QVector<OPleatDeparture> &departures, int departure, int line) -> int;
+
+    /** @brief The index, in @a copies, of one end of one place of one departure line. */
+    static auto CopyIndex(const QVector<OPleatDeparture> &departures, int departure, int line, int end) -> int;
+
+    /** @brief The id of one endpoint of one place of one departure line.
      *
-     *  Position 0 is the prise point itself. Any later position is either a point of the display or, for the last
-     *  one, the copy the operation already made of that prise point when it travels with the other objects: the
-     *  same question Create asks when it decides whether to place a point, so the two cannot disagree. */
-    static auto Endpoint(const OPleatDisplay &display, int position, int end, const OPleatEnd &first,
-                         const OPleatEnd &second, const QVector<SourceItem> &source,
-                         const QVector<DestinationItem> &destination) -> quint32;
+     *  The line as the user drew it is read at the points themselves. Any later place is either a point of the
+     *  display or the copy the operation already made of that point when it travels: the same question Create
+     *  asks when it decides whether to place a point, so the two cannot disagree. */
+    static auto Endpoint(const OPleatDisplay &display, const OPleatPlan &plan,
+                         const QVector<OPleatDeparture> &departures, int departure, int line, int end,
+                         const QVector<SourceItem> &source, const QVector<DestinationItem> &destination) -> quint32;
 
     /** @brief Complete the figure: an id for every object it still misses, and a name for every point. Nothing is
-     *  allocated when the rule refused the pleat — there is no figure to draw then, and no id must be left in the
-     *  file for an object that will not exist. */
-    static void EnsureIds(OPleatDisplay &display, const OPleatEnd &first, const OPleatEnd &second, OPleatKind kind,
-                          bool foldLine, const OPleatPlan &plan, const QVector<SourceItem> &source,
+     *  allocated when the rule refused the pleats — there is no figure to draw then, and no id must be left in
+     *  the file for an object that will not exist.
+     *
+     *  An entry the file holds whose place no longer exists — a departure line the user took away — is dropped:
+     *  the places of the others are then given new ids, since nothing tells which old id stood for which new
+     *  place. */
+    static void EnsureIds(OPleatDisplay &display, const QVector<OPleatDeparture> &departures, bool foldLine,
+                          const OPleatPlan &plan, const QVector<SourceItem> &source,
                           const QVector<DestinationItem> &destination, VContainer *data);
 
-    /** @brief Place the points of the figure: the copies of the prise points, and the apex or the middle of every
-     *  cap. The lines are built by the operation, which is the only one that can put an item in the scene. */
-    static void Create(quint32 idTool, OPleatDisplay &display, const OPleatPlan &plan, OPleatKind kind,
-                       const OPleatEnd &first, const OPleatEnd &second, VContainer *data);
+    /** @brief Place the points of the figure: the copies of the departure lines, and the apex or the middle of
+     *  every cap. The lines are built by the operation, which is the only one that can put an item in the scene. */
+    static void Create(quint32 idTool, OPleatDisplay &display, const OPleatPlan &plan,
+                       const QVector<OPleatDeparture> &departures, VContainer *data);
 
     /** @brief The ids of the points the display created, the ones the operation has to own: every copy it placed
-     *  and every mark. A prise point is not one of them, and neither is a copy the operation made by itself. */
+     *  and every mark. A point of a departure line is not one of them, and neither is a copy the operation made
+     *  by itself. */
     static auto PointImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>;
 
     static void Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDisplay &display);

@@ -9203,10 +9203,10 @@ Cette action ne peut pas être annulée.</translation>
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two — the two points of the departure line included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation>Sélectionnez les objets du contour &lt;b&gt;dans l&apos;ordre&lt;/b&gt; : tous dans le sens horaire ou tous dans le sens antihoraire, sans jamais mélanger les deux — les deux points de la ligne de départ du pli compris. Puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
-    </message>
+            <message>
+            <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two — the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
+            <translation>Sélectionnez les objets du contour &lt;b&gt;dans l&apos;ordre&lt;/b&gt; : tous dans le sens horaire ou tous dans le sens antihoraire, sans jamais mélanger les deux — les points des lignes de départ comprises. Puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
+        </message>
     <message>
         <source>Pleat</source>
         <translation>Pli</translation>
@@ -27271,6 +27271,10 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Tool pleat</source>
         <translation>Outil pli</translation>
     </message>
+        <message>
+            <source>Edit pleats</source>
+            <translation>Modifier les plis</translation>
+        </message>
     <message>
         <source>Double pleat</source>
         <translation>Pli double</translation>
@@ -30759,18 +30763,18 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
 </context>
 <context>
     <name>DialogPleat</name>
-    <message>
-        <source>Click point 1 of the pleat&apos;s departure line (it turns green)</source>
-        <translation>Cliquez le point 1 de la ligne de départ du pli (il devient vert)</translation>
-    </message>
-    <message>
-        <source>Click point 2 of the pleat&apos;s departure line (it turns red)</source>
-        <translation>Cliquez le point 2 de la ligne de départ du pli (il devient rouge)</translation>
-    </message>
-    <message>
-        <source>The departure line is made of two points</source>
-        <translation>La ligne de départ du pli se fait avec deux points</translation>
-    </message>
+            <message>
+            <source>Click point 1 of the departure line of pleat 1 (it turns green)</source>
+            <translation>Cliquez le point 1 de la ligne de départ du pli 1 (il devient vert)</translation>
+        </message>
+                    <message>
+            <source>Click point 2 of the departure line of pleat %1 (it turns red)</source>
+            <translation>Cliquez le point 2 de la ligne de départ du pli %1 (il devient rouge)</translation>
+        </message>
+            <message>
+            <source>A departure line is made of two points</source>
+            <translation>Une ligne de départ se fait avec deux points</translation>
+        </message>
     <message>
         <source>This point is not one of the objects you selected: click a point of the contour</source>
         <translation>Ce point ne fait pas partie des objets sélectionnés : cliquez un point du contour</translation>
@@ -30783,18 +30787,18 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>The edge is not recognized at the cap of point 2 (red): click a point of the piece&apos;s outline, right next to it</source>
         <translation>Le bord n&apos;est pas reconnu au chapeau du point 2 (le rouge) : cliquez un point du contour de la pièce, juste à côté.</translation>
     </message>
-    <message>
-        <source>Click the two points of the departure line.</source>
-        <translation>Cliquez les deux points de la ligne de départ.</translation>
-    </message>
-    <message>
-        <source>Every object you selected must be on the same side of the departure line.</source>
-        <translation>Tous les objets sélectionnés doivent être du même côté de la ligne de départ du pli.</translation>
-    </message>
-    <message>
-        <source>The edge was not recognized at one end of the departure line.</source>
-        <translation>Le bord n&apos;a pas été reconnu à une extrémité de la ligne de départ.</translation>
-    </message>
+            <message>
+            <source>Click the two points of the first departure line.</source>
+            <translation>Cliquez les deux points de la première ligne de départ.</translation>
+        </message>
+            <message>
+            <source>Every object you selected must be on the same side of the departure lines.</source>
+            <translation>Tous les objets sélectionnés doivent être du même côté des lignes de départ.</translation>
+        </message>
+            <message>
+            <source>The edge was not recognized at one end of a departure line.</source>
+            <translation>Le bord n&apos;a pas été reconnu à une extrémité d&apos;une ligne de départ.</translation>
+        </message>
     <message>
         <source>the prise</source>
         <translation>la prise</translation>
@@ -30959,7 +30963,35 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Fold line</source>
         <translation>Ligne de pli</translation>
     </message>
-    <message>
+        <message>
+            <source>Pleats:</source>
+            <translation>Plis :</translation>
+        </message>
+        <message>
+            <source>Pleat %1</source>
+            <translation>Pli %1</translation>
+        </message>
+        <message>
+            <source>Value</source>
+            <translation>Valeur</translation>
+        </message>
+        <message>
+            <source>Kind</source>
+            <translation>Type</translation>
+        </message>
+        <message>
+            <source>Add a pleat</source>
+            <translation>Ajouter un pli</translation>
+        </message>
+        <message>
+            <source>Remove the pleat</source>
+            <translation>Retirer le pli</translation>
+        </message>
+                <message>
+            <source>Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish</source>
+            <translation>Cliquez le point 1 de la ligne de départ du pli %1 (il devient vert), ou %2 pour terminer</translation>
+        </message>
+                    <message>
         <source>Draw the fold line that joins the two caps, and the pen it is drawn with.</source>
         <translation>Tracer la ligne de pli qui joint les deux chapeaux, et le stylo avec lequel elle est tracée.</translation>
     </message>
@@ -30978,6 +31010,14 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Pleat</source>
         <translation>Pli</translation>
     </message>
+        <message>
+            <source>show the fold lines</source>
+            <translation>afficher les lignes de pli</translation>
+        </message>
+        <message>
+            <source>hide the fold lines</source>
+            <translation>masquer les lignes de pli</translation>
+        </message>
     <message>
         <source>change the value of the pleat</source>
         <translation>modifier la valeur du pli</translation>

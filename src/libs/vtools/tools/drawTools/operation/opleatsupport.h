@@ -16,6 +16,11 @@
  **          What is left here is the way out: a point the user designates by hand wins over anything read, for
  **          the points no source can describe — a corner, a crossing, a copy nothing draws through.
  **
+ **          The edge is always read at the point the user gave, never at the place the pleats carried that point
+ **          to: a copy belongs to the operation, so nothing describes the edge there, and a pleat only
+ **          translates — the copy wears the very edge of its origin. What the point designated by hand carries
+ **          wins over both.
+ **
  **          Only a *direction* is ever read, never an orientation: the fold cares about the line, and a vector
  **          and its opposite describe the same edge. Whoever reads the answer must therefore expect no sign.
  **

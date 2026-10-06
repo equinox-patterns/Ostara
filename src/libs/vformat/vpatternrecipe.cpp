@@ -1334,29 +1334,11 @@ auto VPatternRecipe::Spread(const VToolRecord &record, const VContainer &data) -
 //---------------------------------------------------------------------------------------------------------------------
 void VPatternRecipe::SavePleat(const OToolPleat *tool, QDomElement &step) const
 {
-    SetAttribute(step, AttrFirstPoint, QString::number(tool->First().pointId));
-    SetAttribute(step, AttrSecondPoint, QString::number(tool->Second().pointId));
-    SetAttribute(step, OToolPleat::AttrValue, tool->Value());
-    SetAttribute(step, OToolPleat::AttrKind,
-                 tool->Kind() == OPleatKind::Double ? OToolPleat::AttrKindDouble : OToolPleat::AttrKindSimple);
-
-    SetAttribute(step, OToolPleat::AttrCap1, tool->First().showCap ? trueStr : falseStr);
-    SetAttribute(step, OToolPleat::AttrCap2, tool->Second().showCap ? trueStr : falseStr);
-    SetAttribute(step, OToolPleat::AttrCap1Sense,
-                 QString::number(tool->First().secondSense ? 2 : 1));
-    SetAttribute(step, OToolPleat::AttrCap2Sense,
-                 QString::number(tool->Second().secondSense ? 2 : 1));
-
-    if (tool->First().edgePointId != NULL_ID)
-    {
-        SetAttribute(step, OToolPleat::AttrCap1Ref, QString::number(tool->First().edgePointId));
-    }
-    if (tool->Second().edgePointId != NULL_ID)
-    {
-        SetAttribute(step, OToolPleat::AttrCap2Ref, QString::number(tool->Second().edgePointId));
-    }
-
+    // The departure lines are the chain the pleats are recomputed from: one item per line, the very element the
+    // pattern itself holds, so that the step is read back by the same parser (see OToolPleat::SaveDepartures).
     SetAttribute(step, OToolPleat::AttrFoldLine, tool->IsFoldLineShown() ? trueStr : falseStr);
+
+    OToolPleat::SaveDepartures(m_pattern, step, tool->Departures());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

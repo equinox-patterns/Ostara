@@ -4,7 +4,8 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
- **  @brief  The objects a pleat draws: the prise and its copies, the fold line, and the cap of each end.
+ **  @brief  The objects the pleats draw: the departure lines and their copies, the fold lines, and the cap of
+ **          each end of each pleat.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -29,6 +30,7 @@
 #include <QPointF>
 #include <QSharedPointer>
 
+#include "../../vgeometry/vgeometrydef.h"
 #include "../../vgeometry/vgobject.h"
 #include "../../vgeometry/vpointf.h"
 #include "../../vmisc/literals.h"
@@ -49,15 +51,22 @@ const QString OPleatDisplay::AttrFoldColor = QStringLiteral("foldColor");
 const QString OPleatDisplay::AttrLine = QStringLiteral("line");
 const QString OPleatDisplay::AttrFoldLine = QStringLiteral("foldLine");
 const QString OPleatDisplay::AttrCopy = QStringLiteral("copy");
+const QString OPleatDisplay::AttrDeparture = QStringLiteral("departure");
+const QString OPleatDisplay::AttrPlace = QStringLiteral("place");
+const QString OPleatDisplay::AttrEnd = QStringLiteral("end");
 const QString OPleatDisplay::AttrPoint = QStringLiteral("point");
 const QString OPleatDisplay::AttrSide1 = QStringLiteral("side1");
 const QString OPleatDisplay::AttrSide2 = QStringLiteral("side2");
 
 namespace
 {
-/** The label offsets a point of the display is given when the prise point it comes from is gone. */
+/** The label offsets a point of the display is given when the point of the departure line it comes from is gone. */
 constexpr qreal kDefaultLabelOffsetX = 0.4;
 constexpr qreal kDefaultLabelOffsetY = 0.65;
+
+/** How close two places have to be for the figure to call them the same one: the carries are sums of steps, so
+ *  a place is where the arithmetic put it, and this only forgives the rounding of that arithmetic. */
+constexpr qreal kPlaceTolerance = 1e-6;
 
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief The name of a point of the display, made unique against everything the pattern already holds. */
@@ -89,8 +98,8 @@ auto PointOf(quint32 pointId, const VContainer *data) -> QSharedPointer<VPointF>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The name of a prise point, or a plain one when the container no longer holds it: a name is a label, and a
- *  missing one must not cost the figure its objects. */
+/** @brief The name of a point of a departure line, or a plain one when the container no longer holds it: a name is
+ *  a label, and a missing one must not cost the figure its objects. */
 auto PriseName(quint32 pointId, const VContainer *data) -> QString
 {
     const QSharedPointer<VPointF> point = PointOf(pointId, data);
@@ -111,62 +120,126 @@ void PlacePoint(quint32 id, const QPointF &position, const QString &name, const 
 
     data->UpdateGObject(id, point);
 }
+
+/** @brief One end of a departure line, the way every other question of the figure asks for it. */
+auto EndOf(const QVector<OPleatDeparture> &departures, int departure, int end) -> OPleatEnd
+{
+    const OPleatDeparture line = departures.value(departure, OPleatDeparture{});
+    return (end == 0) ? line.first : line.second;
+}
+
+/** @brief Where the endpoint of one place comes from.
+ *
+ *  @a Prise is the point the user drew — the departure line as it is, which the figure never creates; @a Image is
+ *  the copy the operation already made of that point, which stands at the last place of its own departure line;
+ *  @a Own is a place no other object stands for, and the figure then holds a point of its own there. */
+enum class OPleatEndpoint
+{
+    Prise,
+    Image,
+    Own
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+auto EndpointKind(const OPleatPlan &plan, const QVector<OPleatDeparture> &departures, int departure, int line,
+                  int end, const QVector<SourceItem> &source, const QVector<DestinationItem> &destination)
+    -> OPleatEndpoint
+{
+    const OPleatEnd prise = EndOf(departures, departure, end);
+    const QPointF place = plan.Place(prise.position, departure, line);
+
+    if (VFuzzyComparePoints(place, prise.position, kPlaceTolerance))
+    {
+        return OPleatEndpoint::Prise; // the line as the user drew it: there is nothing to create
+    }
+
+    if (VFuzzyComparePoints(place, prise.position + plan.Move(prise.position), kPlaceTolerance)
+        && OOperationLines::PointImage(prise.pointId, source, destination, {}) != NULL_ID)
+    {
+        // The place is where the operation carries that point: making a second point there would leave two of
+        // them where the pattern needs one (see Endpoint).
+        return OPleatEndpoint::Image;
+    }
+
+    return OPleatEndpoint::Own;
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPleatDisplay::PleatCount(OPleatKind kind) -> int
+auto OPleatDisplay::PleatCount(const OPleatDeparture &departure) -> int
 {
-    return (kind == OPleatKind::Double) ? 2 : 1;
+    return (departure.kind == OPleatKind::Double) ? 2 : 1;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPleatDisplay::PositionCount(OPleatKind kind) -> int
+auto OPleatDisplay::LineCount(const OPleatDeparture &departure) -> int
 {
-    return PleatCount(kind) + 1;
+    return PleatCount(departure) + 1;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPleatDisplay::Endpoint(const OPleatDisplay &display, int position, int end, const OPleatEnd &first,
-                             const OPleatEnd &second, const QVector<SourceItem> &source,
-                             const QVector<DestinationItem> &destination) -> quint32
+auto OPleatDisplay::LineCount(const QVector<OPleatDeparture> &departures) -> int
 {
-    const quint32 priseId = (end == 0) ? first.pointId : second.pointId;
-    if (position <= 0)
+    int count = 0;
+    for (const OPleatDeparture &departure : departures)
     {
-        return priseId; // the prise itself: a point the user drew, which the display never creates
+        count += LineCount(departure);
     }
 
-    const quint32 own = display.copies.value(2 * (position - 1) + end).point;
-    if (own != NULL_ID)
-    {
-        return own;
-    }
-
-    // The point travels with the other objects: where it lands is the copy the operation made of it, and making a
-    // second point there would leave two of them where the pattern needs one. That is true of the LAST place only
-    // — the copy line, where the fabric lands. Every place before it is a line the fold draws in the middle of the
-    // travel, which no other object stands for: the display holds a point of its own there, and without it the line
-    // has nothing to be drawn on (see EnsureIds, which gives it one).
-    if (position != static_cast<int>(display.lines.size()) - 1)
-    {
-        return NULL_ID;
-    }
-
-    return OOperationLines::PointImage(priseId, source, destination, {});
+    return count;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OPleatDisplay::EnsureIds(OPleatDisplay &display, const OPleatEnd &first, const OPleatEnd &second, OPleatKind kind,
-                              bool foldLine, const OPleatPlan &plan, const QVector<SourceItem> &source,
+auto OPleatDisplay::CopyCount(const QVector<OPleatDeparture> &departures) -> int
+{
+    return 2 * LineCount(departures);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatDisplay::LineIndex(const QVector<OPleatDeparture> &departures, int departure, int line) -> int
+{
+    int index = line;
+    for (int i = 0; i < departure && i < departures.size(); ++i)
+    {
+        index += LineCount(departures.at(i));
+    }
+
+    return index;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatDisplay::CopyIndex(const QVector<OPleatDeparture> &departures, int departure, int line, int end) -> int
+{
+    return 2 * LineIndex(departures, departure, line) + end;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatDisplay::Endpoint(const OPleatDisplay &display, const OPleatPlan &plan,
+                             const QVector<OPleatDeparture> &departures, int departure, int line, int end,
+                             const QVector<SourceItem> &source, const QVector<DestinationItem> &destination) -> quint32
+{
+    switch (EndpointKind(plan, departures, departure, line, end, source, destination))
+    {
+        case OPleatEndpoint::Prise:
+            return EndOf(departures, departure, end).pointId;
+        case OPleatEndpoint::Image:
+            return OOperationLines::PointImage(EndOf(departures, departure, end).pointId, source, destination, {});
+        case OPleatEndpoint::Own:
+            break;
+    }
+
+    return display.copies.value(CopyIndex(departures, departure, line, end)).point;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDeparture> &departures, bool foldLine,
+                              const OPleatPlan &plan, const QVector<SourceItem> &source,
                               const QVector<DestinationItem> &destination, VContainer *data)
 {
-    const int pleats = PleatCount(kind);
-    const int positions = PositionCount(kind);
-
     if (not display.show || plan.failure != OPleatFailure::None)
     {
-        // Nothing is kept while the figure is off, and nothing exists when the rule refused the pleat: switching the
-        // figure on allocates the objects again, which is what "the objects are created again" means.
+        // Nothing is kept while the figure is off, and nothing exists when the rule refused the pleats: switching
+        // the figure on allocates the objects again, which is what "the objects are created again" means.
         display.lines.clear();
         display.foldLines.clear();
         display.copies.clear();
@@ -174,11 +247,23 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const OPleatEnd &first, co
         return;
     }
 
-    display.lines.resize(positions);
-    // The fold line is the pleat itself: with none drawn there is no object to keep, and its id must not stay in the
-    // file as the id of a line that will never exist.
-    display.foldLines.resize(foldLine ? pleats : 0);
-    display.copies.resize(pleats * 2);
+    // An entry of the file whose place no longer exists — a departure line the user took away — describes a figure
+    // that is gone: nothing tells which of the ids that are left stood for which new place, so every one of them
+    // is given again rather than handed to the wrong point.
+    for (const OPleatCopy &copy : std::as_const(display.copies))
+    {
+        if (copy.departure < 0 || copy.departure >= departures.size() || copy.line < 0
+            || copy.line >= LineCount(departures.at(copy.departure)) || copy.end < 0 || copy.end > 1)
+        {
+            display.copies.clear();
+            break;
+        }
+    }
+
+    display.lines.resize(LineCount(departures));
+    // The fold line is the pleat itself: with none drawn there is no object to keep, and its id must not stay in
+    // the file as the id of a line that will never exist.
+    display.foldLines.resize(foldLine ? plan.PleatCount() : 0);
     display.marks.resize(plan.marks.size());
 
     for (quint32 &line : display.lines)
@@ -197,36 +282,47 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const OPleatEnd &first, co
         }
     }
 
-    for (int k = 1; k < positions; ++k)
+    // The copies the file held are read back by the place they name, and every entry is then stamped with its own:
+    // the entries are rebuilt whole, so that a place the file does not hold is an empty entry — the figure creates
+    // nothing there — and never the entry of another place.
+    QVector<OPleatCopy> ordered(CopyCount(departures));
+    for (const OPleatCopy &copy : std::as_const(display.copies))
     {
-        for (int end = 0; end < 2; ++end)
+        ordered[CopyIndex(departures, copy.departure, copy.line, copy.end)] = copy;
+    }
+    display.copies = ordered;
+
+    for (int departure = 0; departure < departures.size(); ++departure)
+    {
+        for (int line = 0; line < LineCount(departures.at(departure)); ++line)
         {
-            OPleatCopy &copy = display.copies[2 * (k - 1) + end];
-            const OPleatEnd &prise = (end == 0) ? first : second;
-
-            // The copy the operation makes of the prise point is one place only — the last one, where the fabric
-            // lands. Every place before it is a line of the travel that no other object stands for, and it needs a
-            // point of its own: two lines drawn on the same copy would leave the second pleat of a double without a
-            // second side, and the line between the two pleats would sit on the copy line (see Endpoint).
-            const bool carried = (k == positions - 1)
-                                 && OOperationLines::PointImage(prise.pointId, source, destination, {}) != NULL_ID;
-
-            if (carried)
+            for (int end = 0; end < 2; ++end)
             {
-                // An id left by another state — the place was a line of the display in a double, and a simple pleat
-                // carries it: keeping it would leave a second point on the copy line. Whatever changes this asks for
-                // a full parse, so the point that id named is rebuilt from the file, without it.
-                copy.point = NULL_ID;
-                copy.name.clear();
-            }
-            else if (copy.point == NULL_ID)
-            {
-                copy.point = data->getNextId();
-            }
+                OPleatCopy &copy = display.copies[CopyIndex(departures, departure, line, end)];
+                copy.departure = departure;
+                copy.line = line;
+                copy.end = end;
 
-            if (copy.point != NULL_ID && copy.name.isEmpty())
-            {
-                copy.name = UniqueName(PriseName(prise.pointId, data) + "__m"_L1 + QString::number(k), data);
+                const OPleatEnd prise = EndOf(departures, departure, end);
+                if (EndpointKind(plan, departures, departure, line, end, source, destination) != OPleatEndpoint::Own)
+                {
+                    // The place is one the operation carries by itself: an id left by another state would leave
+                    // a second point where the pattern needs one. Whatever changes this asks for a full parse,
+                    // so the point that id named is rebuilt from the file, without it.
+                    copy.point = NULL_ID;
+                    copy.name.clear();
+                    continue;
+                }
+
+                if (copy.point == NULL_ID)
+                {
+                    copy.point = data->getNextId();
+                }
+
+                if (copy.name.isEmpty())
+                {
+                    copy.name = UniqueName(PriseName(prise.pointId, data) + "__m"_L1 + QString::number(line), data);
+                }
             }
         }
     }
@@ -235,7 +331,7 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const OPleatEnd &first, co
     {
         OPleatMarkDisplay &mark = display.marks[i];
         const OPleatMark &resolved = plan.marks.at(i);
-        const OPleatEnd &prise = (resolved.end == 0) ? first : second;
+        const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
 
         if (mark.pleat != resolved.pleat || mark.end != resolved.end)
         {
@@ -252,7 +348,8 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const OPleatEnd &first, co
 
         if (mark.name.isEmpty())
         {
-            const QString suffix = (pleats == 1) ? "__pli"_L1 : "__pli"_L1 + QString::number(resolved.pleat + 1);
+            const QString suffix = (plan.PleatCount() == 1) ? "__pli"_L1
+                                                           : "__pli"_L1 + QString::number(resolved.pleat + 1);
             mark.name = UniqueName(PriseName(prise.pointId, data) + suffix, data);
         }
 
@@ -277,31 +374,32 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const OPleatEnd &first, co
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatPlan &plan, OPleatKind kind,
-                           const OPleatEnd &first, const OPleatEnd &second, VContainer *data)
+void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatPlan &plan,
+                           const QVector<OPleatDeparture> &departures, VContainer *data)
 {
     if (not display.show || plan.failure != OPleatFailure::None)
     {
         return;
     }
 
-    const int positions = PositionCount(kind);
-
-    for (int k = 1; k < positions; ++k)
+    for (int departure = 0; departure < departures.size(); ++departure)
     {
-        for (int end = 0; end < 2; ++end)
+        for (int line = 0; line < LineCount(departures.at(departure)); ++line)
         {
-            const OPleatCopy &copy = display.copies.value(2 * (k - 1) + end);
-            if (copy.point == NULL_ID)
+            for (int end = 0; end < 2; ++end)
             {
-                continue;
-            }
+                const OPleatCopy &copy = display.copies.value(CopyIndex(departures, departure, line, end));
+                if (copy.point == NULL_ID)
+                {
+                    continue;
+                }
 
-            const OPleatEnd &prise = (end == 0) ? first : second;
-            const QSharedPointer<VPointF> source = PointOf(prise.pointId, data);
-            const QPointF offset = source.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
-                                                   : QPointF(source->mx(), source->my());
-            PlacePoint(copy.point, prise.position + plan.step * k, copy.name, offset, idTool, data);
+                const OPleatEnd prise = EndOf(departures, departure, end);
+                const QSharedPointer<VPointF> source = PointOf(prise.pointId, data);
+                const QPointF offset = source.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
+                                                       : QPointF(source->mx(), source->my());
+                PlacePoint(copy.point, plan.Place(prise.position, departure, line), copy.name, offset, idTool, data);
+            }
         }
     }
 
@@ -309,7 +407,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
     {
         const OPleatMarkDisplay &mark = display.marks.at(i);
         const OPleatMark &resolved = plan.marks.at(i);
-        const OPleatEnd &prise = (resolved.end == 0) ? first : second;
+        const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
 
         if (mark.point == NULL_ID)
         {
@@ -387,9 +485,12 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
 
     for (const OPleatCopy &copy : std::as_const(display.copies))
     {
-        // Every place holds an entry, even an empty one: the two lists are read side by side, and dropping one would
-        // pair every following copy with the wrong place on the prise.
+        // The place is written with the point: the places of the figure are read back by what they name, and an
+        // entry that named nothing would be handed to whichever place comes first.
         QDomElement item = doc->createElement(VAbstractOperation::TagItem);
+        doc->SetAttribute(item, AttrDeparture, static_cast<quint32>(copy.departure));
+        doc->SetAttribute(item, AttrPlace, static_cast<quint32>(copy.line));
+        doc->SetAttribute(item, AttrEnd, static_cast<quint32>(copy.end));
         if (copy.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrCopy, copy.point);
@@ -442,6 +543,11 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
         display.foldTypeLine = VAbstractPattern::GetParametrString(element, AttrFoldTypeLine, TypeLineDotLine);
         display.foldColor = VAbstractPattern::GetParametrString(element, AttrFoldColor, ColorLightGreen);
 
+        // The copies of a file written before a pleat could be taken on several departure lines name no place: they
+        // are read in their own order, which is the order the figure held them in — first end then second, place
+        // after place, on the first line of all.
+        int unnamed = 0;
+
         for (QDomElement item = element.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
              item = item.nextSiblingElement(VAbstractOperation::TagItem))
         {
@@ -458,22 +564,31 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
             {
                 display.foldLines.append(VAbstractPattern::GetParametrUInt(item, AttrFoldLine, NULL_ID_STR));
             }
-            else if (item.hasAttribute(AttrCopy))
-            {
-                OPleatCopy copy;
-                copy.point = VAbstractPattern::GetParametrUInt(item, AttrCopy, NULL_ID_STR);
-                copy.name = VDomDocument::GetParametrEmptyString(item, AttrName);
-                display.copies.append(copy);
-            }
             else if (item.hasAttribute(AttrLine))
             {
                 display.lines.append(VAbstractPattern::GetParametrUInt(item, AttrLine, NULL_ID_STR));
             }
             else
             {
-                // An entry with nothing in it is a place the operation carries by itself: the copy of a prise point
-                // that travels is not the display's to create, and the place must still be counted.
-                display.copies.append(OPleatCopy{});
+                // Every place holds an entry, even one with nothing in it: a place the operation carries by itself
+                // is not the display's to create, and the place must still be counted.
+                OPleatCopy copy;
+                copy.point = VAbstractPattern::GetParametrUInt(item, AttrCopy, NULL_ID_STR);
+                copy.name = VDomDocument::GetParametrEmptyString(item, AttrName);
+                if (item.hasAttribute(AttrDeparture))
+                {
+                    copy.departure = static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrDeparture, u"0"_s));
+                    copy.line = static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrPlace, u"0"_s));
+                    copy.end = static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrEnd, u"0"_s));
+                }
+                else
+                {
+                    copy.departure = 0;
+                    copy.line = unnamed / 2 + 1;
+                    copy.end = unnamed % 2;
+                }
+                ++unnamed;
+                display.copies.append(copy);
             }
         }
 

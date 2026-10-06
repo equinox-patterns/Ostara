@@ -742,7 +742,7 @@ void MainWindow::ToolPleat(bool checked)
     ToolSelectOperationLines();
     const QString tooltip =
         tr("Select the objects of the contour <b>in order</b>: all clockwise or all anticlockwise, "
-           "never mixing the two — the two points of the departure line included. Then <b>%1</b> to confirm")
+           "never mixing the two — the points of the departure lines included. Then <b>%1</b> to confirm")
             .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<ODialogPleat>(checked, Tool::Pleat, QString(), tooltip,
                                          &MainWindow::ClosedDrawDialogWithApply<OToolPleat>,

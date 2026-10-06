@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
- **  @brief  The dialog of a pleat: the prise, the objects that travel, the value, and what is drawn.
+ **  @brief  The dialog of the pleats: the value and the boxes of each of them, and the figure.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -32,16 +32,23 @@
 #include <QComboBox>
 #include <QFormLayout>
 #include <QGroupBox>
+#include <QHBoxLayout>
+#include <QHeaderView>
 #include <QLineEdit>
 #include <QLineF>
 #include <QMap>
 #include <QPalette>
 #include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSignalBlocker>
 #include <QTabBar>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 #include "../../tools/drawTools/operation/oedgereader.h"
 #include "../../tools/drawTools/operation/opleatsupport.h"
 #include "../../visualization/line/operation/ovistoolpleat.h"
+#include "../../visualization/visualization.h"
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/ifcdef.h"
 #include "../vgeometry/vabstractcurve.h"
@@ -64,10 +71,15 @@ namespace
 constexpr int kPenIconWidth = 80;
 constexpr int kPenIconHeight = 14;
 constexpr int kColorIconSize = 20;
+constexpr int kTableHeight = 90;
 
-/** How parallel to the departure line an edge has to be for no cap to exist there — the same tolerance the rule
+/** How parallel to a departure line an edge has to be for no cap to exist there — the same tolerance the rule
  *  itself uses to say that the two lines never meet. */
 constexpr qreal kUnusableEdgeTolerance = 1e-7;
+
+/** What a departure line that holds no value yet is given while the gesture runs: the caps are judged on the
+ *  canvas, and a cap is a direction — no value, however small, changes the answer. */
+constexpr qreal kNominalValue = 1.;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -77,8 +89,38 @@ ODialogPleat::ODialogPleat(const VContainer *data, VAbstractPattern *doc, quint3
 {
     ui->setupUi(this);
 
+    // The table of the pleats opens the group and takes the whole width: it is what the rest of the window edits,
+    // and the lines are picked on the canvas — it holds no geometry of its own, one line per departure line.
+    m_table = new QTableWidget(this);
+    m_table->setColumnCount(3);
+    m_table->setHorizontalHeaderLabels({tr("Pleat"), tr("Value"), tr("Kind")});
+    m_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    m_table->verticalHeader()->setVisible(false);
+    m_table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    m_table->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_table->setMinimumHeight(kTableHeight);
+    connect(m_table, &QTableWidget::itemSelectionChanged, this, &ODialogPleat::DepartureSelected);
+    ui->verticalLayoutPleat->insertWidget(0, m_table);
+
+    auto *buttons = new QWidget(this);
+    auto *buttonsLayout = new QHBoxLayout(buttons);
+    buttonsLayout->setContentsMargins(0, 0, 0, 0);
+    m_add = new QPushButton(tr("Add a pleat"), buttons);
+    m_remove = new QPushButton(tr("Remove the pleat"), buttons);
+    buttonsLayout->addWidget(m_add);
+    buttonsLayout->addWidget(m_remove);
+    buttonsLayout->addStretch();
+    connect(m_add, &QPushButton::clicked, this, &ODialogPleat::AddDeparture);
+    connect(m_remove, &QPushButton::clicked, this, &ODialogPleat::RemoveDeparture);
+
+    // The value comes after them, in the same block: what the field holds is the value of the line the table has
+    // selected, and the window reads in that order.
+    ui->verticalLayoutPleat->insertWidget(1, buttons);
+
     // The value the user types is the pleat as it will show once folded: the fabric it takes is twice that, and the
-    // tool works that out. Nothing else is asked: the axis of the move is perpendicular to the prise by definition.
+    // tool works that out. Nothing else is asked: the axis of the move is perpendicular to the departure line by
+    // definition, and the value belongs to the line the table has selected.
     m_formulaValue = new FormulaInputWidget(this);
     m_formulaValue->setData(&this->data);
     m_formulaValue->setToolId(toolId);
@@ -92,8 +134,8 @@ ODialogPleat::ODialogPleat(const VContainer *data, VAbstractPattern *doc, quint3
     InsertFormulaField(ui->formulaValuePlaceholder, m_formulaValue);
     ui->formulaValuePlaceholder = nullptr;
 
-    // One fold, or two side by side: a combo of the house, built here like the others so it carries the same look
-    // and the same behaviour on every system. It opens the group, before the two caps it decides the meaning of.
+    // One fold, or two side by side, for the departure line the table has selected: a combo of the house, built here
+    // like the others so it carries the same look and the same behaviour on every system.
     m_kind = MakeComboBox(this);
     m_kind->addItem(tr("Simple"), QVariant(static_cast<int>(OPleatKind::Simple)));
     m_kind->addItem(tr("Double"), QVariant(static_cast<int>(OPleatKind::Double)));
@@ -128,8 +170,8 @@ ODialogPleat::ODialogPleat(const VContainer *data, VAbstractPattern *doc, quint3
     InitColorCombo(m_foldColor);
     SetColorComboCurrentName(m_foldColor, ColorLightGreen);
 
-    // The pens of the pleat itself — its lines, and the sides of its caps, which are drawn with them — belong to the
-    // group that holds the pleat. The fold line has its own, in the group that holds the fold line alone.
+    // The pens of the pleats — their lines, and the sides of their caps, which are drawn with them — belong to the
+    // group that holds the pleats. The fold line has its own, in the group that holds the fold line alone.
     ui->formLayoutPleat->addRow(tr("Line type:"), m_lineType);
     ui->formLayoutPleat->addRow(tr("Line color:"), m_lineColor);
     ui->formLayoutDisplay->addRow(tr("Fold line type:"), m_foldType);
@@ -155,6 +197,7 @@ ODialogPleat::ODialogPleat(const VContainer *data, VAbstractPattern *doc, quint3
 
     vis = new OVisToolPleat(&this->data);
 
+    EnableDetails(false);
     RefreshCapLabels();
     RefreshFoldLineState();
 }
@@ -166,37 +209,50 @@ ODialogPleat::~ODialogPleat()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::ShownEnd(int rank) const -> OPleatEnd
-{
-    OPleatEnd end = (rank == 1) ? m_second : m_first;
-    end.showCap = (rank == 1) ? ui->checkBoxCap2->isChecked() : ui->checkBoxCap1->isChecked();
-    end.secondSense = (rank == 1) ? ui->checkBoxCap2Sense->isChecked() : ui->checkBoxCap1Sense->isChecked();
-    return end;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::GetFirst() const -> OPleatEnd
-{
-    return ShownEnd(0);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::GetSecond() const -> OPleatEnd
-{
-    return ShownEnd(1);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::GetValue() const -> QString
-{
-    return m_formulaValue->formula();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::GetKind() const -> OPleatKind
+auto ODialogPleat::Kind() const -> OPleatKind
 {
     return (m_kind->currentData().toInt() == static_cast<int>(OPleatKind::Double)) ? OPleatKind::Double
                                                                                   : OPleatKind::Simple;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::Pleats() const -> int
+{
+    int count = 0;
+
+    for (const OPleatDeparture &departure : m_departures)
+    {
+        count += (departure.kind == OPleatKind::Double) ? 2 : 1;
+    }
+
+    return count;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::ShownDepartures() const -> QVector<OPleatDeparture>
+{
+    QVector<OPleatDeparture> departures = m_departures;
+
+    // The editor holds the line it is showing: the geometry of a row comes from what the user typed in it, and the
+    // table and the figure read the very same state.
+    if (m_editorRow >= 0 && m_editorRow < departures.size())
+    {
+        OPleatDeparture &departure = departures[m_editorRow];
+        departure.value = m_formulaValue->formula();
+        departure.kind = Kind();
+        departure.first.showCap = ui->checkBoxCap1->isChecked();
+        departure.first.secondSense = ui->checkBoxCap1Sense->isChecked();
+        departure.second.showCap = ui->checkBoxCap2->isChecked();
+        departure.second.secondSense = ui->checkBoxCap2Sense->isChecked();
+    }
+
+    return departures;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::GetDepartures() const -> QVector<OPleatDeparture>
+{
+    return ShownDepartures();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -210,7 +266,7 @@ auto ODialogPleat::GetDisplay() const -> OPleatDisplay
 {
     OPleatDisplay display = m_display;
 
-    // The figure of a pleat is not optional: it always shows what the fold is made of, and only its fold line can
+    // The figure of a pleat is not optional: it always shows what the fold is made of, and only its fold lines can
     // be turned off.
     display.show = true;
     display.lineTypeLine = GetComboBoxCurrentData(m_lineType, TypeLineLine);
@@ -221,29 +277,23 @@ auto ODialogPleat::GetDisplay() const -> OPleatDisplay
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::SetPleat(const OPleatEnd &first, const OPleatEnd &second, const QString &value, OPleatKind kind,
-                            bool foldLine)
+void ODialogPleat::SetPleat(const QVector<OPleatDeparture> &departures, bool foldLine)
 {
-    m_first = first;
-    m_second = second;
+    m_departures = departures;
 
-    m_formulaValue->setFormula(value);
-    ChangeCurrentData(m_kind, static_cast<int>(kind));
     ui->checkBoxFoldLine->setChecked(foldLine);
-    ui->checkBoxCap1->setChecked(first.showCap);
-    ui->checkBoxCap1Sense->setChecked(first.secondSense);
-    ui->checkBoxCap2->setChecked(second.showCap);
-    ui->checkBoxCap2Sense->setChecked(second.secondSense);
 
-    // An existing pleat is complete: the dialog is opened to edit it, not to go through the gesture again. Its
-    // objects carry the name of the copies they are, so only a change of kind asks for a new one.
-    if (toolId != NULL_ID)
+    // An existing operation is complete: the dialog is opened to edit it, not to go through the gesture again. Its
+    // objects carry the name of the copies they are, so only a new count of pleats asks for a new one.
+    if (this->toolId != NULL_ID)
     {
         m_step = Step::Editing;
         m_sourcesNamed = true;
-        m_namedKind = kind;
+        m_namedPleats = Pleats();
     }
 
+    m_editorRow = departures.isEmpty() ? -1 : 0;
+    FillDepartures();
     RefreshCapLabels();
     RefreshFoldLineState();
     RefreshFigure();
@@ -261,26 +311,43 @@ void ODialogPleat::SetDisplay(const OPleatDisplay &display)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::PleatValue() const -> qreal
+auto ODialogPleat::ValueInPixels(const QString &formula, const VContainer *data) -> qreal
 {
-    if (m_formulaValue == nullptr || m_formulaValue->isValid() == false)
+    if (formula.isEmpty())
     {
         return 0.;
     }
 
-    const qreal value = m_formulaValue->value();
-    return value > 0. ? VAbstractValApplication::VApp()->toPixel(value) : 0.;
+    // A formula that does not hold answers nothing: the dialog draws no fold at all while the user is typing one, and
+    // never a fold built on a value the tool would refuse.
+    const qreal read = Visualization::FindValFromUser(formula, data->DataVariables());
+    return (read > 0. && !qIsNaN(read) && !qIsInf(read)) ? VAbstractValApplication::VApp()->toPixel(read) : 0.;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::MakePlan() const -> OPleatPlan
+auto ODialogPleat::Values(const QVector<OPleatDeparture> &departures, bool nominal) const -> QVector<qreal>
 {
-    const OPleatEnd first = ShownEnd(0);
-    const OPleatEnd second = ShownEnd(1);
+    QVector<qreal> values;
+    values.reserve(departures.size());
 
-    const QVector<SourceItem> source = GetSourceObjects();
-    return OPleatRule::Compose(first, second, PleatValue(), GetKind(),
-                               OPleatRule::SideOf(source, first.pointId, second.pointId, &data));
+    for (const OPleatDeparture &departure : departures)
+    {
+        qreal value = ValueInPixels(departure.value, &data);
+        if (nominal && value <= 0.)
+        {
+            value = kNominalValue;
+        }
+        values.append(value);
+    }
+
+    return values;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::MakePlan(bool nominal) const -> OPleatPlan
+{
+    const QVector<OPleatDeparture> departures = ShownDepartures();
+    return OPleatRule::Compose(departures, Values(departures, nominal), GetSourceObjects(), &data);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -295,9 +362,9 @@ auto ODialogPleat::FailureText(const OPleatPlan &plan) const -> QString
         case OPleatFailure::DegenerateValue:
             return tr("Put a pleat value greater than zero.");
         case OPleatFailure::NoSide:
-            return tr("Every object you selected must be on the same side of the departure line.");
+            return tr("Every object you selected must be on the same side of the departure lines.");
         case OPleatFailure::UnresolvedEdge:
-            return tr("The edge was not recognized at one end of the departure line.");
+            return tr("The edge was not recognized at one end of a departure line.");
         case OPleatFailure::EdgeAlongFold:
             return tr("This edge is parallel to the fold line: no cap is possible here.");
     }
@@ -308,10 +375,13 @@ auto ODialogPleat::FailureText(const OPleatPlan &plan) const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::RefreshFoldLineState()
 {
-    // The fold line joins the two caps: without both of them there is nothing to join, and the box has nothing to
-    // mean. It keeps its state, so ticking the cap back brings the line back with it.
-    const bool bothCaps = ui->checkBoxCap1->isChecked() && ui->checkBoxCap2->isChecked();
-    ui->checkBoxFoldLine->setEnabled(bothCaps);
+    // The fold line of a pleat joins its two caps: with no pleat having both of them, the box has nothing to mean. It
+    // keeps its state, so ticking a cap back brings the line back with it.
+    const QVector<OPleatDeparture> departures = ShownDepartures();
+    const bool any = std::any_of(departures.cbegin(), departures.cend(),
+                                 [](const OPleatDeparture &departure)
+                                 { return departure.first.showCap && departure.second.showCap; });
+    ui->checkBoxFoldLine->setEnabled(any);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -319,7 +389,7 @@ void ODialogPleat::RefreshFigure()
 {
     if (vis.isNull())
     {
-        // A full parse — the one an option that changes the objects of the pleat asks for — clears the scene and takes
+        // A full parse — the one an option that changes the objects of the pleats asks for — clears the scene and takes
         // this preview with it, while the dialog stays up. It is built again from the dialog's own state, so what the
         // user is changing keeps showing.
         vis = new OVisToolPleat(&this->data);
@@ -333,9 +403,7 @@ void ODialogPleat::RefreshFigure()
 
     operation->SetObjects(SourceToObjects(GetSourceObjects()));
     operation->SetPreviewLines(PreviewLines());
-    const bool bothCaps = ui->checkBoxCap1->isChecked() && ui->checkBoxCap2->isChecked();
-    operation->SetPleat(ShownEnd(0), ShownEnd(1), m_formulaValue->formula(), GetKind(),
-                        ui->checkBoxFoldLine->isChecked() && bothCaps);
+    operation->SetPleat(ShownDepartures(), m_pending, ui->checkBoxFoldLine->isChecked(), m_editorRow);
 
     if (not VAbstractValApplication::VApp()->getCurrentScene()->items().contains(operation))
     {
@@ -350,6 +418,18 @@ void ODialogPleat::RefreshFigure()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::FigureOptionChanged()
 {
+    const int row = CurrentRow();
+    if (row >= 0 && row < m_departures.size())
+    {
+        // What the editor shows is what the row holds: a box that is ticked is the row's, and the table says so.
+        m_departures[row].kind = Kind();
+        m_departures[row].first.showCap = ui->checkBoxCap1->isChecked();
+        m_departures[row].first.secondSense = ui->checkBoxCap1Sense->isChecked();
+        m_departures[row].second.showCap = ui->checkBoxCap2->isChecked();
+        m_departures[row].second.secondSense = ui->checkBoxCap2Sense->isChecked();
+        RefreshRow(row);
+    }
+
     RefreshFoldLineState();
     RefreshFigure();
     CheckState();
@@ -359,6 +439,14 @@ void ODialogPleat::FigureOptionChanged()
 void ODialogPleat::ValueChanged(bool valid)
 {
     Q_UNUSED(valid)
+
+    const int row = CurrentRow();
+    if (row >= 0 && row < m_departures.size())
+    {
+        m_departures[row].value = m_formulaValue->formula();
+        RefreshRow(row);
+    }
+
     RefreshFigure();
     CheckState();
 }
@@ -366,19 +454,23 @@ void ODialogPleat::ValueChanged(bool valid)
 //---------------------------------------------------------------------------------------------------------------------
 auto ODialogPleat::IsValid() const -> bool
 {
-    if (m_first.pointId == NULL_ID || m_second.pointId == NULL_ID)
+    if (ShownDepartures().isEmpty())
     {
-        ShowError(tr("Click the two points of the departure line."));
+        ShowError(tr("Click the two points of the first departure line."));
         return false;
     }
 
-    if (PleatValue() <= 0.)
+    const QVector<OPleatDeparture> departures = ShownDepartures();
+    for (const qreal value : Values(departures, false))
     {
-        ShowError(tr("Put a pleat value greater than zero."));
-        return false;
+        if (value <= 0.)
+        {
+            ShowError(tr("Put a pleat value greater than zero."));
+            return false;
+        }
     }
 
-    const OPleatPlan plan = MakePlan();
+    const OPleatPlan plan = MakePlan(false);
     if (plan.failure != OPleatFailure::None)
     {
         ShowError(FailureText(plan));
@@ -413,24 +505,30 @@ auto ODialogPleat::EdgePrompt(int rank) const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::DiscardUnusableEdges()
+void ODialogPleat::DiscardUnusableEdges(int departure)
 {
     // What the tool read, and what no cap can be built from, is not an answer. The dialog has no way of its own to
     // name an edge: it would open on a plan its OK refuses, with nothing in the window able to fix it. The point is
     // asked for on the canvas instead, and the dialog opens only once every cap it needs can be built.
-    const QPointF fold
-        = OEdgeReader::Position(m_second.pointId, &data) - OEdgeReader::Position(m_first.pointId, &data);
+    if (departure < 0 || departure >= m_departures.size())
+    {
+        return;
+    }
+
+    OPleatDeparture &line = m_departures[departure];
+
+    const QPointF fold = line.second.position - line.first.position;
     const qreal foldLength = QLineF(QPointF(), fold).length();
 
     if (foldLength > 0.)
     {
         // An edge that runs along the departure line meets it nowhere: the two lines are parallel, and no cap
         // exists. It is the line of the fold itself — or a construction line drawn through both points of the
-        // prise — and never the edge of the piece.
+        // departure line — and never the edge of the piece.
         const QPointF alongFold = fold / foldLength;
         for (int rank = 0; rank < 2; ++rank)
         {
-            OPleatEnd &end = (rank == 1) ? m_second : m_first;
+            OPleatEnd &end = (rank == 1) ? line.second : line.first;
             if (not end.showCap || end.edgePointId != NULL_ID)
             {
                 continue; // no cap there, or the user has already said which point carries its edge
@@ -450,7 +548,7 @@ void ODialogPleat::DiscardUnusableEdges()
         }
     }
 
-    if (MakePlan().failure != OPleatFailure::EdgeAlongFold)
+    if (MakePlan(true).failure != OPleatFailure::EdgeAlongFold)
     {
         return; // the plan complains about something else, or about nothing
     }
@@ -459,7 +557,7 @@ void ODialogPleat::DiscardUnusableEdges()
     // asked for both ends it concerns.
     for (int rank = 0; rank < 2; ++rank)
     {
-        OPleatEnd &end = (rank == 1) ? m_second : m_first;
+        OPleatEnd &end = (rank == 1) ? line.second : line.first;
         if (end.showCap && end.edgePointId == NULL_ID && QLineF(QPointF(), end.edgeDirection).length() > 0.)
         {
             end.edgeDirection = QPointF();
@@ -468,37 +566,46 @@ void ODialogPleat::DiscardUnusableEdges()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::AskForEdge()
+auto ODialogPleat::AskForEdge() -> bool
 {
-    DiscardUnusableEdges();
-
-    for (int rank = 0; rank < 2; ++rank)
+    for (int departure = 0; departure < m_departures.size(); ++departure)
     {
-        const OPleatEnd end = (rank == 1) ? m_second : m_first;
-        if (not end.showCap || end.edgePointId != NULL_ID)
-        {
-            continue; // no cap there, or the user has already said which point carries its edge
-        }
-
-        if (QLineF(QPointF(), end.edgeDirection).length() > 0.)
-        {
-            continue; // the tool read the edge from the point's own tool: nothing to ask
-        }
-
-        m_edgeRank = rank;
-        m_step = Step::Edge;
-        emit ToolTip(EdgePrompt(rank));
-        return;
+        DiscardUnusableEdges(departure);
     }
 
-    GoToEditing();
+    for (int departure = 0; departure < m_departures.size(); ++departure)
+    {
+        const OPleatDeparture &line = m_departures.at(departure);
+
+        for (int rank = 0; rank < 2; ++rank)
+        {
+            const OPleatEnd &end = (rank == 0) ? line.first : line.second;
+            if (not end.showCap || end.edgePointId != NULL_ID)
+            {
+                continue; // no cap there, or the user has already said which point carries its edge
+            }
+
+            if (QLineF(QPointF(), end.edgeDirection).length() > 0.)
+            {
+                continue; // the tool read the edge from the point's own tool: nothing to ask
+            }
+
+            m_edgeDeparture = departure;
+            m_edgeRank = rank;
+            m_step = Step::Edge;
+            emit ToolTip(EdgePrompt(rank));
+            return false;
+        }
+    }
+
+    return true; // every cap has an edge: the caller goes on, or opens the dialog
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::RefreshCapLabels()
 {
-    // A dot of the colour the point takes on the canvas: green for point 1 of the departure line, red for point 2.
-    // The colour is the name — a point name would say nothing to a modéliste who works with the names turned off.
+    // A dot of the colour the point takes on the canvas: green for point 1 of a departure line, red for point 2. The
+    // colour is the name — a point name would say nothing to a modéliste who works with the names turned off.
     const auto dot = [](VColorRole role) -> QString
     {
         return QStringLiteral("<span style='font-size:15pt; color:%1'>&#9679;</span>")
@@ -510,16 +617,36 @@ void ODialogPleat::RefreshCapLabels()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::NameSources(bool force)
+auto ODialogPleat::PointPrompt() const -> QString
 {
-    const OPleatKind kind = GetKind();
+    // Point 1 turns green and point 2 red: that colour is what names them everywhere else — in the dialog, in the dock
+    // and on the canvas — so the prompt says it, and never a point name. The pleat being built is named by its rank,
+    // which is the very number the table of the dialog will hold it under.
+    const int pleat = static_cast<int>(m_departures.size()) + 1;
 
-    if (not force && m_sourcesNamed && m_namedKind == kind)
+    if (m_pointRank == 0)
     {
-        return; // the objects already carry the name of the pleat they are about to become
+        return m_departures.isEmpty()
+                   ? tr("Click point 1 of the departure line of pleat 1 (it turns green)")
+                   : tr("Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish")
+                         .arg(pleat)
+                         .arg(VModifierKey::EnterKey());
     }
 
-    const QString suffix = (kind == OPleatKind::Double) ? "__m2"_L1 : "__m1"_L1;
+    return tr("Click point 2 of the departure line of pleat %1 (it turns red)").arg(pleat);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::NameSources(bool force)
+{
+    const int pleats = qMax(1, Pleats());
+
+    if (not force && m_sourcesNamed && m_namedPleats == pleats)
+    {
+        return; // the objects already carry the name of the pleats they are about to become
+    }
+
+    const QString suffix = "__m"_L1 + QString::number(pleats);
 
     for (auto &item : SourceObjects())
     {
@@ -546,13 +673,169 @@ void ODialogPleat::NameSources(bool force)
     }
 
     m_sourcesNamed = true;
-    m_namedKind = kind;
+    m_namedPleats = pleats;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::GoToEditing()
+auto ODialogPleat::CurrentRow() const -> int
+{
+    if (m_table == nullptr || m_step != Step::Editing)
+    {
+        return -1;
+    }
+
+    const int row = m_table->currentRow();
+    return (row >= 0 && row < m_departures.size()) ? row : -1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::RefreshRow(int row)
+{
+    if (row < 0 || row >= m_departures.size() || row >= m_table->rowCount())
+    {
+        return;
+    }
+
+    const OPleatDeparture &departure = m_departures.at(row);
+
+    const auto cell = [this, row](int column, const QString &text)
+    {
+        auto *item = new QTableWidgetItem(text);
+        item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+        m_table->setItem(row, column, item);
+    };
+
+    cell(0, tr("Pleat %1").arg(row + 1));
+    cell(1, departure.value.isEmpty() ? QStringLiteral("—") : departure.value);
+    cell(2, departure.kind == OPleatKind::Double ? tr("Double") : tr("Simple"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::ShowDepartureDetails(int row)
+{
+    EnableDetails(row >= 0);
+
+    if (row < 0 || row >= m_departures.size())
+    {
+        return;
+    }
+
+    const OPleatDeparture &departure = m_departures.at(row);
+
+    // The editor is loaded, not edited: nothing of what it says must be written back while it is being filled.
+    const QSignalBlocker blockFormula(m_formulaValue);
+    const QSignalBlocker blockKind(m_kind);
+    const QSignalBlocker blockCap1(ui->checkBoxCap1);
+    const QSignalBlocker blockCap1Sense(ui->checkBoxCap1Sense);
+    const QSignalBlocker blockCap2(ui->checkBoxCap2);
+    const QSignalBlocker blockCap2Sense(ui->checkBoxCap2Sense);
+
+    m_formulaValue->setFormula(departure.value);
+    ChangeCurrentData(m_kind, static_cast<int>(departure.kind));
+    ui->checkBoxCap1->setChecked(departure.first.showCap);
+    ui->checkBoxCap1Sense->setChecked(departure.first.secondSense);
+    ui->checkBoxCap2->setChecked(departure.second.showCap);
+    ui->checkBoxCap2Sense->setChecked(departure.second.secondSense);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::EnableDetails(bool enabled)
+{
+    m_kind->setEnabled(enabled);
+    m_formulaValue->setEnabled(enabled);
+    ui->checkBoxCap1->setEnabled(enabled);
+    ui->checkBoxCap1Sense->setEnabled(enabled);
+    ui->checkBoxCap2->setEnabled(enabled);
+    ui->checkBoxCap2Sense->setEnabled(enabled);
+    m_remove->setEnabled(enabled && m_departures.size() > 1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::FillDepartures()
+{
+    const int rows = static_cast<int>(m_departures.size());
+
+    {
+        const QSignalBlocker blocker(m_table);
+        m_table->setRowCount(rows);
+
+        for (int row = 0; row < rows; ++row)
+        {
+            RefreshRow(row);
+        }
+
+        if (rows > 0)
+        {
+            const int select = (m_editorRow >= 0 && m_editorRow < rows) ? m_editorRow : 0;
+            m_table->selectRow(select);
+            m_editorRow = select;
+        }
+        else
+        {
+            m_editorRow = -1;
+        }
+    }
+
+    ShowDepartureDetails(m_editorRow);
+    m_add->setEnabled(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::DepartureSelected()
+{
+    const int row = CurrentRow();
+    if (row == m_editorRow)
+    {
+        return;
+    }
+
+    m_editorRow = row;
+    ShowDepartureDetails(row);
+    RefreshFoldLineState();
+    RefreshFigure(); // the canvas follows the table: the two ends drawn bright are the ones of the line being edited
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::AddDeparture()
+{
+    // The line is picked on the canvas: the dialog steps aside, and comes back once the pair is complete — the very
+    // gesture that built the others. The parts of the window that belong to a line are put away meanwhile.
+    m_editorRow = -1;
+    m_addingDeparture = true;
+    m_pending = OPleatEnd{};
+    m_pointRank = 0;
+    m_step = Step::Points;
+
+    hide();
+    emit ToolTip(PointPrompt());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::RemoveDeparture()
+{
+    const int row = CurrentRow();
+    if (row < 0 || row >= m_departures.size() || m_departures.size() <= 1)
+    {
+        return;
+    }
+
+    m_departures.removeAt(row);
+    m_editorRow = qMin(row, static_cast<int>(m_departures.size()) - 1);
+    FillDepartures();
+    RefreshFoldLineState();
+    RefreshFigure();
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::GoToEditing(int row)
 {
     m_step = Step::Editing;
+    m_addingDeparture = false;
+    m_pending = OPleatEnd{};
+    m_editorRow = (row >= 0 && row < m_departures.size()) ? row : 0;
+
+    FillDepartures();
 
     setModal(true);
     emit ToolTip(QString());
@@ -575,15 +858,27 @@ void ODialogPleat::ShowDialog(bool click)
         // closed and before the tool reads it.
         NameSources(true);
 
-        // And now the departure line: its two points, in the order that gives them their colour.
+        // And now the departure lines: their points, two by two, in the order that gives them their colour.
         m_step = Step::Points;
         m_pointRank = 0;
+        m_pending = OPleatEnd{};
         emit ToolTip(PointPrompt());
         return;
     }
 
     if (m_step == Step::Points && not click)
     {
+        if (m_pointRank == 0 && not m_departures.isEmpty())
+        {
+            // Enter closes the series: every line is drawn, and every cap it needs can be built — the dialog only
+            // opens on a pleat the tool will be able to build.
+            if (AskForEdge())
+            {
+                GoToEditing(m_addingDeparture ? static_cast<int>(m_departures.size()) - 1 : 0);
+            }
+            return;
+        }
+
         emit ToolTip(PointPrompt()); // Enter says nothing more: the two points are clicks, not a confirmation
         return;
     }
@@ -594,15 +889,6 @@ void ODialogPleat::ShowDialog(bool click)
         // refuses, and nothing in the window can name an edge. The status bar keeps asking for the point.
         emit ToolTip(EdgePrompt(m_edgeRank));
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::PointPrompt() const -> QString
-{
-    // Point 1 turns green and point 2 red: that colour is what names them everywhere else — in the dialog, in the dock
-    // and on the canvas — so the prompt says it, and never a point name.
-    return m_pointRank == 0 ? tr("Click point 1 of the pleat's departure line (it turns green)")
-                            : tr("Click point 2 of the pleat's departure line (it turns red)");
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -628,13 +914,13 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
     {
         if (type != SceneObject::Point)
         {
-            emit ToolTip(tr("The departure line is made of two points"));
+            emit ToolTip(tr("A departure line is made of two points"));
             return;
         }
 
-        // The two points are part of what travels — they are picked among the objects, as the chain of a
-        // slash-and-spread is — so their copies exist and the fold has somewhere to land. A point that was not
-        // selected has no copy, and the pleat could not be built on it.
+        // The points are part of what travels — they are picked among the objects, as the chain of a
+        // slash-and-spread is — so their copies exist and the folds have somewhere to land. A point that was not
+        // selected has no copy, and the pleats could not be built on it.
         const bool isSource = std::any_of(GetSourceObjects().cbegin(), GetSourceObjects().cend(),
                                           [id](const SourceItem &item) { return item.id == id; });
         if (not isSource)
@@ -649,16 +935,38 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
 
         if (m_pointRank == 0)
         {
-            m_first = end;
+            m_pending = end;
             m_pointRank = 1;
             RefreshCapLabels();
             emit ToolTip(PointPrompt());
         }
         else
         {
-            m_second = end;
+            if (end.pointId == m_pending.pointId)
+            {
+                emit ToolTip(FailureText(OPleatPlan{.failure = OPleatFailure::DegeneratePrise}));
+                return;
+            }
+
+            OPleatDeparture departure;
+            departure.first = m_pending;
+            departure.second = end;
+            departure.value = m_formulaValue->formula();
+            departure.kind = Kind();
+
+            // Every line is folded along its own normal, so two pleats of one operation may perfectly well be taken
+            // along two different axes: nothing has to be checked here, and the new line is taken as it is.
+            m_departures.append(departure);
+            m_pending = OPleatEnd{};
+            m_pointRank = 0;
             RefreshCapLabels();
-            AskForEdge(); // no edge to ask for: the dialog opens, and the figure is drawn from what it knows
+
+            // The line is complete: its caps are asked for, and the gesture then goes on with the next departure
+            // line — that is what "several pleats in one pass" means. Enter is what opens the dialog.
+            if (AskForEdge())
+            {
+                emit ToolTip(PointPrompt());
+            }
         }
 
         RefreshFigure();
@@ -674,27 +982,44 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
             return;
         }
 
-        OPleatEnd end = (m_edgeRank == 1) ? m_second : m_first;
+        if (m_edgeDeparture < 0 || m_edgeDeparture >= m_departures.size())
+        {
+            return;
+        }
+
+        OPleatDeparture &line = m_departures[m_edgeDeparture];
+        OPleatEnd end = (m_edgeRank == 1) ? line.second : line.first;
         end.edgePointId = id;
         OPleatSupport::Resolve(end, &data);
-        (m_edgeRank == 1) ? m_second = end : m_first = end;
+
+        if (m_edgeRank == 1)
+        {
+            line.second = end;
+        }
+        else
+        {
+            line.first = end;
+        }
 
         // A point whose line builds no cap is refused here, on the canvas, rather than in the dialog: the status
         // bar asks for another one and the step does not move. The dialog must never open on a cap it cannot build.
-        const OPleatPlan plan = MakePlan();
+        const OPleatPlan plan = MakePlan(true);
         if (plan.failure == OPleatFailure::EdgeAlongFold)
         {
-            OPleatEnd &end = (m_edgeRank == 1) ? m_second : m_first;
-            end.edgePointId = NULL_ID;
-            OPleatSupport::Resolve(end, &data); // back to whatever the tool reads by itself
+            OPleatEnd &refused = (m_edgeRank == 1) ? line.second : line.first;
+            refused.edgePointId = NULL_ID;
+            OPleatSupport::Resolve(refused, &data); // back to whatever the tool reads by itself
             emit ToolTip(QStringLiteral("%1 %2").arg(FailureText(plan),
                                                      tr("Click a point of the outline, right next to it")));
             RefreshFigure(); // the preview shows what the tool reads now, not the point that was refused
             return;
         }
 
-        AskForEdge();
-        RefreshFigure();
+        if (AskForEdge())
+        {
+            emit ToolTip(PointPrompt());
+            RefreshFigure();
+        }
     }
 }
 
@@ -713,7 +1038,7 @@ void ODialogPleat::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::SaveData()
 {
-    NameSources(false); // a change of kind renames the copies, a simple pleat keeps the name it has
+    NameSources(false); // a new count of pleats renames the copies, the same count keeps the names
     RefreshFigure();
     CheckState();
 
@@ -737,6 +1062,13 @@ void ODialogPleat::changeEvent(QEvent *event)
     {
         ui->retranslateUi(this);
         m_formulaValue->setLabelText(tr("Value of the finished pleat:"));
+        m_table->setHorizontalHeaderLabels({tr("Pleat"), tr("Value"), tr("Kind")});
+        m_add->setText(tr("Add a pleat"));
+        m_remove->setText(tr("Remove the pleat"));
+        for (int row = 0; row < m_departures.size(); ++row)
+        {
+            RefreshRow(row);
+        }
         RefreshCapLabels();
     }
 

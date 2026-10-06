@@ -1622,7 +1622,19 @@ void VAbstractOperation::CreateVisibilityGroup(const VAbstractOperationInitData 
         return;
     }
 
-    QMap<quint32, quint32> groupData = VisibilityGroupDataFromSource(initData.doc, initData.data, initData.source);
+    QVector<SourceItem> grouped;
+    grouped.reserve(initData.source.size());
+    for (const SourceItem &item : std::as_const(initData.source))
+    {
+        // What the tool is built on stays out of the layer: the tool draws with it, and a hidden object is one the
+        // figure cannot be read from.
+        if (not initData.keptInPlace.contains(item.id))
+        {
+            grouped.append(item);
+        }
+    }
+
+    QMap<quint32, quint32> groupData = VisibilityGroupDataFromSource(initData.doc, initData.data, grouped);
     AddLineCarriersToGroupData(initData.doc, initData.lines, groupData);
 
     vidtype const groupId = initData.data->getNextId();

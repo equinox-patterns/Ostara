@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
- **  @brief  What a pleat previews: the objects that travel, and where the fold carries them.
+ **  @brief  The preview of the pleats: the objects that travel where the folds put them, and the folds themselves.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -41,6 +41,13 @@
 #include "../vwidgets/global.h"
 #include "../vwidgets/scalesceneitems.h"
 
+namespace
+{
+/** How bright the figure of a departure line the dialog is not editing is drawn: enough to be seen, dim enough for
+ *  the two ends of the line being edited to be the only ones the eye follows. */
+constexpr qreal kDimmedLight = 0.25;
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 OVisToolPleat::OVisToolPleat(const VContainer *data, QGraphicsItem *parent)
   : VisOperation(data, parent)
@@ -49,25 +56,63 @@ OVisToolPleat::OVisToolPleat(const VContainer *data, QGraphicsItem *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OVisToolPleat::SetPleat(const OPleatEnd &first, const OPleatEnd &second, const QString &value, OPleatKind kind,
-                             bool foldLine)
+void OVisToolPleat::SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, bool foldLine,
+                             int active)
 {
-    m_first = first;
-    m_second = second;
-    m_value = value;
-    m_kind = kind;
+    m_departures = departures;
+    m_pending = pending;
     m_foldLine = foldLine;
+    m_active = active;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OVisToolPleat::ValueInPixels() const -> qreal
+auto OVisToolPleat::Light(int departure) const -> qreal
 {
-    if (m_value.isEmpty())
+    // One line is being edited: it is the one the dialog shows, and its two ends have to be told from the ends of the
+    // other lines, which wear the very same green and red. Everything the others draw is dimmed.
+    return (m_active < 0 || m_active == departure) ? 1. : kDimmedLight;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OVisToolPleat::ValueInPixels(const QString &value, const VContainer *data) -> qreal
+{
+    if (value.isEmpty())
     {
         return 0.;
     }
 
-    return VAbstractValApplication::VApp()->toPixel(FindValFromUser(m_value, GetData()->DataVariables()));
+    // A formula that does not hold answers nothing: the preview draws no fold at all while the user is typing one,
+    // and never a fold built on a value the tool would refuse.
+    const qreal read = FindValFromUser(value, data->DataVariables());
+    return (read > 0. && !qIsNaN(read) && !qIsInf(read)) ? VAbstractValApplication::VApp()->toPixel(read) : 0.;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OVisToolPleat::Values() const -> QVector<qreal>
+{
+    QVector<qreal> values;
+    values.reserve(m_departures.size());
+
+    for (const OPleatDeparture &departure : m_departures)
+    {
+        values.append(ValueInPixels(departure.value, GetData()));
+    }
+
+    return values;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OVisToolPleat::Source() const -> QVector<SourceItem>
+{
+    QVector<SourceItem> source;
+    source.reserve(Objects().size());
+
+    for (const quint32 id : Objects())
+    {
+        source.append(SourceItem{.id = id});
+    }
+
+    return source;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -78,48 +123,32 @@ void OVisToolPleat::RefreshGeometry()
         return;
     }
 
+    m_plan = OPleatPlan{};
+
     int iPoint = -1;
     int iCurve = -1;
 
     const QVector<QGraphicsItem *> originObjects = CreateOriginObjects(iPoint, iCurve);
-    if (originObjects.isEmpty())
+    if (originObjects.isEmpty() || m_departures.isEmpty())
     {
-        m_move = QPointF();
         RefreshPreviewLines(false);
         DrawDeparturePoints();
         return;
     }
 
-    const qreal value = ValueInPixels();
-    if (value <= 0. || m_first.pointId == NULL_ID || m_second.pointId == NULL_ID)
+    const OPleatPlan plan = OPleatRule::Compose(m_departures, Values(), Source(), GetData());
+    if (plan.failure != OPleatFailure::None)
     {
-        // The prise or the value is not picked yet: only the objects that travel are drawn, as they are.
-        m_move = QPointF();
+        // A pleat the rule refuses is no pleat: the objects that travel are shown as they are, and only the gesture
+        // keeps its dots. The dialog never opens on such a plan, so this is a state the canvas alone can show.
         RefreshPreviewLines(false);
         DrawDeparturePoints();
         return;
     }
 
-    QVector<SourceItem> source;
-    source.reserve(Objects().size());
-    for (const quint32 id : Objects())
-    {
-        source.append(SourceItem{.id = id});
-    }
+    m_plan = plan;
 
-    const OPleatSide side = OPleatRule::SideOf(source, m_first.pointId, m_second.pointId, GetData());
-    if (side == OPleatSide::Undetermined)
-    {
-        m_move = QPointF();
-        RefreshPreviewLines(false);
-        DrawDeparturePoints();
-        return;
-    }
-
-    const OPleatPlan plan = OPleatRule::Compose(m_first, m_second, value, m_kind, side);
-    m_move = plan.move;
-
-    const OPleatTransform transform(m_first, m_second, value, m_kind, side);
+    const OPleatTransform transform(m_plan);
     CreateTransformedObjects(transform);
 
     // And the copy of every line the user selected, drawn from end to end like the objects: the images of the two
@@ -127,61 +156,86 @@ void OVisToolPleat::RefreshGeometry()
     RefreshPreviewLines(true);
 
     // Last, because RefreshPreviewLines hides every line it does not use of the pool it shares with this call.
-    DrawFigure(plan);
+    DrawFigure();
     DrawDeparturePoints();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OVisToolPleat::PointImage(const QPointF &point) const -> QPointF
 {
-    // A pleat is a translation: every object of the selection, and every line that joins two of them, goes by the
-    // same vector (see m_move).
-    return point + m_move;
+    // A pleat takes the fabric that lies beyond each of its departure lines, so two points of the selection do not
+    // travel the same distance: the plan is asked, exactly as the operation asks it (see OPleatPlan::Move).
+    return point + m_plan.Move(point);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OVisToolPleat::DrawDeparturePoints()
 {
-    // Green for the first point of the departure line, red for the second: the colour IS the name, and the dialog and
+    const auto dot = [this](QVector<VScaledEllipse *> &pool, int index, VColorRole role, const OPleatEnd &end,
+                            qreal light)
+    {
+        VScaledEllipse *item = nullptr;
+        if (index < pool.size())
+        {
+            item = pool.at(index);
+        }
+        else
+        {
+            item = InitItem<VScaledEllipse>(role, this);
+            pool.append(item);
+        }
+
+        item->setOpacity(light);
+
+        if (end.pointId == NULL_ID)
+        {
+            item->setVisible(false);
+            return;
+        }
+
+        DrawPoint(item, end.position);
+        item->setVisible(true);
+    };
+
+    // Green for the first point of a departure line, red for the second: the colour IS the name, and the dialog and
     // the dock use the very same two.
-    if (m_firstDot == nullptr)
+    int first = 0;
+    int second = 0;
+    for (int departure = 0; departure < m_departures.size(); ++departure)
     {
-        m_firstDot = InitItem<VScaledEllipse>(VColorRole::VisSupportColor2, this);
-    }
-    if (m_secondDot == nullptr)
-    {
-        m_secondDot = InitItem<VScaledEllipse>(VColorRole::VisSupportColor4, this);
+        // The dot marks the end of the departure line WHERE THE PLEAT IS, not where the point was drawn: the pleats
+        // before it carried that line away, and a mark left on the original point would name a place the fold never
+        // passes through (see OPleatPlan::Place).
+        OPleatEnd one = m_departures.at(departure).first;
+        OPleatEnd two = m_departures.at(departure).second;
+        one.position = m_plan.Place(one.position, departure, 0);
+        two.position = m_plan.Place(two.position, departure, 0);
+
+        dot(m_firstDots, first++, VColorRole::VisSupportColor2, one, Light(departure));
+        dot(m_secondDots, second++, VColorRole::VisSupportColor4, two, Light(departure));
     }
 
-    if (m_first.pointId != NULL_ID)
-    {
-        DrawPoint(m_firstDot, m_first.position);
-        m_firstDot->setVisible(true);
-    }
-    else
-    {
-        m_firstDot->setVisible(false);
-    }
+    // The line being picked: its first point is already a dot of the gesture, its second one is still to come.
+    dot(m_firstDots, first++, VColorRole::VisSupportColor2, m_pending, 1.);
 
-    if (m_second.pointId != NULL_ID)
+    for (int i = first; i < m_firstDots.size(); ++i)
     {
-        DrawPoint(m_secondDot, m_second.position);
-        m_secondDot->setVisible(true);
+        m_firstDots.at(i)->setVisible(false);
     }
-    else
+    for (int i = second; i < m_secondDots.size(); ++i)
     {
-        m_secondDot->setVisible(false);
+        m_secondDots.at(i)->setVisible(false);
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OVisToolPleat::DrawFigure(const OPleatPlan &plan)
+void OVisToolPleat::DrawFigure()
 {
     int usedLines = 0;
     int usedPoints = 0;
 
     const auto segment = [this, &usedLines](const QPointF &from, const QPointF &to, VColorRole role,
-                                            Qt::PenStyle style)
+                                            Qt::PenStyle style, qreal light)
     {
         VScaledLine *item = nullptr;
         if (usedLines < m_figureLines.size())
@@ -197,6 +251,8 @@ void OVisToolPleat::DrawFigure(const OPleatPlan &plan)
         }
         ++usedLines;
 
+        item->setOpacity(light);
+
         const QLineF line(from, to);
         item->setVisible(line.length() > 0.);
         if (line.length() > 0.)
@@ -205,7 +261,7 @@ void OVisToolPleat::DrawFigure(const OPleatPlan &plan)
         }
     };
 
-    const auto dot = [this, &usedPoints](const QPointF &position)
+    const auto dot = [this, &usedPoints](const QPointF &position, qreal light)
     {
         VScaledEllipse *item = nullptr;
         if (usedPoints < m_figurePoints.size())
@@ -219,6 +275,7 @@ void OVisToolPleat::DrawFigure(const OPleatPlan &plan)
         }
         ++usedPoints;
 
+        item->setOpacity(light);
         DrawPoint(item, position);
         item->setVisible(true);
     };
@@ -235,45 +292,71 @@ void OVisToolPleat::DrawFigure(const OPleatPlan &plan)
         }
     };
 
-    if (plan.failure != OPleatFailure::None)
+    if (m_plan.failure != OPleatFailure::None)
     {
         hideLeftovers();
         return;
     }
 
-    const int pleats = (m_kind == OPleatKind::Double) ? 2 : 1;
-
-    // The prise, and every place the fold carries it to: the same line, one pleat at a time.
-    for (int position = 0; position <= pleats; ++position)
+    // Every departure line, and every place the folds carried it to: the same line, one pleat at a time.
+    for (int departure = 0; departure < m_departures.size(); ++departure)
     {
-        const QPointF shift = plan.step * position;
-        segment(m_first.position + shift, m_second.position + shift, VColorRole::VisSupportColor3, Qt::SolidLine);
+        const OPleatDeparture &line = m_departures.at(departure);
+        const OPleatPlace &place = m_plan.places.value(departure);
+
+        for (int rank = 0; rank <= place.pleats; ++rank)
+        {
+            segment(m_plan.Place(line.first.position, departure, rank),
+                    m_plan.Place(line.second.position, departure, rank), VColorRole::VisSupportColor3, Qt::SolidLine,
+                    Light(departure));
+        }
     }
 
-    // What the pleat is pressed along, drawn only when both caps are: without them it has nothing to join.
-    if (m_foldLine && m_first.showCap && m_second.showCap)
+    // What each pleat is pressed along, drawn only when its two caps are: without them it has nothing to join.
+    if (m_foldLine)
     {
-        for (int pleat = 0; pleat < pleats; ++pleat)
+        for (int departure = 0; departure < m_departures.size(); ++departure)
         {
-            const QPointF shift = plan.step * pleat + plan.step / 2.;
-            segment(m_first.position + shift, m_second.position + shift, VColorRole::VisSupportColor3, Qt::DotLine);
+            const OPleatDeparture &line = m_departures.at(departure);
+            const OPleatPlace &place = m_plan.places.value(departure);
+
+            for (int rank = 0; rank < place.pleats; ++rank)
+            {
+                const int pleat = place.firstPleat + rank;
+                if (m_plan.Mark(pleat, 0) == nullptr || m_plan.Mark(pleat, 1) == nullptr)
+                {
+                    continue;
+                }
+
+                // The fold line of the pleat: its departure line, carried by the pleats taken before it and
+                // translated by half a step — its own step, along its own normal.
+                const QPointF shift = place.carry + place.step * rank + place.step / 2.;
+                segment(line.first.position + shift, line.second.position + shift, VColorRole::VisSupportColor3,
+                        Qt::DotLine, Light(departure));
+            }
         }
     }
 
     // Each cap: its point, and the two sides that make the V — or the point alone when the edge lies along the move.
-    for (const OPleatMark &mark : std::as_const(plan.marks))
+    for (const OPleatMark &mark : std::as_const(m_plan.marks))
     {
-        dot(mark.point);
+        dot(mark.point, Light(mark.departure));
 
-        const OPleatEnd &prise = (mark.end == 1) ? m_second : m_first;
-        const QPointF origin = prise.position + plan.step * mark.pleat;
-        const QPointF copy = origin + plan.step;
-
-        if (!mark.flat)
+        if (mark.flat)
         {
-            segment(mark.point, origin, VColorRole::VisSupportColor3, Qt::SolidLine);
-            segment(mark.point, copy, VColorRole::VisSupportColor3, Qt::SolidLine);
+            continue;
         }
+
+        const OPleatPlace place = m_plan.places.value(mark.departure);
+        const OPleatDeparture line = m_departures.value(mark.departure);
+        const OPleatEnd &prise = (mark.end == 1) ? line.second : line.first;
+
+        const int rank = mark.pleat - place.firstPleat;
+        const QPointF origin = m_plan.Place(prise.position, mark.departure, rank);
+        const QPointF copy = origin + place.step;
+
+        segment(mark.point, origin, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
+        segment(mark.point, copy, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
     }
 
     hideLeftovers();

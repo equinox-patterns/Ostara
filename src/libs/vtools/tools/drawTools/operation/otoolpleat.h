@@ -4,18 +4,19 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
- **  @brief  The pleat tool: one fold, taken on a prise, and held by its own figure.
+ **  @brief  The pleat tool: the folds taken on their departure lines, and held by their own figure.
  **
- **          A pleat is fabric folded back on itself. The user gives the prise — two points — the objects that
- **          travel, and the value the pleat shows once folded; everything else is derived, and the one thing that
- **          is never typed is the axis of the Move, because a move that is not perpendicular to the prise does not
- **          send the prise back onto its own copy. A double pleat is two pleats of the same value side by side,
- **          the second one reversed: the object carries one rule, run twice, and no special case.
+ **          A pleat is fabric folded back on itself. The user gives the departure lines — two points each, as a
+ **          slash-and-spread is given its cuts — the objects that travel, and the value each pleat shows once
+ **          folded; everything else is derived, and the one thing that is never typed is the axis of the Move,
+ **          because a move that is not perpendicular to a departure line does not send that line back onto its own
+ **          copy. A double pleat is two pleats of the same value side by side, the second one reversed: the object
+ **          carries one rule per departure line, and no special case.
  **
- **          The operation is a translation of the objects that travel, plus a figure it draws and owns: the prise,
- **          its copies, the fold line, and the cap of each end (see OPleatDisplay). The intermediate points the
- **          manual construction needed — the middles, the cap points, the tangent point — never become objects the
- **          user has to maintain; they are recomputed on every parse.
+ **          The operation is a translation of the objects that travel, plus a figure it draws and owns: the
+ **          departure lines and their copies, the fold lines, and the cap of each end (see OPleatDisplay). The
+ **          intermediate points the manual construction needed — the middles, the cap points, the tangent point —
+ **          never become objects the user has to maintain; they are recomputed on every parse.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -57,16 +58,11 @@ class VFormula;
 
 struct OToolPleatInitData : VAbstractOperationInitData
 {
-    /** The two ends of the prise, resolved: the caller that reads a file only says which points they are. */
-    OPleatEnd first{};
-    OPleatEnd second{};
+    /** The departure lines, resolved: the caller that reads a file only says which points they are. */
+    QVector<OPleatDeparture> departures{};
 
-    /** The value of the pleat as the user typed it: a formula, in the pattern's unit, read once per parse. */
-    QString value{};
-
-    OPleatKind kind{OPleatKind::Simple};
-
-    /** Whether the fold line itself is drawn: it joins the two caps, so it only means something when both are. */
+    /** Whether the fold line of every pleat is drawn: it joins the two caps of a pleat, so it only means something
+     *  where both of them are. */
     bool foldLine{true};
 
     OPleatDisplay display{};
@@ -85,11 +81,18 @@ public:
                        VContainer *data) -> OToolPleat *;
     static auto Create(OToolPleatInitData &initData) -> OToolPleat *;
 
-    /** @brief Read back what SavePleat wrote. Only says which points the prise is made of: where they are, and
-     *  which way the edge runs there, are read again from the container by every parse. */
+    /** @brief Read back what SavePleat wrote. Only says which points the departure lines are made of: where they
+     *  are, and which way the edge runs there, are read again from the container by every parse. */
     static void ExtractPleat(const QDomElement &domElement, OToolPleatInitData &initData);
 
+    /** @brief Write the departure lines of the operation as their own element, one item per line — the very shape a
+     *  recipe step holds, so that a template replays the pleats it was built from. */
+    static void SaveDepartures(VAbstractPattern *doc, QDomElement &tag, const QVector<OPleatDeparture> &departures);
+
     static const QString ToolType;
+    static const QString TagPleats;
+    static const QString AttrFirstPoint;
+    static const QString AttrSecondPoint;
     static const QString AttrValue;
     static const QString AttrKind;
     static const QString AttrKindSimple;
@@ -108,41 +111,21 @@ public:
         Type = UserType + static_cast<int>(Tool::Pleat)
     };
 
-    /** @brief The two ends of the prise, as the operation holds them: which points they are, what the user asked
-     *  for there, and where the edge runs — the last one recomputed by every parse. */
-    auto First() const -> const OPleatEnd & { return m_first; }
-    auto Second() const -> const OPleatEnd & { return m_second; }
+    /** @brief The departure lines, as the operation holds them: which points they are, what the user asked for at
+     *  each end, and the value and the kind of the pleat taken on each of them. Where the ends are, and which way the
+     *  edge runs there, are recomputed by every parse. */
+    auto Departures() const -> const QVector<OPleatDeparture> & { return m_departures; }
+    auto DepartureCount() const -> int { return static_cast<int>(m_departures.size()); }
 
-    auto Value() const -> const QString & { return m_value; }
+    /** @brief How many pleats the departure lines make: one per simple line, two per double one. */
+    auto PleatCount() const -> int;
 
-    /** @brief The value as the dock edits it: a formula the user can build, evaluated against the pattern. */
-    auto GetFormulaValue() const -> VFormula;
-    void SetFormulaValue(const VFormula &value);
-
-    auto Kind() const -> OPleatKind { return m_kind; }
     auto IsFoldLineShown() const -> bool { return m_foldLine; }
-
-    /** @brief Whether the fold line is actually drawn: the box says so, and the two caps have to be drawn for it to
-     *  have anything to join. One question, one answer, asked by the figure and by the preview alike. */
-    auto FoldLineDrawn() const -> bool { return m_foldLine && m_first.showCap && m_second.showCap; }
-
-    /** @brief One end of the prise, by rank: 0 for the first point the user gave, 1 for the other. The options of
-     *  the two ends are independent, so every one of them is asked by rank rather than by a whole struct. */
-    auto End(int rank) const -> const OPleatEnd &;
-    void SetEnd(int rank, const OPleatEnd &end);
-
-    auto IsCapShown(int rank) const -> bool { return End(rank).showCap; }
-    void SetCapShown(int rank, bool show);
-
-    auto IsCapSecondSense(int rank) const -> bool { return End(rank).secondSense; }
-    void SetCapSecondSense(int rank, bool second);
-
-    auto CapEdgePoint(int rank) const -> quint32 { return End(rank).edgePointId; }
-    void SetCapEdgePoint(int rank, quint32 pointId);
-
-    void SetValue(const QString &value);
-    void SetKind(OPleatKind kind);
     void SetFoldLineShown(bool show);
+
+    /** @brief Whether some pleat can draw its fold line at all: the line joins the two caps of a pleat, and the dock
+     *  greys the box when no pleat has both of them. */
+    auto FoldLinePossible() const -> bool;
 
     auto Display() const -> const OPleatDisplay & { return m_display; }
     void SetDisplay(const OPleatDisplay &display);
@@ -162,7 +145,7 @@ public:
     void ShowVisualization(bool show) override;
 
     /** @brief Open the options dialog, exactly as the context menu's "Options" entry does. The dock offers a button
-     *  for it: the prise is a pair of points, and the dock has no editor for one. */
+     *  for it: the departure lines are pairs of points, and the dock has no editor for one. */
     void OpenOptionsDialog();
 
 protected slots:
@@ -185,17 +168,14 @@ protected:
 private:
     Q_DISABLE_COPY_MOVE(OToolPleat) // NOLINT
 
-    OPleatEnd m_first{};
-    OPleatEnd m_second{};
-    QString m_value{};
-    OPleatKind m_kind{OPleatKind::Simple};
+    QVector<OPleatDeparture> m_departures{};
     bool m_foldLine{true};
     OPleatDisplay m_display{};
 
     explicit OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent = nullptr);
 
-    /** @brief Write the options of the pleat itself — its prise, its value, its kind and its boxes — on the
-     *  operation element. The display is written beside them by its own Save. */
+    /** @brief Write the options of the pleats themselves — their departure lines, their values and their boxes, and
+     *  the fold line — on the operation element. The display is written beside them by its own Save. */
     void SavePleat(QDomElement &tag) const;
 
     auto SyncDestination(const QVector<SourceItem> &source) -> QVector<DestinationItem>;

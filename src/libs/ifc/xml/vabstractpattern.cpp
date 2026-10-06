@@ -2026,9 +2026,19 @@ auto VAbstractPattern::ListOperationExpressions() const -> QVector<VFormulaField
         ReadExpressionAttribute(expressions, dom, AttrLength);
         // The only formula of the tool that closes a dart.
         ReadExpressionAttribute(expressions, dom, AttrClosingDivisor);
-        // The only formula of the pleat: the value it shows once folded (OToolPleat::AttrValue). Read here rather
-        // than in a method of its own, because it is an attribute of <operation> like the two above.
+        // The only formula of the pleat: the value it shows once folded (OToolPleat::AttrValue). A pleat taken on
+        // several departure lines holds one value per line, written in the element that carries those lines, so the
+        // two places are read — as bare names, since a pattern knows nothing of the tools that write it.
         ReadExpressionAttribute(expressions, dom, QStringLiteral("value"));
+        for (QDomElement pleats = dom.firstChildElement(QStringLiteral("pleats")); not pleats.isNull();
+             pleats = pleats.nextSiblingElement(QStringLiteral("pleats")))
+        {
+            for (QDomElement item = pleats.firstChildElement(QStringLiteral("item")); not item.isNull();
+                 item = item.nextSiblingElement(QStringLiteral("item")))
+            {
+                ReadExpressionAttribute(expressions, item, QStringLiteral("value"));
+            }
+        }
     }
 
     return expressions;

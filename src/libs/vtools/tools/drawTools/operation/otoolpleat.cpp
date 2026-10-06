@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
- **  @brief  The pleat tool: one fold, taken on a prise, and held by its own figure.
+ **  @brief  The pleat tool: see the header for what it is meant to build.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -30,6 +30,7 @@
 #include <QDomNodeList>
 #include <QMap>
 #include <QSharedPointer>
+#include <QStringList>
 #include <QUndoCommand>
 
 #include "../../../dialogs/tools/dialogtool.h"
@@ -58,6 +59,9 @@ class QGraphicsSceneContextMenuEvent;
 using namespace Qt::Literals::StringLiterals;
 
 const QString OToolPleat::ToolType = QStringLiteral("pleat");
+const QString OToolPleat::TagPleats = QStringLiteral("pleats");
+const QString OToolPleat::AttrFirstPoint = QStringLiteral("firstPoint");
+const QString OToolPleat::AttrSecondPoint = QStringLiteral("secondPoint");
 const QString OToolPleat::AttrValue = QStringLiteral("value");
 const QString OToolPleat::AttrKind = QStringLiteral("kind");
 const QString OToolPleat::AttrKindSimple = QStringLiteral("simple");
@@ -73,40 +77,45 @@ const QString OToolPleat::AttrFoldLine = QStringLiteral("foldLine");
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The value of the pleat as it will show once folded, in pixels: the formula the user typed, read in the
- *  pattern's unit and turned into the unit the geometry is drawn in. */
+/** @brief The value of a pleat as it will show once folded, in pixels: the formula the user typed, read in the
+ *  pattern's unit and turned into the unit the geometry is drawn in.
+ *
+ *  A formula that cannot be read is worth nothing rather than a refused pattern: the rule then says the pleat has no
+ *  value, and the figure is left out, which is what a file edited by hand deserves. */
 auto PleatValue(quint32 idTool, const QString &value, const VContainer *data) -> qreal
 {
-    QString formula = value; // CheckFormula may rewrite the formula it reads
-    return VAbstractValApplication::VApp()->toPixel(VAbstractTool::CheckFormula(idTool, formula, data));
+    try
+    {
+        QString formula = value; // CheckFormula may rewrite the formula it reads
+        return VAbstractValApplication::VApp()->toPixel(VAbstractTool::CheckFormula(idTool, formula, data));
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        return 0.;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The side of the prise the objects that travel are on, as the rule reads it. */
-auto PleatSide(const OPleatEnd &first, const OPleatEnd &second, const QVector<SourceItem> &source,
-               const VContainer *data) -> OPleatSide
+/** @brief The value of every departure line, in pixels, in the order the lines were given. */
+auto PleatValues(quint32 idTool, const QVector<OPleatDeparture> &departures, const VContainer *data) -> QVector<qreal>
 {
-    return OPleatRule::SideOf(source, first.pointId, second.pointId, data);
+    QVector<qreal> values;
+    values.reserve(departures.size());
+
+    for (const OPleatDeparture &departure : departures)
+    {
+        values.append(PleatValue(idTool, departure.value, data));
+    }
+
+    return values;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The whole plan of the pleat: the move, and the mark of each end of each pleat. */
-auto MakePlan(quint32 idTool, const OPleatEnd &first, const OPleatEnd &second, const QString &value, OPleatKind kind,
-              const QVector<SourceItem> &source, const VContainer *data) -> OPleatPlan
+/** @brief The whole plan of the pleats: how far each line was carried, and the mark of each end of each pleat. */
+auto MakePlan(quint32 idTool, const QVector<OPleatDeparture> &departures, const QVector<SourceItem> &source,
+              const VContainer *data) -> OPleatPlan
 {
-    return OPleatRule::Compose(first, second, PleatValue(idTool, value, data), kind,
-                               PleatSide(first, second, source, data));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/** @brief The destination factory of a pleat: the objects that travel, translated. */
-auto MakeDestination(quint32 idTool, const OPleatEnd &first, const OPleatEnd &second, const QString &value,
-                     OPleatKind kind, const QVector<SourceItem> &source, const VContainer *data)
-    -> OOperationDestination<OPleatTransform>
-{
-    const OPleatTransform transform(first, second, PleatValue(idTool, value, data), kind,
-                                    PleatSide(first, second, source, data));
-    return OOperationDestination<OPleatTransform>(transform);
+    return OPleatRule::Compose(departures, PleatValues(idTool, departures, data), source, data);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -125,75 +134,119 @@ auto MarkPoint(const OPleatDisplay &display, int pleat, int end) -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief One departure line, as the file holds it: the very element a recipe step carries. */
+auto DepartureOf(const QDomElement &item) -> OPleatDeparture
+{
+    OPleatDeparture departure;
+
+    departure.first.pointId = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrFirstPoint, NULL_ID_STR);
+    departure.second.pointId = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrSecondPoint, NULL_ID_STR);
+
+    departure.value = VDomDocument::GetParametrEmptyString(item, OToolPleat::AttrValue);
+
+    departure.kind = (VAbstractPattern::GetParametrString(item, OToolPleat::AttrKind, OToolPleat::AttrKindSimple)
+                      == OToolPleat::AttrKindDouble)
+                         ? OPleatKind::Double
+                         : OPleatKind::Simple;
+
+    departure.first.showCap = VAbstractPattern::GetParametrBool(item, OToolPleat::AttrCap1, trueStr);
+    departure.second.showCap = VAbstractPattern::GetParametrBool(item, OToolPleat::AttrCap2, trueStr);
+    departure.first.secondSense = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrCap1Sense, u"1"_s) == 2;
+    departure.second.secondSense = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrCap2Sense, u"1"_s) == 2;
+
+    departure.first.edgePointId = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrCap1Ref, NULL_ID_STR);
+    departure.second.edgePointId = VAbstractPattern::GetParametrUInt(item, OToolPleat::AttrCap2Ref, NULL_ID_STR);
+
+    return departure;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /** @brief Create every object of the figure, and the lines that join them.
  *
- *  The points come first: a line is carried by two point ids, and the operation's own copy of a prise point only
- *  exists once the destination has been built. */
+ *  The points come first: a line is carried by two point ids, and the operation's own copy of a point of a departure
+ *  line only exists once the destination has been built. */
 void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
 {
-    OPleatDisplay::EnsureIds(initData.display, initData.first, initData.second, initData.kind, initData.foldLine, plan,
-                             initData.source, initData.destination, initData.data);
-    OPleatDisplay::Create(initData.id, initData.display, plan, initData.kind, initData.first, initData.second,
-                          initData.data);
+    OPleatDisplay::EnsureIds(initData.display, initData.departures, initData.foldLine, plan, initData.source,
+                             initData.destination, initData.data);
+    OPleatDisplay::Create(initData.id, initData.display, plan, initData.departures, initData.data);
 
     if (plan.failure != OPleatFailure::None || not initData.display.show)
     {
         return; // no figure to draw: nothing was placed, and no line may be built on a point that is not there
     }
 
-    const int positions = OPleatDisplay::PositionCount(initData.kind);
-    const auto endpoint = [&initData](int position, int end) -> quint32
+    const auto endpoint = [&initData, &plan](int departure, int line, int end) -> quint32
     {
-        return OPleatDisplay::Endpoint(initData.display, position, end, initData.first, initData.second, initData.source,
-                                       initData.destination);
+        return OPleatDisplay::Endpoint(initData.display, plan, initData.departures, departure, line, end,
+                                       initData.source, initData.destination);
     };
 
-    // The prise, and every place it went to: the same line, translated by one pleat at a time. The last one is the
-    // copy line — where the fabric lands — and the one between the two pleats of a double is the line they share.
+    // The departure line of every pleat, and every place the folds carried it to: the same line, translated by one
+    // pleat at a time. The last place of a line is its copy line — where the fabric lands — and the places between
+    // the two folds of a double are the line they share.
     OOperationLine line;
     line.typeLine = initData.display.lineTypeLine;
     line.lineColor = initData.display.lineColor;
 
-    for (int position = 0; position < positions && position < initData.display.lines.size(); ++position)
+    for (int departure = 0; departure < initData.departures.size(); ++departure)
     {
-        line.result = initData.display.lines.at(position);
-        OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, line, endpoint(position, 0),
-                                    endpoint(position, 1), initData.parse);
+        for (int place = 0; place < OPleatDisplay::LineCount(initData.departures.at(departure)); ++place)
+        {
+            line.result = initData.display.lines.value(OPleatDisplay::LineIndex(initData.departures, departure, place));
+            OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, line, endpoint(departure, place, 0),
+                                        endpoint(departure, place, 1), initData.parse);
+        }
     }
 
-    // The fold line of each pleat: what the pleat is pressed along, drawn from one cap to the other.
+    // The fold line of each pleat: what the pleat is pressed along, drawn from one cap to the other, and only where
+    // both of them are there to be joined.
     OOperationLine fold;
     fold.typeLine = initData.display.foldTypeLine;
     fold.lineColor = initData.display.foldColor;
 
-    for (int pleat = 0; pleat < OPleatDisplay::PleatCount(initData.kind) && pleat < initData.display.foldLines.size();
-         ++pleat)
+    if (initData.foldLine)
     {
-        fold.result = initData.display.foldLines.at(pleat);
-        OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, fold, MarkPoint(initData.display, pleat, 0),
-                                    MarkPoint(initData.display, pleat, 1), initData.parse);
+        for (int departure = 0; departure < initData.departures.size(); ++departure)
+        {
+            const OPleatPlace place = plan.places.value(departure);
+
+            for (int rank = 0; rank < place.pleats; ++rank)
+            {
+                const int pleat = place.firstPleat + rank;
+                if (plan.Mark(pleat, 0) == nullptr || plan.Mark(pleat, 1) == nullptr)
+                {
+                    continue;
+                }
+
+                fold.result = initData.display.foldLines.value(pleat);
+                OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, fold,
+                                            MarkPoint(initData.display, pleat, 0),
+                                            MarkPoint(initData.display, pleat, 1), initData.parse);
+            }
+        }
     }
 
-    // The two sides of every cap: its apex, the prise point it was taken on, and the same point carried by the move.
-    for (const OPleatMarkDisplay &mark : std::as_const(initData.display.marks))
+    // The two sides of every cap: its apex, the point of the departure line it was taken on, and the same point
+    // carried by the move.
+    for (int i = 0; i < initData.display.marks.size() && i < plan.marks.size(); ++i)
     {
-        if (mark.pleat < 0 || mark.pleat + 1 >= positions)
-        {
-            continue;
-        }
+        const OPleatMarkDisplay &mark = initData.display.marks.at(i);
+        const OPleatMark &resolved = plan.marks.at(i);
+        const int rank = resolved.pleat - plan.places.value(resolved.departure).firstPleat;
 
         if (mark.side1 != NULL_ID)
         {
             line.result = mark.side1;
             OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, line, mark.point,
-                                        endpoint(mark.pleat, mark.end), initData.parse);
+                                        endpoint(resolved.departure, rank, resolved.end), initData.parse);
         }
 
         if (mark.side2 != NULL_ID)
         {
             line.result = mark.side2;
             OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, line, mark.point,
-                                        endpoint(mark.pleat + 1, mark.end), initData.parse);
+                                        endpoint(resolved.departure, rank + 1, resolved.end), initData.parse);
         }
     }
 }
@@ -213,7 +266,10 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
 
     for (int i = 0; i < left.copies.size(); ++i)
     {
-        if (left.copies.at(i).point != right.copies.at(i).point || left.copies.at(i).name != right.copies.at(i).name)
+        const OPleatCopy &one = left.copies.at(i);
+        const OPleatCopy &other = right.copies.at(i);
+        if (one.departure != other.departure || one.line != other.line || one.end != other.end
+            || one.point != other.point || one.name != other.name)
         {
             return false;
         }
@@ -235,14 +291,14 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 void CreateDestination(OToolPleatInitData &initData)
 {
-    OPleatSupport::Resolve(initData.first, initData.data);
-    OPleatSupport::Resolve(initData.second, initData.data);
+    for (OPleatDeparture &departure : initData.departures)
+    {
+        OPleatSupport::Resolve(departure.first, initData.data);
+        OPleatSupport::Resolve(departure.second, initData.data);
+    }
 
-    const OPleatPlan plan = MakePlan(initData.id, initData.first, initData.second, initData.value, initData.kind,
-                                     initData.source, initData.data);
-    const OOperationDestination<OPleatTransform> destination
-        = MakeDestination(initData.id, initData.first, initData.second, initData.value, initData.kind, initData.source,
-                          initData.data);
+    const OPleatPlan plan = MakePlan(initData.id, initData.departures, initData.source, initData.data);
+    const OOperationDestination<OPleatTransform> destination((OPleatTransform(plan)));
 
     if (initData.typeCreation == Source::FromGui)
     {
@@ -267,10 +323,7 @@ void CreateDestination(OToolPleatInitData &initData)
 //---------------------------------------------------------------------------------------------------------------------
 OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent)
   : VAbstractOperation(initData, parent),
-    m_first(initData.first),
-    m_second(initData.second),
-    m_value(initData.value),
-    m_kind(initData.kind),
+    m_departures(initData.departures),
     m_foldLine(initData.foldLine),
     m_display(initData.display)
 {
@@ -279,15 +332,30 @@ OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OToolPleat::End(int rank) const -> const OPleatEnd &
+auto OToolPleat::PleatCount() const -> int
 {
-    return (rank == 1) ? m_second : m_first;
+    int count = 0;
+
+    for (const OPleatDeparture &departure : m_departures)
+    {
+        count += (departure.kind == OPleatKind::Double) ? 2 : 1;
+    }
+
+    return count;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetEnd(int rank, const OPleatEnd &end)
+auto OToolPleat::FoldLinePossible() const -> bool
 {
-    (rank == 1) ? m_second = end : m_first = end;
+    for (const OPleatDeparture &departure : m_departures)
+    {
+        if (departure.first.showCap && departure.second.showCap)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -300,8 +368,8 @@ auto OToolPleat::SyncDestination(const QVector<SourceItem> &source) -> QVector<D
         return m_destination;
     }
 
-    const OOperationDestination<OPleatTransform> destination
-        = MakeDestination(m_id, m_first, m_second, m_value, m_kind, source, getData());
+    const OPleatPlan plan = MakePlan(m_id, m_departures, source, getData());
+    const OOperationDestination<OPleatTransform> destination((OPleatTransform(plan)));
 
     QVector<DestinationItem> newDestination;
     newDestination.reserve(source.size());
@@ -329,7 +397,7 @@ void OToolPleat::SetDialog()
     SCASSERT(not dialogTool.isNull())
 
     dialogTool->CheckDependencyTreeComplete();
-    dialogTool->SetPleat(m_first, m_second, m_value, m_kind, m_foldLine);
+    dialogTool->SetPleat(m_departures, m_foldLine);
     dialogTool->SetDisplay(m_display);
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
@@ -347,10 +415,7 @@ auto OToolPleat::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *
     SCASSERT(not dialogTool.isNull())
 
     OToolPleatInitData initData;
-    initData.first = dialogTool->GetFirst();
-    initData.second = dialogTool->GetSecond();
-    initData.value = dialogTool->GetValue();
-    initData.kind = dialogTool->GetKind();
+    initData.departures = dialogTool->GetDepartures();
     initData.foldLine = dialogTool->IsFoldLineShown();
     initData.display = dialogTool->GetDisplay();
     initData.source = dialogTool->GetSourceObjects();
@@ -389,24 +454,39 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
         PrepareNames(initData);
     }
 
+    // The departure line of the first pleat is the fold the whole operation is taken on: it is part of what the tool
+    // builds, and the layer must leave the two points where they are. The other lines are given flat, and the fabric
+    // they belong to travels: they go with the objects that do.
+    if (initData.typeCreation == Source::FromGui && not initData.departures.isEmpty())
+    {
+        initData.keptInPlace.insert(initData.departures.constFirst().first.pointId);
+        initData.keptInPlace.insert(initData.departures.constFirst().second.pointId);
+    }
+
     VPatternGraph *patternGraph = initData.doc->PatternGraph();
     SCASSERT(patternGraph != nullptr)
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    // The value is a formula like any other: what it reads has to be known before the copies are built.
-    initData.doc->FindFormulaDependencies(initData.value, initData.id, initData.data->DataDependencyVariables());
+    // The values are formulas like any other: what they read has to be known before the copies are built.
+    for (const OPleatDeparture &departure : std::as_const(initData.departures))
+    {
+        initData.doc->FindFormulaDependencies(departure.value, initData.id, initData.data->DataDependencyVariables());
+    }
 
     CreateDestination(initData);
 
-    // What the copies and the caps are read from: the two points of the prise, the points designated to carry an
-    // edge, and everything that travels.
-    for (const quint32 id : {initData.first.pointId, initData.second.pointId, initData.first.edgePointId,
-                             initData.second.edgePointId})
+    // What the copies and the caps are read from: the points of every departure line, the points designated to carry
+    // an edge, and everything that travels.
+    for (const OPleatDeparture &departure : std::as_const(initData.departures))
     {
-        if (id != NULL_ID)
+        for (const quint32 id : {departure.first.pointId, departure.second.pointId, departure.first.edgePointId,
+                                 departure.second.edgePointId})
         {
-            patternGraph->AddEdge(id, initData.id);
+            if (id != NULL_ID)
+            {
+                patternGraph->AddEdge(id, initData.id);
+            }
         }
     }
 
@@ -429,7 +509,8 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
         patternGraph->AddEdge(initData.id, id);
     }
 
-    // The prise itself is what stays: the pleat has no pivot, and no point of the pattern is left in place by it.
+    // The departure lines themselves are what stays: the pleats have no pivot, and no point of the pattern is left
+    // in place by them.
     CreateDestinationLines(initData, {});
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
@@ -446,52 +527,6 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetValue(const QString &value)
-{
-    if (m_value == value)
-    {
-        return;
-    }
-
-    m_value = value;
-    SaveOptionsAndReparse(true, tr("change the value of the pleat"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OToolPleat::GetFormulaValue() const -> VFormula
-{
-    VFormula formula(m_value, getData());
-    formula.setToolId(m_id);
-    formula.Eval();
-    return formula;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetFormulaValue(const VFormula &value)
-{
-    // A pleat of nothing is no pleat: the rule refuses a value that is not greater than zero, and so does the dock,
-    // rather than letting a pattern hold one the tool would refuse to read back.
-    if (value.error() || value.getDoubleValue() <= 0.)
-    {
-        return;
-    }
-
-    SetValue(value.GetFormula(FormulaType::FromUser));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetKind(OPleatKind kind)
-{
-    if (m_kind == kind)
-    {
-        return;
-    }
-
-    m_kind = kind;
-    SaveOptionsAndReparse(true, tr("change the kind of the pleat"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SetFoldLineShown(bool show)
 {
     if (m_foldLine == show)
@@ -500,52 +535,7 @@ void OToolPleat::SetFoldLineShown(bool show)
     }
 
     m_foldLine = show;
-    SaveOptionsAndReparse(true, show ? tr("show the fold line") : tr("hide the fold line"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetCapShown(int rank, bool show)
-{
-    if (End(rank).showCap == show)
-    {
-        return;
-    }
-
-    OPleatEnd end = End(rank);
-    end.showCap = show;
-    SetEnd(rank, end);
-
-    SaveOptionsAndReparse(true, show ? tr("show the cap") : tr("hide the cap"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetCapSecondSense(int rank, bool second)
-{
-    if (End(rank).secondSense == second)
-    {
-        return;
-    }
-
-    OPleatEnd end = End(rank);
-    end.secondSense = second;
-    SetEnd(rank, end);
-
-    SaveOptionsAndReparse(true, tr("turn the cap the other way"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetCapEdgePoint(int rank, quint32 pointId)
-{
-    if (End(rank).edgePointId == pointId)
-    {
-        return;
-    }
-
-    OPleatEnd end = End(rank);
-    end.edgePointId = pointId;
-    SetEnd(rank, end);
-
-    SaveOptionsAndReparse(true, tr("change the edge of the cap"));
+    SaveOptionsAndReparse(true, show ? tr("show the fold lines") : tr("hide the fold lines"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -616,12 +606,14 @@ void OToolPleat::SetDisplayFoldLineColor(const QString &color)
 //---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SyncDisplay(const QVector<SourceItem> &source)
 {
-    OPleatSupport::Resolve(m_first, getData());
-    OPleatSupport::Resolve(m_second, getData());
+    for (OPleatDeparture &departure : m_departures)
+    {
+        OPleatSupport::Resolve(departure.first, getData());
+        OPleatSupport::Resolve(departure.second, getData());
+    }
 
-    const OPleatPlan plan = MakePlan(m_id, m_first, m_second, m_value, m_kind, source, getData());
-    OPleatDisplay::EnsureIds(m_display, m_first, m_second, m_kind, FoldLineDrawn(), plan, source, m_destination,
-                             getData());
+    const OPleatPlan plan = MakePlan(m_id, m_departures, source, getData());
+    OPleatDisplay::EnsureIds(m_display, m_departures, m_foldLine, plan, source, m_destination, getData());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -708,9 +700,9 @@ auto OToolPleat::ExtraLineIds() const -> QVector<quint32>
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolPleat::DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32>
 {
-    // Everything the figure is made of: the lines of the prise and their copies, the fold lines, the copies of the
-    // prise points the display places, and the caps. Turning a cap off, or the figure itself, takes some of them
-    // away, and only this list says so to the test that chooses between a lite and a full parse.
+    // Everything the figure is made of: the departure lines and their copies, the fold lines, the copies of the points
+    // the display places, and the caps. Turning a cap off, or the figure itself, takes some of them away, and only
+    // this list says so to the test that chooses between a lite and a full parse.
     QSet<quint32> ids;
     const QDomElement display = domElement.firstChildElement(OPleatDisplay::TagDisplay);
     for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
@@ -765,7 +757,8 @@ void OToolPleat::SetVisualization()
         }
         visual->SetPreviewLines(lines);
 
-        visual->SetPleat(m_first, m_second, m_value, m_kind, FoldLineDrawn());
+        // No line is being edited here: the tool's own figure draws them all at the same light.
+        visual->SetPleat(m_departures, OPleatEnd{}, m_foldLine, -1);
         visual->SetMode(Mode::Show);
         visual->RefreshGeometry();
     }
@@ -780,14 +773,11 @@ void OToolPleat::SaveDialog(QDomElement &domElement)
 
     const QVector<SourceItem> source = dialogTool->GetSourceObjects();
 
-    m_first = dialogTool->GetFirst();
-    m_second = dialogTool->GetSecond();
-    m_value = dialogTool->GetValue();
-    m_kind = dialogTool->GetKind();
+    m_departures = dialogTool->GetDepartures();
     m_foldLine = dialogTool->IsFoldLineShown();
 
     const OPleatDisplay dialogDisplay = dialogTool->GetDisplay();
-    // The figure is not optional: it is drawn, and the dialog only decides what the fold line looks like.
+    // The figure is not optional: it is drawn, and the dialog only decides what the fold lines look like.
     m_display.show = true;
     m_display.lineTypeLine = dialogDisplay.lineTypeLine;
     m_display.lineColor = dialogDisplay.lineColor;
@@ -816,18 +806,18 @@ void OToolPleat::ReadToolAttributes(const QDomElement &domElement)
 
     OToolPleatInitData initData;
     ExtractPleat(domElement, initData);
-    m_first = initData.first;
-    m_second = initData.second;
-    m_value = initData.value;
-    m_kind = initData.kind;
+    m_departures = initData.departures;
     m_foldLine = initData.foldLine;
 
     m_display = OPleatDisplay::Extract(domElement);
 
-    // Where the two prise points are, and which way the edge runs there, are never read from the file: they are asked
-    // of the container again, which is what makes the figure follow a point the user moves.
-    OPleatSupport::Resolve(m_first, getData());
-    OPleatSupport::Resolve(m_second, getData());
+    // Where the points of the departure lines are, and which way the edge runs there, are never read from the file:
+    // they are asked of the container again, which is what makes the figure follow a point the user moves.
+    for (OPleatDeparture &departure : m_departures)
+    {
+        OPleatSupport::Resolve(departure.first, getData());
+        OPleatSupport::Resolve(departure.second, getData());
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -843,59 +833,102 @@ void OToolPleat::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 void OToolPleat::SavePleat(QDomElement &tag) const
 {
     doc->SetAttribute(tag, AttrType, ToolType);
-
-    doc->SetAttribute(tag, AttrFirstPoint, m_first.pointId);
-    doc->SetAttribute(tag, AttrSecondPoint, m_second.pointId);
-    doc->SetAttribute(tag, AttrValue, m_value);
-    doc->SetAttribute(tag, AttrKind, m_kind == OPleatKind::Double ? AttrKindDouble : AttrKindSimple);
-
-    doc->SetAttribute(tag, AttrCap1, m_first.showCap);
-    doc->SetAttribute(tag, AttrCap2, m_second.showCap);
-    doc->SetAttribute(tag, AttrCap1Sense, m_first.secondSense ? 2 : 1);
-    doc->SetAttribute(tag, AttrCap2Sense, m_second.secondSense ? 2 : 1);
-
-    if (m_first.edgePointId != NULL_ID)
-    {
-        doc->SetAttribute(tag, AttrCap1Ref, m_first.edgePointId);
-    }
-    if (m_second.edgePointId != NULL_ID)
-    {
-        doc->SetAttribute(tag, AttrCap2Ref, m_second.edgePointId);
-    }
-
     doc->SetAttribute(tag, AttrFoldLine, m_foldLine);
+
+    SaveDepartures(doc, tag, m_departures);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolPleat::SaveDepartures(VAbstractPattern *doc, QDomElement &tag,
+                                const QVector<OPleatDeparture> &departures)
+{
+    SCASSERT(doc != nullptr)
+
+    // The element is written whole: a departure line the user took away must not stay behind in the file.
+    for (QDomElement old = tag.firstChildElement(TagPleats); not old.isNull();)
+    {
+        const QDomElement next = old.nextSiblingElement(TagPleats);
+        tag.removeChild(old);
+        old = next;
+    }
+
+    QDomElement element = doc->createElement(TagPleats);
+
+    for (const OPleatDeparture &departure : departures)
+    {
+        QDomElement item = doc->createElement(VAbstractOperation::TagItem);
+        doc->SetAttribute(item, AttrFirstPoint, departure.first.pointId);
+        doc->SetAttribute(item, AttrSecondPoint, departure.second.pointId);
+        doc->SetAttribute(item, AttrValue, departure.value);
+        doc->SetAttribute(item, AttrKind, departure.kind == OPleatKind::Double ? AttrKindDouble : AttrKindSimple);
+
+        doc->SetAttribute(item, AttrCap1, departure.first.showCap);
+        doc->SetAttribute(item, AttrCap2, departure.second.showCap);
+        doc->SetAttribute(item, AttrCap1Sense, departure.first.secondSense ? 2 : 1);
+        doc->SetAttribute(item, AttrCap2Sense, departure.second.secondSense ? 2 : 1);
+
+        if (departure.first.edgePointId != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrCap1Ref, departure.first.edgePointId);
+        }
+        if (departure.second.edgePointId != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrCap2Ref, departure.second.edgePointId);
+        }
+
+        element.appendChild(item);
+    }
+
+    tag.appendChild(element);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::ExtractPleat(const QDomElement &domElement, OToolPleatInitData &initData)
 {
-    initData.first.pointId = VAbstractPattern::GetParametrUInt(domElement, AttrFirstPoint, NULL_ID_STR);
-    initData.second.pointId = VAbstractPattern::GetParametrUInt(domElement, AttrSecondPoint, NULL_ID_STR);
-
-    initData.value = VDomDocument::GetParametrEmptyString(domElement, AttrValue);
-
-    initData.kind = (VAbstractPattern::GetParametrString(domElement, AttrKind, AttrKindSimple) == AttrKindDouble)
-                        ? OPleatKind::Double
-                        : OPleatKind::Simple;
-
-    initData.first.showCap = VAbstractPattern::GetParametrBool(domElement, AttrCap1, trueStr);
-    initData.second.showCap = VAbstractPattern::GetParametrBool(domElement, AttrCap2, trueStr);
-    initData.first.secondSense = VAbstractPattern::GetParametrUInt(domElement, AttrCap1Sense, u"1"_s) == 2;
-    initData.second.secondSense = VAbstractPattern::GetParametrUInt(domElement, AttrCap2Sense, u"1"_s) == 2;
-
-    initData.first.edgePointId = VAbstractPattern::GetParametrUInt(domElement, AttrCap1Ref, NULL_ID_STR);
-    initData.second.edgePointId = VAbstractPattern::GetParametrUInt(domElement, AttrCap2Ref, NULL_ID_STR);
-
     initData.foldLine = VAbstractPattern::GetParametrBool(domElement, AttrFoldLine, trueStr);
+    initData.departures.clear();
+
+    for (QDomElement element = domElement.firstChildElement(TagPleats); not element.isNull();
+         element = element.nextSiblingElement(TagPleats))
+    {
+        for (QDomElement item = element.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
+             item = item.nextSiblingElement(VAbstractOperation::TagItem))
+        {
+            initData.departures.append(DepartureOf(item));
+        }
+
+        break; // Only the first element is read, exactly as the operation lines are: an operation has one.
+    }
+
+    if (not initData.departures.isEmpty())
+    {
+        return;
+    }
+
+    // A file written before a pleat could be taken on several departure lines carries one line, flat, on the
+    // operation itself. Reading it is what opens those patterns, and the next save writes them the new way.
+    const OPleatDeparture departure = DepartureOf(domElement);
+    if (departure.first.pointId != NULL_ID || departure.second.pointId != NULL_ID)
+    {
+        initData.departures.append(departure);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolPleat::MakeToolTip() const -> QString
 {
+    QStringList values;
+    values.reserve(m_departures.size());
+
+    for (const OPleatDeparture &departure : m_departures)
+    {
+        values.append(departure.value);
+    }
+
     return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
                           "%3")
-        .arg(tr("Pleat"), m_value)              // 1, 2
-        .arg(VisibilityGroupToolTip());         // 3
+        .arg(tr("Pleats"), values.join(QStringLiteral(", "))) // 1, 2
+        .arg(VisibilityGroupToolTip());                       // 3
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -903,9 +936,9 @@ void OToolPleat::RefreshDataInFile()
 {
     VAbstractOperation::RefreshDataInFile();
 
-    // An object the parse has just created — a cap that became oblique, the copy line of a prise point that stopped
-    // travelling — carries an id the file must hold, exactly as the ids of the copies do: a layer names its objects by
-    // id, and an id the file does not carry is one the next open would not recognize.
+    // An object the parse has just created — a cap that became oblique, the copy of a point that stopped travelling —
+    // carries an id the file must hold, exactly as the ids of the copies do: a layer names its objects by id, and an
+    // id the file does not carry is one the next open would not recognize.
     QDomElement domElement = doc->FindElementById(m_id, getTagName());
     if (domElement.isElement() && not SameDisplay(OPleatDisplay::Extract(domElement), m_display))
     {

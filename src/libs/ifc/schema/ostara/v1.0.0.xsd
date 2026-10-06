@@ -391,11 +391,37 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
-                            <!-- The pleat: one fold, taken on a prise of two points. The prise and the value are
-                                 attributes of the operation itself; the figure the fold draws is below. Every
-                                 option is stored only for the sake of the user who set it: the move, the fold
-                                 line and the caps are recomputed on every parse, and none of the points the
-                                 manual construction needed is kept. -->
+                            <!-- The pleats: one departure line per fold the operation takes — two points of the
+                                 source list, the value that pleat shows once folded, whether it is simple or
+                                 double, and what it draws at each end. The lines are given flat, and how far the
+                                 pleats before each of them carried it is read again from the geometry; the move,
+                                 the fold lines and the caps are recomputed on every parse, and none of the points
+                                 the manual construction needed is kept. -->
+                            <xs:element name="pleats" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <xs:attribute name="firstPoint" type="xs:unsignedInt"/>
+                                      <xs:attribute name="secondPoint" type="xs:unsignedInt"/>
+                                      <xs:attribute name="value" type="xs:string"/>
+                                      <xs:attribute name="kind" type="pleatKind"/>
+                                      <xs:attribute name="cap1" type="xs:boolean"/>
+                                      <xs:attribute name="cap2" type="xs:boolean"/>
+                                      <xs:attribute name="cap1Sense" type="senseType"/>
+                                      <xs:attribute name="cap2Sense" type="senseType"/>
+                                      <xs:attribute name="cap1Ref" type="xs:unsignedInt"/>
+                                      <xs:attribute name="cap2Ref" type="xs:unsignedInt"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
+                            <!-- The figure the pleats draw: the departure lines and the places the folds carried
+                                 them to, the fold lines, the copies the display places, and the caps. Every item
+                                 is read back by what it names: a line, a fold line, a copy — with the departure
+                                 line, the place and the end it belongs to, since a figure may hold several
+                                 departure lines — or a cap. -->
                             <xs:element name="pleatDisplay" minOccurs="0" maxOccurs="1">
                               <xs:complexType>
                                 <xs:sequence>
@@ -404,6 +430,9 @@
                                       <xs:attribute name="line" type="xs:unsignedInt"/>
                                       <xs:attribute name="foldLine" type="xs:unsignedInt"/>
                                       <xs:attribute name="copy" type="xs:unsignedInt"/>
+                                      <xs:attribute name="departure" type="xs:unsignedInt"/>
+                                      <xs:attribute name="place" type="xs:unsignedInt"/>
+                                      <xs:attribute name="end" type="xs:unsignedInt"/>
                                       <xs:attribute name="point" type="xs:unsignedInt"/>
                                       <xs:attribute name="side1" type="xs:unsignedInt"/>
                                       <xs:attribute name="side2" type="xs:unsignedInt"/>
@@ -439,10 +468,10 @@
                           <xs:attribute name="p1Line" type="xs:unsignedInt"/>
                           <xs:attribute name="p2Line" type="xs:unsignedInt"/>
                           <xs:attribute name="axisType" type="axisType"/>
-                          <!-- The pleat keeps the two points of its prise, the value the user typed as the pleat
-                               shows once folded, whether it is simple or double, and what it draws at each end:
-                               the cap of an end and which way it lies, the point the user designated when no
-                               tool could tell the edge, and whether the fold line itself is drawn. -->
+                          <!-- The pleat keeps whether the fold lines are drawn. Its departure lines and their
+                               values live in the <pleats> element above; a file written before a pleat could be
+                               taken on several lines carries one of them flat, in the very attributes below,
+                               which are still read for those patterns. -->
                           <xs:attribute name="firstPoint" type="xs:unsignedInt"/>
                           <xs:attribute name="secondPoint" type="xs:unsignedInt"/>
                           <xs:attribute name="value" type="xs:string"/>
