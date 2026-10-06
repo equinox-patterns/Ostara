@@ -513,6 +513,27 @@ auto OToolSpread::ExtraLineIds() const -> QVector<quint32>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OToolSpread::DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32>
+{
+    // The mark of a rotation: its third vertex, and the two lines that make the region readable.
+    QSet<quint32> ids;
+    const QDomElement display = domElement.firstChildElement(OSpreadDisplay::TagDisplay);
+    for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
+         item = item.nextSiblingElement(VAbstractOperation::TagItem))
+    {
+        for (const QString &attribute :
+             {OSpreadDisplay::AttrPoint, OSpreadDisplay::AttrLine1, OSpreadDisplay::AttrLine2})
+        {
+            if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
+            {
+                ids.insert(id);
+            }
+        }
+    }
+    return ids;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OToolSpread::ShowVisualization(bool show)
 {
     ShowToolVisualization<OVisToolSpread>(show);

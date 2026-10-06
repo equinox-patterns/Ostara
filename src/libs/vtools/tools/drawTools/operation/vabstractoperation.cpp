@@ -285,11 +285,22 @@ auto VAbstractOperation::IsRemovable() const -> RemoveStatus
 
     // The lines this operation produced depend on its destination points. They must not make the
     // operation itself impossible to delete.
+    //
+    // Its own figure is part of them: the line a pleat draws where the fabric lands, the line it is pressed along,
+    // and the two sides of every cap are anchored on the copies the operation made. They belong to the operation and
+    // go away with it, exactly like the lines it copies — the only thing a delete has to ask about is what the
+    // objects of OTHER tools hang from.
+    const QVector<quint32> extraLines = ExtraLineIds();
+
     QVector<quint32> ownLines;
-    ownLines.reserve(m_lines.size());
+    ownLines.reserve(m_lines.size() + extraLines.size());
     for (const auto &line : std::as_const(m_lines))
     {
         ownLines.append(line.result);
+    }
+    for (const quint32 id : extraLines)
+    {
+        ownLines.append(id);
     }
 
     auto Filter = [&ownLines](const auto &node) -> auto
@@ -1680,7 +1691,7 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
     // toggling its copies, or the display of its rotations, keeps the same sources and names, yet those objects
     // must be created or deleted, which only a full parse does. The id set says it even when the names do not
     // change.
-    const auto createdObjectIds = [](const QDomElement &element) -> QSet<quint32>
+    const auto createdObjectIds = [this](const QDomElement &element) -> QSet<quint32>
     {
         QSet<quint32> ids;
         for (const auto &item : VAbstractOperation::ExtractDestinationData(element))
@@ -1688,21 +1699,9 @@ void VAbstractOperation::ProcessOperationToolOptions(const QDomElement &oldDomEl
             ids.insert(item.id);
         }
 
-        // The display a slash-and-spread draws lists its own objects in an element of its own, written verbatim
-        // because the operation that reads it is in another layer of the project.
-        const QDomElement display = element.firstChildElement(QStringLiteral("rotationDisplay"));
-        for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
-             item = item.nextSiblingElement(VAbstractOperation::TagItem))
-        {
-            for (const QString &attribute : {QStringLiteral("point"), QStringLiteral("line1"),
-                                             QStringLiteral("line2")})
-            {
-                if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
-                {
-                    ids.insert(id);
-                }
-            }
-        }
+        // The objects a figure of the operation's own is made of: they are written in an element of their own, and
+        // only the operation knows which one — the base asks it here rather than reading a list of element names.
+        ids.unite(DisplayObjectIds(element));
         return ids;
     };
     const bool createdObjectsChanged = (createdObjectIds(oldDomElement) != createdObjectIds(newDomElement));

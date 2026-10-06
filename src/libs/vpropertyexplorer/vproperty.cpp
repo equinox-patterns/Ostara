@@ -487,6 +487,18 @@ void VPE::VProperty::setExpandedByDefault(bool expanded)
     vproperty_d_ptr->ExpandedByDefault = expanded;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+auto VPE::VProperty::isGroupBox() const -> bool
+{
+    return vproperty_d_ptr->GroupBox;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPE::VProperty::setGroupBox(bool groupBox)
+{
+    vproperty_d_ptr->GroupBox = groupBox;
+}
+
 void VPE::VProperty::UpdateParent(const QVariant &value)
 {
     Q_UNUSED(value)

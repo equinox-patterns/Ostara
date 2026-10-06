@@ -47,6 +47,7 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
@@ -370,7 +371,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -489,6 +490,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return Spread(tool, data);
             case Tool::MoveBatch:
                 return MoveBatch(tool, data);
+            case Tool::Pleat:
+                return Pleat(tool, data);
             case Tool::EllipticalArcWithLength:
                 return EllipticalArcWithLength(tool);
             case Tool::ParallelCurve:
@@ -1322,6 +1325,51 @@ auto VPatternRecipe::Spread(const VToolRecord &record, const VContainer &data) -
         rotations.appendChild(item);
     }
     step.appendChild(rotations);
+
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPatternRecipe::SavePleat(const OToolPleat *tool, QDomElement &step) const
+{
+    SetAttribute(step, AttrFirstPoint, QString::number(tool->First().pointId));
+    SetAttribute(step, AttrSecondPoint, QString::number(tool->Second().pointId));
+    SetAttribute(step, OToolPleat::AttrValue, tool->Value());
+    SetAttribute(step, OToolPleat::AttrKind,
+                 tool->Kind() == OPleatKind::Double ? OToolPleat::AttrKindDouble : OToolPleat::AttrKindSimple);
+
+    SetAttribute(step, OToolPleat::AttrCap1, tool->First().showCap ? trueStr : falseStr);
+    SetAttribute(step, OToolPleat::AttrCap2, tool->Second().showCap ? trueStr : falseStr);
+    SetAttribute(step, OToolPleat::AttrCap1Sense,
+                 QString::number(tool->First().secondSense ? 2 : 1));
+    SetAttribute(step, OToolPleat::AttrCap2Sense,
+                 QString::number(tool->Second().secondSense ? 2 : 1));
+
+    if (tool->First().edgePointId != NULL_ID)
+    {
+        SetAttribute(step, OToolPleat::AttrCap1Ref, QString::number(tool->First().edgePointId));
+    }
+    if (tool->Second().edgePointId != NULL_ID)
+    {
+        SetAttribute(step, OToolPleat::AttrCap2Ref, QString::number(tool->Second().edgePointId));
+    }
+
+    SetAttribute(step, OToolPleat::AttrFoldLine, tool->IsFoldLineShown() ? trueStr : falseStr);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::Pleat(const VToolRecord &record, const VContainer &data) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolPleat>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, OToolPleat::ToolType);
+
+    // The prise, the value and what each end draws: everything the fold is recomputed from.
+    SavePleat(tool, step);
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 

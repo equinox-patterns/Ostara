@@ -37,6 +37,7 @@ class VIncrement;
 class VToolRecord;
 class VFormula;
 class VAbstractOperation;
+class OToolPleat;
 struct VFinalMeasurement;
 
 class VPatternRecipe : public VDomDocument
@@ -110,6 +111,11 @@ private:
     auto Transfert(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto Spread(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto MoveBatch(const VToolRecord &record, const VContainer &data) -> QDomElement;
+    auto Pleat(const VToolRecord &record, const VContainer &data) -> QDomElement;
+
+    /** @brief Write what a pleat draws and what it was taken on: a recipe recomputes the fold from the prise, the
+     *  value and the boxes, exactly as the pattern does. */
+    void SavePleat(const OToolPleat *tool, QDomElement &step) const;
     auto EllipticalArcWithLength(const VToolRecord &record) -> QDomElement;
     auto ParallelCurve(const VToolRecord &record) -> QDomElement;
     auto GraduatedCurve(const VToolRecord &record) -> QDomElement;

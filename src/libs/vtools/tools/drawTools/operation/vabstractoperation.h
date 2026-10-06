@@ -32,6 +32,7 @@
 #include <QGraphicsLineItem>
 #include <QMap>
 #include <QMetaObject>
+#include <QSet>
 #include <QObject>
 #include <QString>
 #include <QVector>
@@ -242,6 +243,18 @@ protected:
     /** @brief The lines an operation draws besides the ones its sources carry, wired exactly like them: they
      *  are parented to the operation, so they go with it. Empty for every operation but the slash-and-spread. */
     virtual auto ExtraLineIds() const -> QVector<quint32> { return {}; }
+
+    /** @brief The ids of the objects an operation draws besides its copies, read from ITS OWN element: the display
+     *  of a slash-and-spread, the figure of a pleat. Only the operation knows which element carries them.
+     *
+     *  The test that decides between a lite and a full parse needs them (see ProcessOperationToolOptions): turning
+     *  a cap off, or the display of the rotations on, takes objects away or brings them back, and nothing else in
+     *  the element says so. Empty for an operation that draws nothing of its own. */
+    virtual auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32>
+    {
+        Q_UNUSED(domElement)
+        return {};
+    }
 
     /** @brief Build the scene item of one object this operation draws, reading its shape from the container. */
     void InitOperatedObject(quint32 id);

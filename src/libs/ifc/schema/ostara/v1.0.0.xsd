@@ -391,6 +391,33 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
+                            <!-- The pleat: one fold, taken on a prise of two points. The prise and the value are
+                                 attributes of the operation itself; the figure the fold draws is below. Every
+                                 option is stored only for the sake of the user who set it: the move, the fold
+                                 line and the caps are recomputed on every parse, and none of the points the
+                                 manual construction needed is kept. -->
+                            <xs:element name="pleatDisplay" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <xs:attribute name="line" type="xs:unsignedInt"/>
+                                      <xs:attribute name="foldLine" type="xs:unsignedInt"/>
+                                      <xs:attribute name="copy" type="xs:unsignedInt"/>
+                                      <xs:attribute name="point" type="xs:unsignedInt"/>
+                                      <xs:attribute name="side1" type="xs:unsignedInt"/>
+                                      <xs:attribute name="side2" type="xs:unsignedInt"/>
+                                      <xs:attribute name="name" type="xs:string"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="show" type="xs:boolean"/>
+                                <xs:attribute name="typeLine" type="operationPenStyle"/>
+                                <xs:attribute name="lineColor" type="operationColors"/>
+                                <xs:attribute name="foldTypeLine" type="operationPenStyle"/>
+                                <xs:attribute name="foldColor" type="operationColors"/>
+                              </xs:complexType>
+                            </xs:element>
                           </xs:sequence>
                           <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                           <xs:attribute name="center" type="xs:unsignedInt"/>
@@ -412,6 +439,21 @@
                           <xs:attribute name="p1Line" type="xs:unsignedInt"/>
                           <xs:attribute name="p2Line" type="xs:unsignedInt"/>
                           <xs:attribute name="axisType" type="axisType"/>
+                          <!-- The pleat keeps the two points of its prise, the value the user typed as the pleat
+                               shows once folded, whether it is simple or double, and what it draws at each end:
+                               the cap of an end and which way it lies, the point the user designated when no
+                               tool could tell the edge, and whether the fold line itself is drawn. -->
+                          <xs:attribute name="firstPoint" type="xs:unsignedInt"/>
+                          <xs:attribute name="secondPoint" type="xs:unsignedInt"/>
+                          <xs:attribute name="value" type="xs:string"/>
+                          <xs:attribute name="kind" type="pleatKind"/>
+                          <xs:attribute name="cap1" type="xs:boolean"/>
+                          <xs:attribute name="cap2" type="xs:boolean"/>
+                          <xs:attribute name="cap1Sense" type="senseType"/>
+                          <xs:attribute name="cap2Sense" type="senseType"/>
+                          <xs:attribute name="cap1Ref" type="xs:unsignedInt"/>
+                          <xs:attribute name="cap2Ref" type="xs:unsignedInt"/>
+                          <xs:attribute name="foldLine" type="xs:boolean"/>
                           <xs:attribute name="notes" type="xs:string"/>
                         </xs:complexType>
                       </xs:element>
@@ -1578,6 +1620,18 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="axisType">
+    <xs:restriction base="xs:unsignedInt">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="pleatKind">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="simple"/>
+      <xs:enumeration value="double"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="senseType">
     <xs:restriction base="xs:unsignedInt">
       <xs:enumeration value="1"/>
       <xs:enumeration value="2"/>

@@ -240,6 +240,12 @@ public:
     auto isExpandedByDefault() const -> bool;
     void setExpandedByDefault(bool expanded);
 
+    //! Whether this group renders as a titled frame — a QGroupBox, the frame a dialog groups its options in —
+    //! with its children as the rows inside it. It is neither collapsible nor given a header of its own: the
+    //! frame, when it is checkable, is where the group's own value is read and written.
+    auto isGroupBox() const -> bool;
+    void setGroupBox(bool groupBox);
+
     //! Whether this row draws its label beside its editor, flush with the left edge, instead of sitting in
     //! the form's label column. A spanning row never widens that column, so a long label cannot push the
     //! field of the shorter rows to the right.

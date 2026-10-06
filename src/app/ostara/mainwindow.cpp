@@ -301,6 +301,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("spiral"),                       ui->actionSpiralTool},
         {QStringLiteral("spread"),                       ui->actionSpreadTool},
         {QStringLiteral("move_batch"),                   ui->actionMoveBatchTool},
+        {QStringLiteral("pleat"),                        ui->actionPleatTool},
         {QStringLiteral("true_darts"),                   ui->actionTrueDartsTool},
         {QStringLiteral("new_detail"),                   ui->actionNewDetailTool},
         {QStringLiteral("path"),                         ui->actionInternalPathTool},

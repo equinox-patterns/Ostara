@@ -252,6 +252,12 @@ void OOperationLines::BuildLine(VAbstractPattern *doc, VContainer *data, VMainGr
             lineTool->RefreshPenFromParse(line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine,
                                           line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor
                                                                    : line.lineColor);
+
+            // The pen is not all that moves: a line whose endpoints the operation has just moved — a pleat cap
+            // whose cap point follows the value, a copy line whose endpoints travel — would otherwise stay where
+            // the parse before it put it, and the figure would come apart on screen. A derived line has no element
+            // of its own, so nothing else re-reads its geometry: this is the call, and VToolLine knows it.
+            lineTool->FullUpdateFromFile();
         }
         return;
     }

@@ -81,6 +81,9 @@ public:
     //! Whether this collapsible group starts expanded (shown) instead of collapsed
     bool ExpandedByDefault{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    //! Whether this group renders as a titled frame (a QGroupBox), the way a dialog groups its options
+    bool GroupBox{false}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     //! Whether this row keeps its label beside its editor instead of taking part in the label column
     bool SpanningRow{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 

@@ -64,6 +64,9 @@ public slots:
 
     void buildEditor(VProperty *property, QFormLayout *formLayout, Property type = Property::Simple);
 
+    //! Builds the rows of a group — a collapsible one, or a group box — inside @a subFormLayout, from row @a i on.
+    void buildGroupChildren(VProperty *group, QFormLayout *subFormLayout, int &i);
+
     //! Reads the data from the editors and commits it to the properties
     void commitData();
 

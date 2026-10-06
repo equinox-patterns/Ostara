@@ -8665,6 +8665,10 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>DrawToolBar</name>
     <message>
+        <source>Pleat tool</source>
+        <translation>Pli</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="134"/>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="699"/>
         <source>Tools</source>
@@ -9199,6 +9203,18 @@ Cette action ne peut pas être annulée.</translation>
 </context>
 <context>
     <name>MainWindow</name>
+    <message>
+        <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two — the two points of the departure line included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
+        <translation>Sélectionnez les objets du contour &lt;b&gt;dans l&apos;ordre&lt;/b&gt; : tous dans le sens horaire ou tous dans le sens antihoraire, sans jamais mélanger les deux — les deux points de la ligne de départ du pli compris. Puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
+    </message>
+    <message>
+        <source>Pleat</source>
+        <translation>Pli</translation>
+    </message>
+    <message>
+        <source>Pleat: fold the fabric back on itself along a departure line</source>
+        <translation>Pli : replier le tissu sur lui-même le long d&apos;une ligne de départ du pli</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="14"/>
         <source>Valentina</source>
@@ -11297,22 +11313,6 @@ Voulez-vous le remplacer ?</translation>
         <source>Mat %1 × %2</source>
         <translation>Tapis %1 × %2</translation>
     </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="192"/>
-        <source> · %n piece(s)</source>
-        <translation>
-            <numerusform> · %n pièce</numerusform>
-            <numerusform> · %n pièces</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="197"/>
-        <source> · %n mat(s)</source>
-        <translation>
-            <numerusform> · %n tapis</numerusform>
-            <numerusform> · %n tapis</numerusform>
-        </translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="200"/>
         <source>Canvas %1 × %2</source>
@@ -11324,22 +11324,6 @@ Voulez-vous le remplacer ?</translation>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="276"/>
         <source> · %1</source>
         <translation> · %1</translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="235"/>
-        <source> · %n pages (cover page included)</source>
-        <translation>
-            <numerusform> · %n page (page de garde incluse)</numerusform>
-            <numerusform> · %n pages (page de garde incluse)</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="237"/>
-        <source> · %n pages</source>
-        <translation>
-            <numerusform> · %n page</numerusform>
-            <numerusform> · %n pages</numerusform>
-        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="255"/>
@@ -11390,36 +11374,10 @@ Cette action ne peut pas être annulée.</translation>
         <translation>« %1 » a été exporté dans
 %2</translation>
     </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1355"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="181"/>
-        <source>%n file(s) written to %1</source>
-        <translation>
-            <numerusform>%n fichier écrit dans %1</numerusform>
-            <numerusform>%n fichiers écrits dans %1</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1371"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="212"/>
-        <source>%n file(s) could not be written:</source>
-        <translation>
-            <numerusform>%n fichier n&apos;a pas pu être écrit :</numerusform>
-            <numerusform>%n fichiers n&apos;ont pas pu être écrits :</numerusform>
-        </translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="223"/>
         <source>%1 × %2 %3</source>
         <translation>%1 × %2 %3</translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="195"/>
-        <source>%n file(s) left untouched:</source>
-        <translation>
-            <numerusform>%n fichier laissé tel quel :</numerusform>
-            <numerusform>%n fichiers laissés tels quels :</numerusform>
-        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2242"/>
@@ -22011,6 +21969,11 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VAbstractShortcutManager</name>
     <message>
+        <source>Tool &apos;Pleat&apos;</source>
+        <comment>shortcut for action</comment>
+        <translation>Outil « Pli »</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
         <source>Zoom in</source>
         <comment>shortcut for action</comment>
@@ -23572,6 +23535,15 @@ Voulez-vous continuer ?</translation>
 </context>
 <context>
     <name>VDependencyTreeModel</name>
+    <message>
+        <source>Pleat</source>
+        <comment>operation</comment>
+        <translation>Pli</translation>
+    </message>
+    <message>
+        <source>Pleat</source>
+        <translation>Pli</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="299"/>
         <source>Dependency tree</source>
@@ -25985,6 +25957,10 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VPattern</name>
     <message>
+        <source>Error creating or updating the pleat operation</source>
+        <translation>Erreur lors de la création ou de la mise à jour de l&apos;opération de pli</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/xml/vpattern.cpp" line="271"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
         <translation>La formule utilise un nom que le patron ne définit pas : %1.</translation>
@@ -27280,6 +27256,54 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
 <context>
     <name>VToolOptionsPropertyBrowser</name>
     <message>
+        <source>Draw the cap</source>
+        <translation>Tracer le chapeau</translation>
+    </message>
+    <message>
+        <source>Reverse the sense</source>
+        <translation>Inverser le sens</translation>
+    </message>
+    <message>
+        <source>Value of the finished pleat:</source>
+        <translation>Valeur du pli fini :</translation>
+    </message>
+    <message>
+        <source>Tool pleat</source>
+        <translation>Outil pli</translation>
+    </message>
+    <message>
+        <source>Double pleat</source>
+        <translation>Pli double</translation>
+    </message>
+    <message>
+        <source>Draw the fold line</source>
+        <translation>Tracer la ligne de pli</translation>
+    </message>
+    <message>
+        <source>Show the fold</source>
+        <translation>Afficher le pli</translation>
+    </message>
+    <message>
+        <source>Fold pens</source>
+        <translation>Tracés du pli</translation>
+    </message>
+    <message>
+        <source>Line type:</source>
+        <translation>Style de tracé :</translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation>Couleur du tracé :</translation>
+    </message>
+    <message>
+        <source>Fold line type:</source>
+        <translation>Type de la ligne de pli :</translation>
+    </message>
+    <message>
+        <source>Fold line color:</source>
+        <translation>Couleur de la ligne de pli :</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="374"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="377"/>
         <source>Pattern piece:</source>
@@ -28358,6 +28382,18 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="693"/>
         <source>Draw the cap</source>
         <translation>Tracer le chapeau</translation>
+    </message>
+    <message>
+        <source>Draw</source>
+        <translation>Tracer</translation>
+    </message>
+    <message>
+        <source>Pleat</source>
+        <translation>Pli</translation>
+    </message>
+    <message>
+        <source>Fold line</source>
+        <translation>Ligne de pli</translation>
     </message>
 </context>
 <context>
@@ -30719,6 +30755,268 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>%1
 
 (%2 messages supplémentaires ont été enregistrés.)</translation>
+    </message>
+</context>
+<context>
+    <name>DialogPleat</name>
+    <message>
+        <source>Click point 1 of the pleat&apos;s departure line (it turns green)</source>
+        <translation>Cliquez le point 1 de la ligne de départ du pli (il devient vert)</translation>
+    </message>
+    <message>
+        <source>Click point 2 of the pleat&apos;s departure line (it turns red)</source>
+        <translation>Cliquez le point 2 de la ligne de départ du pli (il devient rouge)</translation>
+    </message>
+    <message>
+        <source>The departure line is made of two points</source>
+        <translation>La ligne de départ du pli se fait avec deux points</translation>
+    </message>
+    <message>
+        <source>This point is not one of the objects you selected: click a point of the contour</source>
+        <translation>Ce point ne fait pas partie des objets sélectionnés : cliquez un point du contour</translation>
+    </message>
+    <message>
+        <source>The edge is not recognized at the cap of point 1 (green): click a point of the piece&apos;s outline, right next to it</source>
+        <translation>Le bord n&apos;est pas reconnu au chapeau du point 1 (le vert) : cliquez un point du contour de la pièce, juste à côté.</translation>
+    </message>
+    <message>
+        <source>The edge is not recognized at the cap of point 2 (red): click a point of the piece&apos;s outline, right next to it</source>
+        <translation>Le bord n&apos;est pas reconnu au chapeau du point 2 (le rouge) : cliquez un point du contour de la pièce, juste à côté.</translation>
+    </message>
+    <message>
+        <source>Click the two points of the departure line.</source>
+        <translation>Cliquez les deux points de la ligne de départ.</translation>
+    </message>
+    <message>
+        <source>Every object you selected must be on the same side of the departure line.</source>
+        <translation>Tous les objets sélectionnés doivent être du même côté de la ligne de départ du pli.</translation>
+    </message>
+    <message>
+        <source>The edge was not recognized at one end of the departure line.</source>
+        <translation>Le bord n&apos;a pas été reconnu à une extrémité de la ligne de départ.</translation>
+    </message>
+    <message>
+        <source>the prise</source>
+        <translation>la prise</translation>
+    </message>
+    <message>
+        <source>Cap %1:</source>
+        <translation>Chapeau %1 :</translation>
+    </message>
+    <message>
+        <source>At cap %1 the edge is not recognized: click a point of the piece&amp;apos;s outline, right next to it</source>
+        <translation>Au chapeau %1, le bord n&amp;apos;est pas reconnu : cliquez un point du contour de la pièce, juste à côté.</translation>
+    </message>
+    <message>
+        <source>the prise</source>
+        <translation>la prise</translation>
+    </message>
+    <message>
+        <source>Value of the finished pleat:</source>
+        <translation>Valeur du pli fini :</translation>
+    </message>
+    <message>
+        <source>Value of the finished pleat</source>
+        <translation>Valeur du pli fini</translation>
+    </message>
+    <message>
+        <source>Pleat:</source>
+        <translation>Pli :</translation>
+    </message>
+    <message>
+        <source>Show the fold</source>
+        <translation>Afficher le pli</translation>
+    </message>
+    <message>
+        <source>Draw the fold: the departure line, the line it is copied to, and the cap of each end.</source>
+        <translation>Tracer le pli : la ligne de départ, la ligne de copie, et le chapeau de chaque extrémité.</translation>
+    </message>
+    <message>
+        <source>Click a point of the outline, right next to it</source>
+        <translation>Cliquez un point du contour de la pièce, juste à côté</translation>
+    </message>
+    <message>
+        <source>Click the objects to fold, then %1</source>
+        <translation>Cliquez les objets à plier, puis %1</translation>
+    </message>
+    <message>
+        <source>Select the objects of the contour, then %1</source>
+        <translation>Sélectionnez les objets du contour, puis %1</translation>
+    </message>
+    <message>
+        <source>Put a pleat value greater than zero.</source>
+        <translation>Mettez une valeur de pli supérieure à zéro.</translation>
+    </message>
+    <message>
+        <source>You clicked the same point twice.</source>
+        <translation>Vous avez cliqué deux fois le même point.</translation>
+    </message>
+    <message>
+        <source>This edge is parallel to the fold line: no cap is possible here.</source>
+        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&amp;apos;est possible ici.</translation>
+    </message>
+    <message>
+        <source>Pleat</source>
+        <translation>Pli</translation>
+    </message>
+    <message>
+        <source>Tool</source>
+        <translation>Outil</translation>
+    </message>
+    <message>
+        <source>Simple</source>
+        <translation>Simple</translation>
+    </message>
+    <message>
+        <source>Double</source>
+        <translation>Double</translation>
+    </message>
+    <message>
+        <source>Cap 1:</source>
+        <translation>Chapeau 1 :</translation>
+    </message>
+    <message>
+        <source>Cap 2:</source>
+        <translation>Chapeau 2 :</translation>
+    </message>
+    <message>
+        <source>Draw</source>
+        <translation>Tracer</translation>
+    </message>
+    <message>
+        <source>Reverse the sense</source>
+        <translation>Inverser le sens</translation>
+    </message>
+    <message>
+        <source>Draw the fold line, from one cap to the other</source>
+        <translation>Tracer la ligne de pli, d&apos;un chapeau à l&apos;autre</translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation>Calque</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nom :</translation>
+    </message>
+    <message>
+        <source>Tags:</source>
+        <translation>Étiquettes :</translation>
+    </message>
+    <message>
+        <source>Enable to create a layer from original objects</source>
+        <translation>Créer un calque à partir des objets d'origine</translation>
+    </message>
+    <message>
+        <source>The original objects move into this layer and leave their other layers.</source>
+        <translation>Les objets d'origine entrent dans ce calque et quittent leurs autres calques.</translation>
+    </message>
+    <message>
+        <source>Separate each tag with comma.</source>
+        <translation>Séparer chaque étiquette par une virgule.</translation>
+    </message>
+    <message>
+        <source>Add tags</source>
+        <translation>Ajouter des étiquettes</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation>Prêt</translation>
+    </message>
+    <message>
+        <source>You can add a note here…</source>
+        <translation>Vous pouvez ajouter une note ici…</translation>
+    </message>
+    <message>
+        <source>Line type:</source>
+        <translation>Style de tracé :</translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation>Couleur du tracé :</translation>
+    </message>
+    <message>
+        <source>Fold line type:</source>
+        <translation>Type de la ligne de pli :</translation>
+    </message>
+    <message>
+        <source>Fold line color:</source>
+        <translation>Couleur de la ligne de pli :</translation>
+    </message>
+    <message>
+        <source>Invalid layer name</source>
+        <translation>Nom de calque invalide</translation>
+    </message>
+    <message>
+        <source>Draw the fold line</source>
+        <translation>Tracer la ligne de pli</translation>
+    </message>
+    <message>
+        <source>Draw the fold line, from one cap to the other.</source>
+        <translation>Tracer la ligne de pli, d&apos;un chapeau à l&apos;autre.</translation>
+    </message>
+    <message>
+        <source>Fold line</source>
+        <translation>Ligne de pli</translation>
+    </message>
+    <message>
+        <source>Draw the fold line that joins the two caps, and the pen it is drawn with.</source>
+        <translation>Tracer la ligne de pli qui joint les deux chapeaux, et le stylo avec lequel elle est tracée.</translation>
+    </message>
+</context>
+  <context>
+    <name>OToolPleat</name>
+    <message>
+        <source>the prise</source>
+        <translation>la prise</translation>
+    </message>
+    <message>
+        <source>pleat</source>
+        <translation>pli</translation>
+    </message>
+    <message>
+        <source>Pleat</source>
+        <translation>Pli</translation>
+    </message>
+    <message>
+        <source>change the value of the pleat</source>
+        <translation>modifier la valeur du pli</translation>
+    </message>
+    <message>
+        <source>change the kind of the pleat</source>
+        <translation>modifier le type de pli</translation>
+    </message>
+    <message>
+        <source>show the fold line</source>
+        <translation>afficher la ligne de pli</translation>
+    </message>
+    <message>
+        <source>hide the fold line</source>
+        <translation>masquer la ligne de pli</translation>
+    </message>
+    <message>
+        <source>show the cap</source>
+        <translation>afficher le chapeau</translation>
+    </message>
+    <message>
+        <source>hide the cap</source>
+        <translation>masquer le chapeau</translation>
+    </message>
+    <message>
+        <source>turn the cap the other way</source>
+        <translation>retourner le chapeau</translation>
+    </message>
+    <message>
+        <source>change the edge of the cap</source>
+        <translation>modifier le bord du chapeau</translation>
+    </message>
+    <message>
+        <source>show the fold</source>
+        <translation>afficher le pli</translation>
+    </message>
+    <message>
+        <source>hide the fold</source>
+        <translation>masquer le pli</translation>
     </message>
 </context>
 </TS>

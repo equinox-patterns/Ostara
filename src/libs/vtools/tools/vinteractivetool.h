@@ -43,6 +43,13 @@ public:
 
     void DialogLinkDestroy();
 
+    /** @brief Link the dialog that drives this tool from now on.
+     *
+     *  A tool the parser builds — every full parse builds one — carries no dialog of its own, while the dialog that
+     *  asked for that parse is still up. The window links the two again, or the Apply that follows would have no
+     *  options to read (every SaveDialog() dereferences the dialog it works from). */
+    void SetDialogLink(const QPointer<DialogTool> &dialog) { m_dialog = dialog; }
+
     virtual void DeleteToolWithConfirm(bool ask = true);
     virtual void PerformDelete();
     virtual auto IsRemovable() const -> RemoveStatus;

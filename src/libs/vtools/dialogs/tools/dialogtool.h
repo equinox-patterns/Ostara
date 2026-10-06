@@ -58,6 +58,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/visualization/visualization.h" // Issue on Windows
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "../../tools/vabstracttool.h"
 
 template <class T> class QSharedPointer;
 
@@ -178,8 +179,12 @@ protected:
 
     /**
      * @brief associatedTool vdrawtool associated with opened dialog.
+     *
+     * Held weakly: a full parse clears the scene, and every tool it held dies with it while this dialog stays up
+     * (see VPattern::PrepareForParse). A raw pointer would be left dangling, and the next Apply or OK would cast it
+     * and crash; the QPointer empties itself, and the tool is found again by its id (see MainWindow::ApplyDialog).
      */
-    VAbstractTool *associatedTool;
+    QPointer<VAbstractTool> associatedTool;
     quint32 toolId;
 
     /** @brief prepare show if we prepare. Show dialog after finish working with visual part of tool*/

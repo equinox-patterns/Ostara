@@ -119,6 +119,8 @@ protected:
     auto ExtraPointIds() const -> QVector<quint32> override;
     auto ExtraLineIds() const -> QVector<quint32> override;
 
+    auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;
+
 private:
     Q_DISABLE_COPY_MOVE(OToolSpread) // NOLINT
 

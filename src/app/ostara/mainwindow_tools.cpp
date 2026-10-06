@@ -80,6 +80,7 @@
 #include "../vtools/dialogs/tools/dialogrotation.h"
 #include "../vtools/dialogs/tools/odialogclosedart.h"
 #include "../vtools/dialogs/tools/odialogmovebatch.h"
+#include "../vtools/dialogs/tools/odialogpleat.h"
 #include "../vtools/dialogs/tools/odialogspread.h"
 #include "../vtools/dialogs/tools/odialogtransfert.h"
 #include "../vtools/dialogs/tools/odialogdartcap.h"
@@ -106,6 +107,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
@@ -211,9 +213,8 @@ template <typename DrawTool> void MainWindow::ClosedDialogWithApply(int result, 
     }
     // If before Cancel was used Apply we have an item
     auto *vtool = qobject_cast<DrawTool *>(m_dialogTool->GetAssociatedTool()); // Don't check for nullptr here
-    if (m_dialogTool->GetAssociatedTool() != nullptr)
+    if (vtool != nullptr)
     {
-        SCASSERT(vtool != nullptr)
         vtool->DialogLinkDestroy();
         connect(vtool, &DrawTool::ToolTip, this, &MainWindow::ShowToolTip);
     }
@@ -734,6 +735,20 @@ void MainWindow::ToolMoveBatch(bool checked)
                                              &MainWindow::ApplyDrawDialog<OToolMoveBatch>);
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolPleat(bool checked)
+{
+    ToolSelectOperationObjects();
+    ToolSelectOperationLines();
+    const QString tooltip =
+        tr("Select the objects of the contour <b>in order</b>: all clockwise or all anticlockwise, "
+           "never mixing the two — the two points of the departure line included. Then <b>%1</b> to confirm")
+            .arg(VModifierKey::EnterKey());
+    SetToolButtonWithApply<ODialogPleat>(checked, Tool::Pleat, QString(), tooltip,
+                                         &MainWindow::ClosedDrawDialogWithApply<OToolPleat>,
+                                         &MainWindow::ApplyDrawDialog<OToolPleat>);
+}
+
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ClosedDialogPiecePath(int result)
@@ -1039,7 +1054,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Check if need to extend.");
 
     switch (t)
     {
@@ -1060,6 +1075,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::FlippingByLine:
         case Tool::Spread:
         case Tool::MoveBatch:
+        case Tool::Pleat:
             dialogTool->SetGroupCategories(doc->GetGroupCategories());
             break;
         case Tool::Transfert:
@@ -1213,6 +1229,20 @@ template <typename DrawTool> void MainWindow::ApplyDialog(VMainGraphicsScene *sc
 {
     SCASSERT(not m_dialogTool.isNull())
 
+    // A full parse — what an option that changes the objects the tool creates asks for — clears the scene, and every
+    // tool it held dies with it while this dialog stays up (see VPattern::PrepareForParse). The tool is then the one
+    // the pattern keeps under the id the dialog remembers: it is found again, never built a second time.
+    if (m_dialogTool->GetAssociatedTool() == nullptr && m_dialogTool->GetToolId() != NULL_ID)
+    {
+        if (auto *rebuilt = qobject_cast<DrawTool *>(VAbstractPattern::FindTool(m_dialogTool->GetToolId())))
+        {
+            // The tool the parser built knows nothing of this dialog: the link is made again before the Apply below
+            // reads the dialog's options into it.
+            rebuilt->SetDialogLink(m_dialogTool);
+            m_dialogTool->SetAssociatedTool(rebuilt);
+        }
+    }
+
     // Only create tool if not already created with apply
     if (m_dialogTool->GetAssociatedTool() == nullptr)
     {
@@ -1223,8 +1253,10 @@ template <typename DrawTool> void MainWindow::ApplyDialog(VMainGraphicsScene *sc
     else
     { // Or update associated tool with data
         auto *vtool = qobject_cast<DrawTool *>(m_dialogTool->GetAssociatedTool());
-        SCASSERT(vtool != nullptr)
-        vtool->FullUpdateFromGuiApply();
+        if (vtool != nullptr)
+        {
+            vtool->FullUpdateFromGuiApply();
+        }
     }
 }
 
@@ -1471,7 +1503,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1704,6 +1736,9 @@ void MainWindow::CancelTool()
         case Tool::MoveBatch:
             ui->actionMoveBatchTool->setChecked(false);
             break;
+        case Tool::Pleat:
+            ui->actionPleatTool->setChecked(false);
+            break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(false);
             break;
@@ -1800,7 +1835,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 76, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -2033,6 +2068,10 @@ void MainWindow::LastUsedTool()
         case Tool::MoveBatch:
             ui->actionMoveBatchTool->setChecked(true);
             ToolMoveBatch(true);
+            break;
+        case Tool::Pleat:
+            ui->actionPleatTool->setChecked(true);
+            ToolPleat(true);
             break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(true);

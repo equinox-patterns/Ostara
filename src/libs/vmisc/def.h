@@ -296,6 +296,7 @@ enum class Tool : ToolVisHolderType
     Spiral,
     Spread,
     MoveBatch,
+    Pleat,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 
@@ -371,6 +372,7 @@ enum class Vis : ToolVisHolderType
     ToolSpiral,
     ToolSpread,
     ToolMoveBatch,
+    ToolPleat,
     LAST_ONE_DO_NOT_USE // add new stuffs above this, this constant must be last and never used
 };
 
@@ -384,8 +386,8 @@ enum class Layout : ToolVisHolderType
 // Vis continues the numbering of Tool, and Layout that of Vis — each anchors on the LAST_ONE_DO_NOT_USE of the
 // one before it. A value added anywhere above therefore moves every value below, without a word. These two say
 // the totals out loud, the way the Q_STATIC_ASSERT on Tool::LAST_ONE_DO_NOT_USE does for the tools.
-Q_STATIC_ASSERT_X(static_cast<int>(Vis::LAST_ONE_DO_NOT_USE) == 146, "List of Vis items changed.");
-Q_STATIC_ASSERT_X(static_cast<int>(Layout::LAST_ONE_DO_NOT_USE) == 148, "List of Layout items changed.");
+Q_STATIC_ASSERT_X(static_cast<int>(Vis::LAST_ONE_DO_NOT_USE) == 148, "List of Vis items changed.");
+Q_STATIC_ASSERT_X(static_cast<int>(Layout::LAST_ONE_DO_NOT_USE) == 150, "List of Layout items changed.");
 
 enum class VarType : qint8
 {

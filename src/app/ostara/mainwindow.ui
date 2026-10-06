@@ -2693,6 +2693,27 @@
      <enum>QAction::MenuRole::NoRole</enum>
     </property>
    </action>
+   <action name="actionPleatTool">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="share/resources/toolicon.qrc">
+      <normaloff>:/toolicon/light/triangle.png</normaloff>:/toolicon/light/triangle.png</iconset>
+    </property>
+    <property name="text">
+     <string>Pleat</string>
+    </property>
+    <property name="toolTip">
+     <string>Pleat: fold the fabric back on itself along a departure line</string>
+    </property>
+    <property name="menuRole">
+     <enum>QAction::MenuRole::NoRole</enum>
+    </property>
+   </action>
    <action name="actionMoveBatchTool">
     <property name="checkable">
      <bool>true</bool>

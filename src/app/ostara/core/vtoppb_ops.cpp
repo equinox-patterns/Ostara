@@ -31,6 +31,7 @@
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
@@ -39,11 +40,16 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vpatterndb/vformula.h"
 #include "vformulaproperty.h"
+#include "ocheckboxrowproperty.h"
+#include "ocheckboxpairrowproperty.h"
+#include "ogroupboxproperty.h"
 #include "oformularowproperty.h"
 #include "../vpropertyexplorer/plugins/vlabelproperty.h"
 #include "../vpropertyexplorer/plugins/venumproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
 #include "../vpropertyexplorer/plugins/vwidgetproperty.h"
+#include "../vpropertyexplorer/plugins/vcolorpropertyeditor.h"
+#include "../vtheme/vscenestylesheet.h"
 #include "ifcdef.h"
 #include "../vmisc/def.h"
 
@@ -54,6 +60,14 @@ namespace
 auto T(const char *s) -> QString
 {
     return VToolOptionsPropertyBrowser::tr(s);
+}
+
+/** @brief The little coloured dot the rows of a pleat's caps carry: the colour IS the name of the point it belongs to,
+ *  green for point 1 of the departure line and red for point 2 — the same two colours the canvas uses, and the same
+ *  helper the rest of the dock decorates its rows with. */
+auto SegmentDotPixmap(VColorRole role) -> QPixmap
+{
+    return VPE::VColorPropertyEditor::GetColorPixmap(VSceneStylesheet::Color(role), 16);
 }
 } // anonymous namespace
 
@@ -151,6 +165,248 @@ auto StyleIndex(const QMap<QString, QIcon> &styles, const QString &penStyle) -> 
     return drawn >= 0 ? drawn : 0;
 }
 
+/** @brief The pleat itself, exactly as its dialog shows it: what it is worth, the kind, the two caps and the pen its
+ *  lines — and the sides of its caps — are drawn with.
+ *
+ *  A group is what the browser dispatches a change to, a child having no entry of its own in its maps (see
+ *  CopyStyleGroup), so every value it holds is read and written together, from the children, in the order they are
+ *  added below.
+ *
+ *  The two caps are told apart by the pastille of the end they belong to, never by a point name: Ostara is worked
+ *  with the names off, and "cap 1" would leave the user guessing. Their two boxes share one row, because they are
+ *  read as a pair — the cap is drawn, and its sense may be turned.
+ *
+ *  The pleat writes explicit values, so its lines never take the pen of the layer they are put in — an exception
+ *  Sophie asked for (see Pleat.md). A pen only redraws lines, so each setter edits the options with a lite parse,
+ *  exactly as the display of a slash-and-spread does. */
+template <class Tool> auto PleatGroup() -> PropertyDesc
+{
+    return {QStringLiteral("pleat"), QString(),
+            [](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+
+                // A titled frame, the way the dialog groups its options, and not a foldable header: the group is
+                // what the rows below belong to, and it holds no switch of its own.
+                auto *group = new OGroupBoxProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pleat")),
+                                                    /*checkable*/ false);
+
+                // The value of the pleat as it shows once folded, in the formula block of the house.
+                auto *value = new VFormulaProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Value of the finished pleat:")));
+                value->SetFormula(t->GetFormulaValue());
+
+                auto *kind = new OCheckBoxRowProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Double pleat")));
+                kind->setValue(t->Kind() == OPleatKind::Double);
+
+                auto *cap1 = new OCheckBoxPairRowProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Draw")),
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Reverse the sense")));
+                cap1->SetState(t->IsCapShown(0), t->IsCapSecondSense(0));
+                cap1->setNameDecoration(SegmentDotPixmap(VColorRole::VisSupportColor2));
+
+                auto *cap2 = new OCheckBoxPairRowProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Draw")),
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Reverse the sense")));
+                cap2->SetState(t->IsCapShown(1), t->IsCapSecondSense(1));
+                cap2->setNameDecoration(SegmentDotPixmap(VColorRole::VisSupportColor4));
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                auto *lineType = new VPE::VLineTypeProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:")));
+                lineType->setStyles(styles);
+                lineType->setValue(StyleIndex(styles, t->DisplayLineType()));
+
+                auto *lineColor = new VPE::VLineColorProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:")));
+                lineColor->SetDefaultColors(VAbstractTool::ColorsList());
+                lineColor->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                lineColor->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                lineColor->setValue(t->DisplayLineColor());
+
+                group->addChild(value);
+                group->addChild(kind);
+                group->addChild(cap1);
+                group->addChild(cap2);
+                group->addChild(lineType);
+                group->addChild(lineColor);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 6)
+                {
+                    return;
+                }
+
+                if (auto *value = qobject_cast<VFormulaProperty *>(prop->getChild(0)))
+                {
+                    auto formula = value->data(VPE::VProperty::DPC_Data, Qt::EditRole).value<VFormula>();
+                    if (formula != t->GetFormulaValue())
+                    {
+                        t->SetFormulaValue(formula);
+
+                        // A value that cannot be folded is refused, and the dock must not go on showing it as if the
+                        // tool had taken it: the field has to give in, even though the user is still typing in it.
+                        if (t->GetFormulaValue() != formula)
+                        {
+                            QVariant back;
+                            back.setValue(t->GetFormulaValue());
+                            value->setValue(back);
+                        }
+                    }
+                }
+
+                t->SetKind(prop->getChild(1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool()
+                               ? OPleatKind::Double
+                               : OPleatKind::Simple);
+
+                bool capsChanged = false;
+                for (int rank = 0; rank < 2; ++rank)
+                {
+                    auto *cap = qobject_cast<OCheckBoxPairRowProperty *>(prop->getChild(2 + rank));
+                    if (cap == nullptr)
+                    {
+                        continue;
+                    }
+
+                    const bool drawn = cap->FirstChecked();
+                    const bool reversed = cap->SecondChecked();
+                    capsChanged =
+                        capsChanged || drawn != t->IsCapShown(rank) || reversed != t->IsCapSecondSense(rank);
+
+                    t->SetCapShown(rank, drawn);
+                    t->SetCapSecondSense(rank, reversed);
+                }
+
+                t->SetDisplayLineType(prop->getChild(4)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+                t->SetDisplayLineColor(prop->getChild(5)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+
+                // The fold line is only drawn with both caps, and the page is what says so — but only a cap can change
+                // that: rebuilding the page on every value would take the focus away from the formula being typed in.
+                if (capsChanged)
+                {
+                    b->UpdateOptions();
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 6)
+                {
+                    return;
+                }
+
+                if (auto *value = qobject_cast<VFormulaProperty *>(prop->getChild(0)))
+                {
+                    QVariant v;
+                    v.setValue(t->GetFormulaValue());
+                    value->setValue(v);
+                }
+
+                prop->getChild(1)->setValue(t->Kind() == OPleatKind::Double);
+
+                for (int rank = 0; rank < 2; ++rank)
+                {
+                    auto *cap = qobject_cast<OCheckBoxPairRowProperty *>(prop->getChild(2 + rank));
+                    if (cap == nullptr)
+                    {
+                        continue;
+                    }
+
+                    cap->SetState(t->IsCapShown(rank), t->IsCapSecondSense(rank));
+                }
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                prop->getChild(4)->setValue(StyleIndex(styles, t->DisplayLineType()));
+                prop->getChild(5)->setValue(t->DisplayLineColor());
+            }};
+}
+
+/**
+ * @brief The fold line of a pleat, and the pen it is drawn with — the very contents of the "Fold line" group of the
+ * dialog.
+ *
+ *  The figure of a pleat is always drawn: there is nothing to turn on or off but this line, which joins the two caps
+ * — without both of them it has nothing to join, and its row is greyed.
+ */
+template <class Tool> auto PleatFoldLineGroup() -> PropertyDesc
+{
+    return {QStringLiteral("pleatFigure"), QString(),
+            [](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+
+                // A titled frame, the way the dialog groups its options, with no switch of its own: what it holds is
+                // the fold line, and the figure is drawn whether it is there or not.
+                auto *group = new OGroupBoxProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Fold line")),
+                                                    /*checkable*/ false);
+
+                auto *fold = new OCheckBoxRowProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Draw the fold line")));
+                fold->setValue(t->IsFoldLineShown());
+                fold->setEditorDisabled(!(t->IsCapShown(0) && t->IsCapShown(1)));
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                auto *foldType = new VPE::VLineTypeProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Fold line type:")));
+                foldType->setStyles(styles);
+                foldType->setValue(StyleIndex(styles, t->DisplayFoldLineType()));
+
+                auto *foldColor = new VPE::VLineColorProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Fold line color:")));
+                foldColor->SetDefaultColors(VAbstractTool::ColorsList());
+                foldColor->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                foldColor->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                foldColor->setValue(t->DisplayFoldLineColor());
+
+                group->addChild(fold);
+                group->addChild(foldType);
+                group->addChild(foldColor);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 3)
+                {
+                    return;
+                }
+
+                t->SetFoldLineShown(prop->getChild(0)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                t->SetDisplayFoldLineType(
+                    prop->getChild(1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+                t->SetDisplayFoldLineColor(
+                    prop->getChild(2)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 3)
+                {
+                    return;
+                }
+
+                prop->getChild(0)->setValue(t->IsFoldLineShown());
+                prop->getChild(0)->setEditorDisabled(!(t->IsCapShown(0) && t->IsCapShown(1)));
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = LineStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                prop->getChild(1)->setValue(StyleIndex(styles, t->DisplayFoldLineType()));
+                prop->getChild(2)->setValue(t->DisplayFoldLineColor());
+            }};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 template <class Tool> auto CopyStyleGroup() -> PropertyDesc
 {
     return {QStringLiteral("copyStyle"), QString(),
@@ -744,6 +1000,21 @@ auto SpreadProperties() -> std::vector<PropertyDesc>
 
         CopyStyleGroup<OToolSpread>(),
         NotesProperty<OToolSpread>(),
+    };
+}
+
+// --- OToolPleat ---
+auto PleatProperties() -> std::vector<PropertyDesc>
+{
+    // The prise is a pair of points and the dock has no editor for one, so the dialog is where the geometry is
+    // changed; everything the rule cannot decide is here, and in the dialog too (see Pleat.md). The page is the
+    // dialog's own two groups: the pleat, and what its figure shows.
+    return {
+        PleatGroup<OToolPleat>(),
+        PleatFoldLineGroup<OToolPleat>(),
+
+        CopyStyleGroup<OToolPleat>(),
+        NotesProperty<OToolPleat>(),
     };
 }
 

@@ -24,6 +24,7 @@
 #include <QEvent>
 #include <QFormLayout>
 #include <QFrame>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
@@ -223,6 +224,21 @@ void VPE::VPropertyFormWidget::build()
                     subFormLayout->addWidget(bottom);
                 }
             }
+            else if (tmpProperty->isGroupBox())
+            {
+                // A titled frame, the way a dialog groups its options (a QGroupBox): the group's own editor IS that
+                // frame — a checkable one carries the value of the group — and its children are the rows inside it.
+                buildEditor(tmpProperty, tmpFormLayout);
+
+                QWidget *const frame = vproperty_d_ptr->EditorWidgets.last().Editor;
+                if (frame != nullptr)
+                {
+                    auto *subFormLayout = new QFormLayout(frame);
+                    subFormLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+
+                    buildGroupChildren(tmpProperty, subFormLayout, i);
+                }
+            }
             else if (tmpProperty->isCollapsible())
             {
                 // Collapsible group: a flat header (text + caret) toggles a hideable content frame.
@@ -246,56 +262,7 @@ void VPE::VPropertyFormWidget::build()
                 // with Properties — commitData()/loadData() pair them by row index.
                 vproperty_d_ptr->EditorWidgets.append(VPropertyFormWidgetPrivate::SEditorWidget());
 
-                QList<VProperty *> children = tmpProperty->getChildren();
-                for (int j = 0; j < children.size(); ++j)
-                {
-                    VProperty *const child = children[j];
-                    if (child->propertyType() == Property::Complex)
-                    {
-                        // A Complex child (e.g. VFormulaProperty) renders as a bold row plus an
-                        // indented sub-frame holding its own children (the "Formula" field).
-                        buildEditor(child, subFormLayout, Property::Complex);
-                        auto *childGroup = new QFrame(content);
-                        childGroup->setFrameStyle(QFrame::NoFrame);
-                        {
-                            auto p = childGroup->palette();
-                            p.setColor(QPalette::Window, qApp->palette().button().color());
-                            childGroup->setPalette(p);
-                            childGroup->setAutoFillBackground(true);
-                        }
-                        subFormLayout->addRow(childGroup);
-                        auto *childSubLayout = new QFormLayout(childGroup);
-                        childSubLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
-                        QMargins childMargins = childSubLayout->contentsMargins();
-                        childMargins.setTop(0);
-                        childMargins.setLeft(18);
-                        childMargins.setRight(0);
-                        childSubLayout->setContentsMargins(childMargins);
-                        childGroup->setLayout(childSubLayout);
-                        ++i;
-                        vproperty_d_ptr->Properties.insert(i, child);
-                        const QList<VProperty *> grandchildren = child->getChildren();
-                        for (int k = 0; k < grandchildren.size(); ++k)
-                        {
-                            buildEditor(grandchildren[k], childSubLayout);
-                            connect(grandchildren[k], &VProperty::childChanged, child,
-                                    &VProperty::ValueChildChanged, Qt::UniqueConnection);
-                            ++i;
-                            vproperty_d_ptr->Properties.insert(i, grandchildren[k]);
-                        }
-                        if (QWidget *bottom = child->bottomWidget(); bottom != nullptr)
-                        {
-                            bottom->setParent(childGroup);
-                            childSubLayout->addWidget(bottom);
-                        }
-                    }
-                    else
-                    {
-                        buildEditor(child, subFormLayout);
-                        ++i;
-                        vproperty_d_ptr->Properties.insert(i, child);
-                    }
-                }
+                buildGroupChildren(tmpProperty, subFormLayout, i);
 
                 content->setVisible(tmpProperty->isExpandedByDefault());
 
@@ -329,6 +296,71 @@ void VPE::VPropertyFormWidget::build()
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Builds the rows of a group inside its own layout: a collapsible group and a group box hold the very same
+ *  children, and an operation's group holds a formula as readily as a check box (the value of a pleat is one).
+ *
+ *  @a i walks the rows of the whole form: every child built here takes the next place in it, so a row's widget and
+ *  its property stay paired (see commitData). */
+void VPE::VPropertyFormWidget::buildGroupChildren(VProperty *group, QFormLayout *subFormLayout, int &i)
+{
+    QList<VProperty *> children = group->getChildren();
+    for (int j = 0; j < children.size(); ++j)
+    {
+        VProperty *const child = children[j];
+        if (child->propertyType() == Property::Complex)
+        {
+            // A Complex child (e.g. VFormulaProperty) renders as a bold row plus an indented sub-frame holding its
+            // own children (the "Formula" field).
+            buildEditor(child, subFormLayout, Property::Complex);
+
+            auto *childGroup = new QFrame(subFormLayout->parentWidget());
+            childGroup->setFrameStyle(QFrame::NoFrame);
+            {
+                auto p = childGroup->palette();
+                p.setColor(QPalette::Window, qApp->palette().button().color());
+                childGroup->setPalette(p);
+                childGroup->setAutoFillBackground(true);
+            }
+            subFormLayout->addRow(childGroup);
+
+            auto *childSubLayout = new QFormLayout(childGroup);
+            childSubLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+            QMargins childMargins = childSubLayout->contentsMargins();
+            childMargins.setTop(0);
+            childMargins.setLeft(18);
+            childMargins.setRight(0);
+            childSubLayout->setContentsMargins(childMargins);
+            childGroup->setLayout(childSubLayout);
+
+            ++i;
+            vproperty_d_ptr->Properties.insert(i, child);
+
+            const QList<VProperty *> grandchildren = child->getChildren();
+            for (int k = 0; k < grandchildren.size(); ++k)
+            {
+                buildEditor(grandchildren[k], childSubLayout);
+                connect(grandchildren[k], &VProperty::childChanged, child, &VProperty::ValueChildChanged,
+                        Qt::UniqueConnection);
+                ++i;
+                vproperty_d_ptr->Properties.insert(i, grandchildren[k]);
+            }
+
+            if (QWidget *bottom = child->bottomWidget(); bottom != nullptr)
+            {
+                bottom->setParent(childGroup);
+                childSubLayout->addWidget(bottom);
+            }
+        }
+        else
+        {
+            buildEditor(child, subFormLayout);
+            ++i;
+            vproperty_d_ptr->Properties.insert(i, child);
+        }
+    }
+}
+
 void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *formLayout, Property type)
 {
     // Add property (no child properties)
@@ -353,10 +385,42 @@ void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *for
     tmpEditor->setEnabled(not property->isEditorDisabled());
 
     // add new row
-    if (type == Property::Complex)
+    if (qobject_cast<QGroupBox *>(tmpEditor) != nullptr)
+    {
+        // A group box is the frame of its rows: it takes the whole line, with no label of its own beside it.
+        formLayout->addRow(tmpEditor);
+    }
+    else if (type == Property::Complex)
     {
         QString const name = "<b>" + property->getName() + "</b>";
         formLayout->addRow(name, tmpEditor);
+    }
+    else if (property->isSpanningRow())
+    {
+        // The label shares the line with the editor and stays out of the form's label column: the row is
+        // full width, flush with the left edge, and its label can never widen the column that pushes the
+        // field of every shorter row to the right. Its decoration — the pastille that names the row — opens the
+        // row, so the box the reader is meant to tick stands beside it and not across the whole form.
+        auto *row = new QFrame(this);
+        row->setFrameStyle(QFrame::NoFrame);
+        auto *rowLayout = new QHBoxLayout(row);
+        rowLayout->setContentsMargins(0, 0, 0, 0);
+        rowLayout->setSpacing(4);
+
+        if (not property->getNameDecoration().isNull())
+        {
+            auto *dotLabel = new QLabel(row);
+            dotLabel->setPixmap(property->getNameDecoration());
+            rowLayout->addWidget(dotLabel);
+        }
+
+        if (not property->getName().isEmpty())
+        {
+            rowLayout->addWidget(new QLabel(property->getName(), row));
+        }
+
+        rowLayout->addWidget(tmpEditor, 1);
+        formLayout->addRow(row);
     }
     else if (not property->getNameDecoration().isNull())
     {
@@ -374,20 +438,6 @@ void VPE::VPropertyFormWidget::buildEditor(VProperty *property, QFormLayout *for
         labelLayout->addWidget(textLabel);
         labelLayout->addStretch();
         formLayout->addRow(labelWidget, tmpEditor);
-    }
-    else if (property->isSpanningRow())
-    {
-        // The label shares the line with the editor and stays out of the form's label column: the row is
-        // full width, flush with the left edge, and its label can never widen the column that pushes the
-        // field of every shorter row to the right.
-        auto *row = new QFrame(this);
-        row->setFrameStyle(QFrame::NoFrame);
-        auto *rowLayout = new QHBoxLayout(row);
-        rowLayout->setContentsMargins(0, 0, 0, 0);
-        rowLayout->setSpacing(8);
-        rowLayout->addWidget(new QLabel(property->getName(), row));
-        rowLayout->addWidget(tmpEditor, 1);
-        formLayout->addRow(row);
     }
     else
     {
@@ -438,7 +488,7 @@ void VPE::VPropertyFormWidget::commitData(int row)
                 tmpProperty->UpdateParent(newValue);
                 emit propertyDataSubmitted(parent);
             }
-            else if (parent != nullptr && parent->isCollapsible())
+            else if (parent != nullptr && (parent->isCollapsible() || parent->isGroupBox()))
             {
                 tmpProperty->setValue(newValue);
                 emit propertyDataSubmitted(parent);

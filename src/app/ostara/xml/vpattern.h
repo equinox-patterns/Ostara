@@ -305,6 +305,7 @@ private:
     void ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolSpread(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseToolMoveBatch(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
+    void ParseToolPleat(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
 
     /** @brief Builds the transfers kept aside by ParseToolTransfert, and reports the ones that still cannot
      *  be built once every block has been read. */
