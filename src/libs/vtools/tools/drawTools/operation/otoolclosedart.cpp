@@ -283,6 +283,14 @@ auto OToolCloseDart::Create(OToolCloseDartInitData &initData) -> OToolCloseDart 
 
     patternGraph->AddEdge(initData.origin, initData.id);
 
+    // The two other points of the dart are read again at every parse, exactly like the pivot. The moving point
+    // is one of the objects being turned and is already declared by the loop below; the target point is not —
+    // it does not travel — so nothing else declares it. Without this edge, deleting the point the dart lands on
+    // makes the whole operation disappear at the next parse: the angle cannot be built, and the tool is simply
+    // not there any more.
+    patternGraph->AddEdge(initData.moving, initData.id);
+    patternGraph->AddEdge(initData.target, initData.id);
+
     for (const auto &object : std::as_const(initData.source))
     {
         patternGraph->AddEdge(object.id, initData.id);

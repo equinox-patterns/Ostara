@@ -207,11 +207,14 @@ auto OToolDartCap::Create(OToolDartCapInitData initData) -> OToolDartCap *
     initData.data->AddLine(initData.id, initData.firstPointId);
     initData.data->AddLine(initData.id, initData.secondPointId);
 
-    // The cap depends on the two points of the opening: the edge goes from the point used to the tool
-    // that uses it, as everywhere else. Reversed, the cap looks like something others depend on and can
-    // never be deleted (VInteractiveTool::IsRemovable counts the dependent nodes).
+    // The cap depends on the four points it is built from, the apex and the point to extend included: they are
+    // read again at every parse, so one of them missing makes the whole file unreadable. The edge goes from the
+    // point used to the tool that uses it, as everywhere else. Reversed, the cap looks like something others
+    // depend on and can never be deleted (VInteractiveTool::IsRemovable counts the dependent nodes).
+    patternGraph->AddEdge(initData.apexId, initData.id);
     patternGraph->AddEdge(initData.firstPointId, initData.id);
     patternGraph->AddEdge(initData.secondPointId, initData.id);
+    patternGraph->AddEdge(initData.extendPointId, initData.id);
 
     if (initData.parse == Document::FullParse)
     {
