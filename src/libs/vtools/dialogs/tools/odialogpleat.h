@@ -146,6 +146,16 @@ private:
      *  cap has one. */
     void AskForEdge();
 
+    /** @brief The status bar's question while an edge is missing: which cap, said by its colour, and what to click. */
+    auto EdgePrompt(int rank) const -> QString;
+
+    /** @brief Drop the edges the tool read that no cap can be built from.
+     *
+     *  The dialog has no way of its own to answer a cap it cannot build: opening it on such a plan would leave the
+     *  OK refusing, with nothing in the window able to name an edge. What the tool read and cannot use is therefore
+     *  not an answer — the point is asked for on the canvas instead (see AskForEdge). */
+    void DiscardUnusableEdges();
+
     /** @brief Name every object that travels after the copy it will become: <name>__m1 for a simple pleat, __m2 for
      *  a double one — the generation the manual construction gave them, so the two are told apart on the canvas.
      *

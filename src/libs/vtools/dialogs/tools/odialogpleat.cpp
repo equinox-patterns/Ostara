@@ -39,6 +39,7 @@
 #include <QPlainTextEdit>
 #include <QTabBar>
 
+#include "../../tools/drawTools/operation/oedgereader.h"
 #include "../../tools/drawTools/operation/opleatsupport.h"
 #include "../../visualization/line/operation/ovistoolpleat.h"
 #include "../ifc/exception/vexceptionbadid.h"
@@ -63,6 +64,10 @@ namespace
 constexpr int kPenIconWidth = 80;
 constexpr int kPenIconHeight = 14;
 constexpr int kColorIconSize = 20;
+
+/** How parallel to the departure line an edge has to be for no cap to exist there — the same tolerance the rule
+ *  itself uses to say that the two lines never meet. */
+constexpr qreal kUnusableEdgeTolerance = 1e-7;
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -399,8 +404,74 @@ void ODialogPleat::ShowError(const QString &message) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::EdgePrompt(int rank) const -> QString
+{
+    return rank == 0 ? tr("The edge is not recognized at the cap of point 1 (green): click a point of the "
+                          "piece's outline, right next to it")
+                     : tr("The edge is not recognized at the cap of point 2 (red): click a point of the piece's "
+                          "outline, right next to it");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::DiscardUnusableEdges()
+{
+    // What the tool read, and what no cap can be built from, is not an answer. The dialog has no way of its own to
+    // name an edge: it would open on a plan its OK refuses, with nothing in the window able to fix it. The point is
+    // asked for on the canvas instead, and the dialog opens only once every cap it needs can be built.
+    const QPointF fold
+        = OEdgeReader::Position(m_second.pointId, &data) - OEdgeReader::Position(m_first.pointId, &data);
+    const qreal foldLength = QLineF(QPointF(), fold).length();
+
+    if (foldLength > 0.)
+    {
+        // An edge that runs along the departure line meets it nowhere: the two lines are parallel, and no cap
+        // exists. It is the line of the fold itself — or a construction line drawn through both points of the
+        // prise — and never the edge of the piece.
+        const QPointF alongFold = fold / foldLength;
+        for (int rank = 0; rank < 2; ++rank)
+        {
+            OPleatEnd &end = (rank == 1) ? m_second : m_first;
+            if (not end.showCap || end.edgePointId != NULL_ID)
+            {
+                continue; // no cap there, or the user has already said which point carries its edge
+            }
+
+            const qreal length = QLineF(QPointF(), end.edgeDirection).length();
+            if (length <= 0.)
+            {
+                continue; // nothing was read: the point is asked for anyway
+            }
+
+            const QPointF edge = end.edgeDirection / length;
+            if (qAbs(edge.x() * alongFold.x() + edge.y() * alongFold.y()) > 1. - kUnusableEdgeTolerance)
+            {
+                end.edgeDirection = QPointF();
+            }
+        }
+    }
+
+    if (MakePlan().failure != OPleatFailure::EdgeAlongFold)
+    {
+        return; // the plan complains about something else, or about nothing
+    }
+
+    // The plan still refuses an edge for a reason of its own: nothing the tool read may be trusted, and the user is
+    // asked for both ends it concerns.
+    for (int rank = 0; rank < 2; ++rank)
+    {
+        OPleatEnd &end = (rank == 1) ? m_second : m_first;
+        if (end.showCap && end.edgePointId == NULL_ID && QLineF(QPointF(), end.edgeDirection).length() > 0.)
+        {
+            end.edgeDirection = QPointF();
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::AskForEdge()
 {
+    DiscardUnusableEdges();
+
     for (int rank = 0; rank < 2; ++rank)
     {
         const OPleatEnd end = (rank == 1) ? m_second : m_first;
@@ -416,11 +487,7 @@ void ODialogPleat::AskForEdge()
 
         m_edgeRank = rank;
         m_step = Step::Edge;
-        emit ToolTip(rank == 0
-                         ? tr("The edge is not recognized at the cap of point 1 (green): click a point of the "
-                              "piece's outline, right next to it")
-                         : tr("The edge is not recognized at the cap of point 2 (red): click a point of the piece's "
-                              "outline, right next to it"));
+        emit ToolTip(EdgePrompt(rank));
         return;
     }
 
@@ -523,8 +590,9 @@ void ODialogPleat::ShowDialog(bool click)
 
     if (m_step == Step::Edge && not click)
     {
-        // Enter while an edge is missing: the dialog opens all the same, and says what is missing.
-        GoToEditing();
+        // Enter says nothing here: a cap without an edge cannot be built, the dialog would open on a plan its OK
+        // refuses, and nothing in the window can name an edge. The status bar keeps asking for the point.
+        emit ToolTip(EdgePrompt(m_edgeRank));
     }
 }
 
@@ -610,6 +678,20 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
         end.edgePointId = id;
         OPleatSupport::Resolve(end, &data);
         (m_edgeRank == 1) ? m_second = end : m_first = end;
+
+        // A point whose line builds no cap is refused here, on the canvas, rather than in the dialog: the status
+        // bar asks for another one and the step does not move. The dialog must never open on a cap it cannot build.
+        const OPleatPlan plan = MakePlan();
+        if (plan.failure == OPleatFailure::EdgeAlongFold)
+        {
+            OPleatEnd &end = (m_edgeRank == 1) ? m_second : m_first;
+            end.edgePointId = NULL_ID;
+            OPleatSupport::Resolve(end, &data); // back to whatever the tool reads by itself
+            emit ToolTip(QStringLiteral("%1 %2").arg(FailureText(plan),
+                                                     tr("Click a point of the outline, right next to it")));
+            RefreshFigure(); // the preview shows what the tool reads now, not the point that was refused
+            return;
+        }
 
         AskForEdge();
         RefreshFigure();
