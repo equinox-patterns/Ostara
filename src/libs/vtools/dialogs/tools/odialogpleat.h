@@ -73,6 +73,10 @@ public:
     void SetPleat(const QVector<OPleatDeparture> &departures, bool foldLine);
     void SetDisplay(const OPleatDisplay &display);
 
+    /** @brief The objects of the figure another tool is built on (see OToolPleat::FigureObjectsInUse): the boxes that
+     *  carry one of them are held, so that un-ticking them cannot take the object out of the pattern. */
+    void SetFigureObjectsInUse(const QSet<quint32> &ids);
+
     void ShowDialog(bool click) override;
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
@@ -128,6 +132,11 @@ private:
 
     QVector<OPleatDeparture> m_departures{};
 
+    /** The departure lines the canvas shows: the ones the tool holds, or, for a pleat not yet built, the ones the
+     *  gesture has just laid. What the editor holds is NOT it — a value, a kind, a cap or a notch changed in the
+     *  window waits for Apply, and the canvas must not move before it (see RefreshFigure). */
+    QVector<OPleatDeparture> m_applied{};
+
     /** The first point of the departure line being picked, when there is one: the second click completes it. */
     OPleatEnd m_pending{};
 
@@ -139,6 +148,9 @@ private:
     bool m_addingDeparture{false};
 
     OPleatDisplay m_display{};
+
+    /** The figure objects with dependents, as the tool answers it when the dialog is linked: what no box may untick. */
+    QSet<quint32> m_figureInUse{};
 
     /** How many pleats the travelling objects were last named for, and whether they were named at all: a pleat being
      *  edited has been named already, a pleat being built has not. */
@@ -172,6 +184,14 @@ private:
     auto MakePlan(bool nominal) const -> OPleatPlan;
 
     auto FailureText(const OPleatPlan &plan) const -> QString;
+
+    /** @brief How many pleats the departure lines before @a departure make: the pleat index of the first fold of one
+     *  line is the number of folds every line before it asked for. */
+    auto PleatsBefore(int departure) const -> int;
+
+    /** @brief True when one of the objects the box of @a end of pleat @a pleat carries is built on by another tool —
+     *  the point, the two sides of a cap, the two halves of a cut edge. */
+    auto BoxInUse(int pleat, int end, bool notch) const -> bool;
 
     /** @brief Ask for the edge of the first end that has a cap and none to follow.
      *

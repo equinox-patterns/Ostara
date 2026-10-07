@@ -34,17 +34,18 @@
 #include "visoperation.h"
 
 /**
- * @brief The preview of the pleats: the objects that travel where the folds put them, and the folds themselves.
+ * @brief The preview of the pleats: the objects that travel where the folds put them, and the two ends of the line
+ * being edited, where the pleats already taken have carried them.
  *
  * No state of its own beyond what the tool gives it: the departure lines and the boxes, replayed on every refresh.
  * The values are read from the formulas the departure lines carry, exactly as the tool will read them.
  *
- * And because a pleat is decided by what it DRAWS — the fold line, the caps, the sense of each cap — the figure is
- * drawn as well, from the same plan the tool will use. Telling the two senses apart is impossible otherwise: the
- * point of a cap moves along the fold line, and nothing else on screen says it moved.
+ * The figure of the pleat — the fold line, the caps, the notches — is NOT drawn here. It is what the pattern holds
+ * once the pleat is applied, and Apply draws it on the canvas without closing the dialog. Drawing it a second time
+ * would mean two renderings of the same thing, and the one here would carry neither the colours nor the pen styles
+ * the user chose: the figure is read where it is built, on the canvas.
  */
 class VScaledEllipse;
-class VScaledLine;
 
 class OVisToolPleat : public VisOperation
 {
@@ -61,24 +62,24 @@ public:
      *  for the object itself. */
     auto PointImage(quint32 id, const QPointF &point) const -> QPointF override;
 
-    /** @brief The departure lines of the pleats being built, the point of the line the user is picking, the boxes,
-     *  and the line being edited, so the preview replays the very folds the tool will build — figure included.
+    /** @brief The departure lines of the pleats being built, the point of the line the user is picking, and the
+     *  line the dialog is editing.
      *
      *  @a pending is the first point of the line being picked, when there is one: it has no line yet, and it is
      *  drawn as the green dot of the gesture, as the tool's own preview does.
      *
      *  @a active is the departure line the dialog is editing, or -1 when there is none: its two ends are the only
-     *  ones drawn bright, and everything the other lines draw is dimmed. The colour tells the two ends of a line
+     *  ones drawn bright, and the ends of the other lines are dimmed. The colour tells the two ends of a line
      *  apart — green for the first, red for the second — and never which line it is; the light is what says that. */
-    void SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, bool foldLine, int active);
+    void SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, int active);
 
     /** @brief Tell the preview that the pleat is already in the pattern.
      *
      *  The pattern then draws everything the pleat produced — the objects its folds carried, the lines of its figure,
      *  their points — and the preview must not draw them a second time: the trace of the origin in orange and its
-     *  image in magenta, laid over that drawing, are what buries the fold lines the dialog is read from. A pleat being
-     *  built still has nothing in the pattern, and there the two traces are the only thing that shows what the folds
-     *  will do: they stay. */
+     *  image in magenta, laid over that drawing, would show the same objects twice. A pleat being built still has
+     *  nothing in the pattern, and there the two traces are the only thing that shows what the folds will do: they
+     *  stay. */
     void SetInPattern(bool inPattern);
 
     auto type() const -> int override { return Type; }
@@ -92,21 +93,15 @@ private:
 
     QVector<OPleatDeparture> m_departures{};
     OPleatEnd m_pending{};
-    bool m_foldLine{true};
     int m_active{-1};
 
-    /** True when the pleat is in the pattern: the preview then keeps the figure and the ends of the gesture, and hides
-     *  what the pattern draws itself (see SetInPattern). */
+    /** True when the pleat is in the pattern: the preview then keeps the ends of the gesture, and hides what the
+     *  pattern draws itself (see SetInPattern). */
     bool m_inPattern{false};
 
     /** The rule, run once per refresh: what each departure line is carried by, where its places are, and the mark
-     *  of each cap. A pleat the rule refused leaves an empty plan, which moves nothing and draws no figure. */
+     *  of each cap. A pleat the rule refused leaves an empty plan, which moves nothing and carries no end. */
     OPleatPlan m_plan{};
-
-    /** The figure of the preview, kept between two refreshes so a mouse move does not rebuild items: the lines of
-     *  the fold, and the point of each cap. */
-    QVector<VScaledLine *> m_figureLines{};
-    QVector<VScaledEllipse *> m_figurePoints{};
 
     /** The two points of each departure line, in the colour that names them: green for the first, red for the
      *  second. Drawn here because the gesture has no pattern object to colour yet — after it, the colours are the
@@ -114,7 +109,7 @@ private:
     QVector<VScaledEllipse *> m_firstDots{};
     QVector<VScaledEllipse *> m_secondDots{};
 
-    /** @brief How bright the figure of one departure line is drawn: the line the dialog is editing is the only one
+    /** @brief How bright the ends of one departure line are drawn: the line the dialog is editing is the only one
      *  at full light, and every other one is dimmed (see kDimmedLight). */
     auto Light(int departure) const -> qreal;
 
@@ -128,10 +123,6 @@ private:
     auto Source() const -> QVector<SourceItem>;
 
     void CreateTransformedObjects(const OPleatTransform &transform);
-
-    /** @brief Draw the figure of the plan: every place of every departure line, the fold lines, and the cap of each
-     *  end. The items it does not need are hidden, so a box that is turned off takes its drawing away here too. */
-    void DrawFigure();
 
     void DrawDeparturePoints();
 

@@ -332,7 +332,9 @@ void CreateDestination(OToolPleatInitData &initData)
     {
         // The dialog refuses to build such a pleat, and this only happens on a file edited by hand: the objects that
         // travel are still copied, the figure is not drawn, and the reason reaches the log.
-        qWarning() << "The pleat" << initData.id << "cannot be drawn, failure" << static_cast<int>(plan.failure);
+        // The house signature is what keeps this off the screen: without it the application turns the very same line
+        // into a modal box — English, with a number no one can act on. The reason is the one the dialog would give.
+        qWarning() << VAbstractValApplication::warningMessageSignature << OPleatFailureText(plan.failure);
     }
 
     CreateDisplayObjects(initData, plan);
@@ -352,18 +354,6 @@ OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OToolPleat::PleatCount() const -> int
-{
-    int count = 0;
-
-    for (const OPleatDeparture &departure : m_departures)
-    {
-        count += (departure.kind == OPleatKind::Double) ? 2 : 1;
-    }
-
-    return count;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolPleat::FoldLinePossible() const -> bool
 {
@@ -410,31 +400,110 @@ auto OToolPleat::SyncDestination(const QVector<SourceItem> &source) -> QVector<D
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OToolPleat::KeptInPlace() const -> QSet<quint32>
+auto OToolPleat::KeptInPlace(const QVector<OPleatDeparture> &departures) -> QSet<quint32>
 {
-    if (m_departures.isEmpty())
+    if (departures.isEmpty())
     {
         return {};
     }
 
-    return {m_departures.constFirst().first.pointId, m_departures.constFirst().second.pointId};
+    return {departures.constFirst().first.pointId, departures.constFirst().second.pointId};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::KeptInPlace() const -> QSet<quint32>
+{
+    return KeptInPlace(m_departures);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SetDialog()
 {
-    SCASSERT(not m_dialog.isNull())
     const QPointer<ODialogPleat> dialogTool = qobject_cast<ODialogPleat *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
+    if (dialogTool.isNull())
+    {
+        return; // in Release SCASSERT says nothing, and a dialog that is not ours is not a dialog at all
+    }
 
     dialogTool->CheckDependencyTreeComplete();
     dialogTool->SetPleat(m_departures, m_foldLine);
     dialogTool->SetDisplay(m_display);
+    dialogTool->SetFigureObjectsInUse(FigureObjectsInUse());
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
     dialogTool->SetLineSources(Lines());
 
     SetDialogVisibilityGroupData(dialogTool);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::FigureObjectsInUse() const -> QSet<quint32>
+{
+    QSet<quint32> inUse;
+
+    if (not doc->IsPatternGraphComplete())
+    {
+        return inUse; // the graph is still being collected: nothing is known yet, so nothing is held back
+    }
+
+    VPatternGraph const *patternGraph = doc->PatternGraph();
+    if (patternGraph == nullptr)
+    {
+        return inUse;
+    }
+
+    // The lines a pleat draws are part of the operation and go away with it: what a delete asks about is what the
+    // objects of OTHER tools hang from, and a point or a curve of the figure answers the very same question.
+    const QVector<quint32> extraLines = ExtraLineIds();
+    QVector<quint32> ownLines;
+    ownLines.reserve(m_lines.size() + extraLines.size());
+    for (const auto &line : std::as_const(m_lines))
+    {
+        ownLines.append(line.result);
+    }
+    for (const quint32 id : extraLines)
+    {
+        ownLines.append(id);
+    }
+
+    auto Filter = [&ownLines](const auto &node) -> auto
+    {
+        return node.type != VNodeType::MODELING_TOOL && node.type != VNodeType::MODELING_OBJECT
+               && !ownLines.contains(node.id);
+    };
+
+    const auto ask = [patternGraph, &Filter, &inUse](quint32 id)
+    {
+        if (id == NULL_ID)
+        {
+            return;
+        }
+
+        // 200 ms: the answer is already there when the graph is complete, and a lock is never waited on for long.
+        if (const auto dependents = patternGraph->TryGetDependentNodes(id, 200, Filter);
+            dependents && !dependents->isEmpty())
+        {
+            inUse.insert(id);
+        }
+    };
+
+    for (const OPleatMarkDisplay &mark : std::as_const(m_display.marks))
+    {
+        ask(mark.point);
+        ask(mark.side1);
+        ask(mark.side2);
+        ask(mark.curve1);
+        ask(mark.curve2);
+    }
+
+    for (const OPleatNotchDisplay &notch : std::as_const(m_display.notches))
+    {
+        ask(notch.point);
+        ask(notch.curve1);
+        ask(notch.curve2);
+    }
+
+    return inUse;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -485,15 +554,12 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
         PrepareNames(initData);
     }
 
-    // The departure line of the first pleat is the fold the whole operation is taken on: it is part of what the tool
-    // builds, and the layer must leave the two points where they are. The other lines are given flat, and the fabric
-    // they belong to travels: they go with the objects that do.
     // The departure line of the first pleat is the fold the whole operation is taken on: the layer must leave its
     // two points where they are (see KeptInPlace, which answers the same for a layer made after the tool exists).
-    if (initData.typeCreation == Source::FromGui && not initData.departures.isEmpty())
+    // The other lines are given flat, and the fabric they belong to travels: they go with the objects that do.
+    if (initData.typeCreation == Source::FromGui)
     {
-        initData.keptInPlace.insert(initData.departures.constFirst().first.pointId);
-        initData.keptInPlace.insert(initData.departures.constFirst().second.pointId);
+        initData.keptInPlace.unite(KeptInPlace(initData.departures));
     }
 
     VPatternGraph *patternGraph = initData.doc->PatternGraph();
@@ -579,14 +645,6 @@ void OToolPleat::SetFoldLineShown(bool show)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OToolPleat::SetDisplay(const OPleatDisplay &display)
-{
-    m_display = display;
-
-    QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
-    SaveOption(obj);
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SetDisplayLineType(const QString &typeLine)
 {
@@ -762,9 +820,11 @@ auto OToolPleat::SyncFigureItems() -> bool
 
     for (auto it = operatedObjects.begin(); it != operatedObjects.end();)
     {
-        if (qobject_cast<VToolLine *>(it.value()) != nullptr || wanted.contains(it.key()))
+        // Only the objects of the figure are in this table: a line of the figure is a *tool*, which a full parse
+        // builds and takes away, and which never enters here (see InitOperatedLine, in the base).
+        if (wanted.contains(it.key()))
         {
-            ++it; // a line is a tool of the pattern: only a full parse builds one, and only a full parse takes one
+            ++it;
             continue;
         }
 
@@ -957,26 +1017,10 @@ auto OToolPleat::ExtraLineIds() const -> QVector<quint32>
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolPleat::DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32>
 {
-    // Everything the figure is made of: the departure lines and their copies, the fold lines, the copies of the points
-    // the display places, and the caps. Turning a cap off, or the figure itself, takes some of them away, and only
-    // this list says so to the test that chooses between a lite and a full parse.
-    QSet<quint32> ids;
-    const QDomElement display = domElement.firstChildElement(OPleatDisplay::TagDisplay);
-    for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
-         item = item.nextSiblingElement(VAbstractOperation::TagItem))
-    {
-        for (const QString &attribute :
-             {OPleatDisplay::AttrLine, OPleatDisplay::AttrFoldLine, OPleatDisplay::AttrCopy, OPleatDisplay::AttrPoint,
-              OPleatDisplay::AttrSide1, OPleatDisplay::AttrSide2, OPleatDisplay::AttrNotch,
-              OPleatDisplay::AttrCurve1, OPleatDisplay::AttrCurve2})
-        {
-            if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
-            {
-                ids.insert(id);
-            }
-        }
-    }
-    return ids;
+    // Everything the figure is made of, and the list lives with the format it names: turning a cap off, or the figure
+    // itself, takes some of those objects away, and only this list says so to the test that chooses between a lite
+    // and a full parse (see OPleatDisplay::ObjectIds).
+    return OPleatDisplay::ObjectIds(domElement);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1003,7 +1047,10 @@ void OToolPleat::SetVisualization()
     if (not vis.isNull())
     {
         auto *visual = qobject_cast<OVisToolPleat *>(vis);
-        SCASSERT(visual != nullptr)
+        if (visual == nullptr)
+        {
+            return; // in Release SCASSERT says nothing: the preview is either ours, or it is not there
+        }
 
         // The pleat is in the pattern: what its folds carried and what its figure is made of are drawn by the pattern
         // itself, and the preview keeps the figure only (see OVisToolPleat::SetInPattern).
@@ -1018,8 +1065,8 @@ void OToolPleat::SetVisualization()
         }
         visual->SetPreviewLines(lines);
 
-        // No line is being edited here: the tool's own figure draws them all at the same light.
-        visual->SetPleat(m_departures, OPleatEnd{}, m_foldLine, -1);
+        // No line is being edited here: the ends of every line are drawn at the same light.
+        visual->SetPleat(m_departures, OPleatEnd{}, -1);
         visual->SetMode(Mode::Show);
         visual->RefreshGeometry();
     }

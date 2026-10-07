@@ -26,6 +26,10 @@
 
 #include "oedgereader.h"
 
+// The tolerance of a direction is the rule's, written once: this reader is the layer below and takes it from
+// there rather than keep a second copy of the same value.
+#include "opleatrule.h"
+
 #include <QLineF>
 #include <QPointF>
 #include <QSharedPointer>
@@ -55,7 +59,7 @@ namespace
 {
 /** Below this length a vector carries no direction at all: a degenerate segment, or two points that the pattern
  *  put on top of each other, answer as little as a point that has no edge. */
-constexpr qreal kDirectionTolerance = 1e-7;
+constexpr qreal kDirectionTolerance = kPleatTolerance; // one value, written in the rule's header
 
 /** Two directions describe the same line when the sine of the angle between them is below this. On a piece a
  *  hundred centimetres wide that is a deviation of a hundredth of a millimetre: a corner is never mistaken for a

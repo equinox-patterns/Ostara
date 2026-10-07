@@ -288,8 +288,12 @@ auto VAbstractOperation::IsRemovable() const -> RemoveStatus
     //
     // Its own figure is part of them: the line a pleat draws where the fabric lands, the line it is pressed along,
     // and the two sides of every cap are anchored on the copies the operation made. They belong to the operation and
-    // go away with it, exactly like the lines it copies — the only thing a delete has to ask about is what the
-    // objects of OTHER tools hang from.
+    // go away with it, exactly like the lines it copies.
+    //
+    // Its POINTS and its CURVES are another matter: a piece, a line or any other tool can be built on one of them,
+    // and it would then have nothing left to read. The dialog holds the box that carries such an object (see
+    // OToolPleat::FigureObjectsInUse); the delete has to answer the very same question, or the object would go away
+    // silently by the other door.
     const QVector<quint32> extraLines = ExtraLineIds();
 
     QVector<quint32> ownLines;
@@ -323,6 +327,29 @@ auto VAbstractOperation::IsRemovable() const -> RemoveStatus
 
         // 500 ms, like the other tools that ask the same question.
         auto const dependecies = patternGraph->TryGetDependentNodes(item.id, 500, Filter);
+
+        if (!dependecies)
+        {
+            return RemoveStatus::Pending; // Lock timeout
+        }
+
+        if (!dependecies->isEmpty())
+        {
+            return RemoveStatus::Blocked;
+        }
+    }
+
+    QVector<quint32> figure;
+    const QVector<quint32> extraPoints = ExtraPointIds();
+    const QVector<quint32> extraCurves = ExtraCurveIds();
+    figure.reserve(extraPoints.size() + extraCurves.size());
+    figure.append(extraPoints);
+    figure.append(extraCurves);
+
+    for (const quint32 id : std::as_const(figure))
+    {
+        // 500 ms, like the destinations above: the answer is already there, and a lock is never waited on for long.
+        auto const dependecies = patternGraph->TryGetDependentNodes(id, 500, Filter);
 
         if (!dependecies)
         {

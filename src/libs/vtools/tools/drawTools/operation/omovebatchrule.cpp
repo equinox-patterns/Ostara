@@ -48,15 +48,7 @@ auto OMoveBatchRule::DefaultMoveName(int index) -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OMoveBatchRule::IndexOf(const QVector<SourceItem> &source, quint32 id) -> int
 {
-    for (int i = 0; i < source.size(); ++i)
-    {
-        if (source.at(i).id == id)
-        {
-            return i;
-        }
-    }
-
-    return -1;
+    return SourceIndexOf(source, id); // the question is the operations', and its answer is written once
 }
 
 //---------------------------------------------------------------------------------------------------------------------

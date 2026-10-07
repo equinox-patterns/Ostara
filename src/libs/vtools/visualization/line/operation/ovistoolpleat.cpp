@@ -26,7 +26,6 @@
 
 #include "ovistoolpleat.h"
 
-#include <QLineF>
 #include <QSharedPointer>
 
 #include "../vgeometry/varc.h"
@@ -41,11 +40,10 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/scalesceneitems.h"
-#include "../../../tools/drawTools/operation/opleatcaprule.h"
 
 namespace
 {
-/** How bright the figure of a departure line the dialog is not editing is drawn: enough to be seen, dim enough for
+/** How bright the ends of a departure line the dialog is not editing are drawn: enough to be seen, dim enough for
  *  the two ends of the line being edited to be the only ones the eye follows. */
 constexpr qreal kDimmedLight = 0.25;
 } // namespace
@@ -58,12 +56,10 @@ OVisToolPleat::OVisToolPleat(const VContainer *data, QGraphicsItem *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OVisToolPleat::SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, bool foldLine,
-                             int active)
+void OVisToolPleat::SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, int active)
 {
     m_departures = departures;
     m_pending = pending;
-    m_foldLine = foldLine;
     m_active = active;
 }
 
@@ -71,7 +67,7 @@ void OVisToolPleat::SetPleat(const QVector<OPleatDeparture> &departures, const O
 auto OVisToolPleat::Light(int departure) const -> qreal
 {
     // One line is being edited: it is the one the dialog shows, and its two ends have to be told from the ends of the
-    // other lines, which wear the very same green and red. Everything the others draw is dimmed.
+    // other lines, which wear the very same green and red. The ends of the others are dimmed.
     return (m_active < 0 || m_active == departure) ? 1. : kDimmedLight;
 }
 
@@ -155,9 +151,9 @@ void OVisToolPleat::RefreshGeometry()
     // ends are the line's image, exactly as the operation will build it.
     RefreshPreviewLines(true);
 
-    // The pleat is in the pattern: every object it carries and every line of its figure is drawn there already, and
-    // the second drawing this preview lays over it — the trace of the origin in orange, the image in magenta — buries
-    // the folds the dialog is read from. Only the figure is kept (see SetInPattern).
+    // The pleat is in the pattern: every object it carries is drawn there already, and the second drawing this
+    // preview lays over it — the trace of the origin in orange, the image in magenta — would show the same objects
+    // twice. Only the ends of the gesture are kept (see SetInPattern).
     if (m_inPattern)
     {
         HideOperatedObjects();
@@ -165,7 +161,6 @@ void OVisToolPleat::RefreshGeometry()
     }
 
     // Last, because RefreshPreviewLines hides every line it does not use of the pool it shares with this call.
-    DrawFigure();
     DrawDeparturePoints();
 }
 
@@ -257,179 +252,6 @@ void OVisToolPleat::DrawDeparturePoints()
     {
         m_secondDots.at(i)->setVisible(false);
     }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void OVisToolPleat::DrawFigure()
-{
-    int usedLines = 0;
-    int usedPoints = 0;
-
-    const auto segment = [this, &usedLines](const QPointF &from, const QPointF &to, VColorRole role,
-                                            Qt::PenStyle style, qreal light)
-    {
-        VScaledLine *item = nullptr;
-        if (usedLines < m_figureLines.size())
-        {
-            item = m_figureLines.at(usedLines);
-            item->SetColorRole(role);
-        }
-        else
-        {
-            item = InitItem<VScaledLine>(role, this);
-            item->SetShowArrows(false);
-            m_figureLines.append(item);
-        }
-        ++usedLines;
-
-        item->setOpacity(light);
-
-        const QLineF line(from, to);
-        item->setVisible(line.length() > 0.);
-        if (line.length() > 0.)
-        {
-            DrawLine(item, line, style);
-        }
-    };
-
-    const auto dot = [this, &usedPoints](const QPointF &position, qreal light)
-    {
-        VScaledEllipse *item = nullptr;
-        if (usedPoints < m_figurePoints.size())
-        {
-            item = m_figurePoints.at(usedPoints);
-        }
-        else
-        {
-            item = InitItem<VScaledEllipse>(VColorRole::VisSupportColor3, this);
-            m_figurePoints.append(item);
-        }
-        ++usedPoints;
-
-        item->setOpacity(light);
-        DrawPoint(item, position);
-        item->setVisible(true);
-    };
-
-    const auto hideLeftovers = [this, usedLines, usedPoints]()
-    {
-        for (int i = usedLines; i < m_figureLines.size(); ++i)
-        {
-            m_figureLines.at(i)->setVisible(false);
-        }
-        for (int i = usedPoints; i < m_figurePoints.size(); ++i)
-        {
-            m_figurePoints.at(i)->setVisible(false);
-        }
-    };
-
-    if (m_plan.failure != OPleatFailure::None)
-    {
-        hideLeftovers();
-        return;
-    }
-
-    // Every departure line, and every place the folds carried it to: the same line, one pleat at a time.
-    for (int departure = 0; departure < m_departures.size(); ++departure)
-    {
-        const OPleatDeparture &line = m_departures.at(departure);
-        const OPleatPlace &place = m_plan.places.value(departure);
-
-        for (int rank = 0; rank <= place.pleats; ++rank)
-        {
-            segment(m_plan.Place(line.first, departure, rank), m_plan.Place(line.second, departure, rank),
-                    VColorRole::VisSupportColor3, Qt::SolidLine, Light(departure));
-        }
-    }
-
-    // What each pleat is pressed along, drawn only when its two caps are: without them it has nothing to join.
-    if (m_foldLine)
-    {
-        for (int departure = 0; departure < m_departures.size(); ++departure)
-        {
-            const OPleatDeparture &line = m_departures.at(departure);
-            const OPleatPlace &place = m_plan.places.value(departure);
-
-            for (int rank = 0; rank < place.pleats; ++rank)
-            {
-                const int pleat = place.firstPleat + rank;
-                if (m_plan.Mark(pleat, 0) == nullptr || m_plan.Mark(pleat, 1) == nullptr)
-                {
-                    continue;
-                }
-
-                // The fold line of the pleat: its departure line, carried by the pleats taken before it and
-                // translated by half a step — its own step, along its own normal.
-                const QPointF shift = place.step / 2.; // the fold line, half a step beyond the place it belongs to
-                segment(m_plan.Place(line.first, departure, rank) + shift,
-                        m_plan.Place(line.second, departure, rank) + shift, VColorRole::VisSupportColor3, Qt::DotLine,
-                        Light(departure));
-            }
-        }
-    }
-
-    // Each cap: its point, and the two sides that make the V — or the point alone when the edge lies along the move.
-    for (const OPleatMark &mark : std::as_const(m_plan.marks))
-    {
-        dot(mark.point, Light(mark.departure));
-
-        if (mark.flat)
-        {
-            continue;
-        }
-
-        const OPleatPlace place = m_plan.places.value(mark.departure);
-        const OPleatDeparture line = m_departures.value(mark.departure);
-        const OPleatEnd &prise = (mark.end == 1) ? line.second : line.first;
-
-        const int rank = mark.pleat - place.firstPleat;
-        const QPointF origin = m_plan.Place(prise, mark.departure, rank);
-        const QPointF copy = origin + place.step;
-
-        // Where a curve carries the edge, the sides of the cap are that curve and its image by the fold: the preview
-        // builds no object, and what it draws is the shape the geometry gives, point after point — the same V the
-        // pattern will hold once the pleat is applied. The name asked for is only the one the cut gives the junction
-        // of the two sides, and the point the cap stands at is the one that names it.
-        const QString apexName = (GetData() != nullptr && GetData()->HasObject(prise.pointId))
-                                     ? GetData()->GetGObject(prise.pointId)->name()
-                                     : QStringLiteral("pli");
-
-        const QPointF shift = place.step / 2.; // the fold line, half a step beyond the place it belongs to
-        const OPleatCapSides sides
-            = (mark.edgeId == NULL_ID)
-                  ? OPleatCapSides{}
-                  : OPleatCapRule::Sides(mark, prise, m_plan.Place(prise, mark.departure, mark.place),
-                                         QLineF(m_plan.Place(line.first, mark.departure, rank) + shift,
-                                                m_plan.Place(line.second, mark.departure, rank) + shift),
-                                         apexName, GetData());
-
-        if (not sides.edge.isNull() && not sides.image.isNull())
-        {
-            for (const QSharedPointer<VAbstractCurve> &side : {sides.edge, sides.image})
-            {
-                const QVector<QPointF> points = side->GetPoints();
-                for (int i = 1; i < points.size(); ++i)
-                {
-                    segment(points.at(i - 1), points.at(i), VColorRole::VisSupportColor3, Qt::SolidLine,
-                            Light(mark.departure));
-                }
-            }
-            continue;
-        }
-
-        segment(mark.point, origin, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
-        segment(mark.point, copy, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
-    }
-
-    // Each notch: the mark the fitter reads on the piece's edge, drawn with the rest of the figure. The halves of
-    // the edge it cuts are objects the operation owns, and the preview has nothing to cut: what the notch is, and
-    // where it stands, is what tells the two senses and the two depths apart on the canvas.
-    for (const OPleatNotch &notch : std::as_const(m_plan.notches))
-    {
-        dot(notch.point, Light(notch.departure));
-    }
-
-    hideLeftovers();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -27345,20 +27345,8 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
             <translation>Modifier les plis</translation>
         </message>
     <message>
-        <source>Double pleat</source>
-        <translation>Pli double</translation>
-    </message>
-    <message>
         <source>Draw the fold line</source>
         <translation>Tracer la ligne de pli</translation>
-    </message>
-    <message>
-        <source>Show the fold</source>
-        <translation>Afficher le pli</translation>
-    </message>
-    <message>
-        <source>Fold pens</source>
-        <translation>Tracés du pli</translation>
     </message>
     <message>
         <source>Line type:</source>
@@ -27840,16 +27828,8 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Modifier les déplacements</translation>
     </message>
     <message>
-        <source>Show copies</source>
-        <translation type="obsolete">Afficher les copies</translation>
-    </message>
-    <message>
         <source>From:</source>
         <translation type="vanished">De :</translation>
-    </message>
-    <message>
-        <source>To:</source>
-        <translation type="vanished">Vers :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="550"/>
@@ -27980,14 +27960,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <source>Group</source>
         <translation type="vanished">Groupe</translation>
-    </message>
-    <message>
-        <source>Group name:</source>
-        <translation type="vanished">Nom du groupe :</translation>
-    </message>
-    <message>
-        <source>Detach all</source>
-        <translation type="vanished">Tout détacher</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="247"/>
@@ -30832,117 +30804,13 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
 </context>
 <context>
     <name>DialogPleat</name>
-            <message>
-            <source>Click point 1 of the departure line of pleat 1 (it turns green)</source>
-            <translation>Cliquez le point 1 de la ligne de départ du pli 1 (il devient vert)</translation>
-        </message>
-                    <message>
-            <source>Click point 2 of the departure line of pleat %1 (it turns red)</source>
-            <translation>Cliquez le point 2 de la ligne de départ du pli %1 (il devient rouge)</translation>
-        </message>
-            <message>
-            <source>A departure line is made of two points</source>
-            <translation>Une ligne de départ se fait avec deux points</translation>
-        </message>
-    <message>
-        <source>This point is not one of the objects you selected: click a point of the contour</source>
-        <translation>Ce point ne fait pas partie des objets sélectionnés : cliquez un point du contour</translation>
-    </message>
-    <message>
-        <source>The edge is not recognized at the cap of point 1 (green): click a point of the piece&apos;s outline, right next to it</source>
-        <translation>Le bord n&apos;est pas reconnu au chapeau du point 1 (le vert) : cliquez un point du contour de la pièce, juste à côté.</translation>
-    </message>
-    <message>
-        <source>The edge is not recognized at the cap of point 2 (red): click a point of the piece&apos;s outline, right next to it</source>
-        <translation>Le bord n&apos;est pas reconnu au chapeau du point 2 (le rouge) : cliquez un point du contour de la pièce, juste à côté.</translation>
-    </message>
-            <message>
-            <source>Click the two points of the first departure line.</source>
-            <translation>Cliquez les deux points de la première ligne de départ.</translation>
-        </message>
-            <message>
-            <source>Every object you selected must be on the same side of the departure lines.</source>
-            <translation>Tous les objets sélectionnés doivent être du même côté des lignes de départ.</translation>
-        </message>
-            <message>
-            <source>The edge was not recognized at one end of a departure line.</source>
-            <translation>Le bord n&apos;a pas été reconnu à une extrémité d&apos;une ligne de départ.</translation>
-        </message>
-    <message>
-        <source>the prise</source>
-        <translation>la prise</translation>
-    </message>
-    <message>
-        <source>Cap %1:</source>
-        <translation>Chapeau %1 :</translation>
-    </message>
-    <message>
-        <source>At cap %1 the edge is not recognized: click a point of the piece&amp;apos;s outline, right next to it</source>
-        <translation>Au chapeau %1, le bord n&amp;apos;est pas reconnu : cliquez un point du contour de la pièce, juste à côté.</translation>
-    </message>
-    <message>
-        <source>the prise</source>
-        <translation>la prise</translation>
-    </message>
-    <message>
-        <source>Value of the finished pleat:</source>
-        <translation>Valeur du pli fini :</translation>
-    </message>
-    <message>
-        <source>Value of the finished pleat</source>
-        <translation>Valeur du pli fini</translation>
-    </message>
-    <message>
-        <source>Pleat:</source>
-        <translation>Pli :</translation>
-    </message>
-    <message>
-        <source>Show the fold</source>
-        <translation>Afficher le pli</translation>
-    </message>
-    <message>
-        <source>Draw the fold: the departure line, the line it is copied to, and the cap of each end.</source>
-        <translation>Tracer le pli : la ligne de départ, la ligne de copie, et le chapeau de chaque extrémité.</translation>
-    </message>
-    <message>
-        <source>Click a point of the outline, right next to it</source>
-        <translation>Cliquez un point du contour de la pièce, juste à côté</translation>
-    </message>
-    <message>
-        <source>Click the objects to fold, then %1</source>
-        <translation>Cliquez les objets à plier, puis %1</translation>
-    </message>
-    <message>
-        <source>Select the objects of the contour, then %1</source>
-        <translation>Sélectionnez les objets du contour, puis %1</translation>
-    </message>
-    <message>
-        <source>Put a pleat value greater than zero.</source>
-        <translation>Mettez une valeur de pli supérieure à zéro.</translation>
-    </message>
-    <message>
-        <source>You clicked the same point twice.</source>
-        <translation>Vous avez cliqué deux fois le même point.</translation>
-    </message>
-    <message>
-        <source>This edge is parallel to the fold line: no cap is possible here.</source>
-        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&apos;est possible ici.</translation>
-    </message>
-    <message>
+                                                            <message>
         <source>Pleat</source>
         <translation>Pli</translation>
     </message>
     <message>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Simple</source>
-        <translation>Simple</translation>
-    </message>
-    <message>
-        <source>Double</source>
-        <translation>Double</translation>
     </message>
     <message>
         <source>Cap 1:</source>
@@ -30967,10 +30835,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <source>Mark the notch of this end on the piece&apos;s edge</source>
         <translation>Marquer le cran de cette extrémité sur le bord de la pièce</translation>
-    </message>
-    <message>
-        <source>The notch of a pleat falls past the end of the edge it should mark.</source>
-        <translation>Le cran d&apos;un pli tombe au-delà du bord qu&apos;il doit marquer.</translation>
     </message>
     <message>
         <source>Draw the fold line, from one cap to the other</source>
@@ -31013,26 +30877,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Vous pouvez ajouter une note ici…</translation>
     </message>
     <message>
-        <source>Line type:</source>
-        <translation>Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Line color:</source>
-        <translation>Couleur du tracé :</translation>
-    </message>
-    <message>
-        <source>Fold line type:</source>
-        <translation>Type de la ligne de pli :</translation>
-    </message>
-    <message>
-        <source>Fold line color:</source>
-        <translation>Couleur de la ligne de pli :</translation>
-    </message>
-    <message>
-        <source>Invalid layer name</source>
-        <translation>Nom de calque invalide</translation>
-    </message>
-    <message>
         <source>Draw the fold line</source>
         <translation>Tracer la ligne de pli</translation>
     </message>
@@ -31044,40 +30888,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Fold line</source>
         <translation>Ligne de pli</translation>
     </message>
-        <message>
-            <source>Pleats:</source>
-            <translation>Plis :</translation>
-        </message>
-        <message>
-            <source>Pleat %1</source>
-            <translation>Pli %1</translation>
-        </message>
-        <message>
-            <source>Value</source>
-            <translation>Valeur</translation>
-        </message>
-        <message>
-            <source>Kind</source>
-            <translation>Type</translation>
-        </message>
-        <message>
-            <source>Add a pleat</source>
-            <translation>Ajouter un pli</translation>
-        </message>
-        <message>
-            <source>Remove the pleat</source>
-            <translation>Retirer le pli</translation>
-        </message>
-                <message>
-            <source>Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish</source>
-            <translation>Cliquez le point 1 de la ligne de départ du pli %1 (il devient vert), ou %2 pour terminer</translation>
-        </message>
-                    <message>
+                                                        <message>
         <source>Draw the fold line that joins the two caps, and the pen it is drawn with.</source>
         <translation>Tracer la ligne de pli qui joint les deux chapeaux, et le stylo avec lequel elle est tracée.</translation>
     </message>
 </context>
-  <context>
+<context>
     <name>OToolPleat</name>
     <message>
         <source>the prise</source>
@@ -31104,36 +30920,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
             <translation>masquer les lignes de pli</translation>
         </message>
     <message>
-        <source>change the value of the pleat</source>
-        <translation>modifier la valeur du pli</translation>
-    </message>
-    <message>
-        <source>change the kind of the pleat</source>
-        <translation>modifier le type de pli</translation>
-    </message>
-    <message>
         <source>show the fold line</source>
         <translation>afficher la ligne de pli</translation>
     </message>
     <message>
         <source>hide the fold line</source>
         <translation>masquer la ligne de pli</translation>
-    </message>
-    <message>
-        <source>show the cap</source>
-        <translation>afficher le chapeau</translation>
-    </message>
-    <message>
-        <source>hide the cap</source>
-        <translation>masquer le chapeau</translation>
-    </message>
-    <message>
-        <source>turn the cap the other way</source>
-        <translation>retourner le chapeau</translation>
-    </message>
-    <message>
-        <source>change the edge of the cap</source>
-        <translation>modifier le bord du chapeau</translation>
     </message>
     <message>
         <source>show the fold</source>
@@ -31203,30 +30995,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Couleur de la ligne de pli :</translation>
     </message>
     <message>
-        <source>You clicked the same point twice.</source>
-        <translation>Vous avez cliqué deux fois le même point.</translation>
-    </message>
-    <message>
-        <source>Put a pleat value greater than zero.</source>
-        <translation>Mettez une valeur de pli supérieure à zéro.</translation>
-    </message>
-    <message>
-        <source>Every object you selected must be on the same side of the departure lines.</source>
-        <translation>Tous les objets sélectionnés doivent être du même côté des lignes de départ.</translation>
-    </message>
-    <message>
-        <source>The edge was not recognized at one end of a departure line.</source>
-        <translation>Le bord n&apos;a pas été reconnu à une extrémité d&apos;une ligne de départ.</translation>
-    </message>
-    <message>
-        <source>This edge is parallel to the fold line: no cap is possible here.</source>
-        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&apos;est possible ici.</translation>
-    </message>
-    <message>
-        <source>The notch of a pleat falls past the end of the edge it should mark.</source>
-        <translation>Le cran d&apos;un pli tombe au-delà du bord qu&apos;il doit marquer.</translation>
-    </message>
-    <message>
         <source>Click the two points of the first departure line.</source>
         <translation>Cliquez les deux points de la première ligne de départ.</translation>
     </message>
@@ -31285,6 +31053,41 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <source>Click a point of the outline, right next to it</source>
         <translation>Cliquez un point du contour de la pièce, juste à côté</translation>
+    </message>
+    <message>
+        <source>Put a pleat value greater than zero.</source>
+        <translation>Mettez une valeur de pli supérieure à zéro.</translation>
+    </message>
+</context>
+<context>
+    <name>OPleatRule</name>
+    <message>
+        <source>You clicked the same point twice.</source>
+        <translation>Vous avez cliqué deux fois le même point.</translation>
+    </message>
+    <message>
+        <source>Put a pleat value greater than zero.</source>
+        <translation>Mettez une valeur de pli supérieure à zéro.</translation>
+    </message>
+    <message>
+        <source>Every object you selected must be on the same side of the departure lines.</source>
+        <translation>Tous les objets sélectionnés doivent être du même côté des lignes de départ.</translation>
+    </message>
+    <message>
+        <source>The edge was not recognized at one end of a departure line.</source>
+        <translation>Le bord n&apos;a pas été reconnu à une extrémité d&apos;une ligne de départ.</translation>
+    </message>
+    <message>
+        <source>This edge is parallel to the fold line: no cap is possible here.</source>
+        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&apos;est possible ici.</translation>
+    </message>
+    <message>
+        <source>The notch of a pleat falls past the end of the edge it should mark.</source>
+        <translation>Le cran d&apos;un pli tombe au-delà du bord qu&apos;il doit marquer.</translation>
+    </message>
+    <message>
+        <source>Two departure lines share a point, and the pleats do not carry them together: no cap can be built there.</source>
+        <translation>Deux lignes de départ partagent un point, et les plis ne les emportent pas ensemble : aucun chapeau ne peut y être construit.</translation>
     </message>
 </context>
 </TS>

@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   o-pleatrule.cpp
+ **  @file   opleatrule.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
@@ -26,6 +26,8 @@
 
 #include "opleatrule.h"
 
+#include <QCoreApplication>
+
 #include <QLineF>
 #include <QSharedPointer>
 
@@ -42,7 +44,7 @@ namespace
 {
 /** Directions are handled normalized: below this length a vector carries no direction at all, and two figures
  *  are considered parallel or perpendicular when the dot product is this close to the bound. */
-constexpr qreal kDirectionTolerance = 1e-7;
+constexpr qreal kDirectionTolerance = kPleatTolerance; // one value, written in the rule's header
 
 /** How far the point that carries the "line to extend" sits from the base point it must be attached to. The
  *  cap rule attaches the line to the base point nearest that carrier, so the carrier has to be closer to the
@@ -84,26 +86,13 @@ auto NormalOf(const OPleatDeparture &departure, OPleatSide side) -> QPointF
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief Where one point of a departure line stands in the ordered selection, or -1 when it is not one of the
  *  objects that travel: a file edited by hand is the only thing that can hold such a line. */
-auto IndexOf(const QVector<SourceItem> &source, quint32 pointId) -> int
-{
-    for (int index = 0; index < source.size(); ++index)
-    {
-        if (source.at(index).id == pointId)
-        {
-            return index;
-        }
-    }
-
-    return -1;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief The run of the ordered selection a pleat takes: what lies between the two points of its departure line,
  *  both included. An empty run is an empty vector, and the pleat then moves nothing. */
 auto RegionOf(const QVector<SourceItem> &source, const OPleatDeparture &departure) -> QVector<SourceItem>
 {
-    const int first = IndexOf(source, departure.first.pointId);
-    const int second = IndexOf(source, departure.second.pointId);
+    const int first = SourceIndexOf(source, departure.first.pointId);
+    const int second = SourceIndexOf(source, departure.second.pointId);
     if (first < 0 || second < 0)
     {
         return {};
@@ -301,6 +290,38 @@ auto OPleatRule::SideOf(const QVector<SourceItem> &region, quint32 firstId, quin
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPleatFailureText(OPleatFailure failure) -> QString
+{
+    switch (failure)
+    {
+        case OPleatFailure::None:
+            return {};
+        case OPleatFailure::DegeneratePrise:
+            return QCoreApplication::translate("OPleatRule", "You clicked the same point twice.");
+        case OPleatFailure::DegenerateValue:
+            return QCoreApplication::translate("OPleatRule", "Put a pleat value greater than zero.");
+        case OPleatFailure::NoSide:
+            return QCoreApplication::translate("OPleatRule",
+                                               "Every object you selected must be on the same side of the departure lines.");
+        case OPleatFailure::UnresolvedEdge:
+            return QCoreApplication::translate("OPleatRule",
+                                               "The edge was not recognized at one end of a departure line.");
+        case OPleatFailure::EdgeAlongFold:
+            return QCoreApplication::translate("OPleatRule",
+                                               "This edge is parallel to the fold line: no cap is possible here.");
+        case OPleatFailure::NotchOffEdge:
+            return QCoreApplication::translate("OPleatRule",
+                                               "The notch of a pleat falls past the end of the edge it should mark.");
+        case OPleatFailure::SplitDeparture:
+            return QCoreApplication::translate(
+                "OPleatRule",
+                "Two departure lines share a point, and the pleats do not carry them together: no cap can be built there.");
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVector<qreal> &values,
                          const QVector<SourceItem> &source, const VContainer *data) -> OPleatPlan
 {
@@ -348,7 +369,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
         OPleatPlace &place = plan.places[index];
 
         const QVector<SourceItem> region = RegionOf(source, departure);
-        place.start = region.isEmpty() ? -1 : IndexOf(source, region.constFirst().id);
+        place.start = region.isEmpty() ? -1 : SourceIndexOf(source, region.constFirst().id);
         place.last = region.isEmpty() ? -1 : place.start + static_cast<int>(region.size()) - 1;
 
         const OPleatSide side = SideOfRegion(region, source, departure, data);
@@ -388,6 +409,23 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
         }
 
         plan.moves.insert(source.at(index).id, move);
+    }
+
+    // A departure line is carried as a whole: its two ends lie in the same region, and the pleats translate them by
+    // the same vector. When one end is taken by another line and the other is not — two lines that share a point —
+    // the edge the cap is built on is no longer parallel to the line itself: the axis of the cap is not the fold any
+    // more, the reflection hands back something other than the copy, and the V does not close. Nothing tells which of
+    // the two the user meant, so the pleat is refused rather than drawn wrong.
+    for (const OPleatDeparture &line : std::as_const(departures))
+    {
+        // Only a line that carries something is asked: a cap is built ON that axis, and a notch walks along the edge
+        // it follows. A line with neither is only carried, and the figure draws it as the rule computed it.
+        const bool carries = line.first.showCap || line.second.showCap || line.first.showNotch || line.second.showNotch;
+        if (carries && plan.Move(line.first.pointId) != plan.Move(line.second.pointId))
+        {
+            plan.failure = OPleatFailure::SplitDeparture;
+            return plan;
+        }
     }
 
     for (int departure = 0; departure < departures.size(); ++departure)
@@ -435,7 +473,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 const QPointF e = edge.edgeDirection / directionLength;
                 const qreal alongMove = Dot(e, place.normal);
 
-                if (qAbs(alongMove) > 1. - kDirectionTolerance)
+                if (qAbs(alongMove) > kPleatParallelCosine)
                 {
                     // The edge runs parallel to the move: it is carried onto itself by the fold, it meets the
                     // fold line at the centre, and both senses give that same point. There is no V to draw — it
@@ -446,7 +484,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 }
 
                 const qreal alongFold = Dot(e, u);
-                if (qAbs(alongFold) > 1. - kDirectionTolerance)
+                if (qAbs(alongFold) > kPleatParallelCosine)
                 {
                     // The edge runs along the fold line: the two never meet, so no cap point exists there.
                     plan.failure = OPleatFailure::EdgeAlongFold;

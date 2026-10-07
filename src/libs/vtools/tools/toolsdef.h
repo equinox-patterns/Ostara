@@ -57,6 +57,23 @@ struct SourceItem
 Q_DECLARE_METATYPE(SourceItem)
 Q_DECLARE_TYPEINFO(SourceItem, Q_MOVABLE_TYPE); // NOLINT
 
+/** @brief Where a point stands in the ordered selection an operation was given: -1 when it is not there at all.
+ *
+ *  One answer for the pleats, the slash-and-spread and the batch move: the three ask the very same question of the
+ *  very same list, and the whole rule is built on it (which objects travel, which side of a line is folded). */
+inline auto SourceIndexOf(const QVector<SourceItem> &source, quint32 pointId) -> int
+{
+    for (int index = 0; index < source.size(); ++index)
+    {
+        if (source.at(index).id == pointId)
+        {
+            return index;
+        }
+    }
+
+    return -1;
+}
+
 struct DestinationItem
 {
     quint32 id{NULL_ID};

@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   o-pleatnotch.cpp
+ **  @file   opleatnotch.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   07/10/2026
  **

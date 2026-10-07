@@ -373,8 +373,13 @@ template <typename T>
 inline void DialogTool::InitOkCancelApply(T *ui)
 {
     InitOkCancel(ui);
+
     bApply = ui->buttonBox->button(QDialogButtonBox::Apply);
-    SCASSERT(bApply != nullptr)
+    if (bApply == nullptr)
+    {
+        return; // in Release SCASSERT says nothing: a dialog without Apply has nothing to wire
+    }
+
     connect(bApply, &QPushButton::clicked, this, &DialogTool::DialogApply);
 }
 
@@ -387,12 +392,22 @@ template <typename T>
 inline void DialogTool::InitOkCancel(T *ui)
 {
     bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
-    SCASSERT(bOk != nullptr)
+    if (bOk == nullptr)
+    {
+        return; // in Release SCASSERT says nothing: a dialog without OK has nothing to wire
+    }
+
     connect(bOk, &QPushButton::clicked, this, &DialogTool::DialogAccepted);
 
-    QPushButton *bCancel = ui->buttonBox->button(QDialogButtonBox::Cancel);
-    SCASSERT(bCancel != nullptr)
-    connect(bCancel, &QPushButton::clicked, this, &DialogTool::DialogRejected);
+    // Annuler n'existe dans aucun dialogue d'outil : il n'a jamais rien défait — les Apply déjà écrits restent dans le
+    // patron et dans la pile d'annulation — et un bouton qui dit le contraire de ce qu'il fait induit en erreur. Il
+    // reste OK, qui valide et ferme, et Apply, qui fait le même travail sans fermer. Fermer sans valider — Échap, la
+    // croix de la fenêtre — passe toujours par closeEvent et DialogRejected : rien n'est écrit.
+    if (QPushButton *cancel = ui->buttonBox->button(QDialogButtonBox::Cancel); cancel != nullptr)
+    {
+        ui->buttonBox->removeButton(cancel);
+        cancel->deleteLater();
+    }
 
     VAbstractApplication::VApp()->Settings()->GetOsSeparator() ? setLocale(QLocale()) : setLocale(QLocale::c());
 }

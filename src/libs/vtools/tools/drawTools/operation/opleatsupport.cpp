@@ -38,7 +38,7 @@ namespace
 {
 /** Below this length a vector carries no direction at all: a degenerate segment, or two points that the pattern
  *  put on top of each other, answer as little as a point that has no edge. */
-constexpr qreal kDirectionTolerance = 1e-7;
+constexpr qreal kDirectionTolerance = kPleatTolerance; // one value, written in the rule's header
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -49,7 +49,9 @@ void OPleatSupport::Resolve(OPleatEnd &end, const VContainer *data)
     if (end.edgePointId != NULL_ID)
     {
         const QPointF designated = OEdgeReader::Position(end.edgePointId, data);
-        if (QLineF(QPointF(), designated).length() > kDirectionTolerance)
+        // What the user designated is a direction FROM the end it carries: measured from the origin of the pattern,
+        // the guard ignored every point near (0, 0) and accepted a point that sat on the end itself.
+        if (data->HasObject(end.edgePointId) && QLineF(end.position, designated).length() > kDirectionTolerance)
         {
             end.edgeDirection = designated - end.position;
             return;

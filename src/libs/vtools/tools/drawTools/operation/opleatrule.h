@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   o-pleatrule.h
+ **  @file   opleatrule.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/10/2026
  **
@@ -89,6 +89,18 @@ enum class OPleatSide : int
     Second = -1
 };
 
+/** @brief Below this length a vector carries no direction at all: a degenerate segment, or two points the pattern
+ *  put on top of each other, answer as little as a point that has no edge. It is a length, in pattern units. */
+inline constexpr qreal kPleatTolerance = 1e-7;
+
+/** @brief How parallel two directions have to be for the lines that carry them to meet nowhere — a *cosine*, and not
+ *  a length: the two are written apart so that no one reads one for the other.
+ *
+ *  The value stays as tight as it always was: what it catches is a construction line drawn exactly along the fold,
+ *  never the nearly parallel edge of a piece. A cap at a hundredth of a degree asks for a cap point a thousand steps
+ *  away, and the tool gives it — that drawing is the modéliste's, not the tool's. */
+inline constexpr qreal kPleatParallelCosine = 1. - 1e-7;
+
 /** @brief What the rule refuses, and the tool has to say out loud rather than build half a pleat. */
 enum class OPleatFailure : int
 {
@@ -98,8 +110,16 @@ enum class OPleatFailure : int
     NoSide,          ///< nothing tells which side of a line is folded: all of it, or both of its sides
     UnresolvedEdge,  ///< an end has a cap but no edge to follow: the user has to designate one
     EdgeAlongFold,   ///< an edge runs along the fold line: it never meets it, so no cap can be built there
-    NotchOffEdge     ///< a notch falls past the end of the edge it should mark: the edge is shorter than the value
+    NotchOffEdge,    ///< a notch falls past the end of the edge it should mark: the edge is shorter than the value
+    SplitDeparture   ///< two departure lines share a point: the folds do not carry that line together, so its cap has no axis
 };
+
+/** @brief What a refusal means, in the words the user reads.
+ *
+ *  It is written with the rule that refuses, because both the dialog and the operation have to say it — the dialog
+ *  in its status line, the tool in the pattern's messages — and a failure the user cannot name is a failure they
+ *  cannot correct. */
+auto OPleatFailureText(OPleatFailure failure) -> QString;
 
 /** @brief One departure line of the operation: the pair of points the fold is taken on, the value it shows once
  *  folded, and whether it is one fold or two side by side.

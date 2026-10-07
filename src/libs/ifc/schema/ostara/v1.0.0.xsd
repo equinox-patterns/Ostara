@@ -440,6 +440,10 @@
                                       <xs:attribute name="departure" type="xs:unsignedInt"/>
                                       <xs:attribute name="place" type="xs:unsignedInt"/>
                                       <xs:attribute name="end" type="xs:unsignedInt"/>
+                                      <!-- The pleat an entry belongs to, and which of the two points of its
+                                           departure line: what an entry is matched by when the figure is read
+                                           back, so that removing one never hands its id to another. -->
+                                      <xs:attribute name="pleat" type="xs:unsignedInt"/>
                                       <xs:attribute name="point" type="xs:unsignedInt"/>
                                       <!-- The two sides of a cap: two straight tracings where a line carries the
                                            edge, and, where a curve carries it, the piece of that curve the fold

@@ -3248,6 +3248,8 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         // is not. The two halves a notch cuts its edge into are curves too, and a curve answers to its own id,
         // exactly like a line. An item with no attribute at all is a place the operation stands for by itself, and
         // names nothing.
+        // The same list as OPleatDisplay::ObjectIds, which cannot be reached from here: libs/ifc does not depend on
+        // libs/vtools. A new attribute of the figure is therefore to be added in the two places.
         const QDomElement pleat = toolElement.firstChildElement(QStringLiteral("pleatDisplay"));
         for (QDomElement item = pleat.firstChildElement(QStringLiteral("item")); !item.isNull();
              item = item.nextSiblingElement(QStringLiteral("item")))

@@ -556,15 +556,16 @@ void DialogPlaceLabel::BuildUi()
     configureFx(m_angleFx);
     configureFx(m_visibleFx);
 
-    // Boutons OK / Cancel (équivalent de DialogTool::InitOkCancel, sans .ui).
-    auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    // Bouton OK seul (équivalent de DialogTool::InitOkCancel, sans .ui) : pas d'Annuler dans un dialogue d'outil, il
+    // ne défait rien et induit en erreur — voir DialogTool::InitOkCancel.
+    auto *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
     bOk = buttonBox->button(QDialogButtonBox::Ok);
-    SCASSERT(bOk != nullptr)
-    connect(bOk, &QPushButton::clicked, this, &DialogTool::DialogAccepted);
+    if (bOk == nullptr)
+    {
+        return; // en Release, SCASSERT ne dit rien : sans bouton OK il n'y a rien à câbler
+    }
 
-    QPushButton *bCancel = buttonBox->button(QDialogButtonBox::Cancel);
-    SCASSERT(bCancel != nullptr)
-    connect(bCancel, &QPushButton::clicked, this, &DialogTool::DialogRejected);
+    connect(bOk, &QPushButton::clicked, this, &DialogTool::DialogAccepted);
 
     VAbstractApplication::VApp()->Settings()->GetOsSeparator() ? setLocale(QLocale()) : setLocale(QLocale::c());
 

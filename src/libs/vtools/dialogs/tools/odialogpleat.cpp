@@ -75,7 +75,7 @@ constexpr int kTableHeight = 90;
 
 /** How parallel to a departure line an edge has to be for no cap to exist there — the same tolerance the rule
  *  itself uses to say that the two lines never meet. */
-constexpr qreal kUnusableEdgeTolerance = 1e-7;
+constexpr qreal kUnusableEdgeTolerance = kPleatTolerance;
 
 /** What a departure line that holds no value yet is given while the gesture runs: the caps are judged on the
  *  canvas, and a cap is a direction — no value, however small, changes the answer. */
@@ -284,6 +284,8 @@ auto ODialogPleat::GetDisplay() const -> OPleatDisplay
 void ODialogPleat::SetPleat(const QVector<OPleatDeparture> &departures, bool foldLine)
 {
     m_departures = departures;
+    // The tool holds these lines: they are what the canvas shows, and what the dialog edits waits for Apply.
+    m_applied = departures;
 
     ui->checkBoxFoldLine->setChecked(foldLine);
 
@@ -296,11 +298,66 @@ void ODialogPleat::SetPleat(const QVector<OPleatDeparture> &departures, bool fol
         m_namedPleats = Pleats();
     }
 
-    m_editorRow = departures.isEmpty() ? -1 : 0;
+    // The row the dialog is editing survives a relink: an Apply rebuilds the tool, reconnects the dialog and comes
+    // back through here — jumping to the first line would take the user away from what they were changing.
+    if (m_editorRow < 0 || m_editorRow >= departures.size())
+    {
+        m_editorRow = departures.isEmpty() ? -1 : 0;
+    }
+
     FillDepartures();
     RefreshCapLabels();
     RefreshFoldLineState();
     RefreshFigure();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::SetFigureObjectsInUse(const QSet<quint32> &ids)
+{
+    m_figureInUse = ids;
+    RefreshNotchState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::PleatsBefore(int departure) const -> int
+{
+    int first = 0;
+
+    for (int index = 0; index < departure && index < m_departures.size(); ++index)
+    {
+        first += (m_departures.at(index).kind == OPleatKind::Double) ? 2 : 1;
+    }
+
+    return first;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogPleat::BoxInUse(int pleat, int end, bool notch) const -> bool
+{
+    const auto held = [this](quint32 id) { return id != NULL_ID && m_figureInUse.contains(id); };
+
+    if (notch)
+    {
+        for (const OPleatNotchDisplay &one : m_display.notches)
+        {
+            if (one.pleat == pleat && one.end == end)
+            {
+                return held(one.point) || held(one.curve1) || held(one.curve2);
+            }
+        }
+
+        return false;
+    }
+
+    for (const OPleatMarkDisplay &one : m_display.marks)
+    {
+        if (one.pleat == pleat && one.end == end)
+        {
+            return held(one.point) || held(one.side1) || held(one.side2) || held(one.curve1) || held(one.curve2);
+        }
+    }
+
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -357,25 +414,9 @@ auto ODialogPleat::MakePlan(bool nominal) const -> OPleatPlan
 //---------------------------------------------------------------------------------------------------------------------
 auto ODialogPleat::FailureText(const OPleatPlan &plan) const -> QString
 {
-    switch (plan.failure)
-    {
-        case OPleatFailure::None:
-            return {};
-        case OPleatFailure::DegeneratePrise:
-            return tr("You clicked the same point twice.");
-        case OPleatFailure::DegenerateValue:
-            return tr("Put a pleat value greater than zero.");
-        case OPleatFailure::NoSide:
-            return tr("Every object you selected must be on the same side of the departure lines.");
-        case OPleatFailure::UnresolvedEdge:
-            return tr("The edge was not recognized at one end of a departure line.");
-        case OPleatFailure::EdgeAlongFold:
-            return tr("This edge is parallel to the fold line: no cap is possible here.");
-        case OPleatFailure::NotchOffEdge:
-            return tr("The notch of a pleat falls past the end of the edge it should mark.");
-    }
-
-    return {};
+    // The words are the rule's, not the dialog's: the tool says the very same thing in the pattern's messages when a
+    // pleat it can no longer build comes back from a file.
+    return OPleatFailureText(plan.failure);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -394,11 +435,58 @@ void ODialogPleat::RefreshFoldLineState()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::RefreshNotchState()
 {
+    const int row = m_editorRow;
+    const int pleats = (row >= 0 && row < m_departures.size())
+                           ? ((m_departures.at(row).kind == OPleatKind::Double) ? 2 : 1)
+                           : 0;
+    const int first = PleatsBefore(row);
+
+    const auto capInUse = [this, pleats, first](int end)
+    {
+        for (int rank = 0; rank < pleats; ++rank)
+        {
+            if (BoxInUse(first + rank, end, false))
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const auto notchInUse = [this, pleats, first](int end)
+    {
+        for (int rank = 0; rank < pleats; ++rank)
+        {
+            if (BoxInUse(first + rank, end, true))
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    // An object another tool is built on cannot leave the pattern: the box that carries it is held, and says why by
+    // staying grey — the answer the Delete action gives for a tool that has dependents. The sense box goes with the
+    // cap box of its end: it moves the point, which is allowed, but it means nothing without the cap.
+    const bool cap1 = ui->checkBoxCap1->isEnabled() && pleats > 0 && !capInUse(0);
+    const bool cap2 = ui->checkBoxCap2->isEnabled() && pleats > 0 && !capInUse(1);
+    ui->checkBoxCap1->setEnabled(cap1);
+    ui->checkBoxCap2->setEnabled(cap2);
+    ui->checkBoxCap1Sense->setEnabled(cap1);
+    ui->checkBoxCap2Sense->setEnabled(cap2);
+
     // A notch marks the edge the cap follows: with no cap at that end there is no edge to follow, and the box has
     // nothing to mean. It keeps its state, exactly as the box of the fold line does, so ticking the cap back brings
     // the notch back with it.
-    ui->checkBoxNotch1->setEnabled(ui->checkBoxCap1->isEnabled() && ui->checkBoxCap1->isChecked());
-    ui->checkBoxNotch2->setEnabled(ui->checkBoxCap2->isEnabled() && ui->checkBoxCap2->isChecked());
+    ui->checkBoxNotch1->setEnabled(cap1 && ui->checkBoxCap1->isChecked() && !notchInUse(0));
+    ui->checkBoxNotch2->setEnabled(cap2 && ui->checkBoxCap2->isChecked() && !notchInUse(1));
+
+    // The kind is not a box: it is the second fold itself. Going back to a simple pleat would take the objects of that
+    // fold out of the file, so the combo is held too as long as one of them is used.
+    const bool secondFoldInUse = pleats == 2
+                                 && (BoxInUse(first + 1, 0, false) || BoxInUse(first + 1, 1, false)
+                                     || BoxInUse(first + 1, 0, true) || BoxInUse(first + 1, 1, true));
+    m_kind->setEnabled(m_kind->isEnabled() && !secondFoldInUse);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -420,11 +508,11 @@ void ODialogPleat::RefreshFigure()
 
     // A pleat the dialog did not create yet has nothing in the pattern: the preview is then the only thing that shows
     // what the folds will do. As soon as the operation exists — the dialog reopened on it, or its own Apply having
-    // built it — the pattern draws all of that, and the preview keeps the figure (see OVisToolPleat::SetInPattern).
+    // built it — the pattern draws all of that, and the preview keeps the ends of the gesture (see SetInPattern).
     operation->SetInPattern(this->toolId != NULL_ID);
     operation->SetObjects(SourceToObjects(GetSourceObjects()));
     operation->SetPreviewLines(PreviewLines());
-    operation->SetPleat(ShownDepartures(), m_pending, ui->checkBoxFoldLine->isChecked(), m_editorRow);
+    operation->SetPleat(m_applied, m_pending, m_editorRow);
 
     if (not VAbstractValApplication::VApp()->getCurrentScene()->items().contains(operation))
     {
@@ -454,7 +542,6 @@ void ODialogPleat::FigureOptionChanged()
     }
 
     RefreshFoldLineState();
-    RefreshFigure();
     CheckState();
 }
 
@@ -470,7 +557,6 @@ void ODialogPleat::ValueChanged(bool valid)
         RefreshRow(row);
     }
 
-    RefreshFigure();
     CheckState();
 }
 
@@ -558,13 +644,13 @@ void ODialogPleat::DiscardUnusableEdges(int departure)
             }
 
             const qreal length = QLineF(QPointF(), end.edgeDirection).length();
-            if (length <= 0.)
+            if (length <= kUnusableEdgeTolerance)
             {
                 continue; // nothing was read: the point is asked for anyway
             }
 
             const QPointF edge = end.edgeDirection / length;
-            if (qAbs(edge.x() * alongFold.x() + edge.y() * alongFold.y()) > 1. - kUnusableEdgeTolerance)
+            if (qAbs(edge.x() * alongFold.x() + edge.y() * alongFold.y()) > kPleatParallelCosine)
             {
                 end.edgeDirection = QPointF();
             }
@@ -581,7 +667,8 @@ void ODialogPleat::DiscardUnusableEdges(int departure)
     for (int rank = 0; rank < 2; ++rank)
     {
         OPleatEnd &end = (rank == 1) ? line.second : line.first;
-        if (end.showCap && end.edgePointId == NULL_ID && QLineF(QPointF(), end.edgeDirection).length() > 0.)
+        if (end.showCap && end.edgePointId == NULL_ID
+            && QLineF(QPointF(), end.edgeDirection).length() > kUnusableEdgeTolerance)
         {
             end.edgeDirection = QPointF();
         }
@@ -608,7 +695,7 @@ auto ODialogPleat::AskForEdge() -> bool
                 continue; // no cap there, or the user has already said which point carries its edge
             }
 
-            if (QLineF(QPointF(), end.edgeDirection).length() > 0.)
+            if (QLineF(QPointF(), end.edgeDirection).length() > kUnusableEdgeTolerance)
             {
                 continue; // the tool read the edge from the point's own tool: nothing to ask
             }
@@ -851,6 +938,7 @@ void ODialogPleat::RemoveDeparture()
     }
 
     m_departures.removeAt(row);
+    m_applied = m_departures;
     m_editorRow = qMin(row, static_cast<int>(m_departures.size()) - 1);
     FillDepartures();
     RefreshFoldLineState();
@@ -868,6 +956,7 @@ void ODialogPleat::GoToEditing(int row)
 
     FillDepartures();
 
+    m_applied = m_departures; // the gesture has just laid these lines: they are what the canvas shows
     setModal(true);
     emit ToolTip(QString());
     RefreshFigure();
@@ -1000,6 +1089,7 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
             }
         }
 
+        m_applied = m_departures; // the pair clicked is a line of the pleat: the gesture shows it
         RefreshFigure();
         CheckState();
         return;
@@ -1048,6 +1138,12 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
 
         if (AskForEdge())
         {
+            // The edge was the last thing the gesture was missing: it goes back to picking the points of the next
+            // line, where Enter opens the window. Without this the step stayed on the edge — the next click rewrote
+            // the edge it had just been given, and the window could never be opened again.
+            m_applied = m_departures;
+            m_step = Step::Points;
+            m_pointRank = 0;
             emit ToolTip(PointPrompt());
             RefreshFigure();
         }
@@ -1077,6 +1173,7 @@ void ODialogPleat::ShowVisualization()
 void ODialogPleat::SaveData()
 {
     NameSources(false); // a new count of pleats renames the copies, the same count keeps the names
+    m_applied = ShownDepartures(); // Apply or OK: what the window holds is applied, and the canvas takes it
     RefreshFigure();
     CheckState();
 
@@ -1103,6 +1200,26 @@ void ODialogPleat::changeEvent(QEvent *event)
         m_table->setHorizontalHeaderLabels({tr("Pleat"), tr("Value"), tr("Kind")});
         m_add->setText(tr("Add a pleat"));
         m_remove->setText(tr("Remove the pleat"));
+        m_kind->setItemText(0, tr("Simple"));
+        m_kind->setItemText(1, tr("Double"));
+
+        // The rows of the two forms are added here, not in the .ui: retranslateUi knows nothing of their labels, and
+        // a label the user reads has to follow the language like every other one. They are asked back from the field
+        // they belong to, so nothing has to be kept.
+        const auto relabel = [](QFormLayout *form, QWidget *field, const QString &text)
+        {
+            if (auto *label = qobject_cast<QLabel *>(form->labelForField(field)); label != nullptr)
+            {
+                label->setText(text);
+            }
+        };
+
+        relabel(ui->formLayoutPleat, m_kind, tr("Pleat:"));
+        relabel(ui->formLayoutPleat, m_lineType, tr("Line type:"));
+        relabel(ui->formLayoutPleat, m_lineColor, tr("Line color:"));
+        relabel(ui->formLayoutDisplay, m_foldType, tr("Fold line type:"));
+        relabel(ui->formLayoutDisplay, m_foldColor, tr("Fold line color:"));
+
         for (int row = 0; row < m_departures.size(); ++row)
         {
             RefreshRow(row);

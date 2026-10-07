@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   o-pleatcaprule.h
+ **  @file   opleatcaprule.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   07/10/2026
  **

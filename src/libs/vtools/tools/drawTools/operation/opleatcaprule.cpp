@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   o-pleatcaprule.cpp
+ **  @file   opleatcaprule.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   07/10/2026
  **
@@ -169,7 +169,9 @@ auto MovedCurve(const QSharedPointer<VAbstractCurve> &curve, const QPointF &offs
         return QSharedPointer<VAbstractCurve>(new VArc(circle->Move(length, angle)));
     }
 
-    return curve;
+    // A kind of curve no one has taught this function: answer nothing rather than hand the curve of the pattern
+    // back, which the caller would then rename and recolour in place.
+    return {};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -212,7 +214,8 @@ auto FlippedCurve(const QSharedPointer<VAbstractCurve> &curve, const QLineF &axi
         return QSharedPointer<VAbstractCurve>(new VArc(circle->Flip(axis)));
     }
 
-    return curve;
+    // See MovedCurve: nothing rather than the curve of the pattern itself.
+    return {};
 }
 } // namespace
 

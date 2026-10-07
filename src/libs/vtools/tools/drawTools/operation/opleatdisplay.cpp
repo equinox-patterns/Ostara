@@ -26,6 +26,7 @@
  *************************************************************************/
 
 #include "opleatdisplay.h"
+#include "../ifc/exception/vexceptionbadid.h"
 
 #include <QLineF>
 #include <QPair>
@@ -62,6 +63,7 @@ const QString OPleatDisplay::AttrCopy = QStringLiteral("copy");
 const QString OPleatDisplay::AttrDeparture = QStringLiteral("departure");
 const QString OPleatDisplay::AttrPlace = QStringLiteral("place");
 const QString OPleatDisplay::AttrEnd = QStringLiteral("end");
+const QString OPleatDisplay::AttrPleat = QStringLiteral("pleat");
 const QString OPleatDisplay::AttrPoint = QStringLiteral("point");
 const QString OPleatDisplay::AttrSide1 = QStringLiteral("side1");
 const QString OPleatDisplay::AttrSide2 = QStringLiteral("side2");
@@ -129,7 +131,15 @@ void PlacePoint(quint32 id, const QPointF &position, const QString &name, const 
     point->setIdObject(idTool);
     point->SetShowLabel(false);
 
-    data->UpdateGObject(id, point);
+    try
+    {
+        data->UpdateGObject(id, point);
+    }
+    catch (const VExceptionBadId &)
+    {
+        // The id already carries something else: a file edited by hand, or a figure whose ids were reused. The object
+        // it names is left alone and the figure does without it — as the sibling display does (see OSpreadDisplay).
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -403,6 +413,56 @@ auto OPleatDisplay::Endpoint(const OPleatDisplay &display, const OPleatPlan &pla
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief The entries of the figure put in the order of the plan, each one matched to its pleat and its end by the
+ *  keys the file carries; an end the figure does not hold yet gets a fresh entry, which the caller fills.
+ *
+ *  A rank is not a key: un-ticking the cap of a first end drops an entry, and the rank then hands that id to the
+ *  second end — a point of the pattern would change meaning without moving, with the name and the calque entry that
+ *  go with it. The keys were added for that.
+ *
+ *  A file written before them carries none (@a pleat is negative): its entries are then taken by rank, once — the
+ *  pass gives them their keys, and everything after that is matched. */
+template <class Entry, class FigureKey, class PlanKey>
+auto OrderedByPlan(const QVector<Entry> &figure, int count, FigureKey figureKey, PlanKey planKey) -> QVector<Entry>
+{
+    QVector<Entry> ordered;
+    ordered.reserve(count);
+
+    QVector<bool> taken(figure.size(), false);
+
+    for (int i = 0; i < count; ++i)
+    {
+        const auto wanted = planKey(i);
+        bool found = false;
+
+        for (int j = 0; j < figure.size(); ++j)
+        {
+            if (not taken.at(j) && figure.at(j).pleat >= 0 && figureKey(figure.at(j)) == wanted)
+            {
+                ordered.append(figure.at(j));
+                taken[j] = true;
+                found = true;
+                break;
+            }
+        }
+
+        if (not found && i < figure.size() && not taken.at(i) && figure.at(i).pleat < 0)
+        {
+            ordered.append(figure.at(i));
+            taken[i] = true;
+            found = true;
+        }
+
+        if (not found)
+        {
+            ordered.append(Entry{});
+        }
+    }
+
+    return ordered;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDeparture> &departures, bool foldLine,
                               const OPleatPlan &plan, const QVector<SourceItem> &source,
                               const QVector<DestinationItem> &destination, VContainer *data)
@@ -455,11 +515,22 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
         }
     }
 
-    for (quint32 &line : display.foldLines)
+    // A fold line joins the two caps of its pleat: with one of them turned off there is nothing to press along, and
+    // the line is not drawn (see CreateDisplayObjects). Its id must then not be reserved either — written in the file,
+    // it would tell the test that chooses the parse "nothing has changed" while the line has no tool at all, and the
+    // pass that puts the cap back, being lite, would never build it: BuildLine only builds on a full parse. The line
+    // comes back because its id does, and a new one makes the figure see the change.
+    for (int pleat = 0; pleat < display.foldLines.size() && pleat < plan.PleatCount(); ++pleat)
     {
-        if (line == NULL_ID)
+        if (plan.Mark(pleat, 0) == nullptr || plan.Mark(pleat, 1) == nullptr)
         {
-            line = data->getNextId();
+            display.foldLines[pleat] = NULL_ID;
+            continue;
+        }
+
+        if (display.foldLines.at(pleat) == NULL_ID)
+        {
+            display.foldLines[pleat] = data->getNextId();
         }
     }
 
@@ -508,19 +579,23 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
         }
     }
 
+    // The marks are put in the order of the plan, matched by the keys the file carries (see OrderedByPlan): what
+    // follows reads plan.marks[i] and display.marks[i] as the same end, which a rank alone did not guarantee.
+    display.marks = OrderedByPlan(display.marks, static_cast<int>(plan.marks.size()),
+                                  [](const OPleatMarkDisplay &one) { return QPair<int, int>(one.pleat, one.end); },
+                                  [&plan](int i) { return QPair<int, int>(plan.marks.at(i).pleat, plan.marks.at(i).end); });
+
     for (int i = 0; i < display.marks.size() && i < plan.marks.size(); ++i)
     {
         OPleatMarkDisplay &mark = display.marks[i];
         const OPleatMark &resolved = plan.marks.at(i);
         const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
 
-        if (mark.pleat != resolved.pleat || mark.end != resolved.end)
-        {
-            // The mark describes another end than it did: its name described that other end too.
-            mark.name.clear();
-            mark.pleat = resolved.pleat;
-            mark.end = resolved.end;
-        }
+        // The entry is the one of this end: the order above matched them by key. Only a file written before the keys
+        // carries another number here, and the name it holds is the right one — it is kept, and the keys are written
+        // with it so that the next pass matches like the others.
+        mark.pleat = resolved.pleat;
+        mark.end = resolved.end;
 
         if (mark.point == NULL_ID)
         {
@@ -579,7 +654,10 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
 
     // The notches, in the order of the plan, exactly like the marks: the plan says which end asks for one, and
     // the figure only says where it stands and what it cuts there.
-    display.notches.resize(plan.notches.size());
+    display.notches = OrderedByPlan(
+        display.notches, static_cast<int>(plan.notches.size()),
+        [](const OPleatNotchDisplay &one) { return QPair<int, int>(one.pleat, one.end); },
+        [&plan](int i) { return QPair<int, int>(plan.notches.at(i).pleat, plan.notches.at(i).end); });
 
     for (int i = 0; i < display.notches.size() && i < plan.notches.size(); ++i)
     {
@@ -587,13 +665,9 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
         const OPleatNotch &resolved = plan.notches.at(i);
         const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
 
-        if (notch.pleat != resolved.pleat || notch.end != resolved.end)
-        {
-            // The notch describes another end than it did: its name described that other end too.
-            notch.name.clear();
-            notch.pleat = resolved.pleat;
-            notch.end = resolved.end;
-        }
+        // Same as the marks: matched by key above, so the name is the one of this end.
+        notch.pleat = resolved.pleat;
+        notch.end = resolved.end;
 
         if (notch.point == NULL_ID)
         {
@@ -807,6 +881,28 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPleatDisplay::ObjectIds(const QDomElement &element) -> QSet<quint32>
+{
+    QSet<quint32> ids;
+    const QDomElement display = element.firstChildElement(TagDisplay);
+
+    for (QDomElement item = display.firstChildElement(VAbstractOperation::TagItem); not item.isNull();
+         item = item.nextSiblingElement(VAbstractOperation::TagItem))
+    {
+        for (const QString &attribute :
+             {AttrLine, AttrFoldLine, AttrCopy, AttrPoint, AttrSide1, AttrSide2, AttrNotch, AttrCurve1, AttrCurve2})
+        {
+            if (const quint32 id = item.attribute(attribute).toUInt(); id != NULL_ID)
+            {
+                ids.insert(id);
+            }
+        }
+    }
+
+    return ids;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPleatDisplay::PointImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>
 {
     QVector<quint32> ids;
@@ -927,6 +1023,11 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
 
     for (const quint32 line : std::as_const(display.foldLines))
     {
+        if (line == NULL_ID)
+        {
+            continue; // the pleat draws no fold line: nothing to write, and no id to hold for it
+        }
+
         QDomElement item = doc->createElement(VAbstractOperation::TagItem);
         doc->SetAttribute(item, AttrFoldLine, line);
         element.appendChild(item);
@@ -954,6 +1055,8 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
     for (const OPleatMarkDisplay &mark : std::as_const(display.marks))
     {
         QDomElement item = doc->createElement(VAbstractOperation::TagItem);
+        doc->SetAttribute(item, AttrPleat, static_cast<quint32>(mark.pleat));
+        doc->SetAttribute(item, AttrEnd, static_cast<quint32>(mark.end));
         if (mark.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrPoint, mark.point);
@@ -984,6 +1087,8 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
     for (const OPleatNotchDisplay &notch : std::as_const(display.notches))
     {
         QDomElement item = doc->createElement(VAbstractOperation::TagItem);
+        doc->SetAttribute(item, AttrPleat, static_cast<quint32>(notch.pleat));
+        doc->SetAttribute(item, AttrEnd, static_cast<quint32>(notch.end));
         if (notch.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrNotch, notch.point);
@@ -1033,6 +1138,13 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
             if (item.hasAttribute(AttrNotch))
             {
                 OPleatNotchDisplay notch;
+                // A negative pleat says the file was written before the keys: the entry will be taken by rank, once.
+                notch.pleat = item.hasAttribute(AttrPleat)
+                                  ? static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrPleat, u"0"_s))
+                                  : -1;
+                notch.end = item.hasAttribute(AttrEnd)
+                                ? static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrEnd, u"0"_s))
+                                : -1;
                 notch.point = VAbstractPattern::GetParametrUInt(item, AttrNotch, NULL_ID_STR);
                 notch.curve1 = VAbstractPattern::GetParametrUInt(item, AttrCurve1, NULL_ID_STR);
                 notch.curve2 = VAbstractPattern::GetParametrUInt(item, AttrCurve2, NULL_ID_STR);
@@ -1042,6 +1154,13 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
             else if (item.hasAttribute(AttrPoint))
             {
                 OPleatMarkDisplay mark;
+                // See the notches: a negative pleat marks a file written before the keys.
+                mark.pleat = item.hasAttribute(AttrPleat)
+                                 ? static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrPleat, u"0"_s))
+                                 : -1;
+                mark.end = item.hasAttribute(AttrEnd)
+                               ? static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrEnd, u"0"_s))
+                               : -1;
                 mark.point = VAbstractPattern::GetParametrUInt(item, AttrPoint, NULL_ID_STR);
                 mark.side1 = VAbstractPattern::GetParametrUInt(item, AttrSide1, NULL_ID_STR);
                 mark.side2 = VAbstractPattern::GetParametrUInt(item, AttrSide2, NULL_ID_STR);

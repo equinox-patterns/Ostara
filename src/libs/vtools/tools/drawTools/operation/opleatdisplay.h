@@ -128,6 +128,7 @@ struct OPleatDisplay
     static const QString AttrDeparture;
     static const QString AttrPlace;
     static const QString AttrEnd;
+    static const QString AttrPleat;
     static const QString AttrPoint;
     static const QString AttrSide1;
     static const QString AttrSide2;
@@ -232,6 +233,15 @@ struct OPleatDisplay
      *  moving from its straight tracings to the curve itself, or back, changes this set: such a change is a full
      *  parse, and that is what takes the tools it leaves behind off the canvas. */
     static auto LineIds(const QDomElement &element) -> QSet<quint32>;
+
+    /** @brief Every object the figure names, whatever the item holds: the lines of the places, the fold lines, the
+     *  copies of the points, the points, the sides and the curves of the caps, and the points and the curves of the
+     *  notches.
+     *
+     *  The class that owns the format answers for it, so a new attribute is added once. libs/ifc reads the same list
+     *  for the calques and cannot lean on vtools (see VAbstractPattern::LayerableObjectsOfTool, which carries the
+     *  copy on purpose). */
+    static auto ObjectIds(const QDomElement &element) -> QSet<quint32>;
 };
 
 #endif // OPLEATDISPLAY_H

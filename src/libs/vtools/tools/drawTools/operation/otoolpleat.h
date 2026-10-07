@@ -117,10 +117,6 @@ public:
      *  each end, and the value and the kind of the pleat taken on each of them. Where the ends are, and which way the
      *  edge runs there, are recomputed by every parse. */
     auto Departures() const -> const QVector<OPleatDeparture> & { return m_departures; }
-    auto DepartureCount() const -> int { return static_cast<int>(m_departures.size()); }
-
-    /** @brief How many pleats the departure lines make: one per simple line, two per double one. */
-    auto PleatCount() const -> int;
 
     auto IsFoldLineShown() const -> bool { return m_foldLine; }
     void SetFoldLineShown(bool show);
@@ -130,7 +126,14 @@ public:
     auto FoldLinePossible() const -> bool;
 
     auto Display() const -> const OPleatDisplay & { return m_display; }
-    void SetDisplay(const OPleatDisplay &display);
+
+    /** @brief The objects of the figure another tool is built on: a point or a curve a piece, a line or any other
+     *  tool reads by its id.
+     *
+     *  Such an object cannot be taken out of the pattern: the box that carries it stays grey in the dialog, exactly
+     *  as the Delete action refuses a tool that has dependents. It is the figure's points and curves that are asked,
+     *  never the copies — a copy belongs to the operation and goes away with it (see IsRemovable). */
+    auto FigureObjectsInUse() const -> QSet<quint32>;
 
     auto DisplayLineType() const -> QString { return m_display.lineTypeLine; }
     void SetDisplayLineType(const QString &typeLine);
@@ -154,6 +157,15 @@ public:
      *  its two points where they are, whenever the layer is created. */
     auto KeptInPlace() const -> QSet<quint32> override;
 
+public slots:
+    /** @brief Give the figure the items of the objects the parse has just created, and take away those of the
+     *  objects it no longer holds.
+     *
+     *  A lite parse creates the objects of the figure in the container and never removes one — only a full parse
+     *  empties it — so the scene follows the *figure*, never what the container happens to hold: what the file no
+     *  longer names loses its item, and what it names gains one. */
+    void FullUpdateFromFile() override;
+
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
 
@@ -172,14 +184,6 @@ protected:
 
     auto FigureFollowsLiteParse(const QDomElement &oldElement, const QDomElement &newElement) const -> bool override;
 
-    /** @brief Give the figure the items of the objects the parse has just created, and take away those of the
-     *  objects it no longer holds.
-     *
-     *  A lite parse creates the objects of the figure in the container and never removes one — only a full parse
-     *  empties it — so the scene follows the *figure*, never what the container happens to hold: what the file no
-     *  longer names loses its item, and what it names gains one. */
-    void FullUpdateFromFile() override;
-
     auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;
 
 private:
@@ -188,6 +192,13 @@ private:
     QVector<OPleatDeparture> m_departures{};
     bool m_foldLine{true};
     OPleatDisplay m_display{};
+
+    /** @brief The two points of the departure line of the first pleat: the fold the whole operation is taken on, and
+     *  the pair a layer must leave where they are (see the override of KeptInPlace).
+     *
+     *  Written once, because the creation and the override answer the same question — they were written twice, and the
+     *  spec keeps the defect it cost: a layer ticked after the fact did not follow the exclusion on one of the two. */
+    static auto KeptInPlace(const QVector<OPleatDeparture> &departures) -> QSet<quint32>;
 
     explicit OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent = nullptr);
 
