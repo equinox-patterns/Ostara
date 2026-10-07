@@ -58,7 +58,7 @@
             <bool>true</bool>
            </property>
            <property name="placeholderText">
-            <string notr="true">Path to the pattern file.</string>
+            <string>Path to the pattern file.</string>
            </property>
           </widget>
          </item>

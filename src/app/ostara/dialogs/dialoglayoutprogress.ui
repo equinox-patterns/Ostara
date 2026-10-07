@@ -71,7 +71,7 @@
      <item>
       <widget class="QLabel" name="labelMessage">
        <property name="text">
-        <string notr="true">Efficiency coefficient: -</string>
+        <string>Efficiency coefficient: -</string>
        </property>
       </widget>
      </item>

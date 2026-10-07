@@ -99,7 +99,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="198"/>
         <source>change the layer of the tool</source>
-        <translation type="unfinished"></translation>
+        <translation>changer le calque de l&apos;outil</translation>
     </message>
 </context>
 <context>
@@ -3208,6 +3208,14 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <source>Please, select unique number for each column</source>
         <translation>Sélectionnez un chiffre unique pour chaque colonne</translation>
     </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nom :</translation>
+    </message>
+    <message>
+        <source>Value:</source>
+        <translation>Valeur :</translation>
+    </message>
 </context>
 <context>
     <name>DialogInsertNode</name>
@@ -3291,6 +3299,10 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <location filename="../../src/app/ostara/dialogs/dialoglayoutprogress.cpp" line="116"/>
         <source>Efficiency coefficient: %1%</source>
         <translation>Coefficient d’efficacité : %1%</translation>
+    </message>
+    <message>
+        <source>Efficiency coefficient: -</source>
+        <translation>Coefficient d’efficacité : -</translation>
     </message>
 </context>
 <context>
@@ -5049,6 +5061,10 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogpatternproperties.cpp" line="498"/>
         <source>Unable to show image. Error: %1</source>
         <translation>Impossible d&apos;afficher l&apos;image. Erreur : %1</translation>
+    </message>
+    <message>
+        <source>Path to the pattern file.</source>
+        <translation>Chemin du fichier du patron.</translation>
     </message>
 </context>
 <context>
@@ -8165,33 +8181,33 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Outil</translation>
+        <translation>Outil</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="62"/>
         <source>Angle</source>
-        <translation type="unfinished">Angle</translation>
+        <translation>Angle</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="67"/>
         <source>Length</source>
-        <translation type="unfinished">Longueur</translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="73"/>
         <source>Rotation</source>
-        <translation type="unfinished">Rotation</translation>
+        <translation>Rotation</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="81"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="136"/>
         <source>Name:</source>
-        <translation type="unfinished">Nom :</translation>
+        <translation>Nom :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="88"/>
@@ -8215,7 +8231,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="110"/>
         <source>Layer</source>
-        <translation type="unfinished">Calque</translation>
+        <translation>Calque</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="122"/>
@@ -8235,7 +8251,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="153"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished">Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
+        <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="166"/>
@@ -8249,12 +8265,12 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="186"/>
         <source>Ready</source>
-        <translation type="unfinished">Prêt</translation>
+        <translation>Prêt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="219"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished">Vous pouvez ajouter une note ici…</translation>
+        <translation>Vous pouvez ajouter une note ici…</translation>
     </message>
 </context>
 <context>
@@ -11400,6 +11416,55 @@ Cette action ne peut pas être annulée.</translation>
         <source>Select the dart point</source>
         <translation>Sélectionner la pointe de la pince</translation>
     </message>
+    <message numerus="yes">
+        <source> · %n piece(s)</source>
+        <translation>
+            <numerusform> · %n pièce</numerusform>
+            <numerusform> · %n pièces</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source> · %n mat(s)</source>
+        <translation>
+            <numerusform> · %n tapis</numerusform>
+            <numerusform> · %n tapis</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source> · %n pages (cover page included)</source>
+        <translation>
+            <numerusform> · %n page (page de garde comprise)</numerusform>
+            <numerusform> · %n pages (page de garde comprise)</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source> · %n pages</source>
+        <translation>
+            <numerusform> · %n page</numerusform>
+            <numerusform> · %n pages</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n file(s) written to %1</source>
+        <translation>
+            <numerusform>%n fichier écrit dans %1</numerusform>
+            <numerusform>%n fichiers écrits dans %1</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n file(s) could not be written:</source>
+        <translation>
+            <numerusform>%n fichier n&apos;a pas pu être écrit :</numerusform>
+            <numerusform>%n fichiers n&apos;ont pas pu être écrits :</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n file(s) left untouched:</source>
+        <translation>
+            <numerusform>%n fichier laissé intact :</numerusform>
+            <numerusform>%n fichiers laissés intacts :</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
@@ -14045,18 +14110,18 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="101"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="426"/>
         <source>Angle:</source>
-        <translation type="unfinished">Angle :</translation>
+        <translation>Angle :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="103"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Modifier l&apos;angle</translation>
+        <translation>Modifier l&apos;angle</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="109"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="427"/>
         <source>Length:</source>
-        <translation type="unfinished">Longueur :</translation>
+        <translation>Longueur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="111"/>
@@ -14098,27 +14163,27 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="442"/>
         <source>Ready</source>
-        <translation type="unfinished">Prêt</translation>
+        <translation>Prêt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="447"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished">Nom de calque invalide</translation>
+        <translation>Nom de calque invalide</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="514"/>
         <source>Invalid angle formula</source>
-        <translation type="unfinished">La formule de l&apos;angle est non valide</translation>
+        <translation>La formule de l&apos;angle est non valide</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="529"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">La formule de la longueur est non valide</translation>
+        <translation>La formule de la longueur est non valide</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="691"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
-        <translation type="unfinished">La longueur ne peut pas dépasser le diamètre du cercle (%1%2).</translation>
+        <translation>La longueur ne peut pas dépasser le diamètre du cercle (%1%2).</translation>
     </message>
 </context>
 <context>
@@ -18665,6 +18730,10 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.ui" line="211"/>
         <source>Interactive tools</source>
         <translation>Mode outils interactifs</translation>
+    </message>
+    <message>
+        <source>&lt; With OS options &gt;</source>
+        <translation>&lt; Celui du système &gt;</translation>
     </message>
 </context>
 <context>
@@ -29840,7 +29909,7 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="926"/>
         <source>Select the objects to remove, then press Enter to confirm — Escape cancels. Magenta is what can be removed: an object must always stay in one layer, so only what another layer holds can go.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez les objets à retirer, puis appuyez sur Entrée pour confirmer — Échap annule. Le magenta est ce qui peut être retiré : un objet doit toujours rester dans un calque, donc seuls ceux qu&apos;un autre calque contient peuvent partir.</translation>
     </message>
     <message>
         <source>No object of this layer can be drawn — there is nothing to transfer.</source>
@@ -30857,7 +30926,7 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     </message>
     <message>
         <source>This edge is parallel to the fold line: no cap is possible here.</source>
-        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&amp;apos;est possible ici.</translation>
+        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&apos;est possible ici.</translation>
     </message>
     <message>
         <source>Pleat</source>
@@ -31022,6 +31091,10 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>Pleat</source>
         <translation>Pli</translation>
     </message>
+    <message>
+        <source>Pleats</source>
+        <translation>Plis</translation>
+    </message>
         <message>
             <source>show the fold lines</source>
             <translation>afficher les lignes de pli</translation>
@@ -31069,6 +31142,149 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <source>hide the fold</source>
         <translation>masquer le pli</translation>
+    </message>
+</context>
+<context>
+    <name>ODialogPleat</name>
+    <message>
+        <source>Pleat</source>
+        <translation>Pli</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Valeur</translation>
+    </message>
+    <message>
+        <source>Kind</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <source>Add a pleat</source>
+        <translation>Ajouter un pli</translation>
+    </message>
+    <message>
+        <source>Remove the pleat</source>
+        <translation>Retirer le pli</translation>
+    </message>
+    <message>
+        <source>Value of the finished pleat:</source>
+        <translation>Valeur du pli fini :</translation>
+    </message>
+    <message>
+        <source>Value of the finished pleat</source>
+        <translation>Valeur du pli fini</translation>
+    </message>
+    <message>
+        <source>Simple</source>
+        <translation>Simple</translation>
+    </message>
+    <message>
+        <source>Double</source>
+        <translation>Double</translation>
+    </message>
+    <message>
+        <source>Pleat:</source>
+        <translation>Pli :</translation>
+    </message>
+    <message>
+        <source>Line type:</source>
+        <translation>Style de tracé :</translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation>Couleur du tracé :</translation>
+    </message>
+    <message>
+        <source>Fold line type:</source>
+        <translation>Type de la ligne de pli :</translation>
+    </message>
+    <message>
+        <source>Fold line color:</source>
+        <translation>Couleur de la ligne de pli :</translation>
+    </message>
+    <message>
+        <source>You clicked the same point twice.</source>
+        <translation>Vous avez cliqué deux fois le même point.</translation>
+    </message>
+    <message>
+        <source>Put a pleat value greater than zero.</source>
+        <translation>Mettez une valeur de pli supérieure à zéro.</translation>
+    </message>
+    <message>
+        <source>Every object you selected must be on the same side of the departure lines.</source>
+        <translation>Tous les objets sélectionnés doivent être du même côté des lignes de départ.</translation>
+    </message>
+    <message>
+        <source>The edge was not recognized at one end of a departure line.</source>
+        <translation>Le bord n&apos;a pas été reconnu à une extrémité d&apos;une ligne de départ.</translation>
+    </message>
+    <message>
+        <source>This edge is parallel to the fold line: no cap is possible here.</source>
+        <translation>Ce bord est parallèle à la ligne de pli : aucun chapeau n&apos;est possible ici.</translation>
+    </message>
+    <message>
+        <source>The notch of a pleat falls past the end of the edge it should mark.</source>
+        <translation>Le cran d&apos;un pli tombe au-delà du bord qu&apos;il doit marquer.</translation>
+    </message>
+    <message>
+        <source>Click the two points of the first departure line.</source>
+        <translation>Cliquez les deux points de la première ligne de départ.</translation>
+    </message>
+    <message>
+        <source>Invalid layer name</source>
+        <translation>Nom de calque invalide</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation>Prêt</translation>
+    </message>
+    <message>
+        <source>The edge is not recognized at the cap of point 1 (green): click a point of the piece&apos;s outline, right next to it</source>
+        <translation>Le bord n&apos;est pas reconnu au chapeau du point 1 (le vert) : cliquez un point du contour de la pièce, juste à côté.</translation>
+    </message>
+    <message>
+        <source>The edge is not recognized at the cap of point 2 (red): click a point of the piece&apos;s outline, right next to it</source>
+        <translation>Le bord n&apos;est pas reconnu au chapeau du point 2 (le rouge) : cliquez un point du contour de la pièce, juste à côté.</translation>
+    </message>
+    <message>
+        <source>Cap 1:</source>
+        <translation>Chapeau 1 :</translation>
+    </message>
+    <message>
+        <source>Cap 2:</source>
+        <translation>Chapeau 2 :</translation>
+    </message>
+    <message>
+        <source>Click point 1 of the departure line of pleat 1 (it turns green)</source>
+        <translation>Cliquez le point 1 de la ligne de départ du pli 1 (il devient vert)</translation>
+    </message>
+    <message>
+        <source>Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish</source>
+        <translation>Cliquez le point 1 de la ligne de départ du pli %1 (il devient vert), ou %2 pour terminer</translation>
+    </message>
+    <message>
+        <source>Click point 2 of the departure line of pleat %1 (it turns red)</source>
+        <translation>Cliquez le point 2 de la ligne de départ du pli %1 (il devient rouge)</translation>
+    </message>
+    <message>
+        <source>Pleat %1</source>
+        <translation>Pli %1</translation>
+    </message>
+    <message>
+        <source>Select the objects of the contour, then %1</source>
+        <translation>Sélectionnez les objets du contour, puis %1</translation>
+    </message>
+    <message>
+        <source>A departure line is made of two points</source>
+        <translation>Une ligne de départ se fait avec deux points</translation>
+    </message>
+    <message>
+        <source>This point is not one of the objects you selected: click a point of the contour</source>
+        <translation>Ce point ne fait pas partie des objets sélectionnés : cliquez un point du contour</translation>
+    </message>
+    <message>
+        <source>Click a point of the outline, right next to it</source>
+        <translation>Cliquez un point du contour de la pièce, juste à côté</translation>
     </message>
 </context>
 </TS>

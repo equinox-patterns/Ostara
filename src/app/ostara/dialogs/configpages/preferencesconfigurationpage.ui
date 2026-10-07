@@ -127,7 +127,7 @@
               <item row="2" column="1">
                <widget class="QCheckBox" name="osOptionCheck">
                 <property name="text">
-                 <string notr="true">&lt; With OS options &gt;</string>
+                 <string>&lt; With OS options &gt;</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>

@@ -73,7 +73,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="labelName">
           <property name="text">
-           <string notr="true">Name:</string>
+           <string>Name:</string>
           </property>
          </widget>
         </item>
@@ -83,7 +83,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="labelValue">
           <property name="text">
-           <string notr="true">Value:</string>
+           <string>Value:</string>
           </property>
          </widget>
         </item>
