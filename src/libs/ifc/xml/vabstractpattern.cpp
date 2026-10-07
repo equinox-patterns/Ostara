@@ -3244,9 +3244,10 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
 
         // The figure of a pleat: the departure lines and the places the folds carried them to, the fold lines, the
         // points the operation carries itself — the caps, and the notches of the ends that ask for one — and the
-        // two sides of every cap. The two halves a notch cuts its edge into are curves, and a curve answers to its
-        // own id, exactly like a line. An item with no attribute at all is a place the operation stands for by
-        // itself, and names nothing.
+        // sides of every cap, which are lines where the edge is straight and the curve of the edge itself where it
+        // is not. The two halves a notch cuts its edge into are curves too, and a curve answers to its own id,
+        // exactly like a line. An item with no attribute at all is a place the operation stands for by itself, and
+        // names nothing.
         const QDomElement pleat = toolElement.firstChildElement(QStringLiteral("pleatDisplay"));
         for (QDomElement item = pleat.firstChildElement(QStringLiteral("item")); !item.isNull();
              item = item.nextSiblingElement(QStringLiteral("item")))

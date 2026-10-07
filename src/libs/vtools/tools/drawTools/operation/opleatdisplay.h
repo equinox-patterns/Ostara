@@ -44,8 +44,15 @@ class VContainer;
  * @brief The point that materializes the cap of one end of one pleat, and the two sides that make it a cap.
  *
  * @a point is the apex of the V — or the middle of the opening when the edge is parallel to the move and there is
- * no V to draw, in which case @a side1 and @a side2 stay NULL_ID and the point stands alone. @a side1 joins the
- * apex to the departure line, @a side2 to that line carried by the move: those are the two tracés of a dart cap.
+ * no V to draw, in which case the sides stay NULL_ID and the point stands alone.
+ *
+ * The two sides are either two **lines** or two **curves**, and never both: a straight edge is its own image by the
+ * fold, so the two straight tracings are exact there and @a side1 and @a side2 carry them — @a side1 joining the
+ * apex to the departure line, @a side2 to that line carried by the move. A curved edge is not a line, and the two
+ * sides then follow the curve itself: @a curve1 is the piece of the edge that runs from the point of the departure
+ * line to the apex, @a curve2 that piece flipped about the fold line, and the two line ids are left empty (see
+ * OPleatCapRule). Whichever pair is held, the ids of the other are NULL_ID, or the file would name objects the
+ * parse will never make.
  *
  * @a pleat is the index of the pleat among all the pleats of the operation, and @a end 0 for the first point of
  * its departure line, 1 for the other: the plan numbers its marks the same way.
@@ -57,6 +64,8 @@ struct OPleatMarkDisplay
     quint32 point{NULL_ID};
     quint32 side1{NULL_ID};
     quint32 side2{NULL_ID};
+    quint32 curve1{NULL_ID};
+    quint32 curve2{NULL_ID};
     QString name{};
 };
 
@@ -204,19 +213,24 @@ struct OPleatDisplay
      *  by itself. */
     static auto PointImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>;
 
-    /** @brief The ids of the curves the display cut for its notches: the two halves of every edge a notch was
-     *  placed on. The operation owns them exactly as it owns the points of its figure, and a curve answers to its
-     *  own id in a layer. */
+    /** @brief The ids of the curves the display cut for its notches and drew for its caps: the two halves of every
+     *  edge a notch was placed on, and the two sides of every cap a curve carries.
+     *
+     *  The operation owns them exactly as it owns the points of its figure, and a curve answers to its own id in a
+     *  layer. The sides of a cap are drawn, where the halves of a notch stay unseen: the figure shows the V, and the
+     *  edge still draws itself whole through the notch. */
     static auto CurveImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>;
 
     static void Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDisplay &display);
     static auto Extract(const QDomElement &domElement) -> OPleatDisplay;
 
     /** @brief The ids of the lines the figure an element holds is made of: the places of the departure lines, the
-     *  fold lines, and the two sides of every cap.
+     *  fold lines, and the two sides of every cap a line carries — a cap a curve carries has no line of its own.
      *
      *  A line is a tool of the pattern, and only a full parse builds one — so this is what tells a change of the
-     *  figure a lite parse can carry from one it cannot (see VAbstractOperation::FigureFollowsLiteParse). */
+     *  figure a lite parse can carry from one it cannot (see VAbstractOperation::FigureFollowsLiteParse). A cap
+     *  moving from its straight tracings to the curve itself, or back, changes this set: such a change is a full
+     *  parse, and that is what takes the tools it leaves behind off the canvas. */
     static auto LineIds(const QDomElement &element) -> QSet<quint32>;
 };
 

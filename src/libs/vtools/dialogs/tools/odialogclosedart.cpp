@@ -460,6 +460,13 @@ void ODialogCloseDart::RefreshPreview()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogCloseDart::ShowVisualization()
 {
+    if (vis.isNull())
+    {
+        // A full parse clears the scene and takes this preview with it, while the dialog stays up (see
+        // DialogTool::RebuildVisualization): it is built again, and the values the dialog shows follow.
+        vis = new OVisToolCloseDart(&this->data);
+    }
+
     AddVisualization<OVisToolCloseDart>();
 }
 

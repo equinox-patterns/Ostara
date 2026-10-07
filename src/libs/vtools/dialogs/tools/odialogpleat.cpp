@@ -307,92 +307,11 @@ void ODialogPleat::SetPleat(const QVector<OPleatDeparture> &departures, bool fol
 void ODialogPleat::SetDisplay(const OPleatDisplay &display)
 {
     m_display = display;
-    m_figureLines = HeldLines(display); // what the operation draws: the state of the window is compared to it
 
     ChangeCurrentData(m_lineType, display.lineTypeLine);
     SetColorComboCurrentName(m_lineColor, display.lineColor);
     ChangeCurrentData(m_foldType, display.foldTypeLine);
     SetColorComboCurrentName(m_foldColor, display.foldColor);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::HeldLines(const OPleatDisplay &display) -> FigureLines
-{
-    FigureLines lines;
-    lines.places = static_cast<int>(display.lines.size());
-    lines.foldLines = static_cast<int>(display.foldLines.size());
-
-    for (const OPleatMarkDisplay &mark : display.marks)
-    {
-        if (mark.side1 != NULL_ID)
-        {
-            lines.markSides += 2; // both sides of the V, or neither of them
-        }
-    }
-
-    return lines;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::CurrentLines(const QVector<OPleatDeparture> &departures, bool foldLine) const -> FigureLines
-{
-    FigureLines lines;
-    if (departures.isEmpty())
-    {
-        return lines;
-    }
-
-    const OPleatPlan plan = MakePlan(false);
-    if (plan.failure != OPleatFailure::None)
-    {
-        return lines; // the rule refused the pleats: no figure is drawn, and nothing is held
-    }
-
-    lines.places = OPleatDisplay::LineCount(departures);
-    lines.foldLines = foldLine ? plan.PleatCount() : 0;
-
-    for (const OPleatMark &mark : plan.marks)
-    {
-        if (not mark.flat)
-        {
-            lines.markSides += 2; // an edge running along the move has no V to draw, and so no side
-        }
-    }
-
-    return lines;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogPleat::LinesChanged() const -> bool
-{
-    if (this->toolId == NULL_ID)
-    {
-        return false; // a pleat being created: nothing of it is in the pattern yet, and OK builds the whole of it
-    }
-
-    const FigureLines shown = CurrentLines(ShownDepartures(), ui->checkBoxFoldLine->isChecked());
-    return shown.places != m_figureLines.places || shown.foldLines != m_figureLines.foldLines
-           || shown.markSides != m_figureLines.markSides;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::CheckState()
-{
-    DialogOperationTool::CheckState();
-
-    if (bApply == nullptr || not bApply->isEnabled() || not LinesChanged())
-    {
-        return;
-    }
-
-    // A cap turned off or on, the fold lines, a pleat added: the figure would draw one line more or one less, and
-    // only a full parse builds a line — the very parse that would rebuild the operation and reject this dialog. The
-    // change therefore waits for OK, as every structural change of an operation does. What the figure only draws as
-    // points and curves — the notch of an end, and the two halves it cuts its edge into — is applied in place: the
-    // tool gives those objects their item on the parse the change asks for.
-    bApply->setEnabled(false);
-    bApply->setToolTip(tr("Adding or removing objects can't be applied while the dialog stays open. "
-                          "Use OK to confirm."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1144,6 +1063,13 @@ void ODialogPleat::OnSourceObjectsSet()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::ShowVisualization()
 {
+    if (vis.isNull())
+    {
+        // A full parse clears the scene and takes this preview with it, while the dialog stays up (see
+        // DialogTool::RebuildVisualization): it is built again, and the values the dialog shows follow.
+        vis = new OVisToolPleat(&this->data);
+    }
+
     AddVisualization<OVisToolPleat>();
 }
 

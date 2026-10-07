@@ -286,7 +286,8 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
     {
         const OPleatMarkDisplay &one = left.marks.at(i);
         const OPleatMarkDisplay &other = right.marks.at(i);
-        if (one.point != other.point || one.side1 != other.side1 || one.side2 != other.side2 || one.name != other.name)
+        if (one.point != other.point || one.side1 != other.side1 || one.side2 != other.side2
+            || one.curve1 != other.curve1 || one.curve2 != other.curve2 || one.name != other.name)
         {
             return false;
         }
@@ -696,6 +697,19 @@ void OToolPleat::AttachFigureToLayer()
         if (mark.point != NULL_ID)
         {
             objects.append(qMakePair(mark.point, m_id));
+        }
+    }
+
+    for (const OPleatMarkDisplay &mark : std::as_const(m_display.marks))
+    {
+        // The two sides of a cap a curve carries: a curve answers to its own id, exactly as a line does, and both
+        // sides are the figure — they are what the pattern shows of the cap.
+        for (const quint32 id : {mark.curve1, mark.curve2})
+        {
+            if (id != NULL_ID)
+            {
+                objects.append(qMakePair(id, id));
+            }
         }
     }
     for (const OPleatNotchDisplay &notch : std::as_const(m_display.notches))

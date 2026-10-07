@@ -441,6 +441,9 @@
                                       <xs:attribute name="place" type="xs:unsignedInt"/>
                                       <xs:attribute name="end" type="xs:unsignedInt"/>
                                       <xs:attribute name="point" type="xs:unsignedInt"/>
+                                      <!-- The two sides of a cap: two straight tracings where a line carries the
+                                           edge, and, where a curve carries it, the piece of that curve the fold
+                                           turns over and its image by the fold. A cap holds one pair or the other. -->
                                       <xs:attribute name="side1" type="xs:unsignedInt"/>
                                       <xs:attribute name="side2" type="xs:unsignedInt"/>
                                       <!-- A notch: the point that marks it, and the two halves the edge it sits

@@ -148,14 +148,14 @@ void DialogOperationTool::SetSourceObjects(const QVector<SourceItem> &value)
 
     if (!m_sourceBaselineCaptured)
     {
-        // First call populates the dialog from the tool; remember the committed object set (by recordId)
-        // so later edits (add/remove) can be detected. Subsequent calls (add/remove/rename) must not move
-        // the baseline.
-        m_baselineSourceRecords.clear();
-        m_baselineSourceRecords.reserve(value.size());
+        // First call populates the dialog from the tool; remember the committed object set (by object id, the one
+        // the pattern holds) so later edits (add/remove) can be detected. Subsequent calls (add/remove/rename) must
+        // not move the baseline.
+        m_baselineSourceIds.clear();
+        m_baselineSourceIds.reserve(value.size());
         for (const auto &item : value)
         {
-            m_baselineSourceRecords.insert(item.recordId);
+            m_baselineSourceIds.append(item.id);
         }
         m_sourceBaselineCaptured = true;
     }
@@ -429,11 +429,11 @@ auto DialogOperationTool::SourceObjectsChanged() const -> bool
         return false;
     }
 
-    QSet<QUuid> current;
+    QVector<quint32> current;
     current.reserve(m_sourceObjects.size());
     for (const auto &item : m_sourceObjects)
     {
-        current.insert(item.recordId);
+        current.append(item.id);
     }
 
     if (m_lineBaselineCaptured && !SameLines(m_lineSources, m_baselineLineSources))
@@ -443,7 +443,7 @@ auto DialogOperationTool::SourceObjectsChanged() const -> bool
         return true;
     }
 
-    return current != m_baselineSourceRecords;
+    return current != m_baselineSourceIds;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

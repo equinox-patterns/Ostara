@@ -82,7 +82,6 @@ protected:
     void changeEvent(QEvent *event) override;
     auto IsValid() const -> bool override;
     void OnSourceObjectsSet() override;
-    void CheckState() override;
     auto Widgets() const -> OperationWidgets override;
 
 private slots:
@@ -141,23 +140,6 @@ private:
 
     OPleatDisplay m_display{};
 
-    /** @brief The lines the figure of the pleats draws, counted per kind.
-     *
-     *  The points and the curves the figure holds are objects the operation parents itself, and the tool gives them
-     *  their item on every parse: a change of those is applied in place, the dialog staying up. A **line** is a tool
-     *  of the pattern, which only a full parse registers — and a full parse tears the operation down and rejects the
-     *  dialog (see MainWindow::FullParseFile). The lines are therefore what says whether a change of the figure can
-     *  be applied or has to be confirmed with OK. */
-    struct FigureLines
-    {
-        int places{0};    //!< the departure lines and the places the folds carried them to
-        int foldLines{0}; //!< the line every pleat is pressed along
-        int markSides{0}; //!< the two sides of every cap: lines too, and only where the V is drawn
-    };
-
-    /** The lines the operation draws, as the dialog received them: what the state of the window is compared to. */
-    FigureLines m_figureLines{};
-
     /** How many pleats the travelling objects were last named for, and whether they were named at all: a pleat being
      *  edited has been named already, a pleat being built has not. */
     bool m_sourcesNamed{false};
@@ -165,20 +147,6 @@ private:
 
     /** @brief How many pleats the departure lines make: one per simple line, two per double one. */
     auto Pleats() const -> int;
-
-    /** @brief The lines the figure of @a departures draws, once folded and drawn. Empty when the rule refuses the
-     *  pleats: there is then no figure at all, and nothing for the operation to hold. */
-    auto CurrentLines(const QVector<OPleatDeparture> &departures, bool foldLine) const -> FigureLines;
-
-    /** @brief The lines the figure an operation holds draws, read of its own display. */
-    static auto HeldLines(const OPleatDisplay &display) -> FigureLines;
-
-    /** @brief Whether the state of the window would add or take away a line of the figure.
-     *
-     *  Such a change is committed with OK: applying it would ask for a full parse, which rebuilds the operation and
-     *  rejects the dialog, so the Apply button is greyed meanwhile — exactly as for a change of the objects that
-     *  travel (see DialogOperationTool::CheckState). */
-    auto LinesChanged() const -> bool;
 
     /** @brief The kind the combo of the editor is showing. */
     auto Kind() const -> OPleatKind;

@@ -924,6 +924,24 @@ auto DialogTool::VisualizationBroken() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief RebuildVisualization build the scene visualization again after a full parse has taken it away.
+ *
+ * A full parse clears the scene and the preview a dialog drives dies with it, while the dialog stays up: an options
+ * dialog that asked for that parse is kept and linked to the tool the parser built (see SurvivesFullParse and
+ * MainWindow::FullParseFile). The window calls this before the options of that rebuilt tool are handed back to the
+ * dialog, so that the setters the relink runs find a preview to talk to — the very work the dialog's first show
+ * does, done again from the state the dialog already holds.
+ */
+void DialogTool::RebuildVisualization()
+{
+    if (UsesVisualization() && vis.isNull())
+    {
+        ShowVisualization();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogTool::Build(const Tool &type)
 {
     Q_UNUSED(type)

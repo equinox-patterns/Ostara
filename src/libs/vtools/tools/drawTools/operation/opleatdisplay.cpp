@@ -27,6 +27,7 @@
 
 #include "opleatdisplay.h"
 
+#include <QLineF>
 #include <QPair>
 #include <QPointF>
 #include <QSharedPointer>
@@ -43,6 +44,7 @@
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "ooperationlines.h"
+#include "opleatcaprule.h"
 #include "opleatnotch.h"
 #include "vabstractoperation.h"
 
@@ -128,6 +130,63 @@ void PlacePoint(quint32 id, const QPointF &position, const QString &name, const 
     point->SetShowLabel(false);
 
     data->UpdateGObject(id, point);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Every id the figure already holds: the lines of the places, the fold lines, the points of the copies, the
+ *  points, the sides and the curves of the caps, and the points and the curves of the notches.
+ *
+ *  A line of the figure is a *tool* of the pattern, and a tool only reaches the container when the parse builds it —
+ *  long after the figure was read from the file. The counter of free ids therefore knows nothing of those ids, and a
+ *  place it has not reached yet would hand the very id of a line to a cap or to a notch: two objects would answer to
+ *  one id, the graph would name one of them twice, and the pattern would carry a figure no layer can tell apart.
+ *  This is what the ids are read for, before a single one is handed out (see EnsureIds). */
+auto FigureIds(const OPleatDisplay &display) -> QVector<quint32>
+{
+    QVector<quint32> ids;
+    ids.reserve(display.lines.size() + display.foldLines.size() + display.copies.size()
+                + display.marks.size() * 5 + display.notches.size() * 3);
+
+    const auto append = [&ids](quint32 id)
+    {
+        if (id != NULL_ID)
+        {
+            ids.append(id);
+        }
+    };
+
+    for (const quint32 id : std::as_const(display.lines))
+    {
+        append(id);
+    }
+
+    for (const quint32 id : std::as_const(display.foldLines))
+    {
+        append(id);
+    }
+
+    for (const OPleatCopy &copy : std::as_const(display.copies))
+    {
+        append(copy.point);
+    }
+
+    for (const OPleatMarkDisplay &mark : std::as_const(display.marks))
+    {
+        for (const quint32 id : {mark.point, mark.side1, mark.side2, mark.curve1, mark.curve2})
+        {
+            append(id);
+        }
+    }
+
+    for (const OPleatNotchDisplay &notch : std::as_const(display.notches))
+    {
+        for (const quint32 id : {notch.point, notch.curve1, notch.curve2})
+        {
+            append(id);
+        }
+    }
+
+    return ids;
 }
 
 /** @brief One end of a departure line, the way every other question of the figure asks for it. */
@@ -360,6 +419,15 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
         return;
     }
 
+    // The figure is about to take ids again, and none of them may be one it already holds: the counter of free ids
+    // is raised to the highest of the ids the file gave it before a single new one is handed out (see FigureIds).
+    // The lines of the figure are tools the parse has not built yet, so the counter is what has to be told about
+    // them — nothing else would.
+    for (const quint32 id : FigureIds(display))
+    {
+        data->UpdateId(id);
+    }
+
     // An entry of the file whose place no longer exists — a departure line the user took away — describes a figure
     // that is gone: nothing tells which of the ids that are left stood for which new place, so every one of them
     // is given again rather than handed to the wrong point.
@@ -472,16 +540,40 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
             // The ids of the sides a previous state had must go, or the objects would stay in the file.
             mark.side1 = NULL_ID;
             mark.side2 = NULL_ID;
+            mark.curve1 = NULL_ID;
+            mark.curve2 = NULL_ID;
             continue;
         }
 
-        if (mark.side1 == NULL_ID)
+        // The two sides of a cap are either two straight tracings or the curve of the edge and its image, never
+        // both: one is exact where the other is not, and the ids of the pair a previous state carried must go, or
+        // the file would name objects the parse will never make.
+        if (resolved.edgeId == NULL_ID)
         {
-            mark.side1 = data->getNextId();
+            mark.curve1 = NULL_ID;
+            mark.curve2 = NULL_ID;
+
+            if (mark.side1 == NULL_ID)
+            {
+                mark.side1 = data->getNextId();
+            }
+            if (mark.side2 == NULL_ID)
+            {
+                mark.side2 = data->getNextId();
+            }
+            continue;
         }
-        if (mark.side2 == NULL_ID)
+
+        mark.side1 = NULL_ID;
+        mark.side2 = NULL_ID;
+
+        if (mark.curve1 == NULL_ID)
         {
-            mark.side2 = data->getNextId();
+            mark.curve1 = data->getNextId();
+        }
+        if (mark.curve2 == NULL_ID)
+        {
+            mark.curve2 = data->getNextId();
         }
     }
 
@@ -581,6 +673,73 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
         const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
                                                    : QPointF(prisePoint->mx(), prisePoint->my());
         PlacePoint(mark.point, resolved.point, mark.name, offset, idTool, data);
+    }
+
+    // The two sides of every cap a curve carries: the piece of the edge the fold turns over, and its image by the
+    // fold. They are cut from the edge as the pattern drew it, then carried to the place of this pleat — a pleat
+    // only translates — and the second one is the first flipped about the fold line (see OPleatCapRule). A cap a
+    // line carries keeps its two straight tracings, which the operation builds with the rest of its lines.
+    for (int i = 0; i < display.marks.size() && i < plan.marks.size(); ++i)
+    {
+        const OPleatMarkDisplay &mark = display.marks.at(i);
+        const OPleatMark &resolved = plan.marks.at(i);
+        if (mark.curve1 == NULL_ID || mark.curve2 == NULL_ID || resolved.edgeId == NULL_ID)
+        {
+            continue;
+        }
+
+        const int departure = resolved.departure;
+        const OPleatDeparture &line = departures.value(departure, OPleatDeparture{});
+        const OPleatEnd prise = EndOf(departures, departure, resolved.end);
+        const OPleatPlace place = plan.places.value(departure);
+        const int rank = resolved.pleat - place.firstPleat;
+        const QPointF shift = place.step / 2.; // the fold line, half a step beyond the place it belongs to
+
+        // The two sides are drawn between the two places of that departure line: the piece of the edge runs from
+        // one of them to the apex, and its image from the apex to the other. Which one the piece starts at is what
+        // the sense decided — the place the plan kept for this cap — and the fold line they are flipped about is
+        // the pleat's own, whatever place the cap opens at.
+        const int place_ = resolved.place;
+        const int other = (place_ == rank) ? rank + 1 : rank;
+
+        const OPleatCapSides sides
+            = OPleatCapRule::Sides(resolved, prise, plan.Place(prise, departure, place_),
+                                   QLineF(plan.Place(line.first, departure, rank) + shift,
+                                          plan.Place(line.second, departure, rank) + shift),
+                                   mark.name, data);
+        if (sides.edge.isNull() || sides.image.isNull())
+        {
+            continue; // the edge is gone, or of a kind no cut can split: there is no side to place
+        }
+
+        // Each side is named after the points it joins, as the halves of a notch are — the point of the place it
+        // starts from to the apex, then the apex to the point of the other place — so that it is found by the points
+        // that bound it, and never by the control points the geometry renames of its own (X1, X4).
+        const auto nameAt = [&display, &plan, &departures, &source, &destination, data,
+                             departure](int line_, int end_) -> QString
+        {
+            const quint32 id = Endpoint(display, plan, departures, departure, line_, end_, source, destination);
+            return (id != NULL_ID && data->HasObject(id)) ? data->GetGObject(id)->name() : QString();
+        };
+
+        const QString from = nameAt(place_, resolved.end);
+        const QString to = nameAt(other, resolved.end);
+
+        for (const QSharedPointer<VAbstractCurve> &side : {sides.edge, sides.image})
+        {
+            side->SetColor(display.lineColor);
+            side->SetPenStyle(display.lineTypeLine);
+            side->setIdObject(idTool);
+        }
+
+        sides.edge->SetNameSuffix(UniqueName(from.isEmpty() ? mark.name : from + QStringLiteral("_") + mark.name,
+                                             data));
+        sides.image->SetNameSuffix(UniqueName(to.isEmpty() ? mark.name : mark.name + QStringLiteral("_") + to, data));
+
+        data->UpdateGObject(mark.curve1, sides.edge);
+        data->UpdateGObject(mark.curve2, sides.image);
+        RegisterCurve(data, sides.edge, mark.curve1);
+        RegisterCurve(data, sides.image, mark.curve2);
     }
 
     // The notches: the mark itself, and, where a curve carries the edge, the two halves that curve is cut into.
@@ -686,7 +845,20 @@ auto OPleatDisplay::PointImages(const OPleatDisplay &display, const VContainer *
 auto OPleatDisplay::CurveImages(const OPleatDisplay &display, const VContainer *data) -> QVector<quint32>
 {
     QVector<quint32> ids;
-    ids.reserve(display.notches.size() * 2);
+    ids.reserve(display.notches.size() * 2 + display.marks.size() * 2);
+
+    for (const OPleatMarkDisplay &mark : std::as_const(display.marks))
+    {
+        // The two sides of a cap a curve carries: the piece of the edge the fold turns over, and its image. Both
+        // are drawn — the V is what the pattern shows of the cap — where the halves of a notch stay unseen.
+        for (const quint32 id : {mark.curve1, mark.curve2})
+        {
+            if (id != NULL_ID && data->HasObject(id))
+            {
+                ids.append(id);
+            }
+        }
+    }
 
     for (const OPleatNotchDisplay &notch : std::as_const(display.notches))
     {
@@ -798,6 +970,14 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
         {
             doc->SetAttribute(item, AttrSide2, mark.side2);
         }
+        if (mark.curve1 != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrCurve1, mark.curve1);
+        }
+        if (mark.curve2 != NULL_ID)
+        {
+            doc->SetAttribute(item, AttrCurve2, mark.curve2);
+        }
         element.appendChild(item);
     }
 
@@ -865,6 +1045,8 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
                 mark.point = VAbstractPattern::GetParametrUInt(item, AttrPoint, NULL_ID_STR);
                 mark.side1 = VAbstractPattern::GetParametrUInt(item, AttrSide1, NULL_ID_STR);
                 mark.side2 = VAbstractPattern::GetParametrUInt(item, AttrSide2, NULL_ID_STR);
+                mark.curve1 = VAbstractPattern::GetParametrUInt(item, AttrCurve1, NULL_ID_STR);
+                mark.curve2 = VAbstractPattern::GetParametrUInt(item, AttrCurve2, NULL_ID_STR);
                 mark.name = VDomDocument::GetParametrEmptyString(item, AttrName);
                 display.marks.append(mark);
             }

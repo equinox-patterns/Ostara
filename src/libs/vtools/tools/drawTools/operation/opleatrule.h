@@ -135,12 +135,18 @@ struct OPleatPlace
 };
 
 /**
- * @brief One mark: the point that materializes an end of a pleat.
+ * @brief One mark: the point that materializes an end of a pleat, and the edge the cap was read on.
  *
  * @a departure is the departure line the pleat was taken on, @a pleat is the index of that pleat among all the
  * pleats of the operation, and @a end is 0 for the first point of the departure line and 1 for the other.
  * @a flat means the edge is parallel to the move: the mark is the centre alone, and the V has nothing to draw —
  * that is the case of a hem, and it is a case in its own right, not a degenerate cap.
+ *
+ * @a point is the apex of the V: where the edge crosses the fold line. When a **curve** carries the edge there, the
+ * two sides of the cap follow that curve and its image by the fold, and @a edgeId, @a length and @a fromStart are
+ * what lets the figure cut them (see OPleatCapRule). They stay empty otherwise — a line carries the edge, and the
+ * two sides are then the straight tracings, which are exact on a straight edge — and the apex is the one the cap
+ * rule found on the tangent.
  */
 struct OPleatMark
 {
@@ -149,6 +155,20 @@ struct OPleatMark
     int end{0};
     bool flat{false};
     QPointF point{};
+
+    /** @brief The curve the edge was read on, or NULL_ID when a line carries it. */
+    quint32 edgeId{NULL_ID};
+
+    /** @brief Where the apex falls on that curve, measured from its start the way the cut tools measure. */
+    qreal length{0.};
+
+    /** @brief Whether the point of the departure line is the start of that curve. */
+    bool fromStart{false};
+
+    /** @brief The place of the departure line the cap is drawn at: its own place when the pleat follows the edge as
+     *  drawn, the one the move carried it to when it follows the edge the move carries — the two sides of the V then
+     *  start from the two places, and the order of the two is what tells one sense from the other. */
+    int place{0};
 };
 
 /**

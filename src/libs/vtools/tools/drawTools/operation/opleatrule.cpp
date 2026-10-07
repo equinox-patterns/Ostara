@@ -35,6 +35,7 @@
 #include "../../vpatterndb/vcontainer.h"
 #include "../toolpoint/toolsinglepoint/odartcaprule.h"
 #include "oedgereader.h"
+#include "opleatcaprule.h"
 #include "opleatnotch.h"
 
 namespace
@@ -460,6 +461,39 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 // Swapping the two ends of its opening is what says so, and it is the only difference: the sides
                 // still join the same two lines, only the point of the V moves to the other side of them.
                 const bool secondSense = edge.secondSense != (rank == 1);
+
+                // Where a curve carries the edge, the cap is read on the curve itself: its apex is the point where
+                // that curve meets the fold line — the fold line then runs from edge to edge — and its two sides
+                // are the piece of the edge that runs to that point and that piece flipped about the fold line,
+                // which is what the fold does to it (see OPleatCapRule). A tangent only meets a curve where it is
+                // taken: the V followed the right axis and the wrong shape, and the fold left the difference.
+                //
+                // Which edge, and which fold line, is what the sense decides, since the two lines of the opening
+                // are two places of the same departure line:
+                //
+                // - the first sense follows the edge **as it is drawn**, the one that leaves the point into the
+                //   region — the notch reads the other one, being counted on the side the fold leaves free — and
+                //   the fold line is read where it stands;
+                // - the second one follows the edge **the move carries**, that is the outline on the other side of
+                //   the point: the piece's edge runs through it, and the fabric comes back from there. That side
+                //   is a step further, so the fold line is read a step back, and the whole figure lands a step on:
+                //   on the place the move carried the line to, which is where that V opens.
+                const QPointF side = secondSense ? -place.normal : place.normal;
+                const QPointF carry = (plan.Place(edge, departure, rank) - edge.position)
+                                      + (secondSense ? place.step : QPointF{});
+                const OPleatCapPlacement curved
+                    = OPleatCapRule::Curved(edge, side, QLineF(centre0 - carry, centre1 - carry), carry, data);
+                if (not curved.point.isNull())
+                {
+                    mark.point = curved.point;
+                    mark.edgeId = curved.edgeId;
+                    mark.length = curved.length;
+                    mark.fromStart = curved.fromStart;
+                    mark.place = secondSense ? rank + 1 : rank;
+                    plan.marks.append(mark);
+                    continue;
+                }
+
                 const QPointF base = secondSense ? copy : origin;
                 const QPointF carrier = base + e * (QLineF(QPointF(), place.step).length() * kCarrierDistance);
 
@@ -496,15 +530,18 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     continue; // no cap, no edge to mark; and the end asks for no notch
                 }
 
-                // The sense decides which line the value is counted from: the pleat's own departure line when it
-                // follows the edge as drawn, its copy when it follows the edge the move carries — and the second
-                // pleat of a double is the first one reversed, which is the whole difference between the two.
+                // The sense decides which line the value is counted from — and the notch reads it **the other way
+                // round** than the cap does: a cran stands beyond the arm the cap lays down, that is **after the
+                // second arm** when the cap follows the edge as drawn, and **before the first one** when it follows
+                // the edge the move carries. The value is counted from the copy in the first case, and from the
+                // departure line in the second — the second pleat of a double being the first one reversed is the
+                // whole difference between the two senses.
                 const bool secondSense = edge.secondSense != (rank == 1);
-                const QPointF from = plan.Place(edge, departure, secondSense ? rank + 1 : rank);
+                const QPointF from = plan.Place(edge, departure, secondSense ? rank : rank + 1);
 
                 // The side the notch leaves the fold by: the fabric lies on the normal side of the line, so a
                 // notch counted from the departure line goes against it, and one counted from the copy goes with.
-                const QPointF side = secondSense ? place.normal : -place.normal;
+                const QPointF side = secondSense ? -place.normal : place.normal;
 
                 OPleatNotch notch;
                 notch.departure = departure;

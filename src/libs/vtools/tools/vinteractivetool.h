@@ -47,12 +47,36 @@ public:
      *
      *  A tool the parser builds — every full parse builds one — carries no dialog of its own, while the dialog that
      *  asked for that parse is still up. The window links the two again, or the Apply that follows would have no
-     *  options to read (every SaveDialog() dereferences the dialog it works from). */
-    void SetDialogLink(const QPointer<DialogTool> &dialog) { m_dialog = dialog; }
+     *  options to read (every SaveDialog() dereferences the dialog it works from).
+     *
+     *  What the dialog emits has to reach this tool again as well: the connections its first show made died with the
+     *  tool the parse destroyed, and a link of pointers alone would leave Apply talking to nobody — the button would
+     *  answer a click and nothing would happen. */
+    void SetDialogLink(const QPointer<DialogTool> &dialog)
+    {
+        m_dialog = dialog;
+
+        if (not m_dialog.isNull())
+        {
+            connect(m_dialog.data(), &DialogTool::DialogClosed, this, &VInteractiveTool::FullUpdateFromGuiOk,
+                    Qt::UniqueConnection);
+            connect(m_dialog.data(), &DialogTool::DialogApplied, this, &VInteractiveTool::FullUpdateFromGuiApply,
+                    Qt::UniqueConnection);
+        }
+    }
 
     virtual void DeleteToolWithConfirm(bool ask = true);
     virtual void PerformDelete();
     virtual auto IsRemovable() const -> RemoveStatus;
+
+    /** @brief setDialog set dialog when user want change tool option.
+     *
+     *  The window calls it when a full parse has just rebuilt the tool under an options dialog it kept open
+     *  (see DialogTool::SurvivesFullParse): the tool carries the options the file now holds, and the dialog reads
+     *  them again — the ids of its own figure, in particular, are the ones the parser has just written. */
+    virtual void SetDialog()
+    { /*do nothing by default*/
+    }
 
 public slots:
     virtual void FullUpdateFromGuiOk(int result);
@@ -64,10 +88,6 @@ protected:
 
     void BlockUndoRedoWhileDialogOpen() const;
 
-    /** @brief setDialog set dialog when user want change tool option. */
-    virtual void SetDialog()
-    { /*do nothing by default*/
-    }
     virtual void SaveDialogChange(const QString &undoText = QString())=0;
 
 private:

@@ -100,14 +100,23 @@ protected:
 
     virtual auto Widgets() const -> OperationWidgets = 0;
 
+    /** @brief An operation is applied by the parse its figure asks for, and that parse can be a full one: the lines
+     *  a figure draws are tools only a full parse builds (see OPleatDisplay::LineIds, and the display of the cuts a
+     *  spread shows). The dialog is what the file is written from, and the tool the parse rebuilds carries that same
+     *  state: it therefore stays open across that parse, and the window links it to the tool it rebuilt (see
+     *  MainWindow::FullParseFile) — so that Apply is the OK of every operation dialog without the closing: the change
+     *  is written, the canvas shows it, and the window stays there to be looked at, changed again, or confirmed. */
+    auto SurvivesFullParse() const -> bool override { return true; }
+
     virtual void OnSourceObjectsSet() {}
 
     void CheckState() override;
 
     // True when the set of operated objects differs from the set the dialog was opened with. Compared by
-    // recordId (the same key SyncDestination() uses), so adding/removing - or removing and re-adding -
-    // an object counts as a change. Such a change forces a full reparse that recreates the tool, so
-    // Apply is disabled for it.
+    // **object id**, the key the pattern itself carries in <source> — and never by the recordId of the session,
+    // which every parse makes anew — so adding/removing - or removing and re-adding - an object counts as a
+    // change, while the state the parser has just rebuilt stays the one the dialog was opened with. Such a
+    // change forces a full reparse that recreates the tool, so Apply is disabled for it.
     auto SourceObjectsChanged() const -> bool;
 
     /** @brief True when the transformation gives this point an image: it is one of the operated objects.
@@ -144,9 +153,14 @@ private:
     QVector<SourceItem> m_sourceObjects{};
     QVector<OOperationLine> m_lineSources{};
 
-    /** @brief m_baselineSourceRecords operated-object recordIds captured when the dialog was first
-     * populated. Used to detect object-set changes (see SourceObjectsChanged). */
-    QSet<QUuid> m_baselineSourceRecords{};
+    /** @brief The operated objects the dialog was populated with, by **object id**: what says whether the user has
+     *  added, taken away or moved one of them since (see SourceObjectsChanged).
+     *
+     *  The ids are the ones the pattern carries in `<source>`, and a parse reads them back as they are. The
+     *  `recordId` of a source item is a key of the session, made anew by every parse and never written to the file:
+     *  comparing those would take the very state the parser has just rebuilt for a change of the user, and grey
+     *  Apply as soon as one Apply has run — the tool being rebuilt under the dialog it drives. */
+    QVector<quint32> m_baselineSourceIds{};
     bool m_sourceBaselineCaptured{false};
 
     /** @brief Same baseline idea for the selected lines: any change of the line set needs a full

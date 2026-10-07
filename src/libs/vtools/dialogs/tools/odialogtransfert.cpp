@@ -138,6 +138,13 @@ auto ODialogTransfert::Widgets() const -> OperationWidgets
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogTransfert::ShowVisualization()
 {
+    if (vis.isNull())
+    {
+        // A full parse clears the scene and takes this preview with it, while the dialog stays up (see
+        // DialogTool::RebuildVisualization): it is built again, and the values the dialog shows follow.
+        vis = new OVisToolTransfert(&this->data);
+    }
+
     AddVisualization<OVisToolTransfert>();
     RefreshPreview();
 }
@@ -219,7 +226,11 @@ auto ODialogTransfert::GetHostPartName() const -> QString
 void ODialogTransfert::SetHostPartName(const QString &name)
 {
     // Every part is offered here: the host part of an existing transfer is a fact to display, not a choice to
-    // make — its combo is disabled for that reason.
+    // make — its combo is disabled for that reason. The list is built again from scratch, because this setter runs
+    // once per parse — and the same dialog is offered its tool's options again when the tool is rebuilt under it
+    // (see DialogTool::SurvivesFullParse) — so an item already there is not added a second time.
+    ui->comboBoxPiece->clear();
+
     const QDomElement root = m_doc->documentElement();
     for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
          draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))

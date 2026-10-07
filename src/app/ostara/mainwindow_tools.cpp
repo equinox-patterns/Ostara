@@ -1240,6 +1240,9 @@ template <typename DrawTool> void MainWindow::ApplyDialog(VMainGraphicsScene *sc
             // reads the dialog's options into it.
             rebuilt->SetDialogLink(m_dialogTool);
             m_dialogTool->SetAssociatedTool(rebuilt);
+            // The parse that rebuilt the tool cleared the scene and took this dialog's preview with it: it is built
+            // again before the apply below reads the dialog's options (see DialogTool::RebuildVisualization).
+            m_dialogTool->RebuildVisualization();
         }
     }
 

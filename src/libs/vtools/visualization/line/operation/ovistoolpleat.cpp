@@ -26,6 +26,7 @@
 
 #include "ovistoolpleat.h"
 
+#include <QLineF>
 #include <QSharedPointer>
 
 #include "../vgeometry/varc.h"
@@ -40,6 +41,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/scalesceneitems.h"
+#include "../../../tools/drawTools/operation/opleatcaprule.h"
 
 namespace
 {
@@ -383,6 +385,37 @@ void OVisToolPleat::DrawFigure()
         const int rank = mark.pleat - place.firstPleat;
         const QPointF origin = m_plan.Place(prise, mark.departure, rank);
         const QPointF copy = origin + place.step;
+
+        // Where a curve carries the edge, the sides of the cap are that curve and its image by the fold: the preview
+        // builds no object, and what it draws is the shape the geometry gives, point after point — the same V the
+        // pattern will hold once the pleat is applied. The name asked for is only the one the cut gives the junction
+        // of the two sides, and the point the cap stands at is the one that names it.
+        const QString apexName = (GetData() != nullptr && GetData()->HasObject(prise.pointId))
+                                     ? GetData()->GetGObject(prise.pointId)->name()
+                                     : QStringLiteral("pli");
+
+        const QPointF shift = place.step / 2.; // the fold line, half a step beyond the place it belongs to
+        const OPleatCapSides sides
+            = (mark.edgeId == NULL_ID)
+                  ? OPleatCapSides{}
+                  : OPleatCapRule::Sides(mark, prise, m_plan.Place(prise, mark.departure, mark.place),
+                                         QLineF(m_plan.Place(line.first, mark.departure, rank) + shift,
+                                                m_plan.Place(line.second, mark.departure, rank) + shift),
+                                         apexName, GetData());
+
+        if (not sides.edge.isNull() && not sides.image.isNull())
+        {
+            for (const QSharedPointer<VAbstractCurve> &side : {sides.edge, sides.image})
+            {
+                const QVector<QPointF> points = side->GetPoints();
+                for (int i = 1; i < points.size(); ++i)
+                {
+                    segment(points.at(i - 1), points.at(i), VColorRole::VisSupportColor3, Qt::SolidLine,
+                            Light(mark.departure));
+                }
+            }
+            continue;
+        }
 
         segment(mark.point, origin, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));
         segment(mark.point, copy, VColorRole::VisSupportColor3, Qt::SolidLine, Light(mark.departure));

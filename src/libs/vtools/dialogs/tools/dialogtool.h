@@ -96,6 +96,7 @@ public:
 
     virtual void ShowDialog(bool click);
     auto VisualizationBroken() const -> bool;
+    void RebuildVisualization();
     virtual void Build(const Tool &type);
     virtual void SetPiecesList(const QVector<quint32> &list);
     virtual void SetPatternDoc(VAbstractPattern *doc);
@@ -122,6 +123,18 @@ public:
 
     /** @brief Recomputes the prolongation from the entered formula and the base curve, and says so. */
     void UpdateProlongation(quint32 curveId, const QString &formula);
+
+    /** @brief Whether this dialog drives a tool a full parse rebuilds, and has to be linked to it again.
+     *
+     *  A full parse tears every tool and the container down, and the window first rejects the options dialogs it
+     *  finds open, whose tool would die under them (see MainWindow::FullParseFile). A dialog whose own state is what
+     *  that parse rebuilds its tool from — and which reads that tool again once the window links it back — has
+     *  nothing to fear from it: it says so here, and the window then keeps it open and links it to the tool the
+     *  parser built, exactly as it does for the apply that asked for the parse (see VInteractiveTool::SetDialogLink).
+     *
+     *  False by default: a dialog is closed before a parse it did not ask for, and that is what keeps the one that
+     *  did from being torn down under the user's hands. */
+    virtual auto SurvivesFullParse() const -> bool { return false; }
 
     virtual void CheckDependencyTreeComplete() = 0;
 
@@ -276,6 +289,7 @@ protected:
      * return false so VisualizationBroken() never reports them as broken just because vis is null.
      */
     virtual auto UsesVisualization() const -> bool { return true; }
+
     /**
      * @brief SaveData Put dialog data in local variables
      */

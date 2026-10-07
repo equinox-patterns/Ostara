@@ -72,6 +72,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
 #include "../vtools/dialogs/tools/dialogtool.h"
+#include "../vtools/tools/vinteractivetool.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
@@ -144,14 +145,24 @@ void MainWindow::FullParseFile()
 {
     qCDebug(vMainWindow, "Full parsing file");
 
+    // A full reparse tears down all tools and the VContainer. A tool options dialog still open now references
+    // freed data, and accepting it would crash, so it is rejected before the teardown — unless it drives a tool
+    // this parse rebuilds and says so (see DialogTool::SurvivesFullParse): it is then kept, and linked again to the
+    // tool the parser builds, at the end of this function.
+    QVector<QPair<QPointer<DialogTool>, quint32>> keptDialogs;
     if (m_toolOptionsDialogVisible)
     {
-        // A full reparse tears down all tools and the VContainer. Any tool options dialog still open
-        // now references freed data, and accepting it would crash. Reject it before teardown.
         const QList<DialogTool *> openDialogs = findChildren<DialogTool *>();
         for (DialogTool *dialog : openDialogs)
         {
-            dialog->reject();
+            if (dialog->SurvivesFullParse())
+            {
+                keptDialogs.append({QPointer<DialogTool>(dialog), dialog->GetToolId()});
+            }
+            else
+            {
+                dialog->reject();
+            }
         }
     }
 
@@ -170,6 +181,17 @@ void MainWindow::FullParseFile()
 
     if (not FullParsePattern())
     {
+        // Nothing was rebuilt: the dialogs kept above have no tool left to drive, and they are closed, as every
+        // other one was before the teardown.
+        for (const auto &[dialog, toolId] : std::as_const(keptDialogs))
+        {
+            Q_UNUSED(toolId)
+            if (not dialog.isNull())
+            {
+                dialog->reject();
+            }
+        }
+
         return;
     }
 
@@ -233,6 +255,32 @@ void MainWindow::FullParseFile()
         {
             m_dockManager->toolOptions()->itemClicked(tool);
         }
+    }
+
+    // The options dialogs kept above drove the tools this parse has just rebuilt: each is linked again to the tool
+    // the pattern keeps under the id it remembers — never built a second time — and reads its options again, so that
+    // the figure it edits is the one the file now holds. A tool the parse did not bring back leaves a dialog nothing
+    // to drive: that one is rejected here, as it would have been before the teardown.
+    for (const auto &[dialog, toolId] : std::as_const(keptDialogs))
+    {
+        if (dialog.isNull())
+        {
+            continue;
+        }
+
+        auto *tool = qobject_cast<VInteractiveTool *>(VAbstractPattern::FindTool(toolId));
+        if (tool == nullptr)
+        {
+            dialog->reject();
+            continue;
+        }
+
+        tool->SetDialogLink(dialog);
+        dialog->SetAssociatedTool(tool);
+        // The parse took the dialog's preview with it: it is built again before the rebuilt tool pushes its options,
+        // or the setters that follow would have no preview to talk to (see DialogTool::RebuildVisualization).
+        dialog->RebuildVisualization();
+        tool->SetDialog();
     }
 }
 

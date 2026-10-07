@@ -517,6 +517,13 @@ void DialogRotation::OnSourceObjectsSet()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogRotation::ShowVisualization()
 {
+    if (vis.isNull())
+    {
+        // A full parse clears the scene and takes this preview with it, while the dialog stays up (see
+        // DialogTool::RebuildVisualization): it is built again, and the values the dialog shows follow.
+        vis = new VisToolRotation(&this->data);
+    }
+
     AddVisualization<VisToolRotation>();
 }
 
