@@ -28,6 +28,7 @@
  *************************************************************************/
 
 #include "vtooloptionspropertybrowser.h"
+#include <QPushButton>
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
@@ -46,6 +47,8 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
 #include "../vpropertyexplorer/plugins/vboolproperty.h"
 #include "ocheckboxrowproperty.h"
+#include "ogroupboxproperty.h"
+#include "../vpropertyexplorer/plugins/vwidgetproperty.h"
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
 #include "../vpropertyexplorer/plugins/vlabelproperty.h"
@@ -385,10 +388,10 @@ auto MakeLineColor(const QString &label) -> PropertyDesc
             }};
 }
 
-// A titled, collapsible group (expanded by default) holding two formula fields — Length then
-// Angle. Used for the two spline handles: "First handle" is the control point attached to the
-// start point (P1), "Second handle" the one attached to the end point (P4). Length comes before
-// Angle on purpose, matching the order used everywhere else in the UI.
+// A titled frame — the way a dialog groups its options, and not a foldable header — holding two formula fields:
+// Length then Angle. Used for the two spline handles: "First handle" is the control point attached to the start
+// point (P1), "Second handle" the one attached to the end point (P4). Length comes before Angle on purpose,
+// matching the order used everywhere else in the UI.
 template <typename Tool>
 auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                            QString (VSpline::*lengthFormulaGetter)() const,
@@ -401,9 +404,9 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                 auto *t = static_cast<Tool *>(tool);
                 const VSpline spl = t->getSpline();
 
-                auto *group = new VPE::VProperty(title);
-                group->setCollapsible(true);
-                group->setExpandedByDefault(true);
+                // The frame itself, with the title on its border: a handle is what the two rows below belong to, and
+                // it holds no switch of its own (see OGroupBoxProperty).
+                auto *group = new OGroupBoxProperty(title, /*checkable*/ false);
 
                 auto *lengthProp = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
                 VFormula lenF((spl.*lengthFormulaGetter)(), t->getData());
@@ -986,7 +989,8 @@ auto CutSplinePathProperties() -> std::vector<PropertyDesc>
 auto SplineProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        // No read-only "Name:" row: it repeated the technical name the "Curve:" row already carries, and nothing
+        // could be edited there (Sophie, 08-10-2026).
         MakeStringPropWithValidator<VToolSpline>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
         MakeSplineHandleGroup<VToolSpline>(QStringLiteral("firstHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First handle:")),
                                            &VSpline::GetC1LengthFormula, &VSpline::SetC1Length,
@@ -1027,8 +1031,31 @@ auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 // --- VToolSplinePath ---
 auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDesc>
 {
+    // No read-only "Name:" row: it repeated the technical name the "Curve:" row already carries, and nothing could
+    // be edited there. In its place, the way in to the dialog, where the whole path is a table of its points — the
+    // dock edits the handles of one point at a time (see the pleat's own "Edit pleats").
     std::vector<PropertyDesc> descs = {
-        MakeObjectNameReadOnly<VToolSplinePath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
+        {QStringLiteral("editCurve"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit curve")),
+         [](VToolOptionsPropertyBrowser *browser, void *item) -> VPE::VProperty *
+         {
+             Q_UNUSED(item)
+             auto *button = new QPushButton(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit curve")));
+             QObject::connect(button,
+                              &QPushButton::clicked,
+                              browser,
+                              [browser]()
+                              {
+                                  if (auto *path = qgraphicsitem_cast<VToolSplinePath *>(browser->currentItem()))
+                                  {
+                                      path->OpenOptionsDialog();
+                                  }
+                              });
+             return new VPE::VWidgetProperty(
+                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit curve")), button);
+         },
+         nullptr,
+         nullptr},
+
         MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
     };
 

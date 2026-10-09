@@ -59,6 +59,9 @@ public:
     void SetPath(const VSplinePath &value);
     auto GetPath() -> VSplinePath;
 
+    /** @brief Paints the point of the given rank as the active one — the row being edited in the dialog's table. */
+    void SetActivePoint(int row);
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -83,9 +86,12 @@ private:
     bool m_isLeftMousePressed{false};
     bool m_pointSelected{false};
 
+    int m_activePoint{-1};
+
     QPointF m_ctrlPoint{};
 
     auto GetPoint(quint32 i) -> VScaledEllipse *;
+    void ApplyActivePoint();
     void RefreshPointLabels(const QVector<VSplinePoint> &pathPoints);
     void DragControlPoint(vsizetype lastPoint, vsizetype preLastPoint, const QPointF &pSpl, vsizetype size);
     void NewCurveSegment(const VSpline &spline, const QPointF &pSpl, vsizetype size);

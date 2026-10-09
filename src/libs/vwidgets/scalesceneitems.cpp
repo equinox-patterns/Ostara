@@ -58,7 +58,7 @@ auto VScaledLine::ScaledPenWidth() const -> qreal
     // "Bold" also while marked for a layer. Read from the flag rather than written into m_isBoldLine, so that
     // dropping the mark gives back exactly the weight the line had before.
     const bool bold = m_isBoldLine || m_layerSelected || m_inLayer;
-    const qreal width = ScaleWidth(bold ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+    const qreal width = ScaleWidth(bold ? VAbstractApplication::VApp()->Settings()->WidthBoldLine()
                                         : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
                                    SceneScale(scene()));
     return qRound(width * 100.) / 100.;
@@ -406,7 +406,7 @@ VScaledEllipse::VScaledEllipse(VColorRole role, QGraphicsItem *parent)
 void VScaledEllipse::RefreshScale()
 {
     const qreal scale = SceneScale(scene());
-    const qreal width = ScaleWidth(VAbstractApplication::VApp()->Settings()->WidthMainLine(), scale);
+    const qreal width = ScaleWidth(VAbstractApplication::VApp()->Settings()->WidthBoldLine(), scale);
 
     QPen visPen = pen();
 
@@ -424,6 +424,20 @@ void VScaledEllipse::RefreshScale()
     {
         ScaleCircleSize(this, scale);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief SetColorRole repaints the disc in another role's colour — the point being edited turns to the orange of the
+ *  active point while the rest of the path keeps the magenta of a visualization. */
+void VScaledEllipse::SetColorRole(VColorRole role)
+{
+    if (m_role == role)
+    {
+        return;
+    }
+
+    m_role = role;
+    RefreshScale();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

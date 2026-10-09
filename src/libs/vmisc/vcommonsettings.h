@@ -1,4 +1,4 @@
-﻿/************************************************************************
+/************************************************************************
  **
  **  @file   vcommonsettings.h
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
@@ -380,6 +380,11 @@ public:
     void SetLineWidth(qreal width);
     auto WidthMainLine() const -> qreal;
     auto WidthHairLine() const -> qreal;
+
+    /** @brief The emphasized stroke — hovered, selected, or marked for a layer.
+     *
+     *  One place to weigh it: three times the hairline, the weight that is actually seen as bold on screen. */
+    auto WidthBoldLine() const -> qreal;
 
     // settings for the tiled PDFs
     auto GetTiledPDFMargins(const Unit &unit) const -> QMarginsF;

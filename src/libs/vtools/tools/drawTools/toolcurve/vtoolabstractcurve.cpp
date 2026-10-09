@@ -114,7 +114,7 @@ auto VToolAbstractCurve::shape() const -> QPainterPath
 void VToolAbstractCurve::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     const qreal width = ScaleWidth((m_isHovered || m_layerSelected || m_inLayer)
-                                       ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+                                       ? VAbstractApplication::VApp()->Settings()->WidthBoldLine()
                                        : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
                                    SceneScale(scene()));
 

@@ -553,6 +553,14 @@ void VToolSplinePath::ShowVisualization(bool show)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief OpenOptionsDialog opens the same dialog the context menu does — the dock's "Edit curve" button and the
+ *  right-click → Options have to lead to one and the same window. */
+void VToolSplinePath::OpenOptionsDialog()
+{
+    ShowOptionsDialog<DialogSplinePath>();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSplinePath::HideShownPointLabels(bool hide)
 {
     const VSplinePath path = getSplinePath();

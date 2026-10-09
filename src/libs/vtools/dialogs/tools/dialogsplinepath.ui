@@ -180,10 +180,47 @@
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
-                <widget class="QListWidget" name="listWidget">
+                <widget class="QTableWidget" name="tableWidget">
                  <property name="toolTip">
                   <string>List of points</string>
                  </property>
+                 <property name="alternatingRowColors">
+                  <bool>true</bool>
+                 </property>
+                 <property name="selectionMode">
+                  <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+                 </property>
+                 <property name="selectionBehavior">
+                  <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+                 </property>
+                 <attribute name="verticalHeaderVisible">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Point</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Length 1</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Angle 1</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Length 2</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Angle 2</string>
+                  </property>
+                 </column>
                 </widget>
                </item>
                <item>

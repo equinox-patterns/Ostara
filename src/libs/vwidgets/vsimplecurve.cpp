@@ -227,7 +227,7 @@ void VSimpleCurve::ScalePenWidth()
     // width and the colour the curve had before.
     const bool marked = m_layerSelected || m_inLayer;
 
-    qreal width = (m_isHovered || marked) ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+    qreal width = (m_isHovered || marked) ? VAbstractApplication::VApp()->Settings()->WidthBoldLine()
                                           : VAbstractApplication::VApp()->Settings()->WidthHairLine();
     width = ScaleWidth(width, SceneScale(scene()));
 

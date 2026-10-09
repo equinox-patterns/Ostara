@@ -35,11 +35,12 @@
 #include <QFont>
 #include <QLabel>
 #include <QLatin1String>
+#include <QHeaderView>
 #include <QLineEdit>
-#include <QListWidget>
-#include <QListWidgetItem>
 #include <QPointer>
 #include <QPushButton>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QToolButton>
 #include <QVariant>
 
@@ -70,8 +71,9 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
-// Per-item handle validity bitmask, stored in QListWidgetItem under this role.
-// A set bit means the corresponding control-handle field is valid.
+// A row carries its point and the validity of its four handle fields in the FIRST cell of the row, under these two
+// roles. A set bit means the corresponding control-handle field is valid.
+constexpr int pointRole = Qt::UserRole;
 constexpr int validityRole = Qt::UserRole + 1;
 constexpr int flagLength1 = 0x1;
 constexpr int flagAngle1 = 0x2;
@@ -79,18 +81,19 @@ constexpr int flagLength2 = 0x4;
 constexpr int flagAngle2 = 0x8;
 constexpr int allHandleFlags = flagLength1 | flagAngle1 | flagLength2 | flagAngle2;
 
-void SetPointValidity(QListWidgetItem *item, int flag, bool valid)
+// The columns of the point table: the row itself, then the four handle values — the incoming handle of the point
+// (Length 1, Angle 1) before its outgoing one (Length 2, Angle 2).
+constexpr int columnPoint = 0;
+constexpr int columnLength1 = 1;
+constexpr int columnAngle1 = 2;
+constexpr int columnLength2 = 3;
+constexpr int columnAngle2 = 4;
+constexpr int pointColumnCount = 5;
+
+// What a handle the point does not have shows in its two cells — the dash the pleat table uses for an empty value.
+auto NotUsedCell() -> QString
 {
-    int validity = item->data(validityRole).toInt();
-    if (valid)
-    {
-        validity |= flag;
-    }
-    else
-    {
-        validity &= ~flag;
-    }
-    item->setData(validityRole, validity);
+    return QStringLiteral("—");
 }
 } // namespace
 
@@ -184,7 +187,15 @@ DialogSplinePath::DialogSplinePath(const VContainer *data, VAbstractPattern *doc
                          CurvePenStylesPics(ui->comboBoxPenStyle->palette().color(QPalette::Base),
                                             ui->comboBoxPenStyle->palette().color(QPalette::Text)));
 
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogSplinePath::PointChanged);
+    // The rows are the points, in the order the path is walked: "Point 1" is the start, the last row the end. The
+    // table shows them, the fields below edit the selected one — a cell is never edited in place (Pleat's table).
+    ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget->setMinimumHeight(90);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    // A table has no currentRowChanged of its own — the current cell carries the row.
+    connect(ui->tableWidget, &QTableWidget::currentCellChanged, this,
+            [this](int row, int, int, int) { PointChanged(row); });
     connect(ui->comboBoxPoint, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
             &DialogSplinePath::currentPointChanged);
     connect(ui->comboBoxNewPoint, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
@@ -233,13 +244,13 @@ void DialogSplinePath::SetPath(const VSplinePath &value)
     m_oldName = path.name();
 
     {
-        const QSignalBlocker blocker(ui->listWidget);
-        ui->listWidget->clear();
+        const QSignalBlocker blocker(ui->tableWidget);
+        ui->tableWidget->setRowCount(0);
         for (qint32 i = 0; i < path.CountPoints(); ++i)
         {
             NewItem(path.at(i));
         }
-        ui->listWidget->setFocus(Qt::OtherFocusReason);
+        ui->tableWidget->setFocus(Qt::OtherFocusReason);
 
         originAliasSuffix = path.GetAliasSuffix();
         ui->lineEditAlias->setText(originAliasSuffix);
@@ -255,7 +266,13 @@ void DialogSplinePath::SetPath(const VSplinePath &value)
 
     flagError = IsPathValid();
 
-    ui->toolButtonRemovePoint->setEnabled(ui->listWidget->count() > 3);
+    ui->toolButtonRemovePoint->setEnabled(ui->tableWidget->rowCount() > 3);
+    RefreshRows();
+
+    // The rows were filled with the table's signals blocked, so the row that is current — the one the dialog opens
+    // on — still has to be shown as the active point of the path.
+    SetActivePoint(CurrentRow());
+
     MoveControls();
 }
 
@@ -386,19 +403,22 @@ void DialogSplinePath::ValidateAlias()
  */
 void DialogSplinePath::PointChanged(int row)
 {
-    if (ui->listWidget->count() == 0 || row < 0)
+    if (ui->tableWidget->rowCount() == 0 || row < 0)
     {
         ui->toolButtonTop->setEnabled(false);
         ui->toolButtonUp->setEnabled(false);
         ui->toolButtonDown->setEnabled(false);
         ui->toolButtonBottom->setEnabled(false);
+        SetActivePoint(-1);
         return;
     }
 
     MoveControls();
 
-    const auto p = qvariant_cast<VSplinePoint>(ui->listWidget->item(row)->data(Qt::UserRole));
-    DataPoint(p);
+    DataPoint(RowPoint(row));
+
+    // The row being edited is the point the canvas shows as active.
+    SetActivePoint(row);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -411,22 +431,22 @@ void DialogSplinePath::currentPointChanged(int index)
     const auto id = qvariant_cast<quint32>(ui->comboBoxPoint->itemData(index));
     QColor color;
 
-    if (ui->listWidget->currentRow() < 0)
+    const int row = CurrentRow();
+    if (row < 0)
     {
         return;
     }
 
     try
     {
-        QListWidgetItem *item = ui->listWidget->item(ui->listWidget->currentRow());
-        auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+        auto p = RowPoint(row);
 
         const auto point = data.GeometricObject<VPointF>(id);
         p.SetP(*point);
 
         DataPoint(p);
-        item->setData(Qt::UserRole, QVariant::fromValue(p));
-        ShowPointIssue(p.P().name());
+        SetRowPoint(row, p);
+        RefreshRow(row);
 
         if (not IsPathValid())
         {
@@ -484,18 +504,19 @@ void DialogSplinePath::AddPoint()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::RemovePoint()
 {
-    if (ui->listWidget->count() <= 3)
+    if (ui->tableWidget->rowCount() <= 3)
     {
         ui->toolButtonRemovePoint->setDisabled(true);
         return;
     }
 
-    QListWidgetItem  const*selectedItem = ui->listWidget->currentItem();
-    if (selectedItem)
+    const int row = CurrentRow();
+    if (row >= 0)
     {
-        delete ui->listWidget->takeItem(ui->listWidget->row(selectedItem));
-        ui->listWidget->setCurrentRow(0);
-        ui->toolButtonRemovePoint->setDisabled(ui->listWidget->count() <= 3);
+        ui->tableWidget->removeRow(row);
+        RefreshRows();
+        ui->tableWidget->setCurrentCell(qMin(row, ui->tableWidget->rowCount() - 1), columnPoint);
+        ui->toolButtonRemovePoint->setDisabled(ui->tableWidget->rowCount() <= 3);
     }
 
     SavePath();
@@ -507,37 +528,27 @@ void DialogSplinePath::RemovePoint()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::MoveTop()
 {
-    MoveListRowTop(ui->listWidget);
-    SavePath();
-    flagError = IsPathValid();
-    CheckState(); // Disable Ok and Apply buttons if something wrong.
+    MoveRow(CurrentRow(), 0);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::MoveUp()
 {
-    MoveListRowUp(ui->listWidget);
-    SavePath();
-    flagError = IsPathValid();
-    CheckState(); // Disable Ok and Apply buttons if something wrong.
+    const int row = CurrentRow();
+    MoveRow(row, row - 1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::MoveDown()
 {
-    MoveListRowDown(ui->listWidget);
-    SavePath();
-    flagError = IsPathValid();
-    CheckState(); // Disable Ok and Apply buttons if something wrong.
+    const int row = CurrentRow();
+    MoveRow(row, row + 1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::MoveBottom()
 {
-    MoveListRowBottom(ui->listWidget);
-    SavePath();
-    flagError = IsPathValid();
-    CheckState(); // Disable Ok and Apply buttons if something wrong.
+    MoveRow(CurrentRow(), ui->tableWidget->rowCount() - 1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -580,14 +591,15 @@ void DialogSplinePath::ShowVisualization()
  */
 void DialogSplinePath::NewItem(const VSplinePoint &point)
 {
-    auto *item = new QListWidgetItem(point.P().name());
-    item->setFont(NodeFont(item->font()));
-    item->setData(Qt::UserRole, QVariant::fromValue(point));
-    item->setData(validityRole, allHandleFlags);
+    const int row = ui->tableWidget->rowCount();
+    ui->tableWidget->insertRow(row);
+    CreateRow(row);
+    SetRowPoint(row, point);
+    SetRowValidity(row, allHandleFlags);
+    RefreshRow(row);
 
-    ui->listWidget->addItem(item);
-    ui->listWidget->setCurrentItem(item);
-    if (ui->listWidget->count() >= 2)
+    ui->tableWidget->setCurrentCell(row, columnPoint);
+    if (ui->tableWidget->rowCount() >= 2)
     {
         bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
         bOk->setEnabled(true);
@@ -595,6 +607,10 @@ void DialogSplinePath::NewItem(const VSplinePoint &point)
     }
 
     DataPoint(point);
+
+    // A row filled while the table was still growing took itself for the last one: the row that was the end until
+    // now has an outgoing handle no more.
+    RefreshRows();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -609,7 +625,7 @@ void DialogSplinePath::DataPoint(const VSplinePoint &p)
         ChangeCurrentData(ui->comboBoxPoint, p.P().id());
     }
 
-    int const row = ui->listWidget->currentRow();
+    int const row = CurrentRow();
     const QString field = tr("Not used");
 
     if (row == 0)
@@ -627,7 +643,7 @@ void DialogSplinePath::DataPoint(const VSplinePoint &p)
         m_formulaLength2->setFormula(VAbstractApplication::VApp()->TrVars()->FormulaToUser(
             p.Length2Formula(), VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
     }
-    else if (row == ui->listWidget->count() - 1)
+    else if (row == ui->tableWidget->rowCount() - 1)
     {
         m_formulaAngle2->setEnabled(false);
         m_formulaAngle2->setFormula(field);
@@ -668,18 +684,16 @@ void DialogSplinePath::Angle1Changed()
         return;
     }
 
-    const int row = ui->listWidget->currentRow();
-    if (row < 0 || row >= ui->listWidget->count())
+    const int row = CurrentRow();
+    if (row < 0 || row >= ui->tableWidget->rowCount())
     {
         return;
     }
 
-    QListWidgetItem *item = ui->listWidget->item(row);
-    SCASSERT(item != nullptr)
-    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+    auto p = RowPoint(row);
 
     const bool valid = m_formulaAngle1->isValid();
-    SetPointValidity(item, flagAngle1, valid);
+    UpdateRowValidity(row, flagAngle1, valid);
 
     if (valid)
     {
@@ -688,18 +702,18 @@ void DialogSplinePath::Angle1Changed()
         if (not VFuzzyComparePossibleNulls(value, p.Angle1()))
         {
             p.SetAngle1(value, f);
-            item->setData(Qt::UserRole, QVariant::fromValue(p));
+            SetRowPoint(row, p);
 
             // Strict coupling: the opposite angle follows. Reflect it in the UI.
-            if (row != ui->listWidget->count() - 1)
+            if (row != ui->tableWidget->rowCount() - 1)
             {
                 m_formulaAngle2->setFormula(p.Angle2Formula());
-                SetPointValidity(item, flagAngle2, true);
+                UpdateRowValidity(row, flagAngle2, true);
             }
         }
     }
 
-    ShowPointIssue(p.P().name());
+    RefreshRow(row);
     CheckState();
 }
 
@@ -711,18 +725,16 @@ void DialogSplinePath::Angle2Changed()
         return;
     }
 
-    const int row = ui->listWidget->currentRow();
-    if (row < 0 || row >= ui->listWidget->count())
+    const int row = CurrentRow();
+    if (row < 0 || row >= ui->tableWidget->rowCount())
     {
         return;
     }
 
-    QListWidgetItem *item = ui->listWidget->item(row);
-    SCASSERT(item != nullptr)
-    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+    auto p = RowPoint(row);
 
     const bool valid = m_formulaAngle2->isValid();
-    SetPointValidity(item, flagAngle2, valid);
+    UpdateRowValidity(row, flagAngle2, valid);
 
     if (valid)
     {
@@ -731,17 +743,17 @@ void DialogSplinePath::Angle2Changed()
         if (not VFuzzyComparePossibleNulls(value, p.Angle2()))
         {
             p.SetAngle2(value, f);
-            item->setData(Qt::UserRole, QVariant::fromValue(p));
+            SetRowPoint(row, p);
 
             if (row != 0)
             {
                 m_formulaAngle1->setFormula(p.Angle1Formula());
-                SetPointValidity(item, flagAngle1, true);
+                UpdateRowValidity(row, flagAngle1, true);
             }
         }
     }
 
-    ShowPointIssue(p.P().name());
+    RefreshRow(row);
     CheckState();
 }
 
@@ -753,27 +765,25 @@ void DialogSplinePath::Length1Changed()
         return;
     }
 
-    const int row = ui->listWidget->currentRow();
-    if (row < 0 || row >= ui->listWidget->count())
+    const int row = CurrentRow();
+    if (row < 0 || row >= ui->tableWidget->rowCount())
     {
         return;
     }
 
-    QListWidgetItem *item = ui->listWidget->item(row);
-    SCASSERT(item != nullptr)
-    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+    auto p = RowPoint(row);
 
     const bool valid = m_formulaLength1->isValid();
-    SetPointValidity(item, flagLength1, valid);
+    UpdateRowValidity(row, flagLength1, valid);
 
     if (valid)
     {
         const QString f = m_formulaLength1->formula();
         p.SetLength1(Visualization::FindLengthFromUser(f, data.DataVariables(), false), f);
-        item->setData(Qt::UserRole, QVariant::fromValue(p));
+        SetRowPoint(row, p);
     }
 
-    ShowPointIssue(p.P().name());
+    RefreshRow(row);
     CheckState();
 }
 
@@ -785,27 +795,25 @@ void DialogSplinePath::Length2Changed()
         return;
     }
 
-    const int row = ui->listWidget->currentRow();
-    if (row < 0 || row >= ui->listWidget->count())
+    const int row = CurrentRow();
+    if (row < 0 || row >= ui->tableWidget->rowCount())
     {
         return;
     }
 
-    QListWidgetItem *item = ui->listWidget->item(row);
-    SCASSERT(item != nullptr)
-    auto p = qvariant_cast<VSplinePoint>(item->data(Qt::UserRole));
+    auto p = RowPoint(row);
 
     const bool valid = m_formulaLength2->isValid();
-    SetPointValidity(item, flagLength2, valid);
+    UpdateRowValidity(row, flagLength2, valid);
 
     if (valid)
     {
         const QString f = m_formulaLength2->formula();
         p.SetLength2(Visualization::FindLengthFromUser(f, data.DataVariables(), false), f);
-        item->setData(Qt::UserRole, QVariant::fromValue(p));
+        SetRowPoint(row, p);
     }
 
-    ShowPointIssue(p.P().name());
+    RefreshRow(row);
     CheckState();
 }
 
@@ -839,9 +847,9 @@ void DialogSplinePath::SavePath()
 auto DialogSplinePath::AllIds() const -> QSet<quint32>
 {
     QSet<quint32> ids;
-    for (qint32 i = 0; i < ui->listWidget->count(); ++i)
+    for (int i = 0; i < ui->tableWidget->rowCount(); ++i)
     {
-        ids.insert(qvariant_cast<VSplinePoint>(ui->listWidget->item(i)->data(Qt::UserRole)).P().id());
+        ids.insert(RowPoint(i).P().id());
     }
 
     return ids;
@@ -862,33 +870,176 @@ auto DialogSplinePath::IsPathValid() const -> bool
 auto DialogSplinePath::ExtractPath() const -> VSplinePath
 {
     QVector<VSplinePoint> points;
-    points.reserve(ui->listWidget->count());
-    for (qint32 i = 0; i < ui->listWidget->count(); ++i)
+    points.reserve(ui->tableWidget->rowCount());
+    for (int i = 0; i < ui->tableWidget->rowCount(); ++i)
     {
-        points.append(qvariant_cast<VSplinePoint>(ui->listWidget->item(i)->data(Qt::UserRole)));
+        points.append(RowPoint(i));
     }
     return VSplinePath(points);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogSplinePath::ShowPointIssue(const QString &pName)
+/** @brief CreateRow gives a row its five cells: empty, non-editable, and carrying nothing yet.
+ *
+ *  What the row means lives in its first cell — the point itself and the validity of its four handle fields — so
+ *  that the row is the model and the table only shows it. */
+void DialogSplinePath::CreateRow(int row)
 {
-    const int row = ui->listWidget->currentRow();
-    if (row == -1)
+    for (int column = 0; column < pointColumnCount; ++column)
+    {
+        auto *cell = new QTableWidgetItem();
+        cell->setFlags(cell->flags() & ~Qt::ItemIsEditable);
+        ui->tableWidget->setItem(row, column, cell);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogSplinePath::RowPoint(int row) const -> VSplinePoint
+{
+    const QTableWidgetItem *cell = ui->tableWidget->item(row, columnPoint);
+    return cell != nullptr ? qvariant_cast<VSplinePoint>(cell->data(pointRole)) : VSplinePoint();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::SetRowPoint(int row, const VSplinePoint &p)
+{
+    if (QTableWidgetItem *cell = ui->tableWidget->item(row, columnPoint); cell != nullptr)
+    {
+        cell->setData(pointRole, QVariant::fromValue(p));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogSplinePath::RowValidity(int row) const -> int
+{
+    const QTableWidgetItem *cell = ui->tableWidget->item(row, columnPoint);
+    return cell != nullptr ? cell->data(validityRole).toInt() : allHandleFlags;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::SetRowValidity(int row, int validity)
+{
+    if (QTableWidgetItem *cell = ui->tableWidget->item(row, columnPoint); cell != nullptr)
+    {
+        cell->setData(validityRole, validity);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSplinePath::UpdateRowValidity(int row, int flag, bool valid)
+{
+    int validity = RowValidity(row);
+    if (valid)
+    {
+        validity |= flag;
+    }
+    else
+    {
+        validity &= ~flag;
+    }
+    SetRowValidity(row, validity);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief RefreshRow writes a row back from its own data: its rank as a name — never the name of the point, which is
+ *  what the pattern calls it and not what the path does with it — and the four values of its two handles.
+ *
+ *  A point at either end of the path has one handle only: the columns of the handle it does not have show a dash,
+ *  the way the fields below are greyed and read "Not used". A row whose values do not all hold says so with "(!)". */
+void DialogSplinePath::RefreshRow(int row)
+{
+    if (row < 0 || row >= ui->tableWidget->rowCount())
     {
         return;
     }
 
-    QListWidgetItem *item = ui->listWidget->item(row);
-    SCASSERT(item != nullptr)
+    const VSplinePoint p = RowPoint(row);
+    const bool first = row == 0;
+    const bool last = row == ui->tableWidget->rowCount() - 1;
 
-    if ((item->data(validityRole).toInt() & allHandleFlags) == allHandleFlags)
+    auto setCell = [this, row](int column, const QString &formula, bool used)
     {
-        item->setText(pName);
+        QTableWidgetItem *cell = ui->tableWidget->item(row, column);
+        if (cell != nullptr)
+        {
+            cell->setText(used ? VAbstractApplication::VApp()->TrVars()->FormulaToUser(
+                                     formula, VAbstractApplication::VApp()->Settings()->GetOsSeparator())
+                               : NotUsedCell());
+        }
+    };
+
+    setCell(columnPoint, PointLabel(row), true);
+    setCell(columnLength1, p.Length1Formula(), not first);
+    setCell(columnAngle1, p.Angle1Formula(), not first);
+    setCell(columnLength2, p.Length2Formula(), not last);
+    setCell(columnAngle2, p.Angle2Formula(), not last);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief PointLabel is the rank of a row, with the mark of the rows whose values do not all hold. */
+auto DialogSplinePath::PointLabel(int row) const -> QString
+{
+    QString label = tr("Point %1").arg(row + 1);
+    if ((RowValidity(row) & allHandleFlags) != allHandleFlags)
+    {
+        label += "(!)"_L1;
     }
-    else
+    return label;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief RefreshRows rewrites every row from its own data.
+ *
+ *  Whether a point has an incoming or an outgoing handle depends on its RANK: adding, removing or moving a point
+ *  changes which rows are the two ends, and a row filled while the table was still growing cannot know it. */
+void DialogSplinePath::RefreshRows()
+{
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row)
     {
-        item->setText(pName + "(!)"_L1);
+        RefreshRow(row);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief MoveRow moves a point to another rank, keeping the order of the rows it crosses: a path is walked, so
+ *  moving a point is not swapping two of them. */
+void DialogSplinePath::MoveRow(int from, int to)
+{
+    if (from < 0 || to < 0 || from == to || from >= ui->tableWidget->rowCount() ||
+        to >= ui->tableWidget->rowCount())
+    {
+        return;
+    }
+
+    const VSplinePoint p = RowPoint(from);
+    const int validity = RowValidity(from);
+
+    ui->tableWidget->removeRow(from);
+    ui->tableWidget->insertRow(to);
+    CreateRow(to);
+    SetRowPoint(to, p);
+    SetRowValidity(to, validity);
+    RefreshRow(to);
+    RefreshRows();
+
+    ui->tableWidget->setCurrentCell(to, columnPoint);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogSplinePath::CurrentRow() const -> int
+{
+    return ui->tableWidget->currentRow();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief SetActivePoint shows which point of the path is being edited: the canvas paints it in the orange of the
+ *  active point, so that the row and the point it stands for are read as one. */
+void DialogSplinePath::SetActivePoint(int row)
+{
+    auto *visPath = qobject_cast<VisToolSplinePath *>(vis);
+    if (visPath != nullptr)
+    {
+        visPath->SetActivePoint(row);
     }
 }
 
@@ -896,12 +1047,12 @@ void DialogSplinePath::ShowPointIssue(const QString &pName)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSplinePath::MoveControls()
 {
-    const int index = ui->listWidget->currentRow();
+    const int index = CurrentRow();
 
     ui->toolButtonTop->setEnabled(index > 0);
     ui->toolButtonUp->setEnabled(index > 0);
-    ui->toolButtonDown->setEnabled(index != -1 && index < ui->listWidget->count() - 1);
-    ui->toolButtonBottom->setEnabled(index != -1 && index < ui->listWidget->count() - 1);
+    ui->toolButtonDown->setEnabled(index != -1 && index < ui->tableWidget->rowCount() - 1);
+    ui->toolButtonBottom->setEnabled(index != -1 && index < ui->tableWidget->rowCount() - 1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -912,10 +1063,9 @@ auto DialogSplinePath::IsValid() const -> bool
         return false;
     }
 
-    for (qint32 i = 0; i < ui->listWidget->count(); ++i)
+    for (int i = 0; i < ui->tableWidget->rowCount(); ++i)
     {
-        QListWidgetItem const *item = ui->listWidget->item(i);
-        if (item != nullptr && (item->data(validityRole).toInt() & allHandleFlags) != allHandleFlags)
+        if ((RowValidity(i) & allHandleFlags) != allHandleFlags)
         {
             return false;
         }
@@ -946,6 +1096,9 @@ void DialogSplinePath::showEvent(QShowEvent *event)
 
     isInitialized = true; // first show windows are held
     ShowVisualization();
+
+    // The visualization is built on show: the active point has to be given to it once it exists.
+    SetActivePoint(CurrentRow());
 
     CheckState();
 }
@@ -992,7 +1145,7 @@ void DialogSplinePath::CheckDependencyTreeComplete()
 {
     m_dependencyReady = m_doc->IsPatternGraphComplete();
     ui->toolButtonAddPoint->setEnabled(m_dependencyReady && ui->comboBoxNewPoint->currentIndex() != -1);
-    ui->toolButtonRemovePoint->setEnabled(m_dependencyReady);
+    ui->toolButtonRemovePoint->setEnabled(m_dependencyReady && ui->tableWidget->rowCount() > 3);
     ui->toolButtonTop->setEnabled(m_dependencyReady);
     ui->toolButtonUp->setEnabled(m_dependencyReady);
     ui->toolButtonDown->setEnabled(m_dependencyReady);

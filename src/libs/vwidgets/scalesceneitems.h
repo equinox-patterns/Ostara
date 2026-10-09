@@ -189,6 +189,10 @@ public:
     auto PointMode() const -> bool;
     void SetPointMode(bool newPointMode);
 
+    /** @brief The role the disc takes its colour from — the point being edited is painted in the active colour. */
+    void SetColorRole(VColorRole role);
+    auto GetColorRole() const -> VColorRole;
+
     void RefreshScale();
 
 protected:
@@ -205,6 +209,12 @@ private:
 inline auto VScaledEllipse::PointMode() const -> bool
 {
     return m_pointMode;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline auto VScaledEllipse::GetColorRole() const -> VColorRole
+{
+    return m_role;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

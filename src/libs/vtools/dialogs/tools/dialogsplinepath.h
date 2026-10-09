@@ -135,7 +135,23 @@ private:
     auto AllIds() const -> QSet<quint32>;
     auto IsPathValid() const -> bool;
     auto ExtractPath() const -> VSplinePath;
-    void ShowPointIssue(const QString &pName);
+
+    // A row of the point table carries the point and the validity of its four handle fields in its first cell, so
+    // that a row can be read, rebuilt or moved on its own — the rows are the model, the widgets only show it.
+    void CreateRow(int row);
+    auto RowPoint(int row) const -> VSplinePoint;
+    void SetRowPoint(int row, const VSplinePoint &p);
+    auto RowValidity(int row) const -> int;
+    void SetRowValidity(int row, int validity);
+    void UpdateRowValidity(int row, int flag, bool valid);
+    void RefreshRow(int row);
+    void RefreshRows();
+    auto PointLabel(int row) const -> QString;
+    void MoveRow(int from, int to);
+    auto CurrentRow() const -> int;
+
+    /** @brief Shows the row being edited as the active point of the path in the canvas. */
+    void SetActivePoint(int row);
 
     void MoveControls();
 };

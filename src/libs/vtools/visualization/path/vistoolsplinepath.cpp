@@ -87,6 +87,7 @@ void VisToolSplinePath::RefreshGeometry()
     }
 
     RefreshPointLabels(pathPoints);
+    ApplyActivePoint();
 
     if (GetMode() == Mode::Creation)
     {
@@ -165,19 +166,23 @@ void VisToolSplinePath::RefreshPointLabels(const QVector<VSplinePoint> &pathPoin
         m_pointLines.append(line);
     }
 
-    const QPointF offset(25, -25); // mm, upper-right of the point
+    // Upper-right of the point, and clear of it: the anchor is the TOP-LEFT corner of the text, so the label has to
+    // be lifted by its own height — the offset alone left a 32 pt box centred on the disc it names.
+    constexpr qreal labelGap = 25;
     for (vsizetype i = 0; i < labelCount; ++i)
     {
         const QPointF pos = static_cast<QPointF>(pathPoints.at(i + 1).P());
 
         auto *label = m_pointLabels.at(i);
         label->setText(tr("Point %1").arg(i + 2));
+        const qreal textHeight = label->boundingRect().height() * label->scale();
         label->SetDestination(pos);
-        label->SetRealPos(pos + offset);
+        label->SetRealPos(pos + QPointF(labelGap, -labelGap - textHeight));
         label->setVisible(true);
 
         auto *line = m_pointLines.at(i);
-        line->setLine(QLineF(pos, label->pos()));
+        // The leader leaves the point at the edge of its disc: from the centre it crossed the disc it points at.
+        line->setLine(QLineF(pos + QPointF(0, -ScaledRadius(SceneScale(scene()))), label->pos()));
         line->setVisible(true);
     }
 
@@ -185,6 +190,26 @@ void VisToolSplinePath::RefreshPointLabels(const QVector<VSplinePoint> &pathPoin
     {
         m_pointLabels.at(i)->setVisible(false);
         m_pointLines.at(i)->setVisible(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief SetActivePoint remembers which point of the path is being edited — the rank of the row in the dialog's
+ *  table — and paints it in the orange of the active point. */
+void VisToolSplinePath::SetActivePoint(int row)
+{
+    m_activePoint = row;
+    ApplyActivePoint();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief ApplyActivePoint gives every point of the path back the magenta of a visualization, except the one being
+ *  edited, which takes the orange of the active point. */
+void VisToolSplinePath::ApplyActivePoint()
+{
+    for (int i = 0; i < m_points.size(); ++i)
+    {
+        m_points.at(i)->SetColorRole(i == m_activePoint ? VColorRole::ActivePointColor : VColorRole::VisSupportColor);
     }
 }
 

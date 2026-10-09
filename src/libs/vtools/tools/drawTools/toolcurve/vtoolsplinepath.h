@@ -86,6 +86,9 @@ public:
 
     void ShowHandles(bool show) override;
 
+    /** @brief Opens the edition dialog — the dock's "Edit curve" button calls it, as the pleat's own does. */
+    void OpenOptionsDialog();
+
 signals:
     /**
      * @brief RefreshLine refresh control line.

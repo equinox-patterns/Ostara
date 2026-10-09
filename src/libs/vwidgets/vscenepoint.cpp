@@ -335,7 +335,7 @@ void VScenePoint::ScaleMainPenWidth(qreal scale)
     // An active point (property browser open) keeps its highlighted look even when not hovered.
     const bool hovered = m_isHovered || m_selected || m_temporarySelected || m_layerSelected || m_inLayer;
 
-    const qreal width = ScaleWidth(hovered ? VAbstractApplication::VApp()->Settings()->WidthMainLine()
+    const qreal width = ScaleWidth(hovered ? VAbstractApplication::VApp()->Settings()->WidthBoldLine()
                                            : VAbstractApplication::VApp()->Settings()->WidthHairLine(),
                                    scale);
 

@@ -44,7 +44,7 @@
 //---------------------------------------------------------------------------------------------------------------------
 VCurvePathItem::VCurvePathItem(VColorRole role, QGraphicsItem *parent)
   : QGraphicsPathItem(parent),
-    m_defaultWidth(VAbstractApplication::VApp()->Settings()->WidthMainLine()),
+    m_defaultWidth(VAbstractApplication::VApp()->Settings()->WidthBoldLine()),
     m_role(role)
 {
 }
