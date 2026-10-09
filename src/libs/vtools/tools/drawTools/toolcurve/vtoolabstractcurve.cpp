@@ -906,7 +906,66 @@ auto VToolAbstractOffsetCurve::HasEndPoint() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create)
+auto VToolAbstractOffsetCurve::CurveEndPoint(bool isStart) const -> OToolCurvePoint *
+{
+    const quint32 pointId = FindPointId(isStart);
+
+    if (pointId == NULL_ID)
+    {
+        return nullptr;
+    }
+
+    return qobject_cast<OToolCurvePoint *>(VAbstractPattern::getTool(pointId));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::StartPointName() const -> QString
+{
+    const OToolCurvePoint *point = CurveEndPoint(true);
+    return point == nullptr ? QString() : point->name();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::EndPointName() const -> QString
+{
+    const OToolCurvePoint *point = CurveEndPoint(false);
+    return point == nullptr ? QString() : point->name();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::StartPointShowLabel() const -> bool
+{
+    const OToolCurvePoint *point = CurveEndPoint(true);
+    return point != nullptr && point->IsLabelVisible(point->getId());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractOffsetCurve::EndPointShowLabel() const -> bool
+{
+    const OToolCurvePoint *point = CurveEndPoint(false);
+    return point != nullptr && point->IsLabelVisible(point->getId());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractOffsetCurve::SetStartPointShowLabel(bool show)
+{
+    if (OToolCurvePoint *point = CurveEndPoint(true))
+    {
+        point->SetLabelVisible(point->getId(), show);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractOffsetCurve::SetEndPointShowLabel(bool show)
+{
+    if (OToolCurvePoint *point = CurveEndPoint(false))
+    {
+        point->SetLabelVisible(point->getId(), show);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create, const QString &name, bool showLabel)
 {
     if (create)
     {
@@ -915,8 +974,9 @@ void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create)
             OToolCurvePointInitData pointData;
             pointData.splineId = m_id;
             pointData.position = CurvePointPosition::Start;
-            pointData.name = doc->GenerateLabel(LabelType::NewLabel);
-            pointData.showLabel = false;
+            // A caller who has a name for the point — the dialog does, the property browser does not — gets it.
+            pointData.name = name.isEmpty() ? doc->GenerateLabel(LabelType::NewLabel) : name;
+            pointData.showLabel = showLabel;
             pointData.scene = qobject_cast<VMainGraphicsScene *>(scene());
             pointData.doc = doc;
             pointData.data = getData();
@@ -947,7 +1007,7 @@ void VToolAbstractOffsetCurve::SetCreateStartPoint(bool create)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolAbstractOffsetCurve::SetCreateEndPoint(bool create)
+void VToolAbstractOffsetCurve::SetCreateEndPoint(bool create, const QString &name, bool showLabel)
 {
     if (create)
     {
@@ -956,8 +1016,8 @@ void VToolAbstractOffsetCurve::SetCreateEndPoint(bool create)
             OToolCurvePointInitData pointData;
             pointData.splineId = m_id;
             pointData.position = CurvePointPosition::End;
-            pointData.name = doc->GenerateLabel(LabelType::NewLabel);
-            pointData.showLabel = false;
+            pointData.name = name.isEmpty() ? doc->GenerateLabel(LabelType::NewLabel) : name;
+            pointData.showLabel = showLabel;
             pointData.scene = qobject_cast<VMainGraphicsScene *>(scene());
             pointData.doc = doc;
             pointData.data = getData();

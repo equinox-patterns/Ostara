@@ -87,6 +87,21 @@ public:
     auto GetStartShowLabel() const -> bool;
     auto GetEndShowLabel() const -> bool;
 
+    /**
+     * @brief Shows one end of the curve as it is in the pattern: whether the point exists, what it is called, whether
+     * its label is drawn. Called by the tool, both when the dialog opens on an existing curve and after the pattern
+     * has been rebuilt under it.
+     */
+    void SetStartPoint(bool exists, const QString &name, bool showLabel);
+    void SetEndPoint(bool exists, const QString &name, bool showLabel);
+
+    /**
+     * @brief The dialog drives a tool the pattern rebuilds when a point is added to the curve or taken away from it:
+     * rather than being closed by that parse, it is linked again to the rebuilt curve, which reads its options anew
+     * (see MainWindow::FullParseFile and DialogTool::RebuildVisualization).
+     */
+    auto SurvivesFullParse() const -> bool override { return true; }
+
     void ShowDialog(bool click) override;
 
     void CheckDependencyTreeComplete() override;
@@ -114,7 +129,8 @@ private slots:
     void MoveDown();
     void DeployFormula();
     void Fx();
-    void SaveOffsetName(const QString &text);
+    void ValidateOffsetName();
+    void SaveOffsetName();
     void SaveOffsetDescription();
     void SaveOffsetFormula();
 
@@ -134,10 +150,21 @@ private:
 
     QVector<VGraduatedCurveOffsetFormula> m_offsets{};
 
+    /// Line whose name is being typed in the Name field, and what was typed for it. Kept here because the table can
+    /// move on before the field is left: the rename has to land on the line the name was typed for, and a field the
+    /// table has refilled since carries the name of another line — which is not a rename at all.
+    int m_namedOffsetRow{-1};
+    QString m_namedOffsetText{};
+
     QCheckBox *m_startShowLabelCheckbox{nullptr};
     QCheckBox *m_endShowLabelCheckbox{nullptr};
     bool m_showLabelStart{false};
     bool m_showLabelEnd{false};
+
+    /// True when the point is already in the pattern. Its name is then the point's own business — every formula that
+    /// uses it would have to follow a rename — so the tab shows it without offering to change it.
+    bool m_startPointExists{false};
+    bool m_endPointExists{false};
 
     void FinishCreating();
 
@@ -150,11 +177,16 @@ private:
 
     auto GetOffsetName(bool translate) const -> QString;
 
+    auto OffsetNameProblem(int row, const QString &name) const -> QString;
+
     auto VisualizationOffsets() const -> QVector<VRawGraduatedCurveOffset>;
 
     void ShowHeaderUnits(int column);
 
     void UpdatePointControls();
+
+    /// Tells the preview which width is being edited — the rank of the table's line — or that none is.
+    void SetActiveOffset(int row);
 };
 
 #endif // DIALOGGRADUATEDCURVE_H

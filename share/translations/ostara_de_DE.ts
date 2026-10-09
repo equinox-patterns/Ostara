@@ -2396,29 +2396,50 @@
         <translation type="vanished">Notizen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="269"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="274"/>
         <source>Offset %1</source>
         <translation>Abstand %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="606"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="875"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="462"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="464"/>
+        <source>The point exists already: rename it on the point itself.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="715"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1085"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="612"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="881"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="721"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1091"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="781"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="903"/>
         <source>Edit offset</source>
         <translation>Abstand bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="876"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="925"/>
+        <source>An offset must carry a name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="930"/>
+        <source>This name cannot be used as the name of a variable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="941"/>
+        <source>Another variable of the pattern already carries this name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1086"/>
         <source>Parser error: %1</source>
         <translation>Parser-Fehler: %1</translation>
     </message>
@@ -4710,12 +4731,12 @@ This action cannot be undone.</source>
         <translation type="obsolete">Linie</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="229"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="243"/>
         <source>Take both points of this line first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="348"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="365"/>
         <source>Invalid layer name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4732,7 +4753,7 @@ This action cannot be undone.</source>
         <translation type="vanished">Ungültiger Name</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="466"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="486"/>
         <source>Adding or removing objects can&apos;t be applied while the dialog stays open. Use OK to confirm.</source>
         <translation>Das Hinzufügen oder Entfernen von Objekten kann nicht angewendet werden, solange der Dialog geöffnet bleibt. Verwenden Sie OK zum Bestätigen.</translation>
     </message>
@@ -6548,27 +6569,32 @@ This action cannot be undone.</source>
 <context>
     <name>DialogPuzzlePreferences</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="14"/>
         <source>Puzzle preferences</source>
-        <translation type="vanished">Puzzle-Einstellungen</translation>
+        <translation>Puzzle-Einstellungen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="60"/>
         <source>Configuration</source>
-        <translation type="vanished">Konfiguration</translation>
+        <translation>Konfiguration</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="87"/>
         <source>Paths</source>
-        <translation type="vanished">Pfade</translation>
+        <translation>Pfade</translation>
     </message>
     <message numerus="yes">
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.cpp" line="159"/>
         <source>Followed %n option(s) require restart to take effect: %1.</source>
-        <translation type="vanished">
+        <translation>
             <numerusform>Folgende %n Option(en) erfordern einen Neustart, um wirksam zu werden: %1.</numerusform>
             <numerusform>Folgende %n Option(en) erfordern einen Neustart, um wirksam zu werden: %1.</numerusform>
         </translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="75"/>
         <source>Layout</source>
-        <translation type="vanished">Layout</translation>
+        <translation>Layout</translation>
     </message>
 </context>
 <context>
@@ -7087,116 +7113,146 @@ This action cannot be undone.</source>
 <context>
     <name>DialogSaveManualLayout</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="26"/>
         <source>Path:</source>
-        <translation type="vanished">Verzeichnis:</translation>
+        <translation>Verzeichnis:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="39"/>
         <source>Destination folder</source>
-        <translation type="vanished">Zielordner</translation>
+        <translation>Zielordner</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="42"/>
         <source>Path to destination folder</source>
-        <translation type="vanished">Pfad zu Zielverzeichnis</translation>
+        <translation>Pfad zu Zielverzeichnis</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="55"/>
         <source>Select path to destination folder</source>
-        <translation type="vanished">Pfad zum Zielordner auswählen</translation>
+        <translation>Pfad zum Zielordner auswählen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="58"/>
         <source>Browse…</source>
-        <translation type="vanished">Auswählen…</translation>
+        <translation>Auswählen…</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="75"/>
         <source>File format:</source>
-        <translation type="vanished">Dateiformat:</translation>
+        <translation>Dateiformat:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="116"/>
         <source>Options</source>
-        <translation type="vanished">Optionen</translation>
+        <translation>Optionen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="122"/>
         <source>Not available</source>
-        <translation type="vanished">Nicht verfügbar</translation>
+        <translation>Nicht verfügbar</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="134"/>
         <source>Binary form</source>
-        <translation type="vanished">Binärform</translation>
+        <translation>Binärform</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="154"/>
         <source>Show grainline</source>
-        <translation type="vanished">Fadenlauf anzeigen</translation>
+        <translation>Fadenlauf anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="164"/>
         <source>Hide ruler</source>
-        <translation type="vanished">Lineal ausblenden</translation>
+        <translation>Lineal ausblenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="178"/>
         <source>Text as paths</source>
-        <translation type="vanished">Text als Pfade</translation>
+        <translation>Text als Pfade</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="144"/>
         <source>Export unified</source>
-        <translation type="vanished">Einheitlich exportieren</translation>
+        <translation>Einheitlich exportieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="188"/>
         <source>Tiles scheme</source>
-        <translation type="vanished">Kachel Schema</translation>
+        <translation>Kachel Schema</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="197"/>
         <source>Compatibility:</source>
-        <translation type="vanished">Kompatibilität:</translation>
+        <translation>Kompatibilität:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="227"/>
         <source>File name:</source>
-        <translation type="vanished">Dateiname:</translation>
+        <translation>Dateiname:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="240"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="243"/>
         <source>File base name</source>
-        <translation type="vanished">Datei-Basisname</translation>
+        <translation>Datei-Basisname</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="101"/>
         <source>The base filename does not match a regular expression.</source>
-        <translation type="vanished">Der Dateiname enthält unerlaubte Zeichen.</translation>
+        <translation>Der Dateiname enthält unerlaubte Zeichen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="145"/>
         <source>Select folder</source>
-        <translation type="vanished">Ordner auswählen</translation>
+        <translation>Ordner auswählen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="190"/>
         <source>Tried to use out of range file format type number.</source>
-        <translation type="vanished">Verwendung einer Dateiformat-Typnummer außerhalb des gültigen Bereichs versucht.</translation>
+        <translation>Verwendung einer Dateiformat-Typnummer außerhalb des gültigen Bereichs versucht.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="198"/>
         <source>Selected not present file format.</source>
-        <translation type="vanished">Nicht vorhandenes Dateiformat ausgewählt.</translation>
+        <translation>Nicht vorhandenes Dateiformat ausgewählt.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="215"/>
         <source>Selected not present file format type.</source>
-        <translation type="vanished">Nicht vorhandener Dateiformat-Typ ausgewählt.</translation>
+        <translation>Nicht vorhandener Dateiformat-Typ ausgewählt.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="388"/>
         <source>The destination directory doesn&apos;t exists or is not readable.</source>
-        <translation type="vanished">Der Zielordner existiert nicht oder kann nicht gelesen werden.</translation>
+        <translation>Der Zielordner existiert nicht oder kann nicht gelesen werden.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="527"/>
         <source>Name conflict</source>
-        <translation type="vanished">Namenskonflikt</translation>
+        <translation>Namenskonflikt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="528"/>
         <source>Folder already contain file with name %1. Rewrite all conflict file names?</source>
-        <translation type="vanished">Der Ordner enthält bereits eine Datei namens %1. Datei überschreiben?</translation>
+        <translation>Der Ordner enthält bereits eine Datei namens %1. Datei überschreiben?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="587"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="591"/>
         <source>Example:</source>
-        <translation type="vanished">Beispiel:</translation>
+        <translation>Beispiel:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="701"/>
         <source>By standard</source>
-        <translation type="vanished">Nach Norm</translation>
+        <translation>Nach Norm</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="14"/>
         <source>Save manual layout</source>
-        <translation type="vanished">Manuelles Layout speichern</translation>
+        <translation>Manuelles Layout speichern</translation>
     </message>
 </context>
 <context>
@@ -7248,11 +7304,11 @@ This action cannot be undone.</source>
         <translation type="vanished">Detail</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1676"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="112"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="204"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="228"/>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Fadenlauf</translation>
     </message>
@@ -7580,9 +7636,9 @@ This action cannot be undone.</source>
         <translation type="vanished">Wähle die maßgeblichen Hauptpfad Objekte im Uhrzeigersinn, &lt;b&gt;%1&lt;/b&gt; - umgekehrte Richtung der Kurve, &lt;b&gt;%2&lt;/b&gt; - Erstellung beenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="514"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1679"/>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <source>Fold line</source>
         <translation>Faltlinie</translation>
     </message>
@@ -8020,7 +8076,7 @@ This action cannot be undone.</source>
         <translation>Liste von Punkten</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="281"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="298"/>
         <source>Select point of curve path</source>
         <translation>Punkt für den Kurvenpfad auswählen</translation>
     </message>
@@ -8029,7 +8085,7 @@ This action cannot be undone.</source>
         <translation type="vanished">Farbe</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="315"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="352"/>
         <source>Color:</source>
         <translation>Farbe:</translation>
     </message>
@@ -8049,8 +8105,8 @@ This action cannot be undone.</source>
         <translation>Erster Kontrollpunkt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="139"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="156"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="142"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="159"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
@@ -8060,68 +8116,98 @@ This action cannot be undone.</source>
         <translation>Zweiter Kontrollpunkt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="129"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="147"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="132"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="150"/>
         <source>Length:</source>
         <translation>Länge:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="141"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="144"/>
         <source>Edit first control point angle</source>
         <translation>Winkel des ersten Kontrollpunktes bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="158"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="161"/>
         <source>Edit second control point angle</source>
         <translation>Winkel des zweiten Kontrollpunktes bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="131"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="982"/>
+        <source>Point %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="134"/>
         <source>Edit first control point length</source>
         <translation>Länge des ersten Kontrollpunktes bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="149"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="152"/>
         <source>Edit second control point length</source>
         <translation>Länge des zweiten Kontrollpunktes bearbeiten</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="613"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="629"/>
         <source>Not used</source>
         <translation>Nicht verwendet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="197"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="201"/>
+        <source>Point</source>
+        <translation type="unfinished">Punkt</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="206"/>
+        <source>Length 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="211"/>
+        <source>Angle 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="216"/>
+        <source>Length 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="221"/>
+        <source>Angle 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="234"/>
         <source>Move on top</source>
         <translation>Ganz nach oben schieben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="214"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="251"/>
         <source>Move up</source>
         <translation>Anheben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="231"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="268"/>
         <source>Move down</source>
         <translation>Absenken</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="248"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="285"/>
         <source>Move on bottom</source>
         <translation>Ganz nach unten schieben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="286"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="323"/>
         <source>Pen style:</source>
         <translation>Zeichenstil:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="329"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="366"/>
         <source>Curve:</source>
         <translation type="unfinished">Kurve:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="367"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="404"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8981,8 +9067,8 @@ This action cannot be undone.</source>
 <context>
     <name>FoldLine</name>
     <message>
-        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
         <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
+        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
         <source>Cut On Fold</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9146,6 +9232,7 @@ This action cannot be undone.</source>
     <name>InternalStrings</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaboutapp.cpp" line="61"/>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="157"/>
         <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation>Das Programm wird in dem Zustand WIE ES IST OHNE GARANTIE UND GEWÄHRLEISTUNG IRGENDEINER ART, EINSCHLIESSLICH DER GARANTIE FÜR DESIGN UND EIGNUNG FÜR EINEN BESTIMMTEN ZWECK, zur Verfügung gestellt.</translation>
     </message>
@@ -9421,8 +9508,8 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="306"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="501"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="830"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="504"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="833"/>
         <source>Select first point of line</source>
         <translation>Ersten Punkt der Linie auswählen</translation>
     </message>
@@ -9437,133 +9524,133 @@ This action cannot be undone.</source>
         <translation>Den ersten Punkt der Linie wählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="359"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="348"/>
+        <source>Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point that carries the edge when no curve does — then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="362"/>
         <source>Select the base point of the rectangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="373"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="376"/>
         <source>Select first point curve</source>
         <translation>Ersten Punkt der Kurve wählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="397"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="400"/>
         <source>Select simple curve</source>
         <translation>Einfache Kurve auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="411"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="414"/>
         <source>Select point of center of arc</source>
         <translation>Mittelpunkt des Bogens auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="440"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="443"/>
         <source>Select point of curve path</source>
         <translation>Punkt für den Kurvenpfad auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="450"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="453"/>
         <source>Select the first point of the curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="474"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="477"/>
         <source>Select curve path</source>
         <translation>Kurvenpfad auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="525"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="528"/>
         <source>Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed automatically; hold &lt;b&gt;%1&lt;/b&gt; to reverse a curve, &lt;b&gt;%2&lt;/b&gt; to finish.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="536"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="539"/>
         <source>Select all the points of the internal marks to place, &lt;b&gt;%1&lt;/b&gt; - confirm selection. Every mark will be attached to the piece you choose in the dialog, so select only points lying on that piece.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="656"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="659"/>
         <source>Select the &lt;b&gt;objects to turn&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="708"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="711"/>
         <source>Select the objects of the portion, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="723"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="737"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="726"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="740"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="751"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="754"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two — the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="800"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="803"/>
         <source>Insert node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="801"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="804"/>
         <source>None of the selected nodes could be placed in the piece.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1006"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1009"/>
         <source>Select the armhole point. Optional: create a perpendicular point beforehand to end the curve perpendicular to the shoulder line.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1018"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1021"/>
         <source>Select the point the spiral starts at</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="554"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="557"/>
         <source>Select base point</source>
         <translation>Fußpunkt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="345"/>
-        <source>Select the apex of the dart, then the two points of its opening, and the point that carries the edge when no curve does — then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="568"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="571"/>
         <source>Select first point of axis</source>
         <translation>Ersten Punkt der Achse auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="597"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="617"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="600"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="620"/>
         <source>Select detail</source>
         <translation>Detail auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="643"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="669"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="682"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="695"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="938"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="646"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="672"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="685"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="698"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="941"/>
         <source>Select one or more objects, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation>Ein oder mehrere Objekte auswählen, &lt;b&gt;%1&lt;/b&gt; - Auswahl bestätigen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="818"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="852"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="951"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="961"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="821"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="855"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="954"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="964"/>
         <source>Select arc</source>
         <translation>Bogen auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="840"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="985"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="996"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="843"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="988"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="999"/>
         <source>Select curve</source>
         <translation>Kurve auswählen</translation>
     </message>
@@ -9737,7 +9824,7 @@ This action cannot be undone.</source>
         <translation>Zuletzt benutztes Werkzeug auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="583"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="586"/>
         <source>Select point for X value (vertical)</source>
         <translation>Punkt für X-Wert (vertikal) auswählen</translation>
     </message>
@@ -9833,17 +9920,17 @@ This action cannot be undone.</source>
         <translation>Originallayout exportieren</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="867"/>
         <source>Select first an arc</source>
         <translation>Ersten Bogen auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="919"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="922"/>
         <source>Select point of the center of the arc</source>
         <translation>Mittelpunkt des Bogens auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="929"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="932"/>
         <source>Select the first base line point</source>
         <translation>Wählen Sie den ersten Punkt der Grundlinie</translation>
     </message>
@@ -10034,7 +10121,7 @@ This action cannot be undone.</source>
         <translation>Schnittpunkt zwischen zwei Kurven</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="886"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="889"/>
         <source>Select first curve</source>
         <translation>Erste Kurve auswählen</translation>
     </message>
@@ -10044,12 +10131,12 @@ This action cannot be undone.</source>
         <translation>Kurve, die einen Punkt als Kontrollmethode verwendet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="383"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="386"/>
         <source>Select first curve point</source>
         <translation>Ersten Punkt der Kurve wählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="460"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="463"/>
         <source>Select point of cubic bezier path</source>
         <translation>Punkt des Pfades der kubischen Bezierkurve auswählen</translation>
     </message>
@@ -10079,13 +10166,13 @@ This action cannot be undone.</source>
         <translation type="vanished">Zeigt, welche Details ins Layout kommen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="875"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="878"/>
         <source>Select first circle center</source>
         <translation>Ersten Kreismittelpunkt auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="897"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="908"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="900"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="911"/>
         <source>Select point on tangent</source>
         <translation>Punkt auf Tangente auswählen</translation>
     </message>
@@ -10115,17 +10202,17 @@ This action cannot be undone.</source>
         <translation>Elliptischer Bogen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="425"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="428"/>
         <source>Select point of center of elliptical arc</source>
         <translation>Mittelpunkt des elliptischen Bogens auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="488"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="491"/>
         <source>Select a curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="515"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="518"/>
         <source>Select main path objects clockwise.</source>
         <translation>Hauptpfadobjekte im Uhrzeigersinn auswählen.</translation>
     </message>
@@ -11022,7 +11109,7 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Ungültiges Bild. Fehler: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="973"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="976"/>
         <source>Select point of the center of the elliptical arc</source>
         <translation>Mittelpunkt des elliptischen Bogens auswählen</translation>
     </message>
@@ -13590,7 +13677,7 @@ This action cannot be undone.</source>
     <name>ODialogDartCap</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="543"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="468"/>
         <source>Dart cap</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13605,90 +13692,86 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="42"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="62"/>
         <source>Type of line:</source>
         <translation type="unfinished">Linientyp:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="59"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="79"/>
         <source>Line color:</source>
         <translation type="unfinished">Linienfarbe:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="75"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="118"/>
+        <source>You can add a note here…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="40"/>
         <source>Cut the piece&apos;s edge at the cap point, so that the crank is a point of it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="78"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="43"/>
         <source>Notch</source>
         <translation type="unfinished">Einschnitt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="50"/>
         <source>Build the cap on the edge the piece carries at the other point of the opening.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="88"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="53"/>
         <source>Reverse the sense</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="118"/>
-        <source>Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="130"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation type="obsolete">Name:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="140"/>
         <source>Tags:</source>
-        <translation type="unfinished">Stichworte:</translation>
+        <translation type="obsolete">Stichworte:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="157"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="126"/>
         <source>Point</source>
         <translation type="unfinished">Punkt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="163"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="132"/>
         <source>Point name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="112"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="129"/>
-        <source>Line:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="429"/>
-        <source>Select the first point of the dart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="451"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="472"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="376"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="397"/>
         <source>The two points of the opening are two different points, and neither of them is the point of the dart.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="456"/>
-        <source>Select the second point of the dart</source>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="354"/>
+        <source>Select the tip of the dart (the point inside the piece)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="477"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="497"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="381"/>
+        <source>Select the first point of the opening (a point of the piece&apos;s edge)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="402"/>
+        <source>Select the second point of the opening (the other end)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="422"/>
         <source>Select a point of the line to extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="522"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="447"/>
         <source>The cap of this dart cannot be built from this point: the line it carries does not meet the axis of the dart. Choose another point of the line to extend.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17800,42 +17883,42 @@ Save it before leaving it?</source>
 <context>
     <name>OToolDartCap</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1011"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1034"/>
         <source>dart cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1086"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1153"/>
         <source>read the cap on the other edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1087"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1154"/>
         <source>read the cap on this edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1110"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1176"/>
         <source>draw the cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1110"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1176"/>
         <source>stop drawing the cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1196"/>
         <source>mark the crank</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1196"/>
         <source>take the crank away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1410"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1532"/>
         <source>Cap</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18862,388 +18945,493 @@ Diese Option wird nach einem Neustart aktiv.</translation>
 <context>
     <name>Puzzle</name>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="73"/>
         <source>Valentina&apos;s manual layout editor.</source>
-        <translation type="vanished">Valentinas manueller Layout-Editor.</translation>
+        <translation>Valentinas manueller Layout-Editor.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="76"/>
         <source>The manual layout file.</source>
-        <translation type="vanished">Die manuelle Layout-Datei.</translation>
+        <translation>Die manuelle Layout-Datei.</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesConfigurationPage</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="45"/>
         <source>Language</source>
-        <translation type="vanished">Sprache</translation>
+        <translation>Sprache</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="54"/>
         <source>GUI language:</source>
-        <translation type="vanished">Sprache der Benutzeroberfläche:</translation>
+        <translation>Sprache der Benutzeroberfläche:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="67"/>
         <source>Toolbar</source>
-        <translation type="vanished">Werkzeugleiste</translation>
+        <translation>Werkzeugleiste</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="73"/>
         <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">Der Text erscheint unter dem Icon (empfohlen für Anfangende).</translation>
+        <translation>Der Text erscheint unter dem Icon (empfohlen für Anfangende).</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="86"/>
         <source>User Interface</source>
-        <translation type="vanished">Benutzeroberfläche</translation>
+        <translation>Benutzeroberfläche</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="112"/>
         <source>Don&apos;t use the native file dialog</source>
-        <translation type="vanished">Verwenden Sie nicht den nativen Dateidialog</translation>
+        <translation>Verwenden Sie nicht den nativen Dateidialog</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="24"/>
         <source>General</source>
-        <translation type="vanished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="100"/>
         <source>Theme:</source>
-        <translation type="vanished">Design:</translation>
+        <translation>Design:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="122"/>
         <source>Graphical output</source>
-        <translation type="vanished">Grafische Ausgabe</translation>
+        <translation>Grafische Ausgabe</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="128"/>
         <source>Use antialiasing</source>
-        <translation type="vanished">Kantenglättung (Anti-Aliasing) verwenden</translation>
+        <translation>Kantenglättung (Anti-Aliasing) verwenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="135"/>
         <source>Use OpenGL to render a scene.
 This option will take an affect after restart.</source>
-        <translation type="vanished">Verwende OpenGL um eine Szene zu berechnen.
+        <translation>Verwende OpenGL um eine Szene zu berechnen.
 Diese Option wird nach einem Neustart aktiv.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="139"/>
         <source>Use OpenGL render</source>
-        <translation type="vanished">OpenGL Berechnung verwenden</translation>
+        <translation>OpenGL Berechnung verwenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="152"/>
         <source>Font</source>
-        <translation type="vanished">Schrift</translation>
+        <translation>Schrift</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="158"/>
         <source>Allow single stroke outline fonts</source>
-        <translation type="vanished">Einzeilige Konturschriften erlauben</translation>
+        <translation>Einzeilige Konturschriften erlauben</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="165"/>
         <source>When this option is activated, the application will utilize SVG Fonts present in your system to render piece label text, instead of using outline fonts.</source>
-        <translation type="vanished">Wenn diese Option aktiviert ist, verwendet die Anwendung die auf Ihrem System vorhandenen SVG-Schriften zur Darstellung von Teilbeschriftungstext, anstatt Konturschriften zu verwenden.</translation>
+        <translation>Wenn diese Option aktiviert ist, verwendet die Anwendung die auf Ihrem System vorhandenen SVG-Schriften zur Darstellung von Teilbeschriftungstext, anstatt Konturschriften zu verwenden.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="168"/>
         <source>Use single-line fonts</source>
-        <translation type="vanished">Einzeilige Schriften verwenden</translation>
+        <translation>Einzeilige Schriften verwenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="178"/>
         <source>Undo</source>
-        <translation type="vanished">Zurück</translation>
+        <translation>Zurück</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="187"/>
         <source>Count steps (0 - no limit):</source>
-        <translation type="vanished">Anzahl Schritte (0 - keine Beschränkung):</translation>
+        <translation>Anzahl Schritte (0 - keine Beschränkung):</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="240"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="288"/>
         <source>Shortcuts</source>
-        <translation type="vanished">Tastenkürzel</translation>
+        <translation>Tastenkürzel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="283"/>
         <source>Action</source>
-        <translation type="vanished">Aktion</translation>
+        <translation>Aktion</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="311"/>
         <source>Restore defaults</source>
-        <translation type="vanished">Standards wiederherstellen</translation>
+        <translation>Standards wiederherstellen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="321"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="470"/>
         <source>Scrolling</source>
-        <translation type="vanished">Scrollen</translation>
+        <translation>Scrollen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="342"/>
         <source>Animation</source>
-        <translation type="vanished">Animation</translation>
+        <translation>Animation</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="351"/>
         <source>Duration:</source>
-        <translation type="vanished">Dauer:</translation>
+        <translation>Dauer:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="358"/>
         <source>Scrolling animation duration</source>
-        <translation type="vanished">Dauer der Scrollanimation</translation>
+        <translation>Dauer der Scrollanimation</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="361"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="387"/>
         <source>ms</source>
         <comment>milliseconds</comment>
-        <translation type="vanished">ms</translation>
+        <translation>ms</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="377"/>
         <source>Update interval:</source>
-        <translation type="vanished">Aktualisierungsintervall:</translation>
+        <translation>Aktualisierungsintervall:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="384"/>
         <source>Time in milliseconds between each animation update</source>
-        <translation type="vanished">Zeit in Millisekunden zwischen den Animationssequenzen</translation>
+        <translation>Zeit in Millisekunden zwischen den Animationssequenzen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="406"/>
         <source>Mouse scale</source>
-        <translation type="vanished">Maus Skalierung</translation>
+        <translation>Maus Skalierung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="415"/>
         <source>Sensor:</source>
         <comment>sensor mouse</comment>
-        <translation type="vanished">Sensor:</translation>
+        <translation>Sensor:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="422"/>
         <source>Scale scrolling sensitivity for mouse with sensor</source>
-        <translation type="vanished">Skalieren der Scrollempfindlichkeit für Maus mit Sensor</translation>
+        <translation>Skalieren der Scrollempfindlichkeit für Maus mit Sensor</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="441"/>
         <source>Wheel:</source>
         <comment>mouse wheel</comment>
-        <translation type="vanished">Mausrad:</translation>
+        <translation>Mausrad:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="448"/>
         <source>Scale scrolling sensitivity for mouse with wheel</source>
-        <translation type="vanished">Skalieren der Scrollempfindlichkeit für Maus mit Rad</translation>
+        <translation>Skalieren der Scrollempfindlichkeit für Maus mit Rad</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="479"/>
         <source>Acceleration:</source>
-        <translation type="vanished">Beschleunigung:</translation>
+        <translation>Beschleunigung:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="523"/>
         <source>Privacy</source>
-        <translation type="vanished">Datenschutz</translation>
+        <translation>Datenschutz</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="529"/>
         <source>Usage statistic</source>
-        <translation type="vanished">Nutzungsstatistik</translation>
+        <translation>Nutzungsstatistik</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="535"/>
         <source>Send usage statistics</source>
-        <translation type="vanished">Nutzungsstatistik senden</translation>
+        <translation>Nutzungsstatistik senden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="542"/>
         <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation type="vanished">Bitte helfen Sie dabei, die Qualität von Valentina zu verbessern, indem Sie automatisch Nutzungsstatistiken senden. Die gesendeten Daten enthalten &lt;span style=&quot; font-weight:700;&quot;&gt;keine potenziell vertraulichen Informationen&lt;/span&gt; wie Benutzernamen, E-Mail-Adressen, Dateiinhalte oder Dateipfade.</translation>
+        <translation>Bitte helfen Sie dabei, die Qualität von Valentina zu verbessern, indem Sie automatisch Nutzungsstatistiken senden. Die gesendeten Daten enthalten &lt;span style=&quot; font-weight:700;&quot;&gt;keine potenziell vertraulichen Informationen&lt;/span&gt; wie Benutzernamen, E-Mail-Adressen, Dateiinhalte oder Dateipfade.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="555"/>
         <source>Crash reports</source>
-        <translation type="vanished">Absturzberichte</translation>
+        <translation>Absturzberichte</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="561"/>
         <source>Send automatic crash reports</source>
-        <translation type="vanished">Automatische Absturzberichte senden</translation>
+        <translation>Automatische Absturzberichte senden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="570"/>
         <source>Email:</source>
-        <translation type="vanished">Email:</translation>
+        <translation>Email:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="583"/>
         <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation type="vanished">Das Senden von Absturzberichten hilft uns, Valentina zuverlässiger zu machen. Alle Informationen werden vertraulich behandelt und nur zur Verbesserung zukünftiger Versionen dieses Programms verwendet. Bitte aktivieren Sie das Senden automatischer Absturzberichte und geben Sie Ihre E-Mail-Adresse an (optional). Falls angegeben, können wir Sie mit zusätzlichen Informationen zum Absturz kontaktieren.</translation>
+        <translation>Das Senden von Absturzberichten hilft uns, Valentina zuverlässiger zu machen. Alle Informationen werden vertraulich behandelt und nur zur Verbesserung zukünftiger Versionen dieses Programms verwendet. Bitte aktivieren Sie das Senden automatischer Absturzberichte und geben Sie Ihre E-Mail-Adresse an (optional). Falls angegeben, können wir Sie mit zusätzlichen Informationen zum Absturz kontaktieren.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="178"/>
         <source>undo limit</source>
-        <translation type="vanished">Rückgängig machen Beschränkung</translation>
+        <translation>Rückgängig machen Beschränkung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="185"/>
         <source>antialiasing</source>
-        <translation type="vanished">Kantenglättung (Anti-Aliasing)</translation>
+        <translation>Kantenglättung (Anti-Aliasing)</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="191"/>
         <source>scene render</source>
-        <translation type="vanished">Szene berechnen</translation>
+        <translation>Szene berechnen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="235"/>
         <source>send crash report</source>
-        <translation type="vanished">Absturzbericht senden</translation>
+        <translation>Absturzbericht senden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="242"/>
         <source>user email in case of crash</source>
-        <translation type="vanished">Benutzer-E-Mail bei Absturz</translation>
+        <translation>Benutzer-E-Mail bei Absturz</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="281"/>
         <source>Dark</source>
         <comment>theme</comment>
-        <translation type="vanished">Dunkel</translation>
+        <translation>Dunkel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="280"/>
         <source>Light</source>
         <comment>theme</comment>
-        <translation type="vanished">Hell</translation>
+        <translation>Hell</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="200"/>
         <source>Update</source>
-        <translation type="vanished">Updaten</translation>
+        <translation>Updaten</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="206"/>
         <source>Automatically check for updates each time the application starts</source>
-        <translation type="vanished">Automatische Suche nach Updates bei jedem Start der Anwendung</translation>
+        <translation>Automatische Suche nach Updates bei jedem Start der Anwendung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="209"/>
         <source>Automatically check for updates</source>
-        <translation type="vanished">Automatisch nach Updates suchen</translation>
+        <translation>Automatisch nach Updates suchen</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesLayoutPage</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="22"/>
         <source>Sheet</source>
-        <translation type="vanished">Blatt</translation>
+        <translation>Blatt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="31"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="436"/>
         <source>Format</source>
-        <translation type="vanished">Format</translation>
+        <translation>Format</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="51"/>
         <source>Unit:</source>
-        <translation type="vanished">Einheit:</translation>
+        <translation>Einheit:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="67"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="462"/>
         <source>Templates:</source>
-        <translation type="vanished">Vorlagen:</translation>
+        <translation>Vorlagen:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="138"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="533"/>
         <source>Width:</source>
-        <translation type="vanished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="151"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="546"/>
         <source>Height:</source>
-        <translation type="vanished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="195"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="590"/>
         <source>Margins</source>
-        <translation type="vanished">Ränder</translation>
+        <translation>Ränder</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="203"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="598"/>
         <source>Right:</source>
-        <translation type="vanished">Rechts:</translation>
+        <translation>Rechts:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="223"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="618"/>
         <source>Top:</source>
-        <translation type="vanished">Oben:</translation>
+        <translation>Oben:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="247"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="642"/>
         <source>Left:</source>
-        <translation type="vanished">Links:</translation>
+        <translation>Links:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="257"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="652"/>
         <source>Bottom:</source>
-        <translation type="vanished">Unten:</translation>
+        <translation>Unten:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="282"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="677"/>
         <source>Ignore margins</source>
-        <translation type="vanished">Ränder ignorieren</translation>
+        <translation>Ränder ignorieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="295"/>
         <source>Control</source>
-        <translation type="vanished">Steuerung</translation>
+        <translation>Steuerung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="301"/>
         <source>Warning superposition of pieces</source>
-        <translation type="vanished">Warnung vor der Überlagerung von Teilen</translation>
+        <translation>Warnung vor der Überlagerung von Teilen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="308"/>
         <source>Warning pieces out of bound</source>
-        <translation type="vanished">Warnung Teile außerhalb der Grenzen</translation>
+        <translation>Warnung Teile außerhalb der Grenzen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="315"/>
         <source>Warning piece gape position</source>
-        <translation type="vanished">Warnung Teilabstandsposition</translation>
+        <translation>Warnung Teilabstandsposition</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="322"/>
         <source>Sticky edges</source>
-        <translation type="vanished">Haftende Ecken</translation>
+        <translation>Haftende Ecken</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="329"/>
         <source>Follow grainline</source>
-        <translation type="vanished">Folge der Fadenlauf-Linie</translation>
+        <translation>Folge der Fadenlauf-Linie</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="344"/>
         <source>Pieces gap</source>
-        <translation type="vanished">Abstand Teile</translation>
+        <translation>Abstand Teile</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="404"/>
         <source>Tiles</source>
-        <translation type="vanished">Kacheln</translation>
+        <translation>Kacheln</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="416"/>
         <source>Show Tiles on sheet</source>
-        <translation type="vanished">Kacheln auf Blatt anzeigen</translation>
+        <translation>Kacheln auf Blatt anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="423"/>
         <source>Show watermark preview</source>
-        <translation type="vanished">Wasserzeichen-Vorschau anzeigen</translation>
+        <translation>Wasserzeichen-Vorschau anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="426"/>
         <source>Show watermark</source>
-        <translation type="vanished">Wasserzeichen anzeigen</translation>
+        <translation>Wasserzeichen anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="182"/>
         <source>default layout settings</source>
-        <translation type="vanished">Standard-Layout-Einstellungen</translation>
+        <translation>Standard-Layout-Einstellungen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="396"/>
         <source>Millimiters</source>
-        <translation type="vanished">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="397"/>
         <source>Centimeters</source>
-        <translation type="vanished">Zentimeter</translation>
+        <translation>Zentimeter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="398"/>
         <source>Inches</source>
-        <translation type="vanished">Inch</translation>
+        <translation>Inch</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="399"/>
         <source>Pixels</source>
-        <translation type="vanished">Pixel</translation>
+        <translation>Pixel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="364"/>
         <source>Line width:</source>
-        <translation type="vanished">Zeilenbreite:</translation>
+        <translation>Zeilenbreite:</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesPathPage</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="20"/>
         <source>Paths that Valentina uses</source>
-        <translation type="vanished">Pfade die Valentina benutzt</translation>
+        <translation>Pfade die Valentina benutzt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="45"/>
         <source>Type</source>
-        <translation type="vanished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="50"/>
         <source>Path</source>
-        <translation type="vanished">Pfad</translation>
+        <translation>Pfad</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="72"/>
         <source>Default</source>
-        <translation type="vanished">Standard</translation>
+        <translation>Standard</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="101"/>
         <source>Edit</source>
-        <translation type="vanished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="137"/>
         <source>Open Directory</source>
-        <translation type="vanished">Öffentliches Verzeichnis (Open Directory)</translation>
+        <translation>Öffentliches Verzeichnis (Open Directory)</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="164"/>
         <source>My SVG Fonts</source>
-        <translation type="vanished">Meine SVG-Schriften</translation>
+        <translation>Meine SVG-Schriften</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="171"/>
         <source>My font corrections</source>
-        <translation type="vanished">Meine Schriftkorrekturen</translation>
+        <translation>Meine Schriftkorrekturen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="178"/>
         <source>My known measurements</source>
-        <translation type="vanished">Meine bekannten Maße</translation>
+        <translation>Meine bekannten Maße</translation>
     </message>
 </context>
 <context>
@@ -19418,12 +19606,14 @@ Diese Option wird nach einem Neustart aktiv.</translation>
         <translation>Detail bewegen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1142"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="441"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="446"/>
         <source>Can&apos;t convert toUInt parameter</source>
         <translation>Konnte nicht in Parameter vom Typ &apos;positive Ganzzahl&apos; umwandeln</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1079"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="492"/>
         <source>Can&apos;t convert toBool parameter</source>
         <translation>Konnte nicht in Parameter vom Typ &apos;Wahrheitswert&apos; umwandeln</translation>
@@ -19434,6 +19624,7 @@ Diese Option wird nach einem Neustart aktiv.</translation>
         <translation>Leerer Parameter erhalten</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1116"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="577"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="582"/>
         <source>Can&apos;t convert toDouble parameter</source>
@@ -19593,6 +19784,7 @@ Diese Option wird nach einem Neustart aktiv.</translation>
         <translation>Ungültige Formel  &apos;%1&apos; für Werkzeug mit der ID &apos;%2&apos;. %3.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1168"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="470"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="475"/>
         <source>Can&apos;t convert toInt parameter</source>
@@ -19689,30 +19881,37 @@ Diese Option wird nach einem Neustart aktiv.</translation>
         <translation>Ungültiger globaler Wert für eine Passzeichen-Länge. Stück &apos;%1&apos;. Länge ist kleiner als minimal erlaubt.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecemove.cpp" line="132"/>
         <source>move pieces</source>
-        <translation type="vanished">Teile bewegen</translation>
+        <translation>Teile bewegen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecerotate.cpp" line="165"/>
         <source>rotate pieces</source>
-        <translation type="vanished">Teil drehen</translation>
+        <translation>Teil drehen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="209"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="259"/>
         <source>Cannot set printer page size</source>
-        <translation type="vanished">Kann die Seitengröße für den Druck nicht einstellen</translation>
+        <translation>Kann die Seitengröße für den Druck nicht einstellen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="220"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="270"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3231"/>
         <source>Cannot set printer margins</source>
-        <translation type="vanished">Kann Druckränder nicht setzen</translation>
+        <translation>Kann Druckränder nicht setzen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="390"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>Kurve &apos;%1&apos;. Die Länge eines geschnittenen Segments ist zu klein. Optimieren Sie es auf den minimalen Wert.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="407"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>Kurve &apos;%1&apos;. Die Länge eines geschnittenen Segments ist zu groß. Optimieren Sie es auf den maximalen Wert.</translation>
     </message>
@@ -19759,22 +19958,24 @@ Diese Option wird nach einem Neustart aktiv.</translation>
         <translation>Möchten Sie wirklich löschen?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecezvaluemove.cpp" line="66"/>
         <source>z value move piece</source>
-        <translation type="vanished">Z-Wert Teil verschieben</translation>
+        <translation>Z-Wert Teil verschieben</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecezvaluemove.cpp" line="275"/>
         <source>z value move pieces</source>
-        <translation type="vanished">Z-Wert Stücke verschieben</translation>
+        <translation>Z-Wert Stücke verschieben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="384"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>Kurve &apos;%1&apos;. Die Länge eines Schnittsegments (%2) ist zu klein. Optimieren Sie es auf den minimalen Wert.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="402"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>Kurve &apos;%1&apos;. Die Länge eines Schnittsegments (%2) ist zu groß. Optimieren Sie es auf den maximalen Wert.</translation>
     </message>
@@ -22842,6 +23043,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="796"/>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="108"/>
         <source>Disable high dpi scaling. Call this option if has problem with scaling (by default scaling enabled). Alternatively you can use the %1 environment variable.</source>
         <translation>Skalierung für hochauflösende Bildschirme ausschalten. Wählen Sie diese Option wenn Sie Probleme mit der Skalierung haben (standardmäßig ist die Skalierung eingeschaltet). Alternativ können Sie die Umgebungsvariable %1 nutzen.</translation>
     </message>
@@ -23179,8 +23381,9 @@ Do you want to continue?</source>
         <translation>Die Dimension C Basis</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="106"/>
         <source>The raw layout data file</source>
-        <translation type="vanished">Die Rohdaten der Layout-Datei</translation>
+        <translation>Die Rohdaten der Layout-Datei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="121"/>
@@ -23243,8 +23446,9 @@ Do you want to continue?</source>
         <translation>Layout-Einheiten (für das Papier, ausgenommen px, Exportmodus). Standardeinheiten ist cm.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="105"/>
         <source>Load pattern pieces from the raw layout data file.</source>
-        <translation type="vanished">Schnittmuster-Teile aus der Rohdaten-Datei laden.</translation>
+        <translation>Schnittmuster-Teile aus der Rohdaten-Datei laden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="722"/>
@@ -24321,121 +24525,150 @@ Do you want to continue?</source>
 <context>
     <name>VPApplication</name>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="355"/>
         <source>Error parsing file. Program will be terminated.</source>
-        <translation type="vanished">Fehler beim Verarbeiten der Datei. Das Programm wird geschlossen.</translation>
+        <translation>Fehler beim Verarbeiten der Datei. Das Programm wird geschlossen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="361"/>
         <source>Error bad id. Program will be terminated.</source>
-        <translation type="vanished">Fehler - unbekannte ID. Das Programm wird geschlossen.</translation>
+        <translation>Fehler - unbekannte ID. Das Programm wird geschlossen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="367"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
-        <translation type="vanished">Fehler - Wert kann nicht konvertiert werden. Das Programm wird geschlossen.</translation>
+        <translation>Fehler - Wert kann nicht konvertiert werden. Das Programm wird geschlossen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="373"/>
         <source>Error empty parameter. Program will be terminated.</source>
-        <translation type="vanished">Fehler - leerer Parameter. Das Programm wird geschlossen.</translation>
+        <translation>Fehler - leerer Parameter. Das Programm wird geschlossen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="379"/>
         <source>Error wrong id. Program will be terminated.</source>
-        <translation type="vanished">Fehler - falsche ID. Das Programm wird geschlossen.</translation>
+        <translation>Fehler - falsche ID. Das Programm wird geschlossen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="392"/>
         <source>Something&apos;s wrong!!</source>
-        <translation type="vanished">Etwas ist schiefgegangen!</translation>
+        <translation>Etwas ist schiefgegangen!</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="398"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
-        <translation type="vanished">Ausnahme ausgelöst: %1. Programm wird beendet.</translation>
+        <translation>Ausnahme ausgelöst: %1. Programm wird beendet.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="742"/>
         <source>Can&apos;t begin to listen for incoming connections on name &apos;%1&apos;</source>
-        <translation type="vanished">Eingehende Verbindung &apos;%1&apos; kann nicht aufgefangen werden</translation>
+        <translation>Eingehende Verbindung &apos;%1&apos; kann nicht aufgefangen werden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="761"/>
         <source>Export mode doesn&apos;t support opening several files.</source>
-        <translation type="vanished">Der Exportmodus unterstützt nicht das Öffnen mehrerer Dateien.</translation>
+        <translation>Der Exportmodus unterstützt nicht das Öffnen mehrerer Dateien.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="768"/>
         <source>Import raw layout data does not support opening several layout files.</source>
-        <translation type="vanished">Der Import von Layout-Rohdaten unterstützt nicht das Öffnen mehrerer Layoutdateien.</translation>
+        <translation>Der Import von Layout-Rohdaten unterstützt nicht das Öffnen mehrerer Layoutdateien.</translation>
     </message>
 </context>
 <context>
     <name>VPCarrousel</name>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="97"/>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="169"/>
         <source>Unplaced pieces</source>
-        <translation type="vanished">Nicht platzierte Teile</translation>
+        <translation>Nicht platzierte Teile</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="300"/>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="303"/>
         <source>Pieces of</source>
-        <translation type="vanished">Teile von</translation>
+        <translation>Teile von</translation>
     </message>
 </context>
 <context>
     <name>VPCarrouselPieceList</name>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="261"/>
         <source>Move to Sheet</source>
-        <translation type="vanished">Verschieben zu Blatt</translation>
+        <translation>Verschieben zu Blatt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="264"/>
         <source>Delete</source>
-        <translation type="vanished">Entfernen</translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="267"/>
         <source>Remove from Sheet</source>
-        <translation type="vanished">Aus Blatt entfernen</translation>
+        <translation>Aus Blatt entfernen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="247"/>
         <source>Move to</source>
-        <translation type="vanished">Bewegen zu</translation>
+        <translation>Bewegen zu</translation>
     </message>
 </context>
 <context>
     <name>VPDialogAbout</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="26"/>
         <source>About Puzzle</source>
-        <translation type="vanished">Über Puzzle</translation>
+        <translation>Über Puzzle</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="100"/>
         <source>Puzzle version</source>
-        <translation type="vanished">Puzzle Version</translation>
+        <translation>Puzzle Version</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="118"/>
         <source>Build revision:</source>
-        <translation type="vanished">Build-Revision:</translation>
+        <translation>Build-Revision:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="131"/>
         <source>This program is part of Valentina project.</source>
-        <translation type="vanished">Dieses Programm ist Teil des Valentina-Projekts.</translation>
+        <translation>Dieses Programm ist Teil des Valentina-Projekts.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="273"/>
         <source>Special thanks</source>
-        <translation type="vanished">Besonderer Dank</translation>
+        <translation>Besonderer Dank</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="317"/>
         <source>Check For Updates</source>
-        <translation type="vanished">Nach Updates suchen</translation>
+        <translation>Nach Updates suchen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="324"/>
         <source>Credits</source>
-        <translation type="vanished">Danksagungen</translation>
+        <translation>Danksagungen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="66"/>
         <source>Cannot open your default browser</source>
-        <translation type="vanished">Konnte den Standard-Browser nicht starten</translation>
+        <translation>Konnte den Standard-Browser nicht starten</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="151"/>
         <source>Build revision: %1</source>
-        <translation type="vanished">Build-Revision: %1</translation>
+        <translation>Build-Revision: %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="155"/>
         <source>Built on %1 at %2</source>
-        <translation type="vanished">Erstellt am %1 um %2</translation>
+        <translation>Erstellt am %1 um %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="162"/>
         <source>Web site : %1</source>
-        <translation type="vanished">Webseite: %1</translation>
+        <translation>Webseite: %1</translation>
     </message>
 </context>
 <context>
@@ -24560,846 +24793,1109 @@ Do you want to continue?</source>
 <context>
     <name>VPGraphicsPiece</name>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpgraphicspiece.cpp" line="325"/>
         <source>Move to</source>
-        <translation type="vanished">Bewegen zu</translation>
+        <translation>Bewegen zu</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpgraphicspiece.cpp" line="339"/>
         <source>Remove from Sheet</source>
-        <translation type="vanished">Move to</translation>
+        <translation>Move to</translation>
     </message>
 </context>
 <context>
     <name>VPGraphicsSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpgraphicssheet.cpp" line="900"/>
         <source>FOLD</source>
-        <translation type="vanished">FALTEN</translation>
+        <translation>FALTEN</translation>
     </message>
 </context>
 <context>
     <name>VPLayout</name>
     <message>
+        <location filename="../../src/app/puzzle/layout/vplayout.cpp" line="76"/>
         <source>Sheet %1</source>
-        <translation type="vanished">Blatt %1</translation>
+        <translation>Blatt %1</translation>
     </message>
 </context>
 <context>
     <name>VPLayoutFileReader</name>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="497"/>
         <source>Piece</source>
-        <translation type="vanished">Teil</translation>
+        <translation>Teil</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="657"/>
         <source>Error in line %1. Grainline main line is empty.</source>
-        <translation type="vanished">Fehler in Zeile %1. Hauptlinie des Fadenlaufs ist leer.</translation>
+        <translation>Fehler in Zeile %1. Hauptlinie des Fadenlaufs ist leer.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1059"/>
         <source>Got empty attribute &apos;%1&apos;</source>
-        <translation type="vanished">Leeres Attribut &quot;%1&quot; gefunden</translation>
+        <translation>Leeres Attribut &quot;%1&quot; gefunden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="630"/>
         <source>Error in line %1. Seam allowance is empty.</source>
-        <translation type="vanished">Fehler in Zeile %1. Nahtzugabe ist leer.</translation>
+        <translation>Fehler in Zeile %1. Nahtzugabe ist leer.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="749"/>
         <source>Error in line %1. Internal path shape is empty.</source>
-        <translation type="vanished">Fehler in Zeile %1. Interne Pfadform ist leer.</translation>
+        <translation>Fehler in Zeile %1. Interne Pfadform ist leer.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1046"/>
         <source>Unexpected tag %1 in line %2</source>
-        <translation type="vanished">Unerwarteter Tag %1 in Zeile %2</translation>
+        <translation>Unerwarteter Tag %1 in Zeile %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="477"/>
         <source>Piece %1 invalid. %2</source>
-        <translation type="vanished">Stück %1 ungültig. %2</translation>
+        <translation>Stück %1 ungültig. %2</translation>
     </message>
 </context>
 <context>
     <name>VPMainGraphicsView</name>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="329"/>
         <source>Restore transformation origin</source>
-        <translation type="vanished">Transformationsursprung wiederherstellen</translation>
+        <translation>Transformationsursprung wiederherstellen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="333"/>
         <source>Remove sheet</source>
-        <translation type="vanished">Blatt entfernen</translation>
+        <translation>Blatt entfernen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="616"/>
         <source>Remove pieces</source>
-        <translation type="vanished">Teile entfernen</translation>
+        <translation>Teile entfernen</translation>
     </message>
 </context>
 <context>
     <name>VPMainWindow</name>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="14"/>
         <source>Puzzle</source>
-        <translation type="vanished">Puzzle</translation>
+        <translation>Puzzle</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="47"/>
         <source>&amp;File</source>
-        <translation type="vanished">&amp;Datei</translation>
+        <translation>&amp;Datei</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="76"/>
         <source>&amp;Window</source>
-        <translation type="vanished">&amp;Fenster</translation>
+        <translation>&amp;Fenster</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="82"/>
         <source>&amp;Help</source>
-        <translation type="vanished">&amp;Hilfe</translation>
+        <translation>&amp;Hilfe</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="121"/>
         <source>Menu</source>
-        <translation type="vanished">Menü</translation>
+        <translation>Menü</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="159"/>
         <source>Piece Carrousel</source>
-        <translation type="vanished">Teile-Karussel</translation>
+        <translation>Teile-Karussel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="198"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2243"/>
         <source>Properties</source>
-        <translation type="vanished">Eigenschaften</translation>
+        <translation>Eigenschaften</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="243"/>
         <source>Current piece properties</source>
-        <translation type="vanished">Aktuelle Eigenschaften der Teile</translation>
+        <translation>Aktuelle Eigenschaften der Teile</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="294"/>
         <source>Current piece</source>
-        <translation type="vanished">Aktuelles Teil</translation>
+        <translation>Aktuelles Teil</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="322"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="838"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1752"/>
         <source>Infos</source>
-        <translation type="vanished">Infos</translation>
+        <translation>Infos</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="328"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="846"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1760"/>
         <source>Name:</source>
-        <translation type="vanished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="687"/>
         <source>Show Seamline</source>
-        <translation type="vanished">Nahtlinie anzeigen</translation>
+        <translation>Nahtlinie anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="668"/>
         <source>Geometry</source>
-        <translation type="vanished">Geometrie</translation>
+        <translation>Geometrie</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="548"/>
         <source>Rotation</source>
-        <translation type="vanished">Drehung</translation>
+        <translation>Drehung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="624"/>
         <source>Angle:</source>
-        <translation type="vanished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="475"/>
         <source>Placement</source>
-        <translation type="vanished">Platzierung</translation>
+        <translation>Platzierung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="748"/>
         <source>No piece selected</source>
-        <translation type="vanished">Kein Teil ausgewählt</translation>
+        <translation>Kein Teil ausgewählt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="783"/>
         <source>Sheet properties</source>
-        <translation type="vanished">Blatteigenschaften</translation>
+        <translation>Blatteigenschaften</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="828"/>
         <source>Current sheet</source>
-        <translation type="vanished">Aktuelles Blatt</translation>
+        <translation>Aktuelles Blatt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="864"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1365"/>
         <source>Format</source>
-        <translation type="vanished">Format</translation>
+        <translation>Format</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1108"/>
         <source>Remove unused length</source>
-        <translation type="vanished">Ungenutzte Länge entfernen</translation>
+        <translation>Ungenutzte Länge entfernen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1118"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1525"/>
         <source>Margins</source>
-        <translation type="vanished">Ränder</translation>
+        <translation>Ränder</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1126"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1533"/>
         <source>Right:</source>
-        <translation type="vanished">Rechts:</translation>
+        <translation>Rechts:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1146"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1553"/>
         <source>Top:</source>
-        <translation type="vanished">Oben:</translation>
+        <translation>Oben:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1170"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1577"/>
         <source>Left:</source>
-        <translation type="vanished">Links:</translation>
+        <translation>Links:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1180"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1587"/>
         <source>Bottom:</source>
-        <translation type="vanished">Unten:</translation>
+        <translation>Unten:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1215"/>
         <source>Placement Grid</source>
-        <translation type="vanished">Platzierung-Raster</translation>
+        <translation>Platzierung-Raster</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1226"/>
         <source>Show Grid</source>
-        <translation type="vanished">Raster anzeigen</translation>
+        <translation>Raster anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1233"/>
         <source>Column width</source>
-        <translation type="vanished">Spaltenbreite</translation>
+        <translation>Spaltenbreite</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1247"/>
         <source>Row height</source>
-        <translation type="vanished">Zeilenhöhe</translation>
+        <translation>Zeilenhöhe</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1622"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1789"/>
         <source>Control</source>
-        <translation type="vanished">Steuerung</translation>
+        <translation>Steuerung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1823"/>
         <source>Follow grainline</source>
-        <translation type="vanished">Folge der Fadenlauf-Linie</translation>
+        <translation>Folge der Fadenlauf-Linie</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1816"/>
         <source>Sticky edges</source>
-        <translation type="vanished">Haftende Ecken</translation>
+        <translation>Haftende Ecken</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1266"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2034"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2370"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2422"/>
         <source>Export</source>
-        <translation type="vanished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1272"/>
         <source>Export Sheet</source>
-        <translation type="vanished">Blatt exportieren</translation>
+        <translation>Blatt exportieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1307"/>
         <source>Tiles properties</source>
-        <translation type="vanished">Kachel Eigenschaften</translation>
+        <translation>Kachel Eigenschaften</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1352"/>
         <source>Tiled Pdf Export</source>
-        <translation type="vanished">Gekachelter PDF-Export</translation>
+        <translation>Gekachelter PDF-Export</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1628"/>
         <source>Show Tiles on sheet</source>
-        <translation type="vanished">Kacheln auf Blatt anzeigen</translation>
+        <translation>Kacheln auf Blatt anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1697"/>
         <source>Layout properties</source>
-        <translation type="vanished">Layout Eigenschaften</translation>
+        <translation>Layout Eigenschaften</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1742"/>
         <source>Layout</source>
-        <translation type="vanished">Layout</translation>
+        <translation>Layout</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1776"/>
         <source>Description</source>
-        <translation type="vanished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1795"/>
         <source>Warning superposition of pieces</source>
-        <translation type="vanished">Warnung vor der Überlagerung von Teilen</translation>
+        <translation>Warnung vor der Überlagerung von Teilen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1802"/>
         <source>Warning pieces out of bound</source>
-        <translation type="vanished">Warnung Teile außerhalb der Grenzen</translation>
+        <translation>Warnung Teile außerhalb der Grenzen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2060"/>
         <source>zoom</source>
-        <translation type="vanished">Vergrößerung</translation>
+        <translation>Vergrößerung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1861"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2079"/>
         <source>Scale</source>
-        <translation type="vanished">Skalieren</translation>
+        <translation>Skalieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2128"/>
         <source>&amp;Open</source>
-        <translation type="vanished">&amp;Öffnen</translation>
+        <translation>&amp;Öffnen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2145"/>
         <source>&amp;Save</source>
-        <translation type="vanished">&amp;Speichern</translation>
+        <translation>&amp;Speichern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2162"/>
         <source>Save &amp;As</source>
-        <translation type="vanished">Speichern &amp;als</translation>
+        <translation>Speichern &amp;als</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2176"/>
         <source>&amp;Import Raw Layout Data</source>
-        <translation type="vanished">&amp;Rohdaten für das Layout importieren</translation>
+        <translation>&amp;Rohdaten für das Layout importieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2190"/>
         <source>E&amp;xit</source>
-        <translation type="vanished">Valentina &amp;beenden</translation>
+        <translation>Valentina &amp;beenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2204"/>
         <source>&amp;New</source>
-        <translation type="vanished">&amp;Neu</translation>
+        <translation>&amp;Neu</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2215"/>
         <source>About &amp;Qt</source>
-        <translation type="vanished">Über &amp;Qt</translation>
+        <translation>Über &amp;Qt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2226"/>
         <source>About &amp;Puzzle</source>
-        <translation type="vanished">Über &amp;amp;Puzzle</translation>
+        <translation>Über &amp;amp;Puzzle</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2257"/>
         <source>Zoom in</source>
-        <translation type="vanished">Vergrößern</translation>
+        <translation>Vergrößern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2271"/>
         <source>Zoom out</source>
-        <translation type="vanished">Verkleinern</translation>
+        <translation>Verkleinern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2285"/>
         <source>Zoom 1:1</source>
-        <translation type="vanished">Vergrößerung 1:1</translation>
+        <translation>Vergrößerung 1:1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2299"/>
         <source>Zoom fit best</source>
-        <translation type="vanished">In Ansicht einpassen</translation>
+        <translation>In Ansicht einpassen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2302"/>
         <source>Zoom sheet</source>
-        <translation type="vanished">Blatt vergrößern</translation>
+        <translation>Blatt vergrößern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2310"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="5132"/>
         <source>Preferences</source>
-        <translation type="vanished">Einstellungen</translation>
+        <translation>Einstellungen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="488"/>
         <source>File &apos;%1&apos; doesn&apos;t exist!</source>
-        <translation type="vanished">Datei &apos;%1&apos; existiert nicht!</translation>
+        <translation>Datei &apos;%1&apos; existiert nicht!</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="532"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="542"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="552"/>
         <source>File error.</source>
-        <translation type="vanished">Dateifehler.</translation>
+        <translation>Dateifehler.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="638"/>
         <source>Fail to create layout.</source>
-        <translation type="vanished">Kann kein Layout erstellen.</translation>
+        <translation>Kann kein Layout erstellen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3452"/>
         <source>Could not extract data from file &apos;%1&apos;. %2</source>
-        <translation type="vanished">Es konnten keine Daten aus der Datei &apos;%1&apos; extrahiert werden. %2</translation>
+        <translation>Es konnten keine Daten aus der Datei &apos;%1&apos; extrahiert werden. %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="931"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1019"/>
         <source>Centimeters</source>
-        <translation type="vanished">Zentimeter</translation>
+        <translation>Zentimeter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="930"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1018"/>
         <source>Millimiters</source>
-        <translation type="vanished">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="932"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1020"/>
         <source>Inches</source>
-        <translation type="vanished">Inch</translation>
+        <translation>Inch</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1803"/>
         <source>Scale:</source>
-        <translation type="vanished">Maßstab:</translation>
+        <translation>Maßstab:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
         <source>untitled %1.vlt</source>
-        <translation type="vanished">unbenannt %1.vlt</translation>
+        <translation>unbenannt %1.vlt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
         <source>untitled.vlt</source>
-        <translation type="vanished">unbenannt.vlt</translation>
+        <translation>unbenannt.vlt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1840"/>
         <source>read only</source>
-        <translation type="vanished">schreibgeschützt</translation>
+        <translation>schreibgeschützt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1906"/>
         <source>Cannot read settings from a malformed .INI file.</source>
-        <translation type="vanished">Kann Einstellungen nicht aus fehlerhafter .INI Datei lesen.</translation>
+        <translation>Kann Einstellungen nicht aus fehlerhafter .INI Datei lesen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1923"/>
         <source>Cannot save settings. Access denied.</source>
-        <translation type="vanished">Kann Einstellungen nicht speichern. Zugriff verwehrt.</translation>
+        <translation>Kann Einstellungen nicht speichern. Zugriff verwehrt.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2831"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3185"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3362"/>
         <source>Failed to open file, is it writable?</source>
-        <translation type="vanished">Die Datei konnte nicht geöffnet werden, ist sie beschreibbar?</translation>
+        <translation>Die Datei konnte nicht geöffnet werden, ist sie beschreibbar?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1978"/>
         <source>&amp;New Window</source>
-        <translation type="vanished">&amp;Neues Fenster</translation>
+        <translation>&amp;Neues Fenster</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1935"/>
         <source>Layout has been modified. Do you want to save your changes?</source>
-        <translation type="vanished">Die Anordnung wurde geändert. Möchten Sie Ihre Änderungen speichern?</translation>
+        <translation>Die Anordnung wurde geändert. Möchten Sie Ihre Änderungen speichern?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3785"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3847"/>
         <source>Layout files</source>
-        <translation type="vanished">Layout-Dateien</translation>
+        <translation>Layout-Dateien</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3789"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3937"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4879"/>
         <source>Open file</source>
-        <translation type="vanished">Datei öffnen</translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3830"/>
         <source>Could not save the file</source>
-        <translation type="vanished">Datei konnte nicht gespeichert werden</translation>
+        <translation>Datei konnte nicht gespeichert werden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3849"/>
         <source>layout</source>
-        <translation type="vanished">Layout</translation>
+        <translation>Layout</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3861"/>
         <source>Save as</source>
-        <translation type="vanished">Speichern unter</translation>
+        <translation>Speichern unter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3891"/>
         <source>Failed to lock. This file already opened in another window.</source>
-        <translation type="vanished">Fehler beim Sperren. Diese Datei ist bereits in einem anderen Fenster geöffnet.</translation>
+        <translation>Fehler beim Sperren. Diese Datei ist bereits in einem anderen Fenster geöffnet.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3901"/>
         <source>Could not save file</source>
-        <translation type="vanished">Konnte Datei nicht speichern</translation>
+        <translation>Konnte Datei nicht speichern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3922"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
-        <translation type="vanished">Fehler beim Sperren. Diese Datei ist bereits in einem anderen Fenster geöffnet. Bei zweifachem Ausführen kann es zu Konflikten kommen.</translation>
+        <translation>Fehler beim Sperren. Diese Datei ist bereits in einem anderen Fenster geöffnet. Bei zweifachem Ausführen kann es zu Konflikten kommen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3932"/>
         <source>Raw Layout files</source>
-        <translation type="vanished">Rohe Layout-Dateien</translation>
+        <translation>Rohe Layout-Dateien</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3950"/>
         <source>About Qt</source>
-        <translation type="vanished">Über QT</translation>
+        <translation>Über QT</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="62"/>
         <source>&amp;Sheet</source>
-        <translation type="vanished">&amp;Blatt</translation>
+        <translation>&amp;Blatt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="90"/>
         <source>&amp;Layout</source>
-        <translation type="vanished">&amp;Layout</translation>
+        <translation>&amp;Layout</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="101"/>
         <source>Watermark</source>
-        <translation type="vanished">Wasserzeichen</translation>
+        <translation>Wasserzeichen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="371"/>
         <source>Gradation id:</source>
-        <translation type="vanished">Gradierung id:</translation>
+        <translation>Gradierung id:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="385"/>
         <source>Copy number:</source>
-        <translation type="vanished">Kopienummer:</translation>
+        <translation>Kopienummer:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="402"/>
         <source>Status</source>
-        <translation type="vanished">Status</translation>
+        <translation>Status</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="415"/>
         <source>Out of bound</source>
-        <translation type="vanished">Außerhalb des Bereichs</translation>
+        <translation>Außerhalb des Bereichs</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="429"/>
         <source>Superposition of pieces</source>
-        <translation type="vanished">Überlappung von Teilen</translation>
+        <translation>Überlappung von Teilen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="443"/>
         <source>Piece gape</source>
-        <translation type="vanished">Teilabstand</translation>
+        <translation>Teilabstand</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="459"/>
         <source>Transformation</source>
-        <translation type="vanished">Umwandlung</translation>
+        <translation>Umwandlung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="469"/>
         <source>Translate</source>
         <comment>Translate piece</comment>
-        <translation type="vanished">Übersetzung</translation>
+        <translation>Übersetzung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="483"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1875"/>
         <source>Horizontal:</source>
-        <translation type="vanished">Horizontal:</translation>
+        <translation>Horizontal:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="506"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1888"/>
         <source>Vertical:</source>
-        <translation type="vanished">Vertikal:</translation>
+        <translation>Vertikal:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="528"/>
         <source>Relative translation</source>
-        <translation type="vanished">Relative Übersetzung</translation>
+        <translation>Relative Übersetzung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="542"/>
         <source>Rotate</source>
-        <translation type="vanished">Drehen</translation>
+        <translation>Drehen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="651"/>
         <source>Apply to each piece separately</source>
-        <translation type="vanished">Auf jedes Teil einzeln anwenden</translation>
+        <translation>Auf jedes Teil einzeln anwenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="677"/>
         <source>Show full piece</source>
-        <translation type="vanished">Gesamtes Teil anzeigen</translation>
+        <translation>Gesamtes Teil anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="697"/>
         <source>Show mirror line</source>
-        <translation type="vanished">Spiegellinie anzeigen</translation>
+        <translation>Spiegellinie anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="707"/>
         <source>Show grainline</source>
-        <translation type="vanished">Fadenlauf anzeigen</translation>
+        <translation>Fadenlauf anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="717"/>
         <source>Vertically flipped</source>
-        <translation type="vanished">Vertikal gespiegelt</translation>
+        <translation>Vertikal gespiegelt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="724"/>
         <source>Horizontally flipped</source>
-        <translation type="vanished">Horizontal gespiegelt</translation>
+        <translation>Horizontal gespiegelt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="884"/>
         <source>Unit:</source>
-        <translation type="vanished">Einheit:</translation>
+        <translation>Einheit:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="900"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1391"/>
         <source>Templates:</source>
-        <translation type="vanished">Vorlagen:</translation>
+        <translation>Vorlagen:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="959"/>
         <source>Length:</source>
-        <translation type="vanished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1022"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1468"/>
         <source>Width:</source>
-        <translation type="vanished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1033"/>
         <source>Grainline orientation:</source>
-        <translation type="vanished">Fadenlauf Ausrichtung:</translation>
+        <translation>Fadenlauf Ausrichtung:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1045"/>
         <source>Force the grainline orientation to always be horizontal</source>
-        <translation type="vanished">Erzwingen, dass die Fadenlaufrichtung immer horizontal ist</translation>
+        <translation>Erzwingen, dass die Fadenlaufrichtung immer horizontal ist</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1068"/>
         <source>Force the grainline orientation to always be vertical</source>
-        <translation type="vanished">Erzwingen, dass die Fadenlaufrichtung immer vertikal ist</translation>
+        <translation>Erzwingen, dass die Fadenlaufrichtung immer vertikal ist</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1205"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1612"/>
         <source>Ignore margins</source>
-        <translation type="vanished">Ränder ignorieren</translation>
+        <translation>Ränder ignorieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1481"/>
         <source>Height:</source>
-        <translation type="vanished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1635"/>
         <source>Show watermark preview</source>
-        <translation type="vanished">Wasserzeichen-Vorschau anzeigen</translation>
+        <translation>Wasserzeichen-Vorschau anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1638"/>
         <source>Show watermark</source>
-        <translation type="vanished">Wasserzeichen anzeigen</translation>
+        <translation>Wasserzeichen anzeigen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1648"/>
         <source>Print tiles scheme</source>
-        <translation type="vanished">Kachel-Schema drucken</translation>
+        <translation>Kachel-Schema drucken</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1655"/>
         <source>Print text as paths</source>
-        <translation type="vanished">Text als Pfade drucken</translation>
+        <translation>Text als Pfade drucken</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1809"/>
         <source>Warning piece gape position</source>
-        <translation type="vanished">Warnung Teilabstandsposition</translation>
+        <translation>Warnung Teilabstandsposition</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1830"/>
         <source>Boundary together with notches</source>
-        <translation type="vanished">Umriss mit Einschnitten</translation>
+        <translation>Umriss mit Einschnitten</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1837"/>
         <source>Cut on fold</source>
-        <translation type="vanished">im Bruch zuschneiden</translation>
+        <translation>im Bruch zuschneiden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1846"/>
         <source>Pieces gap:</source>
-        <translation type="vanished">Abstand der Teile:</translation>
+        <translation>Abstand der Teile:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2040"/>
         <source>Export Layout</source>
-        <translation type="vanished">Layout exportieren</translation>
+        <translation>Layout exportieren</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2093"/>
         <source>Undo commands</source>
-        <translation type="vanished">Kommando rückgängig</translation>
+        <translation>Kommando rückgängig</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2318"/>
         <source>Add Sheet</source>
-        <translation type="vanished">Blatt hinzufügen</translation>
+        <translation>Blatt hinzufügen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2329"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2381"/>
         <source>Print</source>
-        <translation type="vanished">Drucken</translation>
+        <translation>Drucken</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2340"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2392"/>
         <source>Print preview</source>
-        <translation type="vanished">Druckvorschau</translation>
+        <translation>Druckvorschau</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2351"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2403"/>
         <source>Print tiled</source>
-        <translation type="vanished">Gekachelt drucken</translation>
+        <translation>Gekachelt drucken</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2362"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2414"/>
         <source>Print preview tiled</source>
-        <translation type="vanished">Druckvorschau gekachelt</translation>
+        <translation>Druckvorschau gekachelt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2433"/>
         <source>Editor</source>
-        <translation type="vanished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2436"/>
         <source>Create or edit a watermark</source>
-        <translation type="vanished">Anlegen oder Ändern eines Wasserzeichens</translation>
+        <translation>Anlegen oder Ändern eines Wasserzeichens</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2447"/>
         <source>Edit current</source>
-        <translation type="vanished">Aktuelles Anpassen</translation>
+        <translation>Aktuelles Anpassen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2461"/>
         <source>Load</source>
-        <translation type="vanished">Laden</translation>
+        <translation>Laden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2475"/>
         <source>Remove</source>
-        <translation type="vanished">Entfernen</translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2527"/>
         <source>Settings Directory</source>
-        <translation type="vanished">Einstellungsverzeichnis</translation>
+        <translation>Einstellungsverzeichnis</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="533"/>
         <source>Unable to read a layout file. %1</source>
-        <translation type="vanished">Eine Layoutdatei konnte nicht gelesen werden. %1</translation>
+        <translation>Eine Layoutdatei konnte nicht gelesen werden. %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="543"/>
         <source>Failed to read %1</source>
-        <translation type="vanished">Fehler beim Lesen von %1</translation>
+        <translation>Fehler beim Lesen von %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="743"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3753"/>
         <source>&amp;Undo</source>
-        <translation type="vanished">&amp;Rückgängig</translation>
+        <translation>&amp;Rückgängig</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="749"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3754"/>
         <source>&amp;Redo</source>
-        <translation type="vanished">&amp;Wiederholen</translation>
+        <translation>&amp;Wiederholen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="933"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1021"/>
         <source>Pixels</source>
-        <translation type="vanished">Pixel</translation>
+        <translation>Pixel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1934"/>
         <source>Unsaved changes</source>
-        <translation type="vanished">Ungespeicherte Änderungen</translation>
+        <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
         <source>Save…</source>
-        <translation type="vanished">Speichern…</translation>
+        <translation>Speichern…</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
         <source>Save</source>
-        <translation type="vanished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1948"/>
         <source>Don&apos;t Save</source>
-        <translation type="vanished">Nicht speichern</translation>
+        <translation>Nicht speichern</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2423"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2488"/>
         <source>Can&apos;t create a path</source>
-        <translation type="vanished">Kann keinen Pfad erstellen</translation>
+        <translation>Kann keinen Pfad erstellen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2710"/>
         <source>Can&apos;t open file &apos;%1&apos;</source>
-        <translation type="vanished">Datei &apos;%1&apos; kann nicht geöffnet werden</translation>
+        <translation>Datei &apos;%1&apos; kann nicht geöffnet werden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2724"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3238"/>
         <source>Failed in flushing page to disk, disk full?</source>
-        <translation type="vanished">Fehler beim Aktualisieren, Festplatte voll?</translation>
+        <translation>Fehler beim Aktualisieren, Festplatte voll?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3073"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3100"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3129"/>
         <source>The layout is invalid.</source>
-        <translation type="vanished">Das Layout ist ungültig.</translation>
+        <translation>Das Layout ist ungültig.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3074"/>
         <source>The layout is invalid. Piece out of bound. Do you want to continue export?</source>
-        <translation type="vanished">Das Layout ist ungültig. Das Teil ist nicht gebunden. Möchten Sie den Export fortsetzen?</translation>
+        <translation>Das Layout ist ungültig. Das Teil ist nicht gebunden. Möchten Sie den Export fortsetzen?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3101"/>
         <source>The layout is invalid. Pieces superposition. Do you want to continue export?</source>
-        <translation type="vanished">Das Layout ist ungültig. Teile überlagern sich. Export fortsetzen?</translation>
+        <translation>Das Layout ist ungültig. Teile überlagern sich. Export fortsetzen?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3130"/>
         <source>The layout is invalid. One or several pieces are closer than minimally allowed. Do you want to continue export?</source>
-        <translation type="vanished">Die Anordnung ist ungültig. Ein oder mehrere Teile sind näher als minimal erlaubt. Möchten Sie den Export fortsetzen?</translation>
+        <translation>Die Anordnung ist ungültig. Ein oder mehrere Teile sind näher als minimal erlaubt. Möchten Sie den Export fortsetzen?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4219"/>
         <source>Sheet %1</source>
-        <translation type="vanished">Blatt %1</translation>
+        <translation>Blatt %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3528"/>
         <source>translate pieces</source>
-        <translation type="vanished">Teile übersetzen</translation>
+        <translation>Teile übersetzen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3645"/>
         <source>rotate pieces</source>
-        <translation type="vanished">Teil drehen</translation>
+        <translation>Teil drehen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
         <source>untitled %1</source>
-        <translation type="vanished">unbenannt %1</translation>
+        <translation>unbenannt %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
         <source>untitled</source>
-        <translation type="vanished">unbenannt</translation>
+        <translation>unbenannt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4508"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4559"/>
         <source>For printing multipages document all sheet should have the same size.</source>
-        <translation type="vanished">Zum Drucken eines mehrseitigen Dokuments müssen alle Blätter die gleiche Größe haben.</translation>
+        <translation>Zum Drucken eines mehrseitigen Dokuments müssen alle Blätter die gleiche Größe haben.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4520"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4571"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4606"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4644"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4699"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4743"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4776"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4812"/>
         <source>Print error</source>
-        <translation type="vanished">Druckfehler</translation>
+        <translation>Druckfehler</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4521"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4572"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4607"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4645"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4700"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4744"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4777"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4813"/>
         <source>Cannot proceed because there are no available printers in your system.</source>
-        <translation type="vanished">Prozess kann nicht fortgesetzt werden, da keine verfügbaren Drucker in Ihrem System vorhanden sind.</translation>
+        <translation>Prozess kann nicht fortgesetzt werden, da keine verfügbaren Drucker in Ihrem System vorhanden sind.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4876"/>
         <source>Watermark files</source>
-        <translation type="vanished">Wasserzeichen Dateien</translation>
+        <translation>Wasserzeichen Dateien</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4532"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4583"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4618"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4656"/>
         <source>Unable to get sheet page settings</source>
-        <translation type="vanished">Einstellungen der Eigenschaften des Blattes können nicht abgerufen werden</translation>
+        <translation>Einstellungen der Eigenschaften des Blattes können nicht abgerufen werden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1662"/>
         <source>Show tile number</source>
-        <translation type="vanished">Zeige Teile Nummer</translation>
+        <translation>Zeige Teile Nummer</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2107"/>
         <source>Z value</source>
-        <translation type="vanished">Z-Wert</translation>
+        <translation>Z-Wert</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2486"/>
         <source>Bottom</source>
-        <translation type="vanished">Unten</translation>
+        <translation>Unten</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2497"/>
         <source>Down</source>
-        <translation type="vanished">Runter</translation>
+        <translation>Runter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2508"/>
         <source>Up</source>
-        <translation type="vanished">Hoch</translation>
+        <translation>Hoch</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2519"/>
         <source>Top</source>
-        <translation type="vanished">Oben</translation>
+        <translation>Oben</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1645"/>
         <source>Has effect only when print in application. To export with tiles scheme use separate setting</source>
-        <translation type="vanished">Wirkt sich nur beim Drucken in der Anwendung aus. Für den Export mit Kachelschema separate Einstellung verwenden</translation>
+        <translation>Wirkt sich nur beim Drucken in der Anwendung aus. Für den Export mit Kachelschema separate Einstellung verwenden</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4473"/>
         <source>sheet</source>
-        <translation type="vanished">Blatt</translation>
+        <translation>Blatt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3474"/>
         <source>Piece %1 invalid. %2</source>
-        <translation type="vanished">Stück %1 ungültig. %2</translation>
+        <translation>Stück %1 ungültig. %2</translation>
     </message>
 </context>
 <context>
     <name>VPPiece</name>
     <message>
+        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="486"/>
         <source>Seam line is empty</source>
-        <translation type="vanished">Nahtlinie ist leer</translation>
+        <translation>Nahtlinie ist leer</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="492"/>
         <source>Seam allowance line is empty</source>
-        <translation type="vanished">Nahtzugabe ist leer</translation>
+        <translation>Nahtzugabe ist leer</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="498"/>
         <source>Grainline is empty</source>
-        <translation type="vanished">Fadenlauf ist leer</translation>
+        <translation>Fadenlauf ist leer</translation>
     </message>
 </context>
 <context>
     <name>VPTileFactory</name>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="943"/>
         <source>Grid ( %1 , %2 )</source>
-        <translation type="vanished">Gitter ( %1 , %2 )</translation>
+        <translation>Gitter ( %1 , %2 )</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1080"/>
         <source>Page %1 of %2</source>
-        <translation type="vanished">Seite %1 von %2</translation>
+        <translation>Seite %1 von %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1451"/>
         <source>Warning: Multiple single stroke outline fonts detected (%1). The font &quot;%2&quot; was selected.</source>
-        <translation type="vanished">Warnung: Mehrere einzeilige Konturschriften erkannt (%1). Die Schrift &quot;%2&quot; wurde ausgewählt.</translation>
+        <translation>Warnung: Mehrere einzeilige Konturschriften erkannt (%1). Die Schrift &quot;%2&quot; wurde ausgewählt.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1513"/>
         <source>Warning: Multiple single-line SVG fonts detected (%1). The font &quot;%2&quot; was selected.</source>
-        <translation type="vanished">Warnung: Mehrere einzeilige SVG-Schriften erkannt (%1). Die Schrift &quot;%2&quot; wurde ausgewählt.</translation>
+        <translation>Warnung: Mehrere einzeilige SVG-Schriften erkannt (%1). Die Schrift &quot;%2&quot; wurde ausgewählt.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="480"/>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="590"/>
         <source>cm</source>
         <comment>unit</comment>
-        <translation type="vanished">cm</translation>
+        <translation>cm</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="480"/>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="590"/>
         <source>in</source>
         <comment>unit</comment>
-        <translation type="vanished">in</translation>
+        <translation>in</translation>
     </message>
 </context>
 <context>
     <name>VPUndoAddSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundoaddsheet.cpp" line="40"/>
         <source>add sheet</source>
-        <translation type="vanished">Blatt einfügen</translation>
+        <translation>Blatt einfügen</translation>
     </message>
 </context>
 <context>
     <name>VPUndoMovePieceOnSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundomovepieceonsheet.cpp" line="49"/>
         <source>move piece on sheet</source>
-        <translation type="vanished">Teil auf Blatt verschieben</translation>
+        <translation>Teil auf Blatt verschieben</translation>
     </message>
 </context>
 <context>
     <name>VPUndoOriginMove</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundooriginmove.cpp" line="44"/>
         <source>move transformation origin</source>
-        <translation type="vanished">Transformationsursprung verschieben</translation>
+        <translation>Transformationsursprung verschieben</translation>
     </message>
 </context>
 <context>
     <name>VPUndoPieceMove</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecemove.cpp" line="44"/>
         <source>move piece</source>
-        <translation type="vanished">Teil bewegen</translation>
+        <translation>Teil bewegen</translation>
     </message>
 </context>
 <context>
     <name>VPUndoPieceRotate</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecerotate.cpp" line="59"/>
         <source>rotate piece</source>
-        <translation type="vanished">Teil rotieren</translation>
+        <translation>Teil rotieren</translation>
     </message>
 </context>
 <context>
     <name>VPUndoRemoveSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundoremovesheet.cpp" line="48"/>
         <source>add sheet</source>
-        <translation type="vanished">Blatt einfügen</translation>
+        <translation>Blatt einfügen</translation>
     </message>
 </context>
 <context>
@@ -26229,8 +26725,8 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
 <context>
     <name>VToolAbstractBezier</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1076"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1136"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1186"/>
         <source>save tool options</source>
         <translation>Werkzeugoptionen speichern</translation>
     </message>
@@ -26589,7 +27085,7 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
 <context>
     <name>VToolGraduatedCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.cpp" line="119"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.cpp" line="171"/>
         <source>Offset %1</source>
         <translation>Abstand %1</translation>
     </message>
@@ -26790,9 +27286,9 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation>Kurven-Werkzeug</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="871"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="924"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="977"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="874"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="927"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="980"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
@@ -26857,90 +27353,90 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation>Punkt ganz rechts</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="873"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="926"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="979"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="876"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="929"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="982"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="363"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="549"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="622"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="631"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="659"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="792"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="795"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="794"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="797"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Point</source>
         <translation type="unfinished">Punkt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="874"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="927"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="980"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="877"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="930"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="983"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="363"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="549"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="622"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="631"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="659"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Point name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="875"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="928"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="981"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1471"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1474"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="878"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="931"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="984"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1498"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1501"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="363"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="549"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="622"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="631"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="659"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="806"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="808"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="810"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Show Point name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -26949,62 +27445,62 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation type="obsolete">Position:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="416"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="432"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="435"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="452"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="520"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="536"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="561"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="600"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="641"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="671"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="918"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="923"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="946"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="434"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="437"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="454"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="522"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="538"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="563"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="602"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="643"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="673"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="920"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="925"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
         <source>Line:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="502"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="800"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="411"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="505"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="803"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="842"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="846"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="895"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="899"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="948"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="952"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1308"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1311"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1433"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1436"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="806"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="845"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="849"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="898"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="902"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="951"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="955"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1335"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1338"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1463"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="524"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="532"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="536"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="673"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="438"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="454"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="563"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="643"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="440"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="456"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="565"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="645"/>
         <source>Length:</source>
         <translation type="unfinished">Länge:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="415"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="509"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1450"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1453"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="512"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1477"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1480"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="495"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="499"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="645"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="649"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="419"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="673"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="421"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="675"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
         <source>Angle:</source>
         <translation type="unfinished">Winkel:</translation>
     </message>
@@ -27012,150 +27508,150 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="186"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="328"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="421"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="439"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="455"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="522"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="538"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="587"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="644"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="674"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="949"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="422"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="441"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="457"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="524"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="540"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="589"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="646"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="676"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="951"/>
         <source>Line type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="374"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="377"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="376"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="379"/>
         <source>Pattern piece:</source>
         <translation type="unfinished">Schnittteil:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="191"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="421"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="440"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="456"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="523"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="539"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="588"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="645"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="675"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="715"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="929"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="541"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="763"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="931"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
         <source>Line color:</source>
         <translation type="unfinished">Linienfarbe:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="424"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="426"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
         <source>Base point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="443"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="459"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="591"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="648"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="662"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="461"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="593"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="650"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="664"/>
         <source>First point:</source>
         <translation type="unfinished">Erster Punkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="446"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="462"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="594"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="651"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
         <source>Second point:</source>
         <translation type="unfinished">Zweiter Punkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="461"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="650"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="463"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="652"/>
         <source>Third point:</source>
         <translation type="unfinished">Dritter Punkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="469"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="472"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="471"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="474"/>
         <source>Point 1 label:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="488"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="491"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="490"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="493"/>
         <source>Point 2 label:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="507"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="509"/>
         <source>First base point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="508"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="510"/>
         <source>Second base point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="509"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
         <source>First dart point:</source>
         <translation type="unfinished">Erster Abnäherpunkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="510"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
         <source>Second dart point:</source>
         <translation type="unfinished">Zweiter Abnäherpunkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="513"/>
         <source>Third dart point:</source>
         <translation type="unfinished"> Dritter Abnäherpunkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="697"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="700"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="699"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="702"/>
         <source>Draw the cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="714"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="928"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="762"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="930"/>
         <source>Type of line:</source>
         <translation type="unfinished">Linientyp:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="721"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="725"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="744"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="748"/>
         <source>Reverse the sense</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="742"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="745"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="719"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="722"/>
         <source>Notch</source>
         <translation type="unfinished">Einschnitt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="798"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="800"/>
         <source>Point B:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="800"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="802"/>
         <source>Point C:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="802"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
         <source>Point D:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="895"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="898"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="897"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="900"/>
         <source>Height:</source>
         <translation type="unfinished">Höhe:</translation>
     </message>
@@ -27231,16 +27727,16 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="755"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="759"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="529"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="681"/>
         <source>First line point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="771"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="775"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="530"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="682"/>
         <source>Second line point:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27266,88 +27762,88 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="550"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="552"/>
         <source>First line (first point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
         <source>First line (second point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="552"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="554"/>
         <source>Second line (first point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
         <source>Second line (second point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="565"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="568"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="567"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="570"/>
         <source>Additional angle degrees:</source>
         <translation type="unfinished">Zusätzlicher Winkel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="669"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="672"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="766"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="675"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="769"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1416"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1419"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="603"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="606"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="772"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1443"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1446"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="605"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="608"/>
         <source>Radius:</source>
         <translation type="unfinished">Radius:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="632"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="634"/>
         <source>X: vertical point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="635"/>
         <source>Y: horizontal point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="660"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="662"/>
         <source>First point of axis:</source>
         <translation type="unfinished">Erster Punkt der Achse:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
         <source>Second point of axis:</source>
         <translation type="unfinished">Zweiter Punkt der Achse:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="678"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <source>Axis point:</source>
         <translation type="unfinished">Punkt der Schnittachse:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="885"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="890"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="938"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="943"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="990"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1008"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1020"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1032"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1079"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1353"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1415"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1496"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1498"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="888"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="893"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="941"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="946"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1012"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1024"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1059"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1106"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1380"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1442"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1523"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1525"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="351"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="353"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="355"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="357"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="942"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="944"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="946"/>
         <source>Curve:</source>
         <translation type="unfinished">Kurve:</translation>
     </message>
@@ -27526,179 +28022,186 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation>Elliptischer Bogen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="118"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="121"/>
         <source>(Unnamed)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="635"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="638"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="732"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="641"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="735"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1092"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1095"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1223"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1226"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1357"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1499"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1502"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="738"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1119"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1122"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1250"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1253"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1381"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1384"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1529"/>
         <source>Create start point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="652"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="655"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="749"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="658"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="752"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1109"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1112"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1240"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1243"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1371"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1374"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1516"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1519"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="755"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1136"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1139"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1267"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1270"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1398"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1401"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1543"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1546"/>
         <source>Create end point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="686"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="689"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="783"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="692"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="786"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1160"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1163"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1291"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1294"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="789"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1187"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1190"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1318"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1321"/>
         <source>First angle:</source>
         <translation type="unfinished">Erster Winkel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="703"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="706"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1177"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1180"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="709"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1204"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1207"/>
         <source>Second angle:</source>
         <translation type="unfinished">Zweiter Winkel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="720"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="817"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="997"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1009"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1021"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1067"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1080"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1211"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1342"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1533"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="723"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="820"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1001"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1013"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1025"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1094"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1238"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1369"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1560"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="329"/>
         <source>Pen style:</source>
         <translation type="unfinished">Zeichenstil:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="721"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="818"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="998"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1010"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1022"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1068"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1081"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1212"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1343"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1405"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1467"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1534"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="724"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="821"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1014"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1026"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1095"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1108"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1239"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1370"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1432"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1494"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1561"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="334"/>
         <source>Color:</source>
         <translation type="unfinished">Farbe:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="869"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="922"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="975"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="872"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="925"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="978"/>
         <source>Show the two segments instead of the curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="870"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="923"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="976"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="873"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="926"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="979"/>
         <source>Type of line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="991"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="995"/>
         <source>First handle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="998"/>
         <source>Second handle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1041"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1038"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1054"/>
+        <source>Edit curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1068"/>
         <source>Start point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1062"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1089"/>
         <source>End point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1091"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1222"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1118"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1249"/>
         <source>ElArc:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1126"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1129"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1257"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1260"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1153"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1156"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1284"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1287"/>
         <source>Radius 1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1143"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1146"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1274"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1277"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1170"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1173"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1301"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1304"/>
         <source>Radius 2:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1388"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1391"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="876"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="879"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1415"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="878"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="881"/>
         <source>Width:</source>
         <translation type="unfinished">Breite:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1495"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1522"/>
         <source>Full name:</source>
         <translation>Vollständiger Name:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="722"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="819"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="872"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="925"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="978"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="999"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1011"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1023"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1069"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1082"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1213"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1344"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1406"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1468"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1535"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="725"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="822"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="875"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="928"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="981"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1003"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1015"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1027"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1096"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1109"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1240"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1371"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1433"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1495"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1562"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="292"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="340"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="359"/>
@@ -27706,25 +28209,25 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="77"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="81"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="353"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="362"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="407"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="422"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="441"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="457"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="524"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="540"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="548"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="589"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="621"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="630"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="646"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="658"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="676"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="763"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="930"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="951"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="355"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="364"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="409"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="424"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="443"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="459"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="514"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="542"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="550"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="591"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="623"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="632"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="648"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="660"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="678"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="765"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="932"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="953"/>
         <source>Notes:</source>
         <translation>Notiz:</translation>
     </message>
@@ -27735,7 +28238,7 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation>Hintergrundbild</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1049"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1076"/>
         <source>Point %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27748,11 +28251,11 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation type="unfinished">Nehmen:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="634"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="731"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="828"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="832"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="837"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="734"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="831"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="835"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="840"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="284"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="286"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="288"/>
@@ -27789,17 +28292,15 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="633"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="730"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="989"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1007"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1019"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1031"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1078"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1090"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1221"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1352"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1414"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="636"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="733"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1011"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1023"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1105"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1117"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1248"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1379"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1441"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="407"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="469"/>
         <source>Name:</source>
@@ -27836,10 +28337,10 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
         <translation type="unfinished">Ursprungspunkt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1194"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1197"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1325"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1328"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1224"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1352"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1355"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="701"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="705"/>
         <source>Rotation angle:</source>
@@ -29547,7 +30048,7 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
 <context>
     <name>VisToolGraduatedCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolgraduatedcurve.cpp" line="100"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolgraduatedcurve.cpp" line="126"/>
         <source>&lt;b&gt;Graduated curve&lt;/b&gt;: offsets = %1; &lt;b&gt;Mouse click&lt;/b&gt; - selecting next width, &lt;b&gt;%2&lt;/b&gt; - negative width, &lt;b&gt;%3&lt;/b&gt; - finish</source>
         <translation>&lt;b&gt;Abgestufte Kurve&lt;/b&gt;: Abstände = %1; &lt;b&gt;Mausklick&lt;/b&gt; - nächste Breite auswählen, &lt;b&gt;%2&lt;/b&gt; - negative Breite, &lt;b&gt;%3&lt;/b&gt; - abschließen</translation>
     </message>
@@ -29654,22 +30155,22 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
 <context>
     <name>VisToolSplinePath</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="127"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="128"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select three or more points</source>
         <translation>&lt;b&gt;Gekrümmter Pfad&lt;/b&gt;: drei oder mehr Punkte auswählen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="131"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="132"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select three or more points, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
         <translation>&lt;b&gt;Kurvenpfad&lt;/b&gt;: drei oder mehr Punkte auswählen, &lt;b&gt;%1&lt;/b&gt; - Erstellung abschließen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="137"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="138"/>
         <source>Use &lt;b&gt;%1&lt;/b&gt; for sticking angle!</source>
         <translation>Verwenden Sie &lt;b&gt;%1&lt;/b&gt; zum Einrasten des Winkels!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="174"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="177"/>
         <source>Point %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30087,40 +30588,49 @@ Kompatibilitätsfehler beim Roh-Anordnungsformat: actualFileVersion = %1 und fil
 <context>
     <name>mNoisyHandler</name>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="88"/>
         <source>DEBUG:</source>
-        <translation type="vanished">ENTBUGGEN:</translation>
+        <translation>ENTBUGGEN:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="95"/>
         <source>WARNING:</source>
-        <translation type="vanished">WARNUNG:</translation>
+        <translation>WARNUNG:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="102"/>
         <source>CRITICAL:</source>
-        <translation type="vanished">KRITISCH:</translation>
+        <translation>KRITISCH:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="109"/>
         <source>FATAL:</source>
-        <translation type="vanished">FATAL:</translation>
+        <translation>FATAL:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="116"/>
         <source>INFO:</source>
-        <translation type="vanished">INFO:</translation>
+        <translation>INFO:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="142"/>
         <source>Warning</source>
-        <translation type="vanished">Warnung</translation>
+        <translation>Warnung</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="146"/>
         <source>Critical error</source>
-        <translation type="vanished">Kritischer Fehler</translation>
+        <translation>Kritischer Fehler</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="150"/>
         <source>Fatal error</source>
-        <translation type="vanished">Fataler Fehler</translation>
+        <translation>Fataler Fehler</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="154"/>
         <source>Information</source>
-        <translation type="vanished">Information</translation>
+        <translation>Information</translation>
     </message>
 </context>
 <context>

@@ -319,6 +319,22 @@ auto OToolSpiral::EndPointName() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolSpiral::SetEndPointName(const QString &name)
+{
+    const quint32 pointId = FindPointId(false);
+    if (pointId == NULL_ID || name.isEmpty())
+    {
+        return;
+    }
+
+    // The name belongs to the point, and the point knows how to change it and to redraw itself.
+    if (auto *point = dynamic_cast<OToolCurvePoint *>(VAbstractPattern::FindTool(pointId)))
+    {
+        point->setName(name);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OToolSpiral::EndPointLabelVisible() const -> bool
 {
     const quint32 pointId = FindPointId(false);

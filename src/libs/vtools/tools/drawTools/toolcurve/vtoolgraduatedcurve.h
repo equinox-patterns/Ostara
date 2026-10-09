@@ -79,7 +79,14 @@ public:
 
     void ShowVisualization(bool show) override;
 
+    /** @brief Opens the edition dialog — the dock's "Edit curve" button calls it, as the pleat's own does. */
+    void OpenOptionsDialog();
+
     static auto ExtractOffsetData(const QDomElement &domElement) -> QVector<VRawGraduatedCurveOffset>;
+
+public slots:
+    void FullUpdateFromGuiOk(int result) override;
+    void FullUpdateFromGuiApply() override;
 
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
@@ -101,6 +108,10 @@ private:
     void UpdateOffsets(QDomElement &tag, const QVector<VRawGraduatedCurveOffset> &offsets);
 
     auto GatherToolChanges() const -> ToolChanges;
+
+    /// Gives the curve the two optional points the dialog describes, or takes them away, and reads them back into the
+    /// dialog: it is the dialog's way into a fact the pattern owns. Called before the options are written.
+    void ApplyPointOptions();
 };
 
 #endif // VTOOLGRADUATEDCURVE_H

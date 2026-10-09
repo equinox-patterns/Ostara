@@ -1438,7 +1438,6 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 auto SpiralProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Name:"))),
         MakeStringPropWithValidator<OToolSpiral>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &OToolSpiral::GetAliasSuffix, &OToolSpiral::SetAliasSuffix),
         {AttrRadius, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Radius:")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
@@ -1491,25 +1490,52 @@ auto SpiralProperties() -> std::vector<PropertyDesc>
                  QVariant v; v.setValue(t->GetFormulaAngle()); prop->setValue(v);
              }
          }},
+        MakeCurvePenStyle<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
         MakeLineColor<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
         MakeNotes<OToolSpiral>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
-        // The point is always there: this only says whether its name is drawn, hence the last position, after
-        // the notes, where nothing else depends on it.
-        {QStringLiteral("showPointName"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")),
+        // The point is always there: this group says what to call it and whether that name is drawn. Built here
+        // rather than with MakePointGroup, which speaks for a tool that IS the point — the spiral's arrival point is
+        // a tool of its own, the way the offset curves' end points are.
+        {QStringLiteral("point"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<OToolSpiral *>(tool);
-             auto *p = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")));
-             p->setValue(t->EndPointLabelVisible());
-             return p;
+
+             auto *group = new VPE::VProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point")));
+             group->setCollapsible(true);
+
+             auto *nameChild = new VPE::VStringProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Point name:")));
+             nameChild->setValue(t->EndPointName());
+
+             auto *showChild = new VPE::VBoolProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")));
+             showChild->setValue(t->EndPointLabelVisible());
+
+             group->addChild(nameChild);
+             group->addChild(showChild);
+             return group;
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
-                 t->SetEndPointLabelVisible(prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                 const auto children = prop->getChildren();
+                 if (children.size() >= 2) {
+                     QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                     if (n != t->EndPointName()) {
+                         if (QRegularExpression const rx(NameRegExp());
+                             n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                             children[0]->setValue(t->EndPointName());
+                         else
+                             t->SetEndPointName(n);
+                     }
+                     t->SetEndPointLabelVisible(children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                 }
              }
          },
          [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
              if (auto *t = qgraphicsitem_cast<OToolSpiral *>(b->currentItem())) {
-                 prop->setValue(t->EndPointLabelVisible());
+                 const auto children = prop->getChildren();
+                 if (children.size() >= 2) {
+                     children[0]->setValue(t->EndPointName());
+                     children[1]->setValue(t->EndPointLabelVisible());
+                 }
              }
          }},
     };
@@ -1519,8 +1545,30 @@ auto SpiralProperties() -> std::vector<PropertyDesc>
 auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
-        MakeObjectNameReadOnly<VToolGraduatedCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Full name:"))),
-        MakeSourceCurve<VToolGraduatedCurve>(AttrCurve, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolGraduatedCurve::CurveName),
+        // No read-only "Full name:" and no read-only "Curve:" row: the first repeated the technical name, the second
+        // the base curve, and nothing could be edited in either. In their place, the way in to the dialog, where the
+        // widths and that base curve are a table and a combo (see the pleat's own "Edit pleats").
+        {QStringLiteral("editCurve"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit curve")),
+         [](VToolOptionsPropertyBrowser *browser, void *item) -> VPE::VProperty *
+         {
+             Q_UNUSED(item)
+             auto *button = new QPushButton(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit curve")));
+             QObject::connect(button,
+                              &QPushButton::clicked,
+                              browser,
+                              [browser]()
+                              {
+                                  if (auto *curve = qgraphicsitem_cast<VToolGraduatedCurve *>(browser->currentItem()))
+                                  {
+                                      curve->OpenOptionsDialog();
+                                  }
+                              });
+             return new VPE::VWidgetProperty(
+                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Edit curve")), button);
+         },
+         nullptr,
+         nullptr},
+
         // The subName property stays auto-generated in the backend, it is just not shown any more.
         MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
         {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")),

@@ -101,6 +101,10 @@ public:
     /// Name of the arrival point, the one the tool always creates.
     auto EndPointName() const -> QString;
 
+    /// Gives the arrival point another name. That point is a tool of its own, and it is the one that knows how to
+    /// change its name — the formulas that speak of it included.
+    void SetEndPointName(const QString &name);
+
     /// Whether the name of the arrival point is shown on canvas. It is not a creation switch: the point always
     /// exists, and this only says whether its name is drawn.
     auto EndPointLabelVisible() const -> bool;

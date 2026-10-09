@@ -58,6 +58,62 @@ void VToolGraduatedCurve::SetDialog()
     dialogTool->SetName(GetName());
     dialogTool->SetAliasSuffix(splPath->GetAliasSuffix());
     dialogTool->SetNotes(m_notes);
+    // Whether the curve carries a point at either end is a fact of the pattern, written nowhere in the dialog's own
+    // options: the tab shows it, rather than a box left unchecked on a curve that has had one for months.
+    dialogTool->SetStartPoint(HasStartPoint(), StartPointName(), StartPointShowLabel());
+    dialogTool->SetEndPoint(HasEndPoint(), EndPointName(), EndPointShowLabel());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief ApplyPointOptions gives the curve the two points the dialog's Point tab describes, or takes them away.
+ *
+ *  The boxes of that tab are the dialog's own copy of a fact the pattern owns — a point exists at an end of the curve,
+ *  or it does not — and the property browser has always been able to change it, while the dialog could only ever
+ *  speak once, at creation. This is the dialog's voice after that: the same two setters the browser uses, which do
+ *  nothing at all when the point is already the one asked for.
+ */
+void VToolGraduatedCurve::ApplyPointOptions()
+{
+    auto *dialogTool = qobject_cast<DialogGraduatedCurve *>(m_dialog.data());
+    if (dialogTool == nullptr)
+    {
+        return;
+    }
+
+    if (HasStartPoint() && StartPointShowLabel() != dialogTool->GetStartShowLabel())
+    {
+        SetStartPointShowLabel(dialogTool->GetStartShowLabel());
+    }
+    if (HasEndPoint() && EndPointShowLabel() != dialogTool->GetEndShowLabel())
+    {
+        SetEndPointShowLabel(dialogTool->GetEndShowLabel());
+    }
+
+    SetCreateStartPoint(dialogTool->IsCreateStartPoint(), dialogTool->GetStartPointName(),
+                        dialogTool->GetStartShowLabel());
+    SetCreateEndPoint(dialogTool->IsCreateEndPoint(), dialogTool->GetEndPointName(),
+                      dialogTool->GetEndShowLabel());
+
+    // The tab shows what the pattern now holds: a point that has just been created is not renamed from a field that
+    // would take a new name and drop it.
+    dialogTool->SetStartPoint(HasStartPoint(), StartPointName(), StartPointShowLabel());
+    dialogTool->SetEndPoint(HasEndPoint(), EndPointName(), EndPointShowLabel());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolGraduatedCurve::FullUpdateFromGuiApply()
+{
+    ApplyPointOptions();
+    VToolAbstractOffsetCurve::FullUpdateFromGuiApply();
+}//---------------------------------------------------------------------------------------------------------------------
+void VToolGraduatedCurve::FullUpdateFromGuiOk(int result)
+{
+    if (result == QDialog::Accepted)
+    {
+        ApplyPointOptions();
+    }
+
+    VToolAbstractOffsetCurve::FullUpdateFromGuiOk(result);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -264,6 +320,12 @@ void VToolGraduatedCurve::SetGraduatedOffsets(const QVector<VGraduatedCurveOffse
 void VToolGraduatedCurve::ShowVisualization(bool show)
 {
     ShowToolVisualization<VisToolGraduatedCurve>(show);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolGraduatedCurve::OpenOptionsDialog()
+{
+    ShowOptionsDialog<DialogGraduatedCurve>();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

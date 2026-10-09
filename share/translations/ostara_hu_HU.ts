@@ -2392,29 +2392,50 @@
         <translation type="vanished">Megjegyzések</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="269"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="274"/>
         <source>Offset %1</source>
         <translation>Eltolás %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="606"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="875"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="462"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="464"/>
+        <source>The point exists already: rename it on the point itself.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="715"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1085"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="612"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="881"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="721"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1091"/>
         <source>Value</source>
         <translation>Érték</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="781"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="903"/>
         <source>Edit offset</source>
         <translation>Eltolás szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="876"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="925"/>
+        <source>An offset must carry a name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="930"/>
+        <source>This name cannot be used as the name of a variable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="941"/>
+        <source>Another variable of the pattern already carries this name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1086"/>
         <source>Parser error: %1</source>
         <translation>Elemzési hiba: %1</translation>
     </message>
@@ -4693,12 +4714,12 @@ This action cannot be undone.</source>
         <translation type="obsolete">Vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="229"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="243"/>
         <source>Take both points of this line first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="348"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="365"/>
         <source>Invalid layer name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4715,7 +4736,7 @@ This action cannot be undone.</source>
         <translation type="vanished">Érvénytelen név</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="466"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="486"/>
         <source>Adding or removing objects can&apos;t be applied while the dialog stays open. Use OK to confirm.</source>
         <translation>Objektumok hozzáadása vagy eltávolítása nem alkalmazható, amíg a párbeszédablak nyitva van. A megerősítéshez használja az OK gombot.</translation>
     </message>
@@ -6526,20 +6547,31 @@ This action cannot be undone.</source>
 <context>
     <name>DialogPuzzlePreferences</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="14"/>
         <source>Puzzle preferences</source>
-        <translation type="vanished">Puzzle beállítások</translation>
+        <translation>Puzzle beállítások</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="60"/>
         <source>Configuration</source>
-        <translation type="vanished">Beállítás</translation>
+        <translation>Beállítás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="87"/>
         <source>Paths</source>
-        <translation type="vanished">Útvonalak</translation>
+        <translation>Útvonalak</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.ui" line="75"/>
         <source>Layout</source>
-        <translation type="vanished">Elrendezés</translation>
+        <translation>Elrendezés</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../src/app/puzzle/dialogs/dialogpuzzlepreferences.cpp" line="159"/>
+        <source>Followed %n option(s) require restart to take effect: %1.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -7058,116 +7090,146 @@ This action cannot be undone.</source>
 <context>
     <name>DialogSaveManualLayout</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="26"/>
         <source>Path:</source>
-        <translation type="vanished">Útvonal:</translation>
+        <translation>Útvonal:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="39"/>
         <source>Destination folder</source>
-        <translation type="vanished">Célmappa</translation>
+        <translation>Célmappa</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="42"/>
         <source>Path to destination folder</source>
-        <translation type="vanished">A célmappa elérési útja</translation>
+        <translation>A célmappa elérési útja</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="55"/>
         <source>Select path to destination folder</source>
-        <translation type="vanished">Válassza ki a célmappa elérési útját</translation>
+        <translation>Válassza ki a célmappa elérési útját</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="58"/>
         <source>Browse…</source>
-        <translation type="vanished">Tallózás…</translation>
+        <translation>Tallózás…</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="75"/>
         <source>File format:</source>
-        <translation type="vanished">Fájlformátum:</translation>
+        <translation>Fájlformátum:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="116"/>
         <source>Options</source>
-        <translation type="vanished">Beállítások</translation>
+        <translation>Beállítások</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="122"/>
         <source>Not available</source>
-        <translation type="vanished">Nem érhető el</translation>
+        <translation>Nem érhető el</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="134"/>
         <source>Binary form</source>
-        <translation type="vanished">Bináris formátum</translation>
+        <translation>Bináris formátum</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="154"/>
         <source>Show grainline</source>
-        <translation type="vanished">Szálirány megjelenítése</translation>
+        <translation>Szálirány megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="164"/>
         <source>Hide ruler</source>
-        <translation type="vanished">Vonalzó elrejtése</translation>
+        <translation>Vonalzó elrejtése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="178"/>
         <source>Text as paths</source>
-        <translation type="vanished">Szöveg útvonalként</translation>
+        <translation>Szöveg útvonalként</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="144"/>
         <source>Export unified</source>
-        <translation type="vanished">Egységesített exportálás</translation>
+        <translation>Egységesített exportálás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="188"/>
         <source>Tiles scheme</source>
-        <translation type="vanished">Csempeséma</translation>
+        <translation>Csempeséma</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="197"/>
         <source>Compatibility:</source>
-        <translation type="vanished">Kompatibilitás:</translation>
+        <translation>Kompatibilitás:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="227"/>
         <source>File name:</source>
-        <translation type="vanished">Fájlnév:</translation>
+        <translation>Fájlnév:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="240"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="243"/>
         <source>File base name</source>
-        <translation type="vanished">Fájl alapnév</translation>
+        <translation>Fájl alapnév</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="101"/>
         <source>The base filename does not match a regular expression.</source>
-        <translation type="vanished">Az alapfájlnév nem felel meg a mintának.</translation>
+        <translation>Az alapfájlnév nem felel meg a mintának.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="145"/>
         <source>Select folder</source>
-        <translation type="vanished">Válasszon mappát</translation>
+        <translation>Válasszon mappát</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="190"/>
         <source>Tried to use out of range file format type number.</source>
-        <translation type="vanished">Érvénytelen fájlformátumtípus.</translation>
+        <translation>Érvénytelen fájlformátumtípus.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="198"/>
         <source>Selected not present file format.</source>
-        <translation type="vanished">Nem létező fájlformátum.</translation>
+        <translation>Nem létező fájlformátum.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="215"/>
         <source>Selected not present file format type.</source>
-        <translation type="vanished">Nem létező fájlformátumtípus.</translation>
+        <translation>Nem létező fájlformátumtípus.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="388"/>
         <source>The destination directory doesn&apos;t exists or is not readable.</source>
-        <translation type="vanished">A célkönyvtár nem létezik, vagy nem olvasható.</translation>
+        <translation>A célkönyvtár nem létezik, vagy nem olvasható.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="527"/>
         <source>Name conflict</source>
-        <translation type="vanished">Névütközés</translation>
+        <translation>Névütközés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="528"/>
         <source>Folder already contain file with name %1. Rewrite all conflict file names?</source>
-        <translation type="vanished">A mappában már van %1 nevű fájl. Felülírja a konfliktusos fájlokat?</translation>
+        <translation>A mappában már van %1 nevű fájl. Felülírja a konfliktusos fájlokat?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="587"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="591"/>
         <source>Example:</source>
-        <translation type="vanished">Példa:</translation>
+        <translation>Példa:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="701"/>
         <source>By standard</source>
-        <translation type="vanished">Szabvány szerint</translation>
+        <translation>Szabvány szerint</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="14"/>
         <source>Save manual layout</source>
-        <translation type="vanished">Kézi elrendezés mentése</translation>
+        <translation>Kézi elrendezés mentése</translation>
     </message>
 </context>
 <context>
@@ -7219,11 +7281,11 @@ This action cannot be undone.</source>
         <translation type="vanished">Darab</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1676"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="112"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="204"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="228"/>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Szálirány</translation>
     </message>
@@ -7551,9 +7613,9 @@ This action cannot be undone.</source>
         <translation type="vanished">Válassza ki a fő útvonal objektumait az óramutató járásával megegyezően, &lt;b&gt;%1&lt;/b&gt; – görbe irányának megfordítása, &lt;b&gt;%2&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="514"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1679"/>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <source>Fold line</source>
         <translation>Hajtásvonal</translation>
     </message>
@@ -7991,7 +8053,7 @@ This action cannot be undone.</source>
         <translation>Pontok listája</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="281"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="298"/>
         <source>Select point of curve path</source>
         <translation>Válassza ki a görbe útvonal pontját</translation>
     </message>
@@ -8000,7 +8062,7 @@ This action cannot be undone.</source>
         <translation type="vanished">Sziín</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="315"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="352"/>
         <source>Color:</source>
         <translation>Szín:</translation>
     </message>
@@ -8020,8 +8082,8 @@ This action cannot be undone.</source>
         <translation>Első kontrollpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="139"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="156"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="142"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="159"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
@@ -8031,68 +8093,98 @@ This action cannot be undone.</source>
         <translation>Második kontrollpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="129"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="147"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="132"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="150"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="141"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="144"/>
         <source>Edit first control point angle</source>
         <translation>Első kontrollpont szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="158"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="161"/>
         <source>Edit second control point angle</source>
         <translation>Második kontrollpont szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="131"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="982"/>
+        <source>Point %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="134"/>
         <source>Edit first control point length</source>
         <translation>Első kontrollpont hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="149"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="152"/>
         <source>Edit second control point length</source>
         <translation>Második kontrollpont hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="613"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="629"/>
         <source>Not used</source>
         <translation>Nem használt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="197"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="201"/>
+        <source>Point</source>
+        <translation type="unfinished">Pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="206"/>
+        <source>Length 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="211"/>
+        <source>Angle 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="216"/>
+        <source>Length 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="221"/>
+        <source>Angle 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="234"/>
         <source>Move on top</source>
         <translation>Mozgatás tetejére</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="214"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="251"/>
         <source>Move up</source>
         <translation>Mozgatás fel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="231"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="268"/>
         <source>Move down</source>
         <translation>Mozgatás le</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="248"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="285"/>
         <source>Move on bottom</source>
         <translation>Mozgatás aljára</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="286"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="323"/>
         <source>Pen style:</source>
         <translation>Ceruza stílusa:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="329"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="366"/>
         <source>Curve:</source>
         <translation type="unfinished">Görbe:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="367"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="404"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8948,8 +9040,8 @@ This action cannot be undone.</source>
 <context>
     <name>FoldLine</name>
     <message>
-        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
         <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
+        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
         <source>Cut On Fold</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9113,6 +9205,7 @@ This action cannot be undone.</source>
     <name>InternalStrings</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaboutapp.cpp" line="61"/>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="157"/>
         <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
         <translation>A program JÓTÁLLÁS NÉLKÜL, A JELENLEGI ÁLLAPOTÁBAN kerül átadásra, BELEÉRTVE A TERVEZÉSRE, AZ ÉRTÉKESÍTHETŐSÉGRE ÉS AZ ADOTT CÉLRA VALÓ ALKALMASSÁGRA VONATKOZÓ JÓTÁLLÁST IS.</translation>
     </message>
@@ -9388,8 +9481,8 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="306"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="501"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="830"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="504"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="833"/>
         <source>Select first point of line</source>
         <translation>Válassza ki a vonal első pontját</translation>
     </message>
@@ -9404,138 +9497,138 @@ This action cannot be undone.</source>
         <translation>Válassza ki az első vonal első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="345"/>
-        <source>Select the apex of the dart, then the two points of its opening, and the point that carries the edge when no curve does — then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="348"/>
+        <source>Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point that carries the edge when no curve does — then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="359"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="362"/>
         <source>Select the base point of the rectangle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="373"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="376"/>
         <source>Select first point curve</source>
         <translation>Válassza ki a görbe első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="397"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="400"/>
         <source>Select simple curve</source>
         <translation>Válasszon egyszerű görbét</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="411"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="414"/>
         <source>Select point of center of arc</source>
         <translation>Válassza ki az ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="440"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="443"/>
         <source>Select point of curve path</source>
         <translation>Válassza ki a görbe útvonal pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="450"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="453"/>
         <source>Select the first point of the curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="474"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="477"/>
         <source>Select curve path</source>
         <translation>Válasszon görbe útvonalat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="488"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="491"/>
         <source>Select a curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="525"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="528"/>
         <source>Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed automatically; hold &lt;b&gt;%1&lt;/b&gt; to reverse a curve, &lt;b&gt;%2&lt;/b&gt; to finish.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="536"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="539"/>
         <source>Select all the points of the internal marks to place, &lt;b&gt;%1&lt;/b&gt; - confirm selection. Every mark will be attached to the piece you choose in the dialog, so select only points lying on that piece.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="554"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="557"/>
         <source>Select base point</source>
         <translation>Alappont kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="568"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="571"/>
         <source>Select first point of axis</source>
         <translation>Válassza ki a tengely első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="597"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="617"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="600"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="620"/>
         <source>Select detail</source>
         <translation>Válasszon darabot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="643"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="669"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="682"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="695"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="938"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="646"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="672"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="685"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="698"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="941"/>
         <source>Select one or more objects, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation>Válasszon ki egy vagy több objektumot, &lt;b&gt;%1&lt;/b&gt; – kiválasztás megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="656"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="659"/>
         <source>Select the &lt;b&gt;objects to turn&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="708"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="711"/>
         <source>Select the objects of the portion, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="723"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="737"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="726"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="740"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="751"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="754"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two — the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="800"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="803"/>
         <source>Insert node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="801"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="804"/>
         <source>None of the selected nodes could be placed in the piece.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="818"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="852"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="951"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="961"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="821"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="855"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="954"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="964"/>
         <source>Select arc</source>
         <translation>Válasszon ívet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="840"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="985"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="996"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="843"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="988"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="999"/>
         <source>Select curve</source>
         <translation>Válasszon görbét</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1006"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1009"/>
         <source>Select the armhole point. Optional: create a perpendicular point beforehand to end the curve perpendicular to the shoulder line.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1018"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1021"/>
         <source>Select the point the spiral starts at</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9709,7 +9802,7 @@ This action cannot be undone.</source>
         <translation>Az utoljára használt eszköz ismételt aktiválása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="583"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="586"/>
         <source>Select point for X value (vertical)</source>
         <translation>Válasszon pontot az X értékhez (függőleges)</translation>
     </message>
@@ -10135,17 +10228,17 @@ This action cannot be undone.</source>
         <translation>Eredeti elrendezés exportálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="864"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="867"/>
         <source>Select first an arc</source>
         <translation>Válassza ki az első ívet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="919"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="922"/>
         <source>Select point of the center of the arc</source>
         <translation>Válassza ki az ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="929"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="932"/>
         <source>Select the first base line point</source>
         <translation>Válassza ki az alapvonal első pontját</translation>
     </message>
@@ -10336,7 +10429,7 @@ This action cannot be undone.</source>
         <translation>Görbék metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="886"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="889"/>
         <source>Select first curve</source>
         <translation>Válassza ki az első görbét</translation>
     </message>
@@ -10346,12 +10439,12 @@ This action cannot be undone.</source>
         <translation>Görbe pontvezérléssel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="383"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="386"/>
         <source>Select first curve point</source>
         <translation>Válassza ki az első görbepontot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="460"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="463"/>
         <source>Select point of cubic bezier path</source>
         <translation>Válassza ki a köbös Bézier útvonal pontját</translation>
     </message>
@@ -10381,13 +10474,13 @@ This action cannot be undone.</source>
         <translation type="vanished">Az elrendezésbe kerülő alkatrészek megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="875"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="878"/>
         <source>Select first circle center</source>
         <translation>Válassza ki az első kör középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="897"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="908"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="900"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="911"/>
         <source>Select point on tangent</source>
         <translation>Válasszon pontot az érintőn</translation>
     </message>
@@ -10417,12 +10510,12 @@ This action cannot be undone.</source>
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="425"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="428"/>
         <source>Select point of center of elliptical arc</source>
         <translation>Válassza ki az elliptikus ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="515"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="518"/>
         <source>Select main path objects clockwise.</source>
         <translation>Válassza ki a fő útvonal objektumait az óramutató járásával megegyezően.</translation>
     </message>
@@ -10985,7 +11078,7 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation>Érvénytelen kép. Hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="973"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="976"/>
         <source>Select point of the center of the elliptical arc</source>
         <translation>Válassza ki az elliptikus ív középpontját</translation>
     </message>
@@ -13546,7 +13639,7 @@ This action cannot be undone.</source>
     <name>ODialogDartCap</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="543"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="468"/>
         <source>Dart cap</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13561,90 +13654,86 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="42"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="62"/>
         <source>Type of line:</source>
         <translation type="unfinished">Vonaltípus:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="59"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="79"/>
         <source>Line color:</source>
         <translation type="unfinished">Vonal színe:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="75"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="118"/>
+        <source>You can add a note here…</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="40"/>
         <source>Cut the piece&apos;s edge at the cap point, so that the crank is a point of it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="78"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="43"/>
         <source>Notch</source>
         <translation type="unfinished">Bevágás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="50"/>
         <source>Build the cap on the edge the piece carries at the other point of the opening.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="88"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="53"/>
         <source>Reverse the sense</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="118"/>
-        <source>Layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="130"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation type="obsolete">Név:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="140"/>
         <source>Tags:</source>
-        <translation type="unfinished">Címkék:</translation>
+        <translation type="obsolete">Címkék:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="157"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="126"/>
         <source>Point</source>
         <translation type="unfinished">Pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="163"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="132"/>
         <source>Point name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="112"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="129"/>
-        <source>Line:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="429"/>
-        <source>Select the first point of the dart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="451"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="472"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="376"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="397"/>
         <source>The two points of the opening are two different points, and neither of them is the point of the dart.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="456"/>
-        <source>Select the second point of the dart</source>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="354"/>
+        <source>Select the tip of the dart (the point inside the piece)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="477"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="497"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="381"/>
+        <source>Select the first point of the opening (a point of the piece&apos;s edge)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="402"/>
+        <source>Select the second point of the opening (the other end)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="422"/>
         <source>Select a point of the line to extend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="522"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="447"/>
         <source>The cap of this dart cannot be built from this point: the line it carries does not meet the axis of the dart. Choose another point of the line to extend.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17756,42 +17845,42 @@ Save it before leaving it?</source>
 <context>
     <name>OToolDartCap</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1011"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1034"/>
         <source>dart cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1086"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1153"/>
         <source>read the cap on the other edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1087"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1154"/>
         <source>read the cap on this edge</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1110"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1176"/>
         <source>draw the cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1110"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1176"/>
         <source>stop drawing the cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1196"/>
         <source>mark the crank</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1196"/>
         <source>take the crank away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1410"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1532"/>
         <source>Cap</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18811,388 +18900,493 @@ Ez a beállítás újraindítás után lép életbe.</translation>
 <context>
     <name>Puzzle</name>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="73"/>
         <source>Valentina&apos;s manual layout editor.</source>
-        <translation type="vanished">A Valentina kézi elrendezés-szerkesztője.</translation>
+        <translation>A Valentina kézi elrendezés-szerkesztője.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="76"/>
         <source>The manual layout file.</source>
-        <translation type="vanished">A kézi elrendezés fájlja.</translation>
+        <translation>A kézi elrendezés fájlja.</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesConfigurationPage</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="45"/>
         <source>Language</source>
-        <translation type="vanished">Nyelve</translation>
+        <translation>Nyelve</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="54"/>
         <source>GUI language:</source>
-        <translation type="vanished">Felhasználói nyelv:</translation>
+        <translation>Felhasználói nyelv:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="67"/>
         <source>Toolbar</source>
-        <translation type="vanished">Eszköztár</translation>
+        <translation>Eszköztár</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="73"/>
         <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">A szöveg az ikon alatt jelenik meg (kezdőknek ajánlott).</translation>
+        <translation>A szöveg az ikon alatt jelenik meg (kezdőknek ajánlott).</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="86"/>
         <source>User Interface</source>
-        <translation type="vanished">Felhasználói felület</translation>
+        <translation>Felhasználói felület</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="112"/>
         <source>Don&apos;t use the native file dialog</source>
-        <translation type="vanished">Ne használja a natív fájlablakot</translation>
+        <translation>Ne használja a natív fájlablakot</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="24"/>
         <source>General</source>
-        <translation type="vanished">Általános</translation>
+        <translation>Általános</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="100"/>
         <source>Theme:</source>
-        <translation type="vanished">Téma:</translation>
+        <translation>Téma:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="122"/>
         <source>Graphical output</source>
-        <translation type="vanished">Grafikus kimenet</translation>
+        <translation>Grafikus kimenet</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="128"/>
         <source>Use antialiasing</source>
-        <translation type="vanished">Élsimítás használata</translation>
+        <translation>Élsimítás használata</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="135"/>
         <source>Use OpenGL to render a scene.
 This option will take an affect after restart.</source>
-        <translation type="vanished">OpenGL használata a jelenet megjelenítéséhez.
+        <translation>OpenGL használata a jelenet megjelenítéséhez.
 Ez a beállítás újraindítás után lép életbe.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="139"/>
         <source>Use OpenGL render</source>
-        <translation type="vanished">OpenGL megjelenítés használata</translation>
+        <translation>OpenGL megjelenítés használata</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="152"/>
         <source>Font</source>
-        <translation type="vanished">Betűtípus</translation>
+        <translation>Betűtípus</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="158"/>
         <source>Allow single stroke outline fonts</source>
-        <translation type="vanished">Egyvonásos körvonalas betűtípusok engedélyezése</translation>
+        <translation>Egyvonásos körvonalas betűtípusok engedélyezése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="165"/>
         <source>When this option is activated, the application will utilize SVG Fonts present in your system to render piece label text, instead of using outline fonts.</source>
-        <translation type="vanished">Ha ez a beállítás aktív, az alkalmazás a rendszerében lévő SVG betűtípusokat használja a darabcímke szövegének megjelenítéséhez a körvonalas betűtípusok helyett.</translation>
+        <translation>Ha ez a beállítás aktív, az alkalmazás a rendszerében lévő SVG betűtípusokat használja a darabcímke szövegének megjelenítéséhez a körvonalas betűtípusok helyett.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="168"/>
         <source>Use single-line fonts</source>
-        <translation type="vanished">Egyvonalas betűtípusok használata</translation>
+        <translation>Egyvonalas betűtípusok használata</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="178"/>
         <source>Undo</source>
-        <translation type="vanished">Visszavonás</translation>
+        <translation>Visszavonás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="187"/>
         <source>Count steps (0 - no limit):</source>
-        <translation type="vanished">Lépések száma (0 – nincs korlát):</translation>
+        <translation>Lépések száma (0 – nincs korlát):</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="240"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="288"/>
         <source>Shortcuts</source>
-        <translation type="vanished">Gyorsbillentyűk</translation>
+        <translation>Gyorsbillentyűk</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="283"/>
         <source>Action</source>
-        <translation type="vanished">Művelet</translation>
+        <translation>Művelet</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="311"/>
         <source>Restore defaults</source>
-        <translation type="vanished">Alapértékek visszaállítása</translation>
+        <translation>Alapértékek visszaállítása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="321"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="470"/>
         <source>Scrolling</source>
-        <translation type="vanished">Görgetés</translation>
+        <translation>Görgetés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="342"/>
         <source>Animation</source>
-        <translation type="vanished">Animáció</translation>
+        <translation>Animáció</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="351"/>
         <source>Duration:</source>
-        <translation type="vanished">Időtartam:</translation>
+        <translation>Időtartam:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="358"/>
         <source>Scrolling animation duration</source>
-        <translation type="vanished">Görgetésanimáció időtartama</translation>
+        <translation>Görgetésanimáció időtartama</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="361"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="387"/>
         <source>ms</source>
         <comment>milliseconds</comment>
-        <translation type="vanished">ms</translation>
+        <translation>ms</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="377"/>
         <source>Update interval:</source>
-        <translation type="vanished">Frissítési intervallum:</translation>
+        <translation>Frissítési intervallum:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="384"/>
         <source>Time in milliseconds between each animation update</source>
-        <translation type="vanished">Az egyes animációfrissítések közötti idő ezredmásodpercben</translation>
+        <translation>Az egyes animációfrissítések közötti idő ezredmásodpercben</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="406"/>
         <source>Mouse scale</source>
-        <translation type="vanished">Egér méretezés</translation>
+        <translation>Egér méretezés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="415"/>
         <source>Sensor:</source>
         <comment>sensor mouse</comment>
-        <translation type="vanished">Érzékelő:</translation>
+        <translation>Érzékelő:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="422"/>
         <source>Scale scrolling sensitivity for mouse with sensor</source>
-        <translation type="vanished">Görgetés érzékenységének méretezése érzékelős egérhez</translation>
+        <translation>Görgetés érzékenységének méretezése érzékelős egérhez</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="441"/>
         <source>Wheel:</source>
         <comment>mouse wheel</comment>
-        <translation type="vanished">Görgő:</translation>
+        <translation>Görgő:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="448"/>
         <source>Scale scrolling sensitivity for mouse with wheel</source>
-        <translation type="vanished">Görgetés érzékenységének méretezése görgős egérhez</translation>
+        <translation>Görgetés érzékenységének méretezése görgős egérhez</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="479"/>
         <source>Acceleration:</source>
-        <translation type="vanished">Gyorsítás:</translation>
+        <translation>Gyorsítás:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="523"/>
         <source>Privacy</source>
-        <translation type="vanished">Adatvédelem</translation>
+        <translation>Adatvédelem</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="529"/>
         <source>Usage statistic</source>
-        <translation type="vanished">Használati statisztika</translation>
+        <translation>Használati statisztika</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="535"/>
         <source>Send usage statistics</source>
-        <translation type="vanished">Használati statisztika küldése</translation>
+        <translation>Használati statisztika küldése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="542"/>
         <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation type="vanished">Kérjük, segítsen javítani a Valentina minőségén a használati statisztikák automatikus küldésével. A küldött adatok &lt;span style=&quot; font-weight:700;&quot;&gt;nem tartalmaznak potenciálisan érzékeny információkat&lt;/span&gt;, például felhasználóneveket, e-mail-címeket, fájltartalmakat vagy fájlútvonalakat.</translation>
+        <translation>Kérjük, segítsen javítani a Valentina minőségén a használati statisztikák automatikus küldésével. A küldött adatok &lt;span style=&quot; font-weight:700;&quot;&gt;nem tartalmaznak potenciálisan érzékeny információkat&lt;/span&gt;, például felhasználóneveket, e-mail-címeket, fájltartalmakat vagy fájlútvonalakat.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="555"/>
         <source>Crash reports</source>
-        <translation type="vanished">Összeomlási jelentések</translation>
+        <translation>Összeomlási jelentések</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="561"/>
         <source>Send automatic crash reports</source>
-        <translation type="vanished">Automatikus összeomlási jelentések küldése</translation>
+        <translation>Automatikus összeomlási jelentések küldése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="570"/>
         <source>Email:</source>
-        <translation type="vanished">E-mail:</translation>
+        <translation>E-mail:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="583"/>
         <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation type="vanished">Az összeomlási jelentések küldése segít megbízhatóbbá tenni a Valentinát. Minden információt bizalmasan kezelünk, és kizárólag a program jövőbeli verzióinak javítására használunk fel. Kérjük, aktiválja az automatikus összeomlási jelentések küldését, és adja meg az e-mail-címét (nem kötelező). Ha megadja, az összeomlással kapcsolatos további információkért felvehetjük Önnel a kapcsolatot.</translation>
+        <translation>Az összeomlási jelentések küldése segít megbízhatóbbá tenni a Valentinát. Minden információt bizalmasan kezelünk, és kizárólag a program jövőbeli verzióinak javítására használunk fel. Kérjük, aktiválja az automatikus összeomlási jelentések küldését, és adja meg az e-mail-címét (nem kötelező). Ha megadja, az összeomlással kapcsolatos további információkért felvehetjük Önnel a kapcsolatot.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="178"/>
         <source>undo limit</source>
-        <translation type="vanished">visszavonási korlát</translation>
+        <translation>visszavonási korlát</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="185"/>
         <source>antialiasing</source>
-        <translation type="vanished">élsimítás</translation>
+        <translation>élsimítás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="191"/>
         <source>scene render</source>
-        <translation type="vanished">jelenet megjelenítése</translation>
+        <translation>jelenet megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="235"/>
         <source>send crash report</source>
-        <translation type="vanished">összeomlási jelentés küldése</translation>
+        <translation>összeomlási jelentés küldése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="242"/>
         <source>user email in case of crash</source>
-        <translation type="vanished">felhasználó e-mail-címe összeomlás esetén</translation>
+        <translation>felhasználó e-mail-címe összeomlás esetén</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="281"/>
         <source>Dark</source>
         <comment>theme</comment>
-        <translation type="vanished">Sötét</translation>
+        <translation>Sötét</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.cpp" line="280"/>
         <source>Light</source>
         <comment>theme</comment>
-        <translation type="vanished">Világos</translation>
+        <translation>Világos</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="200"/>
         <source>Update</source>
-        <translation type="vanished">Frissítés</translation>
+        <translation>Frissítés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="206"/>
         <source>Automatically check for updates each time the application starts</source>
-        <translation type="vanished">Frissítések automatikus keresése az alkalmazás minden indításakor</translation>
+        <translation>Frissítések automatikus keresése az alkalmazás minden indításakor</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencesconfigurationpage.ui" line="209"/>
         <source>Automatically check for updates</source>
-        <translation type="vanished">Frissítések automatikus keresése</translation>
+        <translation>Frissítések automatikus keresése</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesLayoutPage</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="22"/>
         <source>Sheet</source>
-        <translation type="vanished">Lap</translation>
+        <translation>Lap</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="31"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="436"/>
         <source>Format</source>
-        <translation type="vanished">Formátum</translation>
+        <translation>Formátum</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="51"/>
         <source>Unit:</source>
-        <translation type="vanished">Egység:</translation>
+        <translation>Egység:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="67"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="462"/>
         <source>Templates:</source>
-        <translation type="vanished">Méret:</translation>
+        <translation>Méret:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="138"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="533"/>
         <source>Width:</source>
-        <translation type="vanished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="151"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="546"/>
         <source>Height:</source>
-        <translation type="vanished">Magasság:</translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="195"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="590"/>
         <source>Margins</source>
-        <translation type="vanished">Margók</translation>
+        <translation>Margók</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="203"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="598"/>
         <source>Right:</source>
-        <translation type="vanished">Jobb:</translation>
+        <translation>Jobb:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="223"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="618"/>
         <source>Top:</source>
-        <translation type="vanished">Felső:</translation>
+        <translation>Felső:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="247"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="642"/>
         <source>Left:</source>
-        <translation type="vanished">Bal:</translation>
+        <translation>Bal:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="257"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="652"/>
         <source>Bottom:</source>
-        <translation type="vanished">Alsó:</translation>
+        <translation>Alsó:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="282"/>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="677"/>
         <source>Ignore margins</source>
-        <translation type="vanished">Margók elvetése</translation>
+        <translation>Margók elvetése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="295"/>
         <source>Control</source>
-        <translation type="vanished">Vezérlés</translation>
+        <translation>Vezérlés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="301"/>
         <source>Warning superposition of pieces</source>
-        <translation type="vanished">Figyelmeztetés a darabok átfedéséről</translation>
+        <translation>Figyelmeztetés a darabok átfedéséről</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="308"/>
         <source>Warning pieces out of bound</source>
-        <translation type="vanished">Figyelmeztetés a határon kívüli darabokról</translation>
+        <translation>Figyelmeztetés a határon kívüli darabokról</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="315"/>
         <source>Warning piece gape position</source>
-        <translation type="vanished">Figyelmeztetés a darabok hézagpozíciójáról</translation>
+        <translation>Figyelmeztetés a darabok hézagpozíciójáról</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="322"/>
         <source>Sticky edges</source>
-        <translation type="vanished">Tapadó élek</translation>
+        <translation>Tapadó élek</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="329"/>
         <source>Follow grainline</source>
-        <translation type="vanished">Szálirány követése</translation>
+        <translation>Szálirány követése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="344"/>
         <source>Pieces gap</source>
-        <translation type="vanished">Darabok közötti hézag</translation>
+        <translation>Darabok közötti hézag</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="404"/>
         <source>Tiles</source>
-        <translation type="vanished">Csempék</translation>
+        <translation>Csempék</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="416"/>
         <source>Show Tiles on sheet</source>
-        <translation type="vanished">Csempék megjelenítése a lapon</translation>
+        <translation>Csempék megjelenítése a lapon</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="423"/>
         <source>Show watermark preview</source>
-        <translation type="vanished">Vízjel előnézetének megjelenítése</translation>
+        <translation>Vízjel előnézetének megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="426"/>
         <source>Show watermark</source>
-        <translation type="vanished">Vízjel megjelenítése</translation>
+        <translation>Vízjel megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="182"/>
         <source>default layout settings</source>
-        <translation type="vanished">alapértelmezett elrendezésbeállítások</translation>
+        <translation>alapértelmezett elrendezésbeállítások</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="396"/>
         <source>Millimiters</source>
-        <translation type="vanished">Milliméter</translation>
+        <translation>Milliméter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="397"/>
         <source>Centimeters</source>
-        <translation type="vanished">Centiméter</translation>
+        <translation>Centiméter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="398"/>
         <source>Inches</source>
-        <translation type="vanished">Hüvelyk</translation>
+        <translation>Hüvelyk</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.cpp" line="399"/>
         <source>Pixels</source>
-        <translation type="vanished">Képpont</translation>
+        <translation>Képpont</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferenceslayoutpage.ui" line="364"/>
         <source>Line width:</source>
-        <translation type="vanished">Vonal szélessége:</translation>
+        <translation>Vonal szélessége:</translation>
     </message>
 </context>
 <context>
     <name>PuzzlePreferencesPathPage</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="20"/>
         <source>Paths that Valentina uses</source>
-        <translation type="vanished">A Valentina által használt útvonalak</translation>
+        <translation>A Valentina által használt útvonalak</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="45"/>
         <source>Type</source>
-        <translation type="vanished">Típus</translation>
+        <translation>Típus</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="50"/>
         <source>Path</source>
-        <translation type="vanished">Útvonal</translation>
+        <translation>Útvonal</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="72"/>
         <source>Default</source>
-        <translation type="vanished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.ui" line="101"/>
         <source>Edit</source>
-        <translation type="vanished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="137"/>
         <source>Open Directory</source>
-        <translation type="vanished">Fájl megnyitása</translation>
+        <translation>Fájl megnyitása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="164"/>
         <source>My SVG Fonts</source>
-        <translation type="vanished">Saját SVG betűtípusaim</translation>
+        <translation>Saját SVG betűtípusaim</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="171"/>
         <source>My font corrections</source>
-        <translation type="vanished">Saját betűkorrekcióim</translation>
+        <translation>Saját betűkorrekcióim</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/configpages/puzzlepreferencespathpage.cpp" line="178"/>
         <source>My known measurements</source>
-        <translation type="vanished">Saját ismert méréseim</translation>
+        <translation>Saját ismert méréseim</translation>
     </message>
 </context>
 <context>
@@ -19367,12 +19561,14 @@ Ez a beállítás újraindítás után lép életbe.</translation>
         <translation>darab mozgatása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1142"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="441"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="446"/>
         <source>Can&apos;t convert toUInt parameter</source>
         <translation>A toUInt paraméter nem konvertálható</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1079"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="492"/>
         <source>Can&apos;t convert toBool parameter</source>
         <translation>A toBool paraméter nem konvertálható</translation>
@@ -19383,6 +19579,7 @@ Ez a beállítás újraindítás után lép életbe.</translation>
         <translation>Üres paraméter érkezett</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1116"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="577"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="582"/>
         <source>Can&apos;t convert toDouble parameter</source>
@@ -19542,6 +19739,7 @@ Ez a beállítás újraindítás után lép életbe.</translation>
         <translation>Érvénytelen képlet (&apos;%1&apos;) a(z) &apos;%2&apos; azonosítójú eszközhöz. %3.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1168"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="470"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="475"/>
         <source>Can&apos;t convert toInt parameter</source>
@@ -19638,30 +19836,37 @@ Ez a beállítás újraindítás után lép életbe.</translation>
         <translation>Érvénytelen globális érték a bevágásjel hosszához. A(z) &apos;%1&apos; darab. A hossz kisebb a megengedett minimumnál.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecemove.cpp" line="132"/>
         <source>move pieces</source>
-        <translation type="vanished">darabok mozgatása</translation>
+        <translation>darabok mozgatása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecerotate.cpp" line="165"/>
         <source>rotate pieces</source>
-        <translation type="vanished">darabok forgatása</translation>
+        <translation>darabok forgatása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="209"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="259"/>
         <source>Cannot set printer page size</source>
-        <translation type="vanished">Nem állítható be a nyomtató oldalmérete</translation>
+        <translation>Nem állítható be a nyomtató oldalmérete</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="220"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="270"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3231"/>
         <source>Cannot set printer margins</source>
-        <translation type="vanished">Nyomtatás margóját nem lehet beállítani</translation>
+        <translation>Nyomtatás margóját nem lehet beállítani</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="390"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="407"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
@@ -19708,22 +19913,24 @@ Ez a beállítás újraindítás után lép életbe.</translation>
         <translation>Valóban törölni szeretné?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecezvaluemove.cpp" line="66"/>
         <source>z value move piece</source>
-        <translation type="vanished">darab z-értékének mozgatása</translation>
+        <translation>darab z-értékének mozgatása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecezvaluemove.cpp" line="275"/>
         <source>z value move pieces</source>
-        <translation type="vanished">darabok z-értékének mozgatása</translation>
+        <translation>darabok z-értékének mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="384"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="402"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
@@ -22792,6 +22999,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="796"/>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="108"/>
         <source>Disable high dpi scaling. Call this option if has problem with scaling (by default scaling enabled). Alternatively you can use the %1 environment variable.</source>
         <translation>Nagy DPI-skálázás letiltása. Használja ezt a beállítást, ha probléma van a skálázással (alapértelmezés szerint a skálázás engedélyezve van). Másik lehetőségként használhatja a(z) %1 környezeti változót.</translation>
     </message>
@@ -23129,8 +23337,9 @@ Do you want to continue?</source>
         <translation>A C dimenzió alapértéke</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="106"/>
         <source>The raw layout data file</source>
-        <translation type="vanished">A nyers elrendezési adatok fájlja</translation>
+        <translation>A nyers elrendezési adatok fájlja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="121"/>
@@ -23193,8 +23402,9 @@ Do you want to continue?</source>
         <translation>Elrendezés mértékegysége (a papíréhoz hasonlóan, a px kivételével, exportálás mód). Alapértelmezett mértékegység: cm.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpcommandline.cpp" line="105"/>
         <source>Load pattern pieces from the raw layout data file.</source>
-        <translation type="vanished">Mintadarabok betöltése a nyers elrendezési adatok fájljából.</translation>
+        <translation>Mintadarabok betöltése a nyers elrendezési adatok fájljából.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="722"/>
@@ -24271,121 +24481,150 @@ Do you want to continue?</source>
 <context>
     <name>VPApplication</name>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="355"/>
         <source>Error parsing file. Program will be terminated.</source>
-        <translation type="vanished">Hiba a fájl elemzése közben. A program leáll.</translation>
+        <translation>Hiba a fájl elemzése közben. A program leáll.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="361"/>
         <source>Error bad id. Program will be terminated.</source>
-        <translation type="vanished">Hiba: hibás azonosító. A program leáll.</translation>
+        <translation>Hiba: hibás azonosító. A program leáll.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="367"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
-        <translation type="vanished">Hiba: az érték nem konvertálható. A program leáll.</translation>
+        <translation>Hiba: az érték nem konvertálható. A program leáll.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="373"/>
         <source>Error empty parameter. Program will be terminated.</source>
-        <translation type="vanished">Hiba: üres paraméter. A program leáll.</translation>
+        <translation>Hiba: üres paraméter. A program leáll.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="379"/>
         <source>Error wrong id. Program will be terminated.</source>
-        <translation type="vanished">Hiba: hibás azonosító. A program leáll.</translation>
+        <translation>Hiba: hibás azonosító. A program leáll.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="392"/>
         <source>Something&apos;s wrong!!</source>
-        <translation type="vanished">Valami nincs rendben!</translation>
+        <translation>Valami nincs rendben!</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="398"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
-        <translation type="vanished">Kivétel történt: %1. A program leáll.</translation>
+        <translation>Kivétel történt: %1. A program leáll.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="742"/>
         <source>Can&apos;t begin to listen for incoming connections on name &apos;%1&apos;</source>
-        <translation type="vanished">Nem lehet megkezdeni a bejövő kapcsolatok figyelését a(z) &apos;%1&apos; néven</translation>
+        <translation>Nem lehet megkezdeni a bejövő kapcsolatok figyelését a(z) &apos;%1&apos; néven</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="761"/>
         <source>Export mode doesn&apos;t support opening several files.</source>
-        <translation type="vanished">Az exportálás mód nem támogatja több fájl megnyitását.</translation>
+        <translation>Az exportálás mód nem támogatja több fájl megnyitását.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="768"/>
         <source>Import raw layout data does not support opening several layout files.</source>
-        <translation type="vanished">A nyers elrendezési adatok importálása nem támogatja több elrendezésfájl megnyitását.</translation>
+        <translation>A nyers elrendezési adatok importálása nem támogatja több elrendezésfájl megnyitását.</translation>
     </message>
 </context>
 <context>
     <name>VPCarrousel</name>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="97"/>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="169"/>
         <source>Unplaced pieces</source>
-        <translation type="vanished">El nem helyezett darabok</translation>
+        <translation>El nem helyezett darabok</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="300"/>
+        <location filename="../../src/app/puzzle/carousel/vpcarrousel.cpp" line="303"/>
         <source>Pieces of</source>
-        <translation type="vanished">Darabok ebből</translation>
+        <translation>Darabok ebből</translation>
     </message>
 </context>
 <context>
     <name>VPCarrouselPieceList</name>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="261"/>
         <source>Move to Sheet</source>
-        <translation type="vanished">Áthelyezés a lapra</translation>
+        <translation>Áthelyezés a lapra</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="264"/>
         <source>Delete</source>
-        <translation type="vanished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="267"/>
         <source>Remove from Sheet</source>
-        <translation type="vanished">Eltávolítás a lapról</translation>
+        <translation>Eltávolítás a lapról</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/carousel/vpcarrouselpiecelist.cpp" line="247"/>
         <source>Move to</source>
-        <translation type="vanished">Áthelyezés ide</translation>
+        <translation>Áthelyezés ide</translation>
     </message>
 </context>
 <context>
     <name>VPDialogAbout</name>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="26"/>
         <source>About Puzzle</source>
-        <translation type="vanished">Puzzle névjegy</translation>
+        <translation>Puzzle névjegy</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="100"/>
         <source>Puzzle version</source>
-        <translation type="vanished">Puzzle verzió</translation>
+        <translation>Puzzle verzió</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="118"/>
         <source>Build revision:</source>
-        <translation type="vanished">Build azonosító:</translation>
+        <translation>Build azonosító:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="131"/>
         <source>This program is part of Valentina project.</source>
-        <translation type="vanished">Ez a program a Valentina projekt része.</translation>
+        <translation>Ez a program a Valentina projekt része.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="273"/>
         <source>Special thanks</source>
-        <translation type="vanished">Külön köszönet</translation>
+        <translation>Külön köszönet</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="317"/>
         <source>Check For Updates</source>
-        <translation type="vanished">Frissítés keresése</translation>
+        <translation>Frissítés keresése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.ui" line="324"/>
         <source>Credits</source>
-        <translation type="vanished">Közreműködők</translation>
+        <translation>Közreműködők</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="66"/>
         <source>Cannot open your default browser</source>
-        <translation type="vanished">Nem sikerült megnyitni az alapértelmezett böngészőt</translation>
+        <translation>Nem sikerült megnyitni az alapértelmezett böngészőt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="151"/>
         <source>Build revision: %1</source>
-        <translation type="vanished">Build azonosító: %1</translation>
+        <translation>Build azonosító: %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="155"/>
         <source>Built on %1 at %2</source>
-        <translation type="vanished">Készült: %1 %2</translation>
+        <translation>Készült: %1 %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/dialogs/vpdialogabout.cpp" line="162"/>
         <source>Web site : %1</source>
-        <translation type="vanished">Weboldal: %1</translation>
+        <translation>Weboldal: %1</translation>
     </message>
 </context>
 <context>
@@ -24510,846 +24749,1109 @@ Do you want to continue?</source>
 <context>
     <name>VPGraphicsPiece</name>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpgraphicspiece.cpp" line="325"/>
         <source>Move to</source>
-        <translation type="vanished">Áthelyezés ide</translation>
+        <translation>Áthelyezés ide</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpgraphicspiece.cpp" line="339"/>
         <source>Remove from Sheet</source>
-        <translation type="vanished">Eltávolítás a lapról</translation>
+        <translation>Eltávolítás a lapról</translation>
     </message>
 </context>
 <context>
     <name>VPGraphicsSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpgraphicssheet.cpp" line="900"/>
         <source>FOLD</source>
-        <translation type="vanished">HAJTÁS</translation>
+        <translation>HAJTÁS</translation>
     </message>
 </context>
 <context>
     <name>VPLayout</name>
     <message>
+        <location filename="../../src/app/puzzle/layout/vplayout.cpp" line="76"/>
         <source>Sheet %1</source>
-        <translation type="vanished">Lap %1</translation>
+        <translation>Lap %1</translation>
     </message>
 </context>
 <context>
     <name>VPLayoutFileReader</name>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="497"/>
         <source>Piece</source>
-        <translation type="vanished">Darab</translation>
+        <translation>Darab</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="657"/>
         <source>Error in line %1. Grainline main line is empty.</source>
-        <translation type="vanished">Hiba a(z) %1. sorban. A szálirány fővonala üres.</translation>
+        <translation>Hiba a(z) %1. sorban. A szálirány fővonala üres.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1059"/>
         <source>Got empty attribute &apos;%1&apos;</source>
-        <translation type="vanished">Üres attribútum érkezett: &apos;%1&apos;</translation>
+        <translation>Üres attribútum érkezett: &apos;%1&apos;</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="630"/>
         <source>Error in line %1. Seam allowance is empty.</source>
-        <translation type="vanished">Hiba a(z) %1. sorban. A varrásráhagyás üres.</translation>
+        <translation>Hiba a(z) %1. sorban. A varrásráhagyás üres.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="749"/>
         <source>Error in line %1. Internal path shape is empty.</source>
-        <translation type="vanished">Hiba a(z) %1. sorban. A belső útvonal alakzata üres.</translation>
+        <translation>Hiba a(z) %1. sorban. A belső útvonal alakzata üres.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="1046"/>
         <source>Unexpected tag %1 in line %2</source>
-        <translation type="vanished">Váratlan %1 címke a(z) %2. sorban</translation>
+        <translation>Váratlan %1 címke a(z) %2. sorban</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/xml/vplayoutfilereader.cpp" line="477"/>
         <source>Piece %1 invalid. %2</source>
-        <translation type="vanished">A(z) %1 darab érvénytelen. %2</translation>
+        <translation>A(z) %1 darab érvénytelen. %2</translation>
     </message>
 </context>
 <context>
     <name>VPMainGraphicsView</name>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="329"/>
         <source>Restore transformation origin</source>
-        <translation type="vanished">Transzformáció kiindulópontjának visszaállítása</translation>
+        <translation>Transzformáció kiindulópontjának visszaállítása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="333"/>
         <source>Remove sheet</source>
-        <translation type="vanished">Lap eltávolítása</translation>
+        <translation>Lap eltávolítása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/scene/vpmaingraphicsview.cpp" line="616"/>
         <source>Remove pieces</source>
-        <translation type="vanished">Darabok eltávolítása</translation>
+        <translation>Darabok eltávolítása</translation>
     </message>
 </context>
 <context>
     <name>VPMainWindow</name>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="14"/>
         <source>Puzzle</source>
-        <translation type="vanished">Puzzle</translation>
+        <translation>Puzzle</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="47"/>
         <source>&amp;File</source>
-        <translation type="vanished">&amp;Fájl</translation>
+        <translation>&amp;Fájl</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="76"/>
         <source>&amp;Window</source>
-        <translation type="vanished">&amp;Ablak</translation>
+        <translation>&amp;Ablak</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="82"/>
         <source>&amp;Help</source>
-        <translation type="vanished">&amp;Súgó</translation>
+        <translation>&amp;Súgó</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="121"/>
         <source>Menu</source>
-        <translation type="vanished">Menü</translation>
+        <translation>Menü</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="159"/>
         <source>Piece Carrousel</source>
-        <translation type="vanished">Darabkörhinta</translation>
+        <translation>Darabkörhinta</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="198"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2243"/>
         <source>Properties</source>
-        <translation type="vanished">Tulajdonságok</translation>
+        <translation>Tulajdonságok</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="243"/>
         <source>Current piece properties</source>
-        <translation type="vanished">Jelenlegi darab tulajdonságai</translation>
+        <translation>Jelenlegi darab tulajdonságai</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="294"/>
         <source>Current piece</source>
-        <translation type="vanished">Jelenlegi darab</translation>
+        <translation>Jelenlegi darab</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="322"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="838"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1752"/>
         <source>Infos</source>
-        <translation type="vanished">Információk</translation>
+        <translation>Információk</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="328"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="846"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1760"/>
         <source>Name:</source>
-        <translation type="vanished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="687"/>
         <source>Show Seamline</source>
-        <translation type="vanished">Varrásvonal megjelenítése</translation>
+        <translation>Varrásvonal megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="668"/>
         <source>Geometry</source>
-        <translation type="vanished">Geometria</translation>
+        <translation>Geometria</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="548"/>
         <source>Rotation</source>
-        <translation type="vanished">Forgatás</translation>
+        <translation>Forgatás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="624"/>
         <source>Angle:</source>
-        <translation type="vanished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="475"/>
         <source>Placement</source>
-        <translation type="vanished">Elhelyezés</translation>
+        <translation>Elhelyezés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="748"/>
         <source>No piece selected</source>
-        <translation type="vanished">Nincs kiválasztott darab</translation>
+        <translation>Nincs kiválasztott darab</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="783"/>
         <source>Sheet properties</source>
-        <translation type="vanished">Lap tulajdonságai</translation>
+        <translation>Lap tulajdonságai</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="828"/>
         <source>Current sheet</source>
-        <translation type="vanished">Jelenlegi lap</translation>
+        <translation>Jelenlegi lap</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="864"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1365"/>
         <source>Format</source>
-        <translation type="vanished">Formátum</translation>
+        <translation>Formátum</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1108"/>
         <source>Remove unused length</source>
-        <translation type="vanished">Nem használt hossz eltávolítása</translation>
+        <translation>Nem használt hossz eltávolítása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1118"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1525"/>
         <source>Margins</source>
-        <translation type="vanished">Margók</translation>
+        <translation>Margók</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1126"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1533"/>
         <source>Right:</source>
-        <translation type="vanished">Jobb:</translation>
+        <translation>Jobb:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1146"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1553"/>
         <source>Top:</source>
-        <translation type="vanished">Felső:</translation>
+        <translation>Felső:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1170"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1577"/>
         <source>Left:</source>
-        <translation type="vanished">Bal:</translation>
+        <translation>Bal:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1180"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1587"/>
         <source>Bottom:</source>
-        <translation type="vanished">Alsó:</translation>
+        <translation>Alsó:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1215"/>
         <source>Placement Grid</source>
-        <translation type="vanished">Elhelyezési rács</translation>
+        <translation>Elhelyezési rács</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1226"/>
         <source>Show Grid</source>
-        <translation type="vanished">Rács megjelenítése</translation>
+        <translation>Rács megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1233"/>
         <source>Column width</source>
-        <translation type="vanished">Oszlopszélesség</translation>
+        <translation>Oszlopszélesség</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1247"/>
         <source>Row height</source>
-        <translation type="vanished">Sormagasság</translation>
+        <translation>Sormagasság</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1622"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1789"/>
         <source>Control</source>
-        <translation type="vanished">Vezérlés</translation>
+        <translation>Vezérlés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1823"/>
         <source>Follow grainline</source>
-        <translation type="vanished">Szálirány követése</translation>
+        <translation>Szálirány követése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1816"/>
         <source>Sticky edges</source>
-        <translation type="vanished">Tapadó élek</translation>
+        <translation>Tapadó élek</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1266"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2034"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2370"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2422"/>
         <source>Export</source>
-        <translation type="vanished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1272"/>
         <source>Export Sheet</source>
-        <translation type="vanished">Lap exportálása</translation>
+        <translation>Lap exportálása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1307"/>
         <source>Tiles properties</source>
-        <translation type="vanished">Csempék tulajdonságai</translation>
+        <translation>Csempék tulajdonságai</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1352"/>
         <source>Tiled Pdf Export</source>
-        <translation type="vanished">Csempézett PDF exportálás</translation>
+        <translation>Csempézett PDF exportálás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1628"/>
         <source>Show Tiles on sheet</source>
-        <translation type="vanished">Csempék megjelenítése a lapon</translation>
+        <translation>Csempék megjelenítése a lapon</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1697"/>
         <source>Layout properties</source>
-        <translation type="vanished">Elrendezés tulajdonságai</translation>
+        <translation>Elrendezés tulajdonságai</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1742"/>
         <source>Layout</source>
-        <translation type="vanished">Elrendezés</translation>
+        <translation>Elrendezés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1776"/>
         <source>Description</source>
-        <translation type="vanished">Leírás</translation>
+        <translation>Leírás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1795"/>
         <source>Warning superposition of pieces</source>
-        <translation type="vanished">Figyelmeztetés a darabok átfedéséről</translation>
+        <translation>Figyelmeztetés a darabok átfedéséről</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1802"/>
         <source>Warning pieces out of bound</source>
-        <translation type="vanished">Figyelmeztetés a határon kívüli darabokról</translation>
+        <translation>Figyelmeztetés a határon kívüli darabokról</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2060"/>
         <source>zoom</source>
-        <translation type="vanished">nagyítás</translation>
+        <translation>nagyítás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1861"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2079"/>
         <source>Scale</source>
-        <translation type="vanished">Méretarány</translation>
+        <translation>Méretarány</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2128"/>
         <source>&amp;Open</source>
-        <translation type="vanished">&amp;Megnyitás</translation>
+        <translation>&amp;Megnyitás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2145"/>
         <source>&amp;Save</source>
-        <translation type="vanished">&amp;Mentés</translation>
+        <translation>&amp;Mentés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2162"/>
         <source>Save &amp;As</source>
-        <translation type="vanished">Mentés má&amp;sként</translation>
+        <translation>Mentés má&amp;sként</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2176"/>
         <source>&amp;Import Raw Layout Data</source>
-        <translation type="vanished">Nyers elrendezési adatok &amp;importálása</translation>
+        <translation>Nyers elrendezési adatok &amp;importálása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2190"/>
         <source>E&amp;xit</source>
-        <translation type="vanished">&amp;Kilépés</translation>
+        <translation>&amp;Kilépés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2204"/>
         <source>&amp;New</source>
-        <translation type="vanished">&amp;Új</translation>
+        <translation>&amp;Új</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2215"/>
         <source>About &amp;Qt</source>
-        <translation type="vanished">A &amp;Qt névjegye</translation>
+        <translation>A &amp;Qt névjegye</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2226"/>
         <source>About &amp;Puzzle</source>
-        <translation type="vanished">&amp;Puzzle névjegy</translation>
+        <translation>&amp;Puzzle névjegy</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2257"/>
         <source>Zoom in</source>
-        <translation type="vanished">Nagyítás</translation>
+        <translation>Nagyítás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2271"/>
         <source>Zoom out</source>
-        <translation type="vanished">Kicsinyítés</translation>
+        <translation>Kicsinyítés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2285"/>
         <source>Zoom 1:1</source>
-        <translation type="vanished">Nagyítás 1:1</translation>
+        <translation>Nagyítás 1:1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2299"/>
         <source>Zoom fit best</source>
-        <translation type="vanished">Legjobb illesztés nagyítása</translation>
+        <translation>Legjobb illesztés nagyítása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2302"/>
         <source>Zoom sheet</source>
-        <translation type="vanished">Lap nagyítása</translation>
+        <translation>Lap nagyítása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2310"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="5132"/>
         <source>Preferences</source>
-        <translation type="vanished">Beállítások</translation>
+        <translation>Beállítások</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="488"/>
         <source>File &apos;%1&apos; doesn&apos;t exist!</source>
-        <translation type="vanished">A(z) &apos;%1&apos; fájl nem létezik!</translation>
+        <translation>A(z) &apos;%1&apos; fájl nem létezik!</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="532"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="542"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="552"/>
         <source>File error.</source>
-        <translation type="vanished">Fájlhiba.</translation>
+        <translation>Fájlhiba.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="638"/>
         <source>Fail to create layout.</source>
-        <translation type="vanished">Az elrendezés létrehozása sikertelen.</translation>
+        <translation>Az elrendezés létrehozása sikertelen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3452"/>
         <source>Could not extract data from file &apos;%1&apos;. %2</source>
-        <translation type="vanished">Nem nyerhetők ki adatok a(z) &apos;%1&apos; fájlból. %2</translation>
+        <translation>Nem nyerhetők ki adatok a(z) &apos;%1&apos; fájlból. %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="931"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1019"/>
         <source>Centimeters</source>
-        <translation type="vanished">Centiméter</translation>
+        <translation>Centiméter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="930"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1018"/>
         <source>Millimiters</source>
-        <translation type="vanished">Milliméter</translation>
+        <translation>Milliméter</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="932"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1020"/>
         <source>Inches</source>
-        <translation type="vanished">Hüvelyk</translation>
+        <translation>Hüvelyk</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1803"/>
         <source>Scale:</source>
-        <translation type="vanished">Méretarány:</translation>
+        <translation>Méretarány:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
         <source>untitled %1.vlt</source>
-        <translation type="vanished">névtelen %1.vlt</translation>
+        <translation>névtelen %1.vlt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
         <source>untitled.vlt</source>
-        <translation type="vanished">névtelen.vlt</translation>
+        <translation>névtelen.vlt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1840"/>
         <source>read only</source>
-        <translation type="vanished">csak olvasható</translation>
+        <translation>csak olvasható</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1906"/>
         <source>Cannot read settings from a malformed .INI file.</source>
-        <translation type="vanished">A beállítások nem olvashatók hibás .INI fájlból.</translation>
+        <translation>A beállítások nem olvashatók hibás .INI fájlból.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1923"/>
         <source>Cannot save settings. Access denied.</source>
-        <translation type="vanished">Beállítást nem sikerült elmenteni. Hozzáférés megtagadva.</translation>
+        <translation>Beállítást nem sikerült elmenteni. Hozzáférés megtagadva.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2831"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3185"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3362"/>
         <source>Failed to open file, is it writable?</source>
-        <translation type="vanished">A fájl megnyitása sikertelen, írható-e?</translation>
+        <translation>A fájl megnyitása sikertelen, írható-e?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1978"/>
         <source>&amp;New Window</source>
-        <translation type="vanished">&amp;Új ablak</translation>
+        <translation>&amp;Új ablak</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1935"/>
         <source>Layout has been modified. Do you want to save your changes?</source>
-        <translation type="vanished">Az elrendezés módosult. Szeretné menteni a módosításokat?</translation>
+        <translation>Az elrendezés módosult. Szeretné menteni a módosításokat?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3785"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3847"/>
         <source>Layout files</source>
-        <translation type="vanished">Elrendezésfájlok</translation>
+        <translation>Elrendezésfájlok</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3789"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3937"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4879"/>
         <source>Open file</source>
-        <translation type="vanished">Fájl megnyitása</translation>
+        <translation>Fájl megnyitása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3830"/>
         <source>Could not save the file</source>
-        <translation type="vanished">A fájl nem menthető</translation>
+        <translation>A fájl nem menthető</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3849"/>
         <source>layout</source>
-        <translation type="vanished">elrendezés</translation>
+        <translation>elrendezés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3861"/>
         <source>Save as</source>
-        <translation type="vanished">Mentés másként</translation>
+        <translation>Mentés másként</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3891"/>
         <source>Failed to lock. This file already opened in another window.</source>
-        <translation type="vanished">Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban.</translation>
+        <translation>Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3901"/>
         <source>Could not save file</source>
-        <translation type="vanished">A fájl nem menthető</translation>
+        <translation>A fájl nem menthető</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3922"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
-        <translation type="vanished">Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban. 2 programpéldány ütközést okozhat.</translation>
+        <translation>Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban. 2 programpéldány ütközést okozhat.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3932"/>
         <source>Raw Layout files</source>
-        <translation type="vanished">Nyers elrendezésfájlok</translation>
+        <translation>Nyers elrendezésfájlok</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3950"/>
         <source>About Qt</source>
-        <translation type="vanished">A Qt névjegye</translation>
+        <translation>A Qt névjegye</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="62"/>
         <source>&amp;Sheet</source>
-        <translation type="vanished">&amp;Lap</translation>
+        <translation>&amp;Lap</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="90"/>
         <source>&amp;Layout</source>
-        <translation type="vanished">&amp;Elrendezés</translation>
+        <translation>&amp;Elrendezés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="101"/>
         <source>Watermark</source>
-        <translation type="vanished">Vízjel</translation>
+        <translation>Vízjel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="371"/>
         <source>Gradation id:</source>
-        <translation type="vanished">Fokozatozási azonosító:</translation>
+        <translation>Fokozatozási azonosító:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="385"/>
         <source>Copy number:</source>
-        <translation type="vanished">Másolat száma:</translation>
+        <translation>Másolat száma:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="402"/>
         <source>Status</source>
-        <translation type="vanished">Állapot</translation>
+        <translation>Állapot</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="415"/>
         <source>Out of bound</source>
-        <translation type="vanished">Határon kívül</translation>
+        <translation>Határon kívül</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="429"/>
         <source>Superposition of pieces</source>
-        <translation type="vanished">Darabok átfedése</translation>
+        <translation>Darabok átfedése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="443"/>
         <source>Piece gape</source>
-        <translation type="vanished">Darab hézag</translation>
+        <translation>Darab hézag</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="459"/>
         <source>Transformation</source>
-        <translation type="vanished">Transzformáció</translation>
+        <translation>Transzformáció</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="469"/>
         <source>Translate</source>
         <comment>Translate piece</comment>
-        <translation type="vanished">Eltolás</translation>
+        <translation>Eltolás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="483"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1875"/>
         <source>Horizontal:</source>
-        <translation type="vanished">Vízszintes:</translation>
+        <translation>Vízszintes:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="506"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1888"/>
         <source>Vertical:</source>
-        <translation type="vanished">Függőleges:</translation>
+        <translation>Függőleges:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="528"/>
         <source>Relative translation</source>
-        <translation type="vanished">Relatív eltolás</translation>
+        <translation>Relatív eltolás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="542"/>
         <source>Rotate</source>
-        <translation type="vanished">Forgatás</translation>
+        <translation>Forgatás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="651"/>
         <source>Apply to each piece separately</source>
-        <translation type="vanished">Alkalmazás minden darabra külön-külön</translation>
+        <translation>Alkalmazás minden darabra külön-külön</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="677"/>
         <source>Show full piece</source>
-        <translation type="vanished">Teljes darab megjelenítése</translation>
+        <translation>Teljes darab megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="697"/>
         <source>Show mirror line</source>
-        <translation type="vanished">Tükörvonal megjelenítése</translation>
+        <translation>Tükörvonal megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="707"/>
         <source>Show grainline</source>
-        <translation type="vanished">Szálirány megjelenítése</translation>
+        <translation>Szálirány megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="717"/>
         <source>Vertically flipped</source>
-        <translation type="vanished">Függőlegesen tükrözve</translation>
+        <translation>Függőlegesen tükrözve</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="724"/>
         <source>Horizontally flipped</source>
-        <translation type="vanished">Vízszintesen tükrözve</translation>
+        <translation>Vízszintesen tükrözve</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="884"/>
         <source>Unit:</source>
-        <translation type="vanished">Egység:</translation>
+        <translation>Egység:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="900"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1391"/>
         <source>Templates:</source>
-        <translation type="vanished">Méret:</translation>
+        <translation>Méret:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="959"/>
         <source>Length:</source>
-        <translation type="vanished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1022"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1468"/>
         <source>Width:</source>
-        <translation type="vanished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1033"/>
         <source>Grainline orientation:</source>
-        <translation type="vanished">Szálirány tájolása:</translation>
+        <translation>Szálirány tájolása:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1045"/>
         <source>Force the grainline orientation to always be horizontal</source>
-        <translation type="vanished">A szálirány tájolásának kényszerítése, hogy mindig vízszintes legyen</translation>
+        <translation>A szálirány tájolásának kényszerítése, hogy mindig vízszintes legyen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1068"/>
         <source>Force the grainline orientation to always be vertical</source>
-        <translation type="vanished">A szálirány tájolásának kényszerítése, hogy mindig függőleges legyen</translation>
+        <translation>A szálirány tájolásának kényszerítése, hogy mindig függőleges legyen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1205"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1612"/>
         <source>Ignore margins</source>
-        <translation type="vanished">Margók elvetése</translation>
+        <translation>Margók elvetése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1481"/>
         <source>Height:</source>
-        <translation type="vanished">Magasság:</translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1635"/>
         <source>Show watermark preview</source>
-        <translation type="vanished">Vízjel előnézetének megjelenítése</translation>
+        <translation>Vízjel előnézetének megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1638"/>
         <source>Show watermark</source>
-        <translation type="vanished">Vízjel megjelenítése</translation>
+        <translation>Vízjel megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1648"/>
         <source>Print tiles scheme</source>
-        <translation type="vanished">Csempeséma nyomtatása</translation>
+        <translation>Csempeséma nyomtatása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1655"/>
         <source>Print text as paths</source>
-        <translation type="vanished">Szöveg nyomtatása útvonalként</translation>
+        <translation>Szöveg nyomtatása útvonalként</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1809"/>
         <source>Warning piece gape position</source>
-        <translation type="vanished">Figyelmeztetés a darabok hézagpozíciójáról</translation>
+        <translation>Figyelmeztetés a darabok hézagpozíciójáról</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1830"/>
         <source>Boundary together with notches</source>
-        <translation type="vanished">Határvonal a bevágásokkal együtt</translation>
+        <translation>Határvonal a bevágásokkal együtt</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1837"/>
         <source>Cut on fold</source>
-        <translation type="vanished">Szabás hajtásra</translation>
+        <translation>Szabás hajtásra</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1846"/>
         <source>Pieces gap:</source>
-        <translation type="vanished">Darabok közötti hézag:</translation>
+        <translation>Darabok közötti hézag:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2040"/>
         <source>Export Layout</source>
-        <translation type="vanished">Elrendezés exportálása</translation>
+        <translation>Elrendezés exportálása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2093"/>
         <source>Undo commands</source>
-        <translation type="vanished">Visszavonási parancsok</translation>
+        <translation>Visszavonási parancsok</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2318"/>
         <source>Add Sheet</source>
-        <translation type="vanished">Lap hozzáadása</translation>
+        <translation>Lap hozzáadása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2329"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2381"/>
         <source>Print</source>
-        <translation type="vanished">Nyomtatás</translation>
+        <translation>Nyomtatás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2340"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2392"/>
         <source>Print preview</source>
-        <translation type="vanished">Nyomtatási nézet</translation>
+        <translation>Nyomtatási nézet</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2351"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2403"/>
         <source>Print tiled</source>
-        <translation type="vanished">Csempézett nyomtatás</translation>
+        <translation>Csempézett nyomtatás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2362"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2414"/>
         <source>Print preview tiled</source>
-        <translation type="vanished">Csempézett nyomtatási előnézet</translation>
+        <translation>Csempézett nyomtatási előnézet</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2433"/>
         <source>Editor</source>
-        <translation type="vanished">Szerkesztő</translation>
+        <translation>Szerkesztő</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2436"/>
         <source>Create or edit a watermark</source>
-        <translation type="vanished">Vízjel létrehozása vagy szerkesztése</translation>
+        <translation>Vízjel létrehozása vagy szerkesztése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2447"/>
         <source>Edit current</source>
-        <translation type="vanished">Jelenlegi szerkesztése</translation>
+        <translation>Jelenlegi szerkesztése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2461"/>
         <source>Load</source>
-        <translation type="vanished">Betöltés</translation>
+        <translation>Betöltés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2475"/>
         <source>Remove</source>
-        <translation type="vanished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2527"/>
         <source>Settings Directory</source>
-        <translation type="vanished">Beállítások könyvtára</translation>
+        <translation>Beállítások könyvtára</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="533"/>
         <source>Unable to read a layout file. %1</source>
-        <translation type="vanished">Nem olvasható elrendezésfájl. %1</translation>
+        <translation>Nem olvasható elrendezésfájl. %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="543"/>
         <source>Failed to read %1</source>
-        <translation type="vanished">A(z) %1 olvasása sikertelen</translation>
+        <translation>A(z) %1 olvasása sikertelen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="743"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3753"/>
         <source>&amp;Undo</source>
-        <translation type="vanished">&amp;Visszavonás</translation>
+        <translation>&amp;Visszavonás</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="749"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3754"/>
         <source>&amp;Redo</source>
-        <translation type="vanished">Mé&amp;gis</translation>
+        <translation>Mé&amp;gis</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="933"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1021"/>
         <source>Pixels</source>
-        <translation type="vanished">Képpont</translation>
+        <translation>Képpont</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1934"/>
         <source>Unsaved changes</source>
-        <translation type="vanished">Módosítások nem lettek elmentve</translation>
+        <translation>Módosítások nem lettek elmentve</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
         <source>Save…</source>
-        <translation type="vanished">Mentés…</translation>
+        <translation>Mentés…</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
         <source>Save</source>
-        <translation type="vanished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1948"/>
         <source>Don&apos;t Save</source>
-        <translation type="vanished">Ne mentse</translation>
+        <translation>Ne mentse</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2423"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2488"/>
         <source>Can&apos;t create a path</source>
-        <translation type="vanished">Az útvonal nem hozható létre</translation>
+        <translation>Az útvonal nem hozható létre</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2710"/>
         <source>Can&apos;t open file &apos;%1&apos;</source>
-        <translation type="vanished">A(z) &apos;%1&apos; fájl nem nyitható meg</translation>
+        <translation>A(z) &apos;%1&apos; fájl nem nyitható meg</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2724"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3238"/>
         <source>Failed in flushing page to disk, disk full?</source>
-        <translation type="vanished">Az oldal lemezre írása sikertelen, megtelt a lemez?</translation>
+        <translation>Az oldal lemezre írása sikertelen, megtelt a lemez?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3073"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3100"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3129"/>
         <source>The layout is invalid.</source>
-        <translation type="vanished">Az elrendezés érvénytelen.</translation>
+        <translation>Az elrendezés érvénytelen.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3074"/>
         <source>The layout is invalid. Piece out of bound. Do you want to continue export?</source>
-        <translation type="vanished">Az elrendezés érvénytelen. Egy darab a határon kívül van. Szeretné folytatni az exportálást?</translation>
+        <translation>Az elrendezés érvénytelen. Egy darab a határon kívül van. Szeretné folytatni az exportálást?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3101"/>
         <source>The layout is invalid. Pieces superposition. Do you want to continue export?</source>
-        <translation type="vanished">Az elrendezés érvénytelen. Darabok átfedése. Szeretné folytatni az exportálást?</translation>
+        <translation>Az elrendezés érvénytelen. Darabok átfedése. Szeretné folytatni az exportálást?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3130"/>
         <source>The layout is invalid. One or several pieces are closer than minimally allowed. Do you want to continue export?</source>
-        <translation type="vanished">Az elrendezés érvénytelen. Egy vagy több darab közelebb van a megengedett minimumnál. Szeretné folytatni az exportálást?</translation>
+        <translation>Az elrendezés érvénytelen. Egy vagy több darab közelebb van a megengedett minimumnál. Szeretné folytatni az exportálást?</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4219"/>
         <source>Sheet %1</source>
-        <translation type="vanished">Lap %1</translation>
+        <translation>Lap %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3528"/>
         <source>translate pieces</source>
-        <translation type="vanished">darabok eltolása</translation>
+        <translation>darabok eltolása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3645"/>
         <source>rotate pieces</source>
-        <translation type="vanished">darabok forgatása</translation>
+        <translation>darabok forgatása</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
         <source>untitled %1</source>
-        <translation type="vanished">névtelen %1</translation>
+        <translation>névtelen %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
         <source>untitled</source>
-        <translation type="vanished">névtelen</translation>
+        <translation>névtelen</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4508"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4559"/>
         <source>For printing multipages document all sheet should have the same size.</source>
-        <translation type="vanished">Többoldalas dokumentum nyomtatásához minden lapnak azonos méretűnek kell lennie.</translation>
+        <translation>Többoldalas dokumentum nyomtatásához minden lapnak azonos méretűnek kell lennie.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4520"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4571"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4606"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4644"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4699"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4743"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4776"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4812"/>
         <source>Print error</source>
-        <translation type="vanished">Nyomtatási hiba</translation>
+        <translation>Nyomtatási hiba</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4521"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4572"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4607"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4645"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4700"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4744"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4777"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4813"/>
         <source>Cannot proceed because there are no available printers in your system.</source>
-        <translation type="vanished">Nem lehet folytatni, mert nincs elérhető nyomtató a rendszerben.</translation>
+        <translation>Nem lehet folytatni, mert nincs elérhető nyomtató a rendszerben.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4876"/>
         <source>Watermark files</source>
-        <translation type="vanished">Vízjelfájlok</translation>
+        <translation>Vízjelfájlok</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4532"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4583"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4618"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4656"/>
         <source>Unable to get sheet page settings</source>
-        <translation type="vanished">Nem szerezhetők meg a lap oldalbeállításai</translation>
+        <translation>Nem szerezhetők meg a lap oldalbeállításai</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1662"/>
         <source>Show tile number</source>
-        <translation type="vanished">Csempeszám megjelenítése</translation>
+        <translation>Csempeszám megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2107"/>
         <source>Z value</source>
-        <translation type="vanished">Z-érték</translation>
+        <translation>Z-érték</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2486"/>
         <source>Bottom</source>
-        <translation type="vanished">Alul</translation>
+        <translation>Alul</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2497"/>
         <source>Down</source>
-        <translation type="vanished">Le</translation>
+        <translation>Le</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2508"/>
         <source>Up</source>
-        <translation type="vanished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2519"/>
         <source>Top</source>
-        <translation type="vanished">Felül</translation>
+        <translation>Felül</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.ui" line="1645"/>
         <source>Has effect only when print in application. To export with tiles scheme use separate setting</source>
-        <translation type="vanished">Csak az alkalmazásban való nyomtatáskor van hatása. Csempesémával való exportáláshoz használjon külön beállítást</translation>
+        <translation>Csak az alkalmazásban való nyomtatáskor van hatása. Csempesémával való exportáláshoz használjon külön beállítást</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4473"/>
         <source>sheet</source>
-        <translation type="vanished">lap</translation>
+        <translation>lap</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3474"/>
         <source>Piece %1 invalid. %2</source>
-        <translation type="vanished">A(z) %1 darab érvénytelen. %2</translation>
+        <translation>A(z) %1 darab érvénytelen. %2</translation>
     </message>
 </context>
 <context>
     <name>VPPiece</name>
     <message>
+        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="486"/>
         <source>Seam line is empty</source>
-        <translation type="vanished">A varrásvonal üres</translation>
+        <translation>A varrásvonal üres</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="492"/>
         <source>Seam allowance line is empty</source>
-        <translation type="vanished">A varrásráhagyás-vonal üres</translation>
+        <translation>A varrásráhagyás-vonal üres</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/layout/vppiece.cpp" line="498"/>
         <source>Grainline is empty</source>
-        <translation type="vanished">A szálirány üres</translation>
+        <translation>A szálirány üres</translation>
     </message>
 </context>
 <context>
     <name>VPTileFactory</name>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="943"/>
         <source>Grid ( %1 , %2 )</source>
-        <translation type="vanished">Rács ( %1 , %2 )</translation>
+        <translation>Rács ( %1 , %2 )</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1080"/>
         <source>Page %1 of %2</source>
-        <translation type="vanished">%1. oldal a(z) %2 oldalból</translation>
+        <translation>%1. oldal a(z) %2 oldalból</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1451"/>
         <source>Warning: Multiple single stroke outline fonts detected (%1). The font &quot;%2&quot; was selected.</source>
-        <translation type="vanished">Figyelmeztetés: Több egyvonásos körvonalas betűtípus észlelve (%1). A(z) „%2” betűtípus lett kiválasztva.</translation>
+        <translation>Figyelmeztetés: Több egyvonásos körvonalas betűtípus észlelve (%1). A(z) „%2” betűtípus lett kiválasztva.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="1513"/>
         <source>Warning: Multiple single-line SVG fonts detected (%1). The font &quot;%2&quot; was selected.</source>
-        <translation type="vanished">Figyelmeztetés: Több egyvonalas SVG betűtípus észlelve (%1). A(z) „%2” betűtípus lett kiválasztva.</translation>
+        <translation>Figyelmeztetés: Több egyvonalas SVG betűtípus észlelve (%1). A(z) „%2” betűtípus lett kiválasztva.</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="480"/>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="590"/>
         <source>cm</source>
         <comment>unit</comment>
-        <translation type="vanished">cm</translation>
+        <translation>cm</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="480"/>
+        <location filename="../../src/app/puzzle/vptilefactory.cpp" line="590"/>
         <source>in</source>
         <comment>unit</comment>
-        <translation type="vanished">hüvelyk</translation>
+        <translation>hüvelyk</translation>
     </message>
 </context>
 <context>
     <name>VPUndoAddSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundoaddsheet.cpp" line="40"/>
         <source>add sheet</source>
-        <translation type="vanished">lap hozzáadása</translation>
+        <translation>lap hozzáadása</translation>
     </message>
 </context>
 <context>
     <name>VPUndoMovePieceOnSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundomovepieceonsheet.cpp" line="49"/>
         <source>move piece on sheet</source>
-        <translation type="vanished">darab mozgatása a lapon</translation>
+        <translation>darab mozgatása a lapon</translation>
     </message>
 </context>
 <context>
     <name>VPUndoOriginMove</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundooriginmove.cpp" line="44"/>
         <source>move transformation origin</source>
-        <translation type="vanished">transzformáció kiindulópontjának mozgatása</translation>
+        <translation>transzformáció kiindulópontjának mozgatása</translation>
     </message>
 </context>
 <context>
     <name>VPUndoPieceMove</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecemove.cpp" line="44"/>
         <source>move piece</source>
-        <translation type="vanished">darab mozgatása</translation>
+        <translation>darab mozgatása</translation>
     </message>
 </context>
 <context>
     <name>VPUndoPieceRotate</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundopiecerotate.cpp" line="59"/>
         <source>rotate piece</source>
-        <translation type="vanished">darab forgatása</translation>
+        <translation>darab forgatása</translation>
     </message>
 </context>
 <context>
     <name>VPUndoRemoveSheet</name>
     <message>
+        <location filename="../../src/app/puzzle/undocommands/vpundoremovesheet.cpp" line="48"/>
         <source>add sheet</source>
-        <translation type="vanished">lap hozzáadása</translation>
+        <translation>lap hozzáadása</translation>
     </message>
 </context>
 <context>
@@ -26179,8 +26681,8 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
 <context>
     <name>VToolAbstractBezier</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1076"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1136"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1186"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -26539,7 +27041,7 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
 <context>
     <name>VToolGraduatedCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.cpp" line="119"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.cpp" line="171"/>
         <source>Offset %1</source>
         <translation>Eltolás %1</translation>
     </message>
@@ -26740,9 +27242,9 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation>Görbe eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="871"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="924"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="977"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="874"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="927"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="980"/>
         <source>Color</source>
         <translation>Sziín</translation>
     </message>
@@ -26926,90 +27428,90 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation>Jobb szélső pont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="873"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="926"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="979"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="876"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="929"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="982"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="363"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="549"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="622"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="631"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="659"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="792"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="795"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="794"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="797"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Point</source>
         <translation type="unfinished">Pont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="874"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="927"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="980"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="877"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="930"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="983"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="363"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="549"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="622"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="631"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="659"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Point name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="875"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="928"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="981"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1471"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1474"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="878"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="931"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="984"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1498"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1501"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="363"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="549"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="622"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="631"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="659"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="806"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="808"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="810"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Show Point name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27018,62 +27520,62 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation type="obsolete">Pozíció:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="416"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="432"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="435"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="452"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="520"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="536"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="561"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="600"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="641"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="671"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="918"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="923"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="946"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="434"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="437"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="454"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="522"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="538"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="563"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="602"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="643"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="673"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="920"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="925"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
         <source>Line:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="502"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="800"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="411"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="505"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="803"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="842"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="846"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="895"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="899"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="948"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="952"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1308"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1311"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1433"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1436"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="806"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="845"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="849"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="898"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="902"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="951"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="955"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1335"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1338"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1463"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="524"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="532"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="536"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="673"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="438"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="454"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="563"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="643"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="440"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="456"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="565"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="645"/>
         <source>Length:</source>
         <translation type="unfinished">Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="415"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="509"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1450"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1453"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="512"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1477"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1480"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="495"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="499"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="645"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="649"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="419"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="673"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="421"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="675"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
         <source>Angle:</source>
         <translation type="unfinished">Szög:</translation>
     </message>
@@ -27081,150 +27583,150 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="186"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="328"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="421"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="439"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="455"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="522"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="538"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="587"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="644"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="674"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="949"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="422"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="441"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="457"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="524"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="540"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="589"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="646"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="676"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="951"/>
         <source>Line type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="374"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="377"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="376"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="379"/>
         <source>Pattern piece:</source>
         <translation type="unfinished">Szabásminta rész:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="191"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="421"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="440"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="456"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="523"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="539"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="588"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="645"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="675"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="715"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="929"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="525"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="541"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="590"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="763"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="931"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
         <source>Line color:</source>
         <translation type="unfinished">Vonal színe:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="424"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="426"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
         <source>Base point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="443"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="459"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="591"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="648"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="662"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="461"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="593"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="650"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="664"/>
         <source>First point:</source>
         <translation type="unfinished">Első pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="446"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="462"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="594"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="651"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
         <source>Second point:</source>
         <translation type="unfinished">Második pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="461"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="650"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="463"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="652"/>
         <source>Third point:</source>
         <translation type="unfinished">Harmadik pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="469"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="472"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="471"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="474"/>
         <source>Point 1 label:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="488"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="491"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="490"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="493"/>
         <source>Point 2 label:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="507"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="509"/>
         <source>First base point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="508"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="510"/>
         <source>Second base point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="509"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
         <source>First dart point:</source>
         <translation type="unfinished">Első szűkítőpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="510"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
         <source>Second dart point:</source>
         <translation type="unfinished">Második szűkítőpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="513"/>
         <source>Third dart point:</source>
         <translation type="unfinished">Harmadik szűkítőpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="697"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="700"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="699"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="702"/>
         <source>Draw the cap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="714"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="928"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="762"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="930"/>
         <source>Type of line:</source>
         <translation type="unfinished">Vonaltípus:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="721"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="725"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="744"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="748"/>
         <source>Reverse the sense</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="742"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="745"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="719"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="722"/>
         <source>Notch</source>
         <translation type="unfinished">Bevágás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="798"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="800"/>
         <source>Point B:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="800"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="802"/>
         <source>Point C:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="802"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
         <source>Point D:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="895"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="898"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="897"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="900"/>
         <source>Height:</source>
         <translation type="unfinished">Magasság:</translation>
     </message>
@@ -27300,16 +27802,16 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="755"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="759"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="529"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="681"/>
         <source>First line point:</source>
         <translation type="unfinished">Első vonalpont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="771"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="775"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="530"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="682"/>
         <source>Second line point:</source>
         <translation type="unfinished">Második vonalpont:</translation>
     </message>
@@ -27335,88 +27837,88 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="550"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="552"/>
         <source>First line (first point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
         <source>First line (second point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="552"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="554"/>
         <source>Second line (first point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
         <source>Second line (second point):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="565"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="568"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="567"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="570"/>
         <source>Additional angle degrees:</source>
         <translation type="unfinished">További szög fokban:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="669"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="672"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="766"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="675"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="769"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1416"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1419"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="603"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="606"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="772"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1443"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1446"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="605"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="608"/>
         <source>Radius:</source>
         <translation type="unfinished">Sugár:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="632"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="634"/>
         <source>X: vertical point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="635"/>
         <source>Y: horizontal point:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="660"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="662"/>
         <source>First point of axis:</source>
         <translation type="unfinished">A tengely első pontja:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="661"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
         <source>Second point of axis:</source>
         <translation type="unfinished">A tengely második pontja:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="678"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <source>Axis point:</source>
         <translation type="unfinished">Tengelypont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="885"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="890"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="938"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="943"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="990"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1008"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1020"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1032"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1079"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1353"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1415"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1496"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1498"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="888"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="893"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="941"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="946"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1012"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1024"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1059"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1106"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1380"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1442"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1523"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1525"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="351"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="353"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="355"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="357"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="942"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="944"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="946"/>
         <source>Curve:</source>
         <translation type="unfinished">Görbe:</translation>
     </message>
@@ -27476,179 +27978,186 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="118"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="121"/>
         <source>(Unnamed)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="635"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="638"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="732"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="641"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="735"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1092"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1095"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1223"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1226"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1354"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1357"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1499"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1502"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="738"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1119"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1122"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1250"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1253"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1381"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1384"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1529"/>
         <source>Create start point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="652"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="655"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="749"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="658"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="752"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1109"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1112"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1240"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1243"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1371"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1374"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1516"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1519"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="755"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1136"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1139"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1267"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1270"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1398"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1401"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1543"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1546"/>
         <source>Create end point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="686"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="689"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="783"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="692"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="786"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1160"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1163"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1291"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1294"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="789"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1187"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1190"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1318"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1321"/>
         <source>First angle:</source>
         <translation type="unfinished">Első szög:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="703"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="706"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1177"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1180"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="709"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1204"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1207"/>
         <source>Second angle:</source>
         <translation type="unfinished">Második szög:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="720"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="817"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="997"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1009"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1021"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1067"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1080"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1211"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1342"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1533"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="723"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="820"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1001"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1013"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1025"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1094"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1238"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1369"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1560"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="329"/>
         <source>Pen style:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="721"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="818"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="998"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1010"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1022"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1068"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1081"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1212"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1343"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1405"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1467"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1534"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="724"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="821"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1014"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1026"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1095"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1108"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1239"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1370"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1432"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1494"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1561"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="334"/>
         <source>Color:</source>
         <translation type="unfinished">Szín:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="869"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="922"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="975"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="872"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="925"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="978"/>
         <source>Show the two segments instead of the curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="870"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="923"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="976"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="873"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="926"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="979"/>
         <source>Type of line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="991"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="995"/>
         <source>First handle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="998"/>
         <source>Second handle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1041"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1038"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1054"/>
+        <source>Edit curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1068"/>
         <source>Start point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1062"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1089"/>
         <source>End point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1091"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1222"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1118"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1249"/>
         <source>ElArc:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1126"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1129"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1257"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1260"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1153"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1156"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1284"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1287"/>
         <source>Radius 1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1143"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1146"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1274"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1277"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1170"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1173"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1301"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1304"/>
         <source>Radius 2:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1388"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1391"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="876"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="879"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1415"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="878"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="881"/>
         <source>Width:</source>
         <translation type="unfinished">Szélesség:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1495"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1522"/>
         <source>Full name:</source>
         <translation>Teljes név:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="722"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="819"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="872"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="925"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="978"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="999"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1011"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1023"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1069"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1082"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1213"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1344"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1406"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1468"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1535"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="725"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="822"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="875"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="928"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="981"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1003"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1015"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1027"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1096"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1109"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1240"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1371"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1433"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1495"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1562"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="292"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="340"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="359"/>
@@ -27656,25 +28165,25 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="77"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="81"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="353"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="362"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="407"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="422"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="441"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="457"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="524"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="540"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="548"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="589"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="621"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="630"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="646"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="658"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="676"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="763"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="930"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="951"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="355"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="364"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="409"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="424"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="443"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="459"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="514"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="542"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="550"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="591"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="623"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="632"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="648"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="660"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="678"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="765"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="932"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="953"/>
         <source>Notes:</source>
         <translation>Megjegyzések:</translation>
     </message>
@@ -27685,7 +28194,7 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation>Háttérkép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1049"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1076"/>
         <source>Point %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27698,11 +28207,11 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation type="unfinished">Vétel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="634"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="731"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="828"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="832"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="837"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="734"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="831"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="835"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="840"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="284"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="286"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="288"/>
@@ -27739,17 +28248,15 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="633"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="730"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="989"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1007"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1019"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1031"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1078"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1090"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1221"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1352"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1414"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="636"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="733"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1011"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1023"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1105"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1117"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1248"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1379"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1441"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="407"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="469"/>
         <source>Name:</source>
@@ -27786,10 +28293,10 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
         <translation type="unfinished">Kiindulópont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1194"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1197"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1325"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1328"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1224"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1352"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1355"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="701"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="705"/>
         <source>Rotation angle:</source>
@@ -29493,7 +30000,7 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
 <context>
     <name>VisToolGraduatedCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolgraduatedcurve.cpp" line="100"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolgraduatedcurve.cpp" line="126"/>
         <source>&lt;b&gt;Graduated curve&lt;/b&gt;: offsets = %1; &lt;b&gt;Mouse click&lt;/b&gt; - selecting next width, &lt;b&gt;%2&lt;/b&gt; - negative width, &lt;b&gt;%3&lt;/b&gt; - finish</source>
         <translation>&lt;b&gt;Fokozatos görbe&lt;/b&gt;: eltolások = %1; &lt;b&gt;Egérkattintás&lt;/b&gt; – következő szélesség kijelölése, &lt;b&gt;%2&lt;/b&gt; – negatív szélesség, &lt;b&gt;%3&lt;/b&gt; – befejezés</translation>
     </message>
@@ -29600,22 +30107,22 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
 <context>
     <name>VisToolSplinePath</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="127"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="128"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select three or more points</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon három vagy több pontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="131"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="132"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select three or more points, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon három vagy több pontot, &lt;b&gt;%1&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="137"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="138"/>
         <source>Use &lt;b&gt;%1&lt;/b&gt; for sticking angle!</source>
         <translation>Használja a(z) &lt;b&gt;%1&lt;/b&gt; gombot a szög rögzítéséhez!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="174"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="177"/>
         <source>Point %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30033,40 +30540,49 @@ Nyers elrendezésformátum kompatibilitási hiba: actualFileVersion = %1 és fil
 <context>
     <name>mNoisyHandler</name>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="88"/>
         <source>DEBUG:</source>
-        <translation type="vanished">DEBUG:</translation>
+        <translation>DEBUG:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="95"/>
         <source>WARNING:</source>
-        <translation type="vanished">FIGYELMEZTETÉS:</translation>
+        <translation>FIGYELMEZTETÉS:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="102"/>
         <source>CRITICAL:</source>
-        <translation type="vanished">KRITIKUS:</translation>
+        <translation>KRITIKUS:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="109"/>
         <source>FATAL:</source>
-        <translation type="vanished">VÉGZETES:</translation>
+        <translation>VÉGZETES:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="116"/>
         <source>INFO:</source>
-        <translation type="vanished">INFÓ:</translation>
+        <translation>INFÓ:</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="142"/>
         <source>Warning</source>
-        <translation type="vanished">Figyelmeztetés</translation>
+        <translation>Figyelmeztetés</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="146"/>
         <source>Critical error</source>
-        <translation type="vanished">Kritikus hiba</translation>
+        <translation>Kritikus hiba</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="150"/>
         <source>Fatal error</source>
-        <translation type="vanished">Végzetes hiba</translation>
+        <translation>Végzetes hiba</translation>
     </message>
     <message>
+        <location filename="../../src/app/puzzle/vpapplication.cpp" line="154"/>
         <source>Information</source>
-        <translation type="vanished">Információ</translation>
+        <translation>Információ</translation>
     </message>
 </context>
 <context>

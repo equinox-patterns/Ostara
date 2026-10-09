@@ -48,6 +48,7 @@
 #include "../vwidgets/vmaingraphicsview.h"
 
 class VControlPointSpline;
+class OToolCurvePoint;
 template <class T> class QSharedPointer;
 class VAbstractCubicBezier;
 
@@ -422,8 +423,29 @@ public:
 
     auto HasStartPoint() const -> bool;
     auto HasEndPoint() const -> bool;
-    void SetCreateStartPoint(bool create);
-    void SetCreateEndPoint(bool create);
+
+    /// Name of the point materializing one end of this curve, in the words of the pattern; empty when it has none.
+    auto StartPointName() const -> QString;
+    auto EndPointName() const -> QString;
+
+    /// Whether the label of that point is drawn. False when the curve has no such point.
+    auto StartPointShowLabel() const -> bool;
+    auto EndPointShowLabel() const -> bool;
+
+    /// Shows or hides the label of the point. Nothing happens when the curve has no such point.
+    void SetStartPointShowLabel(bool show);
+    void SetEndPointShowLabel(bool show);
+
+    /**
+     * @brief Creates or deletes the point of an end.
+     *
+     * @p name and @p showLabel describe the point to create — a caller that has a name for it gets it, and an empty
+     * name lets the pattern make one up. Both are what the dialog knows and the property browser does not. Creating
+     * only looks for a point that is not there yet and deleting only for one that is, so the two calls are
+     * idempotent and may be repeated freely.
+     */
+    void SetCreateStartPoint(bool create, const QString &name = QString(), bool showLabel = false);
+    void SetCreateEndPoint(bool create, const QString &name = QString(), bool showLabel = false);
 
 protected:
     struct ToolChanges
@@ -456,6 +478,9 @@ private:
 
     void UpdateNameField(VToolAbstractOffsetCurveField field, const QString &value);
     auto HasConflict(const QString &value, VToolAbstractOffsetCurveField currentField) const -> bool;
+
+    /// The point materializing one end of this curve, or nullptr when the curve has none.
+    auto CurveEndPoint(bool isStart) const -> OToolCurvePoint *;
 };
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -31,6 +31,10 @@
 #include "vispath.h"
 
 struct VRawGraduatedCurveOffset;
+class VAbstractCurve;
+class VGraphicsSimpleTextItem;
+class VScaledEllipse;
+class VScaledLine;
 
 class VisToolGraduatedCurve final : public VisPath
 {
@@ -46,6 +50,12 @@ public:
     void SetCurveId(quint32 newCurveId);
     void SetOffsets(const QVector<VRawGraduatedCurveOffset> &offsets);
 
+    /**
+     * @brief SetActiveOffset remembers which width is being edited — the rank of the row in the dialog's table — and
+     * marks where that one width acts. Every other width keeps the colour of a mark of the preview.
+     */
+    void SetActiveOffset(int index);
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -55,10 +65,31 @@ public:
 private:
     Q_DISABLE_COPY_MOVE(VisToolGraduatedCurve) // NOLINT
 
+    /**
+     * @brief What shows where one width acts: the point of the base curve it is measured from, the point it lands on,
+     * the normal between the two, the rank of the width and its value.
+     */
+    struct StationItems
+    {
+        int index{-1}; ///< rank of the width in the list of offsets, not the rank of this mark along the curve
+        VScaledEllipse *anchor{nullptr};
+        VScaledEllipse *target{nullptr};
+        VScaledLine *normal{nullptr};
+        VGraphicsSimpleTextItem *rank{nullptr};
+        VGraphicsSimpleTextItem *value{nullptr};
+    };
+
     VCurvePathItem *m_originalCurve{nullptr};
 
     QVector<qreal> m_offsets{};
+    QVector<StationItems> m_stations{};
     quint32 m_curveId{NULL_ID};
+    int m_activeOffset{-1};
+
+    void RefreshStations(const VAbstractCurve &curve, const QVector<qreal> &widths, int activeOffset);
+    void ApplyStationColors();
+    auto MakeStationLabel() -> VGraphicsSimpleTextItem *;
+    void PlaceStationLabel(VGraphicsSimpleTextItem *label, const QPointF &from, const QPointF &away);
 };
 
 //---------------------------------------------------------------------------------------------------------------------
