@@ -381,6 +381,44 @@ auto VAbstractOperation::SourceItems() const -> QVector<SourceItem>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::SourceOfImage(quint32 imageId) const -> quint32
+{
+    if (imageId == NULL_ID)
+    {
+        return NULL_ID;
+    }
+
+    for (int i = 0; i < m_destination.size() && i < m_source.size(); ++i)
+    {
+        if (m_destination.at(i).id == imageId)
+        {
+            return m_source.at(i).id;
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::ImageOfSource(quint32 sourceId) const -> quint32
+{
+    if (sourceId == NULL_ID)
+    {
+        return NULL_ID;
+    }
+
+    for (int i = 0; i < m_destination.size() && i < m_source.size(); ++i)
+    {
+        if (m_source.at(i).id == sourceId)
+        {
+            return m_destination.at(i).id;
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractOperation::CopyStyleOf(quint32 objectId) const -> CopyStyle
 {
     if (objectId == NULL_ID)
@@ -1311,7 +1349,14 @@ void VAbstractOperation::SaveSourceDestination(QDomElement &tag,
     {
         QDomElement item = doc->createElement(TagItem);
         doc->SetAttribute(item, AttrIdObject, sItem.id);
-        doc->SetAttribute(item, AttrName, sItem.name);
+        // A name is written only when there is one: the schema declares it optional but NON-EMPTY, so an item that
+        // arrived without a name — a file that says `name=""`, a hand-written one, an operation whose sources were
+        // never named — made the whole pattern impossible to save, with a facet error pointing at a line the user
+        // cannot even see. Written by hand it is the same thing: nothing is what an empty name means.
+        doc->SetAttributeOrRemoveIf<QString>(item,
+                                             AttrName,
+                                             sItem.name,
+                                             [](const QString &name) noexcept -> bool { return name.isEmpty(); });
         doc->SetAttributeOrRemoveIf<QString>(item,
                                              AttrPenStyle,
                                              sItem.penStyle,

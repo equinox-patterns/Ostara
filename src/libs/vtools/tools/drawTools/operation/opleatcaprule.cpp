@@ -351,3 +351,145 @@ auto OPleatCapRule::Sides(const OPleatMark &mark, const OPleatEnd &prise, const 
 
     return sides;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatCapRule::Moved(const QSharedPointer<VAbstractCurve> &curve, const QPointF &offset)
+    -> QSharedPointer<VAbstractCurve>
+{
+    if (curve.isNull())
+    {
+        return {};
+    }
+
+    return offset.isNull() ? curve : MovedCurve(curve, offset);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPleatCapRule::Dart(const QSharedPointer<VAbstractCurve> &edge, const QPointF &point, const QLineF &arm,
+                         const QLineF &axis, const QString &apexName, const QPointF &offset, QPointF *apex,
+                         qreal *length) -> OPleatCapSides
+{
+    OPleatCapSides sides;
+
+    if (apex != nullptr)
+    {
+        *apex = QPointF();
+    }
+    if (length != nullptr)
+    {
+        *length = -1.;
+    }
+
+    if (edge.isNull() || apexName.isEmpty())
+    {
+        return sides;
+    }
+
+    try
+    {
+        // The edge has to end at the point of the opening: a curve the point merely passes through is the object the
+        // outline was drawn from, never the edge of that end — the same question Curved asks of a pleat's cap.
+        qreal from = -1.;
+        qreal fullLength = 0.;
+        if (not StandsOn(edge, point, &from, &fullLength) || not AtAnEnd(from, fullLength))
+        {
+            return sides;
+        }
+
+        // The arm and the fold line **as the pattern draws the edge**: the two are given at the place the cap belongs,
+        // and the edge may be drawn elsewhere — a copy whose operation copied the point and not the curve. Reflecting
+        // about the arm moved back is reflecting the curve drawn where it is, and the figure is carried forward at the
+        // end (see the header).
+        const QLineF armAtEdge(arm.p1() - offset, arm.p2() - offset);
+        const QLineF axisAtEdge(axis.p1() - offset, axis.p2() - offset);
+
+        // THE FIRST FOLD: the piece of the edge is brought onto the fold by the reflection about the arm. The point
+        // of the opening lies on that arm, so it stays where it is, and the curve that comes out of it runs from
+        // there to the fold line — which is what makes the cap of a dart, and what a pleat has no need of: there the
+        // two axes are parallel and the edge already ends on the fold.
+        const QSharedPointer<VAbstractCurve> carried = FlippedCurve(edge, armAtEdge);
+        if (carried.isNull())
+        {
+            return sides;
+        }
+
+        qreal carriedFrom = -1.;
+        qreal carriedFull = 0.;
+        if (not StandsOn(carried, point, &carriedFrom, &carriedFull))
+        {
+            return sides;
+        }
+
+        const bool fromStart = carriedFrom <= carriedFull / 2.;
+
+        // THE SECOND FOLD meets it at the point C: the first crossing walking away from the point of the opening,
+        // read exactly as Curved reads the apex of a pleat's cap. The curve STOPS there — what runs on past the fold
+        // is the rest of the edge of the piece, and no cap follows it.
+        qreal cut = -1.;
+        QPointF crossing;
+        for (const QPointF &candidate : CrossingsOf(carried->GetPoints(), axisAtEdge))
+        {
+            const qreal where = carried->GetLengthByPoint(candidate);
+            if (where < 0.)
+            {
+                continue;
+            }
+
+            if (cut < 0. || (fromStart ? where < cut : where > cut))
+            {
+                cut = where;
+                crossing = candidate;
+            }
+        }
+
+        if (cut < 0.)
+        {
+            // The carried curve never meets the fold line: no cap is built on it, and the straight tracings stand.
+            return sides;
+        }
+
+        const OPleatNotchHalves halves = OPleatNotchRule::Cut(carried, cut, apexName, {}, {});
+        const QSharedPointer<VAbstractCurve> piece = fromStart ? halves.first : halves.second;
+        if (piece.isNull())
+        {
+            return OPleatCapSides{};
+        }
+
+        // The side is carried to the place the cap belongs; a null offset leaves it exactly as the pattern drew it.
+        sides.edge = offset.isNull() ? piece : MovedCurve(piece, offset);
+        if (sides.edge.isNull())
+        {
+            return OPleatCapSides{};
+        }
+
+        // THE FOLD itself: the first side comes back on the copy by the reflection about the fold line, which is the
+        // perpendicular bisector of the two points of the opening — so it starts where the copy stands.
+        sides.image = FlippedCurve(sides.edge, axis);
+        if (sides.image.isNull())
+        {
+            return OPleatCapSides{};
+        }
+
+        // See Sides: the two sides are objects of the operation, and neither is a curve to be cut in turn.
+        for (const QSharedPointer<VAbstractCurve> &side : {sides.edge, sides.image})
+        {
+            side->SetDerivative(true);
+        }
+
+        if (apex != nullptr)
+        {
+            *apex = crossing + offset; // the apex, carried to the place the cap belongs
+        }
+        if (length != nullptr)
+        {
+            *length = cut;
+        }
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        // A curve the geometry refuses to read carries no cap of its own: fail closed, and the tracings stay.
+        return OPleatCapSides{};
+    }
+
+    return sides;
+}

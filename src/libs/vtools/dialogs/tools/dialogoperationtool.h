@@ -177,21 +177,36 @@ private:
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief The widgets every operation dialog offers, read from its generated .ui.
  *
- * The six operations name these widgets the same way in their .ui, so the list is written once here rather than
- * six times. A dialog that renames one of them gets a compile error, which is the point: the widget set is a
- * contract between the base class and every operation dialog.
+ * The operations name these widgets the same way in their .ui, so the list is written once here rather than six
+ * times. The status line and the notes are what every operation dialog has; the layer group — its name, its tags and
+ * its box — is the part a dialog may leave out when the operation has no layer of its own, and the entries are then
+ * simply left null (the base class answers an empty value for them, and never touches a widget that is not there).
  *
  * The source-object list and its combos are NOT here: what an operation operates is chosen on the canvas, one
  * click per object, and a dialog no longer edits that set.
  */
 template <class Ui> auto OperationWidgetsFrom(const Ui *ui) -> OperationWidgets
 {
-    return {.labelStatus = ui->labelStatus,
-            .labelGroupName = ui->labelGroupName,
-            .notes = ui->plainTextEditToolNotes,
-            .groupTags = ui->lineEditGroupTags,
-            .visibilityGroupLine = ui->lineEditVisibilityGroup,
-            .visibilityGroup = ui->groupBoxVisibilityGroup};
+    OperationWidgets widgets{.labelStatus = ui->labelStatus, .notes = ui->plainTextEditToolNotes};
+
+    if constexpr (requires { ui->labelGroupName; })
+    {
+        widgets.labelGroupName = ui->labelGroupName;
+    }
+    if constexpr (requires { ui->lineEditGroupTags; })
+    {
+        widgets.groupTags = ui->lineEditGroupTags;
+    }
+    if constexpr (requires { ui->lineEditVisibilityGroup; })
+    {
+        widgets.visibilityGroupLine = ui->lineEditVisibilityGroup;
+    }
+    if constexpr (requires { ui->groupBoxVisibilityGroup; })
+    {
+        widgets.visibilityGroup = ui->groupBoxVisibilityGroup;
+    }
+
+    return widgets;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

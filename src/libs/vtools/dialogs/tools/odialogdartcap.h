@@ -32,6 +32,9 @@
 #include <QString>
 #include <QtGlobal>
 
+#include "../../tools/drawTools/operation/opleatdisplay.h"
+#include "dialogoperationtool.h"
+
 #include "dialogtool.h"
 
 class QCheckBox;
@@ -52,7 +55,7 @@ class ODialogDartCap;
  * The four points are shown nowhere: they are the ones clicked in the pattern, and the window only asks what
  * is left to decide — whether the cap is drawn, the names of its two tracés, and the pen they share.
  */
-class ODialogDartCap final : public DialogTool
+class ODialogDartCap final : public DialogOperationTool
 {
     Q_OBJECT // NOLINT
 
@@ -74,13 +77,35 @@ public:
     void SetExtendPointId(quint32 value);
 
     auto GetDrawCap() const -> bool;
+
+    /** @brief The figure this dialog asks for, as the operation writes and draws it.
+     *
+     *  The two sides and the crank are the tool's to build — the ids are allocated where the objects are made — so
+     *  what the dialog settles here is the look of the figure and whether it is drawn at all: the pen and the colour
+     *  of the sides, and the flag. It is the same OPleatDisplay the pleat's dialog hands over, so the two
+     *  operations are written and read the same way. */
+    auto GetDisplay() const -> OPleatDisplay;
+
+    /** @brief Load a figure into the dialog, so that an EDIT starts from what the tool holds.
+     *
+     *  The counterpart of GetDisplay: without it the dialog could only ever give a figure, never receive one, and
+     *  editing a cap would reset its pen and its colour. The pleat's dialog has the same pair. */
+    void SetDisplay(const OPleatDisplay &display);
+
+    /** @brief The widgets an operation dialog shares with the tool it writes: the status line, the notes, and the
+     *  layer group. DialogOperationTool reads them from here — and only from here. */
+    auto Widgets() const -> OperationWidgets override;
     void SetDrawCap(bool value);
 
-    auto GetLine1RoleName() const -> QString;
-    void SetLine1RoleName(const QString &suffix);
+    //! Whether the cap follows the edge read at the second point of the opening: the sense of the cap. The two
+    //! senses give two different caps on the same three points, so it travels in the file, like the pleat's.
+    auto GetSecondSense() const -> bool;
+    void SetSecondSense(bool value);
 
-    auto GetLine2RoleName() const -> QString;
-    void SetLine2RoleName(const QString &suffix);
+    //! Whether the crank is asked for: the cap point is where the fold line touches the edge, and the crank is
+    //! what cuts the edge there, in two halves a piece can be built through.
+    auto GetNotchDrawn() const -> bool;
+    void SetNotchDrawn(bool value);
 
     auto GetTypeLine() const -> QString;
     void SetTypeLine(const QString &value);
@@ -114,10 +139,8 @@ protected:
     auto IsValid() const -> bool override;
 
 private slots:
-    //! Grey the two names of the tracés when the cap is not drawn, and honour an incomplete pattern graph.
+    //! Honour an incomplete pattern graph: nothing is edited while the fields have no points to work with.
     void UpdateCapControls();
-    void ValidateLine1RoleName();
-    void ValidateLine2RoleName();
 
 private:
     Q_DISABLE_COPY_MOVE(ODialogDartCap) // NOLINT
@@ -144,13 +167,6 @@ private:
 
     QCheckBox *m_showLabelCheckbox{nullptr};
 
-    QWidget *m_line1Row{nullptr};
-    QWidget *m_line2Row{nullptr};
-    QLabel *m_labelLine1{nullptr};
-    QLabel *m_labelLine2{nullptr};
-    QLineEdit *m_lineEditLine1{nullptr};
-    QLineEdit *m_lineEditLine2{nullptr};
-
     Step m_step{Step::Apex};
 
     /** @brief True while the release that has just picked a point still has to be swallowed: the same release
@@ -161,32 +177,32 @@ private:
     quint32 m_firstPointId{NULL_ID};
     quint32 m_secondPointId{NULL_ID};
     quint32 m_extendPointId{NULL_ID};
+    bool m_secondSense{false};
+    bool m_notchDrawn{false};
 
     QString pointName;
 
     bool flagName{true};
     bool flagPoint{true};
-    bool flagLine1{true};
-    bool flagLine2{true};
 
     /** @brief The four points are known and tell each other apart — what a dart cap is built on. */
     auto PointsAreDistinct() const -> bool;
 
-    /** @brief Whether a name typed for a tracé can name a pair of points: shape and uniqueness, and the
-     *  pastille of the row turned green or red with it. */
-    auto ValidateLineRoleName(QLineEdit *edit, QLabel *label) -> bool;
-
-    /** @brief Whether the construction of the cap exists with these four points: the rule, asked before the
-     *  window opens, so that no cap is ever created from a construction that does not exist. */
+    /** @brief Whether the construction of the cap exists with these points: the rule, asked before the window
+     *  opens, so that no cap is ever created from a construction that does not exist. The line is the edge of
+     *  the piece, read at the end the sense designates, and the point the user may designate is the way out. */
     auto ConstructionExists() const -> bool;
+
+    //! The direction of the edge of the piece at the end of the opening the sense designates, or nothing.
+    auto EdgeDirection() const -> QPointF;
+
+    //! Whether that edge is enough to build the cap: the rule's answer, asked on the read side alone.
+    auto EdgeFound() const -> bool;
 
     void TakeApex(quint32 id);
     void TakeFirstPoint(quint32 id);
     void TakeSecondPoint(quint32 id);
     void TakeExtendPoint(quint32 id);
-
-    /** @brief Paint the two pastilles of the tracés, in the colours the canvas uses for them. */
-    void InitIcons();
 
     /** @brief Say why a click cannot answer the step, and leave the user on that same step.
      *

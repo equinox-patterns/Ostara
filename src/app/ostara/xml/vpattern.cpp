@@ -1350,7 +1350,6 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
             case Tool::Height:
             case Tool::LineIntersectAxis:
             case Tool::CurveIntersectAxis:
-            case Tool::DartCap:
                 rec = ToolBoundingRect<VToolLinePoint>(rec, tool.GetId());
                 break;
             case Tool::Line:
@@ -1383,6 +1382,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
             case Tool::Spread:
             case Tool::MoveBatch:
             case Tool::Pleat:
+            case Tool::DartCap: // a dart cap is an operation now: its figure, and not a point's line
                 rec = ToolBoundingRect<VAbstractOperation>(rec, tool.GetId());
                 break;
             // These tools are not accesseble in Draw mode, but still 'history' contains them.

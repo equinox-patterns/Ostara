@@ -994,8 +994,8 @@ auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &de
             return tr("Rotation", "operation");
         case Tool::CloseDart:
             return tr("Close dart", "operation");
-        case Tool::DartCap:
-            return tr("Dart cap", "tool");
+        case Tool::DartCap: // an operation, like the pleat: the context says which translation is looked up
+            return tr("Dart cap", "operation");
         case Tool::Rectangle:
             return tr("Rectangle", "tool");
         case Tool::FlippingByLine:
@@ -1050,6 +1050,10 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
             return tr("Move by batch");
         case Tool::Pleat:
             return tr("Pleat");
+        case Tool::DartCap:
+            // The same form as the name above it, so the French the tree already carries is used — a bare
+            // `tr("Dart cap")` would be a different message and would show in English until someone translated it.
+            return tr("Dart cap", "operation");
         case Tool::LineIntersect:
             return tr("Point at line intersection");
         case Tool::Spline:

@@ -67,6 +67,12 @@ struct OPleatMarkDisplay
     quint32 curve1{NULL_ID};
     quint32 curve2{NULL_ID};
     QString name{};
+
+    /** @brief Where the label of the point sits, relative to it. Zero means the figure never said, and the caller
+     *  keeps its own default. Read for the cap of a dart, whose point C had a label place of its own before it
+     *  became a figure — a pleat never sets them, so its own files are written exactly as before. */
+    qreal mx{0.};
+    qreal my{0.};
 };
 
 /**

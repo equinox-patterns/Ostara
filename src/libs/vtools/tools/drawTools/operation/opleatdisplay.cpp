@@ -1060,6 +1060,16 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
         if (mark.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrPoint, mark.point);
+            // The label place, written the way everything else in the pattern is: pixels out, the pattern's unit in
+            // the file. Only when the figure carries one — a pleat never does, so its files are unchanged.
+            if (not qFuzzyIsNull(mark.mx))
+            {
+                doc->SetAttribute(item, AttrMx, VAbstractValApplication::VApp()->fromPixel(mark.mx));
+            }
+            if (not qFuzzyIsNull(mark.my))
+            {
+                doc->SetAttribute(item, AttrMy, VAbstractValApplication::VApp()->fromPixel(mark.my));
+            }
             if (not mark.name.isEmpty())
             {
                 doc->SetAttribute(item, AttrName, mark.name);
@@ -1162,6 +1172,8 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
                                ? static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrEnd, u"0"_s))
                                : -1;
                 mark.point = VAbstractPattern::GetParametrUInt(item, AttrPoint, NULL_ID_STR);
+                mark.mx = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMx, "0.0"));
+                mark.my = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMy, "0.0"));
                 mark.side1 = VAbstractPattern::GetParametrUInt(item, AttrSide1, NULL_ID_STR);
                 mark.side2 = VAbstractPattern::GetParametrUInt(item, AttrSide2, NULL_ID_STR);
                 mark.curve1 = VAbstractPattern::GetParametrUInt(item, AttrCurve1, NULL_ID_STR);

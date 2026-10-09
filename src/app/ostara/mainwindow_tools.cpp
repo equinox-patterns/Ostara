@@ -110,7 +110,7 @@
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/operation/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
@@ -339,9 +339,19 @@ void MainWindow::ToolLineIntersect(bool checked)
 void MainWindow::ToolDartCap(bool checked)
 {
     ToolSelectPointByRelease();
+    // The gesture, said the way the pleat says its own: what to pick and how to finish. The old line —
+    // "Select the dart point" — named the wrong thing (a cap is an operation, and it asks for four points), and the
+    // word "apex" names nothing a dressmaker reads: the first point to pick is the TIP of the dart, the point inside
+    // the piece where its two legs meet. Written "the first point of the dart", it was taken for the first point of
+    // the opening — and the tool then drew, silently, a cap built from the wrong point.
+    const QString tooltip =
+        tr("Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point "
+           "that carries the edge when no curve does — then <b>%1</b> to confirm")
+            .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<ODialogDartCap>(
-        checked, Tool::DartCap, QStringLiteral("intersect_cursor.png"), tr("Select the dart point"),
-        &MainWindow::ClosedDrawDialogWithApply<OToolDartCap>, &MainWindow::ApplyDrawDialog<OToolDartCap>);
+        checked, Tool::DartCap, QStringLiteral("intersect_cursor.png"), tooltip,
+        &MainWindow::ClosedDrawDialogWithApply<OToolDartCap>,
+        &MainWindow::ApplyDrawDialog<OToolDartCap>);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

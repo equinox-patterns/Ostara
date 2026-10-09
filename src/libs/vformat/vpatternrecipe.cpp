@@ -44,7 +44,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/operation/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
@@ -469,7 +469,7 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
             case Tool::TrueDarts:
                 return TrueDarts(tool);
             case Tool::DartCap:
-                return DartCap(tool);
+                return DartCap(tool, data);
             case Tool::Rectangle:
                 return Rectangle(tool);
             case Tool::EllipticalArc:
@@ -1182,7 +1182,7 @@ auto VPatternRecipe::Rotation(const VToolRecord &record, const VContainer &data)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VPatternRecipe::DartCap(const VToolRecord &record) -> QDomElement
+auto VPatternRecipe::DartCap(const VToolRecord &record, const VContainer &data) -> QDomElement
 {
     auto *tool = GetPatternTool<OToolDartCap>(record.GetId());
 
@@ -1194,7 +1194,17 @@ auto VPatternRecipe::DartCap(const VToolRecord &record) -> QDomElement
     SetAttribute(step, AttrSecondPoint, tool->SecondPointName());
     SetAttribute(step, AttrExtendPoint, tool->ExtendPointName());
     SetAttribute(step, AttrDrawCap, tool->IsCapDrawn() ? trueStr : falseStr);
+
+    // What was missing, and what a recipe is FOR: a cap is recomputed from its four points, the SENSE that decides
+    // which opening point the edge is read at, and its two flags. Without them the step could only rebuild a cap
+    // with the wrong edge and no crank — the figure itself is deliberately not carried, exactly as the pleat's
+    // recipe carries its prise and not its folds.
+    SetAttribute(step, OToolDartCap::AttrSecondSense, tool->IsSecondSense() ? 2 : 1);
+    SetAttribute(step, OToolDartCap::AttrNotch, tool->IsNotchDrawn() ? trueStr : falseStr);
     LineAttributes(step, tool);
+
+    // The objects the cap names, as every operation's step groups them.
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 
     return step;
 }

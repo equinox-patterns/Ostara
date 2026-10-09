@@ -120,6 +120,41 @@ public:
     static auto Sides(const OPleatMark &mark, const OPleatEnd &prise, const QPointF &origin, const QLineF &foldLine,
                       const QString &apexName, const VContainer *data) -> OPleatCapSides;
 
+    /** @brief The two sides of the cap of a **dart**, built by the two folds a dart is made of.
+     *
+     *  A dart is not a pleat: its two points of the opening are a point and its **copy**, taken by an operation that
+     *  rotated the piece about the apex — so they are one and the same point of the fabric, and the edge of the piece
+     *  runs through both, on the same side of the mouth. The cap is therefore read in two folds:
+     *
+     *  - the edge the pattern draws at @a point is flipped about @a arm, the line that joins that point to the apex
+     *    of the dart: this is what brings the piece the fold turns over onto the fold;
+     *  - the curve that comes out of it meets @a axis — the line the fold is taken on, through the apex and the
+     *    middle of the opening — at the point C, which is what @a apex answers, together with @a length, where it
+     *    falls on that curve;
+     *  - the piece that runs from @a point to C is the first side, and the second is that piece flipped about
+     *    @a axis, which lays it on the copy: @a axis is the perpendicular bisector of the two opening points.
+     *
+     *  @a apexName names the junction of the cut, exactly as in Sides. Null curves mean the cap was not built: no
+     *  curve carries the edge at that point, the point stands in the middle of one instead of at an end, or the
+     *  flipped curve never meets the fold line.
+     *
+     *  @a offset is what carries the figure from the place the edge is **drawn** to the place the cap **belongs**:
+     *  a point of the opening may be a copy whose operation copied the point and not the curve that ends there, and
+     *  the edge is then read where the pattern really drew it — @a point and @a arm being given at the place the cap
+     *  belongs, they are read back by that offset, and the two sides and the apex come back carried. A null offset is
+     *  the ordinary case, where the edge is drawn at the point of the opening itself. */
+    static auto Dart(const QSharedPointer<VAbstractCurve> &edge, const QPointF &point, const QLineF &arm,
+                     const QLineF &axis, const QString &apexName, const QPointF &offset, QPointF *apex, qreal *length)
+        -> OPleatCapSides;
+
+    /** @brief A curve of the figure moved by a plain offset — the dispatch Dart and Sides both need, since no kind of
+     *  curve answers a move through the base class (see MovedCurve).
+     *
+     *  Null when the curve is of a kind the figure has not been taught to move: nothing rather than the curve of the
+     *  pattern itself, which the caller would then rename and recolour in place. */
+    static auto Moved(const QSharedPointer<VAbstractCurve> &curve, const QPointF &offset)
+        -> QSharedPointer<VAbstractCurve>;
+
 private:
     Q_DISABLE_COPY_MOVE(OPleatCapRule) // NOLINT
     OPleatCapRule() = default;

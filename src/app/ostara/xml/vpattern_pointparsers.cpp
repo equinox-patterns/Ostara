@@ -61,7 +61,8 @@
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolarcpoint.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otoolcurvepoint.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/operation/otooldartcap.h"
+#include "../vtools/tools/drawTools/operation/opleatdisplay.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.h"
@@ -1619,6 +1620,10 @@ void VPattern::ParseToolDartCap(VMainGraphicsScene *scene, QDomElement &domEleme
 
     try
     {
+        // An old shape — a `<point>` — read into the OPERATION it became. The type is the same ("dartCap"), and it
+        // is the ELEMENT that decides which reader takes it: this one keeps opening patterns already saved, and the
+        // cap it builds is the very same operation the `<operation type="dartCap">` shape builds. Nothing has to be
+        // converted on disk.
         OToolDartCapInitData initData;
         initData.scene = scene;
         initData.doc = this;
@@ -1626,14 +1631,72 @@ void VPattern::ParseToolDartCap(VMainGraphicsScene *scene, QDomElement &domEleme
         initData.parse = parse;
         initData.typeCreation = Source::FromFile;
 
-        PointsWithLineCommonAttributes(domElement, initData);
+        // `PointsWithLineCommonAttributes` is no longer usable: it writes into a point tool's data, and this is an
+        // operation. id and notes come from the common draw-tool attributes, and the name is the POINT's — the name
+        // the file gave to the point C, which the figure keeps.
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+        initData.pointName = domElement.attribute(AttrName);
+        initData.showLabel = domElement.attribute(AttrShowLabel) == trueStr;
 
         initData.apexId = GetParametrUInt(domElement, AttrApex, NULL_ID_STR);
         initData.firstPointId = GetParametrUInt(domElement, AttrFirstPoint, NULL_ID_STR);
         initData.secondPointId = GetParametrUInt(domElement, AttrSecondPoint, NULL_ID_STR);
         initData.extendPointId = GetParametrUInt(domElement, AttrExtendPoint, NULL_ID_STR);
         initData.drawCap = GetParametrBool(domElement, AttrDrawCap, trueStr);
+        initData.secondSense
+            = VAbstractPattern::GetParametrUInt(domElement, OToolDartCap::AttrSecondSense, u"1"_s) == 2;
+        initData.showNotch = GetParametrBool(domElement, OToolDartCap::AttrNotch, falseStr);
 
+        // The figure was kept as FLAT ATTRIBUTES of the `<point>` — there is no `<pleatDisplay>` to extract — so the
+        // mark and the crank are filled from them, and the display carries what the operation draws.
+        // The very same rule as ReadToolAttributes: a dart cap can have its drawing turned off, and the element
+        // says so — the attribute wins over any default a shared reader would impose.
+        initData.display.show = initData.drawCap;
+
+        // The pen and the colour the POINT was drawn with belong to the FIGURE it became. Read them, or a cap taken
+        // from a pattern already saved would come back in the default pen and the default colour — a silent change
+        // of what its author saw, and one nothing on screen would explain.
+        initData.display.lineTypeLine = domElement.attribute(AttrTypeLine, TypeLineDefault);
+        initData.display.lineColor = domElement.attribute(AttrLineColor, ColorDefault);
+        {
+            OPleatMarkDisplay mark;
+            mark.pleat = 0;
+            mark.end = 0;
+            mark.curve1 = GetParametrUInt(domElement, OToolDartCap::AttrCurve1, NULL_ID_STR);
+            mark.curve2 = GetParametrUInt(domElement, OToolDartCap::AttrCurve2, NULL_ID_STR);
+            // The label place of the point, with the same conversion every other reader of this file uses.
+            mark.mx = VAbstractValApplication::VApp()->toPixel(GetParametrDouble(domElement, AttrMx, QString::number(labelMX)));
+            mark.my = VAbstractValApplication::VApp()->toPixel(GetParametrDouble(domElement, AttrMy, QString::number(labelMY)));
+            initData.display.marks = QVector<OPleatMarkDisplay>{mark};
+        }
+        {
+            OPleatNotchDisplay notch;
+            notch.pleat = 0;
+            notch.end = 0;
+            notch.point = GetParametrUInt(domElement, OToolDartCap::AttrNotchPoint, NULL_ID_STR);
+            notch.curve1 = GetParametrUInt(domElement, OToolDartCap::AttrNotchCurve1, NULL_ID_STR);
+            notch.curve2 = GetParametrUInt(domElement, OToolDartCap::AttrNotchCurve2, NULL_ID_STR);
+            if (notch.point != NULL_ID)
+            {
+                initData.display.notches = QVector<OPleatNotchDisplay>{notch};
+            }
+        }
+
+        // The points the figure is built on are the operation's SOURCE — the same list the dialog feeds when the cap
+        // is made from the interface. An operation without one cannot be written (the schema asks for at least one
+        // item) nor replayed by a recipe, and an old `<point>` names them in its flat attributes. The names are
+        // given by the operation itself, from the objects: a source is a record of what the tool is built on, and
+        // the file must carry a name for it.
+        for (const quint32 id : {initData.apexId, initData.firstPointId, initData.secondPointId, initData.extendPointId})
+        {
+            if (id != NULL_ID)
+            {
+                initData.source.append(SourceItem{.id = id});
+            }
+        }
+
+        // The operation takes the id the `<point>` had — it is the tool the layer and the graph name — and the point
+        // C is given a fresh one by the figure itself, which is what BuildFigure does when `mark.point` is unset.
         OToolDartCap::Create(initData);
     }
     catch (const VExceptionBadId &e)

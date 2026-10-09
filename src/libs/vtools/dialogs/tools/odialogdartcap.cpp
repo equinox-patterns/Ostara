@@ -39,8 +39,10 @@
 #include <QPointF>
 #include <QPushButton>
 #include <QSharedPointer>
+#include <QSignalBlocker>
 #include <QWidget>
 
+#include "../../tools/drawTools/operation/oedgereader.h"
 #include "../../tools/drawTools/toolpoint/toolsinglepoint/odartcaprule.h"
 #include "../../visualization/line/ovistooldartcap.h"
 #include "../dialogtoolbox.h"
@@ -60,7 +62,7 @@
 
 //---------------------------------------------------------------------------------------------------------------------
 ODialogDartCap::ODialogDartCap(const VContainer *data, VAbstractPattern *doc, quint32 toolId, QWidget *parent)
-  : DialogTool(data, doc, toolId, parent),
+  : DialogOperationTool(data, doc, toolId, parent),
     ui(new Ui::ODialogDartCap),
     pointName()
 {
@@ -98,41 +100,8 @@ ODialogDartCap::ODialogDartCap(const VContainer *data, VAbstractPattern *doc, qu
                                         ui->comboBoxLineType->palette().color(QPalette::Text)));
     m_colorCombo = ReplaceColorPickerWithCombo(this, ui->pushButtonLineColor);
 
-    // The two names of the tracés, each with the pastille of the colour its tracé is drawn in — the same pair
-    // of colours the preview uses.
-    m_line1Row = new QWidget();
-    auto *rowLine1 = new QHBoxLayout(m_line1Row);
-    rowLine1->setContentsMargins(0, 0, 0, 0);
-    rowLine1->setSpacing(4);
-    auto *dotLine1 = new QLabel();
-    dotLine1->setObjectName(QStringLiteral("labelRoleNameDot"));
-    dotLine1->setFixedSize(12, 12);
-    m_labelLine1 = new QLabel(tr("Line:"));
-    m_labelLine1->setMinimumWidth(80);
-    m_lineEditLine1 = new QLineEdit();
-    m_lineEditLine1->setObjectName(QStringLiteral("lineEditRoleName"));
-    rowLine1->addWidget(dotLine1);
-    rowLine1->addWidget(m_labelLine1);
-    rowLine1->addWidget(m_lineEditLine1, 1);
-    ui->verticalLayout->insertWidget(1, m_line1Row);
-    connect(m_lineEditLine1, &QLineEdit::textEdited, this, &ODialogDartCap::ValidateLine1RoleName);
-
-    m_line2Row = new QWidget();
-    auto *rowLine2 = new QHBoxLayout(m_line2Row);
-    rowLine2->setContentsMargins(0, 0, 0, 0);
-    rowLine2->setSpacing(4);
-    auto *dotLine2 = new QLabel();
-    dotLine2->setObjectName(QStringLiteral("labelSecondRoleNameDot"));
-    dotLine2->setFixedSize(12, 12);
-    m_labelLine2 = new QLabel(tr("Line:"));
-    m_labelLine2->setMinimumWidth(80);
-    m_lineEditLine2 = new QLineEdit();
-    m_lineEditLine2->setObjectName(QStringLiteral("lineEditSecondRoleName"));
-    rowLine2->addWidget(dotLine2);
-    rowLine2->addWidget(m_labelLine2);
-    rowLine2->addWidget(m_lineEditLine2, 1);
-    ui->verticalLayout->insertWidget(2, m_line2Row);
-    connect(m_lineEditLine2, &QLineEdit::textEdited, this, &ODialogDartCap::ValidateLine2RoleName);
+    connect(ui->checkBoxSecondSense, &QCheckBox::toggled, this, &ODialogDartCap::SetSecondSense);
+    connect(ui->checkBoxNotch, &QCheckBox::toggled, this, &ODialogDartCap::SetNotchDrawn);
 
     connect(ui->checkBoxDrawCap, &QCheckBox::toggled, this,
             [this]()
@@ -152,34 +121,19 @@ ODialogDartCap::ODialogDartCap(const VContainer *data, VAbstractPattern *doc, qu
 
     UpdateCapControls();
 
-    QWidget::setTabOrder(ui->checkBoxDrawCap, m_lineEditLine1);
-    QWidget::setTabOrder(m_lineEditLine1, m_lineEditLine2);
-    QWidget::setTabOrder(m_lineEditLine2, ui->comboBoxLineType);
+    // The order the tab walks the page: the three checkboxes, the two fields of the pen, then the notes.
+    QWidget::setTabOrder(ui->checkBoxDrawCap, ui->checkBoxNotch);
+    QWidget::setTabOrder(ui->checkBoxNotch, ui->checkBoxSecondSense);
+    QWidget::setTabOrder(ui->checkBoxSecondSense, ui->comboBoxLineType);
     QWidget::setTabOrder(ui->comboBoxLineType, m_colorCombo);
     QWidget::setTabOrder(m_colorCombo, ui->plainTextEditToolNotes);
     QWidget::setTabOrder(ui->plainTextEditToolNotes, ui->lineEditNamePoint);
     QWidget::setTabOrder(ui->lineEditNamePoint, ui->buttonBox);
 
-    InitIcons();
-
     vis = new OVisToolDartCap(&this->data);
 
     ui->tabWidget->setCurrentIndex(0);
     SetTabStopDistance(ui->plainTextEditToolNotes);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogDartCap::InitIcons()
-{
-    // The same two colours the canvas draws the two tracés with, and the dock shows on their names.
-    if (auto *dot = findChild<QLabel *>(QStringLiteral("labelRoleNameDot")))
-    {
-        dot->setPixmap(GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor2), 10));
-    }
-    if (auto *dot = findChild<QLabel *>(QStringLiteral("labelSecondRoleNameDot")))
-    {
-        dot->setPixmap(GetColorDotPixmap(VSceneStylesheet::Color(VColorRole::VisSupportColor4), 10));
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -241,6 +195,33 @@ void ODialogDartCap::SetExtendPointId(quint32 value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::Widgets() const -> OperationWidgets
+{
+    return OperationWidgetsFrom(ui);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogDartCap::SetDisplay(const OPleatDisplay &display)
+{
+    SetDrawCap(display.show);
+    SetTypeLine(display.lineTypeLine);
+    SetLineColor(display.lineColor);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::GetDisplay() const -> OPleatDisplay
+{
+    OPleatDisplay display;
+    display.show = GetDrawCap();
+    display.lineTypeLine = GetTypeLine();
+    display.lineColor = GetLineColor();
+
+    // Nothing else is the dialog's: the fold line of a dart is the axis the cap is read on, and it is not drawn as
+    // a figure of its own; the sides and the crank are the operation's to build.
+    return display;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto ODialogDartCap::GetDrawCap() const -> bool
 {
     return ui->checkBoxDrawCap->isChecked();
@@ -251,30 +232,6 @@ void ODialogDartCap::SetDrawCap(bool value)
 {
     ui->checkBoxDrawCap->setChecked(value);
     UpdateCapControls();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogDartCap::GetLine1RoleName() const -> QString
-{
-    return m_lineEditLine1->text().trimmed();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogDartCap::SetLine1RoleName(const QString &suffix)
-{
-    m_lineEditLine1->setText(suffix);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogDartCap::GetLine2RoleName() const -> QString
-{
-    return m_lineEditLine2->text().trimmed();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogDartCap::SetLine2RoleName(const QString &suffix)
-{
-    m_lineEditLine2->setText(suffix);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -366,6 +323,11 @@ void ODialogDartCap::ChosenObject(quint32 id, const SceneObject &type)
         return;
     }
 
+    // Every point the user picks is a **source** of the operation: the figure is built from them, and an operation
+    // copies what it names. The pleat feeds its own list the same way (ToggleSourceObject, protected in
+    // DialogOperationTool); without it the cap would have no source, no figure and no place in the layer.
+    ToggleSourceObject(id);
+
     switch (m_step)
     {
         case Step::Apex:
@@ -389,7 +351,7 @@ void ODialogDartCap::ChosenObject(quint32 id, const SceneObject &type)
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogDartCap::TakeApex(quint32 id)
 {
-    if (not SetObject(id, m_comboApex, tr("Select the first point of the dart")))
+    if (not SetObject(id, m_comboApex, tr("Select the tip of the dart (the point inside the piece)")))
     {
         return;
     }
@@ -416,7 +378,7 @@ void ODialogDartCap::TakeFirstPoint(quint32 id)
         return;
     }
 
-    if (not SetObject(id, m_comboFirstPoint, tr("Select the second point of the dart")))
+    if (not SetObject(id, m_comboFirstPoint, tr("Select the first point of the opening (a point of the piece's edge)")))
     {
         return;
     }
@@ -437,15 +399,31 @@ void ODialogDartCap::TakeSecondPoint(quint32 id)
         return;
     }
 
-    if (not SetObject(id, m_comboSecondPoint, tr("Select a point of the line to extend")))
+    if (not SetObject(id, m_comboSecondPoint, tr("Select the second point of the opening (the other end)")))
     {
         return;
     }
 
     m_secondPointId = id;
-    m_step = Step::ExtendPoint;
-    m_swallowRelease = true;
+
+    // The two points of the opening are picked: the edge of the piece is read at the end the sense designates,
+    // and the window opens on its own when that reading is enough. Nothing read there means the user has to
+    // designate a point of the line to extend — the way out, exactly as the pleat asks for one.
+    if (EdgeFound())
+    {
+        m_step = Step::Complete;
+        m_swallowRelease = false;
+        emit ToolTip(QString()); // the edge was read: there is nothing more to ask here
+    }
+    else
+    {
+        m_step = Step::ExtendPoint;
+        m_swallowRelease = true;
+        emit ToolTip(tr("Select a point of the line to extend"));
+    }
+
     RefreshPreview();
+    CheckState();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -501,6 +479,8 @@ void ODialogDartCap::RefreshPreview()
         visual->SetFirstPointId(GetFirstPointId());
         visual->SetSecondPointId(GetSecondPointId());
         visual->SetExtendPointId(GetExtendPointId());
+        visual->SetSecondSense(GetSecondSense());
+        visual->SetEdgeDirection(EdgeDirection());
         visual->RefreshGeometry();
     }
 }
@@ -508,6 +488,13 @@ void ODialogDartCap::RefreshPreview()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogDartCap::ShowVisualization()
 {
+    if (vis.isNull())
+    {
+        // A full parse clears the scene and takes this preview with it, while the dialog stays up (see
+        // DialogTool::RebuildVisualization): it is built again, exactly as the pleat's dialog builds its own.
+        vis = new OVisToolDartCap(&this->data);
+    }
+
     AddVisualization<OVisToolDartCap>();
 }
 
@@ -526,11 +513,6 @@ void ODialogDartCap::changeEvent(QEvent *event)
         ui->retranslateUi(this);
     }
 
-    if (event->type() == QEvent::PaletteChange)
-    {
-        InitIcons(); // the two pastilles follow the theme
-    }
-
     // remember to call base class implementation
     DialogTool::changeEvent(event);
 }
@@ -547,11 +529,102 @@ auto ODialogDartCap::PointsAreDistinct() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto ODialogDartCap::ConstructionExists() const -> bool
+auto ODialogDartCap::GetSecondSense() const -> bool
 {
-    if (not PointsAreDistinct() || GetExtendPointId() == NULL_ID)
+    return m_secondSense;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogDartCap::SetSecondSense(bool value)
+{
+    if (m_secondSense == value)
+    {
+        return;
+    }
+
+    m_secondSense = value;
+
+    if (ui->checkBoxSecondSense->isChecked() != value)
+    {
+        const QSignalBlocker blocker(ui->checkBoxSecondSense);
+        ui->checkBoxSecondSense->setChecked(value);
+    }
+
+    RefreshPreview();
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::GetNotchDrawn() const -> bool
+{
+    return m_notchDrawn;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogDartCap::SetNotchDrawn(bool value)
+{
+    if (m_notchDrawn == value)
+    {
+        return;
+    }
+
+    m_notchDrawn = value;
+
+    if (ui->checkBoxNotch->isChecked() != value)
+    {
+        const QSignalBlocker blocker(ui->checkBoxNotch);
+        ui->checkBoxNotch->setChecked(value);
+    }
+
+    RefreshPreview();
+    CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::EdgeDirection() const -> QPointF
+{
+    // The edge is read at the opening point the SENSE designates, exactly as the figure reads it: the second point is
+    // the COPY of the first, and the operation that made it copied the curves of that point too — so a curve ends
+    // there as well, and the reader answers on it.
+    const quint32 baseId = m_secondSense ? m_secondPointId : m_firstPointId;
+    QPointF direction = OEdgeReader::Direction(baseId, &data);
+    if (not direction.isNull())
+    {
+        return direction;
+    }
+
+    // No curve ends at that point: it is a copy whose operation copied the point and not the curve. The figure then
+    // reads the edge at the OTHER point of the opening, which a pleat made the image of the very same point, and
+    // carries the figure by the offset between the two — the same question, asked the same way (see OToolDartCap).
+    const quint32 otherId = m_secondSense ? m_firstPointId : m_secondPointId;
+    return (otherId > NULL_ID) ? OEdgeReader::Direction(otherId, &data) : QPointF();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::EdgeFound() const -> bool
+{
+    if (not PointsAreDistinct())
     {
         return false;
+    }
+
+    // The question the figure asks, and no other: does the pattern carry an edge at the opening point the sense
+    // reads? When it does not, the user is asked for the point that carries it — the same way out the pleat asks
+    // for, and the figure then draws the straight tracés.
+    return not EdgeDirection().isNull();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::ConstructionExists() const -> bool
+{
+    if (not PointsAreDistinct())
+    {
+        return false;
+    }
+
+    if (GetExtendPointId() == NULL_ID)
+    {
+        return EdgeFound(); // no point was designated: the edge of the piece is what carries the line
     }
 
     try
@@ -580,76 +653,18 @@ void ODialogDartCap::UpdateCapControls()
     const bool capOn = ui->checkBoxDrawCap->isChecked() && ready;
 
     ui->checkBoxDrawCap->setEnabled(ready);
+    ui->checkBoxNotch->setEnabled(capOn);
     ui->comboBoxLineType->setEnabled(ready);
     if (m_colorCombo != nullptr)
     {
         m_colorCombo->setEnabled(ready);
     }
-
-    // The two names of the tracés only mean something when the cap is drawn.
-    m_line1Row->setEnabled(capOn);
-    m_line2Row->setEnabled(capOn);
-    m_labelLine1->setEnabled(capOn);
-    m_labelLine2->setEnabled(capOn);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogDartCap::ValidateLine1RoleName()
-{
-    flagLine1 = ValidateLineRoleName(m_lineEditLine1, m_labelLine1);
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogDartCap::ValidateLine2RoleName()
-{
-    flagLine2 = ValidateLineRoleName(m_lineEditLine2, m_labelLine2);
-    CheckState();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODialogDartCap::ValidateLineRoleName(QLineEdit *edit, QLabel *label) -> bool
-{
-    if (edit == nullptr || label == nullptr)
-    {
-        return true;
-    }
-
-    const QString suffix = edit->text().trimmed();
-    if (suffix.isEmpty())
-    {
-        edit->setStyleSheet({});
-        ChangeColor(label, OkColor(this));
-        return true;
-    }
-
-    if (QRegularExpression const rx(NameRegExp()); not rx.match(suffix).hasMatch())
-    {
-        edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
-        ChangeColor(label, errorColor);
-        return false;
-    }
-
-    // Line_<suffix> names a pair of points: it has to stay unique among the lines of the pattern.
-    const QString aliasKey = line_ + suffix;
-    const bool taken = data.DataLengthLines().contains(aliasKey)
-                       && data.DataLengthLines().value(aliasKey)->GetReferences().size() >= 2;
-    if (taken)
-    {
-        edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
-        ChangeColor(label, errorColor);
-        return false;
-    }
-
-    edit->setStyleSheet({});
-    ChangeColor(label, OkColor(this));
-    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ODialogDartCap::IsValid() const -> bool
 {
-    // Four points that tell each other apart, a construction that exists — asked before the window opens — and
-    // two names that can name a line. Nothing else can be wrong.
-    return flagName && flagPoint && flagLine1 && flagLine2;
+    // Four points that tell each other apart, and a construction that exists — asked before the window opens.
+    // Nothing else can be wrong.
+    return flagName && flagPoint;
 }

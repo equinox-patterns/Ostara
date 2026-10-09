@@ -82,3 +82,43 @@ auto ODartCapRule::CapPoint(const QPointF &apex, const QPointF &firstPoint, cons
     *capPoint = intersection;
     return Failure::None;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODartCapRule::CarrierPoint(const QPointF &basePoint, const QPointF &edgeDirection, qreal opening) -> QPointF
+{
+    const QLineF direction(QPointF(), edgeDirection);
+    if (direction.isNull())
+    {
+        return {}; // nothing was read: there is no line to carry
+    }
+
+    return basePoint + edgeDirection / direction.length() * (qAbs(opening) * CarrierFraction);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODartCapRule::CrankValue(const QPointF &firstPoint, const QPointF &secondPoint) -> qreal
+{
+    return QLineF(firstPoint, secondPoint).length() / 2.;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODartCapRule::CrankBaseIndex(bool secondSense) -> int
+{
+    // The cap reads the edge at the end the sense designates, and the crank is counted along **that** edge, from that
+    // very point: each sense has its own curve at the mouth of the dart, and the crank stands on it.
+    return secondSense ? 1 : 0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODartCapRule::CapPointFromEdge(const QPointF &apex, const QPointF &firstPoint, const QPointF &secondPoint,
+                                    int baseIndex, const QPointF &edgeDirection, QPointF *capPoint) -> Failure
+{
+    if (QLineF(QPointF(), edgeDirection).isNull())
+    {
+        return Failure::NoEdge; // no edge was read at that end: the user has to designate a point
+    }
+
+    const QPointF basePoint = (baseIndex == 0) ? firstPoint : secondPoint;
+    const QPointF carrier = CarrierPoint(basePoint, edgeDirection, QLineF(firstPoint, secondPoint).length());
+    return CapPoint(apex, firstPoint, secondPoint, carrier, capPoint);
+}

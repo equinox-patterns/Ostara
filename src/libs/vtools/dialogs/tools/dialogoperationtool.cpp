@@ -88,16 +88,17 @@ DialogOperationTool::DialogOperationTool(const VContainer *data, VAbstractPatter
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogOperationTool::GetVisibilityGroupName() const -> QString
 {
-    return Widgets().visibilityGroupLine->text();
+    return (Widgets().visibilityGroupLine == nullptr) ? QString() : Widgets().visibilityGroupLine->text();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::SetVisibilityGroupName(const QString &name) const
 {
-    if (name.isEmpty())
+    if (name.isEmpty() || Widgets().visibilityGroupLine == nullptr)
     {
         // Nothing to put in the field: it keeps the default name its own .ui gives it, which is the name of the
-        // operation and is translated for it. Writing one here would label every operation "Rotation".
+        // operation and is translated for it. Writing one here would label every operation "Rotation". A dialog
+        // without a layer group has no field at all — the value is then simply not offered.
         return;
     }
 
@@ -107,32 +108,45 @@ void DialogOperationTool::SetVisibilityGroupName(const QString &name) const
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogOperationTool::HasLinkedVisibilityGroup() const -> bool
 {
-    return Widgets().visibilityGroup->isChecked();
+    return (Widgets().visibilityGroup != nullptr) && Widgets().visibilityGroup->isChecked();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::SetHasLinkedVisibilityGroup(bool linked) const
 {
+    if (Widgets().visibilityGroup == nullptr)
+    {
+        return; // no layer group in this dialog: there is no box to check
+    }
+
     Widgets().visibilityGroup->setChecked(linked);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::SetVisibilityGroupTags(const QStringList &tags) const
 {
+    if (Widgets().groupTags == nullptr)
+    {
+        return;
+    }
+
     Widgets().groupTags->setText(tags.join(", "));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogOperationTool::GetVisibilityGroupTags() const -> QStringList
 {
-    return Widgets().groupTags->text().split(',');
+    return (Widgets().groupTags == nullptr) ? QStringList{} : Widgets().groupTags->text().split(',');
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogOperationTool::SetGroupCategories(const QStringList &categories)
 {
     m_groupTags = categories;
-    Widgets().groupTags->SetCompletion(m_groupTags);
+    if (Widgets().groupTags != nullptr)
+    {
+        Widgets().groupTags->SetCompletion(m_groupTags);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -344,14 +358,20 @@ void DialogOperationTool::GroupNameChanged()
         if (edit->text().isEmpty())
         {
             flagGroupName = false;
-            ChangeColor(Widgets().labelGroupName, errorColor);
+            if (Widgets().labelGroupName != nullptr)
+            {
+                ChangeColor(Widgets().labelGroupName, errorColor);
+            }
             Widgets().labelStatus->setText(tr("Invalid layer name"));
             CheckState();
             return;
         }
 
         flagGroupName = true;
-        ChangeColor(Widgets().labelGroupName, OkColor(this));
+        if (Widgets().labelGroupName != nullptr)
+        {
+            ChangeColor(Widgets().labelGroupName, OkColor(this));
+        }
     }
     CheckState();
 }

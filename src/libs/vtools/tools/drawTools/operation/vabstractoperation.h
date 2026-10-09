@@ -112,6 +112,18 @@ public:
 
     auto CopyStyleOf(quint32 objectId) const -> CopyStyle;
 
+    /** @brief The object an image of this operation was made from, or NULL_ID when the id is none of its images.
+     *
+     *  The two lists are read positionally — destination[i] is the image of source[i] (see Create) — and this is
+     *  the one reading that goes the other way. An image names the operation that made it and never the object it
+     *  copies (see OOperationDestination), so a tool that has to read an edge at the object the pattern really drew
+     *  has no other way back from the copy it was given. */
+    auto SourceOfImage(quint32 imageId) const -> quint32;
+
+    /** @brief The image this operation made of a source object, or NULL_ID when it copied none. The same two lists,
+     *  read the way they are written — the pleat finds the curve of its figure with it (OPleatDisplay::CarriedId). */
+    auto ImageOfSource(quint32 sourceId) const -> quint32;
+
     /** @brief Write that pen back where the file keeps it, as one undoable step, the way every tool option is
      *  saved. Does nothing for an object this operation did not produce. */
     void SetCopyStyle(quint32 objectId, const QString &penStyle, const QString &color);

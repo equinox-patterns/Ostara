@@ -63,7 +63,7 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
-#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/otooldartcap.h"
+#include "../vtools/tools/drawTools/operation/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
@@ -131,7 +131,7 @@ using namespace Qt::Literals::StringLiterals;
 // Forward declarations — declarative property descriptors (defined in vtoppb_*.cpp)
 auto RotationProperties() -> std::vector<PropertyDesc>;
 auto CloseDartProperties() -> std::vector<PropertyDesc>;
-auto DartCapProperties() -> std::vector<PropertyDesc>;
+auto DartCapOperationProperties() -> std::vector<PropertyDesc>;
 auto RectangleProperties() -> std::vector<PropertyDesc>;
 auto MoveProperties() -> std::vector<PropertyDesc>;
 auto TransfertProperties() -> std::vector<PropertyDesc>;
@@ -366,7 +366,7 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<OToolCloseDart>(item, tr("Tool close dart"), CloseDartProperties());
             break;
         case OToolDartCap::Type:
-            ShowToolOptions<OToolDartCap>(item, tr("Tool dart cap"), DartCapProperties());
+            ShowToolOptions<OToolDartCap>(item, tr("Dart cap"), DartCapOperationProperties());
             break;
         case OToolRectangle::Type:
             ShowToolOptions<OToolRectangle>(item, tr("Tool rectangle"), RectangleProperties());
@@ -539,7 +539,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
             UpdateToolOptions<OToolCloseDart>(CloseDartProperties());
             break;
         case OToolDartCap::Type:
-            UpdateToolOptions<OToolDartCap>(DartCapProperties());
+            UpdateToolOptions<OToolDartCap>(DartCapOperationProperties());
             break;
         case OToolRectangle::Type:
             UpdateToolOptions<OToolRectangle>(RectangleProperties());
@@ -751,7 +751,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
             ChangeToolData<OToolCloseDart>(prop, CloseDartProperties());
             break;
         case OToolDartCap::Type:
-            ChangeToolData<OToolDartCap>(prop, DartCapProperties());
+            ChangeToolData<OToolDartCap>(prop, DartCapOperationProperties());
             break;
         case OToolRectangle::Type:
             ChangeToolData<OToolRectangle>(prop, RectangleProperties());

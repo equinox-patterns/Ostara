@@ -198,6 +198,18 @@
                           <xs:attribute name="apex" type="xs:unsignedInt"/>
                           <xs:attribute name="extendPoint" type="xs:unsignedInt"/>
                           <xs:attribute name="drawCap" type="xs:boolean"/>
+                          <!-- The sense of a dart cap: 1 for the edge read at the first point of the opening,
+                               2 for the one read at the second. Its own attributes are declared on every point,
+                               since a point is typed by its `type` attribute and not by a type of its own. -->
+                          <xs:attribute name="sense" type="senseType"/>
+                          <!-- The crank of a dart cap: whether it is asked for, and the two halves the
+                               piece's edge is cut into at the cap point. -->
+                          <xs:attribute name="notch" type="xs:boolean"/>
+                          <xs:attribute name="notchCurve1" type="xs:unsignedInt"/>
+                          <xs:attribute name="notchCurve2" type="xs:unsignedInt"/>
+                          <xs:attribute name="notchPoint" type="xs:unsignedInt"/>
+                          <!-- curve1 and curve2 are declared above, for the tools that name a curve there: the
+                               two arms of a cap a curve carries take them too, and a line-carried cap has none. -->
                           <xs:attribute name="center" type="xs:unsignedInt"/>
                           <xs:attribute name="radius" type="xs:string"/>
                           <xs:attribute name="axisP1" type="xs:unsignedInt"/>
@@ -304,7 +316,11 @@
                             <xs:element name="destination" minOccurs="1" maxOccurs="1">
                               <xs:complexType>
                                 <xs:sequence>
-                                  <xs:element name="item" minOccurs="1" maxOccurs="unbounded">
+                                  <!-- The element is imposed — SaveSourceDestination always writes it — but it may be
+                                       EMPTY: an operation that transports nothing makes no copy, the copy being
+                                       already there, given by the user (the cap of a dart is the first of them). A
+                                       tool that copies nothing must still be able to be saved. -->
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
                                     <xs:complexType>
                                       <xs:attribute name="idObject" type="xs:unsignedInt" use="required"/>
                                       <xs:attribute name="mx" type="xs:double"/>
@@ -455,6 +471,8 @@
                                       <xs:attribute name="notch" type="xs:unsignedInt"/>
                                       <xs:attribute name="curve1" type="xs:unsignedInt"/>
                                       <xs:attribute name="curve2" type="xs:unsignedInt"/>
+                                      <xs:attribute name="mx" type="xs:double"/>
+                                      <xs:attribute name="my" type="xs:double"/>
                                       <xs:attribute name="name" type="xs:string"/>
                                     </xs:complexType>
                                   </xs:element>
@@ -502,6 +520,18 @@
                           <xs:attribute name="cap1Ref" type="xs:unsignedInt"/>
                           <xs:attribute name="cap2Ref" type="xs:unsignedInt"/>
                           <xs:attribute name="foldLine" type="xs:boolean"/>
+                          <!-- The cap of a dart, written as an operation. It was a `<point>` before — the point
+                               the tool was — and the same type name still opens those patterns, which is why the
+                               attributes below are the very ones declared on `<point>`: an old file and a new one
+                               say the same thing, and it is the element that tells which reader takes it.
+                               `firstPoint` and `secondPoint` are declared above, for the pleat. The figure itself
+                               — the point C, its two sides, the crank — lives in the `<pleatDisplay>` above. -->
+                          <xs:attribute name="apex" type="xs:unsignedInt"/>
+                          <xs:attribute name="extendPoint" type="xs:unsignedInt"/>
+                          <xs:attribute name="drawCap" type="xs:boolean"/>
+                          <xs:attribute name="sense" type="senseType"/>
+                          <xs:attribute name="notch" type="xs:boolean"/>
+                          <xs:attribute name="showPointName" type="xs:boolean"/>
                           <xs:attribute name="notes" type="xs:string"/>
                         </xs:complexType>
                       </xs:element>
