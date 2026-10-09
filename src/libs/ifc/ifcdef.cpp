@@ -106,6 +106,10 @@ const QString AttrApex = QStringLiteral("apex");
 const QString AttrExtendPoint = QStringLiteral("extendPoint");
 const QString AttrDrawCap = QStringLiteral("drawCap");
 const QString AttrShowCopies = QStringLiteral("showCopies");
+// The free categories the layers were tagged with until Ostara replaced them with groups of layers. The reading
+// schema of the legacy .val still declares the attribute, so its name is still needed — to drop it at load (see
+// StripGroupTags), never to write it.
+const QString AttrTags = QStringLiteral("tags");
 const QString AttrLength1 = QStringLiteral("length1");
 const QString AttrLength2 = QStringLiteral("length2");
 const QString AttrP1Line = QStringLiteral("p1Line");

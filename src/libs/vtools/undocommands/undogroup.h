@@ -79,7 +79,7 @@ class ChangeGroupOptions : public VUndoCommand
     Q_OBJECT // NOLINT
 
 public:
-    ChangeGroupOptions(VAbstractPattern *doc, quint32 id, const QString &name, const QStringList &tags,
+    ChangeGroupOptions(VAbstractPattern *doc, quint32 id, const QString &name, quint32 layerGroup,
                        const QString &color, const QString &penStyle, QUndoCommand *parent = nullptr);
     ~ChangeGroupOptions() override = default;
     void undo() override;
@@ -91,8 +91,10 @@ private:
     Q_DISABLE_COPY_MOVE(ChangeGroupOptions) // NOLINT
     QString newName;
     QString oldName{};
-    QStringList newTags;
-    QStringList oldTags{};
+    /// The group of layers the layer belongs to, NULL_ID for none. The dialog that edits a layer edits where it
+    /// sits in the dock as well, so the move is part of the same undo step.
+    quint32 newLayerGroup{NULL_ID};
+    quint32 oldLayerGroup{NULL_ID};
     QString newColor;
     QString oldColor{};
     QString newPenStyle;

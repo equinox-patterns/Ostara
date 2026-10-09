@@ -151,17 +151,17 @@ void RenameGroup::redo()
 //ChangeGroupOptions
 //---------------------------------------------------------------------------------------------------------------------
 ChangeGroupOptions::ChangeGroupOptions(VAbstractPattern *doc, quint32 id, const QString &name,
-                                       const QStringList &tags, const QString &color, const QString &penStyle,
+                                       quint32 layerGroup, const QString &color, const QString &penStyle,
                                        QUndoCommand *parent)
   : VUndoCommand(doc, id, parent),
     newName(name),
-    newTags(tags),
+    newLayerGroup(layerGroup),
     newColor(color),
     newPenStyle(penStyle)
 {
     setText(tr("edit layer"));
     oldName = doc->GetGroupName(id);
-    oldTags = doc->GetGroupTags(id);
+    oldLayerGroup = doc->GetLayerGroup(id);
     oldColor = doc->GetGroupColor(id);
     oldPenStyle = doc->GetGroupPenStyle(id);
 }
@@ -171,7 +171,7 @@ void ChangeGroupOptions::undo()
 {
     qCDebug(vUndo, "Undo.");
     Doc()->SetGroupName(ElementId(), oldName);
-    Doc()->SetGroupTags(ElementId(), oldTags);
+    Doc()->SetLayerGroup(ElementId(), oldLayerGroup);
     Doc()->SetGroupPen(ElementId(), oldColor, oldPenStyle);
     emit UpdateGroups();
     emit Doc()->UpdateToolTip();
@@ -182,7 +182,7 @@ void ChangeGroupOptions::redo()
 {
     qCDebug(vUndo, "Redo.");
     Doc()->SetGroupName(ElementId(), newName);
-    Doc()->SetGroupTags(ElementId(), newTags);
+    Doc()->SetLayerGroup(ElementId(), newLayerGroup);
     Doc()->SetGroupPen(ElementId(), newColor, newPenStyle);
     emit UpdateGroups();
     emit Doc()->UpdateToolTip();

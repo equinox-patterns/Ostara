@@ -1086,7 +1086,8 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::Spread:
         case Tool::MoveBatch:
         case Tool::Pleat:
-            dialogTool->SetGroupCategories(doc->GetGroupCategories());
+            // The groups of layers the operation's own layer may join, offered in its dialog.
+            dialogTool->SetLayerGroups(doc->LayerGroupNames());
             break;
         case Tool::Transfert:
             // The one tool that changes pattern piece in the middle of its own creation. It asks for it, and

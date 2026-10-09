@@ -86,6 +86,8 @@ const QString VAbstractPattern::TagDraw = QStringLiteral("draw");
 const QString VAbstractPattern::TagGroups = QStringLiteral("groups");
 const QString VAbstractPattern::TagGroup = QStringLiteral("group");
 const QString VAbstractPattern::TagGroupItem = QStringLiteral("item");
+const QString VAbstractPattern::TagLayerGroups = QStringLiteral("layerGroups");
+const QString VAbstractPattern::TagLayerGroup = QStringLiteral("layerGroup");
 const QString VAbstractPattern::TagPieceGroups = QStringLiteral("pieceGroups");
 const QString VAbstractPattern::TagPieceGroup = QStringLiteral("pieceGroup");
 const QString VAbstractPattern::TagMember = QStringLiteral("member");
@@ -159,7 +161,8 @@ const QString VAbstractPattern::AttrManualPassmarkAngle = QStringLiteral("manual
 const QString VAbstractPattern::AttrPassmarkAngle = QStringLiteral("passmarkAngleFormula");
 const QString VAbstractPattern::AttrPassmarkVisibility = QStringLiteral("passmarkVisibilityFormula");
 const QString VAbstractPattern::AttrOpacity = QStringLiteral("opacity");
-const QString VAbstractPattern::AttrTags = QStringLiteral("tags");
+const QString VAbstractPattern::AttrLayerGroup = QStringLiteral("layerGroup");
+const QString VAbstractPattern::AttrCollapsed = QStringLiteral("collapsed");
 const QString VAbstractPattern::AttrActive = QStringLiteral("active");
 const QString VAbstractPattern::AttrAuto = QStringLiteral("auto");
 const QString VAbstractPattern::AttrTransform = QStringLiteral("transform");
@@ -243,17 +246,6 @@ auto GetTokens(const VFormulaField &formula) -> QList<QString>
 void GatherTokens(QSet<QString> &tokens, const QList<QString> &tokenList)
 {
     tokens = tokens.unite(ConvertToSet(tokenList));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto PrepareGroupTags(QStringList tags) -> QString
-{
-    for (auto &tag : tags)
-    {
-        tag = tag.simplified();
-    }
-
-    return ConvertToStringList(ConvertToSet<QString>(tags)).join(','_L1);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2431,27 +2423,67 @@ auto VAbstractPattern::CreateGroups(const QString &patternPieceName) -> QDomElem
     if (groups.isNull())
     {
         groups = createElement(TagGroups);
-        draw.appendChild(groups);
+
+        // The schema declares the layers BEFORE the layer groups. A piece that lost its `<groups>` (a file edited
+        // by hand) would otherwise get them appended after them, and a save is refused for an out-of-order `<draw>`.
+        if (QDomElement layerGroups = draw.firstChildElement(TagLayerGroups); not layerGroups.isNull())
+        {
+            draw.insertBefore(groups, layerGroups);
+        }
+        else
+        {
+            draw.appendChild(groups);
+        }
     }
 
     return groups;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::CreateLayerGroups(const QString &patternPieceName) -> QDomElement
+{
+    QDomElement draw = patternPieceName.isEmpty() ? m_patternBlockMapper->GetActiveElement()
+                                                  : m_patternBlockMapper->GetElement(patternPieceName);
+
+    if (draw.isNull())
+    {
+        return {};
+    }
+
+    QDomElement layerGroups = draw.firstChildElement(TagLayerGroups);
+
+    if (layerGroups.isNull())
+    {
+        layerGroups = createElement(TagLayerGroups);
+
+        // Right after the layers, where the schema declares it: `<draw>` is a sequence, so a group block appended
+        // at the end would sit after the piece's calculations and a save would be refused.
+        if (QDomElement groups = draw.firstChildElement(TagGroups); not groups.isNull())
+        {
+            draw.insertAfter(layerGroups, groups);
+        }
+        else
+        {
+            draw.appendChild(layerGroups);
+        }
+    }
+
+    return layerGroups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::CreateGroup(quint32 id,
                                    const QString &name,
-                                   const QStringList &tags,
                                    const QMap<quint32, quint32> &groupData,
                                    vidtype tool,
                                    const QString &color,
-                                   const QString &penStyle) -> QDomElement
+                                   const QString &penStyle,
+                                   quint32 layerGroup) -> QDomElement
 {
     if (id == NULL_ID)
     {
         return QDomElement();
     }
-
-    const QString preparedTags = PrepareGroupTags(tags);
 
     QDomElement group = createElement(TagGroup);
     SetAttribute(group, AttrId, id);
@@ -2461,10 +2493,12 @@ auto VAbstractPattern::CreateGroup(quint32 id,
     SetAttribute(group, AttrColor, color);
     SetAttribute(group, AttrPenStyle, penStyle);
     SetAttributeOrRemoveIf<vidtype>(group, AttrTool, tool, [](vidtype tool) noexcept { return tool == null_id; });
-    SetAttributeOrRemoveIf<QString>(group,
-                                    AttrTags,
-                                    preparedTags,
-                                    [](const QString &preparedTags) noexcept { return preparedTags.isEmpty(); });
+    // The group of layers is written HERE and not afterwards: the element is handed back detached, so nothing
+    // could find it by id to write the attribute in a second pass.
+    SetAttributeOrRemoveIf<quint32>(group,
+                                    AttrLayerGroup,
+                                    layerGroup,
+                                    [](quint32 value) noexcept -> bool { return value == NULL_ID; });
 
     auto i = groupData.constBegin();
     while (i != groupData.constEnd())
@@ -2486,7 +2520,7 @@ auto VAbstractPattern::CreateGroup(quint32 id,
 auto VAbstractPattern::CreateAutomaticGroup(quint32 id, const QString &name,
                                             const QMap<quint32, quint32> &groupData) -> QDomElement
 {
-    QDomElement group = CreateGroup(id, name, {}, groupData);
+    QDomElement group = CreateGroup(id, name, groupData);
     if (not group.isNull())
     {
         // The role, not the name: this is what makes the layer recognisable on the next load, whatever the
@@ -2677,29 +2711,217 @@ void VAbstractPattern::SetActiveGroup(quint32 id, const QString &patternPieceNam
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetGroupTags(vidtype id) -> QStringList
+auto VAbstractPattern::GetLayerGroups(const QString &patternPieceName) -> QMap<quint32, VLayerGroupData>
 {
-    QStringList tags;
-    if (QDomElement const group = FindElementById(id, TagGroup); group.isElement())
+    QMap<quint32, VLayerGroupData> groups;
+
+    try
     {
-        tags = FilterGroupTags(GetParametrEmptyString(group, AttrTags));
+        if (QDomElement const layerGroups = CreateLayerGroups(patternPieceName); not layerGroups.isNull())
+        {
+            QDomNode domNode = layerGroups.firstChild();
+            while (not domNode.isNull())
+            {
+                if (domNode.isElement())
+                {
+                    if (const QDomElement group = domNode.toElement();
+                        not group.isNull() && group.tagName() == TagLayerGroup)
+                    {
+                        const quint32 id = GetParametrUInt(group, AttrId, QChar('0'));
+                        groups.insert(id,
+                                      {.name = GetParametrString(group,
+                                                                 AttrName,
+                                                                 QCoreApplication::translate("VAbstractPattern",
+                                                                                             "Group")),
+                                       .collapsed = GetParametrBool(group, AttrCollapsed, falseStr)});
+                    }
+                }
+                domNode = domNode.nextSibling();
+            }
+        }
+    }
+    catch (const VExceptionConversionError &)
+    {
+        return {};
     }
 
-    return tags;
+    return groups;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractPattern::SetGroupTags(quint32 id, const QStringList &tags)
+auto VAbstractPattern::CreateLayerGroup(quint32 id, const QString &name) -> QDomElement
 {
-    if (QDomElement group = FindElementById(id, TagGroup); group.isElement())
+    if (id == NULL_ID)
     {
-        SetAttributeOrRemoveIf<QString>(group,
-                                        AttrTags,
-                                        tags.join(','_L1),
-                                        [](const QString &rawTags) noexcept { return rawTags.isEmpty(); });
+        return {};
+    }
+
+    QDomElement layerGroup = createElement(TagLayerGroup);
+    SetAttribute(layerGroup, AttrId, id);
+    SetAttribute(layerGroup, AttrName, name);
+
+    return layerGroup;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::LayerGroupNames(const QString &patternPieceName) -> QMap<quint32, QString>
+{
+    QMap<quint32, QString> names;
+
+    const QMap<quint32, VLayerGroupData> groups = GetLayerGroups(patternPieceName);
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        names.insert(it.key(), it.value().name);
+    }
+
+    return names;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::InsertLayerGroup(quint32 id, const QString &name) -> quint32
+{
+    if (id == NULL_ID || name.isEmpty())
+    {
+        return NULL_ID;
+    }
+
+    QDomElement layerGroups = CreateLayerGroups();
+    if (layerGroups.isNull())
+    {
+        return NULL_ID;
+    }
+
+    const QDomElement element = CreateLayerGroup(id, name);
+    if (element.isNull())
+    {
+        return NULL_ID;
+    }
+
+    layerGroups.appendChild(element);
+    modified = true;
+
+    return id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::RemoveLayerGroup(quint32 id)
+{
+    if (QDomElement const layerGroup = FindElementById(id, TagLayerGroup); layerGroup.isElement())
+    {
+        if (QDomNode parent = layerGroup.parentNode(); not parent.isNull())
+        {
+            parent.removeChild(layerGroup);
+            modified = true;
+            emit patternChanged(false);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetLayerGroupName(quint32 id) -> QString
+{
+    if (QDomElement const layerGroup = FindElementById(id, TagLayerGroup); layerGroup.isElement())
+    {
+        return GetParametrString(layerGroup, AttrName, QString());
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetLayerGroupName(quint32 id, const QString &name)
+{
+    if (QDomElement layerGroup = FindElementById(id, TagLayerGroup); layerGroup.isElement())
+    {
+        SetAttribute(layerGroup, AttrName, name);
         modified = true;
         emit patternChanged(false);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetLayerGroupCollapsed(quint32 id) -> bool
+{
+    if (QDomElement const layerGroup = FindElementById(id, TagLayerGroup); layerGroup.isElement())
+    {
+        return GetParametrBool(layerGroup, AttrCollapsed, falseStr);
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetLayerGroupCollapsed(quint32 id, bool collapsed)
+{
+    if (QDomElement layerGroup = FindElementById(id, TagLayerGroup); layerGroup.isElement())
+    {
+        // Written only when folded: a group unfolded is what a file without the attribute reads as, so the two
+        // states cannot drift apart.
+        SetAttributeOrRemoveIf<bool>(layerGroup,
+                                     AttrCollapsed,
+                                     collapsed,
+                                     [](bool value) noexcept -> bool { return not value; });
+        modified = true;
+        emit patternChanged(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetLayerGroup(quint32 layerId) -> quint32
+{
+    if (QDomElement const group = FindElementById(layerId, TagGroup); group.isElement())
+    {
+        const quint32 id = GetParametrUInt(group, AttrLayerGroup, NULL_ID_STR);
+
+        // A group the document does not hold any more reads as "no group": the layer is then listed at the top
+        // level, where the user can gather it again. Nothing dangles in the dock.
+        if (id != NULL_ID && not FindElementById(id, TagLayerGroup).isElement())
+        {
+            return NULL_ID;
+        }
+
+        return id;
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetLayerGroup(quint32 layerId, quint32 groupId)
+{
+    if (QDomElement group = FindElementById(layerId, TagGroup); group.isElement())
+    {
+        // Written on the layer, never on the group: a layer belongs to one group at most, and leaving it (NULL_ID)
+        // is simply the attribute going away.
+        SetAttributeOrRemoveIf<quint32>(group,
+                                        AttrLayerGroup,
+                                        groupId,
+                                        [](quint32 value) noexcept -> bool { return value == NULL_ID; });
+        modified = true;
+        emit patternChanged(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::LayerGroupLayers(quint32 groupId) -> QVector<quint32>
+{
+    QVector<quint32> layers;
+
+    if (groupId == NULL_ID)
+    {
+        return layers;
+    }
+
+    const QMap<quint32, VGroupData> groups = GetGroups();
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        if (it.value().layerGroup == groupId)
+        {
+            layers.append(it.key());
+        }
+    }
+
+    return layers;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2784,25 +3006,6 @@ void VAbstractPattern::SetDimensionCValue(double value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::GetGroupCategories() const -> QStringList
-{
-    QSet<QString> categories;
-
-    const QDomNodeList groups = elementsByTagName(TagGroup);
-    for (int i = 0; i < groups.size(); ++i)
-    {
-        const QDomElement group = groups.at(i).toElement();
-        if (not group.isNull() && group.hasAttribute(AttrTags))
-        {
-            QStringList const groupTags = VAbstractPattern::FilterGroupTags(GetParametrEmptyString(group, AttrTags));
-            categories.unite(ConvertToSet<QString>(groupTags));
-        }
-    }
-
-    return ConvertToList(categories);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint32, VGroupData>
 {
     QMap<quint32, VGroupData> data;
@@ -2843,7 +3046,6 @@ auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint3
                                                                QCoreApplication::translate("VAbstractPattern",
                                                                                            "New layer")),
                                      .visible = GetParametrBool(group, AttrVisible, trueStr),
-                                     .tags = FilterGroupTags(GetParametrEmptyString(group, AttrTags)),
                                      .tool = GetParametrUInt(group, AttrTool, NULL_ID_STR),
                                      .items = items,
                                      // A file written before layers carried a pen reads as the default one:
@@ -2851,7 +3053,8 @@ auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint3
                                      .color = GetParametrString(group, AttrColor, ColorBlack),
                                      .penStyle = GetParametrString(group, AttrPenStyle, TypeLineLine),
                                      .active = GetParametrBool(group, AttrActive, falseStr),
-                                     .automatic = GetParametrBool(group, AttrAuto, falseStr)});
+                                     .automatic = GetParametrBool(group, AttrAuto, falseStr),
+                                     .layerGroup = GetParametrUInt(group, AttrLayerGroup, NULL_ID_STR)});
                     }
                 }
                 domNode = domNode.nextSibling();
@@ -3440,23 +3643,4 @@ auto VAbstractPattern::GetCompletePPData(const QString &name) const -> VContaine
 auto VAbstractPattern::Units() const -> Unit
 {
     return m_units;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::FilterGroupTags(const QString &tags) -> QStringList
-{
-    if (tags.isEmpty())
-    {
-        return QStringList();
-    }
-
-    QStringList list = tags.split(',');
-    for (auto &tag : list)
-    {
-        tag = tag.simplified();
-    }
-
-    list.removeAll("");
-
-    return ConvertToList(ConvertToSet<QString>(list));
 }

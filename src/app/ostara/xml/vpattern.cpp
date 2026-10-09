@@ -1098,7 +1098,7 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
  */
 void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
 {
-    QStringList const tags{TagCalculation, TagModeling, TagDetails, TagGroups};
+    QStringList const tags{TagCalculation, TagModeling, TagDetails, TagGroups, TagLayerGroups};
     QDomNode domNode = node.firstChild();
     while (not domNode.isNull())
     {
@@ -1128,6 +1128,12 @@ void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
                 break;
             case 3: // TagGroups
                 ParseGroups(domElement);
+                break;
+            case 4: // TagLayerGroups
+                // Nothing is built from the groups of layers: the Layers dock reads them straight from the document,
+                // and neither the canvas nor the drawing has anything to prepare. The tag still has to be NAMED
+                // here — the walk covers the whole `<draw>`, and it refuses a tag it does not know, which made a
+                // pattern carrying a group impossible to reopen (measured: "Wrong tag name 'layerGroups'").
                 break;
             default:
                 throw VException(tr("Wrong tag name '%1'.").arg(domElement.tagName()));

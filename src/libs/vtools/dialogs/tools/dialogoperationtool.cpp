@@ -31,6 +31,7 @@
 #include "../../tools/drawTools/operation/ooperationlines.h"
 #include "../../tools/drawTools/vtoolline.h"
 #include "../../tools/vabstracttool.h"
+#include "../widgets/olayergroupchooser.h"
 
 #include <QColor>
 #include <QComboBox>
@@ -123,29 +124,34 @@ void DialogOperationTool::SetHasLinkedVisibilityGroup(bool linked) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::SetVisibilityGroupTags(const QStringList &tags) const
+void DialogOperationTool::SetLayerGroup(quint32 groupId) const
 {
-    if (Widgets().groupTags == nullptr)
+    if (Widgets().layerGroup == nullptr)
     {
         return;
     }
 
-    Widgets().groupTags->setText(tags.join(", "));
+    Widgets().layerGroup->SetGroup(groupId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogOperationTool::GetVisibilityGroupTags() const -> QStringList
+auto DialogOperationTool::GetLayerGroup() const -> quint32
 {
-    return (Widgets().groupTags == nullptr) ? QStringList{} : Widgets().groupTags->text().split(',');
+    return (Widgets().layerGroup == nullptr) ? NULL_ID : Widgets().layerGroup->Group();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogOperationTool::SetGroupCategories(const QStringList &categories)
+auto DialogOperationTool::GetNewLayerGroupName() const -> QString
 {
-    m_groupTags = categories;
-    if (Widgets().groupTags != nullptr)
+    return (Widgets().layerGroup == nullptr) ? QString() : Widgets().layerGroup->NewGroupName();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::SetLayerGroups(const QMap<quint32, QString> &groups)
+{
+    if (Widgets().layerGroup != nullptr)
     {
-        Widgets().groupTags->SetCompletion(m_groupTags);
+        Widgets().layerGroup->SetGroups(groups);
     }
 }
 

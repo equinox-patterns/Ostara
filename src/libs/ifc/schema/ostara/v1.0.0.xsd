@@ -1202,13 +1202,32 @@
                         <xs:attribute name="name" type="xs:string"/>
                         <xs:attribute name="visible" type="xs:boolean"/>
                         <xs:attribute name="tool" type="xs:unsignedInt"/>
-                        <xs:attribute name="tags" type="xs:string"/>
+                        <!-- The group of layers this layer belongs to. An id, and at most one: a layer is in one
+                             group or in none. A group the file no longer holds reads as "no group". -->
+                        <xs:attribute name="layerGroup" type="xs:unsignedInt"/>
                         <xs:attribute name="color" type="colors"/>
                         <xs:attribute name="penStyle" type="linePenStyle"/>
                         <xs:attribute name="active" type="xs:boolean"/>
                         <!-- The layer the application maintains itself, holding the objects no layer references.
                              An identity, not a name: the name is translated and the user may change it. -->
                         <xs:attribute name="auto" type="xs:boolean"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <!-- The groups the layers of the piece are gathered under. A group owns its name, and the layers
+                   point at it: a group every layer has left is still a group, which is what lets it be deleted. -->
+              <xs:element name="layerGroups" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="layerGroup" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
+                        <xs:attribute name="name" type="xs:string"/>
+                        <!-- Whether the dock shows the group folded: the reader's own state, kept with the
+                             document the way the measurements keep theirs. -->
+                        <xs:attribute name="collapsed" type="xs:boolean"/>
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>

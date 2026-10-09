@@ -107,6 +107,12 @@ auto ConvertRemovedFoldLineTypes(QDomDocument *doc) -> bool;
 // Returns true if the attribute was found.
 auto StripShowCopiesAttributes(QDomDocument *doc) -> bool;
 
+// Strip the layer "tags" a pattern DOM still carries. Ostara replaced the tags with groups of layers, and the save
+// schema no longer declares the attribute, so dropping it at load is what keeps a .val (whose reading schema still
+// accepts it) and a pattern written by an earlier Ostara build saveable. Only <group> elements are touched.
+// Returns true if the attribute was found.
+auto StripGroupTags(QDomDocument *doc) -> bool;
+
 // Drop the layer items no tool of the piece can produce: a pair whose tool the file no longer holds, and a pair
 // whose OBJECT the tool does not define — the second being anything but inert, since a single point ignores the
 // object id it is handed and the pairs are applied in ascending key order, so a stale key outvotes the real one.

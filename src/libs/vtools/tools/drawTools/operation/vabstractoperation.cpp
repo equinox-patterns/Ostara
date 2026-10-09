@@ -1490,7 +1490,7 @@ auto VAbstractOperation::NeedUpdateVisibilityGroup() const -> bool
     {
         if (group != null_id)
         {
-            if (m_groupName != doc->GetGroupName(group) || m_groupTags != doc->GetGroupTags(group))
+            if (m_groupName != doc->GetGroupName(group) || m_layerGroup != doc->GetLayerGroup(group))
             {
                 return true; // rename group
             }
@@ -1525,8 +1525,11 @@ void VAbstractOperation::HandleVisibilityGroupChange(QUndoCommand *parent)
         if (group != null_id)
         {
             // The layer's pen is edited from the Layers dock, not here: the values are read back so that this
-            // command leaves them untouched.
-            const auto *groupOptions = new ChangeGroupOptions(doc, group, m_groupName, m_groupTags,
+            // command leaves them untouched. The group of layers, on the other hand, is chosen here — and a group
+            // named on the spot is created first, so the layer can join it.
+            const quint32 layerGroup = MaterializeLayerGroup(doc, &(VDataTool::data), m_layerGroup,
+                                                             m_newLayerGroupName);
+            const auto *groupOptions = new ChangeGroupOptions(doc, group, m_groupName, layerGroup,
                                                               doc->GetGroupColor(group), doc->GetGroupPenStyle(group),
                                                               parent);
             connect(groupOptions, &ChangeGroupOptions::UpdateGroups, doc, &VAbstractPattern::UpdateVisiblityGroups);
@@ -1537,7 +1540,8 @@ void VAbstractOperation::HandleVisibilityGroupChange(QUndoCommand *parent)
             initData.id = m_id;
             initData.hasLinkedVisibilityGroup = m_hasLinkedGroup;
             initData.visibilityGroupName = m_groupName;
-            initData.visibilityGroupTags = m_groupTags;
+            initData.layerGroup = m_layerGroup;
+            initData.newLayerGroupName = m_newLayerGroupName;
             initData.data = &(VDataTool::data);
             initData.doc = doc;
             initData.source = m_source;
@@ -1716,6 +1720,23 @@ auto VAbstractOperation::VisibilityGroupToolTip() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::MaterializeLayerGroup(VAbstractPattern *doc, VContainer *data, quint32 answer,
+                                               const QString &name) -> quint32
+{
+    if (answer != VAbstractPattern::NewLayerGroupId)
+    {
+        return answer; // NULL_ID for "no group", or a group that already exists
+    }
+
+    if (doc == nullptr || data == nullptr)
+    {
+        return NULL_ID;
+    }
+
+    return doc->InsertLayerGroup(data->getNextId(), name);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::CreateVisibilityGroup(const VAbstractOperationInitData &initData, QUndoCommand *parent)
 {
     if (not initData.hasLinkedVisibilityGroup && not initData.visibilityGroupName.isEmpty())
@@ -1740,8 +1761,13 @@ void VAbstractOperation::CreateVisibilityGroup(const VAbstractOperationInitData 
 
     vidtype const groupId = initData.data->getNextId();
 
-    if (const QDomElement group = initData.doc->CreateGroup(groupId, initData.visibilityGroupName,
-                                                            initData.visibilityGroupTags, groupData, initData.id);
+    // The group of layers the new layer joins, created here when the answer named one that does not exist yet —
+    // before the layer is written, which carries its group from the start.
+    const quint32 layerGroup = MaterializeLayerGroup(initData.doc, initData.data, initData.layerGroup,
+                                                     initData.newLayerGroupName);
+
+    if (const QDomElement group = initData.doc->CreateGroup(groupId, initData.visibilityGroupName, groupData,
+                                                            initData.id, ColorBlack, TypeLineLine, layerGroup);
         not group.isNull())
     {
         auto *addGroup = new AddGroup(group, initData.doc, parent);

@@ -43,6 +43,7 @@ class QTableWidgetItem;
 class VAbstractPattern;
 class VContainer;
 struct VGroupData;
+struct VLayerGroupData;
 
 namespace Ui
 {
@@ -119,10 +120,19 @@ private:
         Transferring  ///< The layer gives up any of its own objects, straight into the layer chosen next.
     };
 
+    /// What a row of the table stands for. A group row is the level above the layers: it wears the group's name,
+    /// and the layers that follow it in the list are its content — everything down to the next group row.
+    enum class RowKind : quint8
+    {
+        Layer,
+        LayerGroup
+    };
+
     Ui::VWidgetGroups *ui;
     VAbstractPattern *m_doc;
     VContainer *m_pattern;
     QPushButton *m_addButton;
+    QPushButton *m_addGroupButton{nullptr};
     QCheckBox *m_showActiveLayer{nullptr};
 
     ObjectSelection m_objectSelection{ObjectSelection::Idle};
@@ -141,26 +151,64 @@ private:
     /// it took, and a second computation is a second rule that can drift from the first.
     QMap<quint32, quint32> m_markedObjects;
 
+    /// Where the list was scrolled to when the current row action began. A row action can rebuild the table — the
+    /// layer dialog pushes its change through the document, and the rebuild scrolls the active layer (often the
+    /// last of the list) into view. The position is therefore taken BEFORE the action and given back after it: a
+    /// dialog opened from the list must not move the list (see SelectActiveRow).
+    int m_scrollY{0};
+    int m_scrollX{0};
+
     // Button icon: the current-theme variant at rest, always the dark variant on hover
     // (the hovered button background is an accent, dark in both themes).
     QIcon m_addNormalIcon;
     QIcon m_addHoverIcon;
+    QIcon m_addGroupNormalIcon;
+    QIcon m_addGroupHoverIcon;
 
-    void BuildAddButton();
+    void BuildAddButtons();
     void UpdateAddButtonIcon();
+    void UpdateAddGroupButtonIcon();
     void BuildShowActiveLayerCheckBox();
 
     void FillTable(QMap<quint32, VGroupData> groups);
+    void FillLayerRow(int row, quint32 id, const VGroupData &data, bool dark);
+    void FillLayerGroupRow(int row, quint32 id, const VLayerGroupData &group, const QVector<quint32> &layers,
+                           bool anyVisible, bool dark);
     void SetGroupVisibility(vidtype id, bool visible) const;
     void SetMultipleGroupsVisibility(const QVector<vidtype> &groups, bool visible) const;
 
-    auto FilterGroups(const QMap<quint32, VGroupData> &groups) -> QMap<quint32, VGroupData>;
-
+    /// The row kinds are what tell a group row from a layer row: a group row carries the group's id in the first
+    /// column just like a layer row carries the layer's, and nothing else could tell them apart.
+    auto KindOfRow(int row) const -> RowKind;
+    /// The row of one layer, -1 when the layer is not listed — inside a folded group, or filtered out.
     auto GroupRow(vidtype id) const -> int;
+    auto LayerGroupRow(vidtype groupId) const -> int;
+
+    /// Every layer of the piece, id -> name, by name.
+    auto LayerNames() const -> QMap<quint32, QString>;
+    /// The layers a row of the group dialog may name: the ones no group holds, plus — when editing — the ones the
+    /// group already holds, otherwise opening the dialog would empty it.
+    auto CandidateLayers(quint32 groupId) const -> QMap<quint32, QString>;
+
+    /// Turn the dialog's answer into a group that exists: the id the user picked, or a group created here when the
+    /// answer was "a new one". The creation is pushed as its own command, so the caller opens a macro and one
+    /// Ctrl+Z takes the group AND what joined it.
+    auto MaterializeLayerGroup(quint32 choice, const QString &newName) -> quint32;
+
+    void RefreshGroupEyes() const;
+    /// Every layer of the group is shown. An empty group counts as shown: it has nothing to hide.
+    auto LayerGroupFullyVisible(quint32 groupId) const -> bool;
+    void SetLayerGroupVisibility(quint32 groupId, bool visible);
 
     void ActionAddLayer();
     void ActionEditLayer(quint32 id);
     void ActionDeleteLayer(quint32 id);
+    void ActionAddLayerGroup();
+    void ActionEditLayerGroup(quint32 id);
+    void ActionDeleteLayerGroup(quint32 id);
+    void ActionTransferLayerGroup(quint32 id);
+    /// Fold or unfold one group: what the reader sees, written with the document so it is remembered.
+    void ToggleLayerGroup(quint32 id);
     void ActionHideAll();
     void ActionShowAll();
 
@@ -202,8 +250,11 @@ private:
 
     /// The layer the canvas draws into. A single click on the name is what sets it.
     void SetActiveLayer(quint32 id);
-    /// Put the highlight back on the active layer — the row actions must not move it.
-    void SelectActiveRow();
+    /// Put the highlight back on the active layer — the row actions must not move it. @p keepScroll says the user is
+    /// working in the list: the row comes back into the selection, not into view, so a long list stays where it is
+    /// under their hands.
+    void SelectActiveRow(bool keepScroll = false);
+    void RememberScroll();
 };
 
 #endif // VWIDGETGROUPS_H

@@ -965,6 +965,11 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // wrote would block the pattern's save for good. Silent by design, see the function.
         StripShowCopiesAttributes(doc);
 
+        // Drop the layer tags the layers used to carry. Same reasoning, and the same need for both formats: a .val
+        // is read through a schema that still declares the attribute, and an .ostara written by an earlier Ostara
+        // build carries it too, while the save schema no longer declares it. Silent by design, see the function.
+        StripGroupTags(doc);
+
         // First take out the layer items that no tool of the piece can produce — a pair naming a tool the file no
         // longer holds, or an object its tool does not define. Both are acted on when a layer is hidden, and the
         // second one can pin an object of a hidden layer on screen. Silent by design, and it runs BEFORE the two

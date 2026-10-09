@@ -141,8 +141,16 @@ void PrepareHostLayer(OToolTransfertInitData &initData)
         // transfer that happens to have filled it. Linked, it would be deleted with the operation and — worse —
         // detached from its objects at every validation of the dialog, since the dialog never has a visibility
         // group to show for it.
-        const QDomElement group
-            = doc->CreateGroup(groupId, initData.layerName, {}, {}, null_id);
+        // The layer of the host part joins the group chosen in the dialog. The answer is settled here rather than
+        // by a member helper: this preparation runs before any tool instance exists.
+        quint32 layerGroup = initData.layerGroup;
+        if (layerGroup == VAbstractPattern::NewLayerGroupId)
+        {
+            layerGroup = doc->InsertLayerGroup(initData.data->getNextId(), initData.newLayerGroupName);
+        }
+
+        const QDomElement group = doc->CreateGroup(groupId, initData.layerName, {}, null_id, ColorBlack, TypeLineLine,
+                                                   layerGroup);
         if (group.isNull())
         {
             return;
@@ -207,7 +215,8 @@ auto OToolTransfert::Create(const QPointer<DialogTool> &dialog, VMainGraphicsSce
     // so it could not be created either.
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
-    initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
+    initData.layerGroup = dialogTool->GetLayerGroup();
+    initData.newLayerGroupName = dialogTool->GetNewLayerGroupName();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

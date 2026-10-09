@@ -29,14 +29,12 @@
 #include "dialoggroup.h"
 
 #include <QComboBox>
-#include <QCompleter>
 #include <QLineEdit>
 #include <QScreen>
 
 #include "../dialogtoolbox.h"
 #include "../ifc/ifcdef.h"
 #include "../vmisc/FactoryWidgets.h"
-#include "../vwidgets/odecimalseparatorfilter.h"
 #include "ui_dialoggroup.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -62,9 +60,9 @@ DialogGroup::DialogGroup(const VContainer *data, VAbstractPattern *doc, quint32 
 
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &DialogGroup::NameChanged);
 
-    // Tags are a comma-separated list ("avant, après"): its commas are separators, so the application-wide
-    // decimal filter must leave them alone — otherwise a tag ending in a digit would swallow the comma.
-    ODecimalSeparatorFilter::MarkCommaAsSeparator(ui->lineEditTags);
+    // Where the layer sits in the dock is part of the layer: the group is chosen here, and a group that does not
+    // exist yet can be named on the spot — the dock creates it with the layer, in one undo step.
+    connect(ui->layerGroupChooser, &OLayerGroupChooser::Changed, this, [this]() { CheckState(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -114,21 +112,27 @@ auto DialogGroup::GetName() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogGroup::SetTags(const QStringList &tags)
+void DialogGroup::SetLayerGroups(const QMap<quint32, QString> &groups)
 {
-    ui->lineEditTags->setText(tags.join(", "));
+    ui->layerGroupChooser->SetGroups(groups);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogGroup::GetTags() const -> QStringList
+void DialogGroup::SetLayerGroup(quint32 id)
 {
-    return ui->lineEditTags->text().split(",");
+    ui->layerGroupChooser->SetGroup(id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogGroup::SetGroupCategories(const QStringList &categories)
+auto DialogGroup::GetLayerGroup() const -> quint32
 {
-    ui->lineEditTags->SetCompletion(categories);
+    return ui->layerGroupChooser->Group();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogGroup::GetNewLayerGroupName() const -> QString
+{
+    return ui->layerGroupChooser->NewGroupName();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -177,6 +181,13 @@ void DialogGroup::ShowDialog(bool click)
 void DialogGroup::CheckDependencyTreeComplete()
 {
     // Does nothing
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogGroup::IsValid() const -> bool
+{
+    // A layer carries a name, and the group it is put in is either one that exists or one being named.
+    return flagName && ui->layerGroupChooser->IsValid();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

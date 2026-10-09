@@ -958,7 +958,8 @@ auto OToolDartCap::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene
     // layer: the eye of a layer would neither show nor hide it. The pleat carries the same three fields.
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
-    initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
+    initData.layerGroup = dialogTool->GetLayerGroup();
+    initData.newLayerGroupName = dialogTool->GetNewLayerGroupName();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

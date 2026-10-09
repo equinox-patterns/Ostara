@@ -120,6 +120,10 @@ extern const QString AttrDrawCap;
 // attribute. It is no longer written, and it is stripped from the DOM at load (StripShowCopiesAttributes), because
 // the save schema does not declare it — left in place it would make the whole pattern impossible to save.
 extern const QString AttrShowCopies;
+// Legacy only: a .val (or an .ostara written by an earlier Ostara build) tags its layers with free categories. Ostara
+// replaced them with groups of layers, so the attribute is never written again and is stripped from the DOM at load
+// (StripGroupTags) — the save schema does not declare it, and left in place it would block the save entirely.
+extern const QString AttrTags;
 extern const QString AttrRotationAngle;
 extern const QString AttrLength1;
 extern const QString AttrLength2;

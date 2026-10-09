@@ -63,7 +63,11 @@ struct VAbstractOperationInitData : VDrawToolInitData
     QSet<quint32> keptInPlace{};
 
     QString visibilityGroupName{};
-    QStringList visibilityGroupTags{};
+    /// The group of layers the operation's own layer joins: NULL_ID for none, an existing id, or
+    /// VAbstractPattern::NewLayerGroupId when the user named a group that does not exist yet — created when the
+    /// layer is (see newLayerGroupName).
+    quint32 layerGroup{NULL_ID};
+    QString newLayerGroupName{};
     bool hasLinkedVisibilityGroup{false};
 };
 
@@ -184,7 +188,10 @@ protected:
 
     bool m_hasLinkedGroup{false};
     QString m_groupName{};
-    QStringList m_groupTags{};
+    /// The group of layers the layer of this operation joins, and the name of the group to create when the answer
+    /// was "a new one" — see VAbstractOperationInitData::layerGroup.
+    quint32 m_layerGroup{NULL_ID};
+    QString m_newLayerGroupName{};
 
     explicit VAbstractOperation(const VAbstractOperationInitData &initData, QGraphicsItem *parent = nullptr);
 
@@ -353,6 +360,13 @@ private:
 
     auto NeedUpdateVisibilityGroup() const -> bool;
     void HandleVisibilityGroupChange(QUndoCommand *parent);
+
+protected:
+    /// The group the answer settles on, created in the document when the answer names a new one. NULL_ID when it
+    /// cannot be settled. A shared helper: the same question is asked when the layer is created, when its options
+    /// are applied again, and by the one operation that creates a layer of its own outside its own piece.
+    static auto MaterializeLayerGroup(VAbstractPattern *doc, VContainer *data, quint32 answer, const QString &name)
+        -> quint32;
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -361,12 +375,12 @@ template <typename T> void VAbstractOperation::SetDialogVisibilityGroupData(QPoi
     SCASSERT(not dialogTool.isNull())
 
     vidtype const group = doc->GroupLinkedToTool(m_id);
-    dialogTool->SetGroupCategories(doc->GetGroupCategories());
+    dialogTool->SetLayerGroups(doc->LayerGroupNames());
     if (group != null_id)
     {
         dialogTool->SetHasLinkedVisibilityGroup(true);
         dialogTool->SetVisibilityGroupName(doc->GetGroupName(group));
-        dialogTool->SetVisibilityGroupTags(doc->GetGroupTags(group));
+        dialogTool->SetLayerGroup(doc->GetLayerGroup(group));
     }
     else
     {
@@ -382,7 +396,8 @@ template <typename T> void VAbstractOperation::SaveVisibilityGroupData(QPointer<
     // Save for later use.
     m_hasLinkedGroup = dialogTool->HasLinkedVisibilityGroup();
     m_groupName = dialogTool->GetVisibilityGroupName();
-    m_groupTags = dialogTool->GetVisibilityGroupTags();
+    m_layerGroup = dialogTool->GetLayerGroup();
+    m_newLayerGroupName = dialogTool->GetNewLayerGroupName();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

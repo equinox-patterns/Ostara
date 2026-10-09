@@ -41,14 +41,14 @@
 class QGroupBox;
 class QLabel;
 class QPlainTextEdit;
-class VCompleterLineEdit;
+class OLayerGroupChooser;
 
 struct OperationWidgets
 {
     QLabel *labelStatus{nullptr};
     QLabel *labelGroupName{nullptr};
     QPlainTextEdit *notes{nullptr};
-    VCompleterLineEdit *groupTags{nullptr};
+    OLayerGroupChooser *layerGroup{nullptr};
     QLineEdit *visibilityGroupLine{nullptr};
     QGroupBox *visibilityGroup{nullptr};
 };
@@ -64,13 +64,18 @@ public:
     auto HasLinkedVisibilityGroup() const -> bool;
     void SetHasLinkedVisibilityGroup(bool linked) const;
 
-    void SetVisibilityGroupTags(const QStringList &tags) const;
-    auto GetVisibilityGroupTags() const -> QStringList;
+    /// The group of layers the operation's own layer joins. NULL_ID when it joins none, the id of an existing
+    /// group, or VAbstractPattern::NewLayerGroupId when the user named one that does not exist yet — the tool then
+    /// creates it (see GetNewLayerGroupName()).
+    void SetLayerGroup(quint32 groupId) const;
+    auto GetLayerGroup() const -> quint32;
+    auto GetNewLayerGroupName() const -> QString;
 
     void SetNotes(const QString &notes) const;
     auto GetNotes() const -> QString;
 
-    void SetGroupCategories(const QStringList &categories) override;
+    /// The groups of layers that can be joined, id -> name: what the chooser offers.
+    void SetLayerGroups(const QMap<quint32, QString> &groups) override;
 
     auto GetSourceObjects() const -> QVector<SourceItem>;
     void SetSourceObjects(const QVector<SourceItem> &value);
@@ -147,7 +152,6 @@ protected:
     auto IsFlagGroupName() const -> bool { return flagGroupName; }
     auto IsFlagError() const -> bool { return flagError; }
     void SetFlagError(bool value) { flagError = value; }
-    auto GroupTags() -> QStringList & { return m_groupTags; }
 
 private:
     QVector<SourceItem> m_sourceObjects{};
@@ -171,7 +175,6 @@ private:
     bool stage1{true};
     bool flagGroupName{true};
     bool flagError{false};
-    QStringList m_groupTags{};
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -193,9 +196,9 @@ template <class Ui> auto OperationWidgetsFrom(const Ui *ui) -> OperationWidgets
     {
         widgets.labelGroupName = ui->labelGroupName;
     }
-    if constexpr (requires { ui->lineEditGroupTags; })
+    if constexpr (requires { ui->layerGroupChooser; })
     {
-        widgets.groupTags = ui->lineEditGroupTags;
+        widgets.layerGroup = ui->layerGroupChooser;
     }
     if constexpr (requires { ui->lineEditVisibilityGroup; })
     {

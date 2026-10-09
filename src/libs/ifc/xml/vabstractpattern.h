@@ -43,6 +43,7 @@
 #include <QtGlobal>
 
 #include <atomic>
+#include <limits>
 
 #include "../vmisc/def.h"
 #include "vcoverpagedata.h"
@@ -118,7 +119,6 @@ struct VGroupData
 {
     QString name{};
     bool visible{true};
-    QStringList tags{};
     vidtype tool{NULL_ID};
     QVector<QPair<vidtype, vidtype>> items{};
     /// The layer's own pen. It is what the objects created inside it are offered as a default — the layer never
@@ -130,6 +130,18 @@ struct VGroupData
     /// The layer the application itself maintains for the objects no layer references (see AttrAuto). Its name is
     /// translated and may be changed by the user, which is precisely why the role is carried by this flag.
     bool automatic{false};
+    /// The group of layers this layer is gathered under, NULL_ID when it belongs to none. One layer, one group:
+    /// the attribute holds a single id, and the dock reads the whole hierarchy from it.
+    quint32 layerGroup{NULL_ID};
+};
+
+/// A group of layers: a name, and the layers that point at it. The group owns nothing else — its visibility is
+/// the state of its layers, and an empty group is still a group, which is what lets it be deleted.
+struct VLayerGroupData
+{
+    QString name{};
+    /// Whether the dock shows the group folded. The reader's own state, kept with the document.
+    bool collapsed{false};
 };
 
 QT_WARNING_POP
@@ -314,11 +326,11 @@ public:
     auto CreateGroups(const QString &patternPieceName = QString()) -> QDomElement;
     auto CreateGroup(quint32 id,
                      const QString &name,
-                     const QStringList &tags,
                      const QMap<quint32, quint32> &groupData,
                      vidtype tool = null_id,
                      const QString &color = ColorBlack,
-                     const QString &penStyle = TypeLineLine) -> QDomElement;
+                     const QString &penStyle = TypeLineLine,
+                     quint32 layerGroup = NULL_ID) -> QDomElement;
     /// The layer the application maintains itself: the one holding the objects no layer references. Its NAME is
     /// translated ("Unnamed" / "Sans nom") and the user may change it, so what identifies it is the marker this
     /// writes (AttrAuto) — recognising it by its name made a second one appear in another language.
@@ -333,9 +345,6 @@ public:
     auto GetGroupPenStyle(quint32 id) -> QString;
     void SetGroupPen(quint32 id, const QString &color, const QString &penStyle);
 
-    auto GetGroupTags(vidtype id) -> QStringList;
-    void SetGroupTags(quint32 id, const QStringList &tags);
-
     auto GetDimensionAValue() -> double;
     void SetDimensionAValue(double value);
 
@@ -344,8 +353,6 @@ public:
 
     auto GetDimensionCValue() -> double;
     void SetDimensionCValue(double value);
-
-    auto GetGroupCategories() const -> QStringList;
 
     auto GetGroups(const QString &patternPieceName = QString()) -> QMap<quint32, VGroupData>;
     auto GetGroupsContainingItem(quint32 toolId, quint32 objectId, bool containItem) -> QMap<quint32, QString>;
@@ -356,6 +363,41 @@ public:
     auto RemoveItemFromGroup(quint32 toolId, quint32 objectId, quint32 groupId) -> QDomElement;
     auto GetGroupVisibility(quint32 id) -> bool;
     void SetGroupVisibility(quint32 id, bool visible);
+
+    /// The sentinel a "which group?" answer carries when the group named does not exist yet: the dialogs ask for a
+    /// new group with it, and the code that writes it creates one. A real id never reaches it — the ids come from
+    /// the document's own counter.
+    static constexpr quint32 NewLayerGroupId = std::numeric_limits<quint32>::max();
+
+    /// The groups of layers that can be joined, id -> name — what a dialog offers in a combo. Like the layers,
+    /// they belong to a piece.
+    auto LayerGroupNames(const QString &patternPieceName = QString()) -> QMap<quint32, QString>;
+    auto GetLayerGroups(const QString &patternPieceName = QString()) -> QMap<quint32, VLayerGroupData>;
+    /// The `<layerGroups>` element of one piece, created on the spot when the piece has none. Placed right after
+    /// the layers, where the schema declares it.
+    auto CreateLayerGroups(const QString &patternPieceName = QString()) -> QDomElement;
+    auto CreateLayerGroup(quint32 id, const QString &name) -> QDomElement;
+    /// Create a group AND put it in the piece in one gesture — what the operations need, where the layer is written
+    /// into the DOM before any undo command exists. @p id comes from the document's own counter. NULL_ID when there
+    /// is nothing to create.
+    auto InsertLayerGroup(quint32 id, const QString &name) -> quint32;
+    /// Take the group out of the document. The group's layers are expected to have left it already.
+    void RemoveLayerGroup(quint32 id);
+
+    auto GetLayerGroupName(quint32 id) -> QString;
+    void SetLayerGroupName(quint32 id, const QString &name);
+
+    auto GetLayerGroupCollapsed(quint32 id) -> bool;
+    void SetLayerGroupCollapsed(quint32 id, bool collapsed);
+
+    /// The group one layer belongs to, NULL_ID when it belongs to none — or when the group it names is not in the
+    /// document any more, which a file edited by hand can hold. A layer is never in two groups: nothing to choose.
+    auto GetLayerGroup(quint32 layerId) -> quint32;
+    /// Put one layer in a group, or take it out of every group (NULL_ID). Written on the layer, never on the group.
+    void SetLayerGroup(quint32 layerId, quint32 groupId);
+
+    /// The layers of one group, in the order the document holds them.
+    auto LayerGroupLayers(quint32 groupId) -> QVector<quint32>;
 
     /// The (objectId, toolId) pairs a layer can really hold for one tool element, read from the DOM.
     ///
@@ -384,8 +426,6 @@ public:
     /// Make one layer the active one: the attribute is set on it and removed from every other layer of the piece.
     void SetActiveGroup(quint32 id, const QString &patternPieceName = QString());
 
-    static auto FilterGroupTags(const QString &tags) -> QStringList;
-
     auto PieceDrawName(quint32 id) -> QString;
 
     virtual auto GetCompleteData() const -> VContainer;
@@ -410,6 +450,8 @@ public:
     static const QString TagGroups;
     static const QString TagGroup;
     static const QString TagGroupItem;
+    static const QString TagLayerGroups;
+    static const QString TagLayerGroup;
     static const QString TagPieceGroups;
     static const QString TagPieceGroup;
     static const QString TagMember;
@@ -488,7 +530,10 @@ public:
     static const QString AttrPassmarkAngle;
     static const QString AttrPassmarkVisibility;
     static const QString AttrOpacity;
-    static const QString AttrTags;
+    /// The group of layers a `<group>` belongs to, written on the layer: one id, at most one group.
+    static const QString AttrLayerGroup;
+    /// Whether the dock folds a `<layerGroup>`: the reader's own state, kept with the document.
+    static const QString AttrCollapsed;
     /// Marks the layer the canvas draws into. Absent means "not active", so only the active one carries it —
     /// which also makes it self-healing: deleting the layer deletes its flag with it.
     static const QString AttrActive;

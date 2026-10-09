@@ -687,6 +687,42 @@ auto StripShowCopiesAttributes(QDomDocument *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto StripGroupTags(QDomDocument *doc) -> bool
+{
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    QDomElement const root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    // The layers were tagged with free categories until Ostara replaced them with groups of layers. The reading
+    // schema of the legacy .val still declares the attribute — it has to, those files exist — but the ostara save
+    // schema does not any more, and a save serialises an element exactly as it came from the file. Left in place,
+    // one tagged layer would block the save of the whole pattern. Silent by design: nothing of the tags survives
+    // in the dock, so there is nothing to warn about.
+    bool found = false;
+    const QDomNodeList groups = root.elementsByTagName(VAbstractPattern::TagGroup);
+    for (int i = 0; i < groups.size(); ++i)
+    {
+        QDomElement group = groups.at(i).toElement();
+        if (group.isNull() || not group.hasAttribute(AttrTags))
+        {
+            continue;
+        }
+
+        found = true;
+        group.removeAttribute(AttrTags);
+    }
+
+    return found;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 namespace
 {
 // One branch per renderer: a point, a line and a curve are three unrelated families (a spline tool is not a

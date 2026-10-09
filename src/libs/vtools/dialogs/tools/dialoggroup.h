@@ -53,8 +53,14 @@ public:
     void SetName(const QString &name);
     auto GetName() const -> QString;
 
-    void SetTags(const QStringList &tags);
-    auto GetTags() const -> QStringList;
+    /// The groups of layers that can be joined, id -> name. The layer's own dialog asks the question here rather
+    /// than in the dock: a layer is created and placed in one gesture.
+    void SetLayerGroups(const QMap<quint32, QString> &groups) override;
+    void SetLayerGroup(quint32 id);
+    /// NULL_ID when the layer joins no group, the id of an existing group, or OLayerGroupChooser::kCreateGroup when
+    /// the user named a new one — the caller creates it, GetNewLayerGroupName() carries the name.
+    auto GetLayerGroup() const -> quint32;
+    auto GetNewLayerGroupName() const -> QString;
 
     /// The layer's own pen, edited next to its name. It is what the objects created in the layer are offered as a
     /// default — the layer never repaints what is already drawn.
@@ -63,8 +69,6 @@ public:
 
     void SetColor(const QString &color);
     auto GetColor() const -> QString;
-
-    void SetGroupCategories(const QStringList &categories) override;
 
     auto GetGroup() const -> QMap<quint32, quint32>;
 
@@ -92,11 +96,5 @@ private:
     QMap<quint32, quint32> group;
     bool flagName;
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto DialogGroup::IsValid() const -> bool
-{
-    return flagName;
-}
 
 #endif // DIALOGGROUP_H

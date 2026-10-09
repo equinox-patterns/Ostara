@@ -203,7 +203,8 @@ auto VToolMove::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *s
     initData.lines = OOperationLines::Collect(dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
     initData.visibilityGroupName = dialogTool->GetVisibilityGroupName();
-    initData.visibilityGroupTags = dialogTool->GetVisibilityGroupTags();
+    initData.layerGroup = dialogTool->GetLayerGroup();
+    initData.newLayerGroupName = dialogTool->GetNewLayerGroupName();
     initData.scene = scene;
     initData.doc = doc;
     initData.data = data;

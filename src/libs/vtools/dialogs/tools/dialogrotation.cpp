@@ -544,17 +544,6 @@ void DialogRotation::SaveData()
         operation->RefreshGeometry();
     }
 
-    QStringList groupTags = ui->lineEditGroupTags->text().split(',');
-    for (auto &tag : groupTags)
-    {
-        tag = tag.trimmed();
-        if (not GroupTags().contains(tag))
-        {
-            GroupTags().append(tag);
-        }
-    }
-
-    ui->lineEditGroupTags->SetCompletion(GroupTags());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

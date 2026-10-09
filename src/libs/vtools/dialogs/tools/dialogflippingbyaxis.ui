@@ -91,19 +91,12 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Tags:</string>
+             <string>Group:</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="VCompleterLineEdit" name="lineEditGroupTags">
-            <property name="toolTip">
-             <string>Separate each tag with comma.</string>
-            </property>
-            <property name="placeholderText">
-             <string>Add tags</string>
-            </property>
-           </widget>
+           <widget class="OLayerGroupChooser" name="layerGroupChooser"/>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="labelLayerHint">
@@ -182,14 +175,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>OLayerGroupChooser</class>
+   <extends>QWidget</extends>
+   <header>dialogs/widgets/olayergroupchooser.h</header>
+  </customwidget>
+  <customwidget>
    <class>VPE::QtColorPicker</class>
    <extends>QPushButton</extends>
    <header>../vpropertyexplorer/qtcolorpicker.h</header>
-  </customwidget>
-  <customwidget>
-   <class>VCompleterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>../vwidgets/vlineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

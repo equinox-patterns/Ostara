@@ -32,22 +32,30 @@
 #include "vtheme.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/dialogs/tools/dialoggroup.h"
+#include "../vtools/dialogs/widgets/olayergroupchooser.h"
+#include "../vtools/undocommands/olayergroupcommands.h"
 #include "../vtools/undocommands/undogroup.h"
 #include "ochooselayerdialog.h"
+#include "olayergroupdialog.h"
+#include "otransferlayersdialog.h"
 #include "ui_vwidgetgroups.h"
 
 #include <QCheckBox>
 #include <QCompleter>
 #include <QDomElement>
+#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QStyledItemDelegate>
 #include <QTableWidget>
 #include <QUndoStack>
+
+#include <algorithm>
 
 namespace
 {
@@ -73,6 +81,26 @@ constexpr int kRemove = 6;
 constexpr int kDelete = 7;
 
 constexpr int kColumns = 8;
+
+// The layer (or the group of layers) a row stands for rides in Qt::UserRole; what KIND of row it is rides in the
+// role after it. A group row carries a group id in the very column a layer row carries a layer id, and both ids
+// come from the same document counter — nothing but this marker can tell the two rows apart.
+constexpr int kIdRole = Qt::UserRole;
+constexpr int kKindRole = Qt::UserRole + 1;
+
+//---------------------------------------------------------------------------------------------------------------------
+// One action cell: a themed icon and nothing else. The text stays empty on purpose — the column has no room for a
+// word, and the tooltip is what explains the icon.
+void SetActionCell(QTableWidget *table, int row, int column, const QIcon &icon, const QString &tooltip = QString())
+{
+    auto *item = new QTableWidgetItem(icon, QString());
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+    if (not tooltip.isEmpty())
+    {
+        item->setToolTip(tooltip);
+    }
+    table->setItem(row, column, item);
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto IconResPath(const QString &baseName, bool dark) -> QString
@@ -175,7 +203,7 @@ VWidgetGroups::VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget
     SCASSERT(doc != nullptr)
     SCASSERT(pattern != nullptr)
 
-    BuildAddButton();
+    BuildAddButtons();
     BuildShowActiveLayerCheckBox();
 
     QTableWidget *table = ui->tableWidget;
@@ -214,12 +242,13 @@ VWidgetGroups::VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget
     connect(table, &QTableWidget::cellClicked, this, &VWidgetGroups::OnCellClicked);
     connect(table, &QTableWidget::cellChanged, this, &VWidgetGroups::RenameGroup);
     connect(table, &QTableWidget::customContextMenuRequested, this, &VWidgetGroups::CtxMenu);
-    connect(ui->lineEditTags, &QLineEdit::textChanged, this, &VWidgetGroups::UpdateGroups);
+    connect(ui->lineEditLayerFilter, &QLineEdit::textChanged, this, &VWidgetGroups::UpdateGroups);
 
     // The dock stays open across theme toggles — the icons and the active-row tint must follow.
     connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, [this]()
     {
         UpdateAddButtonIcon();
+        UpdateAddGroupButtonIcon();
         UpdateActiveRowStyle();
         UpdateGroups();
     });
@@ -261,7 +290,7 @@ VWidgetGroups::~VWidgetGroups()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VWidgetGroups::BuildAddButton()
+void VWidgetGroups::BuildAddButtons()
 {
     m_addButton->setObjectName(QStringLiteral("addLayerButton"));
     m_addButton->setText(tr("Add a layer"));
@@ -272,8 +301,25 @@ void VWidgetGroups::BuildAddButton()
     m_addButton->installEventFilter(this);
     UpdateAddButtonIcon();
 
-    // Between the tag filter and the list — directly above it, like the "Add a size range" button.
-    ui->verticalLayout->insertWidget(1, m_addButton, 0, Qt::AlignHCenter);
+    m_addGroupButton = new QPushButton(this);
+    m_addGroupButton->setObjectName(QStringLiteral("addLayerGroupButton"));
+    m_addGroupButton->setText(tr("Add a group"));
+    m_addGroupButton->setIconSize(QSize(kIconSize, kIconSize));
+    m_addGroupButton->setFocusPolicy(Qt::NoFocus);
+    m_addGroupButton->setAutoDefault(false);
+    connect(m_addGroupButton, &QPushButton::clicked, this, &VWidgetGroups::ActionAddLayerGroup);
+    m_addGroupButton->installEventFilter(this);
+    UpdateAddGroupButtonIcon();
+
+    // Between the filter and the list, the two of them side by side — and a LAYOUT, never a QWidget wrapper: the
+    // viewport of a dock carries `.QWidget { background: $DockTitle }`, so a wrapper would draw a band behind the
+    // buttons (subtilité §13).
+    auto *buttons = new QHBoxLayout();
+    buttons->addStretch(1);
+    buttons->addWidget(m_addButton);
+    buttons->addWidget(m_addGroupButton);
+    buttons->addStretch(1);
+    ui->verticalLayout->insertLayout(1, buttons);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -285,6 +331,20 @@ void VWidgetGroups::UpdateAddButtonIcon()
     m_addNormalIcon = QIcon(IconResPath(QStringLiteral("stack-plus-fill"), dark));
     m_addHoverIcon = QIcon(IconResPath(QStringLiteral("stack-plus-fill"), true));
     m_addButton->setIcon(m_addNormalIcon);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::UpdateAddGroupButtonIcon()
+{
+    if (m_addGroupButton == nullptr)
+    {
+        return;
+    }
+
+    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+    m_addGroupNormalIcon = QIcon(IconResPath(QStringLiteral("stack-fill"), dark));
+    m_addGroupHoverIcon = QIcon(IconResPath(QStringLiteral("stack-fill"), true));
+    m_addGroupButton->setIcon(m_addGroupNormalIcon);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -318,6 +378,17 @@ bool VWidgetGroups::eventFilter(QObject *watched, QEvent *event)
             m_addButton->setIcon(m_addNormalIcon);
         }
     }
+    else if (watched == m_addGroupButton)
+    {
+        if (event->type() == QEvent::Enter)
+        {
+            m_addGroupButton->setIcon(m_addGroupHoverIcon);
+        }
+        else if (event->type() == QEvent::Leave || event->type() == QEvent::EnabledChange)
+        {
+            m_addGroupButton->setIcon(m_addGroupNormalIcon);
+        }
+    }
     return QWidget::eventFilter(watched, event);
 }
 
@@ -340,6 +411,10 @@ void VWidgetGroups::SetGroupVisibility(vidtype id, bool visible) const
                     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
                     item->setIcon(MakeCellIcon(visible ? QStringLiteral("eye") : QStringLiteral("eye-closed"), dark));
                 }
+
+                // The group the layer belongs to, if any, reads its layers: hiding the last visible one of a group
+                // closes its eye too, and that line has to follow.
+                RefreshGroupEyes();
             });
     VAbstractApplication::VApp()->getUndoStack()->push(changeGroup);
 }
@@ -369,35 +444,25 @@ void VWidgetGroups::SetMultipleGroupsVisibility(const QVector<vidtype> &groups, 
                     }
                     ++i;
                 }
+
+                // A group eye follows its layers: hiding the last visible one of a group closes it too.
+                RefreshGroupEyes();
             });
     VAbstractApplication::VApp()->getUndoStack()->push(changeGroups);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VWidgetGroups::FilterGroups(const QMap<quint32, VGroupData> &groups) -> QMap<quint32, VGroupData>
+auto VWidgetGroups::KindOfRow(int row) const -> RowKind
 {
-    QMap<quint32, VGroupData> filtered;
-    QSet<QString> const filterCategories =
-        ConvertToSet<QString>(VAbstractPattern::FilterGroupTags(ui->lineEditTags->text()));
-
-    if (filterCategories.isEmpty())
+    const QTableWidgetItem *item = ui->tableWidget->item(row, kVisible);
+    if (item == nullptr)
     {
-        return groups;
+        return RowKind::Layer;
     }
 
-    auto i = groups.constBegin();
-    while (i != groups.constEnd())
-    {
-        const VGroupData &data = i.value();
-        if (QSet<QString> const groupCategories = ConvertToSet<QString>(data.tags);
-            filterCategories.intersects(groupCategories))
-        {
-            filtered.insert(i.key(), data);
-        }
-        ++i;
-    }
-
-    return filtered;
+    // A row built before the groups existed carries no marker, and every such row is a layer.
+    return item->data(kKindRole).toUInt() == static_cast<quint32>(RowKind::LayerGroup) ? RowKind::LayerGroup
+                                                                                       : RowKind::Layer;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -405,10 +470,13 @@ auto VWidgetGroups::GroupRow(vidtype id) const -> int
 {
     for (int r = 0; r < ui->tableWidget->rowCount(); ++r)
     {
-        QTableWidgetItem  const*item = ui->tableWidget->item(r, kVisible);
-        SCASSERT(item != nullptr)
+        if (KindOfRow(r) != RowKind::Layer)
+        {
+            continue;
+        }
 
-        if (id == item->data(Qt::UserRole).toUInt())
+        const QTableWidgetItem *item = ui->tableWidget->item(r, kVisible);
+        if (item != nullptr && id == item->data(kIdRole).toUInt())
         {
             return r;
         }
@@ -418,15 +486,68 @@ auto VWidgetGroups::GroupRow(vidtype id) const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::LayerGroupRow(vidtype groupId) const -> int
+{
+    for (int r = 0; r < ui->tableWidget->rowCount(); ++r)
+    {
+        if (KindOfRow(r) != RowKind::LayerGroup)
+        {
+            continue;
+        }
+
+        const QTableWidgetItem *item = ui->tableWidget->item(r, kVisible);
+        if (item != nullptr && groupId == item->data(kIdRole).toUInt())
+        {
+            return r;
+        }
+    }
+
+    return -1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::LayerNames() const -> QMap<quint32, QString>
+{
+    QMap<quint32, QString> names;
+
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+    for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
+    {
+        names.insert(it.key(), it.value().name);
+    }
+
+    return names;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::CandidateLayers(quint32 groupId) const -> QMap<quint32, QString>
+{
+    QMap<quint32, QString> candidates;
+
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+    for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
+    {
+        // The layers no group holds, and — when editing — the ones this group already holds: a candidate list built
+        // from the free layers alone would empty the group the moment its dialog opened.
+        if (it.value().layerGroup == NULL_ID || (groupId != NULL_ID && it.value().layerGroup == groupId))
+        {
+            candidates.insert(it.key(), it.value().name);
+        }
+    }
+
+    return candidates;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::ActionAddLayer()
 {
-    // The dialog only collects a name and tags here: the new layer is empty, its objects are
+    // The dialog collects a name, a group and the layer's own pen here: the new layer is empty, its objects are
     // added afterwards from the canvas. A throwaway container is enough to build it.
     QScopedPointer<VContainer> const fackeContainer(new VContainer(VAbstractApplication::VApp()->TrVars(),
                                                                    VAbstractValApplication::VApp()->patternUnitsP(),
                                                                    VContainer::UniqueNamespace()));
     QScopedPointer<DialogGroup> const dialog(new DialogGroup(fackeContainer.data(), m_doc, NULL_ID, this));
-    dialog->SetGroupCategories(m_doc->GetGroupCategories());
+    dialog->SetLayerGroups(m_doc->LayerGroupNames());
 
     if (dialog->exec() != QDialog::Accepted)
     {
@@ -434,22 +555,26 @@ void VWidgetGroups::ActionAddLayer()
     }
 
     const quint32 newId = m_pattern->getNextId();
+    const quint32 previous = m_doc->GetActiveGroup();
+
+    // The layer just created becomes the active one — it is where the next object will land. Every write goes into
+    // a single undo step, so one Ctrl+Z takes the layer away entirely — and the group it brought with it.
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("add a layer"));
+
+    // A group named in the dialog is created here, before the layer: the layer is written with the group from the
+    // start, because CreateGroup hands back an element that is not in the document yet — nothing could look it up.
+    const quint32 layerGroup = MaterializeLayerGroup(dialog->GetLayerGroup(), dialog->GetNewLayerGroupName());
+
     if (const QDomElement group = m_doc->CreateGroup(newId,
                                                      dialog->GetName(),
-                                                     dialog->GetTags(),
                                                      {},
                                                      null_id,
                                                      dialog->GetColor(),
-                                                     dialog->GetPenStyle());
+                                                     dialog->GetPenStyle(),
+                                                     layerGroup);
         !group.isNull())
     {
-        const quint32 previous = m_doc->GetActiveGroup();
-
-        // The layer just created becomes the active one — it is where the next object will land. Both writes go
-        // into a single undo step so one Ctrl+Z takes the layer away entirely.
-        QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
-        undoStack->beginMacro(tr("add a layer"));
-
         auto *addGroup = new AddGroup(group, m_doc);
         connect(addGroup, &AddGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
         undoStack->push(addGroup);
@@ -457,9 +582,9 @@ void VWidgetGroups::ActionAddLayer()
         auto *change = new ChangeActiveGroup(m_doc, newId, previous);
         connect(change, &ChangeActiveGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
         undoStack->push(change);
-
-        undoStack->endMacro();
     }
+
+    undoStack->endMacro();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -470,22 +595,277 @@ void VWidgetGroups::ActionEditLayer(quint32 id)
                                                                    VContainer::UniqueNamespace()));
     QScopedPointer<DialogGroup> const dialog(new DialogGroup(fackeContainer.data(), m_doc, NULL_ID, this));
     dialog->SetName(m_doc->GetGroupName(id));
-    dialog->SetTags(m_doc->GetGroupTags(id));
+    dialog->SetLayerGroups(m_doc->LayerGroupNames());
+    dialog->SetLayerGroup(m_doc->GetLayerGroup(id));
     dialog->SetColor(m_doc->GetGroupColor(id));
     dialog->SetPenStyle(m_doc->GetGroupPenStyle(id));
-    dialog->SetGroupCategories(m_doc->GetGroupCategories());
-    const int result = dialog->exec();
 
-    if (result == QDialog::Accepted)
+    if (dialog->exec() != QDialog::Accepted)
     {
-        auto *changeGroupOptions = new ChangeGroupOptions(m_doc, id, dialog->GetName(), dialog->GetTags(),
-                                                          dialog->GetColor(), dialog->GetPenStyle());
-        connect(changeGroupOptions, &ChangeGroupOptions::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
-        // Through the document too: the canvas chrome (the rule's colour, the layer's name) is refreshed by
-        // MainWindow, which listens to the document and not to this dock.
-        connect(changeGroupOptions, &ChangeGroupOptions::UpdateGroups, m_doc,
-                &VAbstractPattern::UpdateVisiblityGroups);
-        VAbstractApplication::VApp()->getUndoStack()->push(changeGroupOptions);
+        return;
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("edit layer"));
+
+    const quint32 layerGroup = MaterializeLayerGroup(dialog->GetLayerGroup(), dialog->GetNewLayerGroupName());
+
+    auto *changeGroupOptions = new ChangeGroupOptions(m_doc, id, dialog->GetName(), layerGroup, dialog->GetColor(),
+                                                      dialog->GetPenStyle());
+    connect(changeGroupOptions, &ChangeGroupOptions::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    // Through the document too: the canvas chrome (the rule's colour, the layer's name) is refreshed by
+    // MainWindow, which listens to the document and not to this dock.
+    connect(changeGroupOptions, &ChangeGroupOptions::UpdateGroups, m_doc,
+            &VAbstractPattern::UpdateVisiblityGroups);
+    undoStack->push(changeGroupOptions);
+
+    undoStack->endMacro();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::MaterializeLayerGroup(quint32 choice, const QString &newName) -> quint32
+{
+    if (choice != VAbstractPattern::NewLayerGroupId)
+    {
+        return choice; // NULL_ID for "no group", or a group that already exists
+    }
+
+    if (newName.isEmpty())
+    {
+        return NULL_ID;
+    }
+
+    const quint32 id = m_pattern->getNextId();
+
+    const QDomElement element = m_doc->CreateLayerGroup(id, newName);
+    if (element.isNull())
+    {
+        return NULL_ID;
+    }
+
+    auto *addGroup = new AddLayerGroup(element, m_doc);
+    connect(addGroup, &AddLayerGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    VAbstractApplication::VApp()->getUndoStack()->push(addGroup);
+
+    return id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::ActionAddLayerGroup()
+{
+    QScopedPointer<OLayerGroupDialog> const dialog(new OLayerGroupDialog(this));
+    dialog->SetTakenNames(m_doc->LayerGroupNames().values());
+    // A group is filled with the layers no other group holds. It may be created empty: the dialog reopens on it.
+    dialog->SetLayers(CandidateLayers(NULL_ID), {});
+
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    const quint32 id = m_pattern->getNextId();
+
+    const QDomElement element = m_doc->CreateLayerGroup(id, dialog->GroupName());
+    if (element.isNull())
+    {
+        return;
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(tr("add a group of layers"));
+
+    auto *addGroup = new AddLayerGroup(element, m_doc);
+    connect(addGroup, &AddLayerGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    undoStack->push(addGroup);
+
+    if (const QVector<quint32> layers = dialog->Layers(); not layers.isEmpty())
+    {
+        auto *change = new ChangeLayersGroup(m_doc, layers, id);
+        connect(change, &ChangeLayersGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+        undoStack->push(change);
+    }
+
+    undoStack->endMacro();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::ActionEditLayerGroup(quint32 id)
+{
+    QStringList taken;
+    const QMap<quint32, QString> groups = m_doc->LayerGroupNames();
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        if (it.key() != id)
+        {
+            taken.append(it.value());
+        }
+    }
+
+    QScopedPointer<OLayerGroupDialog> const dialog(new OLayerGroupDialog(this));
+    dialog->SetTakenNames(taken);
+    dialog->SetGroupName(m_doc->GetLayerGroupName(id));
+    dialog->SetLayers(CandidateLayers(id), m_doc->LayerGroupLayers(id));
+
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    auto *change = new ChangeLayerGroupOptions(m_doc, id, dialog->GroupName(), dialog->Layers());
+    connect(change, &ChangeLayerGroupOptions::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    VAbstractApplication::VApp()->getUndoStack()->push(change);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::ActionDeleteLayerGroup(quint32 id)
+{
+    // A group holding layers is not deletable — it has to be emptied first, which the transfer button does. The icon
+    // stays clickable so the refusal can be explained: a dimmed icon says "no" without telling why.
+    if (const QVector<quint32> content = m_doc->LayerGroupLayers(id); not content.isEmpty())
+    {
+        const int count = static_cast<int>(content.size());
+        QMessageBox::information(this, tr("Group not empty"),
+                                 tr("The group \"%1\" still holds %n layer(s). Move them to another group first, "
+                                    "(the transfer button), then delete the group.",
+                                    "", count)
+                                     .arg(m_doc->GetLayerGroupName(id)));
+        return;
+    }
+
+    auto *delGroup = new DelLayerGroup(m_doc, id);
+    connect(delGroup, &DelLayerGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    VAbstractApplication::VApp()->getUndoStack()->push(delGroup);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::ActionTransferLayerGroup(quint32 id)
+{
+    QMap<quint32, QString> content;
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+    for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
+    {
+        if (it.value().layerGroup == id)
+        {
+            content.insert(it.key(), it.value().name);
+        }
+    }
+
+    if (content.isEmpty())
+    {
+        QMessageBox::information(this, tr("Empty group"),
+                                 tr("The group \"%1\" holds no layer — there is nothing to transfer.")
+                                     .arg(m_doc->GetLayerGroupName(id)));
+        return;
+    }
+
+    // The group itself is not a destination: moving its layers into the group they are already in would move
+    // nothing. "No group" is one, and it is how a group is emptied.
+    QMap<quint32, QString> targets = m_doc->LayerGroupNames();
+    targets.remove(id);
+
+    QScopedPointer<OTransferLayersDialog> const dialog(new OTransferLayersDialog(this));
+    dialog->SetLayers(content);
+    dialog->SetTargets(targets);
+
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    auto *change = new ChangeLayersGroup(m_doc, dialog->SelectedLayers(), dialog->TargetGroup());
+    connect(change, &ChangeLayersGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    VAbstractApplication::VApp()->getUndoStack()->push(change);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::ToggleLayerGroup(quint32 id)
+{
+    auto *change = new ChangeLayerGroupCollapsed(m_doc, id, not m_doc->GetLayerGroupCollapsed(id));
+    connect(change, &ChangeLayerGroupCollapsed::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
+    VAbstractApplication::VApp()->getUndoStack()->push(change);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VWidgetGroups::LayerGroupFullyVisible(quint32 groupId) const -> bool
+{
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+    bool found = false;
+
+    for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
+    {
+        if (it.value().layerGroup != groupId)
+        {
+            continue;
+        }
+
+        if (not it.value().visible)
+        {
+            return false;
+        }
+
+        found = true;
+    }
+
+    // An empty group has nothing to hide, and reads as shown.
+    return found;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::SetLayerGroupVisibility(quint32 groupId, bool visible)
+{
+    QVector<vidtype> layers;
+    const QMap<quint32, VGroupData> all = m_doc->GetGroups();
+    for (auto it = all.constBegin(); it != all.constEnd(); ++it)
+    {
+        if (it.value().layerGroup == groupId)
+        {
+            layers.append(it.key());
+        }
+    }
+
+    if (layers.isEmpty())
+    {
+        // Said rather than done silently: the eye of an empty group cannot do what it promises.
+        emit ShowStatusTip(tr("The group \"%1\" holds no layer yet — there is nothing to show or hide.")
+                               .arg(m_doc->GetLayerGroupName(groupId)));
+        return;
+    }
+
+    SetMultipleGroupsVisibility(layers, visible);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::RefreshGroupEyes() const
+{
+    const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row)
+    {
+        if (KindOfRow(row) != RowKind::LayerGroup)
+        {
+            continue;
+        }
+
+        QTableWidgetItem *item = ui->tableWidget->item(row, kVisible);
+        if (item == nullptr)
+        {
+            continue;
+        }
+
+        const quint32 id = item->data(kIdRole).toUInt();
+
+        bool anyVisible = false;
+        for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
+        {
+            if (it.value().layerGroup == id && it.value().visible)
+            {
+                anyVisible = true;
+                break;
+            }
+        }
+
+        item->setIcon(MakeCellIcon(anyVisible ? QStringLiteral("eye") : QStringLiteral("eye-closed"), dark));
     }
 }
 
@@ -532,20 +912,16 @@ void VWidgetGroups::ActionDeleteLayer(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::ActionHideAll()
 {
-    if (ui->tableWidget->rowCount() < 1)
-    {
-        return;
-    }
-
+    // Walked from the DOCUMENT, not from the table: the layers of a folded group are not listed, and both commands
+    // are about the piece as a whole — a hidden layer inside a folded group has to be reachable from here.
     QVector<vidtype> groups;
-    groups.reserve(ui->tableWidget->rowCount());
-    for (int r = 0; r < ui->tableWidget->rowCount(); ++r)
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+    groups.reserve(layers.size());
+    for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
     {
-        QTableWidgetItem  const*rowItem = ui->tableWidget->item(r, kVisible);
-        quint32 const i = rowItem->data(Qt::UserRole).toUInt();
-        if (m_doc->GetGroupVisibility(i))
+        if (it.value().visible)
         {
-            groups.append(i);
+            groups.append(it.key());
         }
     }
 
@@ -558,20 +934,14 @@ void VWidgetGroups::ActionHideAll()
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::ActionShowAll()
 {
-    if (ui->tableWidget->rowCount() < 1)
-    {
-        return;
-    }
-
     QVector<vidtype> groups;
-    groups.reserve(ui->tableWidget->rowCount());
-    for (int r = 0; r < ui->tableWidget->rowCount(); ++r)
+    const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+    groups.reserve(layers.size());
+    for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
     {
-        QTableWidgetItem  const*rowItem = ui->tableWidget->item(r, kVisible);
-        quint32 const i = rowItem->data(Qt::UserRole).toUInt();
-        if (not m_doc->GetGroupVisibility(i))
+        if (not it.value().visible)
         {
-            groups.append(i);
+            groups.append(it.key());
         }
     }
 
@@ -594,13 +964,55 @@ void VWidgetGroups::OnCellClicked(int row, int column)
     {
         return;
     }
-    const quint32 id = idItem->data(Qt::UserRole).toUInt();
+    const quint32 id = idItem->data(kIdRole).toUInt();
+    const RowKind kind = KindOfRow(row);
+
+    // Taken before the action, not after: what the action rebuilds may already have moved the list (see
+    // SelectActiveRow). The eye, the gear and the trash all come back here, and all three must leave the list
+    // where the reader is looking.
+    RememberScroll();
+
+    if (kind == RowKind::LayerGroup)
+    {
+        switch (column)
+        {
+            case kVisible:
+                // All shown hides, anything else shows: one click always lands on a state the reader asked for,
+                // and undoing a hide is the same gesture.
+                SetLayerGroupVisibility(id, not LayerGroupFullyVisible(id));
+                SelectActiveRow(true);
+                break;
+            case kName:
+                // The caret before the name folds and unfolds the group — the whole line answers, like the
+                // measurement groups. Everything that follows the line belongs to it.
+                ToggleLayerGroup(id);
+                SelectActiveRow(true);
+                break;
+            case kEdit:
+                ActionEditLayerGroup(id);
+                SelectActiveRow(true);
+                break;
+            case kTransfer:
+                ActionTransferLayerGroup(id);
+                break;
+            case kDelete:
+                ActionDeleteLayerGroup(id);
+                SelectActiveRow(true);
+                break;
+            default:
+                break;
+        }
+
+        return;
+    }
 
     switch (column)
     {
         case kVisible:
             SetGroupVisibility(id, not m_doc->GetGroupVisibility(id));
-            SelectActiveRow(); // the highlight belongs to the active layer, never to the last click
+            // The highlight belongs to the active layer, never to the last click — but the list itself does not
+            // move: a long one has to stay where the reader is looking (see SelectActiveRow).
+            SelectActiveRow(true);
             break;
         case kName:
             // A single click on the name makes the layer active. A double click still renames it: the editor
@@ -609,10 +1021,12 @@ void VWidgetGroups::OnCellClicked(int row, int column)
             break;
         case kEdit:
             ActionEditLayer(id);
-            SelectActiveRow();
+            // After the dialog, so the position survives the rebuild the accepted change triggers.
+            SelectActiveRow(true);
             break;
         case kDelete:
             ActionDeleteLayer(id);
+            SelectActiveRow(true);
             break;
         case kAdd:
             // Picking objects for this layer: the canvas does the clicking from now on, Enter confirms.
@@ -628,7 +1042,7 @@ void VWidgetGroups::OnCellClicked(int row, int column)
             StartObjectSelection(id, ObjectSelection::Removing);
             break;
         default:
-            SelectActiveRow();
+            SelectActiveRow(true);
             break;
     }
 }
@@ -708,7 +1122,7 @@ void VWidgetGroups::StartObjectSelection(quint32 layerId, ObjectSelection mode)
         UpdateSelectionTip();
     }
 
-    SelectActiveRow();
+    SelectActiveRow(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1159,7 +1573,7 @@ void VWidgetGroups::SetActiveLayer(quint32 id)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VWidgetGroups::SelectActiveRow()
+void VWidgetGroups::SelectActiveRow(bool keepScroll)
 {
     const int row = GroupRow(m_doc->GetActiveGroup());
     if (row == -1)
@@ -1168,18 +1582,49 @@ void VWidgetGroups::SelectActiveRow()
         return;
     }
 
+    // Selecting a row scrolls it into view, and the active layer is often the last one of the list: on a long list,
+    // clicking the eye of a layer near the top threw the whole dock back to the bottom. Where the user is looking is
+    // where they stay — the row comes back into the selection, not into view. Both bars, because a row selection
+    // also brings the first column back into sight. The position is the one taken when the action began, not the one
+    // the rebuild left behind: editing a layer goes through the document, and that rebuild already scrolled the list.
+    QScrollBar *vertical = ui->tableWidget->verticalScrollBar();
+    QScrollBar *horizontal = ui->tableWidget->horizontalScrollBar();
+    const int scrollY = keepScroll ? m_scrollY : 0;
+    const int scrollX = keepScroll ? m_scrollX : 0;
+
     ui->tableWidget->selectRow(row);
+
+    if (keepScroll)
+    {
+        vertical->setValue(scrollY);
+        horizontal->setValue(scrollX);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::RememberScroll()
+{
+    m_scrollY = ui->tableWidget->verticalScrollBar()->value();
+    m_scrollX = ui->tableWidget->horizontalScrollBar()->value();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::RenameGroup(int row, int column)
 {
-    if (column != kName)
+    // Only a layer's name is edited in place: a group row carries no editor (its name is changed in its dialog),
+    // and renaming the layer a group row would be taken for is exactly what that guard prevents.
+    if (column != kName || KindOfRow(row) != RowKind::Layer)
     {
         return;
     }
 
-    const quint32 id = ui->tableWidget->item(row, kVisible)->data(Qt::UserRole).toUInt();
+    const QTableWidgetItem *idItem = ui->tableWidget->item(row, kVisible);
+    if (idItem == nullptr)
+    {
+        return;
+    }
+
+    const quint32 id = idItem->data(kIdRole).toUInt();
     auto *renameGroup = new ::RenameGroup(m_doc, id, ui->tableWidget->item(row, column)->text());
     connect(renameGroup, &RenameGroup::UpdateGroups, this, &VWidgetGroups::UpdateGroups);
     // The name is also what the canvas shows, and that chrome follows the document, not this dock.
@@ -1198,15 +1643,19 @@ void VWidgetGroups::CtxMenu(const QPoint &pos)
 
     const int row = item->row();
     item = ui->tableWidget->item(row, kVisible);
-    const quint32 id = item->data(Qt::UserRole).toUInt();
+    const quint32 id = item->data(kIdRole).toUInt();
+    const RowKind kind = KindOfRow(row);
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
+
+    // Same rule as the left click: what the menu does to a layer must not move the list (see RememberScroll).
+    RememberScroll();
 
     auto MultipleChangeVisibilityTo = [this](bool visibility)
     {
-        for (int r = 0; r < ui->tableWidget->rowCount(); ++r)
+        const QMap<quint32, VGroupData> layers = m_doc->GetGroups();
+        for (auto it = layers.constBegin(); it != layers.constEnd(); ++it)
         {
-            QTableWidgetItem  const*rowItem = ui->tableWidget->item(r, kVisible);
-            if (rowItem and visibility != m_doc->GetGroupVisibility(rowItem->data(Qt::UserRole).toUInt()))
+            if (visibility != it.value().visible)
             {
                 return true;
             }
@@ -1214,6 +1663,34 @@ void VWidgetGroups::CtxMenu(const QPoint &pos)
 
         return false;
     };
+
+    if (kind == RowKind::LayerGroup)
+    {
+        QScopedPointer<QMenu> const menu(new QMenu());
+        QAction  const*actionEdit = menu->addAction(MakeCellIcon(QStringLiteral("gear-six"), dark), tr("Edit"));
+        QAction  const*actionTransfer =
+            menu->addAction(MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark), tr("Transfer"));
+        QAction  const*actionDelete = menu->addAction(MakeCellIcon(QStringLiteral("trash"), dark), tr("Delete"));
+
+        QAction  const*selectedAction = menu->exec(ui->tableWidget->viewport()->mapToGlobal(pos));
+
+        if (selectedAction == actionEdit)
+        {
+            ActionEditLayerGroup(id);
+            SelectActiveRow(true);
+        }
+        else if (selectedAction == actionTransfer)
+        {
+            ActionTransferLayerGroup(id);
+        }
+        else if (selectedAction == actionDelete)
+        {
+            ActionDeleteLayerGroup(id);
+            SelectActiveRow(true);
+        }
+
+        return;
+    }
 
     QScopedPointer<QMenu> const menu(new QMenu());
     QAction  const*triggerVisibilityMenu =
@@ -1234,14 +1711,17 @@ void VWidgetGroups::CtxMenu(const QPoint &pos)
     if (selectedAction == triggerVisibilityMenu)
     {
         SetGroupVisibility(id, not m_doc->GetGroupVisibility(id));
+        SelectActiveRow(true);
     }
     else if (selectedAction == actionEdit)
     {
         ActionEditLayer(id);
+        SelectActiveRow(true);
     }
     else if (selectedAction == actionDelete)
     {
         ActionDeleteLayer(id);
+        SelectActiveRow(true);
     }
     else if (selectedAction == actionHideAll)
     { // all groups in "group" make unvisible
@@ -1264,10 +1744,14 @@ void VWidgetGroups::RetranslateUI()
 {
     ui->retranslateUi(this);
 
-    // ⚠️ Le bouton, la case et l'infobulle de catégories sont écrits en code, et `ui->retranslateUi` ne les
-    // voit pas. `UpdateGroups` réécrit l'infobulle sans reconstruire le widget : aucune connexion
-    // n'est rejouée, contrairement à un appel du constructeur.
+    // ⚠️ Les deux boutons, la case et les infobulles des lignes sont écrits en code, et `ui->retranslateUi` ne les
+    // voit pas. `UpdateGroups` reconstruit la table : aucune connexion n'est rejouée, contrairement à un appel du
+    // constructeur.
     m_addButton->setText(tr("Add a layer"));
+    if (m_addGroupButton != nullptr)
+    {
+        m_addGroupButton->setText(tr("Add a group"));
+    }
     m_showActiveLayer->setText(tr("Show the active layer on the canvas"));
     UpdateGroups();
 }
@@ -1275,78 +1759,227 @@ void VWidgetGroups::RetranslateUI()
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::FillTable(QMap<quint32, VGroupData> groups)
 {
-    ui->lineEditTags->SetCompletion(m_doc->GetGroupCategories());
-
-    groups = FilterGroups(groups);
-
     const bool dark = (VTheme::ColorSheme() == VColorSheme::Dark);
     const QSignalBlocker blocker(ui->tableWidget);
+
+    // The field filters on the layers' names, and completes on them.
+    const QString filter = ui->lineEditLayerFilter->text().simplified();
+    ui->lineEditLayerFilter->SetCompletion(LayerNames().values());
+
+    const QMap<quint32, VLayerGroupData> layerGroups = m_doc->GetLayerGroups();
+
+    auto MatchesFilter = [&filter](const QString &name)
+    { return filter.isEmpty() || name.contains(filter, Qt::CaseInsensitive); };
+
+    // The order the rows are READ in: the layers no group holds, then each group followed by its own layers. The
+    // table is not sorted afterwards — the group rows ARE the structure, and a sort by name would scatter every
+    // group's content through the top level. Both lists go by name, so the same piece always reads the same way.
+    auto SortedIds = [](QVector<QPair<QString, quint32>> entries) -> QVector<quint32>
+    {
+        std::sort(entries.begin(), entries.end(),
+                  [](const QPair<QString, quint32> &left, const QPair<QString, quint32> &right)
+                  {
+                      const int order = QString::compare(left.first, right.first, Qt::CaseInsensitive);
+                      return order != 0 ? order < 0 : left.second < right.second;
+                  });
+
+        QVector<quint32> ids;
+        ids.reserve(entries.size());
+        for (const auto &entry : entries)
+        {
+            ids.append(entry.second);
+        }
+        return ids;
+    };
+
+    // 1. The layers no group holds, at the top — a group row owns everything that follows it, so a layer outside
+    //    every group has nowhere else to be.
+    QVector<QPair<QString, quint32>> free;
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        if (it.value().layerGroup == NULL_ID && MatchesFilter(it.value().name))
+        {
+            free.append({it.value().name, it.key()});
+        }
+    }
+
+    struct RowDesc
+    {
+        RowKind kind;
+        quint32 id;
+    };
+
+    QVector<RowDesc> rows;
+    for (const quint32 id : SortedIds(free))
+    {
+        rows.append({RowKind::Layer, id});
+    }
+
+    // 2. Each group, then its layers. A group is kept when it has something to show: its own name matches (then
+    //    ALL its layers are shown, the filter is not about them) or at least one of its layers does. Filtering
+    //    unfolds the groups — a match hidden inside a folded group would be a search that answers nothing.
+    QVector<QPair<QString, quint32>> sortedGroups;
+    for (auto it = layerGroups.constBegin(); it != layerGroups.constEnd(); ++it)
+    {
+        sortedGroups.append({it.value().name, it.key()});
+    }
+
+    for (const quint32 groupId : SortedIds(sortedGroups))
+    {
+        const VLayerGroupData group = layerGroups.value(groupId);
+        const bool wholeGroup = MatchesFilter(group.name) && not filter.isEmpty();
+
+        QVector<QPair<QString, quint32>> members;
+        for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+        {
+            if (it.value().layerGroup != groupId)
+            {
+                continue;
+            }
+
+            if (wholeGroup || MatchesFilter(it.value().name))
+            {
+                members.append({it.value().name, it.key()});
+            }
+        }
+
+        if (not filter.isEmpty() && members.isEmpty())
+        {
+            continue;
+        }
+
+        const bool folded = group.collapsed && filter.isEmpty();
+
+        rows.append({RowKind::LayerGroup, groupId});
+
+        if (not folded)
+        {
+            for (const quint32 id : SortedIds(members))
+            {
+                rows.append({RowKind::Layer, id});
+            }
+        }
+    }
+
     // `clearContents`, not `clear`: keep the header configuration (column widths and resize
     // modes) set up by the constructor.
     ui->tableWidget->clearContents();
-
     ui->tableWidget->setColumnCount(kColumns);
-    ui->tableWidget->setRowCount(static_cast<int>(groups.size()));
-    qint32 currentRow = -1;
-    auto i = groups.constBegin();
-    while (i != groups.constEnd())
+    ui->tableWidget->setRowCount(static_cast<int>(rows.size()));
+
+    for (int row = 0; row < rows.size(); ++row)
     {
-        ++currentRow;
-        const VGroupData data = i.value();
-
-        auto *visibleItem = new QTableWidgetItem(
-            MakeCellIcon(data.visible ? QStringLiteral("eye") : QStringLiteral("eye-closed"), dark), QString());
-        visibleItem->setData(Qt::UserRole, i.key());
-        // set the item non-editable (view only)
-        visibleItem->setFlags(visibleItem->flags() & ~Qt::ItemIsEditable);
-        ui->tableWidget->setItem(currentRow, kVisible, visibleItem);
-
-        // The layer's colour, so a glance at the list tells which pen its objects are drawn with.
-        auto *colorItem = new QTableWidgetItem(MakeColorDot(data.color, dark), QString());
-        colorItem->setFlags(colorItem->flags() & ~Qt::ItemIsEditable);
-        ui->tableWidget->setItem(currentRow, kColor, colorItem);
-
-        auto *nameItem = new QTableWidgetItem(data.name);
-        nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        if (not data.tags.isEmpty())
+        if (rows.at(row).kind == RowKind::LayerGroup)
         {
-            nameItem->setToolTip(tr("Categories: %1.").arg(data.tags.join(QStringLiteral(", "))));
-        }
+            const quint32 id = rows.at(row).id;
 
-        if (data.items.isEmpty())
-        {
-            QFont font = nameItem->font();
-            font.setStrikeOut(true);
-            nameItem->setFont(font);
-        }
-
-        ui->tableWidget->setItem(currentRow, kName, nameItem);
-
-        auto MakeActionItem = [this, currentRow](int column, const QIcon &icon, const QString &tooltip)
-        {
-            auto *actionItem = new QTableWidgetItem(icon, QString());
-            actionItem->setFlags(actionItem->flags() & ~Qt::ItemIsEditable);
-            if (not tooltip.isEmpty())
+            QVector<quint32> members;
+            bool anyVisible = false;
+            for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
             {
-                actionItem->setToolTip(tooltip);
+                if (it.value().layerGroup == id)
+                {
+                    members.append(it.key());
+                    anyVisible = anyVisible || it.value().visible;
+                }
             }
-            ui->tableWidget->setItem(currentRow, column, actionItem);
-        };
 
-        MakeActionItem(kEdit, MakeCellIcon(QStringLiteral("gear-six"), dark), QString());
-        MakeActionItem(kAdd, MakeCellIcon(QStringLiteral("plus"), dark), QString());
-        // The bend arrow: an object changes layer without ever leaving every layer — the icon the library draws,
-        // not one this dock invented.
-        MakeActionItem(kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark), QString());
-        MakeActionItem(kRemove, MakeCellIcon(QStringLiteral("minus"), dark), QString());
-        // The trash stays fully visible and clickable even on a layer holding objects: the refusal
-        // is explained by a dialog (ActionDeleteLayer), not by a dimmed icon the reader cannot read.
-        MakeActionItem(kDelete, MakeCellIcon(QStringLiteral("trash"), dark), QString());
-
-        ++i;
+            FillLayerGroupRow(row, id, layerGroups.value(id), members, anyVisible, dark);
+        }
+        else if (const auto it = groups.constFind(rows.at(row).id); it != groups.constEnd())
+        {
+            FillLayerRow(row, it.key(), it.value(), dark);
+        }
     }
-    ui->tableWidget->sortItems(kName, Qt::AscendingOrder);
+
     SelectActiveRow();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::FillLayerRow(int row, quint32 id, const VGroupData &data, bool dark)
+{
+    auto *visibleItem = new QTableWidgetItem(
+        MakeCellIcon(data.visible ? QStringLiteral("eye") : QStringLiteral("eye-closed"), dark), QString());
+    visibleItem->setData(kIdRole, id);
+    visibleItem->setData(kKindRole, static_cast<quint32>(RowKind::Layer));
+    // set the item non-editable (view only)
+    visibleItem->setFlags(visibleItem->flags() & ~Qt::ItemIsEditable);
+    ui->tableWidget->setItem(row, kVisible, visibleItem);
+
+    // The layer's colour, so a glance at the list tells which pen its objects are drawn with.
+    auto *colorItem = new QTableWidgetItem(MakeColorDot(data.color, dark), QString());
+    colorItem->setFlags(colorItem->flags() & ~Qt::ItemIsEditable);
+    ui->tableWidget->setItem(row, kColor, colorItem);
+
+    auto *nameItem = new QTableWidgetItem(data.name);
+    nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    // The tooltip says where the layer sits: the row itself cannot show it without indenting the name, and the
+    // list is read as one column.
+    if (const quint32 groupId = data.layerGroup; groupId != NULL_ID)
+    {
+        nameItem->setToolTip(tr("Group: %1.").arg(m_doc->GetLayerGroupName(groupId)));
+    }
+
+    if (data.items.isEmpty())
+    {
+        QFont font = nameItem->font();
+        font.setStrikeOut(true);
+        nameItem->setFont(font);
+    }
+
+    ui->tableWidget->setItem(row, kName, nameItem);
+
+    SetActionCell(ui->tableWidget, row, kEdit, MakeCellIcon(QStringLiteral("gear-six"), dark));
+    SetActionCell(ui->tableWidget, row, kAdd, MakeCellIcon(QStringLiteral("plus"), dark));
+    // The bend arrow: an object changes layer without ever leaving every layer — the icon the library draws,
+    // not one this dock invented.
+    SetActionCell(ui->tableWidget, row, kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark));
+    SetActionCell(ui->tableWidget, row, kRemove, MakeCellIcon(QStringLiteral("minus"), dark));
+    // The trash stays fully visible and clickable even on a layer holding objects: the refusal
+    // is explained by a dialog (ActionDeleteLayer), not by a dimmed icon the reader cannot read.
+    SetActionCell(ui->tableWidget, row, kDelete, MakeCellIcon(QStringLiteral("trash"), dark));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetGroups::FillLayerGroupRow(int row,
+                                      quint32 id,
+                                      const VLayerGroupData &group,
+                                      const QVector<quint32> &layers,
+                                      bool anyVisible,
+                                      bool dark)
+{
+    auto *visibleItem = new QTableWidgetItem(
+        MakeCellIcon(anyVisible ? QStringLiteral("eye") : QStringLiteral("eye-closed"), dark), QString());
+    visibleItem->setData(kIdRole, id);
+    visibleItem->setData(kKindRole, static_cast<quint32>(RowKind::LayerGroup));
+    visibleItem->setFlags(visibleItem->flags() & ~Qt::ItemIsEditable);
+    visibleItem->setToolTip(tr("Show or hide every layer of the group"));
+    ui->tableWidget->setItem(row, kVisible, visibleItem);
+
+    // No colour of its own: a group is not drawn with anything, its layers are.
+
+    // The caret rides the name, like the measurement groups: what follows the line belongs to the group. The item
+    // is NOT editable — a double click would otherwise open the layer's rename editor on a group row.
+    auto *nameItem = new QTableWidgetItem(MakeCellIcon(group.collapsed ? QStringLiteral("caret-right")
+                                                                      : QStringLiteral("caret-down"), dark),
+                                          group.name);
+    nameItem->setFlags(nameItem->flags() & ~Qt::ItemIsEditable);
+    nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    nameItem->setToolTip(tr("%n layer(s) in this group.", "", static_cast<int>(layers.size())));
+
+    QFont font = nameItem->font();
+    font.setBold(true);
+    nameItem->setFont(font);
+
+    ui->tableWidget->setItem(row, kName, nameItem);
+
+    SetActionCell(ui->tableWidget, row, kEdit, MakeCellIcon(QStringLiteral("gear-six"), dark),
+                  tr("Rename the group and settle the layers it holds"));
+    SetActionCell(ui->tableWidget, row, kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark),
+                  tr("Move layers of this group to another one"));
+    SetActionCell(ui->tableWidget, row, kDelete, MakeCellIcon(QStringLiteral("trash"), dark),
+                  tr("Delete the group — allowed once it holds no layer"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

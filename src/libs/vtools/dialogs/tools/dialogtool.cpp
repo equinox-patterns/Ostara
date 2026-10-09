@@ -899,9 +899,9 @@ void DialogTool::SetToolId(const quint32 &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogTool::SetGroupCategories(const QStringList &categories)
+void DialogTool::SetLayerGroups(const QMap<quint32, QString> &groups)
 {
-    Q_UNUSED(categories)
+    Q_UNUSED(groups)
     // do nothing
 }
 

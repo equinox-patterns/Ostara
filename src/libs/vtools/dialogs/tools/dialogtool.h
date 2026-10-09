@@ -138,7 +138,9 @@ public:
 
     virtual void CheckDependencyTreeComplete() = 0;
 
-    virtual void SetGroupCategories(const QStringList &categories);
+    /// The groups of layers a dialog may offer, id -> name. The tools whose operation keeps a layer of its own
+    /// override it; the others simply have nothing to offer, and the base class does nothing.
+    virtual void SetLayerGroups(const QMap<quint32, QString> &groups);
 
     static void MoveListRowTop(QListWidget *list);
     static void MoveListRowUp(QListWidget *list);

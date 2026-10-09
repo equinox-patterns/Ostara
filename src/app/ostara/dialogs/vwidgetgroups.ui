@@ -23,17 +23,14 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Tags:</string>
+        <string>Layer:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="VCompleterLineEdit" name="lineEditTags">
-       <property name="toolTip">
-        <string>Separate each tag with comma.</string>
-       </property>
+      <widget class="VCompleterLineEdit" name="lineEditLayerFilter">
        <property name="placeholderText">
-        <string>Filter by tags</string>
+        <string>Filter by name</string>
        </property>
       </widget>
      </item>

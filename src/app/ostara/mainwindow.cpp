@@ -538,7 +538,7 @@ void MainWindow::CreateFirstLayer(const QString &layerName, const QString &layer
                                   const QString &layerPenStyle, quint32 basePointId)
 {
     const quint32 newId = pattern->getNextId();
-    const QDomElement group = doc->CreateGroup(newId, layerName, {}, {}, null_id, layerColor, layerPenStyle);
+    const QDomElement group = doc->CreateGroup(newId, layerName, {}, null_id, layerColor, layerPenStyle);
     if (group.isNull())
     {
         return;
