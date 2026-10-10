@@ -73,6 +73,7 @@ private:
     void BuildPreviewPiece();
     void UpdateButtons();
     void OnPatternNext();
+    auto ContourProblem() const -> QString;
 
     OPieceAutomation m_automation{&data};
     OPiecePatternStep *m_patternStep{nullptr};

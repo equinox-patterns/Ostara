@@ -47,6 +47,8 @@
 #include "../vtools/tools/drawTools/operation/otooldartcap.h"
 #include "../vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/oflouncespiraldisplay.h"
+#include "../vtools/tools/drawTools/operation/otoolflouncespiral.h"
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
@@ -371,7 +373,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -492,6 +494,8 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
                 return MoveBatch(tool, data);
             case Tool::Pleat:
                 return Pleat(tool, data);
+            case Tool::FlounceSpiral:
+                return FlounceSpiral(tool, data);
             case Tool::EllipticalArcWithLength:
                 return EllipticalArcWithLength(tool);
             case Tool::ParallelCurve:
@@ -1362,6 +1366,23 @@ auto VPatternRecipe::Pleat(const VToolRecord &record, const VContainer &data) ->
 
     // The prise, the value and what each end draws: everything the fold is recomputed from.
     SavePleat(tool, step);
+
+    step.appendChild(GroupOperationSource(tool, record.GetId(), data));
+
+    return step;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPatternRecipe::FlounceSpiral(const VToolRecord &record, const VContainer &data) -> QDomElement
+{
+    auto *tool = GetPatternTool<OToolFlounceSpiral>(record.GetId());
+
+    QDomElement step = createElement(TagStep);
+
+    SetAttribute(step, AttrType, OToolFlounceSpiral::ToolType);
+
+    // The two values, the angle and the figure: everything the band is rebuilt from.
+    OFlounceSpiralDisplay::Save(m_pattern, step, tool->Display());
 
     step.appendChild(GroupOperationSource(tool, record.GetId(), data));
 

@@ -98,7 +98,8 @@ auto BorrowedToolIcons() -> const QHash<QString, QString> &
                                                   {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")},
                                                   {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")},
                                                   {QStringLiteral("move_batch"), QStringLiteral("el_arc.png")},
-                                                  {QStringLiteral("pleat"), QStringLiteral("triangle.png")}};
+                                                  {QStringLiteral("pleat"), QStringLiteral("triangle.png")},
+                                                  {QStringLiteral("flounce_spiral"), QStringLiteral("point_of_intersection_circles.png")}};
     return borrowed;
 }
 
@@ -535,6 +536,9 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("move_batch"),               tr("Move by batch tool"),                              nullptr, nullptr},
             // Same again: the pleat borrows the icon of the triangle.
             {QStringLiteral("pleat"),                    tr("Pleat tool"),                                      nullptr, nullptr},
+            // Same again: the flounce spiral waits for artwork of its own and borrows the icon of the point at
+            // the intersection of two circles, which is the construction it draws.
+            {QStringLiteral("flounce_spiral"),           tr("Flounce spiral tool"),                             nullptr, nullptr},
         }, kModeDraw},
     };
     // clang-format on
@@ -651,6 +655,21 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("parallel_curve.png")));
         m_buttonMap.insert(QStringLiteral("spiral"), btn);
+    }
+
+    // The flounce spiral waits for artwork of its own too, and borrows the icon of the point at the
+    // intersection of two circles — the same one its action carries.
+    if (!m_buttonMap.contains(QStringLiteral("flounce_spiral")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"),
+                                             QStringLiteral("point_of_intersection_circles.png")));
+        m_buttonMap.insert(QStringLiteral("flounce_spiral"), btn);
     }
 
     // The slash-and-spread borrows the icon of the arc of given length — the same one its action carries.

@@ -1352,7 +1352,19 @@ auto DialogSeamAllowance::GetPathName(quint32 path, bool reverse) const -> QStri
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogSeamAllowance::MainPathIsValid() const -> bool
 {
-    if (CreatePiece().MainPathPoints(&data).count() < 3)
+    const VPiece piece = CreatePiece();
+
+    // A curve node must be able to give the segment that runs from the point before it to the point after
+    // it. When it cannot, the curve is lost silently and the piece is then drawn wrong or not drawn at all.
+    QString curve;
+    if (piece.GetPath().FindUnresolvableCurve(&data, curve))
+    {
+        uiTabPaths->helpLabel->setText(DialogWarningIcon(uiTabPaths->helpLabel) +
+                                       tr("Cannot calculate curve %1.").arg(curve));
+        return false;
+    }
+
+    if (piece.MainPathPoints(&data).count() < 3)
     {
         uiTabPaths->helpLabel->setText(DialogWarningIcon(uiTabPaths->helpLabel) + tr("You need more points!"));
         return false;

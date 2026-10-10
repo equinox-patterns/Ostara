@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -119,4 +119,6 @@ void MainWindow::SetupDrawToolsIcons()
     // The spiral waits for artwork of its own: it borrows the icon of the parallel curve, the closest one to it,
     // and the button of the palette borrows the same one (see DrawToolBar).
     ui->actionSpiralTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("parallel_curve.png")));
+    ui->actionFlounceSpiralTool->setIcon(
+        VTheme::GetIconResource(resource, QStringLiteral("point_of_intersection_circles.png")));
 }

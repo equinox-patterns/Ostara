@@ -26,6 +26,7 @@
  **
  *************************************************************************/
 #include "vpiecegrainline.h"
+#include "../vgeometry/ocontainment.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "compatibility.h"
 #include "qmath.h"
@@ -351,9 +352,6 @@ auto VPieceGrainline::Shape() const -> GrainlineShape
  */
 auto VPieceGrainline::IsContained(const QRectF &boundingRect, qreal &dX, qreal &dY) const -> bool
 {
-    dX = 0;
-    dY = 0;
-
     const QLineF mainLine = GetMainLine();
     QVector<QPointF> apt = {mainLine.p1(), mainLine.p2()};
     if (IsFourWays())
@@ -363,49 +361,13 @@ auto VPieceGrainline::IsContained(const QRectF &boundingRect, qreal &dX, qreal &
         apt.append(secondaryLine.p2());
     }
 
-    // single point differences
-    qreal dPtX;
-    qreal dPtY;
-    bool bInside = true;
-
-    for (auto item : apt)
-    {
-        dPtX = 0;
-        dPtY = 0;
-        if (boundingRect.contains(item))
-        {
-            continue;
-        }
-
-        if (item.x() < boundingRect.left())
-        {
-            dPtX = boundingRect.left() - item.x();
-        }
-        else if (item.x() > boundingRect.right())
-        {
-            dPtX = boundingRect.right() - item.x();
-        }
-        if (item.y() < boundingRect.top())
-        {
-            dPtY = boundingRect.top() - item.y();
-        }
-        else if (item.y() > boundingRect.bottom())
-        {
-            dPtY = boundingRect.bottom() - item.y();
-        }
-
-        if (fabs(dPtX) > fabs(dX))
-        {
-            dX = dPtX;
-        }
-        if (fabs(dPtY) > fabs(dY))
-        {
-            dY = dPtY;
-        }
-
-        bInside = false;
-    }
-    return bInside;
+    // The rule itself lives in OContainment, shared with the other children of a piece — the
+    // information blocks and the annotations — so that the grainline, which has always followed it,
+    // and they can never disagree on what "inside the piece" means.
+    const OContainment::Fit fit = OContainment::FitPoints(boundingRect, apt);
+    dX = fit.translation.x();
+    dY = fit.translation.y();
+    return fit.contained;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

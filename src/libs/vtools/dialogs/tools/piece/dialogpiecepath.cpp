@@ -2402,7 +2402,18 @@ auto DialogPiecePath::CreatePath() const -> VPiecePath
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogPiecePath::PathIsValid() const -> bool
 {
-    if (CreatePath().PathPoints(&data).count() < 2)
+    const VPiecePath path = CreatePath();
+
+    // A curve node must be able to give the segment that runs from the point before it to the point after
+    // it. When it cannot, the curve is lost silently and the path is then drawn wrong or not drawn at all.
+    QString curve;
+    if (path.FindUnresolvableCurve(&data, curve))
+    {
+        ui->helpLabel->setText(DialogWarningIcon(ui->helpLabel) + tr("Cannot calculate curve %1.").arg(curve));
+        return false;
+    }
+
+    if (path.PathPoints(&data).count() < 2)
     {
         ui->helpLabel->setText(DialogWarningIcon(ui->helpLabel) + tr("You need more points!"));
         return false;

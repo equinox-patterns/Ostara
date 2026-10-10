@@ -217,7 +217,7 @@ void MainWindow::SetEnableTool(bool enable)
     QT_WARNING_POP
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
 
     // Drawing Tools
     ui->actionEndLineTool->setEnabled(drawTools);
@@ -266,6 +266,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionSpreadTool->setEnabled(drawTools);
     ui->actionMoveBatchTool->setEnabled(drawTools);
     ui->actionPleatTool->setEnabled(drawTools);
+    ui->actionFlounceSpiralTool->setEnabled(drawTools);
     ui->actionMidpointTool->setEnabled(drawTools);
     ui->actionEllipticalArcTool->setEnabled(drawTools);
     ui->actionInsertNodeTool->setEnabled(drawTools);
@@ -599,7 +600,7 @@ void MainWindow::SetEnabledGUI(bool enabled)
 void MainWindow::InitToolButtons()
 {
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Check if all tools were connected.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Check if all tools were connected.");
 
     auto InitToolButton = [this](VShortcutAction type, QAction *action, void (MainWindow::*slotFunction)(bool))
     {
@@ -684,6 +685,8 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolSpread, ui->actionSpreadTool, &MainWindow::ToolSpread);
     InitToolButton(VShortcutAction::ToolMoveBatch, ui->actionMoveBatchTool, &MainWindow::ToolMoveBatch);
     InitToolButton(VShortcutAction::ToolPleat, ui->actionPleatTool, &MainWindow::ToolPleat);
+    InitToolButton(VShortcutAction::ToolFlounceSpiral, ui->actionFlounceSpiralTool,
+                   &MainWindow::ToolFlounceSpiral);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -61,6 +61,7 @@ public:
     auto ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool;
     auto ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool;
     auto CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal;
+    auto BoundPointId(int index, int step) const -> quint32;
 
     // ---- B. Sequence mutations (read/write m_nodes) ----
     auto CurveEntryPoint(quint32 curveId, QPointF &entry) const -> bool;

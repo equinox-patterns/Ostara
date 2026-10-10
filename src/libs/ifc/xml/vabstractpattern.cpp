@@ -867,7 +867,7 @@ void VAbstractPattern::SetMPath(const QString &path)
 auto VAbstractPattern::SiblingNodeId(const quint32 &nodeId) const -> quint32
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Check if need to ignore modeling tools.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Check if need to ignore modeling tools.");
 
     quint32 siblingId = NULL_ID;
 
@@ -1832,7 +1832,7 @@ auto VAbstractPattern::ListExpressions() const -> QVector<VFormulaField>
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
     // Note. Tool Union Details also contains formulas, but we don't use them for union and keep only to simplifying
     // working with nodes. Same code for saving reading.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     auto futurePointExpressions = QtConcurrent::run([this]() { return ListPointExpressions(); });
     auto futureArcExpressions = QtConcurrent::run([this]() { return ListArcExpressions(); });
@@ -1864,7 +1864,7 @@ auto VAbstractPattern::ListPointExpressions() const -> QVector<VFormulaField>
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment a number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagPoint);
@@ -1892,7 +1892,7 @@ auto VAbstractPattern::ListArcExpressions() const -> QVector<VFormulaField>
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagArc);
@@ -1916,7 +1916,7 @@ auto VAbstractPattern::ListElArcExpressions() const -> QVector<VFormulaField>
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagElArc);
@@ -1942,7 +1942,7 @@ auto VAbstractPattern::ListSplineExpressions() const -> QVector<VFormulaField>
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagSpline);
@@ -2005,7 +2005,7 @@ auto VAbstractPattern::ListOperationExpressions() const -> QVector<VFormulaField
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagOperation);
@@ -2022,6 +2022,15 @@ auto VAbstractPattern::ListOperationExpressions() const -> QVector<VFormulaField
         // several departure lines holds one value per line, written in the element that carries those lines, so the
         // two places are read — as bare names, since a pattern knows nothing of the tools that write it.
         ReadExpressionAttribute(expressions, dom, QStringLiteral("value"));
+        // The values of a flounce spiral live in its figure: the two the user types, and the angle. Read on the
+        // child element, since that is where they are written.
+        for (QDomElement figure = dom.firstChildElement(QStringLiteral("flounceSpiral")); not figure.isNull();
+             figure = figure.nextSiblingElement(QStringLiteral("flounceSpiral")))
+        {
+            ReadExpressionAttribute(expressions, figure, AttrAngle);
+            ReadExpressionAttribute(expressions, figure, AttrLength);
+            ReadExpressionAttribute(expressions, figure, AttrWidth);
+        }
         for (QDomElement pleats = dom.firstChildElement(QStringLiteral("pleats")); not pleats.isNull();
              pleats = pleats.nextSiblingElement(QStringLiteral("pleats")))
         {
@@ -2042,7 +2051,7 @@ auto VAbstractPattern::ListNodesExpressions(const QDomElement &nodes) const -> Q
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
 
@@ -2066,7 +2075,7 @@ auto VAbstractPattern::ListPathExpressions() const -> QVector<VFormulaField>
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagPath);
@@ -2104,7 +2113,7 @@ auto VAbstractPattern::ListPieceExpressions() const -> QVector<VFormulaField>
     // Check if new tool doesn't bring new attribute with a formula.
     // If no just increment number.
     // If new tool bring absolutely new type and has formula(s) create new method to cover it.
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
     QVector<VFormulaField> expressions;
     const QDomNodeList list = elementsByTagName(TagDetail);
@@ -3453,6 +3462,12 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         // names nothing.
         // The same list as OPleatDisplay::ObjectIds, which cannot be reached from here: libs/ifc does not depend on
         // libs/vtools. A new attribute of the figure is therefore to be added in the two places.
+        // A flounce spiral needs no branch of its own here. Its <destination> names both edges and the three
+        // points, and its <lines> names both segments, so the generic handling above already lists everything —
+        // and lists it ONCE. The branch that used to be written here paired the two edges with their own id as
+        // well, which left each of them in the layer twice, under two different owners, and a layer that holds an
+        // object twice cannot say where it belongs: the figure came out as belonging to no layer at all.
+
         const QDomElement pleat = toolElement.firstChildElement(QStringLiteral("pleatDisplay"));
         for (QDomElement item = pleat.firstChildElement(QStringLiteral("item")); !item.isNull();
              item = item.nextSiblingElement(QStringLiteral("item")))

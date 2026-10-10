@@ -26,6 +26,8 @@
 
 #include "oannotationitem.h"
 
+#include "../../vgeometry/ocontainment.h"
+
 #include <QApplication>
 #include <QFontInfo>
 #include <QFontMetricsF>
@@ -95,7 +97,53 @@ void OAnnotationItem::SetAnnotationGeom(const OAnnotationGeom &geom, qreal rotat
     w = (std::max)(w, contentW);
     h = (std::max)(h, contentH);
     setRect(0, 0, w, h);
+    // The stored position is the one the user left, and a file written while the piece still had
+    // its seam allowance can carry one the outline no longer holds: reading it back is where the
+    // rectangle that forms the piece gets its say, so an annotation can never come back outside.
+    ContainPosition();
     update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OAnnotationItem::SetContainmentRect(const QRectF &rect)
+{
+    m_containmentRect = rect;
+    ContainPosition();
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OAnnotationItem::CornerPoints() const -> QVector<QPointF>
+{
+    const QRectF r = rect();
+    return {mapToParent(r.topLeft()), mapToParent(r.topRight()), mapToParent(r.bottomLeft()),
+            mapToParent(r.bottomRight())};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OAnnotationItem::ContainPosition()
+{
+    if (not OContainment::IsUsable(m_containmentRect))
+    {
+        return; // no rectangle to stay in — a piece with nothing drawn, or no host rectangle yet
+    }
+
+    const QVector<QPointF> corners = CornerPoints();
+    // An annotation box bigger than the piece — a long text — has no inside position: the
+    // furthest-point rule would make it swing from one edge to the other at every refresh, and that
+    // position is published back to the model. Such a box stays where it is.
+    if (not OContainment::FitsInside(m_containmentRect, corners))
+    {
+        return;
+    }
+
+    // Only the position is fitted, never the box: the rotation and the size stay the user's, and
+    // the translation the rule returns is the move of the whole item, which is what pos() holds.
+    const OContainment::Fit fit = OContainment::FitPoints(m_containmentRect, corners);
+    if (not fit.contained)
+    {
+        setPos(pos() + fit.translation);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -463,6 +511,7 @@ void OAnnotationItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     setPos(m_dragStartPos + (event->scenePos() - m_dragStartScene));
+    ContainPosition();
     event->accept();
 }
 

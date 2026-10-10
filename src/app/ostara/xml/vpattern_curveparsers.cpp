@@ -46,6 +46,8 @@
 #include "../vtools/tools/drawTools/operation/oclosedartrule.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/oflouncespiraldisplay.h"
+#include "../vtools/tools/drawTools/operation/otoolflouncespiral.h"
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otooldartcap.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
@@ -602,6 +604,49 @@ void VPattern::ParseToolMoveBatch(VMainGraphicsScene *scene, QDomElement &domEle
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolFlounceSpiral(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr)
+    Q_ASSERT_X(domElement.isNull() == false, Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        OToolFlounceSpiralInitData initData;
+        initData.scene = scene;
+        initData.doc = this;
+        initData.data = data;
+        initData.parse = parse;
+        initData.typeCreation = Source::FromFile;
+
+        DrawToolsCommonAttributes(domElement, initData.id, initData.notes);
+
+        // We no longer need to handle suffix attribute here. The code can be removed.
+        Q_STATIC_ASSERT(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 1));
+        initData.suffix = GetParametrEmptyString(domElement, AttrSuffix);
+
+        VAbstractOperation::ExtractData(domElement, initData);
+
+        initData.startPointId = GetParametrUInt(domElement, AttrFirstPoint, NULL_ID_STR);
+        initData.display = OFlounceSpiralDisplay::Extract(domElement);
+        initData.lines = OOperationLines::ExtractLines(domElement);
+
+        OToolFlounceSpiral::Create(initData);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the flounce spiral"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+    catch (qmu::QmuParserError &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating the flounce spiral"), domElement);
+        excep.AddMoreInformation("Message:     "_L1 + e.GetMsg() + '\n'_L1 + "Expression:  "_L1 + e.GetExpr());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseToolPleat(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse)
 {
     SCASSERT(scene != nullptr)
@@ -1019,7 +1064,8 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
                                      << OToolSpread::ToolType         /*6*/
                                      << OToolMoveBatch::ToolType      /*7*/
                                      << OToolPleat::ToolType          /*8*/
-                                     << OToolDartCap::ToolType; /*9*/
+                                     << OToolDartCap::ToolType        /*9*/
+                                     << OToolFlounceSpiral::ToolType; /*10*/
 
     switch (opers.indexOf(type))
     {
@@ -1052,6 +1098,9 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
             break;
         case 9: // OToolDartCap::ToolType
             ParseToolDartCapOperation(scene, domElement, parse);
+            break;
+        case 10: // OToolFlounceSpiral::ToolType
+            ParseToolFlounceSpiral(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown operation type '%1'.").arg(type));

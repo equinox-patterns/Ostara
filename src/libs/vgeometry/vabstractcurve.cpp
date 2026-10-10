@@ -118,42 +118,67 @@ VAbstractCurve::~VAbstractCurve() = default;
 auto VAbstractCurve::GetSegmentPoints(const QVector<QPointF> &points, const QPointF &begin, const QPointF &end,
                                       bool reverse, QString &error) -> QVector<QPointF>
 {
-    QVector<QPointF> segment = points;
-    if (reverse)
+    // Walk the curve in the asked direction and keep the part that goes from `begin` to `end`.
+    auto Extract = [&points, &begin, &end](bool reverseDirection, QString &extractError) -> QVector<QPointF>
     {
-        segment = Reverse(segment);
-    }
+        QVector<QPointF> segment = points;
+        if (reverseDirection)
+        {
+            segment = Reverse(segment);
+        }
 
-    QPointF start = begin;
-    QPointF finish = end;
+        QPointF start = begin;
+        QPointF finish = end;
 
-    if (begin == end)
+        if (begin == end)
+        {
+            start = segment.constFirst();
+            finish = segment.constLast();
+        }
+
+        bool ok = false;
+        segment = FromBegin(segment, start, &ok);
+
+        if (not ok)
+        {
+            extractError = QObject::tr("Could not find the segment start.");
+            return segment;
+        }
+
+        ok = false;
+        segment = ToEnd(segment, finish, &ok);
+
+        if (not ok)
+        {
+            extractError = QObject::tr("Could not find the segment end.");
+            return segment;
+        }
+
+        if (segment.length() < 2)
+        {
+            extractError = QObject::tr("Segment is too short.");
+        }
+
+        return segment;
+    };
+
+    QVector<QPointF> segment = Extract(reverse, error);
+
+    if (error.isEmpty())
     {
-        start = segment.constFirst();
-        finish = segment.constLast();
-    }
-
-    bool ok = false;
-    segment = FromBegin(segment, start, &ok);
-
-    if (not ok)
-    {
-        error = QObject::tr("Could not find the segment start.");
         return segment;
     }
 
-    ok = false;
-    segment = ToEnd(segment, finish, &ok);
-
-    if (not ok)
+    // The part of a curve between two points is unique: when the asked direction cannot find it, the other
+    // direction holds it. The `reverse` flag only lifts an ambiguity, i.e. when both points are the ends of
+    // the curve and the part can be walked either way. Without this fallback a node flagged in the wrong
+    // direction gives back a broken segment, and the contour (a piece) is then drawn wrong or not at all,
+    // without any message.
+    QString otherError;
+    if (const QVector<QPointF> other = Extract(not reverse, otherError); otherError.isEmpty())
     {
-        error = QObject::tr("Could not find the segment end.");
-        return segment;
-    }
-
-    if (segment.length() < 2)
-    {
-        error = QObject::tr("Segment is too short.");
+        error.clear();
+        return other;
     }
 
     return segment;

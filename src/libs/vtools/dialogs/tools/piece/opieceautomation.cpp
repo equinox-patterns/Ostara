@@ -193,6 +193,28 @@ auto OPieceAutomation::CurvePointParam(quint32 curveId, quint32 pointId) const -
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// The id of the nearest point node of the path, walking from @a index in the given direction. The contour is
+// closed, so when the walk leaves the list it starts again from the other end.
+auto OPieceAutomation::BoundPointId(int index, int step) const -> quint32
+{
+    const int count = static_cast<int>(m_nodes.size());
+
+    for (int pass = 0; pass < 2; ++pass)
+    {
+        const int start = pass == 0 ? index + step : (step < 0 ? count - 1 : 0);
+        for (int k = start; k >= 0 && k < count; k += step)
+        {
+            if (m_nodes.at(k).GetTypeTool() == Tool::NodePoint)
+            {
+                return m_nodes.at(k).GetId();
+            }
+        }
+    }
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPieceAutomation::LastCurveReverse(quint32 curveId, bool &reverse) const -> bool
 {
     for (int i = static_cast<int>(m_nodes.size()) - 1; i >= 0; --i)
@@ -382,9 +404,11 @@ auto OPieceAutomation::CompleteClosingCurve(bool endpointsOnly) -> bool
     }
 
     QPointF lastPt;
+    QPointF firstPt;
     try
     {
         lastPt = m_data->GeometricObject<VPointF>(last.GetId())->toQPointF();
+        firstPt = m_data->GeometricObject<VPointF>(first.GetId())->toQPointF();
     }
     catch (const VExceptionBadId &)
     {
@@ -393,8 +417,9 @@ auto OPieceAutomation::CompleteClosingCurve(bool endpointsOnly) -> bool
 
     // A curve of the path carrying one closing point completes the loop if it also
     // carries the other: take its remaining portion.
-    for (const auto &node : m_nodes)
+    for (int i = 0; i < static_cast<int>(m_nodes.size()); ++i)
     {
+        const VPieceNode node = m_nodes.at(i);
         if (not IsCurveNode(node))
         {
             continue;
@@ -404,8 +429,30 @@ auto OPieceAutomation::CompleteClosingCurve(bool endpointsOnly) -> bool
             continue;
         }
 
+        // The points bounding the stretch of this curve the path has already taken.
+        const quint32 entryId = BoundPointId(i, -1);
+        const quint32 exitId = BoundPointId(i, +1);
+
+        // The closing edge must not walk back along the very stretch the path has already taken: it would
+        // describe that stretch twice, in both directions, and the contour would collapse to nothing. This
+        // is the case of a contour made of two points and one curve: the closing edge is the straight width
+        // between those two points, and the curve must NOT be added a second time.
+        if ((entryId == first.GetId() && exitId == last.GetId())
+            || (entryId == last.GetId() && exitId == first.GetId()))
+        {
+            continue;
+        }
+
         // During collection, only an ENDPOINT is a credible premature closing point:
         // an interior point is a cut point and the curve continues through it.
+        //
+        // BOTH ends of the closing edge have to be endpoints of the curve, and not merely to lie ON it. A figure
+        // whose band runs one turn per width — a flounce spiral, where the width IS the pitch — touches itself at
+        // every turn: the last point of the contour lands exactly on a curve already taken (0.004 px away, on a
+        // 378 px width), that curve was accepted as a closing edge, and it closed nothing. The contour then
+        // described a whole extra turn, its geometry stopped computing — "Could not find the segment end" — and
+        // the piece was dropped without ever being drawn. The first point of such a curve is on it as well, by
+        // being one of its endpoints, so testing the last point alone could not tell the two apart.
         if (endpointsOnly)
         {
             QPointF start, end;
@@ -414,6 +461,10 @@ auto OPieceAutomation::CompleteClosingCurve(bool endpointsOnly) -> bool
                 continue;
             }
             if (not SamePoint(lastPt, start) && not SamePoint(lastPt, end))
+            {
+                continue;
+            }
+            if (not SamePoint(firstPt, start) && not SamePoint(firstPt, end))
             {
                 continue;
             }
@@ -431,6 +482,26 @@ auto OPieceAutomation::CompleteClosingCurve(bool endpointsOnly) -> bool
                 {
                     continue; // no known sense: keep the straight closing edge
                 }
+            }
+        }
+
+        // Never add a node whose segment does not exist: such a closing edge would break the contour, and the
+        // contour would then be refused while naming a curve the user never picked.
+        {
+            QVector<QPointF> segment;
+            try
+            {
+                const QSharedPointer<VAbstractCurve> curve = m_data->GeometricObject<VAbstractCurve>(node.GetId());
+                QString segmentError;
+                segment = VAbstractCurve::GetSegmentPoints(curve->GetPoints(), lastPt, firstPt, reverse, segmentError);
+            }
+            catch (const VExceptionBadId &)
+            {
+                continue;
+            }
+            if (segment.size() < 2)
+            {
+                continue;
             }
         }
 

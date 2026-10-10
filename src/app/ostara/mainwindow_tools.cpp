@@ -80,6 +80,7 @@
 #include "../vtools/dialogs/tools/dialogrotation.h"
 #include "../vtools/dialogs/tools/odialogclosedart.h"
 #include "../vtools/dialogs/tools/odialogmovebatch.h"
+#include "../vtools/dialogs/tools/odialogflouncespiral.h"
 #include "../vtools/dialogs/tools/odialogpleat.h"
 #include "../vtools/dialogs/tools/odialogspread.h"
 #include "../vtools/dialogs/tools/odialogtransfert.h"
@@ -107,6 +108,8 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/oflouncespiraldisplay.h"
+#include "../vtools/tools/drawTools/operation/otoolflouncespiral.h"
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/otooltransfert.h"
@@ -746,6 +749,19 @@ void MainWindow::ToolMoveBatch(bool checked)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolFlounceSpiral(bool checked)
+{
+    // Without this the scene is not in "pick a point" mode: a click on a point emits nothing, the dialog never
+    // hears about it, and the tool looks dead. Every tool that starts from an existing point does it first.
+    ToolSelectPointByRelease();
+    qDebug() << "FLOUNCE-DEBUG: ToolFlounceSpiral entre, checked =" << checked;
+    const QString tooltip =
+        tr("Select the point the inner spiral starts at, then fill in the width and the length of the flounce");
+    SetToolButtonWithApply<ODialogFlounceSpiral>(checked, Tool::FlounceSpiral, QString(), tooltip,
+                                                &MainWindow::ClosedDrawDialogWithApply<OToolFlounceSpiral>,
+                                                &MainWindow::ApplyDrawDialog<OToolFlounceSpiral>);
+}
+
 void MainWindow::ToolPleat(bool checked)
 {
     ToolSelectOperationObjects();
@@ -1064,7 +1080,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Check if need to extend.");
 
     switch (t)
     {
@@ -1086,6 +1102,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::Spread:
         case Tool::MoveBatch:
         case Tool::Pleat:
+        case Tool::FlounceSpiral:
             // The groups of layers the operation's own layer may join, offered in its dialog.
             dialogTool->SetLayerGroups(doc->LayerGroupNames());
             break;
@@ -1517,7 +1534,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1753,6 +1770,9 @@ void MainWindow::CancelTool()
         case Tool::Pleat:
             ui->actionPleatTool->setChecked(false);
             break;
+        case Tool::FlounceSpiral:
+            ui->actionFlounceSpiralTool->setChecked(false);
+            break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(false);
             break;
@@ -1849,7 +1869,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -2086,6 +2106,10 @@ void MainWindow::LastUsedTool()
         case Tool::Pleat:
             ui->actionPleatTool->setChecked(true);
             ToolPleat(true);
+            break;
+        case Tool::FlounceSpiral:
+            ui->actionFlounceSpiralTool->setChecked(true);
+            ToolFlounceSpiral(true);
             break;
         case Tool::EllipticalArc:
             ui->actionEllipticalArcTool->setChecked(true);

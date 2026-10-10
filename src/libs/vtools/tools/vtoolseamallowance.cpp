@@ -49,6 +49,7 @@
 #include "../undocommands/saveplacelabeloptions.h"
 #include "../undocommands/savepiecepathoptions.h"
 #include "../undocommands/togglepiecestate.h"
+#include "../vgeometry/ocontainment.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vellipticalarc.h"
 #include "../vgeometry/vplacelabelitem.h"
@@ -1691,10 +1692,15 @@ void VToolSeamAllowance::UpdateInfoBlocks()
 
         if (!detail.GetInfoBlockData().HasStoredGeometry(block))
         {
-            // Auto-place: centered on the piece; further blocks stacked below.
-            geom.pos = m_pieceBoundingRect.center() + QPointF(0.0, (block - 1) * (geom.height + kBlockStackingGap));
+            // Auto-place: centered on the rectangle that forms the piece — the outline, never the
+            // seam allowance drawn around it, or every block would shift as soon as the margins are
+            // turned off; further blocks stacked below.
+            geom.pos = m_pieceOutlineRect.center() + QPointF(0.0, (block - 1) * (geom.height + kBlockStackingGap));
         }
 
+        // A block may not leave the piece. The rectangle goes in before the geometry so the block
+        // is fitted against the rectangle of this pass, never against the one of the previous one.
+        blockItem->SetContainmentRect(m_pieceOutlineRect);
         blockItem->setVisible(true);
         blockItem->SetBlockGeom(geom);
         blockItem->SetContent(lines, geom.fontScale);
@@ -1990,9 +1996,13 @@ void VToolSeamAllowance::UpdateAnnotations()
         OAnnotationGeom geom = annotation.geom;
         if (qFuzzyIsNull(geom.pos.x()) && qFuzzyIsNull(geom.pos.y()))
         {
-            // Never moved (pos still the default): auto-place centered on the piece.
-            geom.pos = m_pieceBoundingRect.center();
+            // Never moved (pos still the default): auto-place centered on the rectangle that forms
+            // the piece — the outline, never the seam allowance drawn around it.
+            geom.pos = m_pieceOutlineRect.center();
         }
+        // An annotation may not leave the piece, exactly like a block: the rectangle goes in first
+        // so the annotation is fitted against the rectangle of this pass.
+        item->SetContainmentRect(m_pieceOutlineRect);
         item->SetAnnotationGeom(geom, EvaluateAnnotationRotation(annotation.rotationFormula));
         item->setVisible(true);
     }
@@ -2303,6 +2313,12 @@ void VToolSeamAllowance::RefreshScale()
 auto VToolSeamAllowance::ChildAnchorRefRect() const -> QRectF
 {
     return m_childRefRect;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::PieceOutlineRect() const -> QRectF
+{
+    return m_pieceOutlineRect;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3022,6 +3038,80 @@ auto VToolSeamAllowance::ComputePieceGeometry(bool combineTogether, bool pieceSh
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::ContainChildPlacements()
+{
+    // The items have already fitted themselves against the rectangle that forms the piece — at load
+    // and during a drag — so this only publishes where they landed. A file written while the piece
+    // still carried its seam allowance can hold a block or an annotation the outline does not, and
+    // every reader of the model — the save pass, the export, the graded canvas — would keep drawing
+    // it there: the correction has to reach the model, not just the canvas.
+    VPiece piece = VAbstractTool::data.GetPiece(m_id);
+    bool changed = false;
+
+    OInfoBlockData &blocks = piece.GetInfoBlockData();
+    for (int index : blocks.StoredBlockIndexes())
+    {
+        const OInfoBlockItem *item = m_infoBlockItems.at(index - 1);
+        if (not item->isVisibleTo(this))
+        {
+            // Masked (a member of a group, whose cartouche its group carries) or not shown: there is
+            // no placement on the canvas to publish. Tested against this piece, not the scene, so a
+            // hidden canvas cannot make the model keep a placement the piece rectangle refused.
+            continue;
+        }
+
+        OInfoBlockGeom geom = blocks.BlockGeom(index);
+        if (OContainment::SamePlacement(geom.pos, item->pos()))
+        {
+            continue;
+        }
+
+        geom.pos = item->pos();
+        // The anchor follows the corrected position: left on the old ratio, it would pull the block
+        // back outside at the next refresh, and the two would correct each other in turn.
+        geom.anchor = OChildAnchor::FromAbsolute(geom.pos, m_childRefRect);
+        blocks.SetBlockGeom(index, geom);
+        changed = true;
+    }
+
+    OAnnotationData &annotations = piece.GetAnnotationData();
+    QList<OAnnotation> list = annotations.Annotations();
+    bool annotationsMoved = false;
+    for (int i = 0; i < list.size() && i < m_annotationItems.size(); ++i)
+    {
+        OAnnotationItem *item = m_annotationItems.at(i);
+        if (not item->isVisibleTo(this))
+        {
+            continue;
+        }
+        if (qFuzzyIsNull(list.at(i).geom.pos.x()) && qFuzzyIsNull(list.at(i).geom.pos.y()))
+        {
+            // (0, 0) is the "never moved" reading UpdateAnnotations makes: such an annotation is
+            // re-centred on the piece at every refresh and owns no placement to correct.
+            continue;
+        }
+        if (OContainment::SamePlacement(list.at(i).geom.pos, item->pos()))
+        {
+            continue;
+        }
+
+        list[i].geom.pos = item->pos();
+        list[i].geom.anchor = OChildAnchor::FromAbsolute(list[i].geom.pos, m_childRefRect);
+        annotationsMoved = true;
+    }
+    if (annotationsMoved)
+    {
+        annotations.SetAnnotations(list);
+        changed = true;
+    }
+
+    if (changed)
+    {
+        VAbstractTool::data.UpdatePiece(m_id, piece);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::MaterializeChildAnchors()
 {
     // GetPiece hands out a copy sharing its data, so nothing here reaches the container
@@ -3085,8 +3175,18 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     {
         m_seamAllowance->setPath(QPainterPath());
 
-        m_pieceBoundingRect = m_mainPath.controlPointRect();
+        // The main path is this item's own path when it is shown, and parked in m_mainPath when it
+        // is hidden: reading m_mainPath alone left the rectangle null whenever the seam allowance
+        // was off, and every child placed from it — the information blocks, the annotations, the
+        // miniature — landed on the item's own origin instead of on the piece. The outline is the
+        // same path in both cases, so it is read once, from the geometry that produced it.
+        m_pieceBoundingRect = geom.seamPath.controlPointRect();
     }
+
+    // The rectangle that forms the piece: its outline, never the seam allowance drawn around it.
+    // A child placed inside the margin is outside the piece as soon as the margins are turned off,
+    // and this rectangle does not move when they are — see PieceOutlineRect().
+    m_pieceOutlineRect = geom.seamPath.controlPointRect();
 
     m_mirrorLine->setPath(geom.mirrorLine);
 
@@ -3107,6 +3207,9 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
     UpdateGrainline();
     UpdateInfoBlocks();
     UpdateAnnotations();
+    // After the children, when every item knows its final position: what the rectangle that forms
+    // the piece refused stays out of the model too, so the next save carries the corrected spot.
+    ContainChildPlacements();
     UpdateThumbnail();
     UpdatePlaceLabels();
     UpdateExcludeState();

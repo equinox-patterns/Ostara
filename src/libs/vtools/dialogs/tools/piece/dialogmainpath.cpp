@@ -805,17 +805,24 @@ auto DialogMainPath::MainPathIsValid() const -> bool
 {
     const QVector<VPieceNode> nodes = GetNodes();
 
-    // Count non-excluded point nodes
-    int pointCount = 0;
-    for (const auto &node : nodes)
+    // A curve node must be able to give the segment that runs from the point before it to the point after
+    // it. When it cannot, the curve is lost silently and the piece is then drawn wrong or not drawn at all.
     {
-        if (node.GetTypeTool() == Tool::NodePoint && not node.IsExcluded())
+        VPiecePath path{PiecePathType::PiecePath};
+        path.SetNodes(nodes);
+
+        QString curve;
+        if (path.FindUnresolvableCurve(m_data, curve))
         {
-            pointCount++;
+            m_helpLabel->setText(DialogWarningIcon(m_helpLabel) + tr("Cannot calculate curve %1.").arg(curve));
+            return false;
         }
     }
 
-    if (pointCount < 3)
+    // Count the points the path really produces: a curve produces many of them, so a closed contour made of
+    // two points and one curve is valid. Counting the point nodes only would refuse such a contour, while
+    // the piece dialog accepts it.
+    if (MainPathPoints().count() < 3)
     {
         m_helpLabel->setText(DialogWarningIcon(m_helpLabel) + tr("You need more points!"));
         return false;
@@ -872,26 +879,26 @@ auto DialogMainPath::MainPathIsValid() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogMainPath::MainPathIsClockwise() const -> bool
+auto DialogMainPath::MainPathPoints() const -> QVector<VLayoutPoint>
 {
-    QVector<VLayoutPoint> layoutPoints;
-    const QVector<VPieceNode> nodes = GetNodes();
-
-    // Build a VPiecePath to compute points
     VPiecePath path{PiecePathType::PiecePath};
-    path.SetNodes(nodes);
+    path.SetNodes(GetNodes());
 
     try
     {
-        layoutPoints = path.PathPoints(m_data);
+        return path.PathPoints(m_data);
     }
-    catch (const VExceptionBadId &)
+    catch (const VException &)
     {
-        return false;
+        return {};
     }
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogMainPath::MainPathIsClockwise() const -> bool
+{
     QVector<QPointF> points;
-    CastTo(layoutPoints, points);
+    CastTo(MainPathPoints(), points);
 
     if (points.count() < 3)
     {

@@ -484,6 +484,42 @@
                                 <xs:attribute name="foldColor" type="operationColors"/>
                               </xs:complexType>
                             </xs:element>
+                            <!-- The figure of a flounce spiral: the whole band under one element. Its two
+                                 edges are curves of the pattern and its three points are points of it, named
+                                 here by id; the two joining segments are carried by the operation and live in
+                                 its <lines>, as any other line it draws. The width, the length and the angle
+                                 are the values the user typed, kept as formulas. -->
+                            <xs:element name="flounceSpiral" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <!-- The inner edge, the outer edge, and either of the two joining
+                                           segments. -->
+                                      <xs:attribute name="inner" type="xs:unsignedInt"/>
+                                      <xs:attribute name="outer" type="xs:unsignedInt"/>
+                                      <xs:attribute name="line" type="xs:unsignedInt"/>
+                                      <!-- One of the three points the tool adds, and which of them it is:
+                                           outerStart, innerEnd or outerEnd. -->
+                                      <xs:attribute name="point" type="xs:unsignedInt"/>
+                                      <xs:attribute name="role" type="xs:string"/>
+                                      <xs:attribute name="name" type="xs:string"/>
+                                      <xs:attribute name="alias" type="xs:string"/>
+                                      <!-- The pen of that one object, so that a click on an edge styles that
+                                           edge alone. Every item carries its own, whatever it names; the two
+                                           points carry none, a point having no pen. -->
+                                      <xs:attribute name="penStyle" type="operationPenStyle"/>
+                                      <xs:attribute name="lineColor" type="operationColors"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="width" type="xs:string"/>
+                                <xs:attribute name="length" type="xs:string"/>
+                                <xs:attribute name="angle" type="xs:string"/>
+                                <xs:attribute name="typeLine" type="operationPenStyle"/>
+                                <xs:attribute name="lineColor" type="operationColors"/>
+                              </xs:complexType>
+                            </xs:element>
                           </xs:sequence>
                           <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
                           <xs:attribute name="center" type="xs:unsignedInt"/>

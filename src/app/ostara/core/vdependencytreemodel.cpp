@@ -77,7 +77,7 @@ auto GetObjectName(vidtype id, const VContainer &patternData, const QString &def
 //---------------------------------------------------------------------------------------------------------------------
 auto IsGeometricTool(Tool toolType) -> bool
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "List of tools changed.");
 
     switch (toolType)
     {
@@ -984,7 +984,7 @@ auto VDependencyTreeModel::GetToolName(vidtype id, const VContainer &patternData
 //---------------------------------------------------------------------------------------------------------------------
 auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &defaultName) const -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "List of tools changed.");
 
     switch (toolType)
     {
@@ -1012,6 +1012,8 @@ auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &de
             return tr("Move by batch", "operation");
         case Tool::Pleat:
             return tr("Pleat", "operation");
+        case Tool::FlounceSpiral:
+            return tr("Flounce spiral", "operation");
         case Tool::UnionDetails:
             return tr("Union details", "operation");
         default:
@@ -1024,7 +1026,7 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
 {
     const VToolRecord tool = FindToolRecord(id);
 
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 77, "List of tools changed.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "List of tools changed.");
 
     switch (tool.GetToolType())
     {
@@ -1050,6 +1052,8 @@ auto VDependencyTreeModel::GetToolToolTip(vidtype id) const -> QString
             return tr("Move by batch");
         case Tool::Pleat:
             return tr("Pleat");
+        case Tool::FlounceSpiral:
+            return tr("Flounce spiral", "operation");
         case Tool::DartCap:
             // The same form as the name above it, so the French the tree already carries is used — a bare
             // `tr("Dart cap")` would be a different message and would show in English until someone translated it.

@@ -34,6 +34,7 @@
 
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QVector>
 
 #include "../../vpatterndb/oannotationdata.h"
 
@@ -70,6 +71,13 @@ public:
     /** @brief Show/hide the editing outline + resize handles (active on click). */
     void SetActive(bool active);
     auto IsActive() const -> bool;
+
+    /** @brief Rectangle the annotation may not leave, in the parent's frame. Null = unconstrained.
+     *
+     * Handed over by the item that owns the annotation — the piece or the group holder — because
+     * only that host knows which rectangle forms the piece (its outline, never the seam
+     * allowance). */
+    void SetContainmentRect(const QRectF &rect);
 
     auto type() const -> int override { return Type; }
     enum
@@ -115,6 +123,14 @@ private:
     auto MinBoxHeight() const -> qreal;
     auto ResolveFont() const -> QFont;
 
+    /** @brief The box's corners in the parent's frame, where the annotation now stands.
+     *
+     * The corners, and not the bounding box: a rotated annotation is inside the rectangle exactly
+     * when its four corners are, while its bounding box would demand more room than it needs. */
+    auto CornerPoints() const -> QVector<QPointF>;
+    /** @brief Move the annotation back inside its containment rectangle; a no-op without one. */
+    void ContainPosition();
+
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OAnnotationItem) // NOLINT
 
@@ -124,6 +140,7 @@ private:
     QSizeF m_naturalSize{};
     qreal m_fontScale{1.0};
     bool m_hasBackground{false};
+    QRectF m_containmentRect{};
 
     Handle m_activeHandle{Handle::None};
     bool m_active{false};

@@ -2693,6 +2693,27 @@
      <enum>QAction::MenuRole::NoRole</enum>
     </property>
    </action>
+   <action name="actionFlounceSpiralTool">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="share/resources/toolicon.qrc">
+      <normaloff>:/toolicon/light/point_of_intersection_circles.png</normaloff>:/toolicon/light/point_of_intersection_circles.png</iconset>
+    </property>
+    <property name="text">
+     <string>Flounce spiral</string>
+    </property>
+    <property name="toolTip">
+     <string>Flounce spiral: a band of constant width wound as a snail</string>
+    </property>
+    <property name="menuRole">
+     <enum>QAction::MenuRole::NoRole</enum>
+    </property>
+   </action>
    <action name="actionPleatTool">
     <property name="checkable">
      <bool>true</bool>

@@ -270,6 +270,7 @@ private slots:
     void ToolSpread(bool checked);
     void ToolMoveBatch(bool checked);
     void ToolPleat(bool checked);
+    void ToolFlounceSpiral(bool checked);
 
     void ActionDraw(bool checked);
     void ActionDetails(bool checked);

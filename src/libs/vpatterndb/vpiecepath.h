@@ -96,6 +96,10 @@ public:
         -> QVector<VLayoutPoint>;
     auto PathNodePoints(const VContainer *data, bool showExcluded = true) const -> QVector<VPointF>;
     auto PathCurvePoints(const VContainer *data) const -> QVector<QVector<QPointF>>;
+
+    /// @brief FindUnresolvableCurve tells whether a curve node of the path cannot give the segment between
+    /// the point before it and the point after it, and describes the offending curve and its two points.
+    auto FindUnresolvableCurve(const VContainer *data, QString &description) const -> bool;
     auto SeamAllowancePoints(const VContainer *data, qreal width, bool reverse) const -> QVector<VSAPoint>;
 
     auto PainterPath(const VContainer *data, const QVector<QPointF> &cuttingPath) const -> QPainterPath;

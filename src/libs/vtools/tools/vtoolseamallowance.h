@@ -226,6 +226,15 @@ public:
      * node, in which case nothing is anchored. */
     auto ChildAnchorRefRect() const -> QRectF;
 
+    /** @brief The rectangle that forms the piece: the bounding box of its main path — the outline.
+     *
+     * Deliberately neither the seam allowance nor the "boundary together with notches" rendering:
+     * the seam allowance is a margin drawn around the piece, and a child placed inside it would fall
+     * out of the piece the moment the margins are turned off. That rectangle is what the information
+     * blocks and the annotations may not leave (the grainline keeps its historical bounds, see
+     * VGrainlineItem). Empty until the geometry has been applied once. */
+    auto PieceOutlineRect() const -> QRectF;
+
     /** @brief The miniature block's wording: the stored seam-allowance labels paired with the
      *  app-side resolver's texts, plus the legend sentence. Empty when no resolver is registered. */
     struct ThumbnailWording
@@ -305,6 +314,7 @@ private:
 
     QPainterPath m_mainPath{}; // Must be first to prevent crash
     QRectF m_pieceBoundingRect{};
+    QRectF m_pieceOutlineRect{}; // The rectangle that forms the piece; see PieceOutlineRect()
     QRectF m_childRefRect{}; // Reference for the children's normalized anchors; see ChildAnchorRefRect()
 
     /** @brief sceneDetails pointer to the scene. */
@@ -430,6 +440,13 @@ private:
     void UpdateFoldLine(const VFoldLine &foldLine);
     /** @brief Re-derives the children's positions from their anchors, and publishes them. */
     void MaterializeChildAnchors();
+    /** @brief Brings deliberately placed information blocks and annotations back inside the piece.
+     *
+     *  The items clamp themselves when they are given a position — at load and while dragging — and
+     *  this publishes the corrected positions, so a file written while the piece still carried its
+     *  seam allowance cannot keep a child the outline does not hold. Runs after the children have
+     *  been refreshed, when the items know their final position. */
+    void ContainChildPlacements();
     /** @brief Records a child position change: derives its anchor, then pushes the undo command.
      *
      *  The single funnel for every child position written on a piece. */

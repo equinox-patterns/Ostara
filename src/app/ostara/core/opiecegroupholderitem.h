@@ -119,6 +119,12 @@ private:
     void RefreshGrainline(const OPieceGroup &group, VContainer *data);
     void RefreshBlocks(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data);
     void RefreshAnnotations(const OPieceGroup &group);
+    /** @brief Publishes the placements of the group's blocks and annotations that their items fitted
+     *  back inside the members' outlines — the group's side of VToolSeamAllowance's containment.
+     *
+     *  @return true when the group changed, so the caller writes it once for the anchors and for
+     *          this correction together. */
+    auto ContainChildPlacements(OPieceGroup &group) -> bool;
     /** @brief The group's miniatures: one per member, drawn from the **group's** data — a member's
      *  own miniature stays masked while it is linked, and an unlink finds it untouched. */
     void RefreshThumbnails(const OPieceGroup &group, VContainer *data);
@@ -150,6 +156,11 @@ private:
     /** @brief Union of the members' scene bounding rects — the holder's clickable frame
      *  (Val Fork VPieceGroupHolderItem). In scene coordinates. */
     QRectF m_groupBounds;
+    /** @brief Union of the members' outlines — the rectangle the group's children may not leave.
+     *  Deliberately not m_groupBounds, which follows the seam allowance: a cartouche placed inside
+     *  the margin would fall out of the piece the moment the margins are turned off. In the holder's
+     *  local frame, like the children's positions. */
+    QRectF m_outlineBounds;
     QRectF m_childRefRect; // Rect the group's children anchor against, in the holder's local frame
     VGrainlineItem *m_grainlineItem{nullptr};
     QVector<OInfoBlockItem *> m_blockItems;

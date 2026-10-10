@@ -108,7 +108,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 100, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 101, "Convert all actions.");
 
     switch (type)
     {
@@ -312,6 +312,8 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolmovebatch"_L1;
         case VShortcutAction::ToolPleat:
             return "toolpleat"_L1;
+        case VShortcutAction::ToolFlounceSpiral:
+            return "toolflouncespiral"_L1;
         case VShortcutAction::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE();
             break;
@@ -324,7 +326,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 100, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 101, "Translate all actions.");
 
     switch (type)
     {
@@ -528,6 +530,8 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Move by batch'", "shortcut for action");
         case VShortcutAction::ToolPleat:
             return tr("Tool 'Pleat'", "shortcut for action");
+        case VShortcutAction::ToolFlounceSpiral:
+            return tr("Tool 'Flounce spiral'", "shortcut for action");
         case VShortcutAction::LAST_ONE_DO_NOT_USE:
             Q_UNREACHABLE(); //-V501
             break;

@@ -33,6 +33,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vmodifierkey.h"
+#include "../vlayout/vlayoutpoint.h"
 
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -129,6 +130,10 @@ void OPieceDialog::ShowDialog(bool click)
     m_pieceStep->SetPieceTotal(data.GetEffectivePieceCount() + 1);
     UpdateButtons();
 
+    // The contour is collected and frozen: state the refusal reason inside the dialog itself, next to the
+    // greyed OK button that it explains.
+    m_pieceStep->SetContourProblem(ContourProblem());
+
     // Fix issue #526. Dialog Detail is not on top after selection second object on Mac.
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     show();
@@ -150,10 +155,46 @@ void OPieceDialog::CheckDependencyTreeComplete()
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceDialog::IsValid() const -> bool
 {
-    // Mirror DialogSeamAllowance::MainPathIsValid: a usable contour resolves to
-    // at least three distinct points.
+    // The OK button is enabled only for a contour that can really be used as a piece.
+    return ContourProblem().isEmpty();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ContourProblem tells why the collected contour cannot be used as a piece, and returns an empty string
+ * when it can.
+ *
+ * A piece is built on its contour: a contour whose curve cannot be computed, or whose points are too few, or
+ * which runs counter-clockwise, gives a piece whose seam allowance and inside are swapped. Such a piece must
+ * never be created — and when it is refused, the reason has to be said, otherwise the disabled OK button leaves
+ * the user with no way out.
+ */
+auto OPieceDialog::ContourProblem() const -> QString
+{
     const VPiece piece = GetPiece();
-    return piece.GetPath().CountNodes() >= 3 && piece.MainPathPoints(&data).count() >= 3;
+    const VPiecePath path = piece.GetPath();
+
+    // Every curve of the contour must be able to give the segment between the points around it.
+    QString curve;
+    if (path.FindUnresolvableCurve(&data, curve))
+    {
+        return tr("Cannot calculate curve %1.").arg(curve);
+    }
+
+    QVector<QPointF> points;
+    CastTo(piece.MainPathPoints(&data), points);
+
+    if (points.count() < 3)
+    {
+        return tr("You need more points!");
+    }
+
+    if (VPiece::SumTrapezoids(points) >= 0)
+    {
+        return tr("You have to choose points in a clockwise direction!");
+    }
+
+    return {};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -226,7 +267,17 @@ void OPieceDialog::BuildPreviewPiece()
     else
     {
         visPath->RefreshGeometry();
+
+        // Say what is still missing, otherwise the disabled OK button is a dead end. While the direction of a
+        // curve is not settled yet the automation owns the message, so leave it alone in that case.
+        if (m_automation.PendingReverseCurves().isEmpty())
+        {
+            emit ToolTip(ContourProblem()); // empty when the contour is usable: clears an outdated message
+        }
     }
+
+    // The same reason, written inside the dialog: the tooltip is not shown any more once the dialog is open.
+    m_pieceStep->SetContourProblem(ContourProblem());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -251,6 +302,14 @@ void OPieceDialog::OnPatternNext()
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceDialog::DialogAccepted()
 {
+    // Never create a piece on a contour that cannot be used. The OK button is already disabled in that case;
+    // this covers the keyboard and any programmatic acceptance, and it says why instead of doing nothing.
+    if (const QString problem = ContourProblem(); not problem.isEmpty())
+    {
+        emit ToolTip(problem);
+        return;
+    }
+
     // Piece name is required: highlight the missing field instead of silently
     // auto-naming the piece.
     if (m_pieceStep->GetPieceName().isEmpty())

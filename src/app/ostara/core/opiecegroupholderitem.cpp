@@ -37,6 +37,7 @@
 
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vgeometry/ocontainment.h"
 #include "../vpatterndb/ochildanchor.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vtools/tools/oannotationitem.h"
@@ -156,6 +157,7 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
     // VPieceGroupHolderItem): children are laid out in LOCAL coordinates so they move
     // together with the group, and the frame is the group's clickable area.
     QRectF bounds;
+    QRectF outlineBounds; // in scene coordinates, like bounds
     for (quint32 pieceId : group.pieceIds)
     {
         try
@@ -164,6 +166,10 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
             if (tool != nullptr)
             {
                 bounds = bounds.united(tool->sceneBoundingRect());
+                // What a member's own children keep to: its outline, never the seam allowance drawn
+                // around it — a cartouche placed inside the margin is outside the piece as soon as
+                // the margins are turned off, and this rectangle does not move when they are.
+                outlineBounds = outlineBounds.united(tool->sceneTransform().mapRect(tool->PieceOutlineRect()));
             }
         }
         catch (const VExceptionBadId &)
@@ -173,6 +179,9 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
     }
     m_groupBounds = bounds;
     setPos(bounds.topLeft());
+    // The children's positions are stored in the holder's local frame, whose origin is the group's
+    // top-left; the rectangle that holds them belongs to that same frame.
+    m_outlineBounds = outlineBounds.translated(-bounds.topLeft());
 
     // The children anchor against the members' node boxes, expressed in the holder's local
     // frame. That is a second box, distinct from m_groupBounds: this one carries the origin
@@ -194,14 +203,20 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
             materialized = true;
         }
     }
+    RefreshGrainline(followed, data);
+    RefreshBlocks(followed, doc, data);
+    RefreshAnnotations(followed);
+    // The group's blocks and annotations are fitted by their items against the members' outlines,
+    // exactly like the ones of a piece; where they landed is published with the anchors, in the one
+    // write this refresh owes the group.
+    if (ContainChildPlacements(followed))
+    {
+        materialized = true;
+    }
     if (materialized)
     {
         data->UpdatePieceGroup(m_groupId, followed);
     }
-
-    RefreshGrainline(followed, data);
-    RefreshBlocks(followed, doc, data);
-    RefreshAnnotations(followed);
     RefreshThumbnails(followed, data);
     update();
 }
@@ -256,6 +271,9 @@ void OPieceGroupHolderItem::RefreshBlocks(const OPieceGroup &group, VAbstractPat
             geom.pos = center + QPointF(0.0, (block - 1) * (geom.height + 12.0));
         }
 
+        // A block may not leave the group's pieces, exactly like a piece's own. The rectangle goes in
+        // before the geometry so the block is fitted against the rectangle of this pass.
+        blockItem->SetContainmentRect(m_outlineBounds);
         blockItem->SetBlockGeom(geom);
         blockItem->SetContent(lines, geom.fontScale);
         blockItem->show();
@@ -301,9 +319,78 @@ void OPieceGroupHolderItem::RefreshAnnotations(const OPieceGroup &group)
         {
             geom.pos = center;
         }
+        // An annotation may not leave the group's pieces, exactly like a block: the rectangle goes in
+        // first so the annotation is fitted against the rectangle of this pass.
+        item->SetContainmentRect(m_outlineBounds);
         item->SetAnnotationGeom(geom, EvaluateRotation(annotation.rotationFormula));
         item->show();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceGroupHolderItem::ContainChildPlacements(OPieceGroup &group) -> bool
+{
+    // The items have already fitted themselves against the members' outlines — at load and during a
+    // drag — so this only publishes where they landed. A file written while the pieces still carried
+    // their seam allowance can hold a block or an annotation those outlines do not, and every reader
+    // of the model — the save pass, the export, the graded canvas — would keep drawing it there.
+    bool changed = false;
+
+    OInfoBlockData &blocks = group.GetInfoBlockData();
+    for (int index : blocks.StoredBlockIndexes())
+    {
+        const OInfoBlockItem *item = m_blockItems.at(index - 1);
+        if (not item->isVisibleTo(this))
+        {
+            continue; // the block does not exist for this group: nothing to publish
+        }
+
+        OInfoBlockGeom geom = blocks.BlockGeom(index);
+        if (OContainment::SamePlacement(geom.pos, item->pos()))
+        {
+            continue;
+        }
+
+        geom.pos = item->pos();
+        // The anchor follows the corrected position: left on the old ratio, it would pull the block
+        // back outside at the next refresh, and the two would correct each other in turn.
+        geom.anchor = OChildAnchor::FromAbsolute(geom.pos, m_childRefRect);
+        blocks.SetBlockGeom(index, geom);
+        changed = true;
+    }
+
+    OAnnotationData &annotations = group.GetAnnotationData();
+    QList<OAnnotation> list = annotations.Annotations();
+    bool annotationsMoved = false;
+    for (int i = 0; i < list.size() && i < m_annotationItems.size(); ++i)
+    {
+        OAnnotationItem *item = m_annotationItems.at(i);
+        if (not item->isVisibleTo(this))
+        {
+            continue;
+        }
+        if (qFuzzyIsNull(list.at(i).geom.pos.x()) && qFuzzyIsNull(list.at(i).geom.pos.y()))
+        {
+            // (0, 0) is the "never moved" reading RefreshAnnotations makes: such an annotation is
+            // re-centred on the group at every refresh and owns no placement to correct.
+            continue;
+        }
+        if (OContainment::SamePlacement(list.at(i).geom.pos, item->pos()))
+        {
+            continue;
+        }
+
+        list[i].geom.pos = item->pos();
+        list[i].geom.anchor = OChildAnchor::FromAbsolute(list[i].geom.pos, m_childRefRect);
+        annotationsMoved = true;
+    }
+    if (annotationsMoved)
+    {
+        annotations.SetAnnotations(list);
+        changed = true;
+    }
+
+    return changed;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

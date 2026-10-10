@@ -26,6 +26,8 @@
 
 #include "oinfoblockitem.h"
 
+#include "../../vgeometry/ocontainment.h"
+
 #include <QApplication>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -59,7 +61,53 @@ void OInfoBlockItem::SetBlockGeom(const OInfoBlockGeom &geom)
     setRotation(-geom.rotation);
     setRect(0, 0, geom.width, geom.height);
     m_fontScale = geom.fontScale;
+    // The stored position is the one the user left, and a file written while the piece still had
+    // its seam allowance can carry one the outline no longer holds: reading it back is where the
+    // rectangle that forms the piece gets its say, so a block can never come back outside.
+    ContainPosition();
     update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockItem::SetContainmentRect(const QRectF &rect)
+{
+    m_containmentRect = rect;
+    ContainPosition();
+    update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OInfoBlockItem::CornerPoints() const -> QVector<QPointF>
+{
+    const QRectF r = rect();
+    return {mapToParent(r.topLeft()), mapToParent(r.topRight()), mapToParent(r.bottomLeft()),
+            mapToParent(r.bottomRight())};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockItem::ContainPosition()
+{
+    if (not OContainment::IsUsable(m_containmentRect))
+    {
+        return; // no rectangle to stay in — a piece with nothing drawn, or no host rectangle yet
+    }
+
+    const QVector<QPointF> corners = CornerPoints();
+    // A block bigger than the piece has no inside position: the furthest-point rule would make it
+    // swing from one edge to the other at every refresh, and that position is published back to the
+    // model — the smallest block would then never settle. Such a block stays where it is.
+    if (not OContainment::FitsInside(m_containmentRect, corners))
+    {
+        return;
+    }
+
+    // Only the position is fitted, never the shape: the block keeps its size and its rotation, and
+    // the translation the rule returns is the move of the whole item, which is what pos() holds.
+    const OContainment::Fit fit = OContainment::FitPoints(m_containmentRect, corners);
+    if (not fit.contained)
+    {
+        setPos(pos() + fit.translation);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -360,8 +408,11 @@ void OInfoBlockItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // Move: manual delta — never the base class, which would drag the selected
-    // piece (the block's movable ancestor) instead of the block.
+    // piece (the block's movable ancestor) instead of the block. The position is recomputed from
+    // the press-time one on every event, so the block cannot walk out of the piece by accumulating
+    // clamped deltas.
     setPos(m_dragStartPos + (event->scenePos() - m_dragStartScene));
+    ContainPosition();
     event->accept();
 }
 

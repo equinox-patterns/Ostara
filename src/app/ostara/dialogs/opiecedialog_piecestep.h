@@ -59,6 +59,9 @@ signals:
 public:
     auto GetPieceName() const -> QString;
     void SetPieceNameInvalid(bool invalid);
+    /** @brief Show why the collected contour is refused (an empty string clears the message). The reason is
+     *         kept inside the step, because a disabled OK button with no explanation leaves no way out. */
+    void SetContourProblem(const QString &problem);
     auto GetPieceNumber() const -> uint;
     void SetPieceTotal(int count);
     auto GetCutFabricQty() const -> int;
@@ -82,6 +85,7 @@ private:
     void InitCutTab(const QString &title, QSpinBox **qtySpin, QCheckBox **onFoldCheck);
 
     QLineEdit *m_nameEdit{nullptr};
+    QLabel *m_problemLabel{nullptr};
     QSpinBox *m_numberSpin{nullptr};
     QLabel *m_totalLabel{nullptr};
     QTabWidget *m_cutTabs{nullptr};

@@ -112,6 +112,7 @@ private:
     auto Spread(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto MoveBatch(const VToolRecord &record, const VContainer &data) -> QDomElement;
     auto Pleat(const VToolRecord &record, const VContainer &data) -> QDomElement;
+    auto FlounceSpiral(const VToolRecord &record, const VContainer &data) -> QDomElement;
 
     /** @brief Write what a pleat draws and what it was taken on: a recipe recomputes the fold from the prise, the
      *  value and the boxes, exactly as the pattern does. */

@@ -872,6 +872,79 @@ auto VPiecePath::EndSegment(const VContainer *data, int i) const -> VSAPoint
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief FindUnresolvableCurve checks that every curve node of the path can really give the segment that
+ * runs from the point before it to the point after it.
+ *
+ * A curve node that cannot give its segment loses the curve silently: the resolved path is then either
+ * wrong or too short to be a contour, and a piece built on it is drawn wrong or not drawn at all, without
+ * any message for the user. This check makes that failure visible and names the offending curve.
+ *
+ * @param data pattern container.
+ * @param description receives the curve name and the two points it is used between, when the result is true.
+ * @return true when a curve of the path cannot be calculated.
+ */
+auto VPiecePath::FindUnresolvableCurve(const VContainer *data, QString &description) const -> bool
+{
+    for (int i = 0; i < d->m_nodes.size(); ++i)
+    {
+        const VPieceNode &node = d->m_nodes.at(i);
+        if (node.IsExcluded())
+        {
+            continue;
+        }
+
+        switch (node.GetTypeTool())
+        {
+            case Tool::NodeArc:
+            case Tool::NodeElArc:
+            case Tool::NodeSpline:
+            case Tool::NodeSplinePath:
+                break;
+            default:
+                continue;
+        }
+
+        bool broken = false;
+        try
+        {
+            const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(node.GetId());
+            const VSAPoint begin = StartSegment(data, i);
+            const VSAPoint end = EndSegment(data, i);
+
+            QString segmentError;
+            const QVector<QPointF> segment = VAbstractCurve::GetSegmentPoints(curve->GetPoints(), begin, end,
+                                                                             node.GetReverse(), segmentError);
+            broken = not segmentError.isEmpty() || segment.size() < 2;
+        }
+        catch (const VException &)
+        {
+            // The curve, or one of the points around it, cannot be reached any more.
+            broken = true;
+        }
+
+        if (not broken)
+        {
+            continue;
+        }
+
+        const QString curveName = NodeName(i, data);
+        const vsizetype previous = FindInLoopNotExcludedUp(i, d->m_nodes);
+        const vsizetype next = FindInLoopNotExcludedDown(i, d->m_nodes);
+        const QString firstName =
+            (previous != i && previous != -1) ? NodeName(static_cast<int>(previous), data) : QString();
+        const QString lastName = (next != i && next != -1) ? NodeName(static_cast<int>(next), data) : QString();
+
+        description = (firstName.isEmpty() || lastName.isEmpty())
+                          ? curveName
+                          : QStringLiteral("%1 (%2 > %3)").arg(curveName, firstName, lastName);
+        return true;
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiecePath::NodePreviousPoint(const VContainer *data, int i) const -> QPointF
 {
     if (i < 0 || i > d->m_nodes.size() - 1)

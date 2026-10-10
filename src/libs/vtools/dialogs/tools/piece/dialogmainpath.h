@@ -36,6 +36,7 @@ class QToolButton;
 class QDialogButtonBox;
 class VContainer;
 class VPieceNode;
+class VLayoutPoint;
 
 class DialogMainPath : public QDialog
 {
@@ -72,6 +73,7 @@ private:
     void UpdateValidation();
     auto MainPathIsValid() const -> bool;
     auto MainPathIsClockwise() const -> bool;
+    auto MainPathPoints() const -> QVector<VLayoutPoint>;
 
     const VContainer *m_data;
 

@@ -29,6 +29,9 @@
 #ifndef DELETEPIECE_H
 #define DELETEPIECE_H
 
+#include <QDomElement>
+#include <QSet>
+#include <QVector>
 #include <QtGlobal>
 
 #include "../tools/vtoolseamallowance.h"
@@ -49,6 +52,25 @@ public:
 private:
     Q_DISABLE_COPY_MOVE(DeletePiece) // NOLINT
 
+    /// The objects of `<modeling>` a piece draws through and the paths it owns, as the file names them.
+    struct PieceModelingRefs
+    {
+        QSet<vidtype> nodes{};          ///< ids of the node copies named by the piece's nodes
+        QVector<QDomElement> paths{};   ///< the <path> elements the piece's <iPaths> name
+    };
+
+    /// One element of `<modeling>` that goes away with the piece.
+    struct OwnedModelingElement
+    {
+        QDomElement parent{};  ///< the `<modeling>` it was read from
+        QDomElement element{}; ///< its clone, the copy that survives the removal and comes back on undo
+    };
+
+    auto ModelingRefsOf(const QDomElement &detail) const -> PieceModelingRefs;
+    void CollectOwnedModeling(const QDomElement &detail);
+    void TakeOwnedModeling();
+    void RestoreOwnedModeling();
+
     QDomNode m_parentNode{};
     quint32 m_siblingId{};
     VPiece m_detail;
@@ -57,6 +79,7 @@ private:
     QPointer<VToolSeamAllowance> m_tool{};
     VToolRecord m_record;
     int m_indexPatternBlock{-1};
+    QVector<OwnedModelingElement> m_ownedModeling{};
 };
 
 #endif // DELETEPIECE_H

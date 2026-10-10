@@ -27,6 +27,7 @@
 #include "opiecedialog_piecestep.h"
 
 #include "../widgets/ogradedalignwidget.h"
+#include "../vtools/dialogs/dialogtoolbox.h"
 
 #include <algorithm>
 
@@ -48,6 +49,13 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
 {
     auto *mainLayout = new QVBoxLayout(this);
     auto *form = new QFormLayout();
+
+    // Why the collected contour is refused: shown at the very top of the step, so the reason is readable as
+    // soon as the dialog opens. A disabled OK button without a reason is a dead end.
+    m_problemLabel = new QLabel();
+    m_problemLabel->setWordWrap(true);
+    m_problemLabel->setVisible(false);
+    mainLayout->addWidget(m_problemLabel);
 
     m_nameEdit = new QLineEdit();
     form->addRow(tr("Piece name"), m_nameEdit);
@@ -158,6 +166,13 @@ auto OPiecePieceStep::GetPieceName() const -> QString
 void OPiecePieceStep::SetPieceNameInvalid(bool invalid)
 {
     m_nameEdit->setStyleSheet(invalid ? QStringLiteral("QLineEdit { border: 1px solid red; }") : QString());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPiecePieceStep::SetContourProblem(const QString &problem)
+{
+    m_problemLabel->setText(problem.isEmpty() ? QString() : DialogWarningIcon(m_problemLabel) + problem);
+    m_problemLabel->setVisible(not problem.isEmpty());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

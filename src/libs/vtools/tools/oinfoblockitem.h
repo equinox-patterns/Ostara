@@ -31,6 +31,7 @@
 
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QVector>
 
 #include "../../vpatterndb/oinfoblockdata.h"
 #include "../../vwidgets/ocartouchepainter.h"
@@ -59,6 +60,12 @@ public:
     void SetBlockGeom(const OInfoBlockGeom &geom);
     auto BlockIndex() const -> int;
     void SetReadOnly(bool readOnly);
+
+    /** @brief Rectangle the block may not leave, in the parent's frame. Null = unconstrained.
+     *
+     * Handed over by the item that owns the block — the piece or the group holder — because only
+     * that host knows which rectangle forms the piece (its outline, never the seam allowance). */
+    void SetContainmentRect(const QRectF &rect);
     /** @brief Show/hide the editing outline + resize handles (active on click). */
     void SetActive(bool active);
     auto IsActive() const -> bool;
@@ -100,12 +107,21 @@ private:
     auto HitTestHandle(const QPointF &localPos) const -> Handle;
     static auto CursorForHandle(Handle handle) -> Qt::CursorShape;
 
+    /** @brief The block's corners in the parent's frame, where the block now stands.
+     *
+     * The corners, and not the bounding box: a rotated block is inside the rectangle exactly when
+     * its four corners are, while its bounding box would demand more room than it needs. */
+    auto CornerPoints() const -> QVector<QPointF>;
+    /** @brief Move the block back inside its containment rectangle; a no-op without one. */
+    void ContainPosition();
+
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(OInfoBlockItem) // NOLINT
 
     int m_blockIndex;
     QVector<OCartoucheRenderLine> m_lines;
     qreal m_fontScale{1.0};
+    QRectF m_containmentRect{};
 
     Handle m_activeHandle{Handle::None};
     bool m_active{false};

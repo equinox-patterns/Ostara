@@ -31,6 +31,8 @@
 #include "vtoppb_templates.h"
 #include "../vtools/tools/drawTools/operation/otoolclosedart.h"
 #include "../vtools/tools/drawTools/operation/otoolmovebatch.h"
+#include "../vtools/tools/drawTools/operation/oflouncespiraldisplay.h"
+#include "../vtools/tools/drawTools/operation/otoolflouncespiral.h"
 #include "../vtools/tools/drawTools/operation/otoolpleat.h"
 #include "../vtools/tools/drawTools/operation/otoolspread.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
@@ -50,7 +52,9 @@
 #include "ifcdef.h"
 #include "../vmisc/def.h"
 
+#include <QPair>
 #include <QPushButton>
+#include <QVector>
 
 namespace
 {
@@ -965,5 +969,247 @@ auto MoveBatchProperties() -> std::vector<PropertyDesc>
 
         CopyStyleGroup<OToolMoveBatch>(),
         NotesProperty<OToolMoveBatch>(),
+    };
+}
+
+namespace
+{
+// --- OToolFlounceSpiral ---
+
+/** @brief The ONE style of the flounce: the pen and the colour of everything the figure draws.
+ *
+ *  The flounce is a whole — two edges and the two segments that close the band — so its style is set once, and the
+ *  two groups it used to have (one for the edge, one for the segments) are gone. It is a titled frame, like the
+ *  pleat's own group, and not two loose rows: a group is what the browser dispatches a change to, its children
+ *  having no entry of their own in its maps, and the frame is what says that the two rows belong to the figure as
+ *  a whole.
+ *
+ *  The pen list is the one of a curve, for the reason the dialog fills its own combo with it: the objects of this
+ *  figure that are drawn are curves, and "none" is not offered to a tool that would then show nothing. */
+auto FlounceStyleGroup() -> PropertyDesc
+{
+    return {QStringLiteral("flounceStyle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Style")),
+            [](VToolOptionsPropertyBrowser *b, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<OToolFlounceSpiral *>(tool);
+
+                auto *group = new OGroupBoxProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Style")),
+                                                    /*checkable*/ false);
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = CurvePenStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+
+                auto *lineType = new VPE::VLineTypeProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line type:")));
+                lineType->setStyles(styles);
+                const auto index = VPE::VLineTypeProperty::IndexOfStyle(styles, t->GetPenStyle());
+                lineType->setValue(index >= 0 ? index : 0);
+
+                auto *lineColor = new VPE::VLineColorProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Line color:")));
+                lineColor->SetDefaultColors(VAbstractTool::ColorsList());
+                lineColor->SetCustomColors(VAbstractValApplication::VApp()->ValentinaSettings()->GetUserToolColors());
+                lineColor->SetUseNativeDialog(!VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+                lineColor->setValue(t->GetLineColor());
+
+                group->addChild(lineType);
+                group->addChild(lineColor);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 2)
+                {
+                    return;
+                }
+
+                // The setters compare before they write, so a change of one row never rewrites the other.
+                t->SetPenStyle(prop->getChild(0)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+                t->SetLineColor(prop->getChild(1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 2)
+                {
+                    return;
+                }
+
+                const QPalette cp = b->ComboBoxPalette();
+                const auto styles = CurvePenStylesPics(cp.color(QPalette::Base), cp.color(QPalette::Text));
+                const auto index = VPE::VLineTypeProperty::IndexOfStyle(styles, t->GetPenStyle());
+
+                prop->getChild(0)->setValue(index >= 0 ? index : 0);
+                prop->getChild(1)->setValue(t->GetLineColor());
+            }};
+}
+
+/** @brief The three points of the figure, in the order the figure places them, each with the name of its row.
+ *
+ *  The labels are the ones the Points tab of the dialog carries: the dock and the dialog speak of the same point
+ *  with the same words, and no new vocabulary is invented for the dock. */
+auto FlouncePoints() -> QVector<QPair<OFlounceSpiralPoint::Role, QString>>
+{
+    return {{OFlounceSpiralPoint::Role::OuterStart,
+             T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Outer edge start:"))},
+            {OFlounceSpiralPoint::Role::InnerEnd,
+             T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Inner edge end:"))},
+            {OFlounceSpiralPoint::Role::OuterEnd,
+             T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Outer edge end:"))}};
+}
+
+/** @brief The name of each of the three points, and the box that shows it.
+ *
+ *  ONE group for the three, closed by a single toggle, exactly as the rectangle offers the three points it
+ *  creates: six rows under one header, the box right under the name it belongs to — three names followed by three
+ *  identical boxes would leave the reader pairing them himself.
+ *
+ *  The points of a flounce are not tools: they are objects of the figure, created, carried and named by the
+ *  operation, so every value here goes through the operation's own accessors. A name the pattern cannot carry, or
+ *  one another object already answers to, is put back in front of the user — the operation refuses it in silence. */
+auto FlouncePointsGroup() -> PropertyDesc
+{
+    return {QStringLiteral("flouncePoints"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Points")),
+            [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<OToolFlounceSpiral *>(tool);
+                auto *group = new VPE::VProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Points")));
+                group->setCollapsible(true);
+
+                const auto points = FlouncePoints();
+                for (const auto &point : points)
+                {
+                    auto *name = new VPE::VStringProperty(point.second);
+                    name->setValue(t->PointName(point.first));
+                    group->addChild(name);
+
+                    auto *show = new VPE::VBoolProperty(
+                        T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Show Point name")));
+                    show->setValue(t->PointLabelVisible(point.first));
+                    group->addChild(show);
+                }
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem());
+                if (t == nullptr)
+                {
+                    return;
+                }
+
+                const auto children = prop->getChildren();
+                const auto points = FlouncePoints();
+                if (children.size() < points.size() * 2)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < points.size(); ++i)
+                {
+                    const OFlounceSpiralPoint::Role role = points.at(i).first;
+
+                    const QString name = children.at(i * 2)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
+                    t->SetPointName(role, name);
+                    if (t->PointName(role) != name)
+                    {
+                        // Refused — empty, badly shaped, or already carried by another object: the old name goes
+                        // back in front of the user.
+                        children.at(i * 2)->setValue(t->PointName(role));
+                    }
+
+                    t->SetPointLabelVisible(
+                        role, children.at(i * 2 + 1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+                }
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem());
+                if (t == nullptr)
+                {
+                    return;
+                }
+
+                const auto children = prop->getChildren();
+                const auto points = FlouncePoints();
+                if (children.size() < points.size() * 2)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < points.size(); ++i)
+                {
+                    children.at(i * 2)->setValue(t->PointName(points.at(i).first));
+                    children.at(i * 2 + 1)->setValue(t->PointLabelVisible(points.at(i).first));
+                }
+            }};
+}
+} // namespace
+
+// --- OToolFlounceSpiral ---
+auto FlounceSpiralProperties() -> std::vector<PropertyDesc>
+{
+    // The name of the ONE curve the figure offers — the outer edge, from A_2 to A_3 — then the two values and the
+    // angle, then the single style of the whole figure. The three points come last, after the notes: the dock is
+    // the only place they can be reached once the tool exists.
+    return {
+        MakeStringPropWithValidator<OToolFlounceSpiral>(
+            AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")),
+            &OToolFlounceSpiral::OuterAlias, &OToolFlounceSpiral::SetOuterAlias),
+        {QStringLiteral("flounceWidth"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Width:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolFlounceSpiral *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Width:")));
+             p->SetFormula(t->GetFormulaWidth()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaWidth()) t->SetFormulaWidth(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaWidth()); prop->setValue(v);
+             }
+         }},
+        {QStringLiteral("flounceLength"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolFlounceSpiral *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
+             p->SetFormula(t->GetFormulaLength()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaLength()) t->SetFormulaLength(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaLength()); prop->setValue(v);
+             }
+         }},
+        {QStringLiteral("flounceAngle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolFlounceSpiral *>(tool);
+             auto *p = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle:")));
+             p->SetFormula(t->GetFormulaAngle()); return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem())) {
+                 auto f = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                 if (f != t->GetFormulaAngle()) t->SetFormulaAngle(f);
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolFlounceSpiral *>(b->currentItem())) {
+                 QVariant v; v.setValue(t->GetFormulaAngle()); prop->setValue(v);
+             }
+         }},
+        FlounceStyleGroup(),
+        NotesProperty<OToolFlounceSpiral>(),
+        FlouncePointsGroup(),
     };
 }

@@ -311,39 +311,57 @@ void VToolPiecePath::RefreshGeometry()
         return;
     }
 
-    QVector<QPointF> cuttingPath;
-    const quint32 pieceId = VAbstractTool::data.GetPieceForPiecePath(m_id);
-    bool showFullPiece = true;
-    QLineF mirrorLine;
-    if (pieceId > NULL_ID)
+    // A node of the path can name an object the pattern does not have: a file written before the piece that
+    // owned the node copy was deleted carries exactly that (see DeletePiece), and the objects a copy wraps can
+    // have gone the same way. The path is then not drawn — and above all it does not throw. This runs from
+    // FullUpdateFromFile, which the parse emits for every tool: an exception here reaches
+    // VPattern::LiteParseTree, whose catch disables the whole interface until the file is reopened. The same
+    // rule as VToolLine::RefreshGeometry, which leaves a line whose endpoint is gone where it is.
+    try
     {
-        VPiece const piece = VAbstractTool::data.GetPiece(pieceId);
-        // We cannot use current VContainer because it doesn't have current seam allowance value
-        const VContainer pData = VAbstractPattern::getTool(pieceId)->GetDataCopy();
-        cuttingPath = piece.CuttingPathPoints(&pData);
+        QVector<QPointF> cuttingPath;
+        const quint32 pieceId = VAbstractTool::data.GetPieceForPiecePath(m_id);
+        bool showFullPiece = true;
+        QLineF mirrorLine;
+        if (pieceId > NULL_ID)
+        {
+            VPiece const piece = VAbstractTool::data.GetPiece(pieceId);
+            // We cannot use current VContainer because it doesn't have current seam allowance value
+            const VContainer pData = VAbstractPattern::getTool(pieceId)->GetDataCopy();
+            cuttingPath = piece.CuttingPathPoints(&pData);
 
-        showFullPiece = piece.IsShowFullPiece();
-        mirrorLine = piece.SeamAllowanceMirrorLine(&pData);
+            showFullPiece = piece.IsShowFullPiece();
+            mirrorLine = piece.SeamAllowanceMirrorLine(&pData);
+        }
+        QPainterPath p = path.PainterPath(this->getData(), cuttingPath);
+
+        if (!path.IsNotMirrored() && showFullPiece && !mirrorLine.isNull())
+        {
+            QVector<VLayoutPoint> points = path.PathPoints(this->getData(), cuttingPath);
+            const QTransform matrix = VGObject::FlippingMatrix(mirrorLine);
+            std::transform(points.begin(),
+                           points.end(),
+                           points.begin(),
+                           [&matrix](const VLayoutPoint &point) -> VLayoutPoint
+                           { return VAbstractPiece::MapPoint(point, matrix); });
+            QVector<QPointF> casted;
+            CastTo(points, casted);
+            p.addPath(VPiecePath::MakePainterPath(casted));
+        }
+
+        p.setFillRule(Qt::OddEvenFill);
+
+        this->setPath(p);
     }
-    QPainterPath p = path.PainterPath(this->getData(), cuttingPath);
-
-    if (!path.IsNotMirrored() && showFullPiece && !mirrorLine.isNull())
+    catch (const VExceptionBadId &)
     {
-        QVector<VLayoutPoint> points = path.PathPoints(this->getData(), cuttingPath);
-        const QTransform matrix = VGObject::FlippingMatrix(mirrorLine);
-        std::transform(points.begin(),
-                       points.end(),
-                       points.begin(),
-                       [&matrix](const VLayoutPoint &point) -> VLayoutPoint
-                       { return VAbstractPiece::MapPoint(point, matrix); });
-        QVector<QPointF> casted;
-        CastTo(points, casted);
-        p.addPath(VPiecePath::MakePainterPath(casted));
+        // A node of the path is gone: nothing of it can be drawn. The tool stays, the pattern keeps its
+        // structure, and the next file the user writes is the one that gets the stray node out (the deletion
+        // of a piece takes its own, and the garbage collector the rest).
+        this->setPath(QPainterPath());
+        return;
     }
 
-    p.setFillRule(Qt::OddEvenFill);
-
-    this->setPath(p);
     QPen pen = this->pen();
     pen.setStyle(path.GetPenType());
     this->setPen(pen);
