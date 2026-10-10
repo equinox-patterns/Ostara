@@ -86,8 +86,10 @@ public:
 
     void ShowVisualization(bool show) override;
 
-    /// Default handle spread around the chest/back width point (t), as a ratio of |Carrure − V|.
-    static constexpr double kDefaultHandleRatio = 0.50;
+    /// Handle spread around the chest/back width point (t), as a ratio of |Carrure − V|. The
+    /// departing handle sits t·|Carrure−V| beyond the chest/back width point, i.e. at
+    /// (1 + t)·|Carrure−V| from V — so t = 0.60 is the manual construction's "×1.6" from V.
+    static constexpr double kDefaultHandleRatio = 0.60;
     /// Incoming handle ratio (β) used when the perpendicular is skipped — the original solver value.
     static constexpr double kPerpendicularRatio = 0.15;
 
@@ -102,7 +104,8 @@ public:
     /// The perpendicular point (segment 2 C2) and shoulder (segment 2 P4) are
     /// user-selected, not computed.
     ///
-    /// @param t  handle spread around the chest/back width point (0.1→0.5, default 0.50).
+    /// @param t  handle spread around the chest/back width point (0.60 = the manual construction's
+    ///           ×1.6 from V, which is where this value comes from).
     static auto SolveHandles(const VPointF &em, const VPointF &carrure, double t) -> ArmholeHandles;
 
     /// True when the perpendicular has been skipped: the user picked the shoulder point twice, so
