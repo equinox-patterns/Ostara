@@ -67,6 +67,7 @@ public:
     virtual auto GetSplinePath() const -> QVector<VSplinePoint> = 0;
 
     auto GetPoints() const -> QVector<QPointF> override;
+    auto GetPath() const -> QPainterPath override;
     auto GetLength() const -> qreal override;
 
     auto DirectionArrows() const -> QVector<DirectionArrow> override;

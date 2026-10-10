@@ -33,6 +33,7 @@
 #include <QSharedDataPointer>
 #include <QtGlobal>
 
+#include "../vgeometry/osmoothpath.h"
 #include "../vlayout/vabstractpiece.h"
 #include "ipieceinfo.h"
 
@@ -288,11 +289,17 @@ template <class T> inline auto VPiece::SeamAllowancePath(const QVector<T> &point
     // seam allowence
     if (IsSeamAllowance() && not points.isEmpty())
     {
-        ekv.moveTo(points.at(0));
-        for (qint32 i = 1; i < points.count(); ++i)
+        // The allowance is a point-set offset: its own line cannot be a curve, but it can be drawn as the
+        // smooth curve those points describe instead of a chain of segments. See OSmoothPath::Path().
+        QVector<QPointF> casted;
+        casted.reserve(points.count());
+        for (const T &point : points)
         {
-            ekv.lineTo(points.at(i));
+            casted.append(point);
         }
+
+        ekv = OSmoothPath::Path(casted, /*close=*/false);
+        ekv.setFillRule(Qt::WindingFill);
 
 #if !defined(V_NO_ASSERT)
         // uncomment for debug
@@ -310,8 +317,6 @@ template <class T> inline auto VPiece::SeamAllowancePath(const QVector<T> &point
 //                }
 //            }
 #endif
-
-        ekv.setFillRule(Qt::WindingFill);
     }
 
     return ekv;

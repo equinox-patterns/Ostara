@@ -31,6 +31,7 @@
 #include "../ifc/exception/vexceptioninvalidnotch.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../ifc/xml/vabstractpattern.h"
+#include "../vgeometry/osmoothpath.h"
 #include "../vgeometry/vabstractcurve.h"
 #include "../vgeometry/vlayoutplacelabel.h"
 #include "../vgeometry/vplacelabelitem.h"
@@ -445,12 +446,10 @@ auto VPiece::MainPathPath(const QVector<QPointF> &points) -> QPainterPath
 
     if (not points.isEmpty())
     {
-        path.moveTo(points[0]);
-        for (qint32 i = 1; i < points.count(); ++i)
-        {
-            path.lineTo(points.at(i));
-        }
-        path.lineTo(points.at(0));
+        // The contour is cut into a polyline by the geometry; it is handed over as the smooth curve those
+        // points describe, so that it stays smooth at any zoom. See OSmoothPath::Path().
+        path = OSmoothPath::Path(points, /*close=*/true);
+        path.setFillRule(Qt::WindingFill);
 
 #if !defined(V_NO_ASSERT)
         // uncomment for debug
@@ -468,8 +467,6 @@ auto VPiece::MainPathPath(const QVector<QPointF> &points) -> QPainterPath
         //                  QString::number(i + 1));
         // }
 #endif
-
-        path.setFillRule(Qt::WindingFill);
     }
 
     return path;

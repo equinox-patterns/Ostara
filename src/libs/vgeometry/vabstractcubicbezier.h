@@ -59,6 +59,8 @@ public:
     virtual auto GetP3() const -> VPointF = 0;
     virtual auto GetP4() const -> VPointF = 0;
 
+    auto GetPath() const -> QPainterPath override;
+
     auto CutSpline(qreal length,
                    QPointF &spl1p2,
                    QPointF &spl1p3,

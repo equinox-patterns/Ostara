@@ -28,6 +28,7 @@
 
 #include "vpiecepath.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
+#include "../vgeometry/osmoothpath.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -574,7 +575,13 @@ auto VPiecePath::PainterPath(const VContainer *data, const QVector<QPointF> &cut
     QVector<VLayoutPoint> const points = PathPoints(data, cuttingPath);
     QVector<QPointF> casted;
     CastTo(points, casted);
-    return MakePainterPath(casted);
+
+    // A path inside a piece is cut into a polyline like every other contour; drawn smooth it stops showing
+    // its segments as soon as one zooms in. See OSmoothPath::Path().
+    QPainterPath path = OSmoothPath::Path(casted, /*close=*/false);
+    path.setFillRule(Qt::WindingFill);
+
+    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -586,7 +593,11 @@ auto VPiecePath::CurvesPainterPath(const VContainer *data) const -> QVector<QPai
 
     for (const auto &curve : curves)
     {
-        paths.append(MakePainterPath(curve));
+        // The creation preview draws these as the piece does: smooth, so that what is being built looks
+        // like what will be drawn. See OSmoothPath::Path().
+        QPainterPath path = OSmoothPath::Path(curve, /*close=*/false);
+        path.setFillRule(Qt::WindingFill);
+        paths.append(path);
     }
     return paths;
 }

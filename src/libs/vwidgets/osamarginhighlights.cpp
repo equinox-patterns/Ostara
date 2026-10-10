@@ -33,6 +33,7 @@
 #include <QPen>
 #include <QSet>
 
+#include "../vgeometry/osmoothpath.h"
 #include "../vmisc/def.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
@@ -193,7 +194,8 @@ void OSAMarginHighlights::Update(const VPiece &piece, const VContainer *data)
             continue;
         }
 
-        QPainterPath segPath = VPiecePath::MakePainterPath(segPoints);
+        QPainterPath segPath = OSmoothPath::Path(segPoints, /*close=*/false);
+        segPath.setFillRule(Qt::WindingFill);
 
         auto *highlightItem = new QGraphicsPathItem(segPath, m_parent);
         highlightItem->setPen(QPen(OSAMarginPalette::Color(colorIdx), kHighlightPenWidth));

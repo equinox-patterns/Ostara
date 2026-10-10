@@ -30,6 +30,7 @@
 #include "vgeometrydef.h"
 #include "vsplinepoint.h"
 
+#include <QPainterPath>
 #include <QtDebug>
 
 #include "../ifc/ifcdef.h"
@@ -92,6 +93,37 @@ auto VAbstractCubicBezierPath::GetPoints() const -> QVector<QPointF>
     }
 
     return pathPoints;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief GetPath hand the chain of cubics over to the drawing engine, as cubics.
+ *
+ * Same reason as VAbstractCubicBezier::GetPath(): the polyline of GetPoints() is cut once, for a tolerance
+ * that ignores the view, so it shows its segments as soon as one zooms in. The chain is cut by the paint
+ * engine itself, at the fineness of the screen, at every repaint.
+ *
+ * One deliberate difference with GetPoints(): a relaxed path has its self-intersecting loops removed from
+ * the point list, and only from the point list. The drawing shows the curve as it is; the lengths and every
+ * point-based computation keep the corrected polyline.
+ */
+auto VAbstractCubicBezierPath::GetPath() const -> QPainterPath
+{
+    QPainterPath path;
+
+    for (qint32 i = 1; i <= CountSubSpl(); ++i)
+    {
+        const VSpline spline = GetSpline(i);
+
+        if (i == 1)
+        {
+            path.moveTo(spline.GetP1().toQPointF());
+        }
+
+        path.cubicTo(spline.GetP2().toQPointF(), spline.GetP3().toQPointF(), spline.GetP4().toQPointF());
+    }
+
+    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

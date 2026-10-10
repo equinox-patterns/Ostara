@@ -20,6 +20,7 @@ set(VGEOMETRY_SOURCES
     vplacelabelitem.cpp
     obezierextension.cpp
     oc2chain.cpp
+    osmoothpath.cpp
     ocontainment.cpp
     ooffsetstations.cpp
     ospiral.cpp
@@ -56,6 +57,7 @@ set(VGEOMETRY_SOURCES
     vplacelabelitem_p.h
     obezierextension.h
     oc2chain.h
+    osmoothpath.h
     ocontainment.h
     ooffsetstations.h
     ospiral.h

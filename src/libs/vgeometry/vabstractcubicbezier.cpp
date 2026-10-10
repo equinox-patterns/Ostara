@@ -31,6 +31,7 @@
 #include <QFuture>
 #include <QLineF>
 #include <QMessageLogger>
+#include <QPainterPath>
 #include <QPoint>
 #include <QtConcurrent>
 #include <QtDebug>
@@ -595,6 +596,29 @@ auto VAbstractCubicBezier::GetMidpoint() const -> VPointF
 auto VAbstractCubicBezier::GetTypeHead() const -> QString
 {
     return SPL_;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief GetPath hand the cubic itself over to the drawing engine, as a cubic.
+ *
+ * GetPoints() cuts the curve into a polyline once, in pattern units, for a tolerance that does not know
+ * anything about the view: the line looks smooth at 100 % and shows its segments as soon as one zooms in on
+ * it, because nothing ever cuts it again for the current zoom. A cubic handed over as a cubic is cut by the
+ * paint engine itself, at the fineness of the screen, at every repaint — and an SVG or PDF export then
+ * carries the real curve instead of a chain of straight pieces.
+ *
+ * GetPoints() keeps serving everything that reads points: hit testing, lengths, intersections, exports that
+ * rebuild their geometry from points.
+ */
+auto VAbstractCubicBezier::GetPath() const -> QPainterPath
+{
+    QPainterPath path;
+
+    path.moveTo(GetP1().toQPointF());
+    path.cubicTo(GetP2().toQPointF(), GetP3().toQPointF(), GetP4().toQPointF());
+
+    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

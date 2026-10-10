@@ -29,6 +29,7 @@
 #include "vabstractarc.h"
 
 #include <QLineF>
+#include <QPainterPath>
 
 #include "../vmisc/def.h"
 #include "vabstractarc_p.h"
@@ -235,14 +236,14 @@ auto VAbstractArc::AngleArc() const -> qreal
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractArc::GetPath() const -> QPainterPath
 {
-    QPainterPath path;
+    // An arc is already a chain of cubics for every point-based computation (ToSplinePath); it is handed
+    // over as cubics so the paint engine cuts it at the fineness of the screen, and not once and for all in
+    // pattern units. See VAbstractCubicBezier::GetPath().
+    QPainterPath path = ToSplinePath().GetPath();
 
-    if (const QVector<QPointF> points = GetPoints(); points.count() >= 2)
+    if (path.isEmpty())
     {
-        path.addPolygon(QPolygonF(points));
-    }
-    else
-    {
+        // Degenerate arc: no radius or no angle. The placeholder disc around the centre.
         QPointF const center = GetCenter().toQPointF();
         auto rec = QRectF(center.x(), center.y(), accuracyPointOnLine * 2, accuracyPointOnLine * 2);
         rec.translate(-rec.center().x(), -rec.center().y());

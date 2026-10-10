@@ -50,6 +50,7 @@
 #include "../undocommands/savepiecepathoptions.h"
 #include "../undocommands/togglepiecestate.h"
 #include "../vgeometry/ocontainment.h"
+#include "../vgeometry/osmoothpath.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vellipticalarc.h"
 #include "../vgeometry/vplacelabelitem.h"
@@ -196,9 +197,9 @@ auto RenderSeamPath(const VPiece &detail, bool combineTogether, const VContainer
 
     if (combineTogether)
     {
-        QPainterPath combinedPath;
-        combinedPath.addPolygon(QPolygonF(boundary));
-        combinedPath.closeSubpath();
+        // Same curve as the plain outline, with the notches taken in: handed over smooth as well, so that
+        // the piece does not look cut up in one display mode and smooth in the other.
+        QPainterPath combinedPath = OSmoothPath::Path(boundary, /*close=*/true);
         combinedPath.setFillRule(Qt::OddEvenFill);
 
         return combinedPath;
@@ -251,9 +252,9 @@ auto RenderSeamAllowancePath(const VPiece &detail, bool combineTogether, const V
         QVector<QPointF> combinedBoundary;
         CastTo(points, combinedBoundary);
 
-        QPainterPath combinedPath;
-        combinedPath.addPolygon(QPolygonF(combinedBoundary));
-        combinedPath.closeSubpath();
+        // The allowance is a point-set offset, so its line is a polyline; drawn smooth it stops showing
+        // its segments as soon as one zooms in. See OSmoothPath::Path().
+        QPainterPath combinedPath = OSmoothPath::Path(combinedBoundary, /*close=*/true);
         combinedPath.setFillRule(Qt::OddEvenFill);
 
         return combinedPath;
@@ -3169,7 +3170,10 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
         path.setFillRule(Qt::OddEvenFill);
         m_seamAllowance->setPath(path);
 
-        m_pieceBoundingRect = m_seamAllowance->path().controlPointRect();
+        // boundingRect() and not controlPointRect(): the contours are handed over as cubics now, and the
+        // rectangle of the control points is wider than the curve itself. The three rectangles below place
+        // the children of the piece, so they must keep measuring the piece, not the handles of its curves.
+        m_pieceBoundingRect = m_seamAllowance->path().boundingRect();
     }
     else
     {
@@ -3180,13 +3184,13 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
         // was off, and every child placed from it — the information blocks, the annotations, the
         // miniature — landed on the item's own origin instead of on the piece. The outline is the
         // same path in both cases, so it is read once, from the geometry that produced it.
-        m_pieceBoundingRect = geom.seamPath.controlPointRect();
+        m_pieceBoundingRect = geom.seamPath.boundingRect();
     }
 
     // The rectangle that forms the piece: its outline, never the seam allowance drawn around it.
     // A child placed inside the margin is outside the piece as soon as the margins are turned off,
     // and this rectangle does not move when they are — see PieceOutlineRect().
-    m_pieceOutlineRect = geom.seamPath.controlPointRect();
+    m_pieceOutlineRect = geom.seamPath.boundingRect();
 
     m_mirrorLine->setPath(geom.mirrorLine);
 
