@@ -222,7 +222,12 @@ auto TangentAt(const QSharedPointer<VAbstractCurve> &curve, const QPointF &point
  *  This is the line the point's **own tool** drew from it — the base segment of an alongLine or an endLine, the
  *  axis of a height, the side a rectangle draws towards it. A tool that draws two of them through the same point
  *  means a corner — the vertex of a triangle, the meeting of a side and a diagonal — and nothing here may choose
- *  between two edges: the answer is then empty, exactly as for a point that carries none. */
+ *  between two edges: the answer is then empty, exactly as for a point that carries none.
+ *
+ *  Two of them on **one straight line** are not a corner, though: they are the two halves a cut made of that
+ *  line, which is what an alongLine draws through the point it created. The line is then read as the tool
+ *  answered before it declared the second half — the first half names it — and only two edges that do not lie
+ *  on the same line meet. */
 auto DirectionFromSegments(quint32 sourceId, const VContainer *data) -> QPointF
 {
     auto *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::FindTool(sourceId));
@@ -231,7 +236,10 @@ auto DirectionFromSegments(quint32 sourceId, const VContainer *data) -> QPointF
         return {};
     }
 
+    const QPointF position = OEdgeReader::Position(sourceId, data);
+
     quint32 other = NULL_ID;
+    QPointF direction;
     for (const VDrawnSegment &segment : tool->DrawnSegments())
     {
         quint32 candidate = NULL_ID;
@@ -248,11 +256,25 @@ auto DirectionFromSegments(quint32 sourceId, const VContainer *data) -> QPointF
             continue;
         }
 
-        if (other != NULL_ID && other != candidate)
+        if (other == NULL_ID)
         {
-            return {}; // two edges through one point: a corner, and no way to tell which one the fold follows
+            other = candidate;
+            direction = position - OEdgeReader::Position(candidate, data);
+            continue;
         }
-        other = candidate;
+
+        // The same edge declared twice says nothing more about the line.
+        if (other == candidate)
+        {
+            continue;
+        }
+
+        if (SameLine(direction, position - OEdgeReader::Position(candidate, data)))
+        {
+            continue; // the other half of one straight line: the answer above is still that line
+        }
+
+        return {}; // two edges through one point: a corner, and no way to tell which one the fold follows
     }
 
     if (other == NULL_ID)
@@ -260,7 +282,7 @@ auto DirectionFromSegments(quint32 sourceId, const VContainer *data) -> QPointF
         return {};
     }
 
-    return OEdgeReader::Position(sourceId, data) - OEdgeReader::Position(other, data);
+    return direction;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

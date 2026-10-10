@@ -78,6 +78,22 @@ public:
     auto GetSecondLineRoleName() const -> QString;
     void SetSecondLineRoleName(const QString &suffix);
 
+    /** @brief The two segments the cut makes: the first point → the point, then the point → the second point,
+     *  in the very order VToolAlongLine::Create registers them in the container.
+     *
+     *  This tool draws both — the first is the inherited main line, the second an item of its own — and without
+     *  this declaration the second one existed only as the Line_ and AngleLine_ variables, so the pen chosen in
+     *  the dialog never reached it and no operation could take it. */
+    auto DrawnSegments() const -> QVector<VDrawnSegment> override
+    {
+        return {{basePointId, getId(), getLineType(), GetLineColor()},
+                {getId(), m_secondPointId, getLineType(), GetLineColor()}};
+    }
+
+    /** @brief The two items that draw those segments, in the same order: a click on one picks that segment
+     *  alone, so an operation takes either half of the cut line. */
+    auto DrawnSegmentItems() const -> QVector<VScaledLine *> override { return {mainLine, m_secondLine}; }
+
     void ShowVisualization(bool show) override;
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id=NULL_ID) override;
@@ -86,6 +102,7 @@ protected:
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void ReadToolAttributes(const QDomElement &domElement) override;
     void SetVisualization() override;
+    void RefreshGeometry() override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     auto MakeToolTip() const -> QString override;
@@ -96,6 +113,9 @@ private:
 
     /** @brief secondPointId id second point of line. */
     quint32 m_secondPointId;
+
+    /** @brief secondLine the item that draws the segment from the point to the second point of the line. */
+    VScaledLine *m_secondLine{nullptr};
 
     bool m_hoverOwnsVisualization{false};
 

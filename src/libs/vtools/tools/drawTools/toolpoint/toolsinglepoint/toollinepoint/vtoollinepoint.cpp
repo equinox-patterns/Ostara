@@ -123,8 +123,40 @@ void VToolLinePoint::RefreshGeometry()
     auto const basePoint = static_cast<QPointF>(*VDrawTool::data.GeometricObject<VPointF>(basePointId));
     QLineF const line(basePoint - point, QPointF());
     mainLine->setLine(line);
-    mainLine->setVisible(not line.isNull());
     RefreshAuthoredPen(mainLine);
+    ApplySegmentsVisibility(); // the geometry is set: the layers can now judge the tracé
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::ApplySegmentsVisibility()
+{
+    const QVector<VDrawnSegment> segments = DrawnSegments();
+    const QVector<VScaledLine *> items = DrawnSegmentItems();
+    const qsizetype count = qMin(segments.size(), items.size());
+
+    for (qsizetype i = 0; i < count; ++i)
+    {
+        VScaledLine *item = items.at(i);
+        if (item == nullptr)
+        {
+            continue;
+        }
+
+        // A tracé joins two points, and it is shown only when the layers show both of them. An empty tracé is
+        // never drawn, whatever the layers say — the same rule the rectangle applies to its four sides.
+        item->setVisible(doc->IsObjectVisible(segments.at(i).point1) && doc->IsObjectVisible(segments.at(i).point2)
+                         && not item->line().isNull());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::GroupVisibility(quint32 object, bool visible)
+{
+    VToolSinglePoint::GroupVisibility(object, visible);
+
+    // The tool has just followed its layer; its tracés follow the layers of the points they join, which this tool
+    // never hears about otherwise.
+    ApplySegmentsVisibility();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -252,8 +284,20 @@ auto VToolLinePoint::MakeToolTip() const -> QString
 void VToolLinePoint::Enable()
 {
     VToolSinglePoint::Enable();
-    mainLine->setEnabled(isEnabled());
-    RefreshAuthoredPen(mainLine);
+
+    // Every line the tool draws follows its enabled state, not only the inherited one: a tool that declares more
+    // than one segment (the cut line of VToolAlongLine) would otherwise leave the others enabled, and with the
+    // pen of the state before.
+    for (VScaledLine *line : DrawnSegmentItems())
+    {
+        if (line == nullptr)
+        {
+            continue;
+        }
+
+        line->setEnabled(isEnabled());
+        RefreshAuthoredPen(line);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

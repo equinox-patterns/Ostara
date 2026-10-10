@@ -96,6 +96,14 @@ public:
     /** @brief The point holds the click (property browser): show the line it comes from, as on hover. */
     void SetActivePoint(bool active) override;
 
+    /** @brief The layers have just been applied: the tool follows them, and so do the tracés it draws.
+     *
+     *  A tracé joins two points and one of them is not this tool's — the base point of a line point, the two
+     *  halves a cut made of a line. A layer only reaches the objects of the tool it hides, so a tracé was left
+     *  on the canvas while one of its two ends had gone: C→B stayed drawn while B was hidden. Aligned again
+     *  here, once the layer pass has decided, and again on every refresh (RefreshGeometry). */
+    void GroupVisibility(quint32 object, bool visible) override;
+
 public slots:
     void Enable() override;
 
@@ -116,6 +124,12 @@ protected:
     QString lineColor;
 
     void RefreshGeometry() override;
+
+    /** @brief Show each tracé the tool draws only when the layers show **both** points it joins, and hide it
+     *  when the segment is empty. One tracé at a time, in the order of DrawnSegments(): a tool that draws more
+     *  than one — the two halves of a cut line — is judged one by one, so hiding the second point takes the
+     *  second half away and leaves the first. */
+    void ApplySegmentsVisibility();
 
     /** @brief Writes the pen the tool asks for — its one colour, its one style — on one of the lines it draws,
      *  then converges the pen so that the emphasis of a hover or of a click still reads on top of it. Used for

@@ -52,6 +52,7 @@
 #include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
+#include "../vwidgets/scalesceneitems.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoollinepoint.h"
 
@@ -76,6 +77,28 @@ VToolAlongLine::VToolAlongLine(const VToolAlongLineInitData &initData, QGraphics
                    initData.firstPointId, 0, initData.notes, parent),
     m_secondPointId(initData.secondPointId)
 {
+    // A cut line is two segments, and this tool draws both: first point → point is the inherited main line,
+    // point → second point is this one. Until now the second segment existed only as the Line_ and AngleLine_
+    // variables VToolAlongLine::Create registers — the pen chosen in the dialog never reached it, and no
+    // operation could take it. Built here, like the main line, so the scene item exists as soon as the tool does.
+    auto const point = static_cast<QPointF>(*VAbstractTool::data.GeometricObject<VPointF>(m_id));
+    auto const secondPoint = static_cast<QPointF>(*VAbstractTool::data.GeometricObject<VPointF>(m_secondPointId));
+    QLineF const line(secondPoint - point, QPointF());
+    m_secondLine = new VScaledLine(line, VColorRole::CustomColor, this);
+    m_secondLine->SetBoldLine(false);
+    m_secondLine->SetShowArrows(true);
+    m_secondLine->setAcceptHoverEvents(true);
+    m_secondLine->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
+    m_secondLine->setZValue(-0.5); // Child line below parent point (Z=0.5 effective vs Z=1)
+    m_secondLine->setVisible(not line.isNull());
+
+    AttachAuthoredColor(m_secondLine);
+    RefreshAuthoredPen(m_secondLine);
+
+    // Both items exist now: one handler per declared segment, in the order DrawnSegments() names them. Called
+    // again on purpose — the inherited constructor wired the one element it knew, and this tool's list wins.
+    InitDrawnSegmentConnections();
+
     ToolCreation(initData.typeCreation);
 }
 
@@ -149,6 +172,31 @@ void VToolAlongLine::SetVisualization()
         visual->SetToolPointId(m_id);
         visual->RefreshGeometry();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAlongLine::RefreshGeometry()
+{
+    // The inherited main line is the first segment, first point → point; the second one is this tool's own.
+    VToolLinePoint::RefreshGeometry();
+
+    if (m_secondLine == nullptr)
+    {
+        return;
+    }
+
+    // Same convention as the main line: the item is carried by the point, so the point is its origin and the
+    // other end is written relative to it.
+    auto const point = static_cast<QPointF>(*VAbstractTool::data.GeometricObject<VPointF>(m_id));
+    auto const secondPoint = static_cast<QPointF>(*VAbstractTool::data.GeometricObject<VPointF>(m_secondPointId));
+    QLineF const line(secondPoint - point, QPointF());
+    m_secondLine->setLine(line);
+    RefreshAuthoredPen(m_secondLine);
+
+    // Called a second time, and on purpose: the base ran the rule on the geometry this line still had from the
+    // refresh before. It knows its own length now — an empty one is not drawn, and neither is a half whose other
+    // end the layers hide.
+    ApplySegmentsVisibility();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

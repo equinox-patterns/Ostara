@@ -364,6 +364,19 @@ public:
     auto GetGroupVisibility(quint32 id) -> bool;
     void SetGroupVisibility(quint32 id, bool visible);
 
+    /** @brief Whether the layers show the object @a objectId.
+     *
+     *  The object belongs to no pattern block of its own: the layers that hold it are read from the document, in
+     *  every block, and joined the way the layer pass joins them — shown as soon as one layer that holds it is
+     *  visible, and shown when no layer holds it at all, which is what the pass decides too. An object id is the
+     *  document's own counter, so a walk over every block answers for the one block the object lives in.
+     *
+     *  Read rather than remembered: a pass only ever describes the block it is given, and a tool refreshed after
+     *  it by another block's pass would be answered with the wrong piece's layers — measured, a layer saved hidden
+     *  came back drawn until it was toggled by hand. A tool whose tracés join objects that are not its own needs
+     *  this answer (see VToolLinePoint::ApplySegmentsVisibility). */
+    auto IsObjectVisible(quint32 objectId) const -> bool;
+
     /// The sentinel a "which group?" answer carries when the group named does not exist yet: the dialogs ask for a
     /// new group with it, and the code that writes it creates one. A real id never reaches it — the ids come from
     /// the document's own counter.

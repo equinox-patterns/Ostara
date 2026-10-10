@@ -517,6 +517,53 @@ void VAbstractPattern::ParseGroups(const QDomElement &domElement)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IsObjectVisible(quint32 objectId) const -> bool
+{
+    // The layers of every block, and the object read from each pair the way ParseItemElement reads it: the tool
+    // attribute, and an object attribute that defaults to the tool — a pair written as (tool, tool) is the object
+    // of that tool, which is how a point of its own is listed.
+    bool held = false;
+
+    try
+    {
+        const QDomElement root = documentElement();
+        for (QDomElement draw = root.firstChildElement(TagDraw); not draw.isNull();
+             draw = draw.nextSiblingElement(TagDraw))
+        {
+            const QDomElement groups = draw.firstChildElement(TagGroups);
+            for (QDomElement group = groups.firstChildElement(TagGroup); not group.isNull();
+                 group = group.nextSiblingElement(TagGroup))
+            {
+                for (QDomElement item = group.firstChildElement(TagGroupItem); not item.isNull();
+                     item = item.nextSiblingElement(TagGroupItem))
+                {
+                    const quint32 tool = GetParametrUInt(item, AttrTool, NULL_ID_STR);
+                    if (GetParametrUInt(item, AttrObject, QString::number(tool)) != objectId)
+                    {
+                        continue;
+                    }
+
+                    held = true;
+                    if (GetParametrBool(group, AttrVisible, trueStr))
+                    {
+                        return true; // one layer that holds it and shows it is enough
+                    }
+                }
+            }
+        }
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        // Layers that cannot be read hide nothing: the same refusal the tools make of a document they cannot
+        // follow, and a tracé is never worth an exception thrown into a parse.
+        return true;
+    }
+
+    // An object no layer holds is shown: the layer pass never hides it either.
+    return not held;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::CountPatternBlockTags() const -> int
 {
     const QDomElement rootElement = this->documentElement();
