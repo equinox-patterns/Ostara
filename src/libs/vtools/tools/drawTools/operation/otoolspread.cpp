@@ -161,7 +161,7 @@ auto SameDisplay(const OSpreadDisplay &left, const OSpreadDisplay &right) -> boo
         const OSpreadMark &one = left.marks.at(k);
         const OSpreadMark &other = right.marks.at(k);
         if (one.point != other.point || one.line1 != other.line1 || one.line2 != other.line2
-            || one.name != other.name)
+            || one.name != other.name || not qFuzzyCompare(one.mx, other.mx) || not qFuzzyCompare(one.my, other.my))
         {
             return false;
         }
@@ -692,6 +692,37 @@ auto OToolSpread::MakeToolTip() const -> QString
                           "%3")
         .arg(tr("Rotations"), QString::number(m_rotations.size())) // 1, 2
         .arg(VisibilityGroupToolTip());                            // 3
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolSpread::ChangeLabelPosition(quint32 id, const QPointF &pos)
+{
+    VAbstractOperation::ChangeLabelPosition(id, pos); // the container object, which is what the scene draws
+
+    // The third vertex of a mark is no destination: the base looked for its record in `<destination>`, found none and
+    // wrote nothing, so the next parse put the label back at the place the point it comes from carries, and the file
+    // kept that place forever. The place belongs to the entry of the display that holds the point, and it is written
+    // there — the first rotation begins at the source object itself and has no vertex, so it has nothing to keep.
+    if (WriteFigureLabelPlace(id, pos))
+    {
+        RefreshDataInFile();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolSpread::WriteFigureLabelPlace(quint32 point, const QPointF &pos) -> bool
+{
+    for (OSpreadMark &mark : m_display.marks)
+    {
+        if (mark.point == point)
+        {
+            mark.mx = pos.x();
+            mark.my = pos.y();
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

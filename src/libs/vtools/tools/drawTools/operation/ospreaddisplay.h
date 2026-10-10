@@ -60,6 +60,13 @@ struct OSpreadMark
     quint32 line1{NULL_ID};
     quint32 line2{NULL_ID};
     QString name{};
+
+    /** @brief Where the label of the third vertex sits, relative to it. Zero means the figure never said — a file
+     *  written before a label could be moved on the display — and the place of the point the vertex comes from then
+     *  stands, which is what the mark did every time until then. Kept by the mark because the vertex is no
+     *  destination: the operation keeps no record of it to write the place in (see OToolSpread). */
+    qreal mx{0.};
+    qreal my{0.};
 };
 
 /**

@@ -113,6 +113,14 @@ protected:
     void ReadToolAttributes(const QDomElement &domElement) override;
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void RefreshDataInFile() override;
+
+    /** @brief Where the label of the third vertex of a mark stands, kept in the mark that holds it.
+     *
+     *  The base writes the container object — what the scene draws — and the `<destination>` record of the point that
+     *  moved. The vertex is no destination: the record is not found, nothing is written, and the next parse puts the
+     *  label back at the place the point it comes from carries. Kept in the entry itself, exactly as OToolDartCap
+     *  keeps the place of its own cap and OToolPleat that of its figure. */
+    void ChangeLabelPosition(quint32 id, const QPointF &pos) override;
     auto MakeToolTip() const -> QString override;
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
@@ -130,6 +138,10 @@ private:
     explicit OToolSpread(const OToolSpreadInitData &initData, QGraphicsItem *parent = nullptr);
 
     auto SyncDestination(const QVector<SourceItem> &source) -> QVector<DestinationItem>;
+
+    /** @brief Keep in @a m_display the place a mark's vertex was dragged to. False when @a point is not one of the
+     *  points the display made — the base has then already written it, or there is nothing to write. */
+    auto WriteFigureLabelPlace(quint32 point, const QPointF &pos) -> bool;
 
     /** @brief Give the display the ids its marks still miss, and drop them when the representation is off: a
      *  mark is only ever created with an id the file carries. */

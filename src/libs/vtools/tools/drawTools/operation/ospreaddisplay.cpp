@@ -167,6 +167,14 @@ void OSpreadDisplay::Create(quint32 idTool, const OSpreadDisplay &display, const
         }
 
         vertex->setIdObject(idTool);
+        // The label place the entry keeps, when it keeps one: zero means the figure never said, and the place of the
+        // point the vertex comes from — which the clone inherited — then stands. See OToolSpread: the vertex is no
+        // destination, so the entry of the mark is the only place its label can be kept.
+        if (not qFuzzyIsNull(mark.mx) || not qFuzzyIsNull(mark.my))
+        {
+            vertex->setMx(mark.mx);
+            vertex->setMy(mark.my);
+        }
         // The vertex is a construction mark: its name is read in the tree, where it names the object, and not on
         // the canvas, where it would sit under the lines of the display.
         vertex->SetShowLabel(false);
@@ -219,6 +227,16 @@ void OSpreadDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OSpread
         if (mark.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrPoint, mark.point);
+            // The label place, written like everything else in the pattern: pixels out, the pattern's unit in the
+            // file, and only when the entry carries one.
+            if (not qFuzzyIsNull(mark.mx))
+            {
+                doc->SetAttribute(item, AttrMx, VAbstractValApplication::VApp()->fromPixel(mark.mx));
+            }
+            if (not qFuzzyIsNull(mark.my))
+            {
+                doc->SetAttribute(item, AttrMy, VAbstractValApplication::VApp()->fromPixel(mark.my));
+            }
             if (not mark.name.isEmpty())
             {
                 doc->SetAttribute(item, AttrName, mark.name);
@@ -255,6 +273,10 @@ auto OSpreadDisplay::Extract(const QDomElement &domElement) -> OSpreadDisplay
         {
             OSpreadMark mark;
             mark.point = VAbstractPattern::GetParametrUInt(item, AttrPoint, NULL_ID_STR);
+            mark.mx = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMx,
+                                                                                                    "0.0"));
+            mark.my = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMy,
+                                                                                                    "0.0"));
             mark.line1 = VAbstractPattern::GetParametrUInt(item, AttrLine1, NULL_ID_STR);
             mark.line2 = VAbstractPattern::GetParametrUInt(item, AttrLine2, NULL_ID_STR);
             mark.name = VDomDocument::GetParametrEmptyString(item, AttrName);

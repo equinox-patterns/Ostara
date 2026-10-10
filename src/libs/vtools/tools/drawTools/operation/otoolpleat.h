@@ -175,6 +175,14 @@ protected:
     void ReadToolAttributes(const QDomElement &domElement) override;
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void RefreshDataInFile() override;
+
+    /** @brief Where the label of a point the FIGURE made stands, kept in the entry of the figure that holds it.
+     *
+     *  The base writes the container object — what the scene draws — and the `<destination>` record of the point that
+     *  moved. A point of the figure is no destination: the record is not found, nothing is written, and the next parse
+     *  puts the label back at the place the point of the departure line carries. Kept in the entry itself, exactly as
+     *  OToolDartCap keeps the place of its own cap. */
+    void ChangeLabelPosition(quint32 id, const QPointF &pos) override;
     auto MakeToolTip() const -> QString override;
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
@@ -205,6 +213,10 @@ private:
     /** @brief Write the options of the pleats themselves — their departure lines, their values and their boxes, and
      *  the fold line — on the operation element. The display is written beside them by its own Save. */
     void SavePleat(QDomElement &tag) const;
+
+    /** @brief Keep in @a m_display the place a point of the figure was dragged to. False when @a point is not one of
+     *  the points the figure made — the base has then already written it, or there is nothing to write. */
+    auto WriteFigureLabelPlace(quint32 point, const QPointF &pos) -> bool;
 
     auto SyncDestination(const QVector<SourceItem> &source) -> QVector<DestinationItem>;
 

@@ -91,6 +91,14 @@ struct OPleatCopy
     int end{0};
     quint32 point{NULL_ID};
     QString name{};
+
+    /** @brief Where the label of the point sits, relative to it. Zero means the figure never said — a file written
+     *  before a label could be moved on the figure — and the place the departure point carries then stands, which is
+     *  what the display did every time until then. Kept by the entry that holds the point, the way a mark keeps its
+     *  own (see OPleatMarkDisplay): a point the figure made is no destination, so the operation has no record of it
+     *  to write the place in. */
+    qreal mx{0.};
+    qreal my{0.};
 };
 
 /**
@@ -111,6 +119,11 @@ struct OPleatNotchDisplay
     quint32 curve1{NULL_ID};
     quint32 curve2{NULL_ID};
     QString name{};
+
+    /** @brief Where the label of the notch sits, relative to it. See OPleatCopy: zero means the figure never said,
+     *  and the mark is no destination either. */
+    qreal mx{0.};
+    qreal my{0.};
 };
 
 /**

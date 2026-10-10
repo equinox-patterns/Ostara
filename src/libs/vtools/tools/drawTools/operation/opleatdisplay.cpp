@@ -143,6 +143,25 @@ void PlacePoint(quint32 id, const QPointF &position, const QString &name, const 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief The label place of a point of the figure: the one the file keeps for that entry, or the one of the point of
+ *  the departure line it was taken from.
+ *
+ *  Zero means the figure never said — a file written before a label could be moved on the figure — and the departure
+ *  point's place then stands, which is what the display did every time until then. A label a point of the figure
+ *  carries has to live somewhere, and the operation keeps no `<destination>` record of a point it made itself: the
+ *  entry of the figure is that place (see OToolPleat::WriteFigureLabelPlace). */
+auto FigureLabelOffset(const QSharedPointer<VPointF> &prisePoint, qreal mx, qreal my) -> QPointF
+{
+    if (not qFuzzyIsNull(mx) || not qFuzzyIsNull(my))
+    {
+        return QPointF(mx, my);
+    }
+
+    return prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
+                               : QPointF(prisePoint->mx(), prisePoint->my());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /** @brief Every id the figure already holds: the lines of the places, the fold lines, the points of the copies, the
  *  points, the sides and the curves of the caps, and the points and the curves of the notches.
  *
@@ -724,9 +743,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
                 }
 
                 const OPleatEnd prise = EndOf(departures, departure, end);
-                const QSharedPointer<VPointF> prisePoint = PointOf(prise.pointId, data);
-                const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
-                                                           : QPointF(prisePoint->mx(), prisePoint->my());
+                const QPointF offset = FigureLabelOffset(PointOf(prise.pointId, data), copy.mx, copy.my);
                 PlacePoint(copy.point, plan.Place(prise, departure, line), copy.name, offset, idTool, data);
             }
         }
@@ -743,9 +760,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
             continue;
         }
 
-        const QSharedPointer<VPointF> prisePoint = PointOf(prise.pointId, data);
-        const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
-                                                   : QPointF(prisePoint->mx(), prisePoint->my());
+        const QPointF offset = FigureLabelOffset(PointOf(prise.pointId, data), mark.mx, mark.my);
         PlacePoint(mark.point, resolved.point, mark.name, offset, idTool, data);
     }
 
@@ -825,9 +840,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
         const OPleatNotch &resolved = plan.notches.at(i);
         const OPleatEnd prise = EndOf(departures, resolved.departure, resolved.end);
 
-        const QSharedPointer<VPointF> prisePoint = PointOf(prise.pointId, data);
-        const QPointF offset = prisePoint.isNull() ? QPointF(kDefaultLabelOffsetX, kDefaultLabelOffsetY)
-                                                   : QPointF(prisePoint->mx(), prisePoint->my());
+        const QPointF offset = FigureLabelOffset(PointOf(prise.pointId, data), notch.mx, notch.my);
 
         if (notch.point != NULL_ID)
         {
@@ -1044,6 +1057,16 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
         if (copy.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrCopy, copy.point);
+            // The label place, written like a mark's: pixels out, the pattern's unit in the file, and only when the
+            // figure carries one.
+            if (not qFuzzyIsNull(copy.mx))
+            {
+                doc->SetAttribute(item, AttrMx, VAbstractValApplication::VApp()->fromPixel(copy.mx));
+            }
+            if (not qFuzzyIsNull(copy.my))
+            {
+                doc->SetAttribute(item, AttrMy, VAbstractValApplication::VApp()->fromPixel(copy.my));
+            }
             if (not copy.name.isEmpty())
             {
                 doc->SetAttribute(item, AttrName, copy.name);
@@ -1102,6 +1125,15 @@ void OPleatDisplay::Save(VAbstractPattern *doc, QDomElement &tag, const OPleatDi
         if (notch.point != NULL_ID)
         {
             doc->SetAttribute(item, AttrNotch, notch.point);
+            // See the copies: the place of the notch's label lives in this entry, the notch being no destination.
+            if (not qFuzzyIsNull(notch.mx))
+            {
+                doc->SetAttribute(item, AttrMx, VAbstractValApplication::VApp()->fromPixel(notch.mx));
+            }
+            if (not qFuzzyIsNull(notch.my))
+            {
+                doc->SetAttribute(item, AttrMy, VAbstractValApplication::VApp()->fromPixel(notch.my));
+            }
             if (not notch.name.isEmpty())
             {
                 doc->SetAttribute(item, AttrName, notch.name);
@@ -1156,6 +1188,10 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
                                 ? static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrEnd, u"0"_s))
                                 : -1;
                 notch.point = VAbstractPattern::GetParametrUInt(item, AttrNotch, NULL_ID_STR);
+                notch.mx = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMx,
+                                                                                                        "0.0"));
+                notch.my = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMy,
+                                                                                                        "0.0"));
                 notch.curve1 = VAbstractPattern::GetParametrUInt(item, AttrCurve1, NULL_ID_STR);
                 notch.curve2 = VAbstractPattern::GetParametrUInt(item, AttrCurve2, NULL_ID_STR);
                 notch.name = VDomDocument::GetParametrEmptyString(item, AttrName);
@@ -1195,6 +1231,10 @@ auto OPleatDisplay::Extract(const QDomElement &domElement) -> OPleatDisplay
                 // is not the display's to create, and the place must still be counted.
                 OPleatCopy copy;
                 copy.point = VAbstractPattern::GetParametrUInt(item, AttrCopy, NULL_ID_STR);
+                copy.mx = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMx,
+                                                                                                       "0.0"));
+                copy.my = VAbstractValApplication::VApp()->toPixel(VAbstractPattern::GetParametrDouble(item, AttrMy,
+                                                                                                       "0.0"));
                 copy.name = VDomDocument::GetParametrEmptyString(item, AttrName);
                 if (item.hasAttribute(AttrDeparture))
                 {

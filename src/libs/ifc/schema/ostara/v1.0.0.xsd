@@ -378,6 +378,10 @@
                                       <xs:attribute name="name" type="xs:string"/>
                                       <xs:attribute name="line1" type="xs:unsignedInt"/>
                                       <xs:attribute name="line2" type="xs:unsignedInt"/>
+                                      <!-- Where the label of the third vertex sits, relative to it. Absent means the
+                                           display never said, and the place of the point it comes from stands. -->
+                                      <xs:attribute name="mx" type="xs:double"/>
+                                      <xs:attribute name="my" type="xs:double"/>
                                     </xs:complexType>
                                   </xs:element>
                                 </xs:sequence>

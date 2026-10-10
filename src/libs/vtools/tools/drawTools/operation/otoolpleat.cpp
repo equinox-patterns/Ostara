@@ -276,7 +276,8 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
         const OPleatCopy &one = left.copies.at(i);
         const OPleatCopy &other = right.copies.at(i);
         if (one.departure != other.departure || one.line != other.line || one.end != other.end
-            || one.point != other.point || one.name != other.name)
+            || one.point != other.point || one.name != other.name || not qFuzzyCompare(one.mx, other.mx)
+            || not qFuzzyCompare(one.my, other.my))
         {
             return false;
         }
@@ -287,7 +288,8 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
         const OPleatMarkDisplay &one = left.marks.at(i);
         const OPleatMarkDisplay &other = right.marks.at(i);
         if (one.point != other.point || one.side1 != other.side1 || one.side2 != other.side2
-            || one.curve1 != other.curve1 || one.curve2 != other.curve2 || one.name != other.name)
+            || one.curve1 != other.curve1 || one.curve2 != other.curve2 || one.name != other.name
+            || not qFuzzyCompare(one.mx, other.mx) || not qFuzzyCompare(one.my, other.my))
         {
             return false;
         }
@@ -298,7 +300,7 @@ auto SameDisplay(const OPleatDisplay &left, const OPleatDisplay &right) -> bool
         const OPleatNotchDisplay &one = left.notches.at(i);
         const OPleatNotchDisplay &other = right.notches.at(i);
         if (one.point != other.point || one.curve1 != other.curve1 || one.curve2 != other.curve2
-            || one.name != other.name)
+            || one.name != other.name || not qFuzzyCompare(one.mx, other.mx) || not qFuzzyCompare(one.my, other.my))
         {
             return false;
         }
@@ -1245,6 +1247,57 @@ auto OToolPleat::MakeToolTip() const -> QString
                           "%3")
         .arg(tr("Pleats"), values.join(QStringLiteral(", "))) // 1, 2
         .arg(VisibilityGroupToolTip());                       // 3
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolPleat::ChangeLabelPosition(quint32 id, const QPointF &pos)
+{
+    VAbstractOperation::ChangeLabelPosition(id, pos); // the container object, which is what the scene draws
+
+    // A point the figure made — the copy of an end of a departure line, the apex of a cap, the mark of a notch — is no
+    // destination: the base looked for its record in `<destination>`, found none and wrote nothing, so the next parse
+    // put the label back at the place the point of the departure line carries, and the file kept that place forever.
+    // The place belongs to the entry of the figure that holds the point, and it is written there.
+    if (WriteFigureLabelPlace(id, pos))
+    {
+        RefreshDataInFile();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::WriteFigureLabelPlace(quint32 point, const QPointF &pos) -> bool
+{
+    for (OPleatCopy &copy : m_display.copies)
+    {
+        if (copy.point == point)
+        {
+            copy.mx = pos.x();
+            copy.my = pos.y();
+            return true;
+        }
+    }
+
+    for (OPleatMarkDisplay &mark : m_display.marks)
+    {
+        if (mark.point == point)
+        {
+            mark.mx = pos.x();
+            mark.my = pos.y();
+            return true;
+        }
+    }
+
+    for (OPleatNotchDisplay &notch : m_display.notches)
+    {
+        if (notch.point == point)
+        {
+            notch.mx = pos.x();
+            notch.my = pos.y();
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
