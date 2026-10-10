@@ -347,6 +347,8 @@ private:
     auto LastToolId() const -> quint32;
     auto PPLastToolId(int blockIndex) const -> quint32;
 
+    auto MaxMentionedId() const -> quint32;
+
     void GarbageCollector();
     void BackupBeforeGarbageCollector() const;
 

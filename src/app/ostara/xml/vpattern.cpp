@@ -59,6 +59,7 @@
 #include "../vpatterndb/vpiecepath.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
+#include "../vtools/tools/drawTools/operation/ooperationlines.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -316,6 +317,67 @@ void VPattern::Parse(const Document &parse)
     {
         RefreshPieceGeometry();
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The highest id the file mentions without declaring it.
+ *
+ * Not every id of a pattern belongs to an element. The image of an operation, the point a dart cap adds, the
+ * line a slash and spread derives: those objects are built again when the file is read, and the file records
+ * their ids only where it uses them — in the source and destination items of the operation, in the items of a
+ * layer, in the result of a line. They have no element of their own, so they are not in the element cache and
+ * MaxRecordedId() knows nothing about them.
+ *
+ * The container hands out a fresh id for every object it builds while reading, and it builds them in file
+ * order. An id handed out below one of those mentioned ids lands on it: the tool that rebuilds its image
+ * under that id then finds the key taken by an object of another type, and the whole file refuses to open.
+ * One real file did exactly that — the point a dart cap adds took the id of the first copy of a transfer,
+ * and the transfer came later in the file than the dart cap.
+ *
+ * The counter therefore has to start above every id the file mentions, declared or not. Over-reading is
+ * harmless: a counter set too high only leaves gaps in the ids.
+ */
+auto VPattern::MaxMentionedId() const -> quint32
+{
+    static const QStringList idAttributes{
+        AttrIdObject,                  // the items of an operation, the items of a modeling
+        VAbstractPattern::AttrObject,  // a layer's items: the object a tool created...
+        VAbstractPattern::AttrTool,    // ...and the tool that created it
+        OOperationLines::AttrIdResult, // the line an operation derives
+        AttrSegment1Id,                // the two segments a cut tool leaves
+        AttrSegment2Id,
+        AttrDuplicate};                // the piece a duplication follows
+
+    quint32 maxId = NULL_ID;
+
+    // Explicit walk: elementsByTagName("*") answers an empty list, the wildcard is not honoured (the DOM
+    // iteration of Qt 6.9+ is the reason the file already uses QDOM_LOOP everywhere).
+    QList<QDomElement> pending;
+    pending.append(documentElement());
+
+    while (not pending.isEmpty())
+    {
+        const QDomElement element = pending.takeLast();
+
+        for (const QString &name : idAttributes)
+        {
+            bool ok = false;
+            const quint32 id = element.attribute(name).toUInt(&ok);
+            if (ok)
+            {
+                maxId = qMax(maxId, id);
+            }
+        }
+
+        for (QDomElement child = element.firstChildElement(); not child.isNull();
+             child = child.nextSiblingElement())
+        {
+            pending.append(child);
+        }
+    }
+
+    return maxId;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1256,7 +1318,9 @@ void VPattern::PrepareForParse(const Document &parse)
         sceneDraw->clear();
         sceneDetail->clear();
         data->ClearForFullParse();
-        data->UpdateId(MaxRecordedId()); // Resync against orphaned nodes that keep their id (upstream 51adb0101).
+        data->UpdateId(qMax(MaxRecordedId(), MaxMentionedId())); // Resync against every id the file mentions:
+                                                                 // declared ones (upstream 51adb0101) and the
+                                                                 // ones a tool only wrote down where it uses them.
         PatternBlockMapper()->Clear();
 
         qDeleteAll(toolsOnRemove); // Remove all invisible on a scene objects.

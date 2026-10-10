@@ -516,9 +516,12 @@ void VPattern::ParseToolTransfert(VMainGraphicsScene *scene, QDomElement &domEle
     }
     catch (const VExceptionBadId &e)
     {
-        VExceptionObjectError excep(tr("Error creating or updating the operation of transfer"), domElement);
-        excep.AddMoreInformation(e.ErrorMessage());
-        throw excep;
+        // One operation that cannot be rebuilt must not cost the whole pattern. The ids it owns — the copies
+        // it rebuilds on load — are the only thing that can fail here: an id already taken by an object of
+        // another type, or a merge point that is not a point. Same answer as a deferred transfer whose
+        // inputs never show up: said out loud, and ignored.
+        qWarning() << VAbstractValApplication::warningMessageSignature
+                   << tr("A transfer could not be rebuilt and was ignored: %1").arg(e.ErrorMessage());
     }
 }
 
