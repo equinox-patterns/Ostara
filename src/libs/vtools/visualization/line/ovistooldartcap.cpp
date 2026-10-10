@@ -49,8 +49,8 @@ OVisToolDartCap::OVisToolDartCap(const VContainer *data, QGraphicsItem *parent)
     m_axis = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
     m_extendLine = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
 
-    m_capLine1 = InitItem<VScaledLine>(VColorRole::VisSupportColor2, this);
-    m_capLine2 = InitItem<VScaledLine>(VColorRole::VisSupportColor4, this);
+    m_capLine1 = InitMark<VScaledLine>(VColorRole::VisSupportColor2, this);
+    m_capLine2 = InitMark<VScaledLine>(VColorRole::VisSupportColor4, this);
 
     m_capPoint = InitPoint(VColorRole::VisMainColor, this);
 }

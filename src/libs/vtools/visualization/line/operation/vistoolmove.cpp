@@ -71,8 +71,8 @@ VisToolMove::VisToolMove(const VContainer *data, QGraphicsItem *parent)
 {
     SetColorRole(VColorRole::VisSupportColor2);
 
-    m_pointOrigin = InitPoint(VColorRole::VisSupportColor2, this);
-    m_pointRotationOrigin = InitPoint(VColorRole::VisSupportColor2, this);
+    m_pointOrigin = InitPoint(VColorRole::VisSupportColor2, this, kMarkZ);
+    m_pointRotationOrigin = InitPoint(VColorRole::VisSupportColor2, this, kMarkZ);
     m_pointFinish = InitPoint(VColorRole::VisSupportColor, this);
     m_angleArc = InitItem<VCurvePathItem>(VColorRole::VisSupportColor3, this);
     m_rotationLine = InitItem<VScaledLine>(VColorRole::VisSupportColor3, this);

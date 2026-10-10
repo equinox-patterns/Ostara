@@ -207,7 +207,9 @@ void OVisToolPleat::DrawDeparturePoints()
         }
         else
         {
-            item = InitItem<VScaledEllipse>(role, this);
+            // The dots are what the gesture asks the eye to read — green for the first end, red for the second — so
+            // they take the Z of a mark and leave the pass the echo of the objects is not in (see InitMark).
+            item = InitMark<VScaledEllipse>(role, this);
             pool.append(item);
         }
 

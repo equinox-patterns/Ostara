@@ -51,8 +51,8 @@ OVisToolTransfert::OVisToolTransfert(const VContainer *data, QGraphicsItem *pare
 {
     SetColorRole(VColorRole::VisSupportColor2);
 
-    m_pointOrigin = InitPoint(VColorRole::VisSupportColor2, this);
-    m_pointTarget = InitPoint(VColorRole::VisSupportColor2, this);
+    m_pointOrigin = InitPoint(VColorRole::VisSupportColor2, this, kMarkZ);
+    m_pointTarget = InitPoint(VColorRole::VisSupportColor2, this, kMarkZ);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

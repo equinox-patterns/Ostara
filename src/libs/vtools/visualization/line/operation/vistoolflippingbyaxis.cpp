@@ -33,7 +33,7 @@
 VisToolFlippingByAxis::VisToolFlippingByAxis(const VContainer *data, QGraphicsItem *parent)
   : VisFlippingOperation(data, parent)
 {
-    m_point1 = InitPoint(VColorRole::VisSupportColor2, this);
+    m_point1 = InitPoint(VColorRole::VisSupportColor2, this, kMarkZ);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -98,7 +98,7 @@ VisToolRotation::VisToolRotation(const VContainer *data, QGraphicsItem *parent)
 {
     SetColorRole(VColorRole::VisSupportColor2);
 
-    m_point = InitPoint(VColorRole::VisSupportColor2, this);
+    m_point = InitPoint(VColorRole::VisSupportColor2, this, kMarkZ);
     // The aides of the rotation — the arc and the reference axis — take a colour of their own, so that the
     // pivot is not painted like the circle it is turned around (same split as VisToolMove).
     m_angleArc = InitItem<VCurvePathItem>(VColorRole::VisSupportColor3, this);

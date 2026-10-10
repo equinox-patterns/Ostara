@@ -114,6 +114,19 @@ protected:
 
     template <class Item> auto InitItem(VColorRole role, QGraphicsItem *parent) -> Item *;
 
+    /** @brief A mark of the gesture: the answer the user has to read — which end is green, which one is red — painted
+     *  above the echo of the objects the preview lays over them.
+     *
+     *  It takes two things, because Qt orders two siblings by the ItemStacksBehindParent flag first and by the Z only
+     *  afterwards (see qt_closestLeaf, qgraphicsitem_p.h): the flag the item inherits from InitItem is cleared, or
+     *  the echo points — which wear none — stay above it whatever its Z, and kMarkZ is given, which puts it above the
+     *  echo points, in the same pass, where the Z does decide. */
+    template <class Item> auto InitMark(VColorRole role, QGraphicsItem *parent) -> Item *;
+
+    /** @brief The Z of a mark of the gesture: above the echo of the objects, whose points sit at 0 and whose lines
+     *  and curves sit at the 1 InitItem gives them. */
+    static constexpr qreal kMarkZ = 2.;
+
     static auto GetPointItem(QVector<VScaledEllipse *> &points, quint32 i, VColorRole role, QGraphicsItem *parent)
         -> VScaledEllipse *;
     static auto GetCurveItem(QVector<VCurvePathItem *> &curves, quint32 i, VColorRole role, QGraphicsItem *parent)
@@ -182,6 +195,15 @@ template <class Item> inline auto Visualization::InitItem(VColorRole role, QGrap
     // scene never receive ItemSceneHasChanged (the base QGraphicsItem constructor consumes it), so the
     // derived itemChange() would never run RefreshPen()/RefreshScale() and the item would keep the
     // default black pen.
+    return item;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <class Item> inline auto Visualization::InitMark(VColorRole role, QGraphicsItem *parent) -> Item *
+{
+    Item *item = InitItem<Item>(role, parent);
+    item->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
+    item->setZValue(kMarkZ);
     return item;
 }
 

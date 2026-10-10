@@ -47,8 +47,8 @@ OVisToolRectangle::OVisToolRectangle(const VContainer *data, QGraphicsItem *pare
     m_pointC = InitPoint(VColorRole::VisSupportColor, this);
     m_pointD = InitPoint(VColorRole::VisSupportColor, this);
 
-    m_lineWidth = InitItem<VScaledLine>(VColorRole::VisSupportColor2, this);
-    m_lineHeight = InitItem<VScaledLine>(VColorRole::VisSupportColor4, this);
+    m_lineWidth = InitMark<VScaledLine>(VColorRole::VisSupportColor2, this);
+    m_lineHeight = InitMark<VScaledLine>(VColorRole::VisSupportColor4, this);
     m_lineCD = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
     m_lineDA = InitItem<VScaledLine>(VColorRole::VisSupportColor, this);
 
