@@ -76,6 +76,15 @@ VAbstractCubicBezierPath::~VAbstractCubicBezierPath()
  */
 auto VAbstractCubicBezierPath::GetPoints() const -> QVector<QPointF>
 {
+    // The memo answers only for the geometry it was built from; see DropPointsMemo(). The approximation
+    // scale is part of the key because the same chain flattened at another scale is another outline — a
+    // near-identical scale is treated as the same one, its outline being indistinguishable.
+    const qreal approximationScale = GetApproximationScale();
+    if (m_pointsMemoValid && qFuzzyCompare(m_pointsMemoScale, approximationScale))
+    {
+        return m_pointsMemo;
+    }
+
     QVector<QPointF> pathPoints;
     for (qint32 i = 1; i <= CountSubSpl(); ++i)
     {
@@ -91,6 +100,10 @@ auto VAbstractCubicBezierPath::GetPoints() const -> QVector<QPointF>
     {
         pathPoints = CheckLoops(pathPoints);
     }
+
+    m_pointsMemo = pathPoints;
+    m_pointsMemoScale = approximationScale;
+    m_pointsMemoValid = true;
 
     return pathPoints;
 }

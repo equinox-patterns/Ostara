@@ -472,6 +472,15 @@ VMainGraphicsView::VMainGraphicsView(QWidget *parent)
     this->setResizeAnchor(QGraphicsView::AnchorUnderMouse);
     this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     this->setInteractive(true);
+
+    // Every action on the pattern destroys and recreates the whole set of items, so one refresh is made of
+    // a very large number of small visible changes. QGraphicsView's default MinimalViewportUpdate then
+    // spends more time working out the smallest region to repaint than it spends repainting it (Qt doc,
+    // ViewportUpdateMode). BoundingRectViewportUpdate looks for a single region instead, which is exactly
+    // the cost being targeted. It never leaves anything unpainted: the bounding rectangle of the changes
+    // contains all of them by construction.
+    this->setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+
     SetAntialiasing(true);
 
     connect(zoom, &GraphicsViewZoom::zoomed, this, [this]() { emit ScaleChanged(transform().m11()); });

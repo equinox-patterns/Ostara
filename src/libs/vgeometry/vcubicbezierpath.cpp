@@ -72,6 +72,7 @@ auto VCubicBezierPath::operator=(const VCubicBezierPath &curve) -> VCubicBezierP
     }
     VAbstractCurve::operator=(curve);
     d = curve.d;
+    DropPointsMemo();
     return *this;
 }
 
@@ -98,6 +99,7 @@ auto VCubicBezierPath::operator=(VCubicBezierPath &&curve) noexcept -> VCubicBez
 {
     VAbstractCubicBezierPath::operator=(curve);
     std::swap(d, curve.d);
+    DropPointsMemo();
     return *this;
 }
 
@@ -193,6 +195,8 @@ VCubicBezierPath::~VCubicBezierPath() = default;
 //---------------------------------------------------------------------------------------------------------------------
 auto VCubicBezierPath::operator[](vsizetype indx) -> VPointF &
 {
+    // The reference handed out here is written to directly, so the memo has to go before it leaves.
+    DropPointsMemo();
     return d->path[indx];
 }
 
@@ -206,6 +210,7 @@ auto VCubicBezierPath::at(vsizetype indx) const -> const VPointF &
 void VCubicBezierPath::append(const VPointF &point)
 {
     d->path.append(point);
+    DropPointsMemo();
     CreateName();
 }
 
@@ -225,6 +230,7 @@ auto VCubicBezierPath::CountPoints() const -> vsizetype
 void VCubicBezierPath::Clear()
 {
     d->path.clear();
+    DropPointsMemo();
     SetDuplicate(0);
 }
 

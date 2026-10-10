@@ -95,6 +95,22 @@ protected:
     void CreateAlias() override;
 
     auto IsRelaxed() const -> bool;
+
+    /// \brief DropPointsMemo drops the polyline memoized by GetPoints().
+    ///
+    /// GetPoints() flattens every sub-spline of the chain and then removes the self-intersecting loops of a
+    /// relaxed path. That result is a pure function of the control points and of the approximation scale, and
+    /// a single parse reads the very same curve again and again: start point, end point, segment, then the
+    /// same curve seen from the neighbouring node. So it is memoized.
+    ///
+    /// The memo is only sound while every write to the geometry drops it, which is what this is for. Nothing
+    /// detects a forgotten call: the curve would simply keep handing out its previous outline, silently.
+    void DropPointsMemo() const { m_pointsMemoValid = false; }
+
+private:
+    mutable QVector<QPointF> m_pointsMemo;
+    mutable qreal m_pointsMemoScale{0};
+    mutable bool m_pointsMemoValid{false};
 };
 
 QT_WARNING_POP

@@ -299,10 +299,10 @@ void VSegmentLabel::Init()
         m_label->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     }
     QFont font = m_label->font();
-    font.setFamily(QString()); // clear inherited family so hint is respected
+    // Keep the application font (Inter). Clearing the family is not "any font": Qt reads an empty family as "the
+    // first font matching the script", drops the family filter, and walks the whole font database once — about
+    // 200 ms on the first file opened after a launch. Only the slant is wanted here.
     font.setItalic(true);
-    font.setFixedPitch(true);
-    font.setStyleHint(QFont::Monospace);
     m_label->setFont(font);
     m_label->SetFontAdjustRatio(0.6);
     m_label->setText(*segmentSign + m_labelPos.name());

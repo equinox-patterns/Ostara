@@ -687,6 +687,7 @@ VSplinePath::~VSplinePath() = default;
 void VSplinePath::append(const VSplinePoint &point)
 {
     d->path.append(point);
+    DropPointsMemo();
     CreateName();
 }
 
@@ -752,6 +753,7 @@ void VSplinePath::UpdatePoint(qint32 indexSpline, const SplinePointPosition &pos
     {
         d->path[indexSpline] = point;
     }
+    DropPointsMemo();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -791,6 +793,7 @@ auto VSplinePath::operator=(const VSplinePath &path) -> VSplinePath &
     }
     VAbstractCubicBezierPath::operator=(path);
     d = path.d;
+    DropPointsMemo();
     return *this;
 }
 
@@ -817,6 +820,7 @@ auto VSplinePath::operator=(VSplinePath &&path) noexcept -> VSplinePath &
 {
     VAbstractCubicBezierPath::operator=(path);
     std::swap(d, path.d);
+    DropPointsMemo();
     return *this;
 }
 
@@ -828,6 +832,8 @@ auto VSplinePath::operator=(VSplinePath &&path) noexcept -> VSplinePath &
  */
 auto VSplinePath::operator[](vsizetype indx) -> VSplinePoint &
 {
+    // The reference handed out here is written to directly, so the memo has to go before it leaves.
+    DropPointsMemo();
     return d->path[indx];
 }
 
@@ -877,6 +883,7 @@ void VSplinePath::SetStrict(bool strict)
     {
         node.SetStrict(strict);
     }
+    DropPointsMemo();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1026,5 +1033,6 @@ auto VSplinePath::GetFSplinePath() const -> QVector<VFSplinePoint>
 void VSplinePath::Clear()
 {
     d->path.clear();
+    DropPointsMemo();
     SetDuplicate(0);
 }
