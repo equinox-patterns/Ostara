@@ -1587,6 +1587,11 @@
       <xs:attribute name="defaultHideMainPath" type="xs:boolean"/>
       <xs:attribute name="defaultSewLineOnDrawing" type="xs:boolean"/>
       <xs:attribute name="defaultSecondPassmarkOnSeamLine" type="xs:boolean"/>
+      <!-- The highest object identifier this document has handed out. It exists because not every id of a
+           pattern belongs to an element: the copies an operation rebuilds are only named where the file uses
+           them, so a reader that counted the declared ids alone could hand one of them out again. Optional:
+           a file without it is read the way it always was. -->
+      <xs:attribute name="highestId" type="xs:unsignedInt"/>
     </xs:complexType>
     <xs:unique name="incrementName">
       <xs:selector xpath=".//increment"/>

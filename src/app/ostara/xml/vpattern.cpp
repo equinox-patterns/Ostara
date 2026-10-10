@@ -60,6 +60,7 @@
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.h"
 #include "../vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.h"
 #include "../vtools/tools/drawTools/operation/ooperationlines.h"
+#include "../vtools/tools/drawTools/operation/opleatdisplay.h"
 #include "../vtools/tools/drawTools/operation/vtoolmove.h"
 #include "../vtools/tools/drawTools/operation/vtoolrotation.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
@@ -133,6 +134,7 @@ using namespace Qt::Literals::StringLiterals;
 
 const QString VPattern::AttrReadOnly = QStringLiteral("readOnly");       // NOLINT(cert-err58-cpp)
 const QString VPattern::AttrLabelPrefix = QStringLiteral("labelPrefix"); // NOLINT(cert-err58-cpp)
+const QString VPattern::AttrHighestId = QStringLiteral("highestId");     // NOLINT(cert-err58-cpp)
 
 using namespace VPatternHelpers;
 
@@ -340,14 +342,21 @@ void VPattern::Parse(const Document &parse)
  */
 auto VPattern::MaxMentionedId() const -> quint32
 {
-    static const QStringList idAttributes{
-        AttrIdObject,                  // the items of an operation, the items of a modeling
-        VAbstractPattern::AttrObject,  // a layer's items: the object a tool created...
-        VAbstractPattern::AttrTool,    // ...and the tool that created it
-        OOperationLines::AttrIdResult, // the line an operation derives
-        AttrSegment1Id,                // the two segments a cut tool leaves
-        AttrSegment2Id,
-        AttrDuplicate};                // the piece a duplication follows
+    // The names of the attributes that carry an id without carrying the word in them: the items of a layer
+    // (`object` is the object a tool created, `tool` the tool itself) and the figure of a pleat or of a dart
+    // cap (`point`, `side1`, `side2`, `curve1`, `curve2`, `notch`). Every other attribute the code writes an
+    // id into has it in its name — `id`, `idObject`, `idResult`, `idTool`, `segment1Id`, `segment2Id` — and
+    // that half of the question is asked as a rule rather than as a list, so that the next one is covered
+    // without a line to add here. Reading one attribute too many costs nothing: the counter only ever rises,
+    // and the worst a false positive can do is leave gaps in the ids.
+    static const QStringList namedAttributes{AttrObject,
+                                             AttrTool,
+                                             OPleatDisplay::AttrPoint,
+                                             OPleatDisplay::AttrSide1,
+                                             OPleatDisplay::AttrSide2,
+                                             OPleatDisplay::AttrCurve1,
+                                             OPleatDisplay::AttrCurve2,
+                                             OPleatDisplay::AttrNotch};
 
     quint32 maxId = NULL_ID;
 
@@ -360,10 +369,19 @@ auto VPattern::MaxMentionedId() const -> quint32
     {
         const QDomElement element = pending.takeLast();
 
-        for (const QString &name : idAttributes)
+        const QDomNamedNodeMap attributes = element.attributes();
+        for (int i = 0; i < attributes.length(); ++i)
         {
+            const QDomAttr attribute = attributes.item(i).toAttr();
+            const QString name = attribute.name();
+
+            if (not namedAttributes.contains(name) && not name.contains(u"id"_s, Qt::CaseInsensitive))
+            {
+                continue;
+            }
+
             bool ok = false;
-            const quint32 id = element.attribute(name).toUInt(&ok);
+            const quint32 id = attribute.value().toUInt(&ok);
             if (ok)
             {
                 maxId = qMax(maxId, id);
@@ -378,6 +396,56 @@ auto VPattern::MaxMentionedId() const -> quint32
     }
 
     return maxId;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The highest identifier the file says it has handed out, 0 when it says nothing.
+ *
+ * Not every id of a pattern belongs to an element: the copies an operation rebuilds are only named where the
+ * file uses them (the destination items of the operation, the items of a layer). A reader that counted the
+ * declared ids alone could therefore hand one of them out again — an object built at load would take an id
+ * another tool had already reserved. The file states the highest id it has used, so the counter can be put
+ * back exactly where it was, and a file that says nothing (every file written before this) is read the way
+ * it always was: see MaxMentionedId().
+ */
+auto VPattern::HighestId() const -> quint32
+{
+    const QDomElement pattern = documentElement();
+    if (pattern.isNull())
+    {
+        return NULL_ID;
+    }
+
+    bool ok = false;
+    const quint32 id = pattern.attribute(AttrHighestId).toUInt(&ok);
+
+    return ok ? id : NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief State in the file the highest identifier the document has handed out.
+ *
+ * The counter lives in memory only, and it is not the same thing as the highest id the file declares: the
+ * copies an operation owns are written nowhere as elements. Losing it is what made a pattern impossible to
+ * open — the point a dart cap adds took the id reserved for the first copy of a transfer.
+ */
+void VPattern::SyncHighestIdToDom()
+{
+    QDomElement pattern = documentElement();
+    if (pattern.isNull())
+    {
+        return;
+    }
+
+    // Everything the document mentions, and the counter itself: the counter is the authority — every object
+    // read from the file raises it (UpdateId), every object created takes the next one — but a mention can
+    // outlive the object it named, so the higher of the two is what the next read must start above.
+    const quint32 highest = qMax(qMax(MaxRecordedId(), MaxMentionedId()), data->getId());
+
+    SetAttributeOrRemoveIf<quint32>(pattern, AttrHighestId, highest,
+                                    [](quint32 id) noexcept { return id == NULL_ID; });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -783,6 +851,10 @@ auto VPattern::SaveDocument(const QString &fileName, QString &error) -> bool
     // A position that moved with the active size exists in the container only: the refresh that
     // moved it pushes no undo command, so no writer has seen it. This is where it reaches the file.
     SyncChildGeometryToDom();
+    // The id counter lives in memory only, and it is not readable from the declared ids alone: what the
+    // document has handed out is written down here, so that the next read cannot hand one of those ids out
+    // again (an operation's copies have no element of their own).
+    SyncHighestIdToDom();
     const bool saved = VAbstractPattern::SaveDocument(fileName, error);
     if (saved && QFileInfo(fileName).suffix() != "autosave"_L1)
     {
@@ -1318,9 +1390,14 @@ void VPattern::PrepareForParse(const Document &parse)
         sceneDraw->clear();
         sceneDetail->clear();
         data->ClearForFullParse();
-        data->UpdateId(qMax(MaxRecordedId(), MaxMentionedId())); // Resync against every id the file mentions:
-                                                                 // declared ones (upstream 51adb0101) and the
-                                                                 // ones a tool only wrote down where it uses them.
+        const quint32 declared = MaxRecordedId();
+        const quint32 mentioned = MaxMentionedId();
+        const quint32 stated = HighestId();
+        // Resync against every id the file mentions: the ones it declares, the ones a tool only wrote down
+        // where it uses them, and the highest id the file itself says it has handed out (upstream 51adb0101).
+        data->UpdateId(qMax(qMax(declared, mentioned), stated));
+        qCDebug(vXML, "Id counter restored to %u (declared %u, mentioned %u, stated %u)", data->getId(), declared,
+                mentioned, stated);
         PatternBlockMapper()->Clear();
 
         qDeleteAll(toolsOnRemove); // Remove all invisible on a scene objects.

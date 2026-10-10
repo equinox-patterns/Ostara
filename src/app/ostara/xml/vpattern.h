@@ -111,6 +111,7 @@ public:
 
     static const QString AttrReadOnly;
     static const QString AttrLabelPrefix;
+    static const QString AttrHighestId;
 
     auto ElementsToParse() const -> int;
 
@@ -348,6 +349,9 @@ private:
     auto PPLastToolId(int blockIndex) const -> quint32;
 
     auto MaxMentionedId() const -> quint32;
+
+    auto HighestId() const -> quint32;
+    void SyncHighestIdToDom();
 
     void GarbageCollector();
     void BackupBeforeGarbageCollector() const;
