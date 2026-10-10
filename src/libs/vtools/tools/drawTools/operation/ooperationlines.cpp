@@ -249,6 +249,15 @@ void OOperationLines::BuildLine(VAbstractPattern *doc, VContainer *data, VMainGr
     {
         if (auto *lineTool = qobject_cast<VToolLine *>(existing); lineTool != nullptr)
         {
+            // A line born of an operation has no element of its own, so nothing ever hands it the container of
+            // the parse in progress: that is what VToolLine::Create does, and this branch is precisely the one
+            // that never calls it. Left alone, the line keeps the container it was built with. VContainer is
+            // shared, so that copy keeps seeing the pattern's later writes for as long as nobody detaches - and
+            // the pattern detaches its own on the first write of every parse. From then on the line resolves its
+            // endpoints in a frozen container and stays where the parse before it put it, on and off depending on
+            // what detached in between. Handing it the current container is what every other tool gets.
+            doc->UpdateToolData(line.result, data);
+
             lineTool->RefreshPenFromParse(line.typeLine.isEmpty() ? VToolLineInitData{}.typeLine : line.typeLine,
                                           line.lineColor.isEmpty() ? VToolLineInitData{}.lineColor
                                                                    : line.lineColor);
