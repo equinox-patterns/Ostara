@@ -481,6 +481,26 @@ void ODialogPleat::RefreshNotchState()
     ui->checkBoxNotch1->setEnabled(cap1 && ui->checkBoxCap1->isChecked() && !notchInUse(0));
     ui->checkBoxNotch2->setEnabled(cap2 && ui->checkBoxCap2->isChecked() && !notchInUse(1));
 
+    // A double pleat has **one** sense and not two: the two folds are the same fold laid back to back, so the second
+    // one is the first one reversed by construction. Sense 1 would fold both of them the same way, and the fold line
+    // of neither would run along an edge — the caps then open on the wrong side, and the notches land anywhere. The
+    // box is therefore held **ticked** at both ends: a double pleat is always read on the edge the move carries.
+    const bool double_ = (row >= 0 && row < m_departures.size() && m_departures.at(row).kind == OPleatKind::Double);
+    if (double_)
+    {
+        const QSignalBlocker blockSense1(ui->checkBoxCap1Sense);
+        const QSignalBlocker blockSense2(ui->checkBoxCap2Sense);
+        ui->checkBoxCap1Sense->setChecked(true);
+        ui->checkBoxCap2Sense->setChecked(true);
+
+        // The row is what the rule reads and what the file keeps: the boxes being held, the row has to say so too.
+        m_departures[row].first.secondSense = true;
+        m_departures[row].second.secondSense = true;
+    }
+
+    ui->checkBoxCap1Sense->setEnabled(cap1 && !double_);
+    ui->checkBoxCap2Sense->setEnabled(cap2 && !double_);
+
     // The kind is not a box: it is the second fold itself. Going back to a simple pleat would take the objects of that
     // fold out of the file, so the combo is held too as long as one of them is used.
     const bool secondFoldInUse = pleats == 2
