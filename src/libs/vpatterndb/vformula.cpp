@@ -33,9 +33,11 @@
 #include <QMessageLogger>
 #include <QScopedPointer>
 #include <QtDebug>
+#include <algorithm>
 #include <limits>
 
 #include "../qmuparser/qmuparsererror.h"
+#include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -287,6 +289,45 @@ void VFormula::Eval()
     {
         d->reason = tr("Formula is empty");
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFormula::MapTokens(const QString &formula, const std::function<QString(const QString &)> &map) -> QString
+{
+    if (formula.isEmpty())
+    {
+        return formula;
+    }
+
+    QString result = formula;
+    bool changed = false;
+
+    try
+    {
+        QScopedPointer<qmu::QmuTokenParser> const parser(new qmu::QmuTokenParser(formula, false, false));
+        const QMap<vsizetype, QString> tokens = parser->GetTokens();
+
+        // Right to left: a replacement of another length would move every position after it.
+        QList<vsizetype> positions = tokens.keys();
+        std::sort(positions.begin(), positions.end(), std::greater<>());
+
+        for (const vsizetype pos : std::as_const(positions))
+        {
+            const QString &token = tokens[pos];
+            const QString mapped = map(token);
+            if (mapped != token)
+            {
+                result.replace(pos, token.length(), mapped);
+                changed = true;
+            }
+        }
+    }
+    catch (qmu::QmuParserError &)
+    {
+        return formula; // A formula nobody can read is the calculator's business, not this function's.
+    }
+
+    return changed ? result : formula;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

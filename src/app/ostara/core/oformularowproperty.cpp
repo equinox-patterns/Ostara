@@ -33,14 +33,19 @@
 #include <QLineEdit>
 #include <QScopedPointer>
 #include <QStyleOptionViewItem>
+#include <QTimer>
 #include <QToolButton>
 
 #include "vtheme.h"
 #include "../vmisc/def.h"
+#include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vformula.h"
+#include "../vpatterndb/vtranslatevars.h"
 #include "../vpropertyexplorer/vproperty.h"
 #include "../vpropertyexplorer/vproperty_p.h"
+#include "../vtools/dialogs/dialogtoolbox.h"
 #include "../vtools/dialogs/support/dialogeditwrongformula.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -121,22 +126,78 @@ auto OFormulaRowProperty::getEditorData(const QWidget *editor) const -> QVariant
     // that difference is what makes the dock hand the edit over to the tool.
     VFormula formula = GetFormula();
     formula.SetFormula(m_field->text(), FormulaType::FromUser);
+
+    // A formula still written with the handle an object had before somebody named it is not refused for that: the
+    // name is known, so it is put right here, and what the tool receives is the name the object has now.
+    formula.SetFormula(
+        VContainer::FormulaWithoutStaleHandles(formula.getData(), formula.GetFormula(FormulaType::FromSystem)),
+        FormulaType::FromSystem);
     formula.Eval();
 
     // Refused when it names an object nobody named: the value handed back is the one the tool holds, so the
     // dock has nothing to commit and the tool keeps its formula. The caller shows `Reason()`.
     if (not formula.CheckObjectNames())
     {
-        // Refused without a word, for the same reason as in VFormulaProperty: this runs inside the form's
-        // commit, and a modal here starts a nested event loop over a widget still committing — that is what
-        // crashed. The value handed back is the one the tool holds, so the dock has nothing to commit.
-        qWarning() << "Refused formula:" << formula.Reason();
+        // Kept in the log only: the names are asked for below, and a `qWarning` in this application is not a line of
+        // text but a modal box (the message handler turns warnings into dialogs) — two dialogs for one gesture.
+        qDebug() << "Formula refused, names to be asked for:" << formula.Reason();
+
+        // Refused, but not a dead end: the objects can be given a name, and once they have one the formula the
+        // user wrote is committed where they meant it to go. Asked after this returns — a modal opened from inside
+        // the form's commit is what crashed, `VPropertyFormWidget::commitData` -> `childChanged` -> `QDialog::exec`
+        // -> `QWindow::handle()` on a window already being torn down.
+        const QString typed = m_field->text();
+        if (m_askingForNames)
+        {
+            return QVariant::fromValue(GetFormula()); // one question is already pending for this gesture
+        }
+        m_askingForNames = true;
+
+        // The row is asked for a value by a form that reads it as const, and naming an object writes: the pointer
+        // is only read again by the event loop, once the commit is over.
+        auto *self = const_cast<OFormulaRowProperty *>(this);
+        QTimer::singleShot(0, self,
+                           [self, typed]()
+                           {
+                               self->NameObjectsAndCommit(typed);
+                               self->m_askingForNames = false;
+                           });
         return QVariant::fromValue(GetFormula());
     }
 
     QVariant value;
     value.setValue(formula);
     return value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OFormulaRowProperty::NameObjectsAndCommit(const QString &typed)
+{
+    VFormula formula = GetFormula();
+    const VContainer *const data = formula.getData();
+    if (data == nullptr || m_field == nullptr)
+    {
+        return;
+    }
+
+    // What was typed, in the internal notation the container answers to: the names asked for here are names, and a
+    // name is internal. Same reading as the commit above, so both agree on what the formula says.
+    QString internal = InternalFormula(typed, data);
+
+    // Nothing is written before the last answer, and cancelling writes nothing at all: the pattern is untouched and
+    // the field stays on the formula the tool holds.
+    if (not NameUnnamedObjects(VAbstractValApplication::VApp()->getMainWindow(), data, internal))
+    {
+        return;
+    }
+
+    formula.SetFormula(internal, FormulaType::FromSystem);
+    formula.Eval();
+    SetFormula(formula);
+    m_field->setText(formula.GetFormula(FormulaType::ToUser));
+
+    // The field no longer holds what the tool holds, and that difference is what carries the edit over to it.
+    Commit();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

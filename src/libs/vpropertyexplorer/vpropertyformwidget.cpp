@@ -480,6 +480,8 @@ void VPE::VPropertyFormWidget::commitData(int row)
     {
         QVariant const newValue = tmpProperty->getEditorData(tmpEditorWidget.Editor);
         QVariant const oldValue = tmpProperty->data(VProperty::DPC_Data, Qt::EditRole);
+
+        
         if (oldValue != newValue)
         {
             VProperty *parent = tmpProperty->getParent();
@@ -498,6 +500,14 @@ void VPE::VPropertyFormWidget::commitData(int row)
                 tmpProperty->setValue(newValue);
                 emit propertyDataSubmitted(tmpProperty);
             }
+        }
+
+        // A property that asks for it is shown the value it now has. The widget is the one place the write does not
+        // reach: a value repaired elsewhere — a formula whose object has just been named — would otherwise wait for
+        // the whole panel to be rebuilt before the user sees it.
+        if (tmpProperty->getSettings().value(QStringLiteral("RefreshEditor")).toBool())
+        {
+            tmpProperty->setEditorData(tmpEditorWidget.Editor);
         }
     }
 }

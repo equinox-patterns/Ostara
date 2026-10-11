@@ -147,6 +147,12 @@ private:
      *  displayed name, the one both the list and the formula field agree on. */
     QString m_unnamedObject{};
 
+    /** @brief True when the user cancelled the naming of the objects the formula uses.
+     *
+     *  Nothing was written — no name, no repair — so there is nothing to edit and the dialogue closes itself
+     *  instead of showing a formula it would refuse. */
+    bool m_nameRequestCancelled{false};
+
     /** @brief m_isInitialized true if window is initialized */
     bool m_isInitialized{false};
 

@@ -26,6 +26,7 @@
  **
  *************************************************************************/
 #include "renameobject.h"
+#include "orewriteformulas.h"
 #include "renametoken.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../qmuparser/qmutokenparser.h"
@@ -115,6 +116,12 @@ void AbstractObjectRename::RenameFormulas()
         }
 
         ProcessElementByType(domElement);
+    }
+
+    if (RenamesEverywhere())
+    {
+        // The dependants above have already been rewritten, and this reaches the formulas no geometry links to.
+        RewriteDocumentFormulas(Doc(), [this](const QString &token) { return ProcessToken(token); });
     }
 
     ProcessLineNames();
@@ -651,6 +658,15 @@ auto RenameAlias::CurveType(GOType objType) -> CurveAliasType
         default:
             return CurveAliasType::All;
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto RenameAlias::RenamesEverywhere() const -> bool
+{
+    // The rule says a name is repaired in every formula that calls the object, and this command cannot assume the
+    // dependency graph knows them all: it is built from geometry, and a name is read by formulas of every kind.
+    // The file is the scope that cannot be wrong about it.
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

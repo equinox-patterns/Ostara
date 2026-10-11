@@ -76,6 +76,25 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief What the formulas call a curve: the name it carries, or the route it answers to while it has none.
+ *
+ *  A curve nobody named is written in a formula by what it is built on — `SplPath_Em_Efs` — and every variable
+ *  read on it carries that same part: `Angle1SplPath_Em_Efs`, `SplPath_Em_Efs_Seg_1`. Renaming has to look for
+ *  that, exactly as a line nobody named is written by the pair of points it joins. */
+auto CurveKeyInFormulas(const QSharedPointer<VAbstractCurve> &curve, const QString &aliasSuffix) -> QString
+{
+    if (not aliasSuffix.isEmpty())
+    {
+        return aliasSuffix;
+    }
+
+    return curve.isNull() ? QString() : curve->HeadlessName();
+}
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
 VToolAbstractCurve::VToolAbstractCurve(
     VAbstractPattern *doc, VContainer *data, quint32 id, const QString &notes, QGraphicsItem *parent)
@@ -651,8 +670,12 @@ void VToolAbstractArc::ProcessArcToolOptions(const QDomElement &oldDomElement,
     {
         const CurveAliasType arcType = arc->getType() == GOType::Arc ? CurveAliasType::Arc : CurveAliasType::ElArc;
 
-        const auto *renameAlias
-            = new RenameAlias(arcType, changes.oldAliasSuffix, changes.newAliasSuffix, doc, m_id, newGroup);
+        const auto *renameAlias = new RenameAlias(arcType,
+                                                  CurveKeyInFormulas(arc, changes.oldAliasSuffix),
+                                                  CurveKeyInFormulas(arc, changes.newAliasSuffix),
+                                                  doc,
+                                                  m_id,
+                                                  newGroup);
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 
@@ -783,9 +806,11 @@ void VToolAbstractOffsetCurve::ProcessOffsetCurveToolOptions(const QDomElement &
 
     if (changes.AliasSuffixChanged())
     {
+        const QSharedPointer<VAbstractCurve> offsetCurve = VAbstractTool::data.GeometricObject<VAbstractCurve>(m_id);
+
         const auto *renameAlias = new RenameAlias(CurveAliasType::SplinePath,
-                                                  changes.oldAliasSuffix,
-                                                  changes.newAliasSuffix,
+                                                  CurveKeyInFormulas(offsetCurve, changes.oldAliasSuffix),
+                                                  CurveKeyInFormulas(offsetCurve, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
                                                   newGroup);
@@ -1157,8 +1182,8 @@ void VToolAbstractBezier::ProcessSplineToolOptions(const QDomElement &oldDomElem
     if (changes.AliasSuffixChanged())
     {
         const auto *renameAlias = new RenameAlias(CurveAliasType::Spline,
-                                                  changes.oldAliasSuffix,
-                                                  changes.newAliasSuffix,
+                                                  CurveKeyInFormulas(oldSpline, changes.oldAliasSuffix),
+                                                  CurveKeyInFormulas(oldSpline, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
                                                   newGroup);
@@ -1207,8 +1232,8 @@ void VToolAbstractBezier::ProcessSplinePathToolOptions(const QDomElement &oldDom
     if (changes.AliasSuffixChanged())
     {
         const auto *renameAlias = new RenameAlias(CurveAliasType::SplinePath,
-                                                  changes.oldAliasSuffix,
-                                                  changes.newAliasSuffix,
+                                                  CurveKeyInFormulas(oldSplinePath, changes.oldAliasSuffix),
+                                                  CurveKeyInFormulas(oldSplinePath, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
                                                   newGroup);

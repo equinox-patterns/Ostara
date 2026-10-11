@@ -35,6 +35,7 @@
 #include <QString>
 #include <QTypeInfo>
 #include <QtGlobal>
+#include <functional>
 
 enum class FormulaType : qint8
 {
@@ -100,6 +101,18 @@ public:
      *
      * @return true when the formula may be kept. */
     auto CheckObjectNames() -> bool;
+
+    /** @brief Apply @a map to every token of @a formula, and return the formula it gives.
+     *
+     *  A token is what the calculator reads as one name — `#Cou`, `E'` and `Line_A10_E'` whole — never a piece of
+     *  one: a name that happens to contain another one is left alone. Positions are read once and replaced from
+     *  the right, so a mapping that changes a length cannot move what follows it.
+     *
+     *  A formula the parser cannot read comes back untouched: reporting it belongs to the calculator, which is
+     *  the only place that knows what is wrong with it.
+     *
+     *  @return @a formula itself when nothing changed. */
+    static auto MapTokens(const QString &formula, const std::function<QString(const QString &)> &map) -> QString;
 
     static auto FormulaTypeId() -> int;
 

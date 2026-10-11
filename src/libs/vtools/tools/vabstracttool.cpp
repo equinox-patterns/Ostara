@@ -315,6 +315,11 @@ auto VAbstractTool::CheckFormula(const quint32 &toolId, QString &formula, const 
         // names may never be allowed to break. So the guard lives outside the parse, and only there.
         if (not VContainer::IsParseInProgress())
         {
+            // An object that has a name may still be written with the handle it had before — a pattern saved before
+            // anybody named it, a formula waiting in a field while the name was given elsewhere. There is nothing to
+            // ask about those: the name is known, so the formula is put right before the rule reads it.
+            formula = VContainer::FormulaWithoutStaleHandles(data, formula);
+
             const QString unnamed = VContainer::UnnamedObjectInFormula(data, formula);
             if (not unnamed.isEmpty())
             {

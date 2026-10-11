@@ -28,6 +28,7 @@
 #include "dialogtoolbox.h"
 
 #include "../ifc/exception/vexceptionbadid.h"
+#include "../ifc/xml/vabstractpattern.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../qmuparser/qmudef.h"
 #include "../tools/drawTools/operation/vabstractoperation.h"
@@ -44,12 +45,21 @@
 #include "../vtheme/vscenestylesheet.h"
 #include "../vtheme/vtheme.h"
 #include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vabstractvalapplication.h"
+#include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vpatterndb/variables/vcurvelength.h"
+#include "../vpatterndb/variables/vcurvevariable.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vpatterndb/vformula.h"
 #include "../vpatterndb/vpiecenode.h"
+#include "../vpatterndb/vtranslatevars.h"
+#include "../undocommands/vchangelinerolename.h"
+#include "../vgeometry/vabstractcurve.h"
 #include "../vpropertyexplorer/qtcolorpicker.h"
+#include "../tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "../vtools/tools/vabstracttool.h"
+#include "support/dialognameobject.h"
 
 #include <qnumeric.h>
 #include <QBuffer>
@@ -57,6 +67,7 @@
 #include <QDebug>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QUndoStack>
 #include <QEvent>
 #include <QIcon>
 #include <QLabel>
@@ -467,6 +478,199 @@ auto UnnamedObjectMessage(const QString &token, const VContainer *container,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto InternalFormula(const QString &formula, const VContainer *data) -> QString
+{
+    if (formula.isEmpty())
+    {
+        return formula;
+    }
+
+    const VTranslateVars *const trVars = VAbstractApplication::VApp()->TrVars();
+    if (trVars == nullptr)
+    {
+        return formula;
+    }
+
+    // First pass: the whole formula, with its functions and its decimal separator. It is the one that gives up in
+    // silence — `Try` — because a formula nobody can read is the calculator's business, not this function's.
+    //
+    // `false`, and not the separator of the system: what is read here is the calculator's own notation, whose
+    // decimal separator is a dot — `ToInternalNotation` has just put one there. Asking for commas makes the reader
+    // stumble on the very dots it was handed, and the whole conversion is then abandoned without a word.
+    const QString converted = VTranslateVars::TryFormulaFromUser(ToInternalNotation(formula), false);
+
+    // Second pass: name by name, for the names that pass left as they were. A name that is already the
+    // calculator's own comes back unchanged, so such a formula is not touched a second time.
+    const QString translated
+        = VFormula::MapTokens(converted, [trVars](const QString &token) -> QString
+                              { return trVars->InternalVarFromUser(token); });
+
+    const QHash<QString, QSharedPointer<VInternalVariable>> *const vars
+        = data == nullptr ? nullptr : data->DataVariables();
+    if (vars == nullptr)
+    {
+        return translated;
+    }
+
+    // Third pass, for what the dictionary left alone: a name written the way it is *read* is still a name the
+    // pattern answers to. The direction that displays every name is asked what the token is — the same direction
+    // the formula field itself is filled with — so a name is understood wherever it can be shown, whether the
+    // reverse of the dictionary answers or not.
+    return VFormula::MapTokens(translated,
+                               [trVars, vars](const QString &token) -> QString
+                               {
+                                   if (vars->contains(token))
+                                   {
+                                       return token; // Already the calculator's own.
+                                   }
+
+                                   for (auto i = vars->constBegin(); i != vars->constEnd(); ++i)
+                                   {
+                                       if (trVars->VarToUser(i.key()) == token)
+                                       {
+                                           return i.key();
+                                       }
+                                   }
+
+                                   return token;
+                               });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formula) -> bool
+{
+    
+    if (data == nullptr || formula.isEmpty())
+    {
+        return true;
+    }
+
+    VAbstractPattern *const doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    if (doc == nullptr)
+    {
+        return true; // Nothing can be written, so there is nothing to ask for either.
+    }
+
+    const QHash<QString, QSharedPointer<VInternalVariable>> *const vars = data->DataVariables();
+    if (vars == nullptr)
+    {
+        return true;
+    }
+
+    const VTranslateVars *const trVars = VAbstractApplication::VApp()->TrVars();
+
+    QList<DialogNameObject::Object> objects;
+    QStringList collected; // the objects already asked about, by the pair of a line or the tool of a curve
+
+    // Token by token, with the calculator's own reading of the formula: a name is only ever read as a whole token,
+    // never as a piece of text, so a line named `A_B` can never reach into one named `A_B2`. And a name repeated
+    // five times in a three-way formula is one object, hence one question.
+    VFormula::MapTokens(formula,
+                        [&](const QString &token) -> QString
+                        {
+                            const QSharedPointer<VInternalVariable> var = vars->value(token);
+                            if (var.isNull() || not VContainer::IsUnnamedObject(data, var))
+                            {
+                                return token;
+                            }
+
+                            const VarType type = var->GetType();
+                            if (type == VarType::LineLength || type == VarType::LineAngle)
+                            {
+                                // A line answers to the pair of points it joins: the length and the angle of one
+                                // pair carry that one name, which is what the user gives here. The dialogue shows
+                                // the token as written — the length or the angle — and the field holds the pair
+                                // alone, never the prefix.
+                                const QString &prefix = type == VarType::LineLength ? line_ : angleLine_;
+                                const QString pairKey = var->GetName().mid(prefix.length());
+                                if (not collected.contains(pairKey))
+                                {
+                                    collected << pairKey;
+                                    objects << DialogNameObject::Object{
+                                        .shown = trVars->VarToUser(SimplifiedName(token)),
+                                        .suffix = pairKey,
+                                        .pairKey = pairKey};
+                                }
+                            }
+                            else
+                            {
+                                // A curve, and everything read on it, is named once: the name belongs to the curve,
+                                // and its angles, handles, radii and the segments of a path follow it. So the route
+                                // — the points it is built on while nobody has named it — is what the user replaces.
+                                const QSharedPointer<VCurveVariable> curveVar
+                                    = qSharedPointerDynamicCast<VCurveVariable>(var);
+                                const QSharedPointer<VAbstractCurve> curve
+                                    = curveVar.isNull()
+                                          ? QSharedPointer<VAbstractCurve>()
+                                          : qSharedPointerDynamicCast<VAbstractCurve>(
+                                                data->GetGObject(curveVar->GetId()));
+                                const QString handle = curveVar.isNull() ? QString() : QString::number(curveVar->GetId());
+                                if (not curve.isNull() && not collected.contains(handle))
+                                {
+                                    collected << handle;
+                                    objects << DialogNameObject::Object{
+                                        .shown = trVars->VarToUser(SimplifiedName(token)),
+                                        .suffix = curve->HeadlessName(),
+                                        .curveId = curveVar->GetId(),
+                                        .typeHead = curve->GetTypeHead()};
+                                }
+                            }
+
+                            return token;
+                        });
+
+    if (objects.isEmpty())
+    {
+        return true; // Nothing is unnamed: every object the formula uses already answers to a name.
+    }
+
+    
+    DialogNameObject dialogue(objects, data, parent);
+    if (dialogue.exec() != QDialog::Accepted)
+    {
+        return false; // Cancelled: not one name was given, not one formula was touched.
+    }
+
+    const QStringList names = dialogue.Names();
+
+    // One operation: naming the objects of one formula is one intent, and one undo takes it back as a whole.
+    QUndoStack *const undoStack = VAbstractApplication::VApp()->getUndoStack();
+    undoStack->beginMacro(QObject::tr("name the objects of a formula"));
+    for (int i = 0; i < objects.size(); ++i)
+    {
+        const DialogNameObject::Object &object = objects.at(i);
+        if (names.at(i).isEmpty())
+        {
+            continue;
+        }
+
+        if (object.pairKey.isEmpty())
+        {
+            // The tool writes the alias, checks that it is free and pushes its own command, which repairs the
+            // formulas of the file: a curve is named the same way here and in the Options dock.
+            auto *tool = qobject_cast<VToolAbstractCurve *>(VAbstractPattern::FindTool(object.curveId));
+            if (tool != nullptr)
+            {
+                tool->SetAliasSuffix(names.at(i));
+            }
+        }
+        else
+        {
+            auto *command
+                = new VChangeLineRoleName(doc, object.pairKey, data->LineRoleName(object.pairKey), names.at(i));
+            QObject::connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+            undoStack->push(command);
+        }
+    }
+    undoStack->endMacro();
+
+    // The names are in the pattern, and every formula of the file has been repaired with them. This one is not in
+    // the file — it is being edited — so it is repaired here, with the same rule: the object's name, nothing else.
+    formula = VContainer::FormulaWithoutStaleHandles(data, formula);
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief EvalToolFormula evaluate formula and show result
  * @param dialog dialog
@@ -525,8 +729,11 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
             // Translate to internal look. The field already holds internal numbers (see ToInternalNotation),
             // so the internal separator is the one to parse with: with the OS separator the parser would
             // refuse the very dot the global filter puts in.
-            QString const formula = VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
-                ToInternalNotation(data.formula), false);
+            //
+            // A formula written before the object was named — or one waiting in a field while the name was given
+            // elsewhere — is not refused for it: what it calls the object still resolves, and the name the object
+            // has now is known. It is put right, and what is judged is the formula the user meant.
+            QString const formula = InternalFormula(data.formula, data.container);
             QScopedPointer<Calculator> const cal(new Calculator());
             result = cal->EvalFormula(data.variables, formula);
 

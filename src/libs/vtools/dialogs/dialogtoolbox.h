@@ -104,6 +104,23 @@ void DeployFormula(QDialog *dialog, QPlainTextEdit *formula, QPushButton *button
 void InitFormulaGrowButton(QPushButton *button);
 auto FilterObject(QObject *object, QEvent *event) -> bool;
 auto ToInternalNotation(const QString &formula) -> QString;
+
+/** @brief @a formula as the calculator reads it, whichever notation it was written in.
+ *
+ *  A formula is *shown* with the names of the user's language and *kept* with the calculator's own, and what is
+ *  typed into a field may follow either — a name is read the way it is displayed, which is the whole point of
+ *  displaying it. The formula is converted as a whole first: names, functions and decimal separator. Then, name
+ *  by name, whatever that pass left alone: a name written the way it is read is understood, and a name that is
+ *  already the calculator's own is left exactly as it is.
+ *
+ *  This is the one place that knows both notations. A formula that names an object has to be read the same way
+ *  wherever it is judged — the panel, the assistant, the guard — or the same formula is understood in one place
+ *  and not in another.
+ *
+ *  @a data, when it is given, is what a name the dictionary did not translate is looked up against: the names the
+ *  pattern answers to are read the way they are read on screen, so a name written as it is displayed is found
+ *  even where the reverse of the dictionary has nothing to say. */
+auto InternalFormula(const QString &formula, const VContainer *data = nullptr) -> QString;
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal;
 
 /** @brief The reason to show when a formula names an object the user never named.
@@ -114,6 +131,20 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
  *  in the signature so the message can gain an object name the day objects stopped being named after points. */
 auto UnnamedObjectMessage(const QString &token, const VContainer *container,
                           const QHash<QString, QSharedPointer<VInternalVariable>> *variables) -> QString;
+
+/** @brief Ask for a name for every object @a formula uses that has none, and repair @a formula with them.
+ *
+ *  A formula can only be edited once every object it uses can be written, and an object nobody named can only be
+ *  written by the points it is built on — the very thing the rule refuses. The names are therefore asked for
+ *  first, one object at a time, and the formula comes back holding them.
+ *
+ *  Nothing is written before the last answer: the names are held by the dialogue, and renaming happens in one
+ *  operation that undoes as a whole. Cancelling anywhere therefore leaves the pattern, and the formula, exactly as
+ *  they were.
+ *
+ *  @a formula is in internal notation, the one the calculator reads.
+ *  @return false when the user cancelled, and then the caller must do nothing at all. */
+auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formula) -> bool;
 void ChangeColor(QWidget *widget, const QColor &color);
 auto OkColor(const QWidget *widget) -> QColor;
 auto GetColorDotPixmap(const QColor &color, int diameter = 10) -> QPixmap;

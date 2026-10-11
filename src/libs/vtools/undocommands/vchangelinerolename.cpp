@@ -29,11 +29,12 @@
 
 #include <QDomElement>
 #include <QDomNamedNodeMap>
+#include <utility>
 
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../ifc/xml/vdomdocument.h"
-#include "../qmuparser/qmutokenparser.h"
+#include "orewriteformulas.h"
 #include "../tools/vabstracttool.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -142,94 +143,37 @@ void VChangeLineRoleName::UpdateDom(const QString & /*oldSuffix*/, const QString
 //---------------------------------------------------------------------------------------------------------------------
 void VChangeLineRoleName::ReplaceTokensInFormulas(const QString &oldSuffix, const QString &newSuffix)
 {
-    if (oldSuffix.isEmpty() || newSuffix.isEmpty())
+    // What a formula may be holding for this line, and what it has to hold afterwards. A line nobody named answers
+    // to the pair of points it joins — `Line_C7_C8` — and that pair keeps resolving after the line is named, so a
+    // formula written before the name existed is not broken: it is repaired, exactly like the one that carries the
+    // name the line had until now. Both are the same line, and only the name may be written.
+    QStringList fromHandles;
+    if (not oldSuffix.isEmpty())
     {
-        return;
+        fromHandles << oldSuffix;
     }
+    fromHandles << m_pairKey;
+    fromHandles.removeDuplicates();
 
-    const QString oldLineToken = line_ + oldSuffix;       // e.g. "Line_Test2"
-    const QString newLineToken = line_ + newSuffix;       // e.g. "Line_MaLigne"
-    const QString oldAngleToken = angleLine_ + oldSuffix; // e.g. "AngleLine_Test2"
-    const QString newAngleToken = angleLine_ + newSuffix; // e.g. "AngleLine_MaLigne"
+    // A name taken away leaves the pair, which is the only thing a formula can write for a line nobody named.
+    const QString toHandle = newSuffix.isEmpty() ? m_pairKey : newSuffix;
 
-    // Check if all tags handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    RewriteDocumentFormulas(Doc(),
+                            [&fromHandles, &toHandle](const QString &token) -> QString
+                            {
+                                for (const QString &handle : std::as_const(fromHandles))
+                                {
+                                    if (token == line_ + handle)
+                                    {
+                                        return line_ + toHandle;
+                                    }
 
-    const QStringList validTags = {VAbstractPattern::TagPoint,
-                                   VAbstractPattern::TagOperation,
-                                   VAbstractPattern::TagArc,
-                                   VAbstractPattern::TagElArc,
-                                   VAbstractPattern::TagSpline,
-                                   VAbstractPattern::TagPath,
-                                   VAbstractPattern::TagTools,
-                                   VAbstractPattern::TagDetail};
+                                    if (token == angleLine_ + handle)
+                                    {
+                                        return angleLine_ + toHandle;
+                                    }
+                                }
 
-    for (const QString &tagName : validTags)
-    {
-        const QDomNodeList elements = Doc()->elementsByTagName(tagName);
-        for (int i = 0; i < elements.size(); ++i)
-        {
-            QDomElement element = elements.at(i).toElement();
-            if (element.isNull())
-            {
-                continue;
-            }
-
-            const QDomNamedNodeMap attrs = element.attributes();
-            for (int j = 0; j < attrs.size(); ++j)
-            {
-                const QDomAttr attr = attrs.item(j).toAttr();
-                if (attr.isNull())
-                {
-                    continue;
-                }
-
-                const QString formula = attr.value();
-                if (formula.isEmpty())
-                {
-                    continue;
-                }
-
-                // Tokenize and replace matching line tokens
-                QString newFormula = formula;
-                bool changed = false;
-
-                try
-                {
-                    QScopedPointer<qmu::QmuTokenParser> const parser(
-                        new qmu::QmuTokenParser(formula, false, false));
-                    const QMap<vsizetype, QString> tokens = parser->GetTokens();
-
-                    // Process tokens in reverse order to maintain correct positions during replacement
-                    QList<vsizetype> positions = tokens.keys();
-                    std::sort(positions.begin(), positions.end(), std::greater<>());
-
-                    for (const vsizetype pos : positions)
-                    {
-                        const QString &token = tokens[pos];
-                        if (token == oldLineToken)
-                        {
-                            newFormula.replace(pos, token.length(), newLineToken);
-                            changed = true;
-                        }
-                        else if (token == oldAngleToken)
-                        {
-                            newFormula.replace(pos, token.length(), newAngleToken);
-                            changed = true;
-                        }
-                    }
-                }
-                catch (qmu::QmuParserError &)
-                {
-                    // Skip formulas that can't be parsed
-                    continue;
-                }
-
-                if (changed)
-                {
-                    element.setAttribute(attr.name(), newFormula);
-                }
-            }
-        }
-    }
+                                return token;
+                            });
 }

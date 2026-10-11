@@ -249,16 +249,26 @@ auto ReplaceTokenAlias(const QString &token, CurveAliasType type, const QString 
 
     QStringList const prefixes = CurveAliasPrefixes(type);
 
-    if (prefixes.isEmpty())
+    if (prefixes.isEmpty() || oldAlias.isEmpty())
     {
-        return token; // Unexpected type
+        return token; // Unexpected type, or nothing to replace: a curve nobody named writes its own route
     }
 
     for (const auto &prefix : std::as_const(prefixes))
     {
-        if (token == QStringLiteral("%1_%2").arg(prefix, oldAlias))
+        const QString head = QStringLiteral("%1_%2").arg(prefix, oldAlias);
+
+        if (token == head)
         {
             return QStringLiteral("%1_%2").arg(prefix, newAlias);
+        }
+
+        // What is built on a curve carries the curve's name and then its own part: the first segment of a path is
+        // `SplPath_MonNom_Seg_1`, and it follows the name exactly like the curve itself. The remainder has to
+        // begin with the separator, so a curve named `Em` never reaches into the tokens of one named `Em_Efs`.
+        if (token.startsWith(head) && token.length() > head.length() && token.at(head.length()) == u'_')
+        {
+            return QStringLiteral("%1_%2%3").arg(prefix, newAlias, token.mid(head.length()));
         }
     }
 

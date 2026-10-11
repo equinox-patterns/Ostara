@@ -87,6 +87,19 @@ public:
 
 public slots:
     void ValueChildChanged(const QVariant &value, int typeForParent) override;
+
+private:
+    /** @brief True while a question about the names a formula is missing is pending or being asked.
+     *
+     *  One gesture produces several commits — the field, the form, the row — and each of them refuses the same
+     *  formula: without this, the question is asked once per commit, and the dialogues open on top of one another. */
+    bool m_askingForNames{false};
+
+    /** @brief Write @a typed into the tool, asking for a name first when @a askForNames.
+     *
+     *  The write is what refreshes the field, so it happens for every commit; the question, for the first of them
+     *  only. Called after the form's commit has returned, never from inside it: see ValueChildChanged. */
+    void NameObjectsAndCommit(const QString &typed, bool askForNames);
 };
 
 #endif // VFORMULAPROPERTY_H

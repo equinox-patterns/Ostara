@@ -62,8 +62,19 @@ private:
     void Commit();
     void OpenFormulaDialog();
 
+    /** @brief Ask for a name for the objects @a typed uses and nobody named, then commit the formula.
+     *
+     *  Called after the form's commit has returned, never from inside it: see getEditorData. */
+    void NameObjectsAndCommit(const QString &typed);
+
     QWidget *m_row{nullptr};
     QLineEdit *m_field{nullptr};
+
+    /** @brief True while a question about the names the formula is missing is pending. One gesture, one question:
+     *  the row is read by a form that commits several times, and each read refuses the same formula.
+     *
+     *  Mutable because the read itself is `const` — the form asks for a value, it does not ask to change one. */
+    mutable bool m_askingForNames{false};
 };
 
 #endif // OFORMULAROWPROPERTY_H

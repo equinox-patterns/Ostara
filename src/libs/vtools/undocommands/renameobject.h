@@ -59,6 +59,13 @@ protected:
     virtual auto ProcessToken(const QString &token) const -> QString = 0;
     virtual void ProcessLineNames();
 
+    /** @brief Whether this rename repairs every formula of the file, or only the tools that depend on the object.
+     *
+     *  Renaming a *point* moves a geometry, and the dependency graph knows exactly which tools read it. Renaming
+     *  what an object is *called* is another matter: the name is written in formulas all over the file — a piece's
+     *  seam allowance, a label, a tool of another block — and no graph knows all of them. */
+    virtual auto RenamesEverywhere() const -> bool;
+
     void ProcessElementByType(QDomElement &element) const;
 
 private:
@@ -95,6 +102,12 @@ inline auto AbstractObjectRename::ProcessType() const -> OperationType
 inline void AbstractObjectRename::SetFullParse(bool newFullParse)
 {
     m_fullParse = newFullParse;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+inline auto AbstractObjectRename::RenamesEverywhere() const -> bool
+{
+    return false;
 }
 
 class RenameLabel : public AbstractObjectRename
@@ -182,6 +195,7 @@ public:
 
 protected:
     auto ProcessToken(const QString &token) const -> QString override;
+    auto RenamesEverywhere() const -> bool override;
 
 private:
     Q_DISABLE_COPY_MOVE(RenameAlias) // NOLINT

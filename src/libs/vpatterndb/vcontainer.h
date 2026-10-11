@@ -224,8 +224,39 @@ public:
      *  Reading a file is not this function's business — a pattern that already writes such a name keeps
      *  loading, and the refusal belongs to the moment the formula is written.
      *
+     *  A line is the one family where being named is not enough to be accepted: it also answers to the pair of
+     *  points it joins, and that pair stays refused. Everything else is accepted as soon as it has a name.
+     *
      *  @return the token as it is written in @a formula, ready to be shown; empty when nothing is unnamed. */
     static auto UnnamedObjectInFormula(const VContainer *container, const QString &formula) -> QString;
+
+    /** @brief Whether @a var is an object nobody has named — the other half of the question above.
+     *
+     *  `UnnamedObjectInFormula` reads a formula and judges what is written in it, token by token: it is the
+     *  guard that refuses a name the user never gave. This one reads an object, not a formula, and answers what
+     *  the formula assistant's list asks of every row it shows: is there a name here, or a name to give?
+     *
+     *  The two are not the same question, and a line is where they part. `A10` and `E'` are the points a line
+     *  named `Line_TestNom` joins, so the pair `Line_A10_E'` is not a name — the guard refuses it — while the
+     *  line itself is named, and the list has a name to show. Judged family by family exactly as the guard
+     *  judges them, so the list and the guard never disagree about what is named.
+     *
+     *  @return true when @a var carries no name of its own. An object that has never had one to give —
+     *  a measurement, an increment, the area of a piece — is not unnamed: it is named by nature. */
+    static auto IsUnnamedObject(const VContainer *container, const QSharedPointer<VInternalVariable> &var) -> bool;
+
+    /** @brief Write @a formula with the name of every object it calls by a handle that is no longer its own.
+     *
+     *  An object is named after the points it joins until somebody gives it a name, and formulas written before
+     *  that keep the old handle: a pattern saved by an earlier Ostara, or a formula typed while the object was
+     *  still nameless. There is nothing to ask about those — the name is known — so what is written is put
+     *  right, silently, and the formula goes on: the handle it held still resolves, but it is not a name.
+     *
+     *  What nobody named is left exactly as it is. That one has no name to be repaired with, and it is the
+     *  guard's business, which reports it and asks the user to give one.
+     *
+     *  @return @a formula itself when every object it uses already answers to its own name. */
+    static auto FormulaWithoutStaleHandles(const VContainer *container, const QString &formula) -> QString;
 
     template <typename T> void AddUniqueVariable(T *var);
     template <typename T> void AddUniqueVariable(const QSharedPointer<T> &var);

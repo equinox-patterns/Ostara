@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "vcontainer.h"
+#include "vformula.h"
 
 #include <climits>
 #include <utility>
@@ -682,6 +683,51 @@ void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 ma
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VContainer::IsUnnamedObject(const VContainer *container, const QSharedPointer<VInternalVariable> &var) -> bool
+{
+    if (container == nullptr || var.isNull())
+    {
+        return false;
+    }
+
+    // The two values a tool hands over under a name of its own, and never a name the user was asked to give:
+    // `CurrentLength` is read in a piece's formulas as it stands, and refusing it would take away a value the
+    // user can neither rename nor replace. They are therefore named, whatever family they are computed in.
+    const QString &technical = var->GetName();
+    if (technical == currentLength || technical == currentSeamAllowance)
+    {
+        return false;
+    }
+
+    switch (var->GetType())
+    {
+        case VarType::LineLength:
+        case VarType::LineAngle:
+        {
+            // A line answers to the two points it joins, and the name the user gave it lives in the role-name
+            // table, under that very pair — never on the variable. A line nobody named has nothing to say:
+            // `Line_C7_C8` is the points, a name that travels with them, whatever the line is. So only a name
+            // makes a line named.
+            const QString &prefix = var->GetType() == VarType::LineLength ? line_ : angleLine_;
+            return container->LineRoleName(technical.mid(prefix.length())).isEmpty();
+        }
+
+        case VarType::CurveLength:
+        case VarType::CurveCLength:
+        case VarType::CurveAngle:
+        case VarType::ArcRadius:
+            // A curve, and everything read on it, carry the alias of the object itself — the one typed in the
+            // Options dock — and it is empty for a curve nobody named. A segment of a path is named with the
+            // path that carries it: it is registered under a route built from points, and a route is not an
+            // alias, so it lands here as unnamed, which is what it is.
+            return var->GetAlias().isEmpty();
+
+        default:
+            return false; // measurements, increments, areas of a piece: they have never had a name to give
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VContainer::UnnamedObjectInFormula(const VContainer *container, const QString &formula) -> QString
 {
     if (container == nullptr || formula.isEmpty())
@@ -713,53 +759,58 @@ auto VContainer::UnnamedObjectInFormula(const VContainer *container, const QStri
             continue; // nothing to judge
         }
 
-        // The two values a tool hands over under a name of its own, and never a name the user was asked to
-        // give: `CurrentLength` is read in a piece's formulas as it stands, and refusing it would take away a
-        // value the user can neither rename nor replace.
-        const QString &technical = var->GetName();
-        if (technical == currentLength || technical == currentSeamAllowance)
+        // The list's question, asked of the object: is there a name here at all? One definition, read by the
+        // assistant's list and by this guard alike, so the two never disagree about what is named.
+        if (IsUnnamedObject(container, var))
         {
-            continue;
+            return token;
         }
 
-        switch (var->GetType())
+        // A line is the one family where being named is not enough. The pair of points it joins resolves like
+        // any other name, and it stays refused: the name the user gave is the only handle a formula may use.
+        // A curve has nothing of the sort — its technical name is its own construction, not the points of the
+        // pattern — so a named curve is accepted under either name.
+        if ((var->GetType() == VarType::LineLength || var->GetType() == VarType::LineAngle)
+            && token != var->GetAlias())
         {
-            case VarType::LineLength:
-            case VarType::LineAngle:
-            {
-                // A line answers to the two points it joins, and the name the user gave it lives in the
-                // role-name table, under that very pair — never on the variable. A line nobody named has
-                // nothing to say: `Line_C7_C8` is the points, a name that travels with them, whatever the
-                // line is. Only a name counts, so only a name is accepted.
-                const QString &prefix = var->GetType() == VarType::LineLength ? line_ : angleLine_;
-                const QString named = container->LineRoleName(technical.mid(prefix.length()));
-                if (named.isEmpty() || (token != line_ + named && token != angleLine_ + named))
-                {
-                    return token;
-                }
-                break;
-            }
-
-            case VarType::CurveLength:
-            case VarType::CurveCLength:
-            case VarType::CurveAngle:
-            case VarType::ArcRadius:
-                // A curve, and everything read on it, carry the alias of the object itself — the one typed in
-                // the Options dock — and it is empty for a curve nobody named. A segment of a path is named
-                // with the path that carries it: it is registered under a route built from points, and a route
-                // is not an alias, so it lands here as unnamed, which is what it is.
-                if (var->GetAlias().isEmpty())
-                {
-                    return token;
-                }
-                break;
-
-            default:
-                break; // measurements, increments, areas of a piece: they have never had a name to give
+            return token;
         }
     }
 
     return QString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::FormulaWithoutStaleHandles(const VContainer *container, const QString &formula) -> QString
+{
+    if (container == nullptr || formula.isEmpty())
+    {
+        return formula;
+    }
+
+    const QHash<QString, QSharedPointer<VInternalVariable>> *const vars = container->DataVariables();
+    if (vars == nullptr)
+    {
+        return formula;
+    }
+
+    return VFormula::MapTokens(formula,
+                               [vars](const QString &token) -> QString
+                               {
+                                   const QSharedPointer<VInternalVariable> var = vars->value(token);
+                                   if (var.isNull())
+                                   {
+                                       // Not a variable of this pattern: a function, a number, a name the parser
+                                       // reports on its own.
+                                       return token;
+                                   }
+
+                                   // The name of the object this token resolves to, and nothing else, is what a
+                                   // formula may write. An object nobody named has no name to offer here: that one
+                                   // is the guard's business, which reports it and asks for one.
+                                   const QString &name = var->GetAlias();
+                                   return name.isEmpty() ? token : name;
+                               });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

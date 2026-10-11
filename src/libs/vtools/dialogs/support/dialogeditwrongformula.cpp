@@ -184,13 +184,30 @@ void DialogEditWrongFormula::DialogRejected()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::EvalFormula()
 {
+    const VTranslateVars *const trVars = VAbstractApplication::VApp()->TrVars();
+
+    const QString typed = ui->plainTextEditFormula->toPlainText();
+    const QString internal = InternalFormula(typed, m_data);
+
+    // A name given since this formula was written — the object named from the canvas, from its own field, or from
+    // this dialogue a moment ago — is nothing to ask about: the formula is repaired with the name the object has
+    // now, and the field is told, so what is read is what the formula will write. Done once, and only when a token
+    // really changed: from then on the two agree and typing is left alone.
+    const QString repaired = VContainer::FormulaWithoutStaleHandles(m_data, internal);
+    QString displayed = typed;
+    if (repaired != internal)
+    {
+        displayed = trVars->FormulaToUser(repaired, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+        QSignalBlocker blocker(ui->plainTextEditFormula);
+        ui->plainTextEditFormula->setPlainText(displayed);
+        MoveCursorToEnd(ui->plainTextEditFormula);
+    }
+
     // Which object the list has to point at, in the very words the list writes it with — the two have to agree
     // for the row to be found. Asked here, before the evaluation, because the refusal only says that something
     // has no name: the identity is what makes the row answer.
     m_unnamedObject.clear();
-    const QString unnamed = VContainer::UnnamedObjectInFormula(
-        m_data, VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
-                    ToInternalNotation(ui->plainTextEditFormula->toPlainText()), false));
+    const QString unnamed = VContainer::UnnamedObjectInFormula(m_data, repaired);
     if (not unnamed.isEmpty())
     {
         const QSharedPointer<VInternalVariable> var = m_data->DataVariables()->value(unnamed);
@@ -199,13 +216,13 @@ void DialogEditWrongFormula::EvalFormula()
             // In the very words the list uses, so the row can be found: the name is the alias when there is one,
             // the object's own name otherwise — exactly what ShowVariable writes on the row.
             const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
-            m_unnamedObject = VAbstractApplication::VApp()->TrVars()->VarToUser(display);
+            m_unnamedObject = trVars->VarToUser(display);
         }
     }
 
     // No label is handed over: the caption beside the value is a name, not a state, and must stay neutral
     // whatever the formula does. The colour is then carried by the value alone, which is also what says why.
-    Eval({.formula = ui->plainTextEditFormula->toPlainText(),
+    Eval({.formula = displayed,
           .variables = m_data->DataVariables(),
           .container = m_data,
           .labelResult = ui->labelResultCalculation,
@@ -506,6 +523,15 @@ void DialogEditWrongFormula::showEvent(QShowEvent *event)
         return;
     }
 
+    // The formula this dialogue was given could not be edited: nobody named the objects it uses, and the question
+    // was put to the user in SetFormula, who cancelled it. Cancelling means nothing happened at all, so the
+    // dialogue has nothing to show and closes itself as soon as the event loop lets it.
+    if (m_nameRequestCancelled)
+    {
+        QTimer::singleShot(0, this, &QDialog::reject);
+        return;
+    }
+
     if (m_isInitialized)
     {
         return;
@@ -574,8 +600,28 @@ void DialogEditWrongFormula::CheckState()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::SetFormula(const QString &value)
 {
-    formula = VAbstractApplication::VApp()->TrVars()->FormulaToUser(
-        value, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    const VTranslateVars *const trVars = VAbstractApplication::VApp()->TrVars();
+
+    // Callers do not agree on the notation they hand over — a tool's field writes in the user's own, the repair of
+    // a written formula hands over the internal one — so the formula is brought to the internal notation here, the
+    // one the container answers to. Everything below judges names, and a name is internal.
+    QString internal = InternalFormula(value, m_data);
+
+    // An object that already has a name is not a question: a formula still written with the handle it had before
+    // is repaired with the name it has now, here and without a word.
+    internal = VContainer::FormulaWithoutStaleHandles(m_data, internal);
+
+    // An object nobody ever named is another matter: a formula can only be written with names, so the names are
+    // asked for before the assistant shows itself — one object at a time, the token as the formula writes it and
+    // the part of it the user replaces. Cancelling means nothing at all happened: no name, no repair, and no
+    // assistant either, which is why the refusal is remembered for showEvent.
+    if (not NameUnnamedObjects(parentWidget() != nullptr ? parentWidget() : this, m_data, internal))
+    {
+        m_nameRequestCancelled = true;
+        return;
+    }
+
+    formula = trVars->FormulaToUser(internal, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
     ui->plainTextEditFormula->setPlainText(formula);
     MoveCursorToEnd(ui->plainTextEditFormula);
     ui->plainTextEditFormula->selectAll();
@@ -756,13 +802,12 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
             // and a double click always inserts something that works.
             const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
 
-            // The switch hides what no formula should be written with: the objects Ostara names after the points
-            // they join, which a line or a curve carries until somebody names it. That is exactly what the
-            // container's rule refuses, asked here one name at a time so there is only one definition of it.
-            // Objects that have never had a name to give — measurements, increments, areas — are none of its
-            // business and are always shown.
-            if (unnamed && ui->checkBoxHideUnnamed->isChecked()
-                && not VContainer::UnnamedObjectInFormula(m_data, var->GetName()).isEmpty())
+            // The switch hides what a formula may not name: the objects nobody has named. The question is asked
+            // of the object, not of a name: a line is judged by the pair of points it joins, a curve by its own
+            // alias. Asked through a name — the one the row shows — it would answer a different question, and
+            // only for the objects whose name happens to resolve. One verdict per row, read twice below.
+            const bool nameless = VContainer::IsUnnamedObject(m_data, var);
+            if (unnamed && ui->checkBoxHideUnnamed->isChecked() && nameless)
             {
                 continue;
             }
@@ -794,7 +839,7 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
             // The objects the switch above hides are the ones with a name to give: a line is named through the
             // pair of points it joins, a curve through the alias of the tool that draws it. The row remembers
             // which of the two it is, so the button knows where to write.
-            if (not VContainer::UnnamedObjectInFormula(m_data, var->GetName()).isEmpty())
+            if (nameless)
             {
                 if (var->GetType() == VarType::LineLength)
                 {
@@ -997,6 +1042,11 @@ void DialogEditWrongFormula::RenameObject()
         }
 
         tool->SetAliasSuffix(suffix);
+
+        // The formula this dialogue is holding was not in the pattern when the rename ran, so the rename could not
+        // repair it: it is repaired here, with the name just given, and the field is told. Without this the user
+        // would be left reading the handle they have just replaced, with Ok still refusing it.
+        EvalFormula();
         ShowCurrentCategory();
         return;
     }
@@ -1016,6 +1066,14 @@ void DialogEditWrongFormula::RenameObject()
     auto *command = new VChangeLineRoleName(doc, reference, oldSuffix, suffix);
     connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     VAbstractApplication::VApp()->getUndoStack()->push(command);
+
+    // The formula held here is repaired the same way as the curve above, and for the same reason.
+    EvalFormula();
+
+    // The pattern has just re-read its names, and the list is read from the container this dialogue holds: showing
+    // the category again is what turns the row that was named into the name that was given, before the user's
+    // eyes. A curve is named the same way, one branch above.
+    ShowCurrentCategory();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
