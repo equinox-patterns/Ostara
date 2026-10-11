@@ -200,6 +200,33 @@ public:
     void AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierPath> &curve, const quint32 &id,
                               quint32 parentId = NULL_ID);
 
+    /** @brief The first token of @a formula that names an object the user never named, or an empty string.
+     *
+     *  Ostara names a line or a curve after the points it joins — `Line_C7_C8`, `Spl_A_D` — and that name
+     *  resolves like any other. It is not a name the user gave, though: it moves with the points, and reading
+     *  it in a formula says nothing about what the object is. Only an alias is a name here, and this is the
+     *  question of whether a formula went through one.
+     *
+     *  @a formula is read in internal notation, the one the calculator receives, so a token carries its
+     *  technical prefix whatever the user typed.
+     *
+     *  What is judged, per family:
+     *   - a line answers by its pair, and the only thing that may be written is the name the user gave it, held
+     *     in `lineRoleNames` under that pair. A line nobody named has nothing to say — `Line_C7_C8` is the
+     *     points, and the points move — so its pair is refused, whether the line was drawn or implied by a
+     *     point tool, and whether it belongs to an operation or not;
+     *   - a curve, a sub-curve and their lengths, angles and control lengths answer by their own alias, the
+     *     one the user typed in the Options dock; a segment of a path is named with the path that carries it;
+     *   - everything else is left alone: measurements, increments and the areas of a piece have never had an
+     *     alias, and `CurrentLength` is a value the tools hand over by name.
+     *
+     *  The name is only ever *refused* here, never the value: a caller may show it and explain what to name.
+     *  Reading a file is not this function's business — a pattern that already writes such a name keeps
+     *  loading, and the refusal belongs to the moment the formula is written.
+     *
+     *  @return the token as it is written in @a formula, ready to be shown; empty when nothing is unnamed. */
+    static auto UnnamedObjectInFormula(const VContainer *container, const QString &formula) -> QString;
+
     template <typename T> void AddUniqueVariable(T *var);
     template <typename T> void AddUniqueVariable(const QSharedPointer<T> &var);
     template <typename T> void AddVariable(T *var);
@@ -350,6 +377,18 @@ private:
     QSharedDataPointer<VContainerData> d;
 
     void AddCurve(const QSharedPointer<VAbstractCurve> &curve, const quint32 &id, quint32 parentId = NULL_ID);
+
+    /** @brief Register @a var under @a route as well, without that route becoming its alias.
+     *
+     *  The difference matters for what the formula assistant lists. An alias is a name the user gave, and the
+     *  assistant shows it in preference to the technical name; a route is only a way to resolve the value, and
+     *  leaves the variable reading under its own name. Point-based names — `Curve_A_B`, a segment's own two
+     *  points — are routes exactly: they must keep resolving, for the formulas and the `.val` files that write
+     *  them, but they must never be handed to the user as if someone had chosen them.
+     *
+     *  The route is only that: the variable is registered under its own name and its simplified form as usual,
+     *  and nothing is stored on it. A route already taken simply costs nothing to re-register. */
+    template <typename T> void AddVariable(const QSharedPointer<T> &var, const QString &name, const QString &route);
 
     template <typename T> void AddVariable(const QSharedPointer<T> &var, const QString &name);
 
@@ -512,6 +551,20 @@ template <typename T> void VContainer::SetTransientVariable(T *var)
     }
 
     AddVariable(var);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename T>
+void VContainer::AddVariable(const QSharedPointer<T> &var, const QString &name, const QString &route)
+{
+    AddVariable(var, name);
+
+    if (route.isEmpty() || route == name || route == var->GetAlias())
+    {
+        return;
+    }
+
+    AddVariable(var, route);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -29,6 +29,7 @@
 #include "vformula.h"
 #include "vformula_p.h"
 
+#include <QCoreApplication>
 #include <QMessageLogger>
 #include <QScopedPointer>
 #include <QtDebug>
@@ -286,6 +287,30 @@ void VFormula::Eval()
     {
         d->reason = tr("Formula is empty");
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VFormula::CheckObjectNames() -> bool
+{
+    if (d->data == nullptr)
+    {
+        return true; // nothing to judge against: the empty container is Eval's business, not this one's
+    }
+
+    // The formula is in internal notation here — `d->formula` is what the calculator reads — so the tokens it
+    // holds carry their technical prefixes whatever the user typed.
+    const QString unnamed = VContainer::UnnamedObjectInFormula(d->data, d->formula);
+    if (unnamed.isEmpty())
+    {
+        return true;
+    }
+
+    // Reported where every other refusal is: `error()` says no, `Reason()` says why, and both the dock and the
+    // dialogue already know how to show them.
+    d->error = true;
+    d->reason = QCoreApplication::translate(
+        "VFormula", "This formula uses an object that has no name. Give it one to use it in a formula.");
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

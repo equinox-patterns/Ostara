@@ -69,6 +69,13 @@ struct FormulaData
 {
     QString formula;
     const QHash<QString, QSharedPointer<VInternalVariable>> *variables{nullptr};
+    /** @brief The container of the pattern, where the tool that owns the field stands.
+     *
+     *  Not needed to compute a formula — @a variables is what the calculator reads — but needed to judge the
+     *  names it uses: whether a line was given one is held by the container's role-name table, not by the
+     *  variable. A caller that has the container passes it, and the field then refuses a name nobody gave; a
+     *  caller that has only a table computes exactly as before. */
+    const VContainer *container{nullptr};
     QLabel *labelEditFormula{nullptr};
     QLabel *labelResult{nullptr};
     QString postfix{};
@@ -94,6 +101,15 @@ void InitFormulaGrowButton(QPushButton *button);
 auto FilterObject(QObject *object, QEvent *event) -> bool;
 auto ToInternalNotation(const QString &formula) -> QString;
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal;
+
+/** @brief The reason to show when a formula names an object the user never named.
+ *
+ *  It deliberately names no object: `Line_C7_C8` is a pair of points, and showing it back would hand the user
+ *  the very habit the rule exists to break. Meant for the two places a formula is judged: the field itself,
+ *  through EvalToolFormula, and the write, through VAbstractTool::CheckFormula. The token and the table stay
+ *  in the signature so the message can gain an object name the day objects stopped being named after points. */
+auto UnnamedObjectMessage(const QString &token, const VContainer *container,
+                          const QHash<QString, QSharedPointer<VInternalVariable>> *variables) -> QString;
 void ChangeColor(QWidget *widget, const QColor &color);
 auto OkColor(const QWidget *widget) -> QColor;
 auto GetColorDotPixmap(const QColor &color, int diameter = 10) -> QPixmap;

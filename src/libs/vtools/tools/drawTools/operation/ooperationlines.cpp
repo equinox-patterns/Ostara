@@ -267,6 +267,15 @@ void OOperationLines::BuildLine(VAbstractPattern *doc, VContainer *data, VMainGr
             // the parse before it put it, and the figure would come apart on screen. A derived line has no element
             // of its own, so nothing else re-reads its geometry: this is the call, and VToolLine knows it.
             lineTool->FullUpdateFromFile();
+
+            // And its variables have to be given back, because nothing else can give them. Every parse clears
+            // the Line_ and AngleLine_ variables, and puts back only those a tool re-reads: a line WITH an
+            // element goes through ParseLineElement, which finds this same tool and calls AddLine again, but a
+            // derived line has no element to be re-read and FindTool returns it here — so this branch is its
+            // only occasion. Without the call below, `Line_<point>_<point>` of the figure resolves while the
+            // user types it and is gone by the next parse: the value is computed, the formula is accepted, and
+            // the file then refuses to open on a name the pattern no longer defines.
+            data->AddLine(first, second, line.result, false);
         }
         return;
     }

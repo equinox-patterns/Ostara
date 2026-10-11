@@ -682,6 +682,87 @@ void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 ma
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VContainer::UnnamedObjectInFormula(const VContainer *container, const QString &formula) -> QString
+{
+    if (container == nullptr || formula.isEmpty())
+    {
+        return QString();
+    }
+
+    const QHash<QString, QSharedPointer<VInternalVariable>> *const vars = container->DataVariables();
+    if (vars == nullptr)
+    {
+        return QString();
+    }
+
+    // Same token shape as DeferFormula: what an identifier can hold in a formula, `#Tm` included. A name that
+    // resolves to nothing is none of this function's business — the calculator reports it on its own.
+    static const QRegularExpression namePattern(QStringLiteral(R"([\p{L}_#][\p{L}\p{N}_'#]*)"));
+    auto matches = namePattern.globalMatch(formula);
+    while (matches.hasNext())
+    {
+        const QString token = matches.next().captured();
+        if (not vars->contains(token))
+        {
+            continue; // not a variable of this pattern: a function, a number, a name the parser will report
+        }
+
+        const QSharedPointer<VInternalVariable> var = vars->value(token);
+        if (var.isNull())
+        {
+            continue; // nothing to judge
+        }
+
+        // The two values a tool hands over under a name of its own, and never a name the user was asked to
+        // give: `CurrentLength` is read in a piece's formulas as it stands, and refusing it would take away a
+        // value the user can neither rename nor replace.
+        const QString &technical = var->GetName();
+        if (technical == currentLength || technical == currentSeamAllowance)
+        {
+            continue;
+        }
+
+        switch (var->GetType())
+        {
+            case VarType::LineLength:
+            case VarType::LineAngle:
+            {
+                // A line answers to the two points it joins, and the name the user gave it lives in the
+                // role-name table, under that very pair — never on the variable. A line nobody named has
+                // nothing to say: `Line_C7_C8` is the points, a name that travels with them, whatever the
+                // line is. Only a name counts, so only a name is accepted.
+                const QString &prefix = var->GetType() == VarType::LineLength ? line_ : angleLine_;
+                const QString named = container->LineRoleName(technical.mid(prefix.length()));
+                if (named.isEmpty() || (token != line_ + named && token != angleLine_ + named))
+                {
+                    return token;
+                }
+                break;
+            }
+
+            case VarType::CurveLength:
+            case VarType::CurveCLength:
+            case VarType::CurveAngle:
+            case VarType::ArcRadius:
+                // A curve, and everything read on it, carry the alias of the object itself — the one typed in
+                // the Options dock — and it is empty for a curve nobody named. A segment of a path is named
+                // with the path that carries it: it is registered under a route built from points, and a route
+                // is not an alias, so it lands here as unnamed, which is what it is.
+                if (var->GetAlias().isEmpty())
+                {
+                    return token;
+                }
+                break;
+
+            default:
+                break; // measurements, increments, areas of a piece: they have never had a name to give
+        }
+    }
+
+    return QString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VContainer::SetLineRoleName(const QString &pairKey, const QString &suffix)
 {
     if (suffix.isEmpty())
@@ -741,9 +822,21 @@ void VContainer::AddArc(const QSharedPointer<VAbstractCurve> &arc, const quint32
     {
         const QSharedPointer<VEllipticalArc> casted = arc.staticCast<VEllipticalArc>();
 
-        AddVariable(new VArcRadius(id, parentId, casted.data(), 1, *GetPatternUnit()));
-        AddVariable(new VArcRadius(id, parentId, casted.data(), 2, *GetPatternUnit()));
+        const QSharedPointer<VArcRadius> first(new VArcRadius(id, parentId, casted.data(), 1, *GetPatternUnit()));
+        const QSharedPointer<VArcRadius> second(new VArcRadius(id, parentId, casted.data(), 2, *GetPatternUnit()));
+
+        AddVariable(first);
+        AddVariable(second);
         AddVariable(new VEllipticalArcRotation(id, parentId, casted.data()));
+
+        // The two radii used to answer to one unnumbered alias — `Radius_ElArc_<suffix>` — and a formula
+        // written then still writes it. It keeps resolving, as a route that lands on the second radius: that
+        // is what the unnumbered key held, the two having overwritten each other in registration order. The
+        // change left the file's own meaning alone and only made the two names tell each other apart.
+        if (not casted->GetAlias().isEmpty())
+        {
+            AddVariable(second, second->GetName(), radius_V + casted->GetAlias());
+        }
     }
 }
 
@@ -781,7 +874,15 @@ void VContainer::AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierP
         const VSpline spl = curve->GetSpline(i);
         const QString ptSuffix = spl.GetP1().name() + '_' + spl.GetP4().name();
 
-        // Helper: register variable + auto-simplified point-based alias (RoleName step 3)
+        // Helper: register variable + point-based simplified KEY (RoleName step 3)
+        //
+        // The key is a ROUTE, not a name: `Curve_A_B` resolves the segment, exactly as it always has, so a
+        // formula or a .val that writes it keeps working. It is deliberately NOT set as the variable's alias
+        // any more — an alias is a name the user gave, and this one is built from two point names. It used to
+        // be set so that the formula assistant showed `Curve_A_B` instead of `Curve_A_C_Seg_1`; that put a
+        // point-name under a name-shaped label, which is precisely what a user may not reference. The
+        // assistant now shows the variable's technical name, and nothing that looks like a user name comes
+        // out of the geometry.
         auto addWithPointKey = [&](const QSharedPointer<VInternalVariable> &var, const QString &simplifiedPrefix) {
             QString baseKey = simplifiedPrefix + ptSuffix;
             QString key = baseKey;
@@ -790,9 +891,7 @@ void VContainer::AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierP
             {
                 key = baseKey + '_' + QString::number(n++);
             }
-            // Set point-based alias so ShowVariable() displays it (Curve_A_B instead of Curve_A_C_Seg_1)
-            var->SetAlias(key);
-            AddVariable(var);
+            AddVariable(var, var->GetName(), key);
             uniqueNames[d->nspace].insert(key);
         };
 

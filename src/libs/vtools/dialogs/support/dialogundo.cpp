@@ -90,3 +90,13 @@ void DialogUndo::closeEvent(QCloseEvent *event)
     Cancel();
     event->accept();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogUndo::SetReason(const QString &reason)
+{
+    if (reason.isEmpty() || ui->label == nullptr)
+    {
+        return;
+    }
+    ui->label->setText(reason);
+}

@@ -87,6 +87,20 @@ public:
     auto error() const -> bool;
     auto Reason() const -> QString;
 
+    /** @brief Whether every object the formula names was given a name by the user.
+     *
+     * Ostara reads an object by its points — `Line_C7_C8`, `Spl_A_D` — so a formula can be written without
+     * anyone naming anything, and it computes. What it cannot do is mean something: the name travels with the
+     * points. The formula editors of the Options dock ask this before handing a formula to a tool, which is
+     * where a formula is *written*; the path that *reads* a file never asks, so a pattern written before the
+     * rule keeps opening.
+     *
+     * On failure the reason is the sentence to show, and it is put where `Reason()` already answers — the dock
+     * shows a refused formula the same way it shows one the parser cannot read.
+     *
+     * @return true when the formula may be kept. */
+    auto CheckObjectNames() -> bool;
+
     static auto FormulaTypeId() -> int;
 
     void Eval();

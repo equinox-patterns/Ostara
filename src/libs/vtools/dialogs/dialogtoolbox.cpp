@@ -443,6 +443,37 @@ auto ToInternalNotation(const QString &formula) -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The reason shown when a formula names an object the user never named.
+ *
+ * A line or a curve of Ostara answers to its points — `Line_C7_C8`, `Spl_A_D` — so a formula can be written
+ * without anyone naming anything, and it computes. What it cannot do is mean something: the name travels with
+ * the points, and it says nothing about the object, so it is refused and the user is asked to name it.
+ *
+ * The object is deliberately NOT named here. Ostara's point is that its user stops reading and writing point
+ * names, so putting `C7–C8` in a refusal would hand back the very habit the rule exists to break — and it
+ * would name nothing at all to someone who does not think in points. `@a token` and `@a var` stay in the
+ * signature so a caller may still tell the families apart, and so the message can gain an object name the day
+ * objects stopped being named after points.
+ */
+auto UnnamedObjectMessage(const QString &token, const VContainer *container,
+                          const QHash<QString, QSharedPointer<VInternalVariable>> *variables) -> QString
+{
+    Q_UNUSED(token)
+    Q_UNUSED(container)
+    Q_UNUSED(variables)
+
+    return QObject::tr("This formula uses an object that has no name. Give it one to use it in a formula.");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief EvalToolFormula evaluate formula and show result
+ * @param dialog dialog
+ * @param data formula data
+ * @param flag formula valid
+ * @return result of calculation
+ */
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal
 {
     SCASSERT(data.labelResult != nullptr)
@@ -458,6 +489,16 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
             message += " ("_L1 + data.postfix + ")"_L1;
         }
         data.labelResult->setText(message);
+        data.labelResult->setToolTip(reason);
+    };
+
+    // The one reason that is an instruction rather than a diagnosis is written where it can be read. "Error"
+    // plus a tooltip is enough for a formula that does not parse — the user knows what a syntax error is — but
+    // not for a rule they are meeting for the first time: the whole point of refusing a name is to have them
+    // name the object, and an instruction nobody reads changes nothing.
+    auto ShowInstruction = [&data](const QString &reason)
+    {
+        data.labelResult->setText(reason);
         data.labelResult->setToolTip(reason);
     };
 
@@ -479,7 +520,17 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
             QScopedPointer<Calculator> const cal(new Calculator());
             result = cal->EvalFormula(data.variables, formula);
 
-            if (qIsInf(result) || qIsNaN(result))
+            // A name the user never gave is read as a value — the pattern defines it — and computing it here
+            // would show a result for a formula that can never be kept. It is refused before the value is
+            // believed, and the reason says which object to name.
+            const QString unnamed = VContainer::UnnamedObjectInFormula(data.container, formula);
+            if (not unnamed.isEmpty())
+            {
+                flag = false;
+                ChangeColor(data.labelEditFormula, errorColor);
+                ShowInstruction(UnnamedObjectMessage(unnamed, data.container, data.variables));
+            }
+            else if (qIsInf(result) || qIsNaN(result))
             {
                 flag = false;
                 ChangeColor(data.labelEditFormula, errorColor);

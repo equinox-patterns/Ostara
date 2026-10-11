@@ -234,6 +234,7 @@ void FormulaInputWidget::evaluate()
     const FormulaData data = {
         .formula = m_textEdit->toPlainText(),
         .variables = m_data->DataVariables(),
+        .container = m_data,
         .labelEditFormula = m_label,
         .labelResult = m_resultLabel,
         .postfix = m_postfix,

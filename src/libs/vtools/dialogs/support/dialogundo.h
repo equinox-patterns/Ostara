@@ -54,6 +54,13 @@ class DialogUndo : public QDialog
 public:
     explicit DialogUndo(QWidget *parent = nullptr);
     auto Result() const -> UndoButton;
+
+    /** @brief Say why the formula is refused, in place of the generic sentence.
+     *
+     *  A formula the parser cannot read needs no explanation — the user knows what a syntax error is. A rule
+     *  met for the first time does: it is only obeyed if it says what to do. The sentence is shown where the
+     *  generic one stood, and the two buttons underneath are unchanged. */
+    void SetReason(const QString &reason);
     ~DialogUndo() override;
 
 protected:

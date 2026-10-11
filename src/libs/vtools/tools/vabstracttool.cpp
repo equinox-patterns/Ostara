@@ -51,11 +51,15 @@
 #include <QUndoStack>
 #include <QVector>
 #include <limits>
+#include <functional>
 #include <map>
 #include <memory>
+#include <optional>
 #include <qnumeric.h>
 
+#include "../dialogs/dialogtoolbox.h"
 #include "../dialogs/support/dialogeditwrongformula.h"
+#include "../ifc/exception/vexceptionobjecterror.h"
 #include "../dialogs/support/dialogundo.h"
 #include "../ifc/exception/vexceptionundo.h"
 #include "../ifc/xml/vpatternblockmapper.h"
@@ -128,6 +132,65 @@ auto ThreadFormulaCache() -> FormulaCache *
         ts->setLocalData(new FormulaCache(maxFormulaCacheSize));
     }
     return ts->localData();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The modal a refused formula raises, and the dialogue that lets it be fixed in place.
+ *
+ * One definition for the two ways a formula is refused: the parser cannot read it, or it names an object the
+ * user never named. Both have to leave a way out — go back, or repair the formula here — and a second copy of
+ * this loop would drift from the first.
+ *
+ * @a dialogueMessage replaces the modal's generic sentence when it is not empty: a syntax error needs no
+ * explanation, a rule met for the first time does.
+ *
+ * @a acceptable is asked of the repaired formula before it is evaluated, and the loop goes round again while it
+ * answers false: a formula can be readable and still refused.
+ *
+ * @param formula [in,out] the formula being checked, kept in step with what the user typed.
+ * @return the computed value when the user repaired the formula, and nothing when they chose to undo — the
+ *         caller then throws, which is what actually cancels the edit.
+ */
+auto RepairFormulaInPlace(const VContainer *data, quint32 toolId, QString &formula, const QString &dialogueMessage,
+                          const std::function<bool(const QString &)> &acceptable) -> std::optional<qreal>
+{
+    QScopedPointer<DialogUndo> const refusal(new DialogUndo(VAbstractValApplication::VApp()->getMainWindow()));
+    refusal->SetReason(dialogueMessage);
+
+    forever
+    {
+        if (refusal->exec() != QDialog::Accepted)
+        {
+            return std::nullopt; // dismissed: nothing is repaired
+        }
+
+        if (refusal->Result() != UndoButton::Fix)
+        {
+            return std::nullopt; // "Undo"
+        }
+
+        QScopedPointer<DialogEditWrongFormula> fix(
+            new DialogEditWrongFormula(data, toolId, VAbstractValApplication::VApp()->getMainWindow()));
+        fix->setWindowTitle(VAbstractTool::tr("Edit wrong formula"));
+        fix->SetFormula(formula);
+        if (fix->exec() != QDialog::Accepted)
+        {
+            continue; // the repair dialogue was dismissed: the modal is asked again
+        }
+
+        formula = fix->GetFormula();
+        /* Need delete dialog here because parser in dialog don't allow use correct separator for parsing here. */
+        fix.reset();
+
+        if (not acceptable(formula))
+        {
+            continue; // still refused, and the modal has to say so again
+        }
+
+        QScopedPointer<Calculator> const calculator(new Calculator());
+        return calculator->EvalFormula(data->DataVariables(), formula);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -246,6 +309,22 @@ auto VAbstractTool::CheckFormula(const quint32 &toolId, QString &formula, const 
     qreal result = 0;
     try
     {
+        // Writing a formula is what this guard is for, and reading a file is not: a parse resolves every name
+        // the pattern defines, including the point-based ones a pattern written before Ostara names its
+        // objects with. Refusing them here would cost the file its readability, which is the one thing the
+        // names may never be allowed to break. So the guard lives outside the parse, and only there.
+        if (not VContainer::IsParseInProgress())
+        {
+            const QString unnamed = VContainer::UnnamedObjectInFormula(data, formula);
+            if (not unnamed.isEmpty())
+            {
+                // Raised as the parser's own refusal, and not as anything else: what happens next is the
+                // business of the catch below, which is the one place that knows how to offer a way out. A rule
+                // whose whole purpose is to change a habit has to leave a way to comply.
+                throw VExceptionObjectError(UnnamedObjectMessage(unnamed, data, data->DataVariables()));
+            }
+        }
+
         result = EvalCachedFormula(formula, data);
 
         if (qIsInf(result) || qIsNaN(result))
@@ -253,6 +332,38 @@ auto VAbstractTool::CheckFormula(const quint32 &toolId, QString &formula, const 
             qDebug() << "Invalid formula value";
             return 0;
         }
+    }
+    catch (const VExceptionObjectError &)
+    {
+        // The name rule, and only it, refuses before the formula is read: a name the user never gave is read as
+        // a value, so the parser has no reason to complain. It therefore has its own catch — the one below
+        // watches the parser, and would never see this.
+        if (VContainer::IsParseInProgress())
+        {
+            throw;
+        }
+
+        if (not VAbstractApplication::VApp()->IsAppInGUIMode())
+        {
+            throw;
+        }
+
+        const QString refusedForAName = VContainer::UnnamedObjectInFormula(data, formula);
+        const std::optional<qreal> repaired = RepairFormulaInPlace(
+            data, toolId, formula, UnnamedObjectMessage(refusedForAName, data, data->DataVariables()),
+            [data](const QString &candidate)
+            { return VContainer::UnnamedObjectInFormula(data, candidate).isEmpty(); });
+        if (not repaired.has_value())
+        {
+            throw VExceptionUndo(u"Undo wrong formula %1"_s.arg(formula));
+        }
+
+        if (qIsInf(repaired.value()) || qIsNaN(repaired.value()))
+        {
+            qDebug() << "Invalid formula value";
+            return 0;
+        }
+        return repaired.value();
     }
     catch (qmu::QmuParserError &e)
     {
@@ -281,48 +392,15 @@ auto VAbstractTool::CheckFormula(const quint32 &toolId, QString &formula, const 
 
         if (VAbstractApplication::VApp()->IsAppInGUIMode())
         {
-            QScopedPointer<DialogUndo> const dialogUndo(
-                new DialogUndo(VAbstractValApplication::VApp()->getMainWindow()));
-            forever
+            const std::optional<qreal> repaired = RepairFormulaInPlace(
+                data, toolId, formula, QString(),
+                [data](const QString &candidate)
+                { return VContainer::UnnamedObjectInFormula(data, candidate).isEmpty(); });
+            if (not repaired.has_value())
             {
-                if (dialogUndo->exec() == QDialog::Accepted)
-                {
-                    const UndoButton resultUndo = dialogUndo->Result();
-                    if (resultUndo == UndoButton::Fix)
-                    {
-                        QScopedPointer<DialogEditWrongFormula> dialog(
-                            new DialogEditWrongFormula(data, toolId, VAbstractValApplication::VApp()->getMainWindow()));
-
-                        dialog->setWindowTitle(tr("Edit wrong formula"));
-                        dialog->SetFormula(formula);
-                        if (dialog->exec() == QDialog::Accepted)
-                        {
-                            formula = dialog->GetFormula();
-                            /* Need delete dialog here because parser in dialog don't allow use correct separator for
-                             * parsing here. */
-                            dialog.reset();
-                            QScopedPointer<Calculator> const cal1(new Calculator());
-                            result = cal1->EvalFormula(data->DataVariables(), formula);
-
-                            if (qIsInf(result) || qIsNaN(result))
-                            {
-                                qDebug() << "Invalid the formula value";
-                                return 0;
-                            }
-
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        throw VExceptionUndo(u"Undo wrong formula %1"_s.arg(formula));
-                    }
-                }
-                else
-                {
-                    throw;
-                }
+                throw VExceptionUndo(u"Undo wrong formula %1"_s.arg(formula));
             }
+            result = repaired.value();
         }
         else
         {

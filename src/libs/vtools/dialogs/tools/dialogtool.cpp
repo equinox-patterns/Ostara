@@ -689,7 +689,12 @@ auto DialogTool::IsSplinePath(const QSharedPointer<VGObject> &obj) const -> bool
  */
 auto DialogTool::Eval(const FormulaData &formulaData, bool &flag) -> qreal
 {
-    const qreal result = EvalToolFormula(this, formulaData, flag);
+    // The container is this dialog's own copy of the pattern's data, so the name a formula uses is judged
+    // against the very objects the dialog is showing. `EvalToolFormula` only reads it.
+    FormulaData data = formulaData;
+    data.container = &this->data;
+
+    const qreal result = EvalToolFormula(this, data, flag);
     CheckState(); // Disable Ok and Apply buttons if something wrong.
     return result;
 }

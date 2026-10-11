@@ -70,7 +70,14 @@ VArcRadius::VArcRadius(const quint32 &id, const quint32 &parentId, const VEllipt
 
     if (not elArc->GetAlias().isEmpty())
     {
-        SetAlias(radius_V + elArc->GetAlias());
+        // The number belongs in the alias as it does in the name: the two radii of one ellipse are two
+        // distinct values, and without it both answered to the very same name — so a formula could not tell
+        // which one it meant, and the assistant listed the two of them as one. The alias now mirrors the name,
+        // `Radius1ElArc_<suffix>` and `Radius2ElArc_<suffix>`.
+        //
+        // The unnumbered form those two used to share keeps resolving, as a route registered by
+        // VContainer::AddCurve: a formula written before this change must still find a value.
+        SetAlias(radius_V + QStringLiteral("%1%2").arg(numberRadius).arg(elArc->GetAlias()));
     }
 
     if (numberRadius == 1)

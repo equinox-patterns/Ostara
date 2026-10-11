@@ -26,10 +26,13 @@
  **
  *************************************************************************/
 
+#include <QtDebug>
+
 #include "vformulaproperty.h"
 #include "vformulapropertyeditor.h"
 
 #include "../vmisc/vabstractapplication.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/vformula.h"
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
 #include "../vpropertyexplorer/vproperty_p.h"
@@ -225,5 +228,23 @@ void VFormulaProperty::ValueChildChanged(const QVariant &value, int typeForParen
     VFormula newFormula = GetFormula();
     newFormula.SetFormula(value.toString(), FormulaType::FromUser);
     newFormula.Eval();
+
+    // A formula written here names an object that has no name: refused, and the property keeps the formula the
+    // tool holds — the same answer it gives a formula the parser cannot read, which `Eval` has just marked.
+    // The field is left showing what was typed, so the sentence below it can be read.
+    if (not newFormula.CheckObjectNames())
+    {
+        // Refused, and refused without a word here on purpose. This runs from inside the form's commit, so a
+        // modal opened at this point would start a nested event loop on a widget half-way through committing —
+        // which is exactly what crashed: `VPropertyFormWidget::commitData` -> `childChanged` -> `QDialog::exec`
+        // -> `QWindow::handle()` on a window already being torn down.
+        //
+        // The refusal itself is enough for the dock: the formula property keeps the formula the tool holds, so
+        // there is nothing to commit and the field goes back to it. `error()` and `Reason()` carry the why, and
+        // the log keeps it for good.
+        qWarning() << "Refused formula:" << newFormula.Reason();
+        return;
+    }
+
     SetFormula(newFormula);
 }

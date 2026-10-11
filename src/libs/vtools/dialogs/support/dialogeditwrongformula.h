@@ -108,6 +108,12 @@ signals:
 private slots:
     void FilterVariablesEdited(const QString &filter);
 
+    /** @brief Name the line whose row carries the button that asked for it.
+     *
+     *  A line nobody named cannot be written in a formula, so the list that offers its pair offers the name as
+     *  well — and this is where the name is given, without leaving the formula being written. */
+    void RenameLine();
+
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(DialogEditWrongFormula) // NOLINT
@@ -132,12 +138,23 @@ private:
 
     bool flagFormula{false};
 
+    /** @brief The variable a refusal was about, as the list writes it, or empty when the last evaluation found
+     *  nothing to refuse.
+     *
+     *  Kept so the list can point at the object instead of naming it: the refusal must not put a pair of points
+     *  back in front of the user, and a highlighted row says which object without saying its name. Held as the
+     *  displayed name, the one both the list and the formula field agree on. */
+    QString m_unnamedObject{};
+
     /** @brief m_isInitialized true if window is initialized */
     bool m_isInitialized{false};
 
     void InitVariables();
 
     template <class T> void ShowVariable(const QList<T> &vars);
+
+    /** @brief Put the "name it" button in @a row, for the line of @a pairKey. */
+    void AddNameButton(int row, const QString &pairKey);
     void ShowMeasurements(const QList<QSharedPointer<VMeasurement>> &vars);
     void ShowFunctions();
     void ShowConstants();

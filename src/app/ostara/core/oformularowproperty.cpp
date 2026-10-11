@@ -26,6 +26,7 @@
 
 #include "oformularowproperty.h"
 
+#include <QtDebug>
 #include <QCoreApplication>
 #include <QHBoxLayout>
 #include <QIcon>
@@ -121,6 +122,17 @@ auto OFormulaRowProperty::getEditorData(const QWidget *editor) const -> QVariant
     VFormula formula = GetFormula();
     formula.SetFormula(m_field->text(), FormulaType::FromUser);
     formula.Eval();
+
+    // Refused when it names an object nobody named: the value handed back is the one the tool holds, so the
+    // dock has nothing to commit and the tool keeps its formula. The caller shows `Reason()`.
+    if (not formula.CheckObjectNames())
+    {
+        // Refused without a word, for the same reason as in VFormulaProperty: this runs inside the form's
+        // commit, and a modal here starts a nested event loop over a widget still committing — that is what
+        // crashed. The value handed back is the one the tool holds, so the dock has nothing to commit.
+        qWarning() << "Refused formula:" << formula.Reason();
+        return QVariant::fromValue(GetFormula());
+    }
 
     QVariant value;
     value.setValue(formula);

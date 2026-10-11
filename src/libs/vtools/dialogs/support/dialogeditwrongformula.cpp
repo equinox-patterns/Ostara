@@ -35,8 +35,10 @@
 #include <QDialog>
 #include <QFont>
 #include <QHeaderView>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMapIterator>
+#include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QRadioButton>
@@ -56,6 +58,7 @@
 #include "../vformat/knownmeasurements/vknownmeasurements.h"
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vmisc/def.h"
+#include "../qmuparser/qmudef.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -70,6 +73,7 @@
 #include "../vpatterndb/variables/vpiecearea.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
+#include "../undocommands/vchangelinerolename.h"
 #include "ui_dialogeditwrongformula.h"
 
 template <class T> class QSharedPointer;
@@ -77,7 +81,8 @@ template <class T> class QSharedPointer;
 enum
 {
     ColumnName = 0,
-    ColumnFullName
+    ColumnFullName,
+    ColumnNameAction
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -131,7 +136,12 @@ DialogEditWrongFormula::DialogEditWrongFormula(const VContainer *data, quint32 t
         QGuiApplication::restoreOverrideCursor();
     }
 #endif
-    ui->tableWidget->setColumnCount(2);
+    ui->tableWidget->setColumnCount(3);
+    // Only the last column is named: the second one carries a measurement's full name in one category and
+    // nothing in the others, so a fixed header there would lie. A column left without a label shows its
+    // number — which is what the third one did before this.
+    ui->tableWidget->setHorizontalHeaderLabels({QString(), QString(), tr("Name it")});
+    ui->tableWidget->horizontalHeader()->setMinimumSectionSize(90);
     ui->tableWidget->setEditTriggers(QTableWidget::NoEditTriggers);
     ui->tableWidget->verticalHeader()->hide();
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -167,8 +177,26 @@ void DialogEditWrongFormula::DialogRejected()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::EvalFormula()
 {
+    // Which object the list has to point at, in the very words the list writes it with — the two have to agree
+    // for the row to be found. Asked here, before the evaluation, because the refusal only says that something
+    // has no name: the identity is what makes the row answer.
+    m_unnamedObject.clear();
+    const QString unnamed = VContainer::UnnamedObjectInFormula(
+        m_data, VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
+                    ToInternalNotation(ui->plainTextEditFormula->toPlainText()), false));
+    if (not unnamed.isEmpty())
+    {
+        const QSharedPointer<VInternalVariable> var = m_data->DataVariables()->value(unnamed);
+        if (not var.isNull())
+        {
+            const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
+            m_unnamedObject = VAbstractApplication::VApp()->TrVars()->VarToUser(display);
+        }
+    }
+
     Eval({.formula = ui->plainTextEditFormula->toPlainText(),
           .variables = m_data->DataVariables(),
+          .container = m_data,
           .labelEditFormula = ui->labelEditFormula,
           .labelResult = ui->labelResultCalculation,
           .postfix = postfix,
@@ -609,7 +637,11 @@ void DialogEditWrongFormula::SetDescription(const QString &name, qreal value, bo
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogEditWrongFormula::Eval(const FormulaData &formulaData, bool &flag) -> qreal
 {
-    const qreal result = EvalToolFormula(this, formulaData, flag);
+    // The dialogue's own container, so the names the formula uses are judged against the objects it lists.
+    FormulaData data = formulaData;
+    data.container = m_data;
+
+    const qreal result = EvalToolFormula(this, data, flag);
     CheckState(); // Disable Ok and Apply buttons if something wrong.
     return result;
 }
@@ -632,12 +664,21 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
+    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
+    // buttons of the list just left would stand over a list that has none.
+    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
     ui->tableWidget->setColumnHidden(ColumnFullName, true);
     ui->labelDescription->setText(QString());
+
+    // "Length of lines" is the category whose objects Ostara names in a table of pairs, and so the one that has
+    // a line to offer to name: the column comes back with it, and only with it.
+    ui->tableWidget->setColumnHidden(ColumnNameAction, not ui->radioButtonLengthLine->isChecked());
 
     const VTranslateVars *trVars = VAbstractApplication::VApp()->TrVars();
 
     QSet<QString> processedNames;
+
+    int refusedRow = -1; // the object the formula was refused for, when this list is the one that carries it
 
     for (const auto &var : vars)
     {
@@ -659,17 +700,126 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
             processedNames.insert(name);
 
             ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+            const int row = ui->tableWidget->rowCount() - 1;
+
             auto *item = new QTableWidgetItem(trVars->VarToUser(name));
             QFont font = item->font();
             font.setBold(true);
             item->setFont(font);
-            ui->tableWidget->setItem(ui->tableWidget->rowCount() - 1, ColumnName, item);
+            ui->tableWidget->setItem(row, ColumnName, item);
+
+            // A line nobody named can be named right here, where it is being read. The formula that names it
+            // by its pair cannot be written until it has a name, so the list that offers the pair is the place
+            // to give one — and the line pairs only: a curve is named in the Options dock of its own tool.
+            if (var->GetType() == VarType::LineLength && var->GetAlias().isEmpty())
+            {
+                AddNameButton(row, var->GetName().mid(line_.length()));
+            }
+
+            // The object the formula was refused for is the one to look at: the row is pointed at rather than
+            // named, so the refusal says which object without putting its points back in front of the user.
+            if (not m_unnamedObject.isEmpty() && item->text() == m_unnamedObject)
+            {
+                refusedRow = row;
+            }
         }
     }
 
     blocker.unblock();
-    ui->tableWidget->selectRow(0);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidget->selectRow(refusedRow >= 0 ? refusedRow : 0);
+    if (refusedRow >= 0)
+    {
+        ui->tableWidget->scrollToItem(ui->tableWidget->item(refusedRow, ColumnName));
+    }
+    // The name column takes what it needs, the two others share the rest: a button stretched across the table
+    // would read as the row's main content instead of an offer.
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(ColumnName, QHeaderView::Stretch);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(ColumnFullName, QHeaderView::Stretch);
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(ColumnNameAction, QHeaderView::ResizeToContents);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Offer to name the line of @a pairKey, in the row that shows it.
+ *
+ * The pair is carried by the button rather than by a member: the table is rebuilt on every category change, so
+ * a member would have to be kept in step with rows that no longer exist. The row itself is the answer — it is
+ * the line the user is reading when the name is missing.
+ */
+void DialogEditWrongFormula::AddNameButton(int row, const QString &pairKey)
+{
+    auto *button = new QPushButton(tr("Name it"));
+    button->setProperty("pairKey", pairKey);
+    // Given a size of its own: a cell widget is not laid out before the column asks for its width, so
+    // `ResizeToContents` would otherwise size the column on a button that reports almost nothing — which is
+    // how it came out too narrow to read.
+    button->setMinimumWidth(90);
+    button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(button, &QPushButton::clicked, this, &DialogEditWrongFormula::RenameLine);
+    ui->tableWidget->setCellWidget(row, ColumnNameAction, button);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEditWrongFormula::RenameLine()
+{
+    auto *button = qobject_cast<QPushButton *>(sender());
+    if (button == nullptr)
+    {
+        return;
+    }
+
+    const QString pairKey = button->property("pairKey").toString();
+    if (pairKey.isEmpty())
+    {
+        return;
+    }
+
+    VAbstractPattern *const doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    if (doc == nullptr)
+    {
+        return;
+    }
+
+    const QString oldSuffix = m_data->LineRoleName(pairKey);
+
+    bool accepted = false;
+    const QString proposed = QInputDialog::getText(this, tr("Name the line"), tr("Name:"), QLineEdit::Normal,
+                                                   oldSuffix, &accepted);
+    if (not accepted)
+    {
+        return;
+    }
+
+    const QString suffix = proposed.trimmed();
+    if (suffix.isEmpty())
+    {
+        return;
+    }
+
+    // The name has to be one a formula can carry, and the pattern's own rule says which: a name no formula
+    // could write would be worse than no name at all.
+    if (not QRegularExpression(NameRegExp()).match(suffix).hasMatch())
+    {
+        QMessageBox::warning(this, tr("Name the line"), tr("The name %1 cannot be used in a formula.").arg(suffix));
+        return;
+    }
+
+    // The name has to be unique among the lines of the piece: two lines answering to one name would leave the
+    // pattern unable to say which one a formula means. The container refuses a duplicate silently, so the
+    // question is asked here, where an answer can still be given.
+    for (auto i = m_data->LineRoleNames().constBegin(); i != m_data->LineRoleNames().constEnd(); ++i)
+    {
+        if (i.key() != pairKey && i.value() == suffix)
+        {
+            QMessageBox::warning(this, tr("Name the line"),
+                                 tr("The name %1 is already used by another line.").arg(suffix));
+            return;
+        }
+    }
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -682,6 +832,9 @@ void DialogEditWrongFormula::ShowMeasurements(const QList<QSharedPointer<VMeasur
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
+    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
+    // buttons of the list just left would stand over a list that has none.
+    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
     ui->tableWidget->setColumnHidden(ColumnFullName, false);
     ui->labelDescription->setText(QString());
 
@@ -742,6 +895,9 @@ void DialogEditWrongFormula::ShowFunctions()
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
+    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
+    // buttons of the list just left would stand over a list that has none.
+    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
     ui->tableWidget->setColumnHidden(ColumnFullName, true);
     ui->labelDescription->setText(QString());
 
@@ -797,6 +953,9 @@ void DialogEditWrongFormula::ShowConstants()
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
+    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
+    // buttons of the list just left would stand over a list that has none.
+    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
     ui->tableWidget->setColumnHidden(ColumnFullName, false);
     ui->labelDescription->setText(QString());
 

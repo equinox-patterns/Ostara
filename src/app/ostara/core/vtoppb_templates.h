@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <type_traits>
 #include <vector>
 
 #include <QPixmap>
@@ -48,6 +49,8 @@
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
 #include "../vpatterndb/vformula.h"
+#include "../vpatterndb/variables/vlinelength.h"
+#include "../vtools/undocommands/vchangelinerolename.h"
 #include "vformulaproperty.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -99,6 +102,144 @@ inline void VToolOptionsPropertyBrowser::AddProperties(const QList<VPE::VPropert
 // Declarative property system — generic template functions
 // ============================================================================
 
+// ====== The names of the lines a tool draws ======
+
+/** @brief Apply a name to the line of @a pairKey, on the tool @a tool and in the pattern.
+ *
+ *  One definition, for every tool that lets its lines be named: the container holds the pair, the command
+ *  writes it to `<lineNames>` and the pattern re-reads it. The uniqueness and the format are the container's
+ *  business — it refuses a name already taken and the dock shows the value it kept.
+ *
+ *  @return true when the name was applied. */
+inline auto ApplyLineName(VAbstractTool *tool, const QString &pairKey, const QString &suffix) -> bool
+{
+    if (tool == nullptr || pairKey.isEmpty())
+    {
+        return false;
+    }
+
+    VContainer *const data = tool->getData();
+    if (data == nullptr)
+    {
+        return false;
+    }
+
+    const QString oldSuffix = data->LineRoleName(pairKey);
+    if (oldSuffix == suffix)
+    {
+        return true; // nothing to do, and the caller must not revert the field
+    }
+
+    data->SetLineRoleName(pairKey, suffix);
+    if (data->LineRoleName(pairKey) != suffix)
+    {
+        return false; // the container refused it: a name already taken by another line
+    }
+
+    VAbstractPattern *const doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    if (doc == nullptr)
+    {
+        return true;
+    }
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    QObject::connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
+    return true;
+}
+
+/** @brief The lines a tool draws that its own fields do not name, so the dock can offer to name them.
+ *
+ *  A tool draws one line per `AddLine` of its `Create`, and only some of them are covered by the "Line:"
+ *  fields of its descriptor list. The others had no name to give at all — so no formula could ever write them,
+ *  and the field asking for a name could never be satisfied. The pairs are read from the container: each
+ *  `AddLine` registers its variables against the id of the tool that made them.
+ *
+ *  A pair is skipped when it already carries a name, or when the descriptor list already shows it. */
+inline auto LineNameProperties(VAbstractTool *tool) -> std::vector<PropertyDesc>
+{
+    std::vector<PropertyDesc> extra;
+    if (tool == nullptr || tool->getData() == nullptr)
+    {
+        return extra;
+    }
+
+    VContainer *const data = tool->getData();
+    const quint32 toolId = tool->getId();
+    int lineNumber = 1;
+
+    for (const auto &var : data->DataLengthLines())
+    {
+        if (var.isNull())
+        {
+            continue;
+        }
+
+        const QList<quint32> refs = var->GetReferences();
+        if (refs.isEmpty() || refs.constFirst() != toolId)
+        {
+            continue; // a line of another tool
+        }
+
+        // `AngleLine_` keeps the same pair, so the length variable is the one to read the pair from.
+        const QString &prefix = line_;
+        if (not var->GetName().startsWith(prefix))
+        {
+            continue;
+        }
+        const QString pairKey = var->GetName().mid(prefix.length());
+
+        // Named already: the field that names it is the one that shows it, and the order the fields were
+        // built in is the pattern's own order — the first line first. The alias and the role name are written
+        // by `SetLineRoleName` before `AddLine` reads the pair, so either one answers.
+        if (not var->GetAlias().isEmpty() || not data->LineRoleName(pairKey).isEmpty())
+        {
+            continue;
+        }
+
+        const QString attrId = QStringLiteral("lineName:") + pairKey;
+
+        // The label numbers the lines of the tool rather than naming their points: Ostara's user is not meant
+        // to read pairs, and the assistant points at the line anyway — this field only has to be findable.
+        const QString label = QObject::tr("Line %1:").arg(++lineNumber);
+        extra.push_back({attrId, label,
+                         [label, pairKey, tool](VToolOptionsPropertyBrowser *b, void *) -> VPE::VProperty * {
+                             Q_UNUSED(b)
+                             auto *p = new VPE::VStringProperty(label);
+                             if (tool->getData() != nullptr)
+                             {
+                                 p->setValue(tool->getData()->LineRoleName(pairKey));
+                             }
+                             return p;
+                         },
+                         [pairKey, tool](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                             Q_UNUSED(b)
+                             const QString wanted = prop->data(VPE::VProperty::DPC_Data, Qt::EditRole).toString();
+                             if (tool->getData() == nullptr)
+                             {
+                                 return;
+                             }
+                             if (wanted == tool->getData()->LineRoleName(pairKey))
+                             {
+                                 return;
+                             }
+                             if (not ApplyLineName(tool, pairKey, wanted))
+                             {
+                                 prop->setValue(tool->getData()->LineRoleName(pairKey));
+                             }
+                         },
+                         [pairKey, tool](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+                             Q_UNUSED(b)
+                             if (tool->getData() != nullptr)
+                             {
+                                 prop->setValue(tool->getData()->LineRoleName(pairKey));
+                             }
+                         }});
+    }
+
+    return extra;
+}
+
 template <class Tool>
 void VToolOptionsPropertyBrowser::ShowToolOptions(QGraphicsItem *item, const QString &title,
                                                    const std::vector<PropertyDesc> &descriptors)
@@ -126,6 +267,33 @@ void VToolOptionsPropertyBrowser::ShowToolOptions(QGraphicsItem *item, const QSt
             {
                 // One property that cannot read its value — a stale id, a formula variable that no longer fits —
                 // must cost that property alone. The dock keeps working and the failure reaches the log.
+                qWarning() << "Property" << desc.attrId << "could not be built:" << e.ErrorMessage();
+                continue;
+            }
+
+            if (prop)
+            {
+                properties.append(prop);
+                ids.append(desc.attrId);
+            }
+        }
+    }
+
+    // The lines the tool draws that its own fields do not name: offered here, so that every line a tool makes
+    // can be given a name — and so a formula can write it.
+    // Not every item the dock shows is a tool — a background image is not, and it draws no line. The lines are
+    // the tools' business, and only theirs.
+    if constexpr (std::is_base_of_v<VAbstractTool, Tool>)
+    {
+        for (const auto &desc : LineNameProperties(i))
+        {
+            VPE::VProperty *prop = nullptr;
+            try
+            {
+                prop = desc.create(this, static_cast<void *>(i));
+            }
+            catch (const VException &e)
+            {
                 qWarning() << "Property" << desc.attrId << "could not be built:" << e.ErrorMessage();
                 continue;
             }
