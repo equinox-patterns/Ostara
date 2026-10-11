@@ -42,9 +42,12 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QScrollBar>
 #include <QSharedPointer>
 #include <QShowEvent>
 #include <QSize>
+#include <QStyle>
+#include <QStyleOptionButton>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QTextCursor>
@@ -54,12 +57,12 @@
 #include <new>
 
 #include "../tools/dialogtool.h"
+#include "../tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "../vformat/knownmeasurements/vknownmeasurement.h"
 #include "../vformat/knownmeasurements/vknownmeasurements.h"
 #include "../vformat/knownmeasurements/vknownmeasurementsdatabase.h"
 #include "../vmisc/def.h"
 #include "../qmuparser/qmudef.h"
-#include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/variables/varcradius.h"
@@ -122,7 +125,6 @@ DialogEditWrongFormula::DialogEditWrongFormula(const VContainer *data, quint32 t
 
     VAbstractApplication::VApp()->Settings()->GetOsSeparator() ? setLocale(QLocale()) : setLocale(QLocale::c());
 
-    connect(ui->toolButtonPutHere, &QPushButton::clicked, this, &DialogEditWrongFormula::PutHere);
     connect(ui->tableWidget, &QTableWidget::itemDoubleClicked, this, &DialogEditWrongFormula::PutVal);
 
     connect(ui->plainTextEditFormula, &QPlainTextEdit::textChanged, this,
@@ -136,15 +138,20 @@ DialogEditWrongFormula::DialogEditWrongFormula(const VContainer *data, quint32 t
         QGuiApplication::restoreOverrideCursor();
     }
 #endif
-    ui->tableWidget->setColumnCount(3);
-    // Only the last column is named: the second one carries a measurement's full name in one category and
-    // nothing in the others, so a fixed header there would lie. A column left without a label shows its
-    // number — which is what the third one did before this.
-    ui->tableWidget->setHorizontalHeaderLabels({QString(), QString(), tr("Name it")});
+    // Two columns to start with, and the headers are written by SetTableColumns with the count, in one place.
+    // The third column exists only in the category that has something to name — see SetTableColumns.
+    ui->tableWidget->setColumnCount(ColumnFullName + 1);
     ui->tableWidget->horizontalHeader()->setMinimumSectionSize(90);
     ui->tableWidget->setEditTriggers(QTableWidget::NoEditTriggers);
     ui->tableWidget->verticalHeader()->hide();
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    // The row above the field reads "Calculated value:" then the value, both against the left edge. A layout
+    // item's alignment places the box, never the text inside it: that one is the label's own, and every QLabel
+    // here leaves it to the style. Said here rather than in the .ui because `retranslateUi` cannot take it
+    // away — the caption and its value then cannot drift apart, and no gap opens between them.
+    ui->labelEditFormula->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    ui->labelResultCalculation->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -189,15 +196,18 @@ void DialogEditWrongFormula::EvalFormula()
         const QSharedPointer<VInternalVariable> var = m_data->DataVariables()->value(unnamed);
         if (not var.isNull())
         {
+            // In the very words the list uses, so the row can be found: the name is the alias when there is one,
+            // the object's own name otherwise — exactly what ShowVariable writes on the row.
             const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
             m_unnamedObject = VAbstractApplication::VApp()->TrVars()->VarToUser(display);
         }
     }
 
+    // No label is handed over: the caption beside the value is a name, not a state, and must stay neutral
+    // whatever the formula does. The colour is then carried by the value alone, which is also what says why.
     Eval({.formula = ui->plainTextEditFormula->toPlainText(),
           .variables = m_data->DataVariables(),
           .container = m_data,
-          .labelEditFormula = ui->labelEditFormula,
           .labelResult = ui->labelResultCalculation,
           .postfix = postfix,
           .checkZero = checkZero,
@@ -218,7 +228,17 @@ void DialogEditWrongFormula::ValChanged(int row)
         return;
     }
     QTableWidgetItem *item = ui->tableWidget->item(row, ColumnName);
-    const QString name = VAbstractApplication::VApp()->TrVars()->VarFromUser(item->text());
+    // The variable's own name, carried by the row, rather than the text on screen: that text is a display name,
+    // and looking it up as a key is what raised `ExceptionBadId` and left the description empty.
+    QString name = item->data(Qt::UserRole).toString();
+    if (name.isEmpty())
+    {
+        name = item->text();
+    }
+    else
+    {
+        name = VAbstractApplication::VApp()->TrVars()->VarFromUser(name);
+    }
 
     try
     {
@@ -284,20 +304,6 @@ void DialogEditWrongFormula::ValChanged(int row)
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief PutHere put variable into edit
- */
-void DialogEditWrongFormula::PutHere()
-{
-    QTableWidgetItem *item = ui->tableWidget->currentItem();
-    if (item != nullptr)
-    {
-        PutVal(item);
-        ui->plainTextEditFormula->setFocus();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
  * @brief PutVal put variable into edit
  * @param item chosen item of table widget
  */
@@ -327,7 +333,7 @@ void DialogEditWrongFormula::PutVal(QTableWidgetItem *item)
  */
 void DialogEditWrongFormula::Measurements()
 {
-    ui->checkBoxHideEmpty->setEnabled(true);
+    SetCategoryCheckBoxes(true, false);
 
     QList<QSharedPointer<VMeasurement>> vars = m_data->DataMeasurements().values();
     std::stable_sort(vars.begin(), vars.end(),
@@ -343,46 +349,103 @@ void DialogEditWrongFormula::Measurements()
  */
 void DialogEditWrongFormula::LengthLines()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
-    ShowVariable(m_data->DataLengthLines().values());
+    SetCategoryCheckBoxes(false, true);
+    // The one list that offers to name what it shows, because a pair of points is all a line has until it is
+    // named. Every other list is read-only.
+    ShowVariable(m_data->DataLengthLines().values(), true, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::RadiusArcs()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
-    ShowVariable(m_data->DataRadiusesArcs().values());
+    SetCategoryCheckBoxes(false, true);
+    Arc();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The curve lengths that belong to an arc, which the category "Arc" takes and "Length of curves" leaves.
+ *
+ *  An arc's length is registered as a curve length — same class, same variable — so nothing but the name tells
+ *  the two apart: an arc is `Arc_…` or `ElArc_…`, a spline `Spl_…` or `SplPath…`. The name is read rather than
+ *  the tool, because the variable is all this list has.
+ */
+auto DialogEditWrongFormula::IsArcCurve(const QSharedPointer<VCurveLength> &var) -> bool
+{
+    const QString name = var->GetName();
+    return name.startsWith(arc_) || name.startsWith(elarc_);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Arc: everything the pattern reads on an arc — its length, and its radius.
+ *
+ *  A pattern holds many curves and few arcs, so the two live together here instead of leaving the radius alone
+ *  in a category of its own. The lengths come from the curve lengths, the radii from the radii: one list, so the
+ *  user reads an arc in one place.
+ */
+void DialogEditWrongFormula::Arc()
+{
+    SetCategoryCheckBoxes(false, true);
+
+    // Both maps hold the same kind of variable under different typed views, and an arc has one of each. Appending
+    // them keeps a single list — and a single ordering — for the whole category.
+    QList<QSharedPointer<VCurveVariable>> vars;
+    for (const auto &var : m_data->DataLengthCurves())
+    {
+        if (IsArcCurve(var))
+        {
+            vars.append(var);
+        }
+    }
+    for (const auto &var : m_data->DataRadiusesArcs())
+    {
+        vars.append(var);
+    }
+
+    ShowVariable(vars, true, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::AnglesCurves()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
-    ShowVariable(m_data->DataAnglesCurves().values());
+    SetCategoryCheckBoxes(false, true);
+    ShowVariable(m_data->DataAnglesCurves().values(), false, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief LengthCurves show in list lengths of curves variables
+ *
+ * Curves only: an arc is read in the "Arc" category, which holds its length and its radius together. Listing it
+ * here too would offer the same object twice, in two categories that would then disagree on what it is.
  */
 void DialogEditWrongFormula::LengthCurves()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
-    ShowVariable(m_data->DataLengthCurves().values());
+    SetCategoryCheckBoxes(false, true);
+
+    QList<QSharedPointer<VCurveLength>> curves;
+    for (const auto &var : m_data->DataLengthCurves())
+    {
+        if (not IsArcCurve(var))
+        {
+            curves.append(var);
+        }
+    }
+
+    ShowVariable(curves, true, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::CurvesCLength()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
-    ShowVariable(m_data->DataCurvesCLength().values());
+    SetCategoryCheckBoxes(false, true);
+    ShowVariable(m_data->DataCurvesCLength().values(), false, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::AngleLines()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
-    ShowVariable(m_data->DataAngleLines().values());
+    SetCategoryCheckBoxes(false, true);
+    ShowVariable(m_data->DataAngleLines().values(), false, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -403,7 +466,7 @@ void DialogEditWrongFormula::PreviewCalculations()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::PieceArea()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
+    SetCategoryCheckBoxes(false, false);
     ShowVariable(m_data->DataPieceArea().values());
 }
 
@@ -413,7 +476,7 @@ void DialogEditWrongFormula::PieceArea()
  */
 void DialogEditWrongFormula::Functions()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
+    SetCategoryCheckBoxes(false, false);
     ShowFunctions();
 }
 
@@ -423,7 +486,7 @@ void DialogEditWrongFormula::Functions()
  */
 void DialogEditWrongFormula::Constants()
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
+    SetCategoryCheckBoxes(false, false);
     ShowConstants();
 }
 
@@ -458,11 +521,20 @@ void DialogEditWrongFormula::showEvent(QShowEvent *event)
     CheckState();
 
     m_isInitialized = true; // first show windows are held
+
+    // The "Name it" column is the only one with a width of its own; the two others share the rest, which is what
+    // `Stretch` is for. Measured here, once the table has its real size, because a cell widget reports nothing
+    // to `ResizeToContents` — measured before the dialogue is on screen, the button's column came out too narrow.
+    ApplyColumnWidths();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::resizeEvent(QResizeEvent *event)
 {
+    // The button's column keeps the width it was measured for; the two others are stretched, and Qt does that
+    // again on its own when the table grows.
+    ApplyColumnWidths();
+
     // remember the size for the next time this dialog is opened, but only
     // if widget was already initialized, which rules out the resize at
     // dialog creating, which would
@@ -479,11 +551,6 @@ void DialogEditWrongFormula::changeEvent(QEvent *event)
     if (event->type() == QEvent::LanguageChange)
     {
         ui->retranslateUi(this);
-    }
-
-    if (event->type() == QEvent::PaletteChange)
-    {
-        InitIcons();
     }
 
     // remember to call base class implementation
@@ -617,6 +684,10 @@ void DialogEditWrongFormula::InitVariables()
     connect(ui->radioButtonConstants, &QRadioButton::clicked, this, ClearFilterFormulaInputs);
 
     connect(ui->checkBoxHideEmpty, CHECKBOX_STATE_CHANGED, this, &DialogEditWrongFormula::Measurements);
+
+    // The unnamed switch does not filter what is already listed, it decides what is listed at all: the category
+    // is built again, which is what a filter over a table built on the fly costs.
+    connect(ui->checkBoxHideUnnamed, CHECKBOX_STATE_CHANGED, this, &DialogEditWrongFormula::ShowCurrentCategory);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -647,32 +718,22 @@ auto DialogEditWrongFormula::Eval(const FormulaData &formulaData, bool &flag) ->
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogEditWrongFormula::InitIcons()
-{
-    const auto resource = QStringLiteral("icon");
-
-    ui->label->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/equal.png")));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ShowVariable show variables in list
  * @param vars container with variables
  */
-template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &vars)
+template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &vars, bool nameable, bool unnamed)
 {
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
-    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
-    // buttons of the list just left would stand over a list that has none.
-    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
     ui->tableWidget->setColumnHidden(ColumnFullName, true);
     ui->labelDescription->setText(QString());
 
     // "Length of lines" is the category whose objects Ostara names in a table of pairs, and so the one that has
-    // a line to offer to name: the column comes back with it, and only with it.
-    ui->tableWidget->setColumnHidden(ColumnNameAction, not ui->radioButtonLengthLine->isChecked());
+    // a line to offer to name. It says so itself when it calls this; every other category leaves the table two
+    // columns wide.
+    SetTableColumns(nameable);
 
     const VTranslateVars *trVars = VAbstractApplication::VApp()->TrVars();
 
@@ -682,38 +743,69 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
 
     for (const auto &var : vars)
     {
-        if (ui->checkBoxHideEmpty->isEnabled() && ui->checkBoxHideEmpty->isChecked() && var->IsNotUsed())
+        if (ui->checkBoxHideEmpty->isVisible() && ui->checkBoxHideEmpty->isChecked() && var->IsNotUsed())
         {
             continue; // skip this measurement
         }
 
         if (!var->Filter(m_toolId))
         { // If we create this variable don't show
-            // Prefer alias (RoleName) over technical name for display,
-            // then apply simplified prefix (Curve_ for Spl_, Radius_ for RadiusArc_, etc.).
-            QString name = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
-            if (processedNames.contains(name))
+            // The name shown is the object's own, exactly as the formula writes it: `Line_TestRectangle` for a
+            // named line, `Line_Y_Y1` for one nobody named, `#Cou` for an increment. It is never blank — every
+            // object that reaches this list has a name the calculator resolves — so the list can always be read
+            // and a double click always inserts something that works.
+            const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
+
+            // The switch hides what no formula should be written with: the objects Ostara names after the points
+            // they join, which a line or a curve carries until somebody names it. That is exactly what the
+            // container's rule refuses, asked here one name at a time so there is only one definition of it.
+            // Objects that have never had a name to give — measurements, increments, areas — are none of its
+            // business and are always shown.
+            if (unnamed && ui->checkBoxHideUnnamed->isChecked()
+                && not VContainer::UnnamedObjectInFormula(m_data, var->GetName()).isEmpty())
             {
                 continue;
             }
 
-            processedNames.insert(name);
+            // Two keys can hold the same object — a role name and the pair it replaced — and the name is what
+            // tells them apart. Asking by the displayed name keeps one row per object.
+            const QString key = display;
+            if (processedNames.contains(key))
+            {
+                continue;
+            }
+
+            processedNames.insert(key);
 
             ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
             const int row = ui->tableWidget->rowCount() - 1;
 
-            auto *item = new QTableWidgetItem(trVars->VarToUser(name));
+            auto *item = new QTableWidgetItem(trVars->VarToUser(display));
             QFont font = item->font();
             font.setBold(true);
             item->setFont(font);
+
+            // What the button of this row has to act on. The list is rebuilt on every category change, so this
+            // cannot be a member: the row is the answer, and it carries what it is about.
+            item->setData(Qt::UserRole, var->GetName());
+            item->setData(Qt::UserRole + 1, QString());
             ui->tableWidget->setItem(row, ColumnName, item);
 
-            // A line nobody named can be named right here, where it is being read. The formula that names it
-            // by its pair cannot be written until it has a name, so the list that offers the pair is the place
-            // to give one — and the line pairs only: a curve is named in the Options dock of its own tool.
-            if (var->GetType() == VarType::LineLength && var->GetAlias().isEmpty())
+            // The objects the switch above hides are the ones with a name to give: a line is named through the
+            // pair of points it joins, a curve through the alias of the tool that draws it. The row remembers
+            // which of the two it is, so the button knows where to write.
+            if (not VContainer::UnnamedObjectInFormula(m_data, var->GetName()).isEmpty())
             {
-                AddNameButton(row, var->GetName().mid(line_.length()));
+                if (var->GetType() == VarType::LineLength)
+                {
+                    item->setData(Qt::UserRole + 1, QStringLiteral("line"));
+                    AddNameButton(row, var->GetName().mid(line_.length()));
+                }
+                else if (var->GetType() == VarType::CurveLength)
+                {
+                    item->setData(Qt::UserRole + 1, QStringLiteral("curve"));
+                    AddNameButton(row, var->GetName());
+                }
             }
 
             // The object the formula was refused for is the one to look at: the row is pointed at rather than
@@ -731,36 +823,110 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
     {
         ui->tableWidget->scrollToItem(ui->tableWidget->item(refusedRow, ColumnName));
     }
-    // The name column takes what it needs, the two others share the rest: a button stretched across the table
-    // would read as the row's main content instead of an offer.
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(ColumnName, QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(ColumnFullName, QHeaderView::Stretch);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(ColumnNameAction, QHeaderView::ResizeToContents);
+    // Two columns of equal width and a third one at the width of its button — see ApplyColumnWidths.
+    ApplyColumnWidths();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEditWrongFormula::SetCategoryCheckBoxes(bool measurements, bool unnamed)
+{
+    // A category shows the two switches that mean something for it, and none of the others: a checkbox that
+    // does nothing is a question the user answers for nothing. "Hide empty measurements" is a question about
+    // measurements; "Hide unnamed objects" is a question about the objects a formula can name.
+    ui->checkBoxHideEmpty->setVisible(measurements);
+    ui->checkBoxHideUnnamed->setVisible(unnamed);
+
+    // The switch keeps the answer the user gave it. Setting it back to checked here — to give each category its
+    // own default — swallowed the first click on it: unchecking the box rebuilds the list, and the rebuild put
+    // the box back to checked before anything could see the change.
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEditWrongFormula::ApplyColumnWidths()
+{
+    // Two columns of equal width, like every other list of this dialogue, and a third one that takes only what
+    // its button needs. `Stretch` divides the free width evenly between the two first; the third is served first,
+    // because a button has a width below which it cannot be read, and `ResizeToContents` cannot find it: the
+    // button is a cell *widget*, and a view measures a column from its items.
+    QHeaderView *header = ui->tableWidget->horizontalHeader();
+    header->setSectionResizeMode(ColumnName, QHeaderView::Stretch);
+    header->setSectionResizeMode(ColumnFullName, QHeaderView::Stretch);
+
+    if (ui->tableWidget->isColumnHidden(ColumnNameAction))
+    {
+        return;
+    }
+
+    header->setSectionResizeMode(ColumnNameAction, QHeaderView::Interactive);
+    header->resizeSection(ColumnNameAction, NameActionWidth());
+
+    // A row is as tall as its text, which is not enough to hold a button: the theme's item padding leaves 30
+    // pixels and a button asks for 32, so "Name it" came out cut off at the top and the bottom. The height is
+    // taken from the button itself, so a style that wants more room gets it, and every row of the list matches.
+    QPushButton probe(tr("Name it"));
+    probe.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    ui->tableWidget->verticalHeader()->setDefaultSectionSize(probe.sizeHint().height() + 4);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEditWrongFormula::NameActionWidth() const -> int
+{
+    // What the column has to hold, measured rather than supposed. The button asks for only 76 pixels for
+    // "Name it", and a column that narrow reads as a mistake: a column holding a button and a header needs room
+    // around them, so a floor is set well above the bare request.
+    constexpr int minWidth = 130;
+
+    QPushButton probe(tr("Name it"));
+    probe.setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    const int buttonWidth = probe.sizeHint().width();
+
+    // The font of the table, not the font of a button built here: the header draws with its own.
+    const QFontMetrics metrics(ui->tableWidget->fontMetrics());
+    const QTableWidgetItem *header = ui->tableWidget->horizontalHeaderItem(ColumnNameAction);
+    const int headerWidth = header == nullptr ? 0 : metrics.horizontalAdvance(header->text()) + 16;
+
+    return qMax(minWidth, qMax(headerWidth, buttonWidth + 16));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEditWrongFormula::SetTableColumns(bool nameable)
+{
+    // The header is written with the column count, in one place: `setColumnCount` alone would leave the third
+    // label behind and show it again the next time the column comes back.
+    if (nameable)
+    {
+        ui->tableWidget->setColumnCount(ColumnNameAction + 1);
+        ui->tableWidget->setHorizontalHeaderLabels({QString(), QString(), tr("Name it")});
+    }
+    else
+    {
+        ui->tableWidget->setColumnCount(ColumnFullName + 1);
+        ui->tableWidget->setHorizontalHeaderLabels({QString(), QString()});
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief Offer to name the line of @a pairKey, in the row that shows it.
+ * @brief Offer to name the object of @a reference, in the row that shows it.
  *
- * The pair is carried by the button rather than by a member: the table is rebuilt on every category change, so
- * a member would have to be kept in step with rows that no longer exist. The row itself is the answer — it is
- * the line the user is reading when the name is missing.
+ * The reference is carried by the button rather than by a member: the table is rebuilt on every category change,
+ * so a member would have to be kept in step with rows that no longer exist. The row itself is the answer — it is
+ * the object the user is reading when the name is missing.
+ *
+ * @a reference is the pair of points for a line, the variable's own name for a curve: the two families are not
+ * named in the same place, and RenameObject reads the kind from the row to know which one it is holding.
  */
-void DialogEditWrongFormula::AddNameButton(int row, const QString &pairKey)
+void DialogEditWrongFormula::AddNameButton(int row, const QString &reference)
 {
     auto *button = new QPushButton(tr("Name it"));
-    button->setProperty("pairKey", pairKey);
-    // Given a size of its own: a cell widget is not laid out before the column asks for its width, so
-    // `ResizeToContents` would otherwise size the column on a button that reports almost nothing — which is
-    // how it came out too narrow to read.
-    button->setMinimumWidth(90);
+    button->setProperty("reference", reference);
     button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(button, &QPushButton::clicked, this, &DialogEditWrongFormula::RenameLine);
+    connect(button, &QPushButton::clicked, this, &DialogEditWrongFormula::RenameObject);
     ui->tableWidget->setCellWidget(row, ColumnNameAction, button);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogEditWrongFormula::RenameLine()
+void DialogEditWrongFormula::RenameObject()
 {
     auto *button = qobject_cast<QPushButton *>(sender());
     if (button == nullptr)
@@ -768,8 +934,8 @@ void DialogEditWrongFormula::RenameLine()
         return;
     }
 
-    const QString pairKey = button->property("pairKey").toString();
-    if (pairKey.isEmpty())
+    const QString reference = button->property("reference").toString();
+    if (reference.isEmpty())
     {
         return;
     }
@@ -780,11 +946,24 @@ void DialogEditWrongFormula::RenameLine()
         return;
     }
 
-    const QString oldSuffix = m_data->LineRoleName(pairKey);
+    // The row says which family this button belongs to, and the family decides where the name is written and
+    // how it is checked: a line answers to a pair of points and lives in the role-name table, a curve answers
+    // to its own tool and carries its alias in the pattern.
+    const int row = RowOfWidget(button);
+    const QString kind = row >= 0 ? ui->tableWidget->item(row, ColumnName)->data(Qt::UserRole + 1).toString()
+                                  : QString();
+    if (kind.isEmpty())
+    {
+        return;
+    }
 
+    const bool curve = kind == QStringLiteral("curve");
+    const QString oldSuffix = curve ? CurveAlias(reference) : m_data->LineRoleName(reference);
+
+    const QString title = curve ? tr("Name the curve") : tr("Name the line");
     bool accepted = false;
-    const QString proposed = QInputDialog::getText(this, tr("Name the line"), tr("Name:"), QLineEdit::Normal,
-                                                   oldSuffix, &accepted);
+    const QString proposed =
+        QInputDialog::getText(this, title, tr("Name:"), QLineEdit::Normal, oldSuffix, &accepted);
     if (not accepted)
     {
         return;
@@ -797,10 +976,28 @@ void DialogEditWrongFormula::RenameLine()
     }
 
     // The name has to be one a formula can carry, and the pattern's own rule says which: a name no formula
-    // could write would be worse than no name at all.
+    // could write would be worse than no name at all. The tool checks it again before writing — both families
+    // refuse a name that does not match, and a curve also refuses one already taken — but a refusal nobody
+    // explains would leave the row looking as if nothing had happened.
     if (not QRegularExpression(NameRegExp()).match(suffix).hasMatch())
     {
-        QMessageBox::warning(this, tr("Name the line"), tr("The name %1 cannot be used in a formula.").arg(suffix));
+        QMessageBox::warning(this, title, tr("The name %1 cannot be used in a formula.").arg(suffix));
+        return;
+    }
+
+    if (curve)
+    {
+        // The curve's tool writes its own name, checks that it is unique, and pushes the rename — which is
+        // undoable, and re-parses the pattern. Whether it took is not readable here: the container this dialogue
+        // holds is refreshed by that parse, so asking it now would answer with the name from before.
+        auto *tool = qobject_cast<VToolAbstractCurve *>(VAbstractPattern::FindTool(CurveToolId(reference)));
+        if (tool == nullptr)
+        {
+            return;
+        }
+
+        tool->SetAliasSuffix(suffix);
+        ShowCurrentCategory();
         return;
     }
 
@@ -809,17 +1006,82 @@ void DialogEditWrongFormula::RenameLine()
     // question is asked here, where an answer can still be given.
     for (auto i = m_data->LineRoleNames().constBegin(); i != m_data->LineRoleNames().constEnd(); ++i)
     {
-        if (i.key() != pairKey && i.value() == suffix)
+        if (i.key() != reference && i.value() == suffix)
         {
-            QMessageBox::warning(this, tr("Name the line"),
-                                 tr("The name %1 is already used by another line.").arg(suffix));
+            QMessageBox::warning(this, title, tr("The name %1 is already used by another line.").arg(suffix));
             return;
         }
     }
 
-    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    auto *command = new VChangeLineRoleName(doc, reference, oldSuffix, suffix);
     connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     VAbstractApplication::VApp()->getUndoStack()->push(command);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEditWrongFormula::RowOfWidget(const QWidget *widget) const -> int
+{
+    for (int row = 0; row < ui->tableWidget->rowCount(); ++row)
+    {
+        if (ui->tableWidget->cellWidget(row, ColumnNameAction) == widget)
+        {
+            return row;
+        }
+    }
+
+    return -1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEditWrongFormula::CurveToolId(const QString &variableName) const -> quint32
+{
+    const QSharedPointer<VInternalVariable> var = m_data->DataVariables()->value(variableName);
+    if (var.isNull())
+    {
+        return NULL_ID;
+    }
+
+    const QSharedPointer<VCurveVariable> curve = qSharedPointerDynamicCast<VCurveVariable>(var);
+    return curve.isNull() ? NULL_ID : curve->GetId();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogEditWrongFormula::CurveAlias(const QString &variableName) const -> QString
+{
+    auto *tool = qobject_cast<VToolAbstractCurve *>(VAbstractPattern::FindTool(CurveToolId(variableName)));
+    return tool == nullptr ? QString() : tool->GetAliasSuffix();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEditWrongFormula::ShowCurrentCategory()
+{
+    // The list is rebuilt from the container this dialogue holds, and the pattern has just re-parsed it: showing
+    // the category again is what turns the row that was named into the name that was given, before the user's
+    // eyes. Every category the unnamed switch governs is here, because that switch is also what calls this.
+    if (ui->radioButtonLengthLine->isChecked())
+    {
+        LengthLines();
+    }
+    else if (ui->radioButtonLengthSpline->isChecked())
+    {
+        LengthCurves();
+    }
+    else if (ui->radioButtonAngleLine->isChecked())
+    {
+        AngleLines();
+    }
+    else if (ui->radioButtonRadiusesArcs->isChecked())
+    {
+        Arc();
+    }
+    else if (ui->radioButtonAnglesCurves->isChecked())
+    {
+        AnglesCurves();
+    }
+    else if (ui->radioButtonCLength->isChecked())
+    {
+        CurvesCLength();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -832,15 +1094,15 @@ void DialogEditWrongFormula::ShowMeasurements(const QList<QSharedPointer<VMeasur
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
-    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
-    // buttons of the list just left would stand over a list that has none.
-    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
+    // A measurement is named by the measurement file it comes from: there is nothing here to give it, so the
+    // column that offers to name an object is not part of this table at all.
+    SetTableColumns(false);
     ui->tableWidget->setColumnHidden(ColumnFullName, false);
     ui->labelDescription->setText(QString());
 
     for (const auto &var : vars)
     {
-        if (ui->checkBoxHideEmpty->isEnabled() && ui->checkBoxHideEmpty->isChecked() && var->IsNotUsed())
+        if (ui->checkBoxHideEmpty->isVisible() && ui->checkBoxHideEmpty->isChecked() && var->IsNotUsed())
         {
             continue; // skip this measurement
         }
@@ -883,7 +1145,9 @@ void DialogEditWrongFormula::ShowMeasurements(const QList<QSharedPointer<VMeasur
 
     blocker.unblock();
     ui->tableWidget->selectRow(0);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // Placed by hand like every other list: the columns were left to `Stretch` and the name column took an
+    // even share of the width, which is too little for a name beside a button.
+    ApplyColumnWidths();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -895,9 +1159,8 @@ void DialogEditWrongFormula::ShowFunctions()
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
-    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
-    // buttons of the list just left would stand over a list that has none.
-    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
+    // A function is a name the calculator already knows: there is nothing here to name.
+    SetTableColumns(false);
     ui->tableWidget->setColumnHidden(ColumnFullName, true);
     ui->labelDescription->setText(QString());
 
@@ -938,7 +1201,9 @@ void DialogEditWrongFormula::ShowFunctions()
 
     blocker.unblock();
     ui->tableWidget->selectRow(0);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // Placed by hand like every other list: the columns were left to `Stretch` and the name column took an
+    // even share of the width, which is too little for a name beside a button.
+    ApplyColumnWidths();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -953,9 +1218,9 @@ void DialogEditWrongFormula::ShowConstants()
     QSignalBlocker blocker(ui->tableWidget);
     ui->tableWidget->clearContents();
     ui->tableWidget->setRowCount(0);
-    // Every category rebuilds the table, and only the lines put a button in the last column: without this the
-    // buttons of the list just left would stand over a list that has none.
-    ui->tableWidget->setColumnHidden(ColumnNameAction, true);
+    // A constant is a name the calculator already knows: there is nothing here to name. The second column
+    // stays, because a constant carries a description worth reading beside its token.
+    SetTableColumns(false);
     ui->tableWidget->setColumnHidden(ColumnFullName, false);
     ui->labelDescription->setText(QString());
 
@@ -984,13 +1249,15 @@ void DialogEditWrongFormula::ShowConstants()
 
     blocker.unblock();
     ui->tableWidget->selectRow(0);
-    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    // Placed by hand like every other list: the columns were left to `Stretch` and the name column took an
+    // even share of the width, which is too little for a name beside a button.
+    ApplyColumnWidths();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::ShowIncrementsInPreviewCalculation(bool show)
 {
-    ui->checkBoxHideEmpty->setEnabled(false);
+    SetCategoryCheckBoxes(false, false);
 
     QMap<QString, QSharedPointer<VIncrement>> increments;
 

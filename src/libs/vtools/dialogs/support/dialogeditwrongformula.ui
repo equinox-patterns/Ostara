@@ -34,45 +34,27 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="palette">
-        <palette>
-         <active>
-          <colorrole role="WindowText">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </colorrole>
-         </active>
-         <inactive>
-          <colorrole role="WindowText">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
-           </brush>
-          </colorrole>
-         </inactive>
-         <disabled>
-          <colorrole role="WindowText">
-           <brush brushstyle="SolidPattern">
-            <color alpha="255">
-             <red>159</red>
-             <green>158</green>
-             <blue>158</blue>
-            </color>
-           </brush>
-          </colorrole>
-         </disabled>
-        </palette>
+       <property name="text">
+        <string>Calculated value:</string>
+       </property>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignLeft">
+      <widget class="QLabel" name="labelResultCalculation">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Value</string>
+       </property>
+       <property name="whatsThis">
+        <string notr="true"/>
        </property>
        <property name="text">
-        <string>Formula:</string>
+        <string notr="true">_</string>
        </property>
       </widget>
      </item>
@@ -88,61 +70,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QToolButton" name="toolButtonPutHere">
-       <property name="toolTip">
-        <string>Insert variable into formula</string>
-       </property>
-       <property name="text">
-        <string notr="true"/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../../vmisc/share/resources/icon.qrc">
-         <normaloff>:/icon/24x24/putHere.png</normaloff>:/icon/24x24/putHere.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../../../vmisc/share/resources/icon.qrc">:/icon/light/24x24/equal.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="QLabel" name="labelResultCalculation">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>87</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Value</string>
-       </property>
-       <property name="whatsThis">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string notr="true">_</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
@@ -285,7 +212,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>Radius of arcs</string>
+                <string>Arc</string>
                </property>
               </widget>
              </item>
@@ -359,6 +286,16 @@
             <widget class="QCheckBox" name="checkBoxHideEmpty">
              <property name="text">
               <string>Hide empty measurements</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBoxHideUnnamed">
+             <property name="text">
+              <string>Hide unnamed objects</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -441,7 +378,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>toolButtonPutHere</tabstop>
   <tabstop>radioButtonStandardTable</tabstop>
   <tabstop>radioButtonIncrements</tabstop>
   <tabstop>radioButtonLengthLine</tabstop>

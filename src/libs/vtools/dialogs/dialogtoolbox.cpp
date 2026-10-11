@@ -477,7 +477,6 @@ auto UnnamedObjectMessage(const QString &token, const VContainer *container,
 auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qreal
 {
     SCASSERT(data.labelResult != nullptr)
-    SCASSERT(data.labelEditFormula != nullptr)
 
     qreal result = INT_MIN; // Value can be 0, so use max imposible value
 
@@ -502,10 +501,21 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
         data.labelResult->setToolTip(reason);
     };
 
+    // The label beside the field names what the field holds, and a name is not in error — so a caller whose
+    // label is a plain caption passes none, and the colour then falls to the value alone, which carries both
+    // the reason and the state. Every other caller keeps the behaviour it had.
+    auto MarkState = [&data](const QColor &color)
+    {
+        if (data.labelEditFormula != nullptr)
+        {
+            ChangeColor(data.labelEditFormula, color);
+        }
+    };
+
     if (data.formula.isEmpty())
     {
         flag = false;
-        ChangeColor(data.labelEditFormula, errorColor);
+        MarkState(errorColor);
         ShowErrorResult(QObject::tr("Empty formula"));
     }
     else
@@ -527,13 +537,13 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
             if (not unnamed.isEmpty())
             {
                 flag = false;
-                ChangeColor(data.labelEditFormula, errorColor);
+                MarkState(errorColor);
                 ShowInstruction(UnnamedObjectMessage(unnamed, data.container, data.variables));
             }
             else if (qIsInf(result) || qIsNaN(result))
             {
                 flag = false;
-                ChangeColor(data.labelEditFormula, errorColor);
+                MarkState(errorColor);
                 ShowErrorResult(
                     QObject::tr("Invalid result. Value is infinite or NaN. Please, check your calculations."));
             }
@@ -543,13 +553,13 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
                 if (data.checkZero && qFuzzyIsNull(result))
                 {
                     flag = false;
-                    ChangeColor(data.labelEditFormula, errorColor);
+                    MarkState(errorColor);
                     ShowErrorResult(QObject::tr("Value can't be 0"));
                 }
                 else if (data.checkLessThanZero && result < 0)
                 {
                     flag = false;
-                    ChangeColor(data.labelEditFormula, errorColor);
+                    MarkState(errorColor);
                     ShowErrorResult(QObject::tr("Value can't be less than 0"));
                 }
                 else
@@ -561,7 +571,7 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
                     }
                     data.labelResult->setText(message);
                     flag = true;
-                    ChangeColor(data.labelEditFormula, OkColor(dialog));
+                    MarkState(OkColor(dialog));
                     data.labelResult->setToolTip(QObject::tr("Value"));
                 }
             }
@@ -569,7 +579,7 @@ auto EvalToolFormula(QDialog *dialog, const FormulaData &data, bool &flag) -> qr
         catch (qmu::QmuParserError &e)
         {
             flag = false;
-            ChangeColor(data.labelEditFormula, errorColor);
+            MarkState(errorColor);
             ShowErrorResult(QObject::tr("Parser error: %1").arg(e.GetMsg()));
             qDebug() << "\nMath parser error:\n"
                      << "--------------------------------------\n"

@@ -38,6 +38,7 @@
 #include <QtGlobal>
 
 class VMeasurement;
+class VCurveLength;
 struct FormulaData;
 class VContainer;
 
@@ -78,7 +79,6 @@ public slots:
 
     void EvalFormula();
     void ValChanged(int row);
-    void PutHere();
     void PutVal(QTableWidgetItem *item);
 
     void Measurements();
@@ -108,11 +108,12 @@ signals:
 private slots:
     void FilterVariablesEdited(const QString &filter);
 
-    /** @brief Name the line whose row carries the button that asked for it.
+    /** @brief Name the object whose row carries the button that asked for it.
      *
-     *  A line nobody named cannot be written in a formula, so the list that offers its pair offers the name as
-     *  well — and this is where the name is given, without leaving the formula being written. */
-    void RenameLine();
+     *  An object nobody named cannot be written in a formula, so the list that offers it offers the name as
+     *  well — and this is where the name is given, without leaving the formula being written. A line and a curve
+     *  are not named in the same place; the row says which one, and this reads it there. */
+    void RenameObject();
 
 private:
     // cppcheck-suppress unknownMacro
@@ -151,10 +152,53 @@ private:
 
     void InitVariables();
 
-    template <class T> void ShowVariable(const QList<T> &vars);
+    /** @brief Lay the table out for a list that offers to name its objects, or for one that does not.
+     *
+     *  The last column is taken away rather than hidden for the categories that have nothing to name: hidden,
+     *  it keeps its header and its widths, so the table still carries a column with no reason to be there. */
+    void SetTableColumns(bool nameable);
 
-    /** @brief Put the "name it" button in @a row, for the line of @a pairKey. */
-    void AddNameButton(int row, const QString &pairKey);
+    /** @brief Show only the switches that mean something for the category on screen.
+     *
+     *  @a measurements for the one category whose values can be empty, @a unnamed for the ones whose objects can
+     *  be without a name. A switch that does nothing is a question the user answers for nothing. */
+    void SetCategoryCheckBoxes(bool measurements, bool unnamed);
+
+    /** @brief Two columns of equal width, and the "Name it" one at the width its button needs. */
+    void ApplyColumnWidths();
+
+    /** @brief The width the "Name it" column needs for its header and its button, measured rather than guessed. */
+    auto NameActionWidth() const -> int;
+
+    /** @brief List @a vars, offering to name the ones nobody named when @a nameable.
+     *
+     *  @a unnamed says whether this list holds objects that can be without a name, and so whether the switch
+     *  that hides them applies — a category of measurements has nothing to do with it. */
+    template <class T> void ShowVariable(const QList<T> &vars, bool nameable = false, bool unnamed = false);
+
+    /** @brief Put the "name it" button in @a row, for the object of @a reference.
+     *
+     *  @a reference is the pair of points for a line, the variable's own name for a curve. */
+    void AddNameButton(int row, const QString &reference);
+
+    /** @brief The row holding @a widget, or -1: what a cell widget cannot say about itself. */
+    auto RowOfWidget(const QWidget *widget) const -> int;
+
+    /** @brief The tool that draws the curve held under @a variableName, or NULL_ID. */
+    auto CurveToolId(const QString &variableName) const -> quint32;
+
+    /** @brief The alias the curve's own tool carries, empty while it has none. */
+    auto CurveAlias(const QString &variableName) const -> QString;
+
+    /** @brief Show again the category on screen, after a name has been given. */
+    void ShowCurrentCategory();
+
+    /** @brief Arc: the lengths and the radii of the pattern's arcs, in one list — see the definition. */
+    void Arc();
+
+    /** @brief Whether a curve length belongs to an arc — `Arc_…` or `ElArc_…` — and so to the "Arc" category. */
+    static auto IsArcCurve(const QSharedPointer<VCurveLength> &var) -> bool;
+
     void ShowMeasurements(const QList<QSharedPointer<VMeasurement>> &vars);
     void ShowFunctions();
     void ShowConstants();
@@ -167,8 +211,6 @@ private:
                         bool square = false);
 
     auto Eval(const FormulaData &formulaData, bool &flag) -> qreal;
-
-    void InitIcons();
 
     auto IsValid() const -> bool;
     void closeEvent(QCloseEvent *event) override;

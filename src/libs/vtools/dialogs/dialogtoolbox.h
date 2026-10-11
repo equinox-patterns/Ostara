@@ -76,6 +76,10 @@ struct FormulaData
      *  variable. A caller that has the container passes it, and the field then refuses a name nobody gave; a
      *  caller that has only a table computes exactly as before. */
     const VContainer *container{nullptr};
+    /** @brief The caption beside the formula field, when the caller has one to colour.
+     *
+     *  Optional, and null for a caller whose caption is a plain name: a name is not in error, so a colour
+     *  there says nothing. The result label then carries the state on its own. */
     QLabel *labelEditFormula{nullptr};
     QLabel *labelResult{nullptr};
     QString postfix{};
