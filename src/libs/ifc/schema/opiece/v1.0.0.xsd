@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A piece of the library: one block of a pattern, the increments that block uses, and what it needs from the
+     pattern it will be imported into.
+
+     This schema is about the envelope, and only the envelope. A piece carries a <draw> and its increments; it
+     carries nothing of the pattern it came from — no cartouche, no watermark, no size ranges, no materials, no
+     measurements. That is what the format says, and that is what this file enforces.
+
+     The body of the block is accepted as it stands. It is the very text the .ostara schema validated on the way
+     out, and the pattern that receives the block validates it again, against its own schema, at its next save:
+     writing the tools a second time here would be a second truth to keep in step with every tool Ostara gains,
+     and a tool left out of it would make a piece impossible to save. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="piece">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="version" type="formatVersion"/>
+        <xs:element name="unit" type="units"/>
+        <xs:element name="increments" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="increment" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="description" type="xs:string"/>
+                  <xs:attribute name="name" type="shortName" use="required"/>
+                  <xs:attribute name="formula" type="xs:string"/>
+                  <xs:attribute name="type" type="incrementType"/>
+                  <xs:attribute name="specialUnits" type="xs:boolean"/>
+                  <xs:attribute name="groupId" type="xs:unsignedInt"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="incrementGroups" type="incrementGroupList" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="previewCalculations" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="increment" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="description" type="xs:string"/>
+                  <xs:attribute name="name" type="shortName" use="required"/>
+                  <xs:attribute name="formula" type="xs:string"/>
+                  <xs:attribute name="type" type="incrementType"/>
+                  <xs:attribute name="specialUnits" type="xs:boolean"/>
+                  <xs:attribute name="groupId" type="xs:unsignedInt"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="previewCalculationGroups" type="incrementGroupList" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="dependencies" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="dependency" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="token" type="xs:string" use="required"/>
+                  <!-- The block the value comes from — the one that declares the object it is built on.
+                       Absent when no block declares it: an operation rebuilds copies that have a value
+                       and no element of their own, and naming a block there would be a guess. -->
+                  <xs:attribute name="origin" type="xs:string"/>
+                  <!-- And when that block IS a library piece, its identity, which survives a rename in
+                       the library where a name would not. -->
+                  <xs:attribute name="libraryId" type="libraryIdentity"/>
+                  <xs:attribute name="category" type="xs:string"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="draw" minOccurs="1" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:any namespace="##local" processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <!-- The name the piece was saved under. It is what the import dialog offers as the name of the
+                 instance, and what the reader calls the piece's category once the instance has its own name. -->
+            <xs:attribute name="name" type="xs:string" use="required"/>
+            <!-- The identity of the library piece: stable across a rename in the library, so that a piece
+                 already imported somewhere still knows which piece it came from. -->
+            <xs:attribute name="libraryId" type="libraryIdentity" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- A group of increments, one list per table. It carries no increment: membership is written on the
+       increment itself, the way a layer carries the group it belongs to. `collapsed` is the reader's own
+       state — whether the table shows the group folded — kept with the document the way the layers keep
+       theirs. Folding a group enables and disables nothing, so it can never break a formula. -->
+  <xs:complexType name="incrementGroupList">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="incrementGroup" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:attribute name="id" type="xs:unsignedInt" use="required"/>
+          <xs:attribute name="name" type="xs:string"/>
+          <xs:attribute name="collapsed" type="xs:boolean"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="formatVersion">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[0-9]{1,}\.[0-9]{1,}\.[0-9]{1,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="units">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="mm"/>
+      <xs:enumeration value="cm"/>
+      <xs:enumeration value="inch"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="shortName">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([^\p{Nd}\\\p{Zs}*\\/&amp;|!&lt;&gt;^&#10;\()\-−+.,٫, ٬.’=?:;'\\&quot;]){1,1}([^\\\p{Zs}*\\/&amp;|!&lt;&gt;^&#10;\()\-−+.,٫, ٬.’=?:;\\&quot;]){0,}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="incrementType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="increment"/>
+      <xs:enumeration value="separator"/>
+      <xs:enumeration value="checkWidth"/>
+      <xs:enumeration value="checkHeight"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="libraryIdentity">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\}"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

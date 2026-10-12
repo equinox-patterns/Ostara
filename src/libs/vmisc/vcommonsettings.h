@@ -111,6 +111,9 @@ public:
     auto GetPathCartoucheTemplates() const -> QString;
     void SetPathCartoucheTemplates(const QString &value) const;
 
+    auto GetPathPieces() const -> QString;
+    void SetPathPieces(const QString &value) const;
+
     auto GetPathPdfTemplates() const -> QString;
     void SetPathPdfTemplates(const QString &value) const;
 

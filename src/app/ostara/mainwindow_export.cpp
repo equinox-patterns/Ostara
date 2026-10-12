@@ -48,6 +48,9 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "core/vapplication.h"
+#include "core/opiecedocument.h"
+#include "core/opiecebuilder.h"
+#include "core/opiecelibrary.h"
 #include <QCoreApplication>
 #include <QDir>
 #include <QDomElement>
@@ -711,6 +714,86 @@ void ProbeMarkNames(QDomElement &element, int &renamed)
     }
 }
 
+// Seconde question, celle du produit : un bloc se relit-il comme une pièce, et le fichier obtenu passe-t-il
+// son propre schéma ? Rien ici n'appartient au produit.
+void ProbeBuildPiece(VPattern *doc, VContainer *pattern)
+{
+    const QDomElement root = doc->documentElement();
+
+    QStringList blocks;
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        blocks.append(draw.attribute(VAbstractPattern::AttrName));
+    }
+    qInfo() << "PIECE-BUILD: blocs du patron =" << blocks;
+
+    const auto countRows = [](const QDomElement &section) -> int
+    {
+        int rows = 0;
+        for (QDomElement row = section.firstChildElement(); not row.isNull(); row = row.nextSiblingElement())
+        {
+            ++rows;
+        }
+        return rows;
+    };
+
+    for (const QString &blockName : blocks)
+    {
+        OPieceDocument piece;
+        QString error;
+        if (not OPieceBuilder::Build(doc, pattern, blockName, blockName, &piece, error))
+        {
+            qInfo() << "PIECE-BUILD:" << blockName << "-> ECHEC :" << error;
+            continue;
+        }
+
+        const QDomElement draw = piece.DrawElement();
+        const QList<OPieceDocument::Dependency> dependencies = piece.Dependencies();
+
+        QStringList needed;
+        for (const OPieceDocument::Dependency &dependency : dependencies)
+        {
+            needed.append(dependency.origin.isEmpty()
+                              ? dependency.token
+                              : dependency.token + QStringLiteral(" <- ") + dependency.origin);
+        }
+
+        qInfo() << "PIECE-BUILD:" << blockName << "| identifiant =" << piece.LibraryId()
+                << "| unite =" << piece.Unit()
+                << "| calques =" << draw.firstChildElement(QStringLiteral("groups")).childNodes().count()
+                << "| groupes de calques ="
+                << draw.firstChildElement(QStringLiteral("layerGroups")).childNodes().count()
+                << "| increments =" << countRows(piece.Increments())
+                << "| calculs preliminaires =" << countRows(piece.PreviewCalculations())
+                << "| dependances =" << dependencies.size() << needed;
+
+        const QString filePath = QStringLiteral("/tmp/probe_piece_%1.opiece")
+                                     .arg(QString(blockName).replace(QChar(u' '), QChar(u'_')));
+        QString saveError;
+        if (not OPieceLibrary::Save(&piece, filePath, &saveError))
+        {
+            qInfo() << "PIECE-BUILD:   ECRITURE REFUSEE ->" << saveError;
+            continue;
+        }
+        qInfo() << "PIECE-BUILD:   ecrit et valide ->" << filePath << QFileInfo(filePath).size() << "octets";
+
+        OPieceDocument reloaded;
+        QString loadError;
+        if (OPieceLibrary::Load(filePath, &reloaded, &loadError))
+        {
+            qInfo() << "PIECE-BUILD:   relu -> nom =" << reloaded.PieceName()
+                    << "| identifiant =" << reloaded.LibraryId()
+                    << "| increments =" << countRows(reloaded.Increments())
+                    << "| dependances =" << reloaded.Dependencies().size();
+        }
+        else
+        {
+            qInfo() << "PIECE-BUILD:   RELECTURE ECHOUEE ->" << loadError;
+        }
+    }
+}
+
 void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
 {
     if (pattern == nullptr || doc == nullptr)
@@ -1028,6 +1111,10 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_BUILD"))
+        {
+            ProbeBuildPiece(doc, pattern); // TEMPORARY — sonde de faisabilité, à retirer
         }
         else if (qEnvironmentVariableIsSet("OSTARA_PIECE_PROBE"))
         {

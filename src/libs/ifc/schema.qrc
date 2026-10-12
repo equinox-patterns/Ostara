@@ -128,5 +128,6 @@
         <file>schema/layout/v0.2.2.xsd</file>
         <file>schema/known_measurements/v1.0.0.xsd</file>
         <file>schema/ostara/v1.0.0.xsd</file>
+        <file>schema/opiece/v1.0.0.xsd</file>
     </qresource>
 </RCC>
