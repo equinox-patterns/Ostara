@@ -141,6 +141,7 @@
      <string>&amp;Libraries</string>
     </property>
     <addaction name="actionManageMeasurements"/>
+    <addaction name="actionPieceLibrary"/>
    </widget>
    <widget class="QMenu" name="menuInfoBlock">
     <property name="title">
@@ -654,6 +655,20 @@
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+Shift+N</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionSavePiece">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save piece to library</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the active pattern piece to the piece library</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -2667,6 +2682,17 @@
    </property>
    <property name="toolTip">
     <string>Browse, open, and manage measurement tables in the library</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionPieceLibrary">
+   <property name="text">
+    <string>Piece Library</string>
+   </property>
+   <property name="toolTip">
+    <string>Browse the pieces saved in the library, and see what each of them needs</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

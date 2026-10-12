@@ -36,6 +36,7 @@
 #include "../vformat/vpatternrecipe.h"
 #include "../ifc/exception/vexceptioninvalidhistory.h"
 #include "../ifc/ifcdef.h"
+#include "../ifc/xml/vpatternblockmapper.h"
 #include "../vmisc/literals.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -52,14 +53,24 @@
 #include "core/opiecebuilder.h"
 #include "core/opiecelibrary.h"
 #include "core/opieceimport.h" // TEMPORARY — sonde de l'import, à retirer
+#include "core/opieceinsert.h" // TEMPORARY — sonde de l'insertion, à retirer
 #include "core/opiecemark.h"   // TEMPORARY — sonde du marquage, à retirer
 #include "core/opieceremap.h" // TEMPORARY — la sonde d'insertion éprouve la règle du produit
 #include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
+#include "dialogs/dialognewpattern.h" // TEMPORARY — sonde de la dialog « nouvelle pièce », à retirer
+#include "dialogs/opiecelibrarydialog.h" // TEMPORARY — sonde de la fenêtre de bibliothèque, à retirer
 #include <QCoreApplication>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
+#include <QLabel>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QGroupBox>
+#include <QListWidget>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -1278,6 +1289,96 @@ void ProbeIncrementGroupsUi(VPattern *doc, VContainer *pattern)
     clickGroupRow(preview, QStringLiteral("table des calculs preliminaires, second clic"));
 }
 
+// TEMPORARY — sonde de la dialog « nouvelle pièce », à retirer à la fin du chantier. Elle construit la dialog et
+// lit ce qu'elle montre : les deux groupes, ce que chaque ligne de la bibliothèque dit, ce qui ne peut pas être
+// choisi, et ce que le bouton annonce. C'est ce qu'un coup d'œil ne prouve pas.
+void ProbeNewPieceDialog(VPattern *doc, VContainer *pattern, const QString &libraryPath)
+{
+    const auto dump = [](const QString &label, DialogNewPattern &dialog)
+    {
+        auto *list = dialog.findChild<QListWidget *>(QStringLiteral("listPieces"));
+        auto *hint = dialog.findChild<QLabel *>(QStringLiteral("labelImportHint"));
+        auto *hidden = dialog.findChild<QLabel *>(QStringLiteral("labelImportHidden"));
+        auto *groupImport = dialog.findChild<QGroupBox *>(QStringLiteral("groupImport"));
+        auto *buttonBox = dialog.findChild<QDialogButtonBox *>(QStringLiteral("buttonBox"));
+
+        if (list == nullptr || hint == nullptr || hidden == nullptr || groupImport == nullptr || buttonBox == nullptr)
+        {
+            qInfo() << "NEWPP:" << label << "| les widgets de la dialog sont introuvables";
+            return;
+        }
+
+        qInfo() << "NEWPP:" << label << "| groupe import =" << groupImport->title()
+                << "| lignes =" << list->count() << "| bouton =" << buttonBox->button(QDialogButtonBox::Ok)->text()
+                << "| actif =" << buttonBox->button(QDialogButtonBox::Ok)->isEnabled();
+        qInfo() << "NEWPP:" << label << "| indication =" << hint->text();
+        if (hidden->isVisible() || not hidden->text().isEmpty())
+        {
+            qInfo() << "NEWPP:" << label << "| pieces ecartees =" << hidden->text();
+        }
+
+        for (int row = 0; row < list->count(); ++row)
+        {
+            const QListWidgetItem *item = list->item(row);
+            qInfo() << "NEWPP:" << label << "|   ligne" << row << "|" << item->text()
+                    << "| choisissable =" << ((item->flags() & Qt::ItemIsEnabled) != 0)
+                    << "| chemin =" << item->data(Qt::UserRole).toString()
+                    << "| info =" << QString(item->toolTip()).replace(QLatin1Char('\n'), QStringLiteral(" / "));
+        }
+    };
+
+    // 1. Une piece de plus dans un patron qui existe : l'unite vient du patron.
+    {
+        DialogNewPattern dialog(pattern, QStringLiteral("Piece 9"), DialogNewPattern::Creation::Piece);
+        dialog.SetTakenNames({QStringLiteral("Piece 9")});
+        dialog.SetLibraryDirectory(libraryPath);
+        dialog.SetLibraryUnit(OPieceImport::HostUnit(doc));
+        dump(QStringLiteral("piece, unite du patron"), dialog);
+    }
+
+    // 2. Le patron qui nait : l'unite est la question, et le tri la suit.
+    {
+        DialogNewPattern dialog(pattern, QStringLiteral("Piece 1"), DialogNewPattern::Creation::Pattern);
+        dialog.SetLibraryDirectory(libraryPath);
+
+        auto *units = dialog.findChild<QComboBox *>(QStringLiteral("comboBoxUnits"));
+        if (units == nullptr)
+        {
+            qInfo() << "NEWPP: nouveau patron | la combo d'unites est introuvable";
+            return;
+        }
+
+        for (const QString &wanted : {QStringLiteral("cm"), QStringLiteral("mm"), QStringLiteral("inch")})
+        {
+            const int index = units->findData(wanted);
+            if (index != -1)
+            {
+                units->setCurrentIndex(index);
+                dump(QStringLiteral("nouveau patron en ") + wanted, dialog);
+            }
+        }
+
+        // Et le choix, puis le double-clic, sur la premiere piece offerte.
+        auto *list = dialog.findChild<QListWidget *>(QStringLiteral("listPieces"));
+        auto *buttonBox = dialog.findChild<QDialogButtonBox *>(QStringLiteral("buttonBox"));
+        units->setCurrentIndex(units->findData(QStringLiteral("cm")));
+        for (int row = 0; row < list->count(); ++row)
+        {
+            if ((list->item(row)->flags() & Qt::ItemIsEnabled) == 0)
+            {
+                continue;
+            }
+
+            list->itemDoubleClicked(list->item(row));
+            qInfo() << "NEWPP: nouveau patron | double-clic sur la ligne" << row
+                    << "| resultat =" << dialog.result()
+                    << "(Accepted =" << static_cast<int>(QDialog::Accepted) << ") | chemin rendu ="
+                    << dialog.ImportedPath() << "| bouton =" << buttonBox->button(QDialogButtonBox::Ok)->text();
+            break;
+        }
+    }
+}
+
 // TEMPORARY — sonde de l'import des incréments, à retirer à la fin du chantier.
 // Fait entrer dans le patron les incréments d'une pièce de la bibliothèque, et lit ce que le patron en a fait.
 void ProbePieceImport(VPattern *doc, VContainer *pattern)
@@ -1802,6 +1903,395 @@ void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
     const bool saved = doc->SaveDocument(outFile, error);
     qInfo() << "PIECE-PROBE: save =" << saved << "|" << error << "|" << outFile;
 }
+
+// TEMPORARY — sonde de la fenêtre de bibliothèque, à retirer à la fin du chantier. Elle ne montre rien : elle
+// construit la fenêtre, puis lit ce qu'elle afficherait, ligne par ligne. C'est la seule façon de mesurer une
+// fenêtre sans quelqu'un devant.
+void ProbePieceLibrary(const QString &directory)
+{
+    OPieceLibraryDialog dialog(directory);
+
+    auto *table = dialog.findChild<QTableWidget *>();
+    auto *details = dialog.findChild<QLabel *>(QStringLiteral("descLabel"));
+    if (table == nullptr || details == nullptr)
+    {
+        qInfo() << "LIB: la fenetre n'a ni table ni zone de details";
+        return;
+    }
+
+    qInfo() << "LIB: dossier =" << directory << "| lignes =" << table->rowCount()
+            << "| colonnes =" << table->columnCount();
+
+    for (int row = 0; row < table->rowCount(); ++row)
+    {
+        QStringList cells;
+        for (int column = 0; column < table->columnCount(); ++column)
+        {
+            const QTableWidgetItem *item = table->item(row, column);
+            cells.append(item == nullptr ? QStringLiteral("<vide>") : item->text());
+        }
+        qInfo() << "LIB:  ligne" << row << "=" << cells;
+    }
+
+    for (int row = 0; row < table->rowCount(); ++row)
+    {
+        table->selectRow(row);
+        qInfo() << "LIB: details de la ligne" << row << "=" << details->text().split(QLatin1Char('\n'));
+    }
+
+    // Et le cas d'une ligne filtrée : ce qui reste caché ne doit plus rien dire, et ce qui reste visible
+    // doit être ce que la zone de détails raconte.
+    auto *search = dialog.findChild<QLineEdit *>();
+    if (search != nullptr)
+    {
+        auto report = [table, details, search](const QString &text)
+        {
+            search->setText(text);
+            QStringList visible;
+            for (int row = 0; row < table->rowCount(); ++row)
+            {
+                if (not table->isRowHidden(row))
+                {
+                    visible.append(table->item(row, 0)->text());
+                }
+            }
+            qInfo() << "LIB: recherche" << text << "-> visibles =" << visible << "| details ="
+                    << details->text().split(QLatin1Char('\n'));
+        };
+
+        report(QStringLiteral("zzz"));
+        report(QStringLiteral("Manch"));
+        report(QString());
+    }
+}
+// TEMPORARY — fabrication du patron témoin du §11, à retirer avec le témoin qu'il produit. Ce que le chantier
+// ne trouvait dans aucun patron réel : une formule qui cite un nom d'objet de **sa propre pièce** — les seules
+// rencontres mesurées jusqu'ici citaient les objets d'une **autre** pièce, c'est-à-dire une dépendance. Le
+// témoin est un `BustedeBase` auquel on ajoute un point dont la longueur est `Line_Em_Pro`, la ligne Em→Pro du
+// Buste : au marquage, cette formule doit suivre ses points (`Line_Em__P1_Pro__P1`), et c'est exactement ce
+// qu'aucune mesure ne pouvait montrer avant.
+void ProbeWitnessFormulas(VPattern *doc, const QString &outPath)
+{
+    const QDomElement root = doc->documentElement();
+
+    QDomElement calculation;
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        if (draw.attribute(VAbstractPattern::AttrName) == QStringLiteral("Buste"))
+        {
+            calculation = draw.firstChildElement(VAbstractPattern::TagCalculation);
+        }
+    }
+
+    if (calculation.isNull())
+    {
+        qInfo() << "WITNESS: pas de bloc Buste";
+        return;
+    }
+
+    // Le modèle vient du **même** bloc : ses références restent dans le bloc, donc la copie n'invente aucune
+    // référence croisée — ce qu'une pièce ne peut pas porter.
+    QDomElement model;
+    for (QDomElement point = calculation.firstChildElement(VAbstractPattern::TagPoint); not point.isNull();
+         point = point.nextSiblingElement(VAbstractPattern::TagPoint))
+    {
+        if (point.attribute(QStringLiteral("type")) == QStringLiteral("endLine"))
+        {
+            model = point;
+            break;
+        }
+    }
+
+    if (model.isNull())
+    {
+        qInfo() << "WITNESS: aucun point endLine dans le Buste, rien a fabriquer";
+        return;
+    }
+
+    // Le plus grand id du document, par le même parcours que le reste des sondes : le joker `*` de
+    // `elementsByTagName` ne rend rien ici.
+    QSet<QString> declaredIds;
+    ProbeCollectDeclaredIds(root, declaredIds);
+    quint32 highest = 0;
+    for (const QString &value : declaredIds)
+    {
+        bool ok = false;
+        const quint32 id = value.toUInt(&ok);
+        if (ok)
+        {
+            highest = qMax(highest, id);
+        }
+    }
+
+    qInfo() << "WITNESS: ids declares =" << declaredIds.size() << "| plus grand id =" << highest;
+
+    // Le nom du point témoin doit être **libre** : un doublon ferait deux objets sous une clé, et la mesure ne
+    // dirait plus lequel des deux la formule suit. C'est le vocabulaire du marquage qui répond — celui du produit.
+    const QString witnessName = QStringLiteral("ZZTemoin");
+    if (OPieceMark::DeclaredNames(root).contains(witnessName))
+    {
+        qInfo() << "WITNESS:" << witnessName << "existe deja, rien a fabriquer";
+        return;
+    }
+
+    QDomElement witness = model.cloneNode(true).toElement();
+    witness.setAttribute(VDomDocument::AttrId, QString::number(highest + 1));
+    witness.setAttribute(VAbstractPattern::AttrName, witnessName);
+    // L'incrément est **cité** par la formule : c'est ce qui le fait voyager avec la pièce — le constructeur
+    // n'emporte que ce que la pièce utilise, et un incrément que personne ne cite reste chez lui.
+    witness.setAttribute(QStringLiteral("length"), QStringLiteral("Line_Em_Pro+#ZZTemoin"));
+    witness.setAttribute(QStringLiteral("angle"), QStringLiteral("0"));
+    calculation.appendChild(witness);
+
+    qInfo() << "WITNESS: point" << witness.attribute(VAbstractPattern::AttrName)
+            << "| id =" << witness.attribute(VDomDocument::AttrId)
+            << "| basePoint =" << witness.attribute(QStringLiteral("basePoint"))
+            << "| length =" << witness.attribute(QStringLiteral("length"));
+
+    // Et un incrément que l'hôte ne porte pas : c'est lui qui fait **naître** une ligne et un groupe à
+    // l'insertion, donc lui qui éprouve l'annulation de l'import. Sans lui, tout existe déjà dans l'hôte, rien
+    // n'est ajouté, et « une seule passe d'undo » ne se mesurerait pas.
+    QDomElement increments = root.firstChildElement(VAbstractPattern::TagIncrements);
+    if (increments.isNull())
+    {
+        qInfo() << "WITNESS: pas de section increments, rien a fabriquer";
+        return;
+    }
+
+    QDomElement row = doc->createElement(VAbstractPattern::TagIncrement);
+    row.setAttribute(VAbstractPattern::AttrName, QStringLiteral("#ZZTemoin"));
+    row.setAttribute(QStringLiteral("formula"), QStringLiteral("2"));
+    row.setAttribute(QStringLiteral("description"), QStringLiteral("Increment temoin de l'insertion"));
+    increments.appendChild(row);
+    qInfo() << "WITNESS: increment" << row.attribute(VAbstractPattern::AttrName) << "ajoute";
+
+    QString error;
+    if (doc->SaveDocument(outPath, error))
+    {
+        qInfo() << "WITNESS: ecrit ->" << outPath << QFileInfo(outPath).size() << "octets";
+    }
+    else
+    {
+        qInfo() << "WITNESS: ECRITURE REFUSEE ->" << error;
+    }
+}
+
+// TEMPORARY — sonde de l'insertion d'une pièce de bibliothèque, à retirer à la fin du chantier. Elle fait ce que
+// le produit fera : lire la pièce, la refuser si elle n'a pas sa place, la préparer, puis **pousser la commande**
+// — et elle mesure les deux choses qu'aucune relecture ne prouve : que la formule du témoin suit ses points, et
+// qu'un seul Ctrl+Z remet le document exactement dans l'état d'avant.
+namespace
+{
+/// Le contenu d'une section, **sérialisé** : `QDomElement::text()` ne rend rien quand tout est en attributs, et
+/// c'est justement le cas des incréments — une comparaison sur `.text()` serait vraie sans rien comparer.
+auto ProbeSectionText(const QDomElement &section) -> QString
+{
+    if (section.isNull())
+    {
+        return QStringLiteral("<absente>");
+    }
+
+    QDomDocument holder;
+    holder.appendChild(section.cloneNode(true));
+    return holder.toString(0);
+}
+
+auto ProbeSections(const QDomElement &root) -> QString
+{
+    QStringList parts;
+    for (const QString &tag : {VAbstractPattern::TagIncrements, VAbstractPattern::TagIncrementGroups,
+                               VAbstractPattern::TagPreviewCalculations,
+                               VAbstractPattern::TagPreviewCalculationGroups, VAbstractPattern::TagLineNames})
+    {
+        const QDomElement section = root.firstChildElement(tag);
+        const QString rows = section.isNull() ? QStringLiteral("-") : QString::number(section.childNodes().count());
+        parts.append(tag + QLatin1Char('(') + rows + QLatin1String(")=") + ProbeSectionText(section));
+    }
+    return parts.join(QStringLiteral("\n    "));
+}
+
+auto ProbePointByName(const QDomElement &root, const QString &name) -> QDomElement
+{
+    const QDomNodeList points = root.elementsByTagName(VAbstractPattern::TagPoint);
+    for (int i = 0; i < points.count(); ++i)
+    {
+        const QDomElement point = points.at(i).toElement();
+        if (point.attribute(VAbstractPattern::AttrName) == name)
+        {
+            return point;
+        }
+    }
+    return {};
+}
+
+auto ProbeUniqueInstance(VPattern *doc, const QString &wanted) -> QString
+{
+    const QStringList taken = doc->PatternBlockMapper()->GetBlockNames();
+    if (not taken.contains(wanted))
+    {
+        return wanted;
+    }
+
+    for (int suffix = 2; suffix < 100; ++suffix)
+    {
+        const QString candidate = wanted + QLatin1Char(' ') + QString::number(suffix);
+        if (not taken.contains(candidate))
+        {
+            return candidate;
+        }
+    }
+    return wanted;
+}
+} // namespace
+
+auto ProbePositionIn(const QDomElement &element) -> QPointF
+{
+    if (element.hasAttribute(AttrX) && element.hasAttribute(AttrY))
+    {
+        return {element.attribute(AttrX).toDouble(), element.attribute(AttrY).toDouble()};
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        const QPointF found = ProbePositionIn(child);
+        if (not found.isNull())
+        {
+            return found;
+        }
+    }
+
+    return {};
+}
+
+auto ProbeFirstPosition(const QDomElement &block) -> QPointF
+{
+    return ProbePositionIn(block);
+}
+
+void ProbePieceInsert(VPattern *doc, VContainer *pattern, const QString &piecePath, const QPointF &anchorTarget)
+{
+    OPieceDocument piece;
+    QString error;
+    if (not OPieceLibrary::Load(piecePath, &piece, &error))
+    {
+        qInfo() << "INSERT: piece illisible ->" << error;
+        return;
+    }
+
+    qInfo() << "INSERT: piece =" << piece.PieceName() << "| unite =" << piece.Unit()
+            << "| dependances =" << piece.Dependencies().size();
+    qInfo() << "INSERT: placement demande | cible =" << anchorTarget
+            << "| point de base du morceau =" << ProbeFirstPosition(piece.DrawElement());
+
+    if (not OPieceImport::CheckMeasurements(piece, doc, error))
+    {
+        qInfo() << "INSERT: aucune table de mesures ->" << error;
+        return;
+    }
+
+    if (not OPieceImport::CheckUnit(piece, doc, error))
+    {
+        qInfo() << "INSERT: unite refusee ->" << error;
+        return;
+    }
+
+    if (not OPieceImport::CheckDependencies(piece, doc, error))
+    {
+        qInfo() << "INSERT: dependance manquante ->" << error;
+    }
+    else
+    {
+        qInfo() << "INSERT: unite et dependances acceptees";
+    }
+
+    const QDomElement root = doc->documentElement();
+    const QString sectionsBefore = ProbeSections(root);
+    const int blocksBefore = static_cast<int>(doc->CountPatternBlockTags());
+    const QDomElement mancheBefore = [doc]()
+    {
+        for (QDomElement draw = doc->documentElement().firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+             draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+        {
+            if (draw.attribute(VAbstractPattern::AttrName) == QStringLiteral("Manche"))
+            {
+                return draw;
+            }
+        }
+        return QDomElement();
+    }();
+    const QString mancheBeforeText = ProbeSectionText(mancheBefore);
+
+    const QString instanceName = ProbeUniqueInstance(doc, piece.PieceName());
+    const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, doc, pattern, instanceName, anchorTarget);
+    qInfo() << "INSERT: prepare | instance =" << prepared.instanceName << "| bloc pret =" << prepared.IsReady()
+            << "| noms renommes =" << prepared.renamed.size() << "| marque posee ="
+            << (prepared.renamed.isEmpty() ? QStringLiteral("non") : QStringLiteral("oui"))
+            << "| position posee =" << ProbeFirstPosition(prepared.block) << "| ecart ="
+            << (ProbeFirstPosition(prepared.block) - ProbeFirstPosition(piece.DrawElement()));
+
+    VAbstractApplication::VApp()->getUndoStack()->push(
+        new OPieceInsert::AddPieceFromLibrary(prepared, piece, doc, pattern));
+
+    // Ce que la mesure doit montrer : la formule du témoin suit **ses** points.
+    const QDomElement witness = ProbePointByName(doc->documentElement(), QStringLiteral("ZZTemoin__P1"));
+    qInfo() << "INSERT: temoin | point ZZTemoin__P1 trouve =" << (not witness.isNull())
+            << "| length =" << witness.attribute(QStringLiteral("length"))
+            << "| angle =" << witness.attribute(QStringLiteral("angle"));
+
+    const QDomElement hostEm = ProbePointByName(doc->documentElement(), QStringLiteral("Em"));
+    const QDomElement hostPro = ProbePointByName(doc->documentElement(), QStringLiteral("Pro"));
+    qInfo() << "INSERT: l'hote n'a pas bouge | Em nue =" << (not hostEm.isNull())
+            << "| Pro nue =" << (not hostPro.isNull()) << "| blocs =" << blocksBefore << "->"
+            << doc->CountPatternBlockTags();
+
+    const auto nanCount = [pattern]()
+    {
+        int nan = 0;
+        const QHash<QString, QSharedPointer<VInternalVariable>> *variables = pattern->DataVariables();
+        for (auto it = variables->constBegin(); it != variables->constEnd(); ++it)
+        {
+            if (not it.value().isNull() && it.value()->GetValue() != nullptr && std::isnan(*it.value()->GetValue()))
+            {
+                ++nan;
+            }
+        }
+        return nan;
+    };
+    qInfo() << "INSERT: apres insertion | variables =" << pattern->DataVariables()->size() << "| NaN =" << nanCount()
+            << "| sections =" << ProbeSections(doc->documentElement());
+
+    // Un seul Ctrl+Z : les quatre sections ET le bloc, ou rien.
+    VAbstractApplication::VApp()->getUndoStack()->undo();
+    const QString sectionsAfterUndo = ProbeSections(doc->documentElement());
+    qInfo() << "INSERT: apres un Ctrl+Z | blocs =" << doc->CountPatternBlockTags() << "| sections identiques ="
+            << (sectionsAfterUndo == sectionsBefore) << "| bloc temoin encore la ="
+            << (not ProbePointByName(doc->documentElement(), QStringLiteral("ZZTemoin__P1")).isNull());
+    if (sectionsAfterUndo != sectionsBefore)
+    {
+        qInfo() << "INSERT:   AVANT =" << sectionsBefore;
+        qInfo() << "INSERT:   APRES =" << sectionsAfterUndo;
+    }
+    qInfo() << "INSERT: apres un Ctrl+Z | NaN =" << nanCount() << "| variables =" << pattern->DataVariables()->size();
+
+    // Et un Ctrl+Y remet tout, sans rien laisser de plus.
+    VAbstractApplication::VApp()->getUndoStack()->redo();
+    const QDomElement witnessAgain = ProbePointByName(doc->documentElement(), QStringLiteral("ZZTemoin__P1"));
+    qInfo() << "INSERT: apres un Ctrl+Y | temoin =" << (not witnessAgain.isNull())
+            << "| length =" << witnessAgain.attribute(QStringLiteral("length")) << "| blocs ="
+            << doc->CountPatternBlockTags() << "| sections =" << ProbeSections(doc->documentElement());
+
+    const QString mancheAfterText = ProbeSectionText(mancheBefore);
+    qInfo() << "INSERT: la Manche de l'hote, texte identique ="
+            << (mancheBeforeText == QStringLiteral("<absente>")
+                    ? QStringLiteral("(pas de Manche)")
+                    : QString::number(mancheAfterText == mancheBeforeText));
+
+    const QString outFile = QDir::tempPath() + QStringLiteral("/ostara_piece_insert.ostara");
+    QString saveError;
+    const bool saved = doc->SaveDocument(outFile, saveError);
+    qInfo() << "INSERT: enregistrer =" << saved << "|" << saveError << "|" << outFile;
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1872,6 +2362,27 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_INSERT"))
+        {
+            // TEMPORARY — sonde, à retirer
+            const QPointF beyond = PositionBeyondDrawn();
+            ProbePieceInsert(doc, pattern, qEnvironmentVariable("OSTARA_PIECE_INSERT"),
+                             QPointF(VAbstractValApplication::VApp()->fromPixel(beyond.x()),
+                                     VAbstractValApplication::VApp()->fromPixel(beyond.y())));
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_WITNESS"))
+        {
+            ProbeWitnessFormulas(doc, qEnvironmentVariable("OSTARA_PIECE_WITNESS")); // TEMPORARY — sonde, à retirer
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_NEWPP_DIALOG"))
+        {
+            // TEMPORARY — sonde, à retirer
+            ProbeNewPieceDialog(doc, pattern, qEnvironmentVariable("OSTARA_NEWPP_DIALOG"));
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_LIBRARY"))
+        {
+            ProbePieceLibrary(qEnvironmentVariable("OSTARA_PIECE_LIBRARY")); // TEMPORARY — sonde, à retirer
         }
         else if (qEnvironmentVariableIsSet("OSTARA_PIECE_IMPORT"))
         {

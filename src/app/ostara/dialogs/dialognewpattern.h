@@ -65,6 +65,19 @@ public:
     /// dialog says so by keeping OK down rather than by asking the question again after the fact.
     void SetTakenNames(const QStringList &names);
 
+    /// The library to offer in the second group. **Given** by the caller, never read from the settings here: the
+    /// caller is what knows which library it is talking about, and giving it is also what makes this dialog
+    /// measurable.
+    void SetLibraryDirectory(const QString &directory);
+
+    /// The unit a piece of the library must be in to be offered — the unit of the pattern it would enter. Read
+    /// from the unit combo instead when the pattern itself is being born: there the unit is the question, and
+    /// changing it re-reads the library.
+    void SetLibraryUnit(const Unit &unit);
+
+    /// The piece the reader chose to import, as an absolute path — empty when she chose to create one instead.
+    auto ImportedPath() const -> QString;
+
     /// The layer the piece starts in — the two are born together, since no object may live outside a layer.
     auto LayerName() const -> QString;
     auto LayerColor() const -> QString;
@@ -91,6 +104,27 @@ private:
     QComboBox *m_layerPenStyle{nullptr};
     QComboBox *m_layerColor{nullptr};
     void InitUnits();
+
+    /// Fill the second group from the library the caller gave: one line per piece, saying what it reads
+    /// elsewhere — that is what decides whether it can enter this pattern at all. A file that cannot be read
+    /// keeps its place and says why, unselectable, rather than disappearing from the list without a word.
+    void FillLibrary();
+
+    /// The unit a piece must be in to be offered: the combo's when the pattern is being born, the one the caller
+    /// gave otherwise. Every other unit is left out of the list, because the insertion would refuse it.
+    auto WantedUnit() const -> Unit;
+
+    /// The piece selected in the library list, or empty. What the dialog is about to do hangs on it.
+    auto SelectedLibraryPiece() const -> QString;
+
+    /// The kind of creation this dialog asks about — what tells whether the unit is the combo's or the caller's.
+    Creation m_creation{Creation::Pattern};
+
+    QString m_libraryDirectory{};
+    QString m_importedPath{};
+    Unit m_libraryUnit{Unit::LAST_UNIT_DO_NOT_USE};
+    /// The OK button's own text, kept so it can be given back when the choice goes back to creating a piece.
+    QString m_okText{};
 };
 
 #endif // DIALOGINDIVIDUALMEASUREMENTS_H

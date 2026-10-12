@@ -125,6 +125,7 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionArrowTool->setEnabled(enableOnDesignStage);
     ui->actionExportRecipe->setEnabled(enableOnDrawStage);
     ui->actionNewDraw->setEnabled(enableOnDrawStage);
+    UpdatePieceSaveAction();
     ui->actionDraw->setEnabled(enable);
     ui->actionDetails->setEnabled(enable);
     ui->actionGraded->setEnabled(enable);
@@ -401,6 +402,7 @@ void MainWindow::CreateActions()
     connect(ui->actionExport, &QAction::triggered, this, &MainWindow::ActionExport);
     connect(ui->actionExportRecipe, &QAction::triggered, this, &MainWindow::ActionExportRecipe_triggered);
     connect(ui->actionNewDraw, &QAction::triggered, this, &MainWindow::ActionNewDraw_triggered);
+    connect(ui->actionSavePiece, &QAction::triggered, this, &MainWindow::ActionSavePiece_triggered);
     connect(ui->actionExportFinalMeasurementsToCSV, &QAction::triggered, this, &MainWindow::ExportFMeasurementsToCSV);
     connect(ui->actionTable, &QAction::triggered, this, &MainWindow::ActionTable_triggered);
     connect(ui->actionFinalMeasurements, &QAction::triggered, this, &MainWindow::ActionFinalMeasurements_triggered);
@@ -511,6 +513,7 @@ void MainWindow::CreateActions()
     connect(ui->actionEditMeasurements, &QAction::triggered, this, &MainWindow::OnEditMeasurements);
     connect(ui->actionCreateMeasurements, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
     connect(ui->actionManageMeasurements, &QAction::triggered, this, &MainWindow::ActionManageMeasurements);
+    connect(ui->actionPieceLibrary, &QAction::triggered, this, &MainWindow::ActionPieceLibrary);
     connect(ui->actionExportAs, &QAction::triggered, this, &MainWindow::ExportLayoutAs);
     connect(ui->actionPrintPreview, &QAction::triggered, this, &MainWindow::PrintPreviewOrigin);
     connect(ui->actionPrintPreviewTiled, &QAction::triggered, this, &MainWindow::PrintPreviewTiled);

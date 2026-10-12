@@ -90,18 +90,36 @@ auto LocalDefinitions(const QString &expression) -> QSet<QString>
     return names;
 }
 
-/** @brief Every object identifier the elements of @p element declare — their own `id`. */
+/**
+ * @brief Every object identifier the elements of @p element declare.
+ *
+ * An element declares its own object with `@id` — and a point that cuts a curve also declares the segments
+ * it cuts, whose ids live in `segment1Id`…`segment4Id`. Those curves belong to the block that holds the
+ * point: without them, a piece reading `SplPath_R1_Eb` would look like a value that nobody declares, and
+ * would travel without its origin.
+ */
 void CollectDeclaredIds(const QDomElement &element, QSet<quint32> &ids)
 {
-    if (element.hasAttribute(VDomDocument::AttrId))
+    const auto collect = [&element, &ids](const QString &attribute)
     {
+        if (not element.hasAttribute(attribute))
+        {
+            return;
+        }
+
         bool ok = false;
-        const quint32 id = element.attribute(VDomDocument::AttrId).toUInt(&ok);
+        const quint32 id = element.attribute(attribute).toUInt(&ok);
         if (ok)
         {
             ids.insert(id);
         }
-    }
+    };
+
+    collect(VDomDocument::AttrId);
+    collect(AttrSegment1Id);
+    collect(AttrSegment2Id);
+    collect(AttrSegment3Id);
+    collect(AttrSegment4Id);
 
     for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
     {

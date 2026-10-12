@@ -38,20 +38,32 @@
 #include <QCoreApplication>
 #include <QCursor>
 #include <QDateTime>
+#include <QDir>
+#include <QFileInfo>
 #include <QFormLayout>
 #include <QFrame>
 #include <QGuiApplication>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPalette>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QSignalBlocker>
 #include <QtGlobal>
 #include <new>
 
+#include "core/opiecebuilder.h"
+#include "core/opiecedocument.h"
+#include "core/opiecelibrary.h"
+#include "core/opieceimport.h"
+#include "core/opieceinsert.h"
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "core/odetailspropertybrowser.h"
 #include "dialogs/dialognewpattern.h"
+#include "dialogs/oexportfiledialog.h"
+#include "dialogs/opiecelibrarydialog.h"
+#include "dialogs/osavepiecedialog.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetgroups.h"
@@ -227,6 +239,7 @@ void MainWindow::FullParseFile()
     GlobalChangePP(patternPiece);
 
     SetEnableTool(m_comboBoxDraws->count() > 0);
+    UpdatePieceSaveAction();
     m_dockManager->detailsWidget()->UpdateList();
     // A full parse recreated the tools: if the details-options dock still shows the piece page,
     // repopulate it with the recreated tool, so an undo/redo of a delete refreshes the internal
@@ -590,13 +603,196 @@ void MainWindow::ActionNewDraw_triggered()
     }
     dialog.SetTakenNames(taken);
 
+    // The library is given to the dialog, the way it is given to the piece library window: the caller is what
+    // knows which folder it is talking about, and a dialog that reads the settings itself cannot be measured.
+    // The unit too: a piece of another unit is not a choice, since the insertion would refuse it.
+    dialog.SetLibraryDirectory(OPieceLibrary::DefaultDirectory());
+    dialog.SetLibraryUnit(OPieceImport::HostUnit(doc));
+
     if (dialog.exec() != QDialog::Accepted)
     {
         return;
     }
+
+    // Two answers behind one window: a piece named by hand, or a piece taken from the library. The second
+    // brings its own name, its layers and its increments, so it goes in through the insertion and nothing else
+    // of this dialog is read.
+    if (const QString imported = dialog.ImportedPath(); not imported.isEmpty())
+    {
+        InsertLibraryPiece(imported);
+        return;
+    }
+
     qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(dialog.name()));
 
     AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle());
+}
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionSavePiece_triggered()
+{
+    if (doc == nullptr || m_comboBoxDraws == nullptr)
+    {
+        return;
+    }
+
+    const QString blockName = doc->PatternBlockMapper()->GetActive();
+    if (blockName.isEmpty())
+    {
+        return;
+    }
+
+    // The name is asked before anything is written — and asked again as long as the library already holds
+    // one under that name: the question is the door, and the only way through it is to name the piece
+    // something else. A cancelled dialog leaves the library exactly as it was.
+    const QDir library(OPieceLibrary::DefaultDirectory());
+    while (true)
+    {
+        OSavePieceDialog dialog(blockName, this);
+        if (dialog.exec() != QDialog::Accepted)
+        {
+            return;
+        }
+
+        const QString name = dialog.name();
+        const QString filePath = library.filePath(name + QLatin1Char('.') + OPieceLibrary::Extension());
+
+        if (OExportFileDialog::ConfirmOverwrite(this, filePath, tr("Save piece")))
+        {
+            SavePieceToLibrary(blockName, name, filePath);
+            return;
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::SavePieceToLibrary(const QString &blockName, const QString &name, const QString &filePath)
+{
+    OPieceDocument piece;
+    QString error;
+    if (not OPieceBuilder::Build(doc, pattern, blockName, name, &piece, error))
+    {
+        QMessageBox::warning(this, tr("Save piece"), error);
+        return;
+    }
+
+    if (not OPieceLibrary::Save(&piece, filePath, &error))
+    {
+        QMessageBox::warning(this, tr("Save piece"), error);
+        return;
+    }
+
+    statusBar()->showMessage(tr("Piece saved: %1").arg(QFileInfo(filePath).fileName()), 5000);
+    qCDebug(vMainWindow, "Piece %s saved.", qUtf8Printable(filePath));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionPieceLibrary()
+{
+    // The library is a window on a folder: it reads the pieces and says what each of them needs. It writes
+    // nothing — the piece it hands back is inserted by the pattern, and that is a change of the pattern.
+    OPieceLibraryDialog dialog(OPieceLibrary::DefaultDirectory(), this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    InsertLibraryPiece(dialog.SelectedPath());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::InsertLibraryPiece(const QString &filePath)
+{
+    if (doc == nullptr || pattern == nullptr || filePath.isEmpty())
+    {
+        return;
+    }
+
+    OPieceDocument piece;
+    QString error;
+    if (not OPieceLibrary::Load(filePath, &piece, &error))
+    {
+        QMessageBox::warning(this, tr("Piece library"), error);
+        return;
+    }
+
+    // What the piece may not do, said before anything is touched: a pattern that holds no measurement table to
+    // read the piece against, a piece of another unit, and a piece whose values live in a piece this pattern does
+    // not hold. All three are refusals, never silent entries — and the first one is the only one the user can
+    // repair on the spot, so the table is asked for and the insertion carries on once it is loaded.
+    if (not OPieceImport::CheckMeasurements(piece, doc, error))
+    {
+        QMessageBox ask(QMessageBox::Question, tr("Piece library"), error, QMessageBox::NoButton, this);
+        QPushButton *const load = ask.addButton(tr("Load a measurement table"), QMessageBox::AcceptRole);
+        ask.addButton(QMessageBox::Cancel);
+        ask.exec();
+
+        if (ask.clickedButton() == load)
+        {
+            OnLoadMeasurements();
+        }
+
+        // The table is only there once the chosen file has been read: a cancelled question, a cancelled file
+        // dialog, or a legacy table that still has to be converted all leave the pattern without one — and the
+        // piece has then nothing to be read with.
+        if (not OPieceImport::CheckMeasurements(piece, doc, error))
+        {
+            return;
+        }
+    }
+
+    if (not OPieceImport::CheckUnit(piece, doc, error) || not OPieceImport::CheckDependencies(piece, doc, error))
+    {
+        QMessageBox::warning(this, tr("Piece library"), error);
+        return;
+    }
+
+    // The instance name is the piece's own, and a second one takes the next free name: the block name is what the
+    // top bar shows, and two blocks cannot wear the same one.
+    QString instanceName = piece.PieceName();
+    const QStringList taken = doc->PatternBlockMapper()->GetBlockNames();
+    for (int suffix = 2; taken.contains(instanceName) && suffix < 100; ++suffix)
+    {
+        instanceName = piece.PieceName() + QLatin1Char(' ') + QString::number(suffix);
+    }
+
+    // Where it takes place, decided before anything is written: a piece brings a whole construction with it, and
+    // it starts beyond what the pattern already shows. The canvas thinks in pixels, the document in the pattern's
+    // own unit, and this is the one place the two meet.
+    const QPointF beyond = PositionBeyondDrawn();
+    const QPointF anchorTarget(VAbstractValApplication::VApp()->fromPixel(beyond.x()),
+                               VAbstractValApplication::VApp()->fromPixel(beyond.y()));
+
+    const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, doc, pattern, instanceName, anchorTarget);
+    if (not prepared.IsReady())
+    {
+        QMessageBox::warning(this, tr("Piece library"), tr("This piece holds no block to insert."));
+        return;
+    }
+
+    // One gesture: the block, the increments it brings, the groups that hold them and the names of its lines all
+    // go in through one command, so one Ctrl+Z takes the whole piece back out.
+    VAbstractApplication::VApp()->getUndoStack()->push(
+        new OPieceInsert::AddPieceFromLibrary(prepared, piece, doc, pattern));
+
+    // And the new piece takes the canvas, the way a piece drawn by hand does. The selector is what remembers it:
+    // the full parse that follows rebuilds the list and puts back the piece the selector names, so the piece has
+    // to be named there **before** that parse — the same two lines AddPP writes for a piece born in the app.
+    if (m_comboBoxDraws != nullptr)
+    {
+        const QSignalBlocker blocker(m_comboBoxDraws);
+        if (m_comboBoxDraws->findText(prepared.instanceName) == -1)
+        {
+            m_comboBoxDraws->addItem(prepared.instanceName);
+        }
+        m_comboBoxDraws->setCurrentIndex(m_comboBoxDraws->findText(prepared.instanceName));
+    }
+
+    // And the view follows it, the way it follows a piece drawn by hand: the piece landed beyond everything, so
+    // without this the gesture would show nothing at all.
+    QApplication::postEvent(this, new FitBestCurrentEvent());
+
+    statusBar()->showMessage(tr("Piece inserted: %1").arg(prepared.instanceName), 5000);
+    qCDebug(vMainWindow, "Piece %s inserted as %s.", qUtf8Printable(filePath), qUtf8Printable(prepared.instanceName));
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionShowMainPath_triggered(bool checked)

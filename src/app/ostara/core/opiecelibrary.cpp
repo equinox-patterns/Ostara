@@ -76,6 +76,43 @@ auto OPieceLibrary::ScanDirectory(const QString &dirPath) -> QStringList
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Summaries(const QString &dirPath) -> QList<Summary>
+{
+    const QStringList files = ScanDirectory(dirPath);
+
+    QList<Summary> summaries;
+    summaries.reserve(files.size());
+    for (const QString &filePath : files)
+    {
+        const QFileInfo info(filePath);
+
+        Summary summary;
+        summary.path = filePath;
+        // The file name is the fallback, and not a lesser one: it is what the reader will recognise when the
+        // file cannot be read, and what she will go and look at.
+        summary.name = info.completeBaseName();
+        summary.modified = info.lastModified();
+
+        OPieceDocument piece;
+        QString error;
+        if (Load(filePath, &piece, &error))
+        {
+            summary.name = piece.PieceName();
+            summary.unit = piece.Unit();
+            summary.dependencies = piece.Dependencies();
+        }
+        else
+        {
+            summary.error = error;
+        }
+
+        summaries.append(summary);
+    }
+
+    return summaries;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPieceLibrary::Load(const QString &filePath, OPieceDocument *piece, QString *error) -> bool
 {
     if (piece == nullptr)
@@ -134,4 +171,53 @@ auto OPieceLibrary::Save(OPieceDocument *piece, const QString &filePath, QString
         *error = err;
     }
     return ok;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Needs(const Summary &summary) -> QString
+{
+    if (not summary.error.isEmpty())
+    {
+        // A file that cannot be read has nothing to say about what it needs, and the dash says exactly that.
+        return QStringLiteral("—");
+    }
+
+    QStringList pieces;
+    for (const OPieceDocument::Dependency &dependency : summary.dependencies)
+    {
+        pieces.append(dependency.origin.isEmpty() ? dependency.token : dependency.origin);
+    }
+    pieces.removeDuplicates();
+
+    return pieces.join(QStringLiteral(", "));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Details(const Summary &summary) -> QString
+{
+    if (not summary.error.isEmpty())
+    {
+        return QCoreApplication::translate("OPieceLibrary", "This piece could not be read: %1").arg(summary.error);
+    }
+
+    if (summary.dependencies.isEmpty())
+    {
+        return QCoreApplication::translate("OPieceLibrary",
+                                           "It needs nothing: everything it reads, it declares.");
+    }
+
+    QStringList lines{QCoreApplication::translate("OPieceLibrary", "Needs:")};
+    for (const OPieceDocument::Dependency &dependency : summary.dependencies)
+    {
+        // The value, and then who declares it. When nothing does, the value is shown alone rather than hidden:
+        // it is exactly the case the import will refuse, and it is better seen here than there.
+        lines.append(dependency.origin.isEmpty()
+                         ? QStringLiteral("    ")
+                               + QCoreApplication::translate("OPieceLibrary", "%1 — no piece declares it")
+                                     .arg(dependency.token)
+                         : QStringLiteral("    ") + dependency.token + QStringLiteral(" ← ")
+                               + dependency.origin);
+    }
+
+    return lines.join(QLatin1Char('\n'));
 }

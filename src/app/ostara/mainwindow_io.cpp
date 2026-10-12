@@ -35,6 +35,7 @@
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/def.h"
+#include "core/opiecelibrary.h"
 #include "core/vapplication.h"
 #include "core/odetailspropertybrowser.h"
 #include "core/ogradedrangerenames.h"
@@ -561,6 +562,7 @@ void MainWindow::Clear()
         m_comboBoxDraws->clear();
         m_comboBoxDraws->setDisabled(true);
     }
+    UpdatePieceSaveAction();
     ui->actionDraw->setEnabled(false);
     ui->actionDetails->setEnabled(false);
     ui->actionGraded->setEnabled(false);
@@ -636,6 +638,9 @@ void MainWindow::on_actionNew_triggered()
 
         qCDebug(vMainWindow, "First PP");
         DialogNewPattern newPattern(pattern, patternPieceName, DialogNewPattern::Creation::Pattern, this);
+        // The library is given to the dialog here as well, and the unit is the one the dialog is asking about:
+        // changing it re-reads the library, since a piece of another unit could not enter this pattern.
+        newPattern.SetLibraryDirectory(OPieceLibrary::DefaultDirectory());
         if (newPattern.exec() == QDialog::Accepted)
         {
             patternPieceName = newPattern.name();
@@ -653,8 +658,33 @@ void MainWindow::on_actionNew_triggered()
         VMainGraphicsView::NewSceneRect(m_sceneDraw, ui->view);
         VMainGraphicsView::NewSceneRect(m_sceneDetails, ui->view);
 
-        // The piece and the layer it starts in, in one gesture — see AddPP.
-        AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle());
+        if (const QString imported = newPattern.ImportedPath(); not imported.isEmpty())
+        {
+            // The pattern is born from a piece of the library instead of one drawn here. The file has to exist
+            // **before** the block: a block is inserted into a document, and a pattern that has never been
+            // written has no root at all — the same CreateEmptyFile the first base point asks for.
+            if (doc->CountPatternBlockTags() == 0)
+            {
+                doc->CreateEmptyFile();
+            }
+
+            InsertLibraryPiece(imported);
+
+            // The insertion can still not happen — a pattern is born without a measurement table, the piece needs
+            // one, and the reader may refuse it. The pattern is already born by then (a block has to be inserted
+            // **into** a document), so it is given the piece it would have had: the empty one the other branch
+            // creates, rather than a document the schema would refuse to save.
+            if (doc->CountPatternBlockTags() == 0)
+            {
+                AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(),
+                      newPattern.LayerPenStyle());
+            }
+        }
+        else
+        {
+            // The piece and the layer it starts in, in one gesture — see AddPP.
+            AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle());
+        }
 
         // Normalize to Draw mode (mirrors LoadPattern) so the Details dock/content
         // cannot leak into a freshly created pattern.

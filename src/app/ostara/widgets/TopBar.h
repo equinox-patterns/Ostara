@@ -46,7 +46,8 @@ public:
 
     void SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout,
                         QAction *exportMode);
-    void SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction);
+    void SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction,
+                                QAction *savePieceAction);
     void SetMeasurementWidgets(QAction *loadAction, QLabel *fileNameLabel,
                                QLabel *separator, QAction *tableAction);
     void SetZoomWidget(QWidget *zoomBlock);
@@ -104,6 +105,7 @@ private:
     QComboBox   *m_comboDraws         = nullptr;
     QLabel      *m_pieceLabel         = nullptr;
     QToolButton *m_btnNewPiece        = nullptr;
+    QToolButton *m_btnSavePiece       = nullptr; // writes the active piece into the piece library
     QLabel      *m_sepPatternMeasure  = nullptr; // line-vertical between new piece and ruler
 
     // --- Center: measurement ----------------------------------------------

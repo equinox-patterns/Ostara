@@ -123,14 +123,14 @@ void OExportFileDialog::AddOption(QWidget *option)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportFileDialog::ConfirmOverwrite(QWidget *parent, const QString &filePath) -> bool
+auto OExportFileDialog::ConfirmOverwrite(QWidget *parent, const QString &filePath, const QString &title) -> bool
 {
     if (!QFileInfo::exists(filePath))
     {
         return true;
     }
 
-    const auto answer = QMessageBox::question(parent, tr("Export"),
+    const auto answer = QMessageBox::question(parent, title.isEmpty() ? tr("Export") : title,
                                               tr("%1 already exists. Replace it?")
                                                   .arg(QFileInfo(filePath).fileName()),
                                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No);

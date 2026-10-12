@@ -27,6 +27,8 @@
 #ifndef OPIECEIMPORT_H
 #define OPIECEIMPORT_H
 
+#include "../vmisc/def.h"
+
 #include <QDomElement>
 #include <QHash>
 #include <QString>
@@ -97,6 +99,58 @@ auto ImportIncrements(const OPieceDocument &piece, VPattern *host, VContainer *d
  * @return true when the piece may enter. False when it is refused, @p error saying why.
  */
 auto CheckUnit(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
+
+/**
+ * @brief The unit a piece declares, read from the word alone.
+ *
+ * `Unit::LAST_UNIT_DO_NOT_USE` when the word is missing or names something a piece may not carry — read as a word
+ * of the schema, never through `StrToUnits`, which answers centimetres to anything it does not know.
+ *
+ * The same reading `CheckUnit` refuses on, and it is public so that a list can be **filtered** by it: a dialog
+ * that offers a piece of another unit would offer a piece the very next click refuses.
+ */
+auto PieceUnit(const QString &unit) -> Unit;
+
+/**
+ * @brief The unit @p host works in: the one its file declares, and failing that the one the work is in.
+ *
+ * Public for the same reason as @ref PieceUnit — the list of pieces to offer is built from it.
+ */
+auto HostUnit(const VAbstractPattern *host) -> Unit;
+
+/**
+ * @brief Whether @p host holds the pieces @p piece reads elsewhere.
+ *
+ * A piece that reads a value it does not declare needs another piece — that is what a dependency *is* — and a
+ * pattern that holds none of them cannot give the value back: the piece would enter with formulas pointing at
+ * nothing. The answer is a **refusal that names what is missing**, never a silent entry.
+ *
+ * A candidate is looked for in the order that survives renaming: the piece's `libraryId` first — it is what stays
+ * true when a piece is renamed in the library — then its `category`, the name it wore, and finally the **name of
+ * the block**, because a block drawn by hand carries neither identity nor category and refusing to see it would
+ * be refusing the ordinary case.
+ *
+ * @param error written with what to tell the reader: what the piece reads, and what to do about it.
+ * @return true when every value the piece reads is declared by some block of @p host.
+ */
+auto CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
+
+/**
+ * @brief Whether @p host holds the measurement table a piece is read against.
+ *
+ * A piece does not carry its measurements: the table is shared by every pattern of a file, and the formulas the
+ * piece brings are evaluated *with* it. A pattern that holds no table therefore has nothing to read a piece with
+ * — and the failure would come too late to be repaired: the block would already be in the document when the parse
+ * refuses it, and the parse only logs "the formula uses a name the pattern does not define" before disabling the
+ * editor. So the refusal is asked **before** anything is written, and it is the caller's to answer: the canvas is
+ * where a measurement table is loaded.
+ *
+ * @param host the pattern the piece would enter, asked whether it holds a measurement table at all.
+ * @param error written with what to tell the reader — the refusal, then what to do about it.
+ * @return true when the pattern holds a measurement table.
+ */
+auto CheckMeasurements(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
+
 /**
  * @brief Writes the origin of @p piece on @p block, as the block enters the pattern.
  *

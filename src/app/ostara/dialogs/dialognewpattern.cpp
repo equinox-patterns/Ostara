@@ -28,6 +28,8 @@
 
 #include "dialognewpattern.h"
 #include "ui_dialognewpattern.h"
+#include "../core/opiecelibrary.h"
+#include "../core/opieceimport.h"
 #include "../ifc/ifcdef.h"
 #include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -40,7 +42,9 @@
 #include <QFormLayout>
 #include <QFrame>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QLineEdit>
+#include <QListWidget>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
@@ -68,7 +72,7 @@ constexpr int kAirStretch = 1;
 //---------------------------------------------------------------------------------------------------------------------
 DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPieceName, Creation creation,
                                    QWidget *parent)
-    :QDialog(parent), ui(new Ui::DialogNewPattern), m_data(data)
+    :QDialog(parent), ui(new Ui::DialogNewPattern), m_data(data), m_creation(creation)
 {
     ui->setupUi(this);
 
@@ -91,6 +95,31 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
         // belongs to the pattern — is not part of it.
         setWindowTitle(tr("New pattern piece"));
         ui->formLayout->setRowVisible(kUnitRow, false);
+    }
+
+    // What OK does is said ON the button, because the two groups ask two different things and nothing else in
+    // the window tells them apart: with a piece chosen, the name and the layer above do not apply.
+    if (QPushButton *bOk = ui->buttonBox->button(QDialogButtonBox::Ok); bOk != nullptr)
+    {
+        m_okText = bOk->text();
+    }
+
+    connect(ui->listPieces, &QListWidget::itemDoubleClicked, this,
+            [this](QListWidgetItem *item) -> void
+            {
+                if (item != nullptr && (item->flags() & Qt::ItemIsEnabled) != 0)
+                {
+                    m_importedPath = item->data(Qt::UserRole).toString();
+                    accept();
+                }
+            });
+    connect(ui->listPieces, &QListWidget::itemSelectionChanged, this, &DialogNewPattern::CheckState);
+
+    // The unit is part of the question when a pattern is being born, and only then: changing it changes which
+    // pieces the library can offer, so the list is read again.
+    if (creation == Creation::Pattern)
+    {
+        connect(ui->comboBoxUnits, &QComboBox::currentIndexChanged, this, [this]() -> void { FillLibrary(); });
     }
 
     BuildLayerFields();
@@ -158,6 +187,109 @@ void DialogNewPattern::SetTakenNames(const QStringList &names)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::SetLibraryDirectory(const QString &directory)
+{
+    m_libraryDirectory = directory;
+    FillLibrary();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::SetLibraryUnit(const Unit &unit)
+{
+    m_libraryUnit = unit;
+    FillLibrary();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogNewPattern::WantedUnit() const -> Unit
+{
+    // A pattern being born has no file yet: the unit *is* the question this dialog asks, so the combo answers it.
+    // One more piece in a pattern that exists inherits its unit, and the caller says which.
+    return m_creation == Creation::Pattern ? PatternUnit() : m_libraryUnit;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::FillLibrary()
+{
+    ui->listPieces->clear();
+    ui->labelImportHint->setText(tr("Double-click a piece to insert it, or select one and accept."));
+    ui->labelImportHidden->clear();
+    ui->labelImportHidden->setVisible(false);
+
+    if (m_libraryDirectory.isEmpty())
+    {
+        return;
+    }
+
+    const Unit wanted = WantedUnit();
+    const QList<OPieceLibrary::Summary> summaries = OPieceLibrary::Summaries(m_libraryDirectory);
+
+    int leftOut = 0;
+    for (const OPieceLibrary::Summary &summary : summaries)
+    {
+        // **Only the pieces this pattern could take.** A piece is written in one unit and a pattern holds one from
+        // end to end, so a piece of another unit is not a choice — it is a refusal three clicks from here. A file
+        // that cannot be read declares no unit at all, and is left out with the same count.
+        if (OPieceImport::PieceUnit(summary.unit) != wanted)
+        {
+            ++leftOut;
+            continue;
+        }
+
+        // A line has no column header above it here, so what the row says has to be a sentence: the window's
+        // "Needs" column becomes "needs Buste". A piece that cannot be read needs no case of its own — it declares
+        // no unit, so the filter above has already left it out, and the count below says so.
+        QString line = summary.name;
+        if (const QString needs = OPieceLibrary::Needs(summary); not needs.isEmpty())
+        {
+            line = tr("%1 — needs %2").arg(summary.name, needs);
+        }
+
+        auto *item = new QListWidgetItem(line, ui->listPieces);
+        item->setToolTip(OPieceLibrary::Details(summary));
+        item->setData(Qt::UserRole, summary.path);
+    }
+
+    if (summaries.isEmpty())
+    {
+        ui->labelImportHint->setText(tr("No piece is saved in the library yet."));
+        return;
+    }
+
+    if (ui->listPieces->count() == 0)
+    {
+        ui->labelImportHint->setText(tr("No piece in the library is in %1.").arg(UnitsToStr(wanted, true)));
+    }
+
+    if (leftOut > 0)
+    {
+        // Said rather than hidden: a reader who saved a piece in another unit and does not see it here must not go
+        // looking for a mistake of her own.
+        ui->labelImportHidden->setText(tr("%n piece(s) not shown: another unit, or unreadable.", "", leftOut));
+        ui->labelImportHidden->setVisible(true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogNewPattern::SelectedLibraryPiece() const -> QString
+{
+    if (const QListWidgetItem *item = ui->listPieces->currentItem(); item != nullptr)
+    {
+        return item->data(Qt::UserRole).toString();
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogNewPattern::ImportedPath() const -> QString
+{
+    // The double-click path is kept as it is: the dialog is already accepted by the time anyone asks, and the
+    // list may have been emptied since.
+    return m_importedPath.isEmpty() ? SelectedLibraryPiece() : m_importedPath;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogNewPattern::LayerName() const -> QString
 {
     return m_layerName->text();
@@ -187,6 +319,18 @@ void DialogNewPattern::CheckState()
 {
     QPushButton *bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     SCASSERT(bOk != nullptr)
+
+    // A piece chosen in the library is a whole answer on its own: it brings its name, its layers and its
+    // increments, so the name and the layer fields above have nothing to say — and the button says so, rather
+    // than letting the reader wonder which of the two groups is about to be read.
+    if (not SelectedLibraryPiece().isEmpty())
+    {
+        bOk->setText(tr("Insert the piece"));
+        bOk->setEnabled(true);
+        return;
+    }
+
+    bOk->setText(m_okText);
 
     // The piece needs a name no other piece of this pattern wears, and the layer needs one too: both are
     // nameable things that end up written, so the button says what is missing by staying down.

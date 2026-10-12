@@ -29,6 +29,8 @@
 
 #include "opiecedocument.h"
 
+#include <QDateTime>
+#include <QList>
 #include <QString>
 #include <QStringList>
 
@@ -45,6 +47,22 @@
  */
 namespace OPieceLibrary
 {
+/**
+ * @brief What a piece of the library says about itself, read without its geometry.
+ *
+ * Enough to show it in a list and to say what it will ask for: a piece that reads a value it does not
+ * declare needs another piece, and the library is where that other piece is looked for.
+ */
+struct Summary
+{
+    QString path{};      ///< the file, as the library holds it.
+    QString name{};      ///< the name the piece wears — its file's name when the file could not be read.
+    QString unit{};      ///< the unit of the pattern it was cut from (`mm`, `cm`, `inch`).
+    QList<OPieceDocument::Dependency> dependencies{}; ///< what it reads without declaring it.
+    QDateTime modified{};///< when the file was last written.
+    QString error{};     ///< why the file could not be read; empty when it could.
+};
+
 /** @brief The extension of a saved piece, without its dot. */
 auto Extension() -> QString;
 
@@ -53,6 +71,34 @@ auto DefaultDirectory() -> QString;
 
 /** @brief Every piece in @p dirPath, as absolute paths sorted by name — empty if there is none. */
 auto ScanDirectory(const QString &dirPath) -> QStringList;
+
+/**
+ * @brief Every piece in @p dirPath, read and summarised, in the order the scan gives.
+ *
+ * A file that cannot be read is **kept in the list**, with its reason: a piece that disappears from the
+ * library without a word is worse than one that says it is unreadable — the reader would look for a
+ * mistake of her own.
+ */
+auto Summaries(const QString &dirPath) -> QList<Summary>;
+
+/**
+ * @brief What @p summary reads elsewhere, named for a list — `Buste, Manche`.
+ *
+ * The **pieces**, not the tokens: a piece that enters a pattern asks for other pieces, and that is what a
+ * reader looks for. A file that cannot be read has nothing to say about what it needs, and says so with a dash.
+ *
+ * Written once, here, beside the summary it describes: the library window and the dialog that imports both show
+ * this line, and two authors would end up saying it two ways.
+ */
+auto Needs(const Summary &summary) -> QString;
+
+/**
+ * @brief The same, told at length: one line per value, and who declares it.
+ *
+ * The case nothing declares is **shown rather than hidden** — it is exactly the one the import refuses, and it
+ * is better seen in the library than met as a refusal.
+ */
+auto Details(const Summary &summary) -> QString;
 
 /** @brief Reads @p filePath into @p piece, which must not hold anything worth keeping. */
 auto Load(const QString &filePath, OPieceDocument *piece, QString *error) -> bool;

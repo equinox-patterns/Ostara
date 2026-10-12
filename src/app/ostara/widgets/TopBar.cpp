@@ -125,7 +125,8 @@ void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QA
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TopBar::SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction)
+void TopBar::SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction,
+                                    QAction *savePieceAction)
 {
     m_pieceLabel = pieceLabel;
     pieceLabel->setParent(this);
@@ -141,6 +142,15 @@ void TopBar::SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QActio
     m_btnNewPiece->setToolButtonStyle(Qt::ToolButtonIconOnly);
     m_btnNewPiece->setIconSize(QSize(24, 24));
     m_centerLayout->addWidget(m_btnNewPiece);
+
+    // Right next to the piece it saves: the piece the combo shows is the piece the button writes, so the
+    // two are read as one gesture — choose, then keep.
+    m_btnSavePiece = new QToolButton(this);
+    m_btnSavePiece->setDefaultAction(savePieceAction);
+    m_btnSavePiece->setAutoRaise(true);
+    m_btnSavePiece->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    m_btnSavePiece->setIconSize(QSize(24, 24));
+    m_centerLayout->addWidget(m_btnSavePiece);
 
     // Separator between pattern piece and measurement sections
     m_sepPatternMeasure = new QLabel(this);
@@ -247,6 +257,10 @@ void TopBar::SetPatternPieceVisible(bool visible)
     if (m_btnNewPiece)
     {
         m_btnNewPiece->setVisible(visible);
+    }
+    if (m_btnSavePiece)
+    {
+        m_btnSavePiece->setVisible(visible);
     }
     if (m_sepPatternMeasure)
     {
@@ -389,6 +403,12 @@ void TopBar::ReloadIcons()
     ReloadSep(m_sepGradedLayout);
     ReloadSep(m_sepLayoutExport);
     ReloadSep(m_sepPatternMeasure);
+
+    // The save button wears the only icon the mode set does not: it is not a mode, it is the piece.
+    if (m_btnSavePiece)
+    {
+        m_btnSavePiece->setIcon(QIcon(QStringLiteral(":/icons/%1/floppy-disk-fill_%1.svg").arg(theme)));
+    }
 
     // Refresh dim separator if visible
     if (m_dimSeparator && m_dimSeparator->isVisible())

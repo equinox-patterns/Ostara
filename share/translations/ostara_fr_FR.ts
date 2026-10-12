@@ -4756,8 +4756,51 @@ Cette action ne peut pas être annulée.</translation>
         <source>New pattern</source>
         <translation>Nouveau patron</translation>
     </message>
-</context>
-<context>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui"/>
+        <source>Create a piece</source>
+        <translation>Créer une pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui"/>
+        <source>Import a piece</source>
+        <translation>Importer une pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp"/>
+        <source>Double-click a piece to insert it, or select one and accept.</source>
+        <translation>Double-cliquez une pièce pour l&apos;insérer, ou sélectionnez-la et validez.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp"/>
+        <source>Insert the piece</source>
+        <translation>Insérer la pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp"/>
+        <source>No piece is saved in the library yet.</source>
+        <translation>Aucune pièce n&apos;est encore enregistrée dans la bibliothèque.</translation>
+    </message>
+
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp"/>
+        <source>%1 — needs %2</source>
+        <translation>%1 — a besoin de %2</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp"/>
+        <source>No piece in the library is in %1.</source>
+        <translation>Aucune pièce de la bibliothèque n&apos;est en %1.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp"/>
+        <source>%n piece(s) not shown: another unit, or unreadable.</source>
+        <translation>
+            <numerusform>%n pièce non montrée : autre unité, ou illisible.</numerusform>
+            <numerusform>%n pièces non montrées : autre unité, ou illisible.</numerusform>
+        </translation>
+    </message>
+</context><context>
     <name>DialogNormal</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="121"/>
@@ -9474,6 +9517,51 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>MainWindow</name>
     <message>
+        <location filename="../../src/app/ostara/mainwindow.ui"/>
+        <source>Save piece to library</source>
+        <translation>Enregistrer la pièce dans la bibliothèque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui"/>
+        <source>Save the active pattern piece to the piece library</source>
+        <translation>Enregistrer l&apos;élément de patron actif dans la bibliothèque de pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp"/>
+        <source>Save piece</source>
+        <translation>Enregistrer la pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp"/>
+        <source>Piece saved: %1</source>
+        <translation>Pièce enregistrée : %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui"/>
+        <source>Piece Library</source>
+        <translation>Bibliothèque de pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui"/>
+        <source>Browse the pieces saved in the library, and see what each of them needs</source>
+        <translation>Parcourir les pièces enregistrées dans la bibliothèque et voir ce dont chacune a besoin</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp"/>
+        <source>Piece library</source>
+        <translation>Bibliothèque de pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp"/>
+        <source>Piece inserted: %1</source>
+        <translation>Pièce insérée : %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp"/>
+        <source>This piece holds no block to insert.</source>
+        <translation>Cette pièce ne contient aucun bloc à insérer.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="770"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two — the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation>Sélectionnez les objets du contour &lt;b&gt;dans l&apos;ordre&lt;/b&gt; : tous dans le sens horaire ou tous dans le sens antihoraire, sans jamais mélanger les deux — les points des lignes de départ comprises. Puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
@@ -11416,6 +11504,11 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="407"/>
         <source>Load measurements table</source>
         <translation>Charger un tableau de mensurations</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp"/>
+        <source>Load a measurement table</source>
+        <translation>Charger un tableau de mesures</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="88"/>
@@ -17257,6 +17350,14 @@ Cette action ne peut pas être annulée.</translation>
     </message>
 </context>
 <context>
+    <name>OPieceBuilder</name>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecebuilder.cpp"/>
+        <source>There is no block named %1.</source>
+        <translation>Aucun bloc ne porte le nom %1.</translation>
+    </message>
+</context>
+<context>
     <name>OPieceCartoucheCutEditor</name>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="56"/>
@@ -17362,6 +17463,24 @@ Cette action ne peut pas être annulée.</translation>
     </message>
 </context>
 <context>
+    <name>OPieceImport</name>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp"/>
+        <source>This piece reads %1, and no piece of this pattern declares it. Import the piece it comes from first.</source>
+        <translation>Cette pièce lit %1, et aucune pièce de ce patron ne le déclare. Importez d&apos;abord la pièce dont elle vient.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp"/>
+        <source>The piece is in %1 and this pattern is in %2. A pattern holds one unit from end to end, and a piece is never converted: import it into a pattern of its own unit.</source>
+        <translation>La pièce est en %1 et ce patron est en %2. Un patron tient une seule unité d&apos;un bout à l&apos;autre, et une pièce n&apos;est jamais convertie : importez-la dans un patron de son unité.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp"/>
+        <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
+        <translation>Ce patron n&apos;a pas encore de tableau de mesures, et une pièce se lit contre un tableau : ses formules sont évaluées avec les mesures du tableau. Chargez un tableau de mesures, puis insérez la pièce.</translation>
+    </message>
+</context>
+<context>
     <name>OPieceInfoWidget</name>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
@@ -17406,6 +17525,95 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="255"/>
         <source>On fold</source>
         <translation>Au pli</translation>
+    </message>
+</context>
+<context>
+    <name>OPieceInsert</name>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceinsert.cpp"/>
+        <source>Insert the piece &quot;%1&quot;</source>
+        <translation>Insérer la pièce « %1 »</translation>
+    </message>
+</context>
+<context>
+    <name>OPieceLibrary</name>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecelibrary.cpp"/>
+        <source>Not a piece file.</source>
+        <translation>Ce n&apos;est pas un fichier de pièce.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecelibrary.cpp"/>
+        <source>%1 — no piece declares it</source>
+        <translation>%1 — aucune pièce ne le déclare</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecelibrary.cpp"/>
+        <source>It needs nothing: everything it reads, it declares.</source>
+        <translation>Elle n&apos;a besoin de rien : tout ce qu&apos;elle lit, elle le déclare.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecelibrary.cpp"/>
+        <source>Needs:</source>
+        <translation>A besoin de :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecelibrary.cpp"/>
+        <source>This piece could not be read: %1</source>
+        <translation>Cette pièce n&apos;a pas pu être lue : %1</translation>
+    </message>
+
+</context><context>
+    <name>OPieceLibraryDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Modified</source>
+        <translation>Modifié le</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Needs</source>
+        <translation>A besoin de</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>No piece is saved in the library yet.</source>
+        <translation>Aucune pièce n&apos;est encore enregistrée dans la bibliothèque.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>No piece matches the search.</source>
+        <translation>Aucune pièce ne correspond à la recherche.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Piece library</source>
+        <translation>Bibliothèque de pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Insert</source>
+        <translation>Insérer</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Search:</source>
+        <translation>Rechercher :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Search pieces…</source>
+        <translation>Rechercher une pièce…</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp"/>
+        <source>Unit</source>
+        <translation>Unité</translation>
     </message>
 </context>
 <context>
@@ -17595,6 +17803,34 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="316"/>
         <source>Two departure lines share a point, and the pleats do not carry them together: no cap can be built there.</source>
         <translation>Deux lignes de départ partagent un point, et les plis ne les emportent pas ensemble : aucun chapeau ne peut y être construit.</translation>
+    </message>
+</context>
+<context>
+    <name>OSavePieceDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>A piece is written as a file in the library, so its name cannot hold a slash.</source>
+        <translation>Une pièce est écrite sous forme de fichier dans la bibliothèque : son nom ne peut donc pas contenir de barre oblique.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>Name the piece in the library.</source>
+        <translation>Nommer la pièce dans la bibliothèque.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>Pattern piece name:</source>
+        <translation>Nom de l&apos;élément de patron :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>Save piece to the library</source>
+        <translation>Enregistrer la pièce dans la bibliothèque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>The name the piece will wear in the library</source>
+        <translation>Le nom que la pièce portera dans la bibliothèque</translation>
     </message>
 </context>
 <context>

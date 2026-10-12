@@ -529,6 +529,7 @@ void MainWindow::AddPP(const QString &PPName, const QString &layerName, const QS
     QApplication::postEvent(this, new FitBestCurrentEvent());
 
     ui->actionNewDraw->setEnabled(true);
+    UpdatePieceSaveAction();
     m_statusLabel->setText(QString());
 
     undoStack->endMacro();
@@ -567,21 +568,47 @@ void MainWindow::CreateFirstLayer(const QString &layerName, const QString &layer
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::StartPositionNewPP() const -> QPointF
 {
+    // The first piece of a pattern starts at the origin; every later one stands clear of what is drawn. Both
+    // numbers are the canvas's own (pixels), and PositionBeyondDrawn answers the same origin on an empty canvas.
+    if (m_comboBoxDraws->count() > 1)
+    {
+        return PositionBeyondDrawn();
+    }
+
+    return {30.0, 40.0};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Where a construction that brings its own geometry starts: beyond everything the draw scene shows.
+ *
+ * A piece drawn by hand starts at a bare point and the user draws around it; a piece coming from the library
+ * brings a whole construction with it, and dropped where the block it was saved from still stands, the two hide
+ * one behind the other. So both start **beyond what is drawn**, and in the same place — one rule, not two.
+ *
+ * The numbers are the canvas's own, in pixels; a caller writing them into the document converts them
+ * (VAbstractValApplication::fromPixel), the way every tool position is written.
+ */
+auto MainWindow::PositionBeyondDrawn() const -> QPointF
+{
     const qreal originX = 30.0;
     const qreal originY = 40.0;
     const qreal margin = 40.0;
-    if (m_comboBoxDraws->count() > 1)
-    {
-        const QRectF rect = m_sceneDraw->VisibleItemsBoundingRect();
-        if (rect.width() <= rect.height())
-        {
-            return {rect.width() + margin, originY};
-        }
 
-        return {originX, rect.height() + margin};
+    const QRectF drawn = m_sceneDraw->VisibleItemsBoundingRect();
+    if (drawn.isEmpty())
+    {
+        return {originX, originY}; // Nothing to stand clear of yet.
     }
 
-    return {originX, originY};
+    // To the right when what is drawn is taller than wide, below otherwise: a construction takes roughly its own
+    // size, and the shorter side is the one it leaves alone.
+    if (drawn.width() <= drawn.height())
+    {
+        return {drawn.right() + margin, drawn.top()};
+    }
+
+    return {drawn.left(), drawn.bottom() + margin};
 }
 
 

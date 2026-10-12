@@ -86,7 +86,12 @@ public:
     /// exactement ce pourquoi ce dialogue existe.
     ///
     /// @return true quand il faut écrire — donc aussi quand le fichier n'existe pas.
-    static bool ConfirmOverwrite(QWidget *parent, const QString &filePath);
+    ///
+    /// @param title the window title, defaulting to the export's. It is a parameter because the question
+    ///        is not the export's alone — saving a piece to the library asks the same one — and a window
+    ///        titled "Export" over a piece would name the wrong gesture. The question itself stays here,
+    ///        single.
+    static bool ConfirmOverwrite(QWidget *parent, const QString &filePath, const QString &title = QString());
 
 protected:
     void changeEvent(QEvent *event) override;

@@ -167,8 +167,25 @@ void MainWindow::ToolBarDraws()
     connect(m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::PatternPieceRenameRequested, this,
             &MainWindow::RenameActivePatternPiece);
 
-    m_topBar->SetPatternPieceWidgets(m_patternPieceLabel, m_comboBoxDraws, ui->actionNewDraw);
+    m_topBar->SetPatternPieceWidgets(m_patternPieceLabel, m_comboBoxDraws, ui->actionNewDraw,
+                                     ui->actionSavePiece);
     ui->actionNewDraw->setToolTip(FormatActionToolTip(ui->actionNewDraw));
+    ui->actionSavePiece->setToolTip(FormatActionToolTip(ui->actionSavePiece));
+    UpdatePieceSaveAction();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdatePieceSaveAction()
+{
+    if (ui->actionSavePiece == nullptr)
+    {
+        return;
+    }
+
+    // The combo *is* the list of what can be saved: the button reads its state rather than re-deciding
+    // which stages hold pieces — a second copy of that rule is a second thing to keep in step.
+    ui->actionSavePiece->setEnabled(m_comboBoxDraws != nullptr && m_comboBoxDraws->isEnabled()
+                                    && m_comboBoxDraws->count() > 0);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -337,6 +354,8 @@ void MainWindow::UpdateTopBarIcons()
         QIcon(QStringLiteral(":/icons/%1/printer-fill_%1.svg").arg(themeDir)));
     ui->actionNewDraw->setIcon(
         QIcon(QStringLiteral(":/icons/%1/plus-circle-fill_%1.svg").arg(themeDir)));
+    ui->actionSavePiece->setIcon(
+        QIcon(QStringLiteral(":/icons/%1/floppy-disk-fill_%1.svg").arg(themeDir)));
 
     ui->actionZoomIn->setIcon(
         QIcon(QStringLiteral(":/icons/%1/magnifying-glass-plus-fill_%1.svg").arg(themeDir)));

@@ -109,6 +109,11 @@ public:
 
     void LiteParseIncrements();
 
+    /// Rewrite the `<lineNames>` section from the container — that section has one author, and this is it: the
+    /// save path asks for it too. A caller that has just registered line names in the container (an import does)
+    /// must ask for it as well, because a parse reads the **section**, never the container.
+    void SyncLineNamesToDom();
+
     static const QString AttrReadOnly;
     static const QString AttrLabelPrefix;
     static const QString AttrHighestId;
@@ -223,7 +228,6 @@ private:
     void ParsePathElement(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
     void ParseIncrementsElement(const QDomNode &node, const Document &parse);
     void ParseLineNamesElement(const QDomElement &domElement);
-    void SyncLineNamesToDom();
 
     void PrepareForParse(const Document &parse);
     void ToolsCommonAttributes(const QDomElement &domElement, quint32 &id);

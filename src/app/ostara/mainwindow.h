@@ -518,11 +518,13 @@ private slots:
 
     void ActionExportRecipe_triggered();
     void ActionNewDraw_triggered();
+    void ActionSavePiece_triggered();
     void ActionTable_triggered();
     void ActionFinalMeasurements_triggered();
     void ActionInfoBlock_triggered(int page);
     void ActionExportTemplates_triggered(int tab);
     void ActionManageMeasurements();
+    void ActionPieceLibrary();
     void ActionShowMainPath_triggered(bool checked);
     void ActionBoundaryTogetherWithNotches_triggered(bool checked);
 
@@ -780,6 +782,27 @@ private:
     void SetEnableTool(bool enable);
     void SetLayoutModeActions();
 
+    /// Keep the top bar's save-piece button in step with what there is to save.
+    ///
+    /// One function rather than a setEnabled at each of the four places the piece list changes (a full
+    /// parse, a new piece, a closed pattern, a mode change): the button answers one question — is there a
+    /// piece to write — and that question is asked in one place.
+    void UpdatePieceSaveAction();
+
+    /// @brief Insert the library piece held in @p filePath into the open pattern, as one undoable gesture.
+    ///
+    /// Everything the piece may not do is refused before anything is touched — another unit, a value no piece of
+    /// this pattern declares — and the piece enters with its names marked when they collide, its ids renewed, its
+    /// increments, its groups and its role names all in the same command.
+    void InsertLibraryPiece(const QString &filePath);
+
+    /// Write the piece @p blockName into the library under the name @p name.
+    ///
+    /// The piece is cut from the pattern as it stands — its names marked, its increments, its dependencies
+    /// and its identity gathered — and written to @p filePath. Nothing is written if anything is refused:
+    /// a piece that cannot be cut, or a file the schema will not accept, is said and left alone.
+    void SavePieceToLibrary(const QString &blockName, const QString &name, const QString &filePath);
+
     void SaveCurrentScene();
     void RestoreCurrentScene();
     void MinimumScrollBar();
@@ -846,6 +869,10 @@ private:
     void CreateFirstLayer(const QString &layerName, const QString &layerColor, const QString &layerPenStyle,
                           quint32 basePointId);
     auto StartPositionNewPP() const -> QPointF;
+    /// Where a construction that brings its own geometry — a piece inserted from the library — starts: beyond
+    /// everything the draw scene shows, in the canvas's own unit (pixels). The same place a piece drawn by hand
+    /// takes once the pattern already holds one.
+    auto PositionBeyondDrawn() const -> QPointF;
 
     void InitScenes();
     void InitWelcomePage();

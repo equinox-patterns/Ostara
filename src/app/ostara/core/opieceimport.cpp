@@ -52,7 +52,7 @@ auto PieceUnits() -> const QHash<QString, Unit> &
 /// says something no piece may carry.
 auto UnitOf(const OPieceDocument &piece) -> Unit
 {
-    return PieceUnits().value(piece.Unit().trimmed(), Unit::LAST_UNIT_DO_NOT_USE);
+    return OPieceImport::PieceUnit(piece.Unit());
 }
 
 /// The unit of the pattern the piece would enter: the unit of the **file**, and the one the application is
@@ -296,6 +296,94 @@ auto OPieceImport::CheckUnit(const OPieceDocument &piece, const VAbstractPattern
                                             "unit from end to end, and a piece is never converted: import it into "
                                             "a pattern of its own unit.")
                     .arg(UnitsToStr(pieceUnit, true), UnitsToStr(hostUnit, true));
+        return false;
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::PieceUnit(const QString &unit) -> Unit
+{
+    return PieceUnits().value(unit.trimmed(), Unit::LAST_UNIT_DO_NOT_USE);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::HostUnit(const VAbstractPattern *host) -> Unit
+{
+    return UnitOf(host);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::CheckMeasurements(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool
+{
+    Q_UNUSED(piece)
+
+    if (host == nullptr || not host->MPath().isEmpty())
+    {
+        return true;
+    }
+
+    error = QCoreApplication::translate("OPieceImport",
+                                        "This pattern has no measurement table yet, and a piece is read against "
+                                        "one: its formulas are evaluated with the measurements of the table. Load "
+                                        "a measurement table, then insert the piece.");
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool
+{
+    if (host == nullptr)
+    {
+        return true;
+    }
+
+    // The blocks of the host, in the order the document holds them: what a value can be read back from.
+    QList<QDomElement> blocks;
+    const QDomElement root = host->documentElement();
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        blocks.append(draw);
+    }
+
+    // A candidate is looked for by the key that survives the longest first: the identity a piece keeps when it is
+    // renamed in the library, then the name it wore, and only then the name of the block — which a block drawn by
+    // hand carries alone.
+    const auto held = [&blocks](const QString &attribute, const QString &value)
+    {
+        if (value.isEmpty())
+        {
+            return false;
+        }
+
+        for (const QDomElement &draw : blocks)
+        {
+            if (draw.attribute(attribute) == value)
+            {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    for (const OPieceDocument::Dependency &dependency : piece.Dependencies())
+    {
+        if (held(OPieceDocument::AttrLibraryId, dependency.libraryId)
+            || held(OPieceDocument::AttrCategory, dependency.category)
+            || held(VAbstractPattern::AttrName, dependency.origin))
+        {
+            continue;
+        }
+
+        // Nothing holds it. What is missing is said by the value itself when nothing names it: the one who reads
+        // the message has to be able to go and look for the piece it comes from.
+        const QString missing = dependency.origin.isEmpty() ? dependency.token : dependency.origin;
+        error = QCoreApplication::translate("OPieceImport",
+                                            "This piece reads %1, and no piece of this pattern declares it. "
+                                            "Import the piece it comes from first.")
+                    .arg(missing);
         return false;
     }
 
