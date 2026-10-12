@@ -155,7 +155,7 @@ auto VFormulaProperty::setEditorData(QWidget *editor) -> bool
 //! Gets the data from the widget
 auto VFormulaProperty::getEditorData(const QWidget *editor) const -> QVariant
 {
-    
+
     if (const auto *tmpWidget = qobject_cast<const VFormulaPropertyEditor *>(editor); tmpWidget != nullptr)
     {
         QVariant value;
@@ -265,43 +265,44 @@ void VFormulaProperty::ValueChildChanged(const QVariant &value, int typeForParen
     Q_UNUSED(typeForParent)
     VFormula newFormula = GetFormula();
 
-    
+
     newFormula.SetFormula(value.toString(), FormulaType::FromUser);
 
-    // What is judged is read against the pattern's own container, not the copy the tool holds: a line cleared and
-    // rebuilt by the last parse is in one and not in the other. The formula keeps the container it came with — it
-    // is put back before the value is stored, so the tool receives exactly what it gave, plus the formula.
+    // The *names* are judged against the pattern's own container, not the copy the tool holds: a line cleared and
+    // rebuilt by the last parse is in one and not in the other. The *value*, though, is computed against the
+    // container the formula came with, and only against that one: the values a tool lends — `CurrentLength`, the
+    // length being cut, the seam allowance being drawn — live in the tool's container and nowhere else. Judging
+    // against the pattern is what lets a line be recognised; computing against it is what would make
+    // `CurrentLength/2` unreadable, and the field look read-only.
     const QScopedPointer<VContainer> patternData = PatternData();
-    const VContainer *const toolData = newFormula.getData();
-    if (not patternData.isNull())
-    {
-        newFormula.setData(patternData.data());
-    }
+    const VContainer *const judgement = patternData.isNull() ? newFormula.getData() : patternData.data();
 
     // The field writes in whatever notation the formula is *displayed* in, the container answers to the
     // calculator's own, and the two have to meet before anything can be judged: a name is internal. `InternalFormula`
     // is the one place that knows both, so a name typed the way it is read is understood here exactly as it is in
     // the assistant.
-    const QString internal = InternalFormula(value.toString(), newFormula.getData());
+    const QString internal = InternalFormula(value.toString(), judgement);
 
     // A formula still written with the handle an object had before somebody named it is not refused for that: the
     // name is known, so it is put right here, and what the tool receives is the name the object has now.
-    newFormula.SetFormula(VContainer::FormulaWithoutStaleHandles(newFormula.getData(), internal),
-                          FormulaType::FromSystem);
+    newFormula.SetFormula(VContainer::FormulaWithoutStaleHandles(judgement, internal), FormulaType::FromSystem);
     newFormula.Eval();
 
-    
+
     // A formula written here names an object that has no name: refused, and the property keeps the formula the
     // tool holds — the same answer it gives a formula the parser cannot read, which `Eval` has just marked.
     // The field is left showing what was typed, so the sentence below it can be read.
-    if (not newFormula.CheckObjectNames())
+    // Asked of the pattern's container, the one that knows the lines: the copy the tool holds answers for the
+    // values it lends and for nothing else, which is exactly why the same formula was named in one place and
+    // not in the other.
+    if (not VContainer::UnnamedObjectInFormula(judgement, newFormula.GetFormula(FormulaType::FromSystem)).isEmpty())
     {
         // Kept in the log only. It is a warning no longer: the names are asked for below, so there is nothing for
         // the user to read here — and a `qWarning` in this application is not a line of text, it is a modal box
         // (the message handler turns warnings into dialogs). Two dialogs for one gesture, one of them useless.
         qDebug() << "Formula refused, names to be asked for:" << newFormula.Reason();
 
-        
+
         // Refused, but not a dead end: the objects the formula uses can be given a name, and once they have one the
         // formula the user wrote is written where they meant it to go. Asked *after* this returns, never from here:
         // a modal opened inside the form's commit starts a nested event loop over a widget half-way through
@@ -331,16 +332,13 @@ void VFormulaProperty::ValueChildChanged(const QVariant &value, int typeForParen
                 return;
     }
 
-    // The judgement is over: the value goes back to the container it came with, so what the tool receives is the
-    // formula it already knew, in the container it knows.
-    newFormula.setData(toolData);
     SetFormula(newFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VFormulaProperty::NameObjectsAndCommit(const QString &typed, bool askForNames)
 {
-    
+
     VFormula formula = GetFormula();
     const VContainer *const data = formula.getData();
     if (data == nullptr)

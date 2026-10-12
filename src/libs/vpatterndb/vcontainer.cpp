@@ -759,6 +759,16 @@ auto VContainer::UnnamedObjectInFormula(const VContainer *container, const QStri
             continue; // nothing to judge
         }
 
+        // The two values a tool hands over under a name of its own are not names anybody gave, and are never
+        // refused, whatever family they are computed in. `CurrentLength` *is* a VLengthLine while a cut is being
+        // edited, and a line is refused for being written by its pair instead of its name: without this, the value
+        // a tool lends would be refused like a point-based name, and `CurrentLength/2` could not even be created.
+        const QString &technical = var->GetName();
+        if (technical == currentLength || technical == currentSeamAllowance)
+        {
+            continue;
+        }
+
         // The list's question, asked of the object: is there a name here at all? One definition, read by the
         // assistant's list and by this guard alike, so the two never disagree about what is named.
         if (IsUnnamedObject(container, var))
@@ -802,6 +812,16 @@ auto VContainer::FormulaWithoutStaleHandles(const VContainer *container, const Q
                                    {
                                        // Not a variable of this pattern: a function, a number, a name the parser
                                        // reports on its own.
+                                       return token;
+                                   }
+
+                                   // The two values a tool hands over under a name of its own are not names the
+                                   // user gave, and are never rewritten. They are lent the alias of whatever they are
+                                   // computed on — a line, a curve, an arc — so rewriting `CurrentLength` would put the
+                                   // name of that object in the middle of a formula that asks for a length.
+                                   const QString &technical = var->GetName();
+                                   if (technical == currentLength || technical == currentSeamAllowance)
+                                   {
                                        return token;
                                    }
 
