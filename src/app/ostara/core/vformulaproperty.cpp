@@ -46,8 +46,6 @@
 #include "../vtools/dialogs/dialogtoolbox.h"
 #include "vformulapropertyeditor.h"
 
-namespace
-{
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief The container of the pattern itself, or a null pointer when no pattern is open.
  *
@@ -66,7 +64,6 @@ auto PatternData() -> QScopedPointer<VContainer>
 
     return QScopedPointer<VContainer>(new VContainer(doc->GetCompleteData()));
 }
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 VFormulaProperty::VFormulaProperty(const QString &name)

@@ -127,16 +127,23 @@ auto OFormulaRowProperty::getEditorData(const QWidget *editor) const -> QVariant
     VFormula formula = GetFormula();
     formula.SetFormula(m_field->text(), FormulaType::FromUser);
 
+    // Same two roles as the main formula field: the *names* are judged against the pattern's own container, where a
+    // line cleared and rebuilt by the last parse really is, and the *value* is computed against the container the
+    // formula came with — the only one that knows the values a tool lends (`CurrentLength`, the seam allowance).
+    const QScopedPointer<VContainer> patternData = PatternData();
+    const VContainer *const judgement = patternData.isNull() ? formula.getData() : patternData.data();
+
     // A formula still written with the handle an object had before somebody named it is not refused for that: the
     // name is known, so it is put right here, and what the tool receives is the name the object has now.
     formula.SetFormula(
-        VContainer::FormulaWithoutStaleHandles(formula.getData(), formula.GetFormula(FormulaType::FromSystem)),
+        VContainer::FormulaWithoutStaleHandles(judgement, formula.GetFormula(FormulaType::FromSystem)),
         FormulaType::FromSystem);
     formula.Eval();
 
     // Refused when it names an object nobody named: the value handed back is the one the tool holds, so the
     // dock has nothing to commit and the tool keeps its formula. The caller shows `Reason()`.
-    if (not formula.CheckObjectNames())
+    // Asked of the pattern's container, the one that knows the lines.
+    if (not VContainer::UnnamedObjectInFormula(judgement, formula.GetFormula(FormulaType::FromSystem)).isEmpty())
     {
         // Kept in the log only: the names are asked for below, and a `qWarning` in this application is not a line of
         // text but a modal box (the message handler turns warnings into dialogs) — two dialogs for one gesture.
@@ -180,13 +187,17 @@ void OFormulaRowProperty::NameObjectsAndCommit(const QString &typed)
         return;
     }
 
+    // The names are read and asked against the pattern's own container, as the commit above judges them.
+    const QScopedPointer<VContainer> patternData = PatternData();
+    const VContainer *const judgement = patternData.isNull() ? data : patternData.data();
+
     // What was typed, in the internal notation the container answers to: the names asked for here are names, and a
     // name is internal. Same reading as the commit above, so both agree on what the formula says.
-    QString internal = InternalFormula(typed, data);
+    QString internal = InternalFormula(typed, judgement);
 
     // Nothing is written before the last answer, and cancelling writes nothing at all: the pattern is untouched and
     // the field stays on the formula the tool holds.
-    if (not NameUnnamedObjects(VAbstractValApplication::VApp()->getMainWindow(), data, internal))
+    if (not NameUnnamedObjects(VAbstractValApplication::VApp()->getMainWindow(), judgement, internal))
     {
         return;
     }
@@ -195,6 +206,10 @@ void OFormulaRowProperty::NameObjectsAndCommit(const QString &typed)
     formula.Eval();
     SetFormula(formula);
     m_field->setText(formula.GetFormula(FormulaType::ToUser));
+
+    // The field has kept the focus the whole time — the dialogue was opened on top of it — and the row is only read
+    // back when it lets the focus go. Given up here, exactly as clicking beside the field does it.
+    m_field->clearFocus();
 
     // The field no longer holds what the tool holds, and that difference is what carries the edit over to it.
     Commit();

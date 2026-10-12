@@ -29,7 +29,19 @@
 #ifndef VFORMULAPROPERTY_H
 #define VFORMULAPROPERTY_H
 
+#include <QScopedPointer>
+
 #include "../vpropertyexplorer/vproperty.h"
+
+class VContainer;
+
+/** @brief The container of the pattern itself, or a null pointer when no pattern is open.
+ *
+ *  A property's formula comes with the container its tool holds, and that is a *copy*: a parse clears the variables
+ *  it rebuilds — the lines among them — and clearing one detaches the pattern's table from every copy. A name is
+ *  judged against the pattern's own container; a value is computed against the one the formula came with, which is
+ *  the only one that knows what a tool lends. */
+auto PatternData() -> QScopedPointer<VContainer>;
 
 class VFormula;
 
