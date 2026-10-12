@@ -1286,6 +1286,14 @@
               </xs:element>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string"/>
+            <!-- The identity of the library piece this block was imported as — absent on a block drawn here. It
+                 is what survives a rename in the library, where a name would not: a piece already imported still
+                 knows which piece it came from. -->
+            <xs:attribute name="libraryId" type="libraryIdentity"/>
+            <!-- What the reader calls the piece it came from, once the instance has a name of its own: the name
+                 the piece was saved under. An aid for reading and for offering the plausible ones — the link
+                 itself is the identity, never this. -->
+            <xs:attribute name="category" type="xs:string"/>
           </xs:complexType>
         </xs:element>
         <xs:element name="pieceGroups" minOccurs="0" maxOccurs="1">
@@ -2059,6 +2067,14 @@
       <xs:enumeration value="2ArrowsTextAbove"/><!--Same as default-->
       <xs:enumeration value="2Arrows"/>
       <xs:enumeration value="none"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- The identity of a library piece, written on the block it was imported as. The schema of the pieces declares
+       the same type: the two are separate documents — one is the piece, the other the pattern that receives it —
+       and the identity has to mean the same thing in both. -->
+  <xs:simpleType name="libraryIdentity">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\}"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>
