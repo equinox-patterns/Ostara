@@ -93,13 +93,7 @@ auto ThirdVertexName(const OSpreadCut &cut, const VContainer *data) -> QString
         return {};
     }
 
-    const QString name = base + "__R"_L1 + QString::number(cut.carried.size());
-    if (data->IsUnique(name))
-    {
-        return name;
-    }
-
-    return name + '_' + QString::number(data->UniqueDuplicate(name));
+    return CopyName(data, base, CopySuffix::Spread + QString::number(cut.carried.size()));
 }
 } // namespace
 

@@ -457,13 +457,13 @@ void DialogCutSpline::InitIcons()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCutSpline::GenerateDefLeftSubName() const -> QString
 {
-    return GenerateDefSubCurveName(&data, getSplineId(), "__ls"_L1, "LSubCurve"_L1, GetPointName());
+    return GenerateDefSubCurveName(&data, getSplineId(), CopySuffix::SubCurveLeft, "LSubCurve"_L1, GetPointName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCutSpline::GenerateDefRightSubName() const -> QString
 {
-    return GenerateDefSubCurveName(&data, getSplineId(), "__rs"_L1, "RSubCurve"_L1, GetPointName());
+    return GenerateDefSubCurveName(&data, getSplineId(), CopySuffix::SubCurveRight, "RSubCurve"_L1, GetPointName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

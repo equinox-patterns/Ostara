@@ -233,15 +233,7 @@ void ODialogSpread::ShowDialog(bool click)
 
             try
             {
-                const QSharedPointer<VGObject> object = data.GetGObject(item.id);
-                if (object->getType() == GOType::Point)
-                {
-                    item.name = object->name() + "__R"_L1;
-                }
-                else
-                {
-                    item.name = data.GeometricObject<VAbstractCurve>(item.id)->HeadlessName() + "__R"_L1;
-                }
+                item.name = DefaultCopyName(&data, item.id, CopySuffix::Spread);
             }
             catch (const VExceptionBadId &)
             {

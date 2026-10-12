@@ -85,17 +85,7 @@ constexpr qreal kPlaceTolerance = 1e-6;
 /** @brief The name of a point of the display, made unique against everything the pattern already holds. */
 auto UniqueName(const QString &base, const VContainer *data) -> QString
 {
-    if (base.isEmpty())
-    {
-        return base;
-    }
-
-    if (data->IsUnique(base))
-    {
-        return base;
-    }
-
-    return base + '_'_L1 + QString::number(data->UniqueDuplicate(base));
+    return CopyName(data, base, QString());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -592,7 +582,7 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
 
                 if (copy.name.isEmpty())
                 {
-                    copy.name = UniqueName(PriseName(prise.pointId, data) + "__m"_L1 + QString::number(line), data);
+                    copy.name = UniqueName(PriseName(prise.pointId, data) + CopySuffix::Pleat + QString::number(line), data);
                 }
             }
         }
@@ -623,8 +613,8 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
 
         if (mark.name.isEmpty())
         {
-            const QString suffix = (plan.PleatCount() == 1) ? "__pli"_L1
-                                                           : "__pli"_L1 + QString::number(resolved.pleat + 1);
+            const QString suffix = (plan.PleatCount() == 1) ? CopySuffix::PleatMark
+                                                           : CopySuffix::PleatMark + QString::number(resolved.pleat + 1);
             mark.name = UniqueName(PriseName(prise.pointId, data) + suffix, data);
         }
 
@@ -695,8 +685,8 @@ void OPleatDisplay::EnsureIds(OPleatDisplay &display, const QVector<OPleatDepart
 
         if (notch.name.isEmpty())
         {
-            const QString suffix = (plan.PleatCount() == 1) ? "__cran"_L1
-                                                           : "__cran"_L1 + QString::number(resolved.pleat + 1);
+            const QString suffix = (plan.PleatCount() == 1) ? CopySuffix::PleatNotch
+                                                           : CopySuffix::PleatNotch + QString::number(resolved.pleat + 1);
             notch.name = UniqueName(PriseName(prise.pointId, data) + suffix, data);
         }
 

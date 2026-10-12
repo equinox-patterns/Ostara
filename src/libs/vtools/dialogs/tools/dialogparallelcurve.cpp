@@ -381,7 +381,7 @@ void DialogParallelCurve::ChosenObject(quint32 id, const SceneObject &type)
         }
         prepare = true;
 
-        SetName(GenerateDefOffsetCurveName(&data, GetOriginCurveId(), "__o"_L1, "Curve"_L1 + offset_));
+        SetName(GenerateDefOffsetCurveName(&data, GetOriginCurveId(), CopySuffix::OffsetCurve, "Curve"_L1 + offset_));
 
         auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
         SCASSERT(window != nullptr)

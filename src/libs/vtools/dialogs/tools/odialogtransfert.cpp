@@ -308,7 +308,7 @@ void ODialogTransfert::ShowDialog(bool click)
 
         // The copies are named after their sources: naming them here, while the source part is the active one,
         // is what lets the host part tell them apart.
-        FillDefSourceNames(SourceObjects(), &data, "t"_L1);
+        FillDefSourceNames(SourceObjects(), &data, CopySuffix::Transfert);
         RefreshPreview();
 
         Say(tr("Click the merge point of the part to transfer"));

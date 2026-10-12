@@ -235,7 +235,7 @@ void ODialogCloseDart::ShowDialog(bool click)
 
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
-        FillDefSourceNames(SourceObjects(), &data, "c"_L1);
+        FillDefSourceNames(SourceObjects(), &data, CopySuffix::CloseDart);
 
         m_step = Step::Pivot;
         emit ToolTip(tr("Select the pivot point"));

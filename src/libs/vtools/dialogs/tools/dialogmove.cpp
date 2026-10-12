@@ -312,7 +312,7 @@ void DialogMove::ShowDialog(bool click)
 
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
-        FillDefSourceNames(SourceObjects(), &data, "m"_L1);
+        FillDefSourceNames(SourceObjects(), &data, CopySuffix::Move);
     }
     else if (not stage2 && not IsStage1() && prepare && click)
     {

@@ -194,15 +194,7 @@ void ODialogMoveBatch::ShowDialog(bool click)
 
             try
             {
-                const QSharedPointer<VGObject> object = data.GetGObject(item.id);
-                if (object->getType() == GOType::Point)
-                {
-                    item.name = object->name() + "__M"_L1;
-                }
-                else
-                {
-                    item.name = data.GeometricObject<VAbstractCurve>(item.id)->HeadlessName() + "__M"_L1;
-                }
+                item.name = DefaultCopyName(&data, item.id, CopySuffix::MoveBatch);
             }
             catch (const VExceptionBadId &)
             {

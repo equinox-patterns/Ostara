@@ -184,7 +184,7 @@ void DialogFlippingByLine::ShowDialog(bool click)
 
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
-        FillDefSourceNames(SourceObjects(), &data, "fl"_L1);
+        FillDefSourceNames(SourceObjects(), &data, CopySuffix::FlipByLine);
 
         emit ToolTip(tr("Select first line point"));
     }

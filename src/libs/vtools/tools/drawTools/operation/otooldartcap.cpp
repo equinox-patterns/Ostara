@@ -86,19 +86,12 @@ void RegisterCurve(VContainer *data, const QSharedPointer<VAbstractCurve> &curve
 //! The name of the point C: the apex it belongs to, made unique as any object of a figure is.
 auto DartCapName(const OToolDartCapInitData &initData, const VContainer *data) -> QString
 {
-    QString base = QStringLiteral("cap");
     if (initData.apexId != NULL_ID && data->HasObject(initData.apexId))
     {
-        base = data->GetGObject(initData.apexId)->name() + QStringLiteral("__cap");
+        return CopyName(data, data->GetGObject(initData.apexId)->name(), CopySuffix::DartCap);
     }
 
-    QString name = base;
-    int suffix = 1;
-    while (not data->IsUnique(name))
-    {
-        name = base + QString::number(++suffix);
-    }
-    return name;
+    return CopyName(data, QStringLiteral("cap"), QString());
 }
 
 void BuildFigure(OToolDartCapInitData &initData)
@@ -442,7 +435,7 @@ void BuildFigure(OToolDartCapInitData &initData)
         }
         if (notch.name.isEmpty())
         {
-            notch.name = mark.name + QStringLiteral("__cran");
+            notch.name = mark.name + CopySuffix::Notch;
         }
         {
             const QSharedPointer<VPointF> crank
@@ -1251,12 +1244,7 @@ void OToolDartCap::NameSources(QVector<SourceItem> &source, const VContainer *da
 
         try
         {
-            const QSharedPointer<VGObject> object = data->GetGObject(item.id);
-            const QString base = (object->getType() == GOType::Point)
-                                     ? object->name()
-                                     : data->GeometricObject<VAbstractCurve>(item.id)->HeadlessName();
-            const QString name = base + QStringLiteral("__cap");
-            item.name = data->IsUnique(name) ? name : name + '_'_L1 + QString::number(data->UniqueDuplicate(name));
+            item.name = CopyNameOfSource(data, item.id, CopySuffix::DartCap);
         }
         catch (const VExceptionBadId &)
         {

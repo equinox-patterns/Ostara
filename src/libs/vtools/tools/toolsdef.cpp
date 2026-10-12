@@ -52,20 +52,50 @@
 
 using namespace Qt::Literals::StringLiterals;
 
-namespace
+//---------------------------------------------------------------------------------------------------------------------
+auto CopyNameBase(const VContainer *data, quint32 sourceId) -> QString
 {
-auto GetBaseName(quint32 id, const VContainer *data) -> QString
-{
-    if (const QSharedPointer<VGObject> obj = data->GetGObject(id); obj->getType() == GOType::Point)
+    if (const QSharedPointer<VGObject> obj = data->GetGObject(sourceId); obj->getType() == GOType::Point)
     {
         return obj->name();
     }
 
     // Assume it's a curve for other types
-    const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(id);
+    const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(sourceId);
     return curve->HeadlessName();
 }
-} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DefaultCopyName(const VContainer *data, quint32 sourceId, const QString &suffix) -> QString
+{
+    SCASSERT(data != nullptr)
+    return CopyNameBase(data, sourceId) + suffix;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto CopyName(const VContainer *data, const QString &base, const QString &suffix) -> QString
+{
+    SCASSERT(data != nullptr)
+
+    if (base.isEmpty())
+    {
+        return base;
+    }
+
+    const QString name = base + suffix;
+    if (data->IsUnique(name))
+    {
+        return name;
+    }
+
+    return name + '_'_L1 + QString::number(data->UniqueDuplicate(name));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto CopyNameOfSource(const VContainer *data, quint32 sourceId, const QString &suffix) -> QString
+{
+    return CopyName(data, CopyNameBase(data, sourceId), suffix);
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto SourceToObjects(const QVector<SourceItem> &source) -> QVector<quint32>
@@ -133,8 +163,8 @@ void FillDefSourceNames(QVector<SourceItem> &source, const VContainer *data, con
 
             try
             {
-                const QString baseName = GetBaseName(sourceItem.id, data);
-                const QString candidateName = u"%1__%2%3"_s.arg(baseName, suffix).arg(suffixIndex);
+                const QString baseName = CopyNameBase(data, sourceItem.id);
+                const QString candidateName = baseName + suffix + QString::number(suffixIndex);
                 // Curves are registered with a type head prefix (e.g. "Spl_"), so uniqueness must be
                 // checked against the full name, not the headless candidate.
                 const QString fullName = GetSourceItemName(candidateName, sourceItem.id, data);
@@ -174,8 +204,8 @@ void FillDefSourceNames(QVector<SourceItem> &source, const VContainer *data, con
 
                 try
                 {
-                    const QString baseName = GetBaseName(sourceItem.id, data);
-                    sourceItem.name = u"%1__%2%3"_s.arg(baseName, suffix).arg(suffixIndex);
+                    const QString baseName = CopyNameBase(data, sourceItem.id);
+                    sourceItem.name = baseName + suffix + QString::number(suffixIndex);
                 }
                 catch (const VExceptionBadId &)
                 {
@@ -231,10 +261,10 @@ auto GetDefSourceName(quint32 id, const VContainer *data, const QString &suffix,
 
     try
     {
-        const QString baseName = GetBaseName(id, data);
+        const QString baseName = CopyNameBase(data, id);
         for (int suffixIndex = 1; suffixIndex <= maxTries; ++suffixIndex)
         {
-            const QString candidateName = u"%1__%2%3"_s.arg(baseName, suffix).arg(suffixIndex);
+            const QString candidateName = baseName + suffix + QString::number(suffixIndex);
             // Curves are registered with a type head prefix (e.g. "Spl_"), so uniqueness must be
             // checked against the full name, not the headless candidate.
             const QString fullName = GetSourceItemName(candidateName, id, data);

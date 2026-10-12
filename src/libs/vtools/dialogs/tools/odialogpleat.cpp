@@ -776,7 +776,7 @@ void ODialogPleat::NameSources(bool force)
         return; // the objects already carry the name of the pleats they are about to become
     }
 
-    const QString suffix = "__m"_L1 + QString::number(pleats);
+    const QString suffix = CopySuffix::Pleat + QString::number(pleats);
 
     for (auto &item : SourceObjects())
     {
@@ -787,14 +787,7 @@ void ODialogPleat::NameSources(bool force)
 
         try
         {
-            const QSharedPointer<VGObject> object = data.GetGObject(item.id);
-            const QString base = (object->getType() == GOType::Point)
-                                     ? object->name()
-                                     : data.GeometricObject<VAbstractCurve>(item.id)->HeadlessName();
-
-            const QString name = base + suffix;
-            item.name = data.IsUnique(name) ? name
-                                            : name + '_'_L1 + QString::number(data.UniqueDuplicate(name));
+            item.name = CopyNameOfSource(&data, item.id, suffix);
         }
         catch (const VExceptionBadId &)
         {

@@ -190,7 +190,7 @@ void DialogFlippingByAxis::ShowDialog(bool click)
 
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
-        FillDefSourceNames(SourceObjects(), &data, "fa"_L1);
+        FillDefSourceNames(SourceObjects(), &data, CopySuffix::FlipByAxis);
 
         emit ToolTip(tr("Select origin point"));
     }

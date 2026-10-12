@@ -121,6 +121,54 @@ auto NodesToObjects(const QVector<VPieceNode> &nodes) -> QVector<quint32>;
 
 void FillDefSourceNames(QVector<SourceItem> &source, const VContainer *data, const QString &suffix);
 
+/**
+ * @brief Les suffixes qui nomment les copies — un seul endroit.
+ *
+ * Une copie s'appelle d'après son objet d'origine, plus le suffixe de l'outil qui l'a fabriquée. Le suffixe
+ * commence par `__` et se termine par la marque de l'outil ; les six outils historiques y ajoutent l'indice de
+ * génération (`__r1`, `__r2`), ce dont FillDefSourceNames se charge, les outils Ostara le portent dans leur
+ * suffixe (`__pli2`, `__o3`).
+ *
+ * La casse distingue des outils différents : `__r` la rotation simple et `__R` le slash-and-spread, `__m` le
+ * move simple et `__M` le move batch.
+ *
+ * Le pli porte `__mp` — `m` de move, `p` de pleat : c'est le move du pli. Il portait `__m` comme le move
+ * simple, si bien qu'un move et un pli copiant le même point réclamaient le même nom. Le changement ne touche
+ * aucun patron existant : un nom de copie est **écrit** dans `<source><item name="…">` et relu, et les outils
+ * respectent un nom déjà présent — un vieux pli garde `C7__m3`, seuls les nouveaux reçoivent `__mp3`.
+ */
+namespace CopySuffix
+{
+inline const QString Rotation = QStringLiteral("__r");
+inline const QString CloseDart = QStringLiteral("__c");
+inline const QString Transfert = QStringLiteral("__t");
+inline const QString FlipByLine = QStringLiteral("__fl");
+inline const QString FlipByAxis = QStringLiteral("__fa");
+inline const QString Move = QStringLiteral("__m");
+inline const QString Pleat = QStringLiteral("__mp");
+inline const QString PleatMark = QStringLiteral("__pli");
+inline const QString PleatNotch = QStringLiteral("__cran");
+inline const QString Spread = QStringLiteral("__R");
+inline const QString MoveBatch = QStringLiteral("__M");
+inline const QString DartCap = QStringLiteral("__cap");
+inline const QString Notch = QStringLiteral("__cran");
+inline const QString OffsetCurve = QStringLiteral("__o");
+inline const QString SubCurveLeft = QStringLiteral("__ls");
+inline const QString SubCurveRight = QStringLiteral("__rs");
+} // namespace CopySuffix
+
+/// Le nom de base d'une copie : celui de son origine — le nom d'un point, le « headless » d'une courbe.
+auto CopyNameBase(const VContainer *data, quint32 sourceId) -> QString;
+
+/// Ce nom plus le suffixe de l'outil, sans vérifier le patron : la marque seule, l'indice restant à l'appelant.
+auto DefaultCopyName(const VContainer *data, quint32 sourceId, const QString &suffix) -> QString;
+
+/// Ce nom plus le suffixe, rendu unique dans le patron — la règle complète.
+auto CopyName(const VContainer *data, const QString &base, const QString &suffix) -> QString;
+
+/// La règle complète, à partir de l'id de l'objet d'origine.
+auto CopyNameOfSource(const VContainer *data, quint32 sourceId, const QString &suffix) -> QString;
+
 auto GetDefSourceName(quint32 id, const VContainer *data, const QString &suffix, const QSet<QString> &occupiedNames)
     -> QString;
 

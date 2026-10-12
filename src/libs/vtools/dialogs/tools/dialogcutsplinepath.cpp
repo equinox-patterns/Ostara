@@ -451,13 +451,13 @@ void DialogCutSplinePath::InitIcons()
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCutSplinePath::GenerateDefLeftSubName() const -> QString
 {
-    return GenerateDefSubCurveName(&data, getSplinePathId(), "__ls"_L1, "LSubCurve"_L1, GetPointName());
+    return GenerateDefSubCurveName(&data, getSplinePathId(), CopySuffix::SubCurveLeft, "LSubCurve"_L1, GetPointName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogCutSplinePath::GenerateDefRightSubName() const -> QString
 {
-    return GenerateDefSubCurveName(&data, getSplinePathId(), "__rs"_L1, "RSubCurve"_L1, GetPointName());
+    return GenerateDefSubCurveName(&data, getSplinePathId(), CopySuffix::SubCurveRight, "RSubCurve"_L1, GetPointName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

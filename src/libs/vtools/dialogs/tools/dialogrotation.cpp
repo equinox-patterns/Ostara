@@ -382,7 +382,7 @@ void DialogRotation::ShowDialog(bool click)
 
         VAbstractValApplication::VApp()->getSceneView()->AllowRubberBand(false);
 
-        FillDefSourceNames(SourceObjects(), &data, "r"_L1);
+        FillDefSourceNames(SourceObjects(), &data, CopySuffix::Rotation);
 
         emit ToolTip(tr("Select the pivot point"));
     }

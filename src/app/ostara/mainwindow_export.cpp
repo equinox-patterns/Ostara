@@ -35,23 +35,31 @@
 #include "../vlayout/dialogs/dialoglayoutscale.h"
 #include "../vformat/vpatternrecipe.h"
 #include "../ifc/exception/vexceptioninvalidhistory.h"
+#include "../ifc/ifcdef.h"
 #include "../vmisc/literals.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vexception/vexception.h"
+#include "../vgeometry/vabstractcurve.h"
+#include "../vgeometry/vgobject.h"
+#include "../vpatterndb/variables/vcurvevariable.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "core/vapplication.h"
 #include <QCoreApplication>
 #include <QDir>
+#include <QDomElement>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QProcess>
+#include <QRegularExpression>
+#include <QSet>
 #include <QTemporaryFile>
 #include <QtDebug>
+#include <cmath>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include "../vmisc/vtextcodec.h"
@@ -596,6 +604,363 @@ auto MainWindow::DoFMExport(const VCommandLinePtr &expParams) -> bool
     return ExportFMeasurementsToCSVData(filePath, expParams->IsCSVWithHeader(), mib, separator);
 }
 //---------------------------------------------------------------------------------------------------------------------
+// TEMPORARY — sonde de faisabilité pour la bibliothèque de pièces. À RETIRER.
+// Répond à une seule question : un <draw> inséré à chaud dans un document vivant, avec des identifiants neufs,
+// est-il relu correctement par un nouveau parse ? Rien ici n'appartient au produit.
+namespace
+{
+const QString probeSuffix = QStringLiteral("__PROBE");
+
+void ProbeCollectDeclaredIds(const QDomElement &element, QSet<QString> &declared)
+{
+    if (element.hasAttribute(QStringLiteral("id")))
+    {
+        declared.insert(element.attribute(QStringLiteral("id")));
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        ProbeCollectDeclaredIds(child, declared);
+    }
+}
+
+void ProbeRemapIds(QDomElement &element, VContainer *pattern, QHash<QString, quint32> &idMap, int &remapped)
+{
+    // Liste blanche des attributs qui portent un id SANS le dire dans leur nom — source : le XSD.
+    // Une règle fondée sur la VALEUR est fausse : les ids 1..N se confondent avec les énumérations
+    // (sense, axisType, crossPoint, aScale…), et le fichier ne passe plus la validation du schéma.
+    static const QStringList namedAttributes{
+        QStringLiteral("object"),      QStringLiteral("tool"),        QStringLiteral("point"),
+        QStringLiteral("side1"),       QStringLiteral("side2"),       QStringLiteral("curve1"),
+        QStringLiteral("curve2"),      QStringLiteral("notch"),       QStringLiteral("firstPoint"),
+        QStringLiteral("secondPoint"), QStringLiteral("thirdPoint"),  QStringLiteral("basePoint"),
+        QStringLiteral("pShoulder"),   QStringLiteral("p1Line"),      QStringLiteral("p2Line"),
+        QStringLiteral("p1Line1"),     QStringLiteral("p1Line2"),     QStringLiteral("p2Line1"),
+        QStringLiteral("p2Line2"),     QStringLiteral("spline"),      QStringLiteral("splinePath"),
+        QStringLiteral("apex"),        QStringLiteral("extendPoint"), QStringLiteral("notchCurve1"),
+        QStringLiteral("notchCurve2"), QStringLiteral("notchPoint"),  QStringLiteral("center"),
+        QStringLiteral("arc"),         QStringLiteral("elArc"),       QStringLiteral("curve"),
+        QStringLiteral("firstArc"),    QStringLiteral("secondArc"),   QStringLiteral("c1Center"),
+        QStringLiteral("c2Center"),    QStringLiteral("tangent"),     QStringLiteral("cCenter"),
+        QStringLiteral("point1"),      QStringLiteral("point2"),      QStringLiteral("point3"),
+        QStringLiteral("point4"),      QStringLiteral("dartP1"),      QStringLiteral("dartP2"),
+        QStringLiteral("dartP3"),      QStringLiteral("baseLineP1"),  QStringLiteral("baseLineP2"),
+        QStringLiteral("pSpline"),     QStringLiteral("duplicate"),   QStringLiteral("origin"),
+        QStringLiteral("target"),      QStringLiteral("line"),        QStringLiteral("foldLine"),
+        QStringLiteral("copy"),        QStringLiteral("departure"),   QStringLiteral("place"),
+        QStringLiteral("end"),         QStringLiteral("pleat"),       QStringLiteral("start"),
+        QStringLiteral("pivot"),       QStringLiteral("line1"),       QStringLiteral("line2"),
+        QStringLiteral("inner"),       QStringLiteral("outer"),       QStringLiteral("cap1"),
+        QStringLiteral("cap2"),        QStringLiteral("cap1Ref"),     QStringLiteral("cap2Ref"),
+        QStringLiteral("p1"),          QStringLiteral("p2"),          QStringLiteral("path"),
+        QStringLiteral("piece"),       QStringLiteral("gradedAlignPoint"),
+        QStringLiteral("gradedAlignPointMember")};
+
+    if (element.hasAttributes())
+    {
+        const QDomNamedNodeMap attrs = element.attributes();
+        for (int i = 0; i < attrs.count(); ++i)
+        {
+            QDomAttr attr = attrs.item(i).toAttr();
+            const QString name = attr.name();
+            const QString value = attr.value();
+
+            const bool byName = name == QStringLiteral("id")
+                                || name.contains(QStringLiteral("id"), Qt::CaseInsensitive)
+                                || namedAttributes.contains(name);
+            bool isNumber = false;
+            value.toUInt(&isNumber);
+            if (not byName || not isNumber)
+            {
+                continue;
+            }
+
+            if (not idMap.contains(value))
+            {
+                idMap.insert(value, pattern->getNextId());
+            }
+            attr.setValue(QString::number(idMap.value(value)));
+            ++remapped;
+        }
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        ProbeRemapIds(child, pattern, idMap, remapped);
+    }
+}
+
+// Marque chaque nom déclaré dans la copie — les points, lignes et courbes — du marqueur de pièce.
+// C'est CE renommage qui doit faire disparaître la divergence entre le DOM et le conteneur.
+void ProbeMarkNames(QDomElement &element, int &renamed)
+{
+    if (element.hasAttribute(AttrName) && element.tagName() != VAbstractPattern::TagDraw
+        && element.tagName() != VAbstractPattern::TagDetail)
+    {
+        const QString name = element.attribute(AttrName);
+        if (not name.isEmpty())
+        {
+            element.setAttribute(AttrName, name + QStringLiteral("__P1"));
+            ++renamed;
+        }
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        ProbeMarkNames(child, renamed);
+    }
+}
+
+void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
+{
+    if (pattern == nullptr || doc == nullptr)
+    {
+        qInfo() << "PIECE-PROBE: no document loaded";
+        return;
+    }
+
+    const QDomNodeList draws = doc->elementsByTagName(VAbstractPattern::TagDraw);
+    qInfo() << "PIECE-PROBE: blocks in file =" << draws.size();
+
+    // Combien d'objets du patron réclament DÉJÀ le même nom, sans aucune insertion ? Un nom « base_n » dont
+    // « base » existe aussi est un doublon que le conteneur a numéroté lui-même : le fichier ne le contient pas.
+    {
+        const QHash<QString, QSharedPointer<VInternalVariable>> *vars = pattern->DataVariables();
+        QSet<QString> all;
+        for (auto it = vars->constBegin(); it != vars->constEnd(); ++it)
+        {
+            all.insert(it.key());
+        }
+
+        static const QRegularExpression dupTail(QStringLiteral("_(\\d+)$"));
+        QStringList dupes;
+        int dupeCount = 0;
+        for (auto it = vars->constBegin(); it != vars->constEnd(); ++it)
+        {
+            const QRegularExpressionMatch match = dupTail.match(it.key());
+            if (not match.hasMatch() || not all.contains(it.key().left(match.capturedStart())))
+            {
+                continue;
+            }
+            ++dupeCount;
+            if (dupes.size() < 20)
+            {
+                dupes.append(it.key());
+            }
+        }
+        qInfo() << "PIECE-PROBE: noms deja numerotes par le conteneur, sans import =" << dupeCount << dupes;
+
+        // Les ids declares dans le fichier, et la table « id fabrique -> type d'operation qui le reclame ».
+        // Croiser l'id de la courbe d'une valeur numerotee avec cette table designe l'outil responsable,
+        // sans deduction.
+        QSet<QString> declaredIds;
+        ProbeCollectDeclaredIds(doc->documentElement(), declaredIds);
+
+        QHash<QString, QString> operationOfDestination;
+        const QDomNodeList operations = doc->elementsByTagName(QStringLiteral("operation"));
+        for (int i = 0; i < operations.size(); ++i)
+        {
+            const QDomElement operation = operations.at(i).toElement();
+            if (operation.isNull())
+            {
+                continue;
+            }
+            const QString type = operation.attribute(QStringLiteral("type"));
+            for (QDomElement destination = operation.firstChildElement(QStringLiteral("destination"));
+                 not destination.isNull();
+                 destination = destination.nextSiblingElement(QStringLiteral("destination")))
+            {
+                for (QDomElement item = destination.firstChildElement(QStringLiteral("item")); not item.isNull();
+                     item = item.nextSiblingElement(QStringLiteral("item")))
+                {
+                    operationOfDestination.insert(item.attribute(QStringLiteral("idObject")), type);
+                }
+            }
+        }
+
+        // Classement : un doublon est soit un OBJET de geometrie, soit une VALEUR derivee (longueur, angle,
+        // aire). Pour une valeur derivee, l'id de sa courbe dit si la courbe est dans le fichier, et quelle
+        // operation la reclame.
+        for (auto it = vars->constBegin(); it != vars->constEnd(); ++it)
+        {
+            const QRegularExpressionMatch match = dupTail.match(it.key());
+            if (not match.hasMatch() || not all.contains(it.key().left(match.capturedStart())))
+            {
+                continue;
+            }
+
+            const QSharedPointer<VInternalVariable> var = it.value();
+            const int type = static_cast<int>(var->GetType());
+
+            QString object = QStringLiteral("VALEUR DERIVEE");
+            if (const QSharedPointer<VGObject> gobject = qSharedPointerDynamicCast<VGObject>(var);
+                not gobject.isNull())
+            {
+                object = QStringLiteral("OBJET id=%1").arg(gobject->id());
+                if (const QSharedPointer<VAbstractCurve> curve = qSharedPointerDynamicCast<VAbstractCurve>(var);
+                    not curve.isNull())
+                {
+                    object += QStringLiteral(" duplicate=%1").arg(curve->GetDuplicate());
+                }
+            }
+            else if (const QSharedPointer<VCurveVariable> curveVar = qSharedPointerDynamicCast<VCurveVariable>(var);
+                     not curveVar.isNull())
+            {
+                const quint32 curveId = curveVar->GetId();
+                const QString id = QString::number(curveId);
+                QString detail = QStringLiteral("courbe ABSENTE du conteneur");
+                try
+                {
+                    const QSharedPointer<VAbstractCurve> curve = pattern->GeometricObject<VAbstractCurve>(curveId);
+                    detail = QStringLiteral("nom=%1 | duplicate=%2 | derivee=%3")
+                                 .arg(curve->name())
+                                 .arg(curve->GetDuplicate())
+                                 .arg(curve->IsDerivative() ? QStringLiteral("oui") : QStringLiteral("non"));
+                }
+                catch (const VExceptionBadId &)
+                {
+                }
+                object = QStringLiteral("courbe id=%1 | dans le fichier=%2 | operation=%3 | %4")
+                             .arg(id, declaredIds.contains(id) ? QStringLiteral("oui") : QStringLiteral("NON"),
+                                  operationOfDestination.value(id, QStringLiteral("-")), detail);
+            }
+            qInfo() << "PIECE-PROBE:   doublon" << it.key() << "| type=" << type << "|" << object;
+        }
+    }
+
+    if (draws.isEmpty())
+    {
+        qInfo() << "PIECE-PROBE: no block to copy, nothing to test";
+        return;
+    }
+
+    const QDomElement source = draws.at(0).toElement();
+    const QString sourceName = source.attribute(AttrName);
+    const qsizetype variablesBefore = pattern->DataVariables()->size();
+
+    QDomElement clone = source.cloneNode(true).toElement();
+    const QString cloneName = sourceName + probeSuffix;
+    clone.setAttribute(AttrName, cloneName);
+
+    // Des noms de pièce distincts, sinon l'avertissement de doublon.
+    const QDomNodeList details = clone.elementsByTagName(VAbstractPattern::TagDetail);
+    for (int i = 0; i < details.count(); ++i)
+    {
+        QDomElement detail = details.at(i).toElement();
+        detail.setAttribute(AttrName, detail.attribute(AttrName) + probeSuffix);
+    }
+
+    QSet<QString> declared;
+    ProbeCollectDeclaredIds(clone, declared);
+
+    // Sonde 2 : le marqueur de pièce sur chaque nom déclaré.
+    int namesMarked = 0;
+    ProbeMarkNames(clone, namesMarked);
+
+    QHash<QString, quint32> idMap;
+    int remapped = 0;
+    ProbeRemapIds(clone, pattern, idMap, remapped);
+
+    QSet<QString> namesBefore;
+    {
+        const QHash<QString, QSharedPointer<VInternalVariable>> *vars = pattern->DataVariables();
+        for (auto it = vars->constBegin(); it != vars->constEnd(); ++it)
+        {
+            namesBefore.insert(it.key());
+        }
+    }
+
+    doc->InsertRootElement(clone);
+
+    bool inserted = false;
+    const QDomNodeList afterInsert = doc->elementsByTagName(VAbstractPattern::TagDraw);
+    for (int i = 0; i < afterInsert.count(); ++i)
+    {
+        if (afterInsert.at(i).toElement().attribute(AttrName) == cloneName)
+        {
+            inserted = true;
+            break;
+        }
+    }
+
+    qInfo() << "PIECE-PROBE: block" << sourceName << "->" << cloneName << "| inserted =" << inserted
+            << "| declared ids =" << declared.size() << "| distinct ids remapped =" << idMap.size()
+            << "| attributes rewritten =" << remapped << "| names marked =" << namesMarked;
+
+    try
+    {
+        doc->LiteParseTree(Document::FullLiteParse);
+
+        int nan = 0;
+        int total = 0;
+        const QHash<QString, QSharedPointer<VInternalVariable>> *vars = pattern->DataVariables();
+        for (auto it = vars->constBegin(); it != vars->constEnd(); ++it)
+        {
+            if (it.value().isNull() || it.value()->GetValue() == nullptr)
+            {
+                continue;
+            }
+            ++total;
+            if (std::isnan(*it.value()->GetValue()))
+            {
+                ++nan;
+            }
+        }
+
+        const QDomNodeList afterParse = doc->elementsByTagName(VAbstractPattern::TagDraw);
+        qInfo() << "PIECE-PROBE: reparse OK | blocks" << draws.size() << "->" << afterParse.size()
+                << "| variables" << variablesBefore << "->" << vars->size() << "| values" << total
+                << "| NaN" << nan;
+
+        // Un nom d'objet du bloc inséré n'est « suffixé d'office » que si, en lui retirant son _<n> final,
+        // on retombe sur un nom qui existait AVANT l'insertion. C'est la détection exacte du dédoublonnage.
+        static const QRegularExpression autoTail(QStringLiteral("_(\\d+)$"));
+        QStringList autoSuffixed;
+        QStringList markedNames;
+        int markedCount = 0;
+        for (auto it = vars->constBegin(); it != vars->constEnd(); ++it)
+        {
+            if (namesBefore.contains(it.key()))
+            {
+                continue;
+            }
+
+            const QRegularExpressionMatch match = autoTail.match(it.key());
+            if (match.hasMatch() && namesBefore.contains(it.key().left(match.capturedStart())))
+            {
+                if (autoSuffixed.size() < 8)
+                {
+                    autoSuffixed.append(it.key());
+                }
+                continue;
+            }
+
+            if (it.key().contains(QStringLiteral("__P1")))
+            {
+                ++markedCount;
+                if (markedNames.size() < 6)
+                {
+                    markedNames.append(it.key());
+                }
+            }
+        }
+        qInfo() << "PIECE-PROBE: new values carrying the piece marker =" << markedCount << markedNames;
+        qInfo() << "PIECE-PROBE: new values the container had to suffix itself =" << autoSuffixed.size()
+                << autoSuffixed;
+    }
+    catch (const VException &e)
+    {
+        qInfo() << "PIECE-PROBE: reparse FAILED |" << e.ErrorMessage();
+    }
+
+    const QString outFile = QDir::tempPath() + QStringLiteral("/ostara_piece_probe.ostara");
+    QString error;
+    const bool saved = doc->SaveDocument(outFile, error);
+    qInfo() << "PIECE-PROBE: save =" << saved << "|" << error << "|" << outFile;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ProcessCMD()
 {
     const VCommandLinePtr cmd = VApplication::CommandLine();
@@ -663,6 +1028,10 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_PROBE"))
+        {
+            ProbeRuntimeBlockInsertion(pattern, doc); // TEMPORARY — sonde de faisabilité, à retirer
         }
 
         QCoreApplication::exit(V_EX_OK); // close program after processing in console mode
