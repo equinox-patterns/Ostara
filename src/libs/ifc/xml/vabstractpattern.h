@@ -144,6 +144,16 @@ struct VLayerGroupData
     bool collapsed{false};
 };
 
+/// A group of increments: a name, and the rows that point at it. Same shape as a group of layers, and for the
+/// same reason — the group owns nothing, so a group every row has left is still a group, and it holds no
+/// meaning of its own: folding it can break no formula.
+struct VIncrementGroupData
+{
+    QString name{};
+    /// Whether the table shows the group folded. The reader's own state, kept with the document.
+    bool collapsed{false};
+};
+
 QT_WARNING_POP
 
 QT_WARNING_PUSH
@@ -412,6 +422,49 @@ public:
     /// The layers of one group, in the order the document holds them.
     auto LayerGroupLayers(quint32 groupId) -> QVector<quint32>;
 
+    // -----------------------------------------------------------------------------------------------------------
+    // Groups of increments. **One list per table**, `incrementGroups` for the table of increments and
+    // `previewCalculationGroups` for the table of preliminary calculations, and a row carries the id of its group
+    // in `groupId` — never the other way round, exactly like a layer carrying `layerGroup`.
+    //
+    // Unlike the groups of layers these belong to the document, not to a piece: `<increments>` is a child of the
+    // root. Nothing here asks which piece is active, and no undo command remembers one.
+    //
+    // The **ids** come from the document's own counter, so a group id is unique across both lists: everything that
+    // is answered by id finds its group without knowing the table. Only the list itself has to be named.
+    // -----------------------------------------------------------------------------------------------------------
+
+    /// The groups of one table, id -> what the table shows of them. A read only: nothing is created, so merely
+    /// listing the groups of a pattern leaves its file as it was.
+    auto GetIncrementGroups(bool previewCalculation = false) -> QMap<quint32, VIncrementGroupData>;
+    /// The same, id -> name — what a caller offers in a combo.
+    auto IncrementGroupNames(bool previewCalculation = false) -> QMap<quint32, QString>;
+    /// The group list of one table, **created on the spot when the table has none** and placed where the schema
+    /// declares it. Unlike the increments themselves, which the file always carries, the list appears the day a
+    /// first group is filed into it.
+    auto CreateIncrementGroups(bool previewCalculation = false) -> QDomElement;
+    /// The `<incrementGroup>` element of one group, handed back detached — the caller puts it in the list.
+    auto CreateIncrementGroup(quint32 id, const QString &name) -> QDomElement;
+    /// Create a group AND put it in its list in one gesture. @p id comes from the document's own counter. NULL_ID
+    /// when there is nothing to create.
+    auto InsertIncrementGroup(quint32 id, const QString &name, bool previewCalculation = false) -> quint32;
+    /// Take the group out of the document, and its list with it when it was the last one. The rows are expected to
+    /// have left it already.
+    void RemoveIncrementGroup(quint32 id);
+
+    auto GetIncrementGroupName(quint32 id) -> QString;
+    void SetIncrementGroupName(quint32 id, const QString &name);
+
+    auto GetIncrementGroupCollapsed(quint32 id) -> bool;
+    void SetIncrementGroupCollapsed(quint32 id, bool collapsed);
+
+    /// The group one row is filed under, NULL_ID when it is loose — or when the group it names is not in the
+    /// document any more, which a file edited by hand can hold. A row is never in two groups: nothing to choose.
+    /// The name has to say which table it is read from: a name is unique inside its table, not across the two.
+    auto GetIncrementGroup(const QString &incrementName, bool previewCalculation = false) -> quint32;
+    /// File one row under a group, or take it out of every group (NULL_ID). Written on the row, never on the group.
+    void SetIncrementGroup(const QString &incrementName, quint32 groupId, bool previewCalculation = false);
+
     /// The (objectId, toolId) pairs a layer can really hold for one tool element, read from the DOM.
     ///
     /// The pair is not decorative: GroupVisibility receives the object id and each tool decides from its own C++
@@ -458,6 +511,7 @@ public:
     static const QString TagIncrements;
     /// The groups of the table of increments: one list per table, and each row points at its group.
     static const QString TagIncrementGroups;
+    static const QString TagIncrementGroup;
     static const QString TagLineNames;
     static const QString TagPreviewCalculations;
     static const QString TagPreviewCalculationGroups;
@@ -708,6 +762,20 @@ private:
                                      const QHash<QString, QList<quint32>> &variables, quint64 generation);
 
     auto ListIncrements() const -> QStringList;
+
+    /// The `<increments>` or `<previewCalculations>` table a "which one?" answer names, and the list of groups that
+    /// goes with it. One place for the pair, so the two can never be told apart differently in two places.
+    static auto IncrementTableTag(bool previewCalculation) -> QString;
+    static auto IncrementGroupsTag(bool previewCalculation) -> QString;
+
+    /// The group list of one table **as the document holds it**, creating nothing. What the reads use; the writes go
+    /// through CreateIncrementGroups.
+    auto ExistingIncrementGroups(const QString &tag) const -> QDomElement;
+
+    /// The `<increment>` a name designates, **looked up in one table only**. A name is unique inside its table, not
+    /// across the two: the same `#Cou` can live in both, and a scan of the whole document would answer with whichever
+    /// comes first in document order — the wrong row to file under a group, or to read a group from.
+    auto FindIncrementInTable(const QString &incrementsTag, const QString &name) const -> QDomElement;
     auto ListPointExpressions() const -> QVector<VFormulaField>;
     auto ListArcExpressions() const -> QVector<VFormulaField>;
     auto ListElArcExpressions() const -> QVector<VFormulaField>;

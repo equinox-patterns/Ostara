@@ -80,6 +80,7 @@ const QString VAbstractPattern::TagImage = QStringLiteral("image");
 const QString VAbstractPattern::TagMeasurements = QStringLiteral("measurements");
 const QString VAbstractPattern::TagIncrements = QStringLiteral("increments");
 const QString VAbstractPattern::TagIncrementGroups = QStringLiteral("incrementGroups");
+const QString VAbstractPattern::TagIncrementGroup = QStringLiteral("incrementGroup");
 const QString VAbstractPattern::TagLineNames = QStringLiteral("lineNames");
 const QString VAbstractPattern::TagPreviewCalculations = QStringLiteral("previewCalculations");
 const QString VAbstractPattern::TagPreviewCalculationGroups = QStringLiteral("previewCalculationGroups");
@@ -2983,6 +2984,287 @@ auto VAbstractPattern::LayerGroupLayers(quint32 groupId) -> QVector<quint32>
     }
 
     return layers;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IncrementTableTag(bool previewCalculation) -> QString
+{
+    return previewCalculation ? TagPreviewCalculations : TagIncrements;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IncrementGroupsTag(bool previewCalculation) -> QString
+{
+    return previewCalculation ? TagPreviewCalculationGroups : TagIncrementGroups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::ExistingIncrementGroups(const QString &tag) const -> QDomElement
+{
+    return documentElement().firstChildElement(tag);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetIncrementGroups(bool previewCalculation) -> QMap<quint32, VIncrementGroupData>
+{
+    QMap<quint32, VIncrementGroupData> groups;
+
+    // **Read, and only read.** The groups of layers create their list on sight, which leaves an empty
+    // `<layerGroups>` in a pattern that was merely shown in a dock; here the list arrives with its first group and
+    // leaves with its last, so looking at the increments of a pattern cannot mark it modified.
+    QDomElement const incrementGroups = ExistingIncrementGroups(IncrementGroupsTag(previewCalculation));
+
+    if (incrementGroups.isNull())
+    {
+        return groups;
+    }
+
+    try
+    {
+        QDomNode domNode = incrementGroups.firstChild();
+        while (not domNode.isNull())
+        {
+            if (const QDomElement group = domNode.toElement();
+                not group.isNull() && group.tagName() == TagIncrementGroup)
+            {
+                const quint32 id = GetParametrUInt(group, AttrId, NULL_ID_STR);
+                groups.insert(id,
+                              {.name = GetParametrString(group,
+                                                         AttrName,
+                                                         QCoreApplication::translate("VAbstractPattern", "Group")),
+                               .collapsed = GetParametrBool(group, AttrCollapsed, falseStr)});
+            }
+            domNode = domNode.nextSibling();
+        }
+    }
+    catch (const VExceptionConversionError &)
+    {
+        return {};
+    }
+
+    return groups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IncrementGroupNames(bool previewCalculation) -> QMap<quint32, QString>
+{
+    QMap<quint32, QString> names;
+
+    const QMap<quint32, VIncrementGroupData> groups = GetIncrementGroups(previewCalculation);
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        names.insert(it.key(), it.value().name);
+    }
+
+    return names;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::CreateIncrementGroups(bool previewCalculation) -> QDomElement
+{
+    QDomElement const root = documentElement();
+    if (root.isNull())
+    {
+        return {};
+    }
+
+    const QString tag = IncrementGroupsTag(previewCalculation);
+
+    if (QDomElement existing = root.firstChildElement(tag); not existing.isNull())
+    {
+        return existing;
+    }
+
+    QDomElement incrementGroups = createElement(tag);
+
+    // **Where the schema declares it**, asked of the one authority that knows. `<pattern>` is a sequence, so a list
+    // appended at the end would sit after the pieces and a save would be refused; the order lives in
+    // RootElementOrder, read by InsertRootElement alone, and a second opinion written here is what would break it.
+    InsertRootElement(incrementGroups);
+
+    return incrementGroups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::CreateIncrementGroup(quint32 id, const QString &name) -> QDomElement
+{
+    if (id == NULL_ID)
+    {
+        return {};
+    }
+
+    QDomElement incrementGroup = createElement(TagIncrementGroup);
+    SetAttribute(incrementGroup, AttrId, id);
+    SetAttribute(incrementGroup, AttrName, name);
+
+    return incrementGroup;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::InsertIncrementGroup(quint32 id, const QString &name, bool previewCalculation) -> quint32
+{
+    if (id == NULL_ID || name.isEmpty())
+    {
+        return NULL_ID;
+    }
+
+    QDomElement incrementGroups = CreateIncrementGroups(previewCalculation);
+    if (incrementGroups.isNull())
+    {
+        return NULL_ID;
+    }
+
+    const QDomElement element = CreateIncrementGroup(id, name);
+    if (element.isNull())
+    {
+        return NULL_ID;
+    }
+
+    incrementGroups.appendChild(element);
+    modified = true;
+
+    return id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::RemoveIncrementGroup(quint32 id)
+{
+    QDomElement const incrementGroup = FindElementById(id, TagIncrementGroup);
+    if (not incrementGroup.isElement())
+    {
+        return;
+    }
+
+    QDomElement incrementGroups = incrementGroup.parentNode().toElement();
+    if (incrementGroups.isNull())
+    {
+        return;
+    }
+
+    incrementGroups.removeChild(incrementGroup);
+    modified = true;
+    emit patternChanged(false);
+
+    // The list goes when the last group leaves it: an empty `<incrementGroups>` is noise in the file, and
+    // CreateIncrementGroups puts it back the day it is needed.
+    if (incrementGroups.childNodes().isEmpty())
+    {
+        QDomNode root = incrementGroups.parentNode();
+        root.removeChild(incrementGroups);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetIncrementGroupName(quint32 id) -> QString
+{
+    if (QDomElement const incrementGroup = FindElementById(id, TagIncrementGroup); incrementGroup.isElement())
+    {
+        return GetParametrString(incrementGroup, AttrName, QString());
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetIncrementGroupName(quint32 id, const QString &name)
+{
+    if (QDomElement incrementGroup = FindElementById(id, TagIncrementGroup); incrementGroup.isElement())
+    {
+        SetAttribute(incrementGroup, AttrName, name);
+        modified = true;
+        emit patternChanged(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetIncrementGroupCollapsed(quint32 id) -> bool
+{
+    if (QDomElement const incrementGroup = FindElementById(id, TagIncrementGroup); incrementGroup.isElement())
+    {
+        return GetParametrBool(incrementGroup, AttrCollapsed, falseStr);
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetIncrementGroupCollapsed(quint32 id, bool collapsed)
+{
+    if (QDomElement incrementGroup = FindElementById(id, TagIncrementGroup); incrementGroup.isElement())
+    {
+        // Written only when folded: a group unfolded is what a file without the attribute reads as, so the two
+        // states cannot drift apart.
+        SetAttributeOrRemoveIf<bool>(incrementGroup,
+                                     AttrCollapsed,
+                                     collapsed,
+                                     [](bool value) noexcept -> bool { return not value; });
+        modified = true;
+        emit patternChanged(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::FindIncrementInTable(const QString &incrementsTag, const QString &name) const -> QDomElement
+{
+    QDomElement const table = documentElement().firstChildElement(incrementsTag);
+    if (table.isNull())
+    {
+        return {};
+    }
+
+    QDomNode domNode = table.firstChild();
+    while (not domNode.isNull())
+    {
+        if (const QDomElement increment = domNode.toElement();
+            not increment.isNull() && increment.tagName() == TagIncrement)
+        {
+            if (increment.attribute(AttrName) == name)
+            {
+                return increment;
+            }
+        }
+        domNode = domNode.nextSibling();
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::GetIncrementGroup(const QString &incrementName, bool previewCalculation) -> quint32
+{
+    QDomElement const increment = FindIncrementInTable(IncrementTableTag(previewCalculation), incrementName);
+    if (not increment.isElement())
+    {
+        return NULL_ID;
+    }
+
+    const quint32 id = GetParametrUInt(increment, AttrGroupId, NULL_ID_STR);
+
+    // A group the document does not hold any more reads as "no group": the row is then listed at the top level,
+    // where the reader sees it. Nothing dangles in the table.
+    if (id != NULL_ID && not FindElementById(id, TagIncrementGroup).isElement())
+    {
+        return NULL_ID;
+    }
+
+    return id;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetIncrementGroup(const QString &incrementName, quint32 groupId, bool previewCalculation)
+{
+    if (QDomElement increment = FindIncrementInTable(IncrementTableTag(previewCalculation), incrementName);
+        increment.isElement())
+    {
+        // Written on the row, never on the group: a row is in one group at most, and leaving it (NULL_ID) is simply
+        // the attribute going away.
+        SetAttributeOrRemoveIf<quint32>(increment,
+                                        AttrGroupId,
+                                        groupId,
+                                        [](quint32 value) noexcept -> bool { return value == NULL_ID; });
+        modified = true;
+        emit patternChanged(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

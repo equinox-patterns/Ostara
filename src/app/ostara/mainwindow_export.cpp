@@ -794,6 +794,141 @@ void ProbeBuildPiece(VPattern *doc, VContainer *pattern)
     }
 }
 
+// TEMPORARY — sonde des groupes d'incréments, à retirer à la fin du chantier.
+// Exerce le modèle de bout en bout : création de la liste à sa place, rangement d'une ligne, pli, lecture, et
+// surtout l'enregistrement — c'est le schéma qui dit si l'ordre du document tient.
+void ProbeIncrementGroups(VPattern *doc, VContainer *pattern)
+{
+    if (pattern == nullptr || doc == nullptr)
+    {
+        qInfo() << "GROUPS: no document loaded";
+        return;
+    }
+
+    const auto positionOf = [doc](const QString &tag) -> int {
+        const QDomElement root = doc->documentElement();
+        int index = 0;
+        for (QDomNode node = root.firstChild(); not node.isNull(); node = node.nextSibling())
+        {
+            if (node.toElement().tagName() == tag)
+            {
+                return index;
+            }
+            ++index;
+        }
+        return -1;
+    };
+
+    // Deux vraies lignes de la table des incréments, prises dans le fichier.
+    const QDomElement table = doc->documentElement().firstChildElement(VAbstractPattern::TagIncrements);
+    QStringList rowNames;
+    for (QDomNode node = table.firstChild(); not node.isNull(); node = node.nextSibling())
+    {
+        if (const QDomElement row = node.toElement();
+            not row.isNull() && row.tagName() == VAbstractPattern::TagIncrement)
+        {
+            rowNames << row.attribute(VAbstractPattern::AttrName);
+        }
+    }
+    qInfo() << "GROUPS: lignes de la table =" << rowNames.size() << "| deux premieres =" << rowNames.value(0)
+            << rowNames.value(1);
+
+    // 1. Une lecture ne crée rien.
+    const bool noListBefore = doc->documentElement().firstChildElement(VAbstractPattern::TagIncrementGroups).isNull();
+    const qsizetype emptyRead = doc->GetIncrementGroups().size();
+    const bool stillNoList =
+        doc->documentElement().firstChildElement(VAbstractPattern::TagIncrementGroups).isNull();
+    qInfo() << "GROUPS: 1. lecture seule -> avant =" << noListBefore << "| lue =" << emptyRead
+            << "| toujours absente =" << stillNoList;
+
+    // La même lecture sur l'autre table, et rien ne doit apparaître non plus.
+    const qsizetype emptyReadPreview = doc->GetIncrementGroups(true).size();
+    const bool noPreviewList =
+        doc->documentElement().firstChildElement(VAbstractPattern::TagPreviewCalculationGroups).isNull();
+    qInfo() << "GROUPS: 1b. lecture calculs preliminaires -> lue =" << emptyReadPreview
+            << "| liste absente =" << noPreviewList;
+
+    // 2. Création de la liste, à sa place.
+    const quint32 groupId = pattern->getNextId();
+    const quint32 inserted = doc->InsertIncrementGroup(groupId, QStringLiteral("Buste"));
+    qInfo() << "GROUPS: 2. groupe cree -> id =" << groupId << "| rendu =" << inserted
+            << "| increments a" << positionOf(VAbstractPattern::TagIncrements) << "| incrementGroups a"
+            << positionOf(VAbstractPattern::TagIncrementGroups) << "| previewCalculations a"
+            << positionOf(VAbstractPattern::TagPreviewCalculations);
+
+    // 3. Ranger deux lignes, et lire ce rangement.
+    if (rowNames.size() >= 2)
+    {
+        doc->SetIncrementGroup(rowNames.at(0), groupId);
+        doc->SetIncrementGroup(rowNames.at(1), groupId);
+    }
+    const quint32 readBack = rowNames.isEmpty() ? NULL_ID : doc->GetIncrementGroup(rowNames.value(0));
+    const quint32 loose = rowNames.size() < 3 ? NULL_ID : doc->GetIncrementGroup(rowNames.at(2));
+    qInfo() << "GROUPS: 3. rangement -> relu =" << readBack << "| attendu =" << groupId
+            << "| ligne non rangee =" << loose;
+
+    // 4. La table compte : le meme nom lu dans l'autre table n'est pas cette ligne-la.
+    const quint32 crossTable = rowNames.isEmpty() ? NULL_ID : doc->GetIncrementGroup(rowNames.value(0), true);
+    qInfo() << "GROUPS: 4. meme nom dans l'autre table ->" << crossTable << "(NULL_ID attendu)";
+
+    // 5. Le pli : ecrit quand il est plie, retire sinon.
+    const QString groupsTag = VAbstractPattern::TagIncrementGroups;
+    const auto collapsedAttr = [doc, &groupsTag]() -> QString {
+        const QDomElement group = doc->documentElement()
+                                      .firstChildElement(groupsTag)
+                                      .firstChildElement(VAbstractPattern::TagIncrementGroup);
+        return group.attribute(VAbstractPattern::AttrCollapsed);
+    };
+    doc->SetIncrementGroupCollapsed(groupId, true);
+    const bool folded = doc->GetIncrementGroupCollapsed(groupId);
+    const QString foldedAttr = collapsedAttr();
+    doc->SetIncrementGroupCollapsed(groupId, false);
+    const bool unfolded = doc->GetIncrementGroupCollapsed(groupId);
+    qInfo() << "GROUPS: 5. pli -> plie =" << folded << "attribut ecrit =" << foldedAttr << "| deplie ="
+            << unfolded << "attribut restant =" << collapsedAttr();
+
+    // 6. Ce que la liste rend.
+    const QMap<quint32, QString> names = doc->IncrementGroupNames();
+    const QMap<quint32, VIncrementGroupData> groups = doc->GetIncrementGroups();
+    qInfo() << "GROUPS: 6. liste -> noms =" << names << "| groupes =" << groups.size() << "| nom du groupe ="
+            << doc->GetIncrementGroupName(groupId);
+
+    // 7. L'enregistrement : c'est lui qui dit si l'ordre du document tient.
+    if (QString error; doc->SaveDocument(QStringLiteral("/tmp/probe_groups.ostara"), error))
+    {
+        qInfo() << "GROUPS: 7. ENREGISTREMENT OK -> /tmp/probe_groups.ostara";
+    }
+    else
+    {
+        qInfo() << "GROUPS: 7. ENREGISTREMENT REFUSE ->" << error;
+    }
+
+    // 8. Une ligne qu'on delie perd son attribut.
+    if (not rowNames.isEmpty())
+    {
+        doc->SetIncrementGroup(rowNames.value(0), NULL_ID);
+        qInfo() << "GROUPS: 8. ligne deliee -> relu =" << doc->GetIncrementGroup(rowNames.value(0))
+                << "(NULL_ID attendu) | l'autre ligne toujours rangee ="
+                << (rowNames.size() >= 2 ? doc->GetIncrementGroup(rowNames.at(1)) : NULL_ID);
+    }
+
+    // 9. Le groupe part, et sa liste avec lui puisqu'il etait le dernier.
+    doc->RemoveIncrementGroup(groupId);
+    qInfo() << "GROUPS: 9. groupe retire -> groupes =" << doc->GetIncrementGroups().size()
+            << "| liste encore la ="
+            << (not doc->documentElement().firstChildElement(VAbstractPattern::TagIncrementGroups).isNull());
+
+    // 10. Et l'enregistrement tient toujours sans la liste.
+    if (QString error; doc->SaveDocument(QStringLiteral("/tmp/probe_groups_empty.ostara"), error))
+    {
+        qInfo() << "GROUPS: 10. ENREGISTREMENT OK -> /tmp/probe_groups_empty.ostara";
+    }
+    else
+    {
+        qInfo() << "GROUPS: 10. ENREGISTREMENT REFUSE ->" << error;
+    }
+}
+
 void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
 {
     if (pattern == nullptr || doc == nullptr)
@@ -1111,6 +1246,10 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_GROUPS"))
+        {
+            ProbeIncrementGroups(doc, pattern); // TEMPORARY — sonde de faisabilité, à retirer
         }
         else if (qEnvironmentVariableIsSet("OSTARA_PIECE_BUILD"))
         {
