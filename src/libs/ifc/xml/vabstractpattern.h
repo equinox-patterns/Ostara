@@ -456,8 +456,11 @@ public:
     static const QString TagNotes;
     static const QString TagMeasurements;
     static const QString TagIncrements;
+    /// The groups of the table of increments: one list per table, and each row points at its group.
+    static const QString TagIncrementGroups;
     static const QString TagLineNames;
     static const QString TagPreviewCalculations;
+    static const QString TagPreviewCalculationGroups;
     static const QString TagIncrement;
     static const QString TagDraw;
     static const QString TagGroups;
@@ -547,6 +550,9 @@ public:
     static const QString AttrLayerGroup;
     /// Whether the dock folds a `<layerGroup>`: the reader's own state, kept with the document.
     static const QString AttrCollapsed;
+    /// The group an `<increment>` is filed under, written on the row: one id, at most one group — the
+    /// same shape as the layer's `layerGroup`. Only importing a piece writes one.
+    static const QString AttrGroupId;
     /// Marks the layer the canvas draws into. Absent means "not active", so only the active one carries it —
     /// which also makes it self-healing: deleting the layer deletes its flag with it.
     static const QString AttrActive;

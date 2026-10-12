@@ -79,8 +79,10 @@ const QString VAbstractPattern::TagNotes = QStringLiteral("notes");
 const QString VAbstractPattern::TagImage = QStringLiteral("image");
 const QString VAbstractPattern::TagMeasurements = QStringLiteral("measurements");
 const QString VAbstractPattern::TagIncrements = QStringLiteral("increments");
+const QString VAbstractPattern::TagIncrementGroups = QStringLiteral("incrementGroups");
 const QString VAbstractPattern::TagLineNames = QStringLiteral("lineNames");
 const QString VAbstractPattern::TagPreviewCalculations = QStringLiteral("previewCalculations");
+const QString VAbstractPattern::TagPreviewCalculationGroups = QStringLiteral("previewCalculationGroups");
 const QString VAbstractPattern::TagIncrement = QStringLiteral("increment");
 const QString VAbstractPattern::TagDraw = QStringLiteral("draw");
 const QString VAbstractPattern::TagGroups = QStringLiteral("groups");
@@ -163,6 +165,7 @@ const QString VAbstractPattern::AttrPassmarkVisibility = QStringLiteral("passmar
 const QString VAbstractPattern::AttrOpacity = QStringLiteral("opacity");
 const QString VAbstractPattern::AttrLayerGroup = QStringLiteral("layerGroup");
 const QString VAbstractPattern::AttrCollapsed = QStringLiteral("collapsed");
+const QString VAbstractPattern::AttrGroupId = QStringLiteral("groupId");
 const QString VAbstractPattern::AttrActive = QStringLiteral("active");
 const QString VAbstractPattern::AttrAuto = QStringLiteral("auto");
 const QString VAbstractPattern::AttrTransform = QStringLiteral("transform");
@@ -1759,13 +1762,15 @@ auto VAbstractPattern::RootElementOrder() -> const QStringList &
         TagFinalMeasurements,   // 16
         TagBackgroundImages,    // 17
         TagCoverPage,           // 18
-        TagMeasurements,        // 19 required
-        TagIncrements,          // 20 required
-        TagPreviewCalculations, // 21 required
-        TagLineNames,           // 22
-        TagDraw,                // 23 one or more
-        TagPieceGroups,         // 24
-        TagSizeRanges,          // 25
+        TagMeasurements,             // 19 required
+        TagIncrements,               // 20 required
+        TagIncrementGroups,          // 21
+        TagPreviewCalculations,      // 22 required
+        TagPreviewCalculationGroups, // 23
+        TagLineNames,                // 24
+        TagDraw,                     // 25 one or more
+        TagPieceGroups,              // 26
+        TagSizeRanges,               // 27
     };
     return kOrder;
 }
