@@ -74,6 +74,22 @@ struct IncrementReport
  */
 auto ImportIncrements(const OPieceDocument &piece, VPattern *host, VContainer *data, const QString &instanceName)
     -> IncrementReport;
+
+/**
+ * @brief Writes the origin of @p piece on @p block, as the block enters the pattern.
+ *
+ * Two attributes, answering two different questions. `libraryId` is the identity of the library piece the block
+ * comes from, **kept exactly as the piece carries it**: renaming a piece in the library renames its file, and a
+ * block already imported has to go on knowing which piece it came from. `category` is the readable name of that
+ * same origin — the name the piece was saved under — because the instance is about to take a name of its own
+ * (`Dos`) and `category` is what keeps the origin readable afterwards: it is what will let the dialog offer only
+ * the plausible candidates.
+ *
+ * @param block the block about to enter, **before** it is renamed — the origin's name is read from @p piece while
+ *              the block still carries it, and `category` is what remembers it.
+ * @param piece the library piece the block was read from; it is not modified.
+ */
+void SetOrigin(QDomElement &block, const OPieceDocument &piece);
 } // namespace OPieceImport
 
 #endif // OPIECEIMPORT_H

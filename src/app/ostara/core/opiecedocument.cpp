@@ -43,10 +43,8 @@ const QString kTagDependency = QStringLiteral("dependency");
 const QString kTagDraw = QStringLiteral("draw");
 
 const QString kAttrName = QStringLiteral("name");
-const QString kAttrLibraryId = QStringLiteral("libraryId");
 const QString kAttrToken = QStringLiteral("token");
 const QString kAttrOrigin = QStringLiteral("origin");
-const QString kAttrCategory = QStringLiteral("category");
 
 const QString kPieceVersion = QStringLiteral("1.0.0");
 
@@ -70,6 +68,12 @@ auto SectionOrder() -> const QStringList &
     return order;
 }
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+// The two attributes of the identity, named once: they are written by the piece, read back by the builder, and
+// written again on the block an import brings in — three files, one spelling.
+const QString OPieceDocument::AttrLibraryId = QStringLiteral("libraryId");
+const QString OPieceDocument::AttrCategory = QStringLiteral("category");
 
 //---------------------------------------------------------------------------------------------------------------------
 OPieceDocument::OPieceDocument(QObject *parent)
@@ -161,7 +165,14 @@ void OPieceDocument::SetDraw(const QDomElement &source, const QString &name, con
 
     QDomElement imported = importNode(source, true).toElement();
     imported.setAttribute(kAttrName, name);
-    imported.setAttribute(kAttrLibraryId, libraryId);
+    imported.setAttribute(OPieceDocument::AttrLibraryId, libraryId);
+
+    // A piece carries no category: its own name **is** the category, and the reader will read it as such the day
+    // the instance takes a name of its own. The block of an *instance* does carry one — the origin it was read
+    // from — so a piece cut out of an imported instance arrives with a stale category, which would name an origin
+    // that is not this piece's. The schema refuses the attribute here anyway, so keeping it would not produce a
+    // piece that reads oddly: it would produce no piece at all.
+    imported.removeAttribute(OPieceDocument::AttrCategory);
 
     // The block is the last section of the sequence, so appending is inserting in order.
     root.appendChild(imported);
@@ -182,7 +193,7 @@ auto OPieceDocument::PieceName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceDocument::LibraryId() const -> QString
 {
-    return DrawElement().attribute(kAttrLibraryId);
+    return DrawElement().attribute(OPieceDocument::AttrLibraryId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -256,11 +267,11 @@ void OPieceDocument::SetDependencies(const QList<Dependency> &dependencies)
 
         if (not dependency.libraryId.isEmpty())
         {
-            element.setAttribute(kAttrLibraryId, dependency.libraryId);
+            element.setAttribute(OPieceDocument::AttrLibraryId, dependency.libraryId);
         }
         if (not dependency.category.isEmpty())
         {
-            element.setAttribute(kAttrCategory, dependency.category);
+            element.setAttribute(OPieceDocument::AttrCategory, dependency.category);
         }
 
         target.appendChild(element);
@@ -278,8 +289,8 @@ auto OPieceDocument::Dependencies() const -> QList<Dependency>
     {
         dependencies.append(Dependency{element.attribute(kAttrToken),
                                        element.attribute(kAttrOrigin),
-                                       element.attribute(kAttrLibraryId),
-                                       element.attribute(kAttrCategory)});
+                                       element.attribute(OPieceDocument::AttrLibraryId),
+                                       element.attribute(OPieceDocument::AttrCategory)});
     }
 
     return dependencies;

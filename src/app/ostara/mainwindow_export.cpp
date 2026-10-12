@@ -56,7 +56,9 @@
 #include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
 #include <QCoreApplication>
 #include <QDir>
+#include <QDomDocument>
 #include <QDomElement>
+#include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -64,6 +66,7 @@
 #include <QRegularExpression>
 #include <QSet>
 #include <QTemporaryFile>
+#include <QUuid>
 #include <QtDebug>
 #include <cmath>
 
@@ -1224,6 +1227,71 @@ void ProbePieceImport(VPattern *doc, VContainer *pattern)
     else
     {
         qInfo() << "IMPORT: ENREGISTREMENT REFUSE ->" << error;
+    }
+
+    // ── L'identite : ce que le bloc emporte de la piece dont il vient ────────────────────────────────────────
+    qInfo() << "IMPORT: piece -> nom (categorie d'origine) =" << piece.PieceName()
+            << "| identifiant =" << piece.LibraryId();
+
+    QDomElement block = piece.DrawElement().cloneNode(true).toElement();
+    OPieceImport::SetOrigin(block, piece); // AVANT le renommage : c'est l'ordre qui fait la categorie
+    block.setAttribute(AttrName, QStringLiteral("Dos"));
+
+    qInfo() << "IMPORT: bloc prepare -> nom =" << block.attribute(AttrName)
+            << "| identifiant =" << block.attribute(OPieceDocument::AttrLibraryId)
+            << "| categorie =" << block.attribute(OPieceDocument::AttrCategory);
+
+    const OPieceRemap::Report identities = OPieceRemap::RemapIds(block, pattern);
+    doc->InsertRootElement(block);
+
+    QString error;
+    const QString written = QStringLiteral("/tmp/probe_import_identite.ostara");
+    if (doc->SaveDocument(written, error))
+    {
+        QFile reread(written);
+        QDomDocument again;
+        if (reread.open(QIODevice::ReadOnly) && again.setContent(&reread))
+        {
+            const QDomNodeList draws = again.elementsByTagName(VAbstractPattern::TagDraw);
+            for (int i = 0; i < draws.count(); ++i)
+            {
+                const QDomElement draw = draws.at(i).toElement();
+                if (draw.attribute(AttrName) != QStringLiteral("Dos"))
+                {
+                    continue;
+                }
+                qInfo() << "IMPORT: relu du fichier -> nom =" << draw.attribute(AttrName)
+                        << "| identifiant =" << draw.attribute(OPieceDocument::AttrLibraryId)
+                        << "| categorie =" << draw.attribute(OPieceDocument::AttrCategory);
+            }
+        }
+        qInfo() << "IMPORT: ENREGISTREMENT OK (identite) ->" << written
+                << "| ids remplaces sur le bloc =" << identities.ids << identities.written;
+    }
+    else
+    {
+        qInfo() << "IMPORT: ENREGISTREMENT REFUSE (identite) ->" << error;
+    }
+
+    // ── Une piece ne porte jamais de categorie : le schema de la piece la refuse ─────────────────────────────
+    {
+        OPieceDocument cut;
+        cut.Create(piece.Unit());
+        cut.SetDraw(block, QStringLiteral("Dos"), QUuid::createUuid().toString());
+
+        QString cutError;
+        const bool saved = OPieceLibrary::Save(&cut, QStringLiteral("/tmp/probe_piece_identite.opiece"), &cutError);
+        qInfo() << "IMPORT: piece tiree d'un bloc qui portait une categorie -> categorie gardee ="
+                << cut.DrawElement().hasAttribute(OPieceDocument::AttrCategory) << "| ecriture acceptee =" << saved
+                << cutError;
+
+        // Le correctif est-il necessaire ? On remet la categorie sur le <draw> de la piece et on reessaie : le
+        // schema de la piece ne la connait pas, donc l'ecriture doit etre REFUSEE.
+        cut.DrawElement().setAttribute(OPieceDocument::AttrCategory, QStringLiteral("Buste"));
+        QString refusedError;
+        const bool refused =
+            OPieceLibrary::Save(&cut, QStringLiteral("/tmp/probe_piece_identite_refusee.opiece"), &refusedError);
+        qInfo() << "IMPORT: le meme <draw> AVEC une categorie -> ecriture acceptee =" << refused << refusedError;
     }
 }
 

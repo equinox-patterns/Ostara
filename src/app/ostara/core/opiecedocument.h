@@ -65,6 +65,23 @@ public:
         QString category{};
     };
 
+    /**
+     * @brief The identity of the library piece a block comes from, written **on the block**.
+     *
+     * It is stable where a name is not: renaming a piece in the library renames its file, and the blocks
+     * already imported have to go on knowing which piece they came from.
+     */
+    static const QString AttrLibraryId;
+
+    /**
+     * @brief The readable name of that origin — `Buste` — written on the block an instance has become.
+     *
+     * The instance takes a name of its own (`Dos`) and the category is what keeps the origin readable
+     * afterwards. **A `.opiece` never carries it**: there, the piece's own `name` *is* its category, and the
+     * schema of the piece refuses the attribute rather than let a stale one travel.
+     */
+    static const QString AttrCategory;
+
     explicit OPieceDocument(QObject *parent = nullptr);
 
     auto SaveSchema() const -> QString override;

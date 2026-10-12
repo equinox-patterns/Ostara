@@ -161,3 +161,15 @@ auto OPieceImport::ImportIncrements(const OPieceDocument &piece,
 
     return report;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceImport::SetOrigin(QDomElement &block, const OPieceDocument &piece)
+{
+    if (block.isNull() || piece.DrawElement().isNull())
+    {
+        return;
+    }
+
+    block.setAttribute(OPieceDocument::AttrLibraryId, piece.LibraryId());
+    block.setAttribute(OPieceDocument::AttrCategory, piece.PieceName());
+}

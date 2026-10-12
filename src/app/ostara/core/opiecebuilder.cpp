@@ -44,9 +44,6 @@
 
 namespace
 {
-const QString kAttrLibraryId = QStringLiteral("libraryId");
-const QString kAttrCategory = QStringLiteral("category");
-
 /** @brief Where a value read from outside the block comes from. */
 struct Origin
 {
@@ -122,8 +119,8 @@ void CollectOrigins(const QDomElement &root, QHash<quint32, Origin> &origins)
          draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
     {
         const Origin origin{draw.attribute(VAbstractPattern::AttrName),
-                            draw.attribute(kAttrLibraryId),
-                            draw.attribute(kAttrCategory)};
+                            draw.attribute(OPieceDocument::AttrLibraryId),
+                            draw.attribute(OPieceDocument::AttrCategory)};
 
         QSet<quint32> ids;
         CollectDeclaredIds(draw, ids);
