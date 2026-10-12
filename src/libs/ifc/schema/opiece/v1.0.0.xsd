@@ -69,6 +69,25 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <!-- The names the piece gives to its own lines, and the two points each one joins.
+             They belong to a pattern's ROOT — outside every block — so a piece that did not carry them would
+             lose names its own formulas cite: one real pattern writes `AngleLine_Angle180` in a spline, and
+             nothing but this section declares `Angle180`. Imported without it, the formula would resolve to
+             nothing, or bind to a line of the host that happens to carry the same name.
+             `points` is the ordered pair of point names, separated by a space — the form the pattern writes —
+             so a row travels exactly as it stands, and the one the piece has to rename is its pair. -->
+        <xs:element name="lineNames" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="line" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="points" type="xs:string" use="required"/>
+                  <xs:attribute name="name" type="nameSuffix" use="required"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="draw" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
@@ -134,6 +153,18 @@
   <xs:simpleType name="libraryIdentity">
     <xs:restriction base="xs:string">
       <xs:pattern value="\{[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}\}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- The name a piece gives to one of its lines. Typed, and not left as a free string, because it becomes a
+       token of a formula — `Line_Angle180`, `AngleLine_Angle180` — and a name a formula cannot spell is a name
+       nobody can use. Copied from the pattern's schema, which declares the same type: the two schemas are two
+       separate documents, and an `xs:include` is impossible here — the schema is loaded from a memory buffer
+       with no URI, so a relative `schemaLocation` has nothing to resolve against. The two must agree, and this
+       comment is what tells whoever changes one of them. -->
+  <xs:simpleType name="nameSuffix">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([^\\\p{Zs}*\\/&amp;|!&lt;&gt;^&#10;\()\-−+.,٫, ٬.’=?:;'\\&quot;]){1,1}([^\\\p{Zs}*\\/&amp;|!&lt;&gt;^&#10;\()\-−+.,٫, ٬.’=?:;\\&quot;]){0,}"/>
     </xs:restriction>
   </xs:simpleType>
 </xs:schema>

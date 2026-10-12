@@ -834,11 +834,54 @@ auto VContainer::FormulaWithoutStaleHandles(const VContainer *container, const Q
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The two names a key joins, recovered against the objects the pattern holds.
+ *
+ * The key is `P1_P2`, and a name may contain `_` — one the reader typed, and every name the import of a piece
+ * marks with `__P<n>`. Splitting is therefore not a decoding: the cut that puts a **known object name** on each
+ * side is. Exactly one cut has to be right; when none or several are, nothing is invented and the pair stays
+ * unknown — the pattern then writes the key the way it always did.
+ */
+namespace
+{
+auto RecoveredPair(const QHash<quint32, QSharedPointer<VGObject>> &objects, const QString &pairKey)
+    -> QPair<QString, QString>
+{
+    QSet<QString> known;
+    known.reserve(objects.size());
+    for (const QSharedPointer<VGObject> &object : objects)
+    {
+        if (not object.isNull())
+        {
+            known.insert(object->name());
+        }
+    }
+
+    QPair<QString, QString> found{};
+    int cuts = 0;
+    for (qsizetype cut = pairKey.indexOf(QLatin1Char('_')); cut > 0;
+         cut = pairKey.indexOf(QLatin1Char('_'), cut + 1))
+    {
+        const QString first = pairKey.left(cut);
+        const QString second = pairKey.mid(cut + 1);
+        if (known.contains(first) && known.contains(second))
+        {
+            found = {first, second};
+            ++cuts;
+        }
+    }
+
+    return cuts == 1 ? found : QPair<QString, QString>{};
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
 void VContainer::SetLineRoleName(const QString &pairKey, const QString &suffix)
 {
     if (suffix.isEmpty())
     {
         d->lineRoleNames.remove(pairKey);
+        d->lineRolePairs.remove(pairKey);
         return;
     }
 
@@ -852,18 +895,49 @@ void VContainer::SetLineRoleName(const QString &pairKey, const QString &suffix)
     }
 
     d->lineRoleNames.insert(pairKey, suffix);
+
+    // The pair, when the objects of the pattern can tell it: this form of the call carries the key alone.
+    if (const QPair<QString, QString> pair = RecoveredPair(d->calculationObjects, pairKey); not pair.first.isEmpty())
+    {
+        d->lineRolePairs.insert(pairKey, pair);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VContainer::SetLineRoleName(const QString &first, const QString &second, const QString &suffix)
+{
+    if (first.isEmpty() || second.isEmpty())
+    {
+        return;
+    }
+
+    const QString pairKey = first + '_' + second;
+    SetLineRoleName(pairKey, suffix);
+
+    if (d->lineRoleNames.contains(pairKey))
+    {
+        // The caller just said which two names these are — there is nothing to recover, and nothing to be wrong
+        // about: a name may hold an underscore, and the key alone would then be undecidable.
+        d->lineRolePairs.insert(pairKey, {first, second});
+    }
+    else
+    {
+        d->lineRolePairs.remove(pairKey); // refused for a duplicate role name: nothing was filed
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VContainer::RemoveLineRoleName(const QString &pairKey)
 {
     d->lineRoleNames.remove(pairKey);
+    d->lineRolePairs.remove(pairKey);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VContainer::ClearLineRoleNames()
 {
     d->lineRoleNames.clear();
+    d->lineRolePairs.clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -876,6 +950,12 @@ auto VContainer::LineRoleName(const QString &pairKey) const -> QString
 auto VContainer::LineRoleNames() const -> const QHash<QString, QString> &
 {
     return d->lineRoleNames;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::LineRolePair(const QString &pairKey) const -> QPair<QString, QString>
+{
+    return d->lineRolePairs.value(pairKey);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -305,8 +305,9 @@ void VPattern::ParseLineNamesElement(const QDomElement &domElement)
             continue;
         }
 
-        const QString pairKey = pointNames.at(0) + '_' + pointNames.at(1);
-        data->SetLineRoleName(pairKey, name);
+        // The two names are handed over as they were read, and not only joined: this runs **before** the blocks,
+        // so no object exists yet to recover the pair from — and a name may hold an underscore.
+        data->SetLineRoleName(pointNames.at(0), pointNames.at(1), name);
     }
 }
 
@@ -353,13 +354,22 @@ void VPattern::SyncLineNamesToDom()
     const auto &roleNames = data->LineRoleNames();
     for (auto it = roleNames.cbegin(); it != roleNames.cend(); ++it)
     {
-        QDomElement lineEl = createElement(VDomDocument::TagLine);
-        const QStringList pointNames = it.key().split('_');
-        if (pointNames.size() != 2)
+        // The pair as the container holds it. Splitting the key is only the fallback for a role declared by a
+        // caller that had nothing but the key: a name may contain '_' — the import of a piece marks names with
+        // `__P<n>` — and the split would then throw the entry away, silently, at this very save.
+        QPair<QString, QString> pair = data->LineRolePair(it.key());
+        if (pair.first.isEmpty())
         {
-            continue;
+            const QStringList pointNames = it.key().split('_');
+            if (pointNames.size() != 2)
+            {
+                continue;
+            }
+            pair = {pointNames.at(0), pointNames.at(1)};
         }
-        lineEl.setAttribute(AttrPoints, pointNames.at(0) + ' ' + pointNames.at(1));
+
+        QDomElement lineEl = createElement(VDomDocument::TagLine);
+        lineEl.setAttribute(AttrPoints, pair.first + ' ' + pair.second);
         lineEl.setAttribute(AttrName, it.value());
         lineNamesElement.appendChild(lineEl);
     }

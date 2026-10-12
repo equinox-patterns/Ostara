@@ -1229,6 +1229,39 @@ void ProbePieceImport(VPattern *doc, VContainer *pattern)
         qInfo() << "IMPORT: ENREGISTREMENT REFUSE ->" << error;
     }
 
+    // ── Les noms de role des lignes : ils vivent a la RACINE du patron, hors du bloc copie ───────────────────
+    {
+        const auto ReportRoles = [](const QString &label, const OPieceImport::LineNameReport &roles) {
+            qInfo() << "IMPORT:" << label << "-> ajoutes =" << roles.added << "| gardes =" << roles.kept
+                    << "| conflits =" << roles.clashes.size();
+            for (const OPieceImport::LineNameClash &clash : roles.clashes)
+            {
+                qInfo() << "IMPORT:   conflit sur la paire" << clash.points << "| nom =" << clash.name
+                        << "| nom deja pris =" << clash.nameTaken << "| le patron garde =" << clash.held;
+            }
+        };
+
+        qInfo() << "IMPORT: la piece porte" << piece.LineNames().childNodes().count() << "nom(s) de role";
+
+        const QHash<QString, QString> none;
+        ReportRoles(QStringLiteral("roles tels quels"), OPieceImport::ImportLineNames(piece, pattern, none));
+
+        // Le renommage, tel que le marquage le fera : la paire ET le nom du role.
+        QHash<QString, QString> renamed;
+        for (QDomElement row = piece.LineNames().firstChildElement(VDomDocument::TagLine); not row.isNull();
+             row = row.nextSiblingElement(VDomDocument::TagLine))
+        {
+            const QStringList pair = row.attribute(AttrPoints).split(QLatin1Char(' '), Qt::SkipEmptyParts);
+            for (const QString &name : pair)
+            {
+                renamed.insert(name, name + QStringLiteral("__P1"));
+            }
+            const QString role = row.attribute(AttrName);
+            renamed.insert(role, role + QStringLiteral("__P1"));
+        }
+        ReportRoles(QStringLiteral("roles renommes"), OPieceImport::ImportLineNames(piece, pattern, renamed));
+    }
+
     // ── L'identite : ce que le bloc emporte de la piece dont il vient ────────────────────────────────────────
     qInfo() << "IMPORT: piece -> nom (categorie d'origine) =" << piece.PieceName()
             << "| identifiant =" << piece.LibraryId();
@@ -1263,6 +1296,16 @@ void ProbePieceImport(VPattern *doc, VContainer *pattern)
                 qInfo() << "IMPORT: relu du fichier -> nom =" << draw.attribute(AttrName)
                         << "| identifiant =" << draw.attribute(OPieceDocument::AttrLibraryId)
                         << "| categorie =" << draw.attribute(OPieceDocument::AttrCategory);
+            }
+
+            // La section est RECONSTRUITE depuis le conteneur a chaque enregistrement : ce qui suit est donc la
+            // preuve que le role a bien ete depose dans le conteneur, et pas seulement ecrit dans le DOM.
+            const QDomElement roles = again.elementsByTagName(VAbstractPattern::TagLineNames).at(0).toElement();
+            for (QDomElement row = roles.firstChildElement(VDomDocument::TagLine); not row.isNull();
+                 row = row.nextSiblingElement(VDomDocument::TagLine))
+            {
+                qInfo() << "IMPORT: <lineNames> relu -> points =" << row.attribute(AttrPoints)
+                        << "| nom =" << row.attribute(AttrName);
             }
         }
         qInfo() << "IMPORT: ENREGISTREMENT OK (identite) ->" << written

@@ -100,6 +100,16 @@ public:
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QHash<QString, QString> lineRoleNames{};
 
+    /**
+     * @brief The two names each role joins, for the roles whose pair is known.
+     *
+     * Keyed like @ref lineRoleNames. A role declared by a caller that had the two names keeps them here; one
+     * declared from the key alone is recovered against the objects the container holds at that moment — which is
+     * why a pair can be missing, and why the pattern then falls back to splitting the key.
+     */
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+    QHash<QString, QPair<QString, QString>> lineRolePairs{};
+
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, VPiece>> pieces{QSharedPointer<QHash<quint32, VPiece>>::create()};
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
@@ -191,10 +201,29 @@ public:
     void AddLine(quint32 firstPointId, quint32 secondPointId, quint32 mainReference = NULL_ID,
                  bool takeRoleName = true);
     void SetLineRoleName(const QString &pairKey, const QString &suffix);
+
+    /**
+     * @brief The same, for a caller that knows the two names separately — the parser of the pattern, the import
+     * of a piece.
+     *
+     * The pair has to be remembered *as two names*: the key joins them with `_`, and a name may contain `_` — the
+     * import of a piece marks names with `__P<n>` — so the key alone no longer says where the second name
+     * begins. The parser needs this form because it reads `<lineNames>` **before** the blocks, when no object
+     * exists yet to recover the pair from.
+     */
+    void SetLineRoleName(const QString &first, const QString &second, const QString &suffix);
     void RemoveLineRoleName(const QString &pairKey);
     void ClearLineRoleNames();
     auto LineRoleName(const QString &pairKey) const -> QString;
     auto LineRoleNames() const -> const QHash<QString, QString> &;
+
+    /**
+     * @brief The two names @p pairKey joins, in order, or two empty strings when they are not known.
+     *
+     * The pattern writes `<lineNames>` at every save — the section is rebuilt from the container, never edited
+     * in place — so this is what keeps a role name from being lost when a point name holds an underscore.
+     */
+    auto LineRolePair(const QString &pairKey) const -> QPair<QString, QString>;
     void AddArc(const QSharedPointer<VAbstractCurve> &arc, const quint32 &id, const quint32 &parentId = NULL_ID);
     void AddSpline(const QSharedPointer<VAbstractBezier> &curve, quint32 id, quint32 parentId = NULL_ID);
     void AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierPath> &curve, const quint32 &id,

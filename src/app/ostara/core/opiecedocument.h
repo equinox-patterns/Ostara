@@ -117,6 +117,16 @@ public:
     void SetDependencies(const QList<Dependency> &dependencies);
     auto Dependencies() const -> QList<Dependency>;
 
+    /**
+     * @brief The names the piece gives to its own lines, and the pair of points each one joins.
+     *
+     * They are copied **as they stand**: a row is `<line points="A B" name="…"/>` in the pattern as in the
+     * piece, so the only thing the import has to rename is the pair — and the piece cannot do it, because it
+     * does not know what its points will be called once they enter a pattern.
+     */
+    void SetLineNames(const QDomElement &source);
+    auto LineNames() const -> QDomElement;
+
 private:
     /** @brief The section @p tag if it is there. */
     auto ExistingSection(const QString &tag) const -> QDomElement;

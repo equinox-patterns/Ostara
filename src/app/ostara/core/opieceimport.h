@@ -28,6 +28,7 @@
 #define OPIECEIMPORT_H
 
 #include <QDomElement>
+#include <QHash>
 #include <QString>
 #include <QVector>
 
@@ -90,6 +91,45 @@ auto ImportIncrements(const OPieceDocument &piece, VPattern *host, VContainer *d
  * @param piece the library piece the block was read from; it is not modified.
  */
 void SetOrigin(QDomElement &block, const OPieceDocument &piece);
+/**
+ * @brief A name the pattern already gives to a line, and the line it gives it to.
+ *
+ * A role is remembered per **pair of points**, and its name has to be unique — the pattern refuses a second
+ * line under a name already taken, and drops the entry when it reads the file back. So a piece can meet two
+ * walls: the pattern may already name that same pair, and it may already answer to that same name.
+ */
+struct LineNameClash
+{
+    QString points{};      ///< The pair, as the piece writes it.
+    QString name{};        ///< The name the piece gives that line.
+    bool nameTaken{false}; ///< True when the name belongs to **another** line; what is kept is then in @p held.
+    QString held{};        ///< What the pattern keeps — its name for that pair, or the pair owning that name.
+};
+
+struct LineNameReport
+{
+    int added{0};
+    int kept{0};
+    QVector<LineNameClash> clashes{};
+};
+
+/**
+ * @brief Writes the names @p piece gives to its lines into the pattern, their pair of points renamed.
+ *
+ * The lines' names live at the **root** of a pattern — outside every block — so they do not travel with the
+ * block and have to be carried and put back deliberately. They go into @p data and not into the DOM: the
+ * section is **rebuilt from the container at every save** (`VPattern::SyncLineNamesToDom`), so a row written
+ * by hand would be swept away by the next save.
+ *
+ * The pair of a row is renamed by @p renamed, which is the same table the import uses for the piece's names —
+ * empty when nothing collides, in which case a row travels as it stands. @p renamed also applies to the role
+ * itself: it is a name of use, and it becomes a token of a formula (`AngleLine_Angle180`).
+ *
+ * The **first import wins**, as for the increments: a pair the pattern already names is left as it is, and the
+ * reader is told when the piece would have said something else.
+ */
+auto ImportLineNames(const OPieceDocument &piece, VContainer *data, const QHash<QString, QString> &renamed)
+    -> LineNameReport;
 } // namespace OPieceImport
 
 #endif // OPIECEIMPORT_H

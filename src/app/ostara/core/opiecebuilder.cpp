@@ -27,6 +27,7 @@
 #include "opiecebuilder.h"
 
 #include "def.h"
+#include "ifcdef.h"
 #include "vcontainer.h"
 #include "vformula.h"
 #include "variables/vinternalvariable.h"
@@ -153,6 +154,96 @@ auto IsInside(const QDomNode &node, const QDomElement &block) -> bool
  *
  * Element by element, so a piece carries the increments it uses and nothing of the table it came from.
  */
+/**
+ * @brief The names a line of the block can join.
+ *
+ * A line role names a **pair of points**, so a role is the block's own when the block declares both of them.
+ * Points are named on `<point>` — `name` for every tool, `name1`…`name3` for the three that make several,
+ * `curveName1/2` and `curve1Name1/2`/`curve2Name1/2` for the segments a cut or an intersection produces — and
+ * by the `<item>` of a `<source>`, of a `pleatDisplay`, of a `rotationDisplay` and of a `flounceSpiral`, whose
+ * `name` is the object the operation places. Nothing else is asked: a layer's label, a piece's own name or the
+ * label of a dialog take no part in a line.
+ */
+void CollectPointNames(const QDomElement &element, const QString &parentTag, QSet<QString> &names)
+{
+    static const QSet<QString> pointSlots{QStringLiteral("name"),        QStringLiteral("name1"),
+                                          QStringLiteral("name2"),       QStringLiteral("name3"),
+                                          QStringLiteral("curveName1"),  QStringLiteral("curveName2"),
+                                          QStringLiteral("curve1Name1"), QStringLiteral("curve1Name2"),
+                                          QStringLiteral("curve2Name1"), QStringLiteral("curve2Name2")};
+
+    const QString tag = element.tagName();
+    const bool isPoint = tag == VAbstractPattern::TagPoint;
+    // `<item>` and `<source>` have no constant of their own in the project: it reads them by their name.
+    const bool namesAnObject =
+        isPoint
+        || (tag == QStringLiteral("item")
+            && (parentTag == QStringLiteral("source") || parentTag == QStringLiteral("pleatDisplay")
+                || parentTag == QStringLiteral("rotationDisplay") || parentTag == QStringLiteral("flounceSpiral")));
+
+    if (namesAnObject)
+    {
+        for (const QString &slot : (isPoint ? pointSlots : QSet<QString>{VAbstractPattern::AttrName, AttrAlias}))
+        {
+            const QString name = element.attribute(slot);
+            if (not name.isEmpty())
+            {
+                names.insert(name);
+            }
+        }
+    }
+
+    // The flat form of an operation names the image it produces in one attribute, and the operations were
+    // written that way before every one of them had a `<source>`.
+    if (tag == VAbstractPattern::TagOperation)
+    {
+        const QString suffix = element.attribute(QStringLiteral("suffix"));
+        if (not suffix.isEmpty())
+        {
+            names.insert(suffix);
+        }
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        CollectPointNames(child, tag, names);
+    }
+}
+
+/**
+ * @brief The roles of the lines this block owns.
+ *
+ * Measured on the real patterns: every role of the corpus has **exactly one** block declaring both points of
+ * its pair — and it is the block whose formula cites the role. A row whose pair the block does not declare
+ * whole is left out rather than guessed at: a role carried for a line the piece does not have would name a line
+ * of the host.
+ */
+auto CollectLineRoles(const QDomElement &root, const QSet<QString> &pointNames) -> QDomElement
+{
+    const QDomElement section = root.firstChildElement(VAbstractPattern::TagLineNames);
+    if (section.isNull() || pointNames.isEmpty())
+    {
+        return {};
+    }
+
+    QDomDocument owner = section.ownerDocument();
+    QDomElement collected = owner.createElement(section.tagName());
+
+    for (QDomElement row = section.firstChildElement(VDomDocument::TagLine); not row.isNull();
+         row = row.nextSiblingElement(VDomDocument::TagLine))
+    {
+        const QStringList pair = row.attribute(AttrPoints).split(QLatin1Char(' '), Qt::SkipEmptyParts);
+        if (pair.size() != 2 || not pointNames.contains(pair.at(0)) || not pointNames.contains(pair.at(1)))
+        {
+            continue;
+        }
+
+        collected.appendChild(row.cloneNode(true).toElement());
+    }
+
+    return collected;
+}
+
 auto CollectRows(const QDomElement &section, const QSet<QString> &names) -> QDomElement
 {
     if (section.isNull() || names.isEmpty())
@@ -320,6 +411,14 @@ auto OPieceBuilder::Build(VAbstractPattern *doc,
                          {},
                          CollectRows(root.firstChildElement(VAbstractPattern::TagPreviewCalculations), carried),
                          {});
+
+    // The names the block gives to its own lines. They live at the **root** of the pattern, outside the block
+    // that is copied, so they have to be gathered like the increments — and they are gathered on the block's
+    // point names, because that is what a role is made of.
+    QSet<QString> pointNames;
+    CollectPointNames(block, QString(), pointNames);
+    piece->SetLineNames(CollectLineRoles(root, pointNames));
+
     piece->SetDependencies(needed);
 
     // Last, because the block closes the sequence. Its identity is minted here and never moves again.

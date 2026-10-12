@@ -39,6 +39,7 @@ const QString kTagIncrementGroups = QStringLiteral("incrementGroups");
 const QString kTagPreviewCalculations = QStringLiteral("previewCalculations");
 const QString kTagPreviewCalculationGroups = QStringLiteral("previewCalculationGroups");
 const QString kTagDependencies = QStringLiteral("dependencies");
+const QString kTagLineNames = QStringLiteral("lineNames");
 const QString kTagDependency = QStringLiteral("dependency");
 const QString kTagDraw = QStringLiteral("draw");
 
@@ -64,6 +65,7 @@ auto SectionOrder() -> const QStringList &
                                    kTagPreviewCalculations,
                                    kTagPreviewCalculationGroups,
                                    kTagDependencies,
+                                   kTagLineNames,
                                    kTagDraw};
     return order;
 }
@@ -246,6 +248,37 @@ auto OPieceDocument::PreviewCalculations() const -> QDomElement
 auto OPieceDocument::PreviewCalculationGroups() const -> QDomElement
 {
     return ExistingSection(kTagPreviewCalculationGroups);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceDocument::LineNames() const -> QDomElement
+{
+    return ExistingSection(kTagLineNames);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceDocument::SetLineNames(const QDomElement &source)
+{
+    // A piece names no line of its own as often as not — `Manche` and `Pli 2` of the witness name none — and an
+    // empty section says nothing. It is left out, the way a piece without a dependency leaves out
+    // `<dependencies>`, and the schema allows both.
+    if (source.isNull() || not source.hasChildNodes())
+    {
+        QDomElement root = documentElement();
+        if (const QDomElement previous = ExistingSection(kTagLineNames); not previous.isNull())
+        {
+            root.removeChild(previous);
+        }
+        return;
+    }
+
+    QDomElement target = Section(kTagLineNames);
+    RemoveAllChildren(target);
+
+    for (QDomNode row = source.firstChild(); not row.isNull(); row = row.nextSibling())
+    {
+        target.appendChild(importNode(row, true));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

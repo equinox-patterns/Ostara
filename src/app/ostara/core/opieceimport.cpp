@@ -163,6 +163,69 @@ auto OPieceImport::ImportIncrements(const OPieceDocument &piece,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::ImportLineNames(const OPieceDocument &piece,
+                                   VContainer *data,
+                                   const QHash<QString, QString> &renamed) -> LineNameReport
+{
+    LineNameReport report{};
+    if (data == nullptr)
+    {
+        return report;
+    }
+
+    const auto Renamed = [&renamed](const QString &name) -> QString { return renamed.value(name, name); };
+
+    for (QDomElement row = piece.LineNames().firstChildElement(VDomDocument::TagLine); not row.isNull();
+         row = row.nextSiblingElement(VDomDocument::TagLine))
+    {
+        const QStringList pair = row.attribute(AttrPoints).split(QLatin1Char(' '), Qt::SkipEmptyParts);
+        const QString name = Renamed(row.attribute(AttrName));
+        if (pair.size() != 2 || name.isEmpty())
+        {
+            continue;
+        }
+
+        const QString key = Renamed(pair.at(0)) + '_' + Renamed(pair.at(1));
+        if (const QString held = data->LineRoleName(key); not held.isEmpty())
+        {
+            if (held == name)
+            {
+                ++report.kept;
+            }
+            else
+            {
+                report.clashes.append({row.attribute(AttrPoints), name, false, held});
+            }
+            continue;
+        }
+
+        // The name has to be free before the pair is filed: the pattern refuses a second line under a name
+        // already taken — it says so at parse time and drops the entry — so a name that is taken is reported
+        // rather than written.
+        const QHash<QString, QString> &roles = data->LineRoleNames();
+        QString owner;
+        for (auto it = roles.constBegin(); it != roles.constEnd(); ++it)
+        {
+            if (it.value() == name)
+            {
+                owner = it.key();
+                break;
+            }
+        }
+        if (not owner.isEmpty())
+        {
+            report.clashes.append({row.attribute(AttrPoints), name, true, owner});
+            continue;
+        }
+
+        data->SetLineRoleName(Renamed(pair.at(0)), Renamed(pair.at(1)), name);
+        ++report.added;
+    }
+
+    return report;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPieceImport::SetOrigin(QDomElement &block, const OPieceDocument &piece)
 {
     if (block.isNull() || piece.DrawElement().isNull())
