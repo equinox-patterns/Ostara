@@ -220,6 +220,11 @@ void VPattern::RemoveIncrement(const QString &type, const QString &name)
     const QDomNodeList list = elementsByTagName(type);
     list.at(0).removeChild(FindIncrement(name));
     emit patternChanged(false);
+
+    // The rows of one table are filed in its own list: what is dropped is the list of the table the row just left.
+    // Removing the last increment of an imported group takes the group with it — nothing stands under a heading no
+    // row refers to, and the reader has no gesture to take it away.
+    DropEmptyIncrementGroups(type == TagPreviewCalculations);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -451,6 +451,10 @@ public:
     /// Take the group out of the document, and its list with it when it was the last one. The rows are expected to
     /// have left it already.
     void RemoveIncrementGroup(quint32 id);
+    /// **A group is held by its rows: the last one to leave takes it with it**, and the list goes with its last
+    /// group. Called by everything that unfiles or removes a row — an import files rows in, never out, but a reader
+    /// deleting the last increment of an imported group would otherwise leave a heading nothing stands under.
+    void DropEmptyIncrementGroups(bool previewCalculation = false);
 
     auto GetIncrementGroupName(quint32 id) -> QString;
     void SetIncrementGroupName(quint32 id, const QString &name);
@@ -458,6 +462,10 @@ public:
     auto GetIncrementGroupCollapsed(quint32 id) -> bool;
     void SetIncrementGroupCollapsed(quint32 id, bool collapsed);
 
+    /// The group each row of one table is filed under, **row name -> group id, in one pass**. The table of
+    /// variables rebuilds itself on every keystroke, so asking per row would walk the table again for every row.
+    /// A row left loose is simply absent from the map.
+    auto IncrementRowGroups(bool previewCalculation = false) -> QMap<QString, quint32>;
     /// The group one row is filed under, NULL_ID when it is loose — or when the group it names is not in the
     /// document any more, which a file edited by hand can hold. A row is never in two groups: nothing to choose.
     /// The name has to say which table it is read from: a name is unique inside its table, not across the two.

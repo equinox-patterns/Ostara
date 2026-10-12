@@ -88,6 +88,22 @@ struct IncrementData
     bool specialUnits{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
+/// What a row of either table stands for. A group line is the level above the increments: it wears the group's name,
+/// and the rows that follow it down to the next group line are its content — exactly the shape of a group of
+/// measurements. An increment row carries no marker at all: its first column holds a name, not an id, and nothing
+/// but this marker could tell the two lines apart.
+enum class RowKind : quint8
+{
+    Increment,
+    Group
+};
+
+/// The group a group line stands for rides in Qt::UserRole, on the very column an increment row uses for its name;
+/// what KIND of row it is rides in the role after it. One group id can be told from one increment name by nothing
+/// else.
+constexpr int kIdRole = Qt::UserRole;
+constexpr int kKindRole = Qt::UserRole + 1;
+
 //---------------------------------------------------------------------------------------------------------------------
 void SetIncrementDescription(int i, const QxtCsvModel &csv, const QVector<int> &map, IncrementData &measurement)
 {
@@ -184,6 +200,11 @@ DialogIncrements::DialogIncrements(VContainer *data, VPattern *doc, QWidget *par
     connect(ui->tableWidgetIncrement, &QTableWidget::itemSelectionChanged, this,
             &DialogIncrements::ShowIncrementDetails);
     connect(ui->tableWidgetPC, &QTableWidget::itemSelectionChanged, this, &DialogIncrements::ShowIncrementDetails);
+
+    // A click on the line of a group folds it. No other gesture comes from the tables themselves — every other
+    // change is an edit made in the panel below — so this is the only click either table listens to.
+    connect(ui->tableWidgetIncrement, &QTableWidget::cellClicked, this, &DialogIncrements::OnIncrementCellClicked);
+    connect(ui->tableWidgetPC, &QTableWidget::cellClicked, this, &DialogIncrements::OnIncrementCellClicked);
 
     ui->toolButtonAdd->setMenu(InitVarTypeMenu(ui->toolButtonAdd->menu(), true /*increments tab*/));
     ui->toolButtonAdd->setProperty("hasMenu", true);
@@ -415,6 +436,97 @@ auto DialogIncrements::AddSeparatorCell(QTableWidget *table, const QString &text
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogIncrements::AddGroupCell(QTableWidget *table, quint32 groupId, const QString &name, bool collapsed, int row)
+    -> QTableWidgetItem *
+{
+    SCASSERT(table != nullptr)
+
+    auto *item = new QTableWidgetItem(GroupCaret(collapsed), name);
+    SetTextAlignment(item, Qt::AlignVCenter);
+    item->setData(kIdRole, groupId);
+    item->setData(kKindRole, static_cast<quint32>(RowKind::Group));
+    item->setToolTip(tr("Group: %1").arg(name));
+
+    QFont itemFont = item->font();
+    itemFont.setBold(true);
+    item->setFont(itemFont);
+
+    // Not editable: a double click would otherwise open the increment's rename editor on the line of a group.
+    item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+
+    table->setItem(row, 0, item);
+
+    return item;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogIncrements::RowIncrementName(const QTableWidget *table, int row) -> QString
+{
+    if (table == nullptr || row < 0 || row >= table->rowCount())
+    {
+        return {};
+    }
+
+    const QTableWidgetItem *item = table->item(row, 0);
+    if (item == nullptr)
+    {
+        return {};
+    }
+
+    // A row built before the groups existed carries no marker, and every such row is an increment.
+    if (item->data(kKindRole).toUInt() == static_cast<quint32>(RowKind::Group))
+    {
+        return {};
+    }
+
+    return item->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogIncrements::RowGroupId(const QTableWidget *table, int row) -> quint32
+{
+    if (table == nullptr || row < 0 || row >= table->rowCount())
+    {
+        return NULL_ID;
+    }
+
+    const QTableWidgetItem *item = table->item(row, 0);
+    if (item == nullptr || item->data(kKindRole).toUInt() != static_cast<quint32>(RowKind::Group))
+    {
+        return NULL_ID;
+    }
+
+    return item->data(kIdRole).toUInt();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogIncrements::RowOfIncrement(const QTableWidget *table, const QString &name) -> int
+{
+    if (table == nullptr || name.isEmpty())
+    {
+        return -1;
+    }
+
+    for (int row = 0; row < table->rowCount(); ++row)
+    {
+        if (RowIncrementName(table, row) == name)
+        {
+            return row;
+        }
+    }
+
+    return -1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogIncrements::GroupCaret(bool collapsed) -> QIcon
+{
+    // The same pair the formula field's own grow button wears: pointing right while there is something folded away,
+    // down while everything is out. Read from the theme, so the two themes each get their own drawing.
+    return FromTheme(collapsed ? VThemeIcon::GoNext : VThemeIcon::GoDown);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogIncrements::GetCustomName() const -> QString
 {
     qint32 num = 1;
@@ -500,86 +612,56 @@ void DialogIncrements::Controls(QTableWidget *table)
 {
     SCASSERT(table != nullptr)
 
-    if (table->rowCount() > 0)
-    {
-        const QTableWidgetItem *nameField = table->item(table->currentRow(), 0);
-        SCASSERT(nameField != nullptr)
+    const QString name = RowIncrementName(table, table->currentRow());
 
-        if (table == ui->tableWidgetIncrement)
-        {
-            ui->toolButtonRemove->setEnabled(not IncrementUsed(nameField->text()));
-        }
-        else if (table == ui->tableWidgetPC)
-        {
-            ui->toolButtonRemovePC->setEnabled(not IncrementUsed(nameField->text()));
-        }
-    }
-    else
+    if (name.isEmpty())
     {
+        // A group line is not a row of the table of variables: it can neither be removed nor moved, and there is
+        // nothing to ask the formulas about. A table with no current row lands here too — the old shape of this
+        // function read the current row whenever the table held one, which is not the same thing.
         if (table == ui->tableWidgetIncrement)
         {
             ui->toolButtonRemove->setEnabled(false);
-        }
-        else if (table == ui->tableWidgetPC)
-        {
-            ui->toolButtonRemovePC->setEnabled(false);
-        }
-    }
-
-    if (table->rowCount() >= 2)
-    {
-        if (table->currentRow() == 0)
-        {
-            if (table == ui->tableWidgetIncrement)
-            {
-                ui->toolButtonUp->setEnabled(false);
-                ui->toolButtonDown->setEnabled(true);
-            }
-            else if (table == ui->tableWidgetPC)
-            {
-                ui->toolButtonUpPC->setEnabled(false);
-                ui->toolButtonDownPC->setEnabled(true);
-            }
-        }
-        else if (table->currentRow() == table->rowCount() - 1)
-        {
-            if (table == ui->tableWidgetIncrement)
-            {
-                ui->toolButtonUp->setEnabled(true);
-                ui->toolButtonDown->setEnabled(false);
-            }
-            else if (table == ui->tableWidgetPC)
-            {
-                ui->toolButtonUpPC->setEnabled(true);
-                ui->toolButtonDownPC->setEnabled(false);
-            }
-        }
-        else
-        {
-            if (table == ui->tableWidgetIncrement)
-            {
-                ui->toolButtonUp->setEnabled(true);
-                ui->toolButtonDown->setEnabled(true);
-            }
-            else if (table == ui->tableWidgetPC)
-            {
-                ui->toolButtonUpPC->setEnabled(true);
-                ui->toolButtonDownPC->setEnabled(true);
-            }
-        }
-    }
-    else
-    {
-        if (table == ui->tableWidgetIncrement)
-        {
             ui->toolButtonUp->setEnabled(false);
             ui->toolButtonDown->setEnabled(false);
         }
         else if (table == ui->tableWidgetPC)
         {
+            ui->toolButtonRemovePC->setEnabled(false);
             ui->toolButtonUpPC->setEnabled(false);
             ui->toolButtonDownPC->setEnabled(false);
         }
+
+        return;
+    }
+
+    if (table == ui->tableWidgetIncrement)
+    {
+        ui->toolButtonRemove->setEnabled(not IncrementUsed(name));
+    }
+    else if (table == ui->tableWidgetPC)
+    {
+        ui->toolButtonRemovePC->setEnabled(not IncrementUsed(name));
+    }
+
+    const int row = table->currentRow();
+    const int lastRow = table->rowCount() - 1;
+
+    // A member cannot leave its group by the arrows: above the first member sits the group's line, and below the
+    // last one the arrows would reorder the document across the group. Everywhere else the row moves between two
+    // increments, which is what the arrows promise.
+    const bool canMoveUp = row > 0 && RowGroupId(table, row - 1) == NULL_ID;
+    const bool canMoveDown = row < lastRow && RowGroupId(table, row + 1) == NULL_ID;
+
+    if (table == ui->tableWidgetIncrement)
+    {
+        ui->toolButtonUp->setEnabled(canMoveUp);
+        ui->toolButtonDown->setEnabled(canMoveDown);
+    }
+    else if (table == ui->tableWidgetPC)
+    {
+        ui->toolButtonUpPC->setEnabled(canMoveUp);
+        ui->toolButtonDownPC->setEnabled(canMoveDown);
     }
 }
 
@@ -681,34 +763,41 @@ void DialogIncrements::EnableDetails(QTableWidget *table, bool enabled)
         ui->plainTextEditFormulaPC->setEnabled(enabled);
     }
 
-    if (table->rowCount() > 0)
+    if (table->rowCount() > 0 && table->currentRow() != -1)
     {
-        const QTableWidgetItem *nameField = table->item(table->currentRow(), 0);
-        SCASSERT(nameField != nullptr)
-        QSharedPointer<VIncrement> const incr = m_data->GetVariable<VIncrement>(nameField->text());
-        const bool isSeparator = incr->GetIncrementType() == IncrementType::Separator;
+        // A group line has neither a value nor a formula: its line is a heading, and the panel would otherwise offer
+        // to edit something that does not exist. The container is asked only about a real increment — it throws on a
+        // name it does not hold, and a group's name is not one of them.
+        const QString name = RowIncrementName(table, table->currentRow());
+
+        bool showsValue = false;
+        if (not name.isEmpty())
+        {
+            QSharedPointer<VIncrement> const incr = m_data->GetVariable<VIncrement>(name);
+            showsValue = incr->GetIncrementType() != IncrementType::Separator;
+        }
 
         if (table == ui->tableWidgetIncrement)
         {
-            ui->labelCalculated->setVisible(not isSeparator);
-            ui->labelCalculatedValue->setVisible(not isSeparator);
-            ui->labelFormula->setVisible(not isSeparator);
-            ui->plainTextEditFormula->setVisible(not isSeparator);
-            ui->pushButtonGrow->setVisible(not isSeparator);
-            ui->toolButtonExpr->setVisible(not isSeparator);
-            ui->labelIncrementUnits->setVisible(not isSeparator);
-            ui->comboBoxIncrementUnits->setVisible(not isSeparator);
+            ui->labelCalculated->setVisible(showsValue);
+            ui->labelCalculatedValue->setVisible(showsValue);
+            ui->labelFormula->setVisible(showsValue);
+            ui->plainTextEditFormula->setVisible(showsValue);
+            ui->pushButtonGrow->setVisible(showsValue);
+            ui->toolButtonExpr->setVisible(showsValue);
+            ui->labelIncrementUnits->setVisible(showsValue);
+            ui->comboBoxIncrementUnits->setVisible(showsValue);
         }
         else if (table == ui->tableWidgetPC)
         {
-            ui->labelCalculatedPC->setVisible(not isSeparator);
-            ui->labelCalculatedValuePC->setVisible(not isSeparator);
-            ui->labelFormulaPC->setVisible(not isSeparator);
-            ui->plainTextEditFormulaPC->setVisible(not isSeparator);
-            ui->pushButtonGrowPC->setVisible(not isSeparator);
-            ui->toolButtonExprPC->setVisible(not isSeparator);
-            ui->labelPreviewCalculationUnits->setVisible(not isSeparator);
-            ui->comboBoxPreviewCalculationUnits->setVisible(not isSeparator);
+            ui->labelCalculatedPC->setVisible(showsValue);
+            ui->labelCalculatedValuePC->setVisible(showsValue);
+            ui->labelFormulaPC->setVisible(showsValue);
+            ui->plainTextEditFormulaPC->setVisible(showsValue);
+            ui->pushButtonGrowPC->setVisible(showsValue);
+            ui->toolButtonExprPC->setVisible(showsValue);
+            ui->labelPreviewCalculationUnits->setVisible(showsValue);
+            ui->comboBoxPreviewCalculationUnits->setVisible(showsValue);
         }
     }
 }
@@ -818,17 +907,26 @@ void DialogIncrements::ShowTableIncrementDetails(QTableWidget *table)
         return;
     }
 
+    const QString name = RowIncrementName(table, table->currentRow());
+
+    // A group line has nothing to show, and its name is not an increment: the panel is cleared and switched off
+    // without ever asking the container, which throws on a name it does not hold. This is where that call used to
+    // happen before the try below could catch anything.
+    if (name.isEmpty())
+    {
+        EnableDetails(table, false);
+        return;
+    }
+
     if (table->rowCount() > 0 && table->currentRow() != -1)
     {
         EnableDetails(table, true);
 
-        // name
-        const QTableWidgetItem *nameField = table->item(table->currentRow(), 0);
         QSharedPointer<VIncrement> incr;
 
         try
         {
-            incr = m_data->GetVariable<VIncrement>(nameField->text());
+            incr = m_data->GetVariable<VIncrement>(name);
         }
         catch (const VExceptionBadId &e)
         {
@@ -866,6 +964,59 @@ void DialogIncrements::ShowTableIncrementDetails(QTableWidget *table)
     else
     {
         EnableDetails(table, false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogIncrements::OnIncrementCellClicked(int row, int column)
+{
+    Q_UNUSED(column)
+
+    auto *table = qobject_cast<QTableWidget *>(sender());
+    if (table == nullptr)
+    {
+        return;
+    }
+
+    // Which column was hit changes nothing: a group line is a heading, it has nothing to edit, and the whole line
+    // answers the click the way the line of a group of measurements does.
+    if (RowGroupId(table, row) != NULL_ID)
+    {
+        ToggleIncrementGroup(table, row);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogIncrements::ToggleIncrementGroup(QTableWidget *table, int groupRow)
+{
+    const quint32 groupId = RowGroupId(table, groupRow);
+    if (groupId == NULL_ID)
+    {
+        return;
+    }
+
+    const bool collapsed = not m_patternDoc->GetIncrementGroupCollapsed(groupId);
+
+    // Written with the document, so the fold is where the reader left it the next time the pattern is opened — it is
+    // the reader's own state, exactly like the folds of the layers, and it is what marks the pattern modified when
+    // all that was done is folding a group.
+    m_patternDoc->SetIncrementGroupCollapsed(groupId, collapsed);
+
+    if (QTableWidgetItem *item = table->item(groupRow, 0); item != nullptr)
+    {
+        item->setIcon(GroupCaret(collapsed));
+    }
+
+    // Then the rows this line owns: everything down to the next group line, which is exactly what the fill built
+    // under it. **Hidden, not removed** — the table keeps every row, so the indices the dialog navigates by, and
+    // the selection, do not move.
+    for (int row = groupRow + 1; row < table->rowCount(); ++row)
+    {
+        if (RowGroupId(table, row) != NULL_ID)
+        {
+            break;
+        }
+        table->setRowHidden(row, collapsed);
     }
 }
 
@@ -916,7 +1067,11 @@ void DialogIncrements::AddNewIncrement(IncrementType type)
     const QString name = GetCustomName();
     qint32 currentRow = -1;
 
-    if (table->currentRow() == -1)
+    // A group line is no anchor: the new increment goes to the end of its table, exactly as when nothing is
+    // selected. Anchoring on a heading would file the row outside every group by accident.
+    const QString anchor = RowIncrementName(table, table->currentRow());
+
+    if (anchor.isEmpty())
     {
         currentRow = table->rowCount();
         incrementMode ? m_patternDoc->AddEmptyIncrement(name, type)
@@ -925,10 +1080,9 @@ void DialogIncrements::AddNewIncrement(IncrementType type)
     else
     {
         currentRow = table->currentRow() + 1;
-        const QTableWidgetItem *nameField = table->item(table->currentRow(), 0);
 
-        incrementMode ? m_patternDoc->AddEmptyIncrementAfter(nameField->text(), name, type)
-                      : m_patternDoc->AddEmptyPreviewCalculationAfter(nameField->text(), name, type);
+        incrementMode ? m_patternDoc->AddEmptyIncrementAfter(anchor, name, type)
+                      : m_patternDoc->AddEmptyPreviewCalculationAfter(anchor, name, type);
     }
 
     m_hasChanges = true;
@@ -1815,41 +1969,108 @@ void DialogIncrements::FillIncrementsTable(QTableWidget *table,
         }
     }
 
-    qint32 currentRow = -1;
-    QMapIterator iMap(map);
-    table->setRowCount(static_cast<int>(map.size()));
-    while (iMap.hasNext())
+    // What this table shows of the groups **of its own table**, read once. The rows keep the order of the document,
+    // and a group is a heading in front of the rows it holds — the shape a group of measurements has. Asking the
+    // document row by row would walk it once per row, and this table is rebuilt on every keystroke of the panel
+    // below, so the walk would be paid again on each character typed.
+    const QMap<quint32, VIncrementGroupData> groups = m_patternDoc->GetIncrementGroups(takePreviewCalculations);
+    const QMap<QString, quint32> rowGroups = m_patternDoc->IncrementRowGroups(takePreviewCalculations);
+
+    // A row naming a group the document does not hold any more is a loose row, exactly as the model answers it.
+    auto GroupOf = [&groups, &rowGroups](const QString &name) -> quint32
     {
-        iMap.next();
-        const QSharedPointer<VIncrement> &incr = increments.value(iMap.value());
-        ++currentRow;
+        const quint32 id = rowGroups.value(name, NULL_ID);
+        return groups.contains(id) ? id : NULL_ID;
+    };
+
+    struct Row
+    {
+        RowKind kind;
+        QString name;                          // the group's name on a heading, the increment's own otherwise
+        QSharedPointer<VIncrement> increment;  // none on a heading
+        quint32 groupId{NULL_ID};
+    };
+
+    // Which rows belong to which group, gathered once — NULL_ID holding the rows no group holds.
+    QMap<quint32, QVector<QSharedPointer<VIncrement>>> byGroup;
+    for (auto i = map.constBegin(); i != map.constEnd(); ++i)
+    {
+        const QSharedPointer<VIncrement> &incr = increments.value(i.value());
+        byGroup[GroupOf(incr->GetName())].append(incr);
+    }
+
+    QVector<Row> rows;
+
+    // **The rows no group holds come first**, in the order of the document: a group line owns everything that
+    // follows it, so a row outside every group has nowhere else to be.
+    for (const QSharedPointer<VIncrement> &incr : byGroup.value(NULL_ID))
+    {
+        rows.append({RowKind::Increment, incr->GetName(), incr, NULL_ID});
+    }
+
+    // Then each group followed by **its own** rows, in the order of their ids — the order the document created
+    // them, one import after another. A group no row refers to is shown all the same: the file holds it and the
+    // rows point at it, so leaving it out would hide a state the file really has.
+    for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+    {
+        rows.append({RowKind::Group, it.value().name, {}, it.key()});
+
+        for (const QSharedPointer<VIncrement> &incr : byGroup.value(it.key()))
+        {
+            rows.append({RowKind::Increment, incr->GetName(), incr, it.key()});
+        }
+    }
+
+    table->setRowCount(static_cast<int>(rows.size()));
+
+    bool folded = false;
+
+    for (int row = 0; row < rows.size(); ++row)
+    {
+        const Row &desc = rows.at(row);
+
+        // A span set by an earlier fill outlives the items it covered — the dialog found that out with the
+        // separators. Every row takes its own back to one column before any of them sets one.
+        if (table->columnSpan(row, 1) > 1)
+        {
+            table->setSpan(row, 1, 1, 1);
+        }
+
+        if (desc.kind == RowKind::Group)
+        {
+            AddGroupCell(table, desc.groupId, desc.name, groups.value(desc.groupId).collapsed, row);
+
+            // Everything this line owns is hidden while it is folded. The heading stays — what it hides is one
+            // gesture away — and the rows are hidden rather than left out, so no index moves under the reader.
+            folded = groups.value(desc.groupId).collapsed;
+            continue;
+        }
+
+        table->setRowHidden(row, folded);
+
+        const QSharedPointer<VIncrement> &incr = desc.increment;
 
         if (incr->GetType() == VarType::Increment)
         {
-            AddCell(table, incr->GetName(), currentRow, 0, Qt::AlignVCenter); // name
+            AddCell(table, incr->GetName(), row, 0, Qt::AlignVCenter); // name
 
             QString calculatedValue = VAbstractApplication::VApp()->LocaleToString(*incr->GetValue());
             if (incr->IsSpecialUnits())
             {
                 calculatedValue = calculatedValue + degreeSymbol;
             }
-            AddCell(table, calculatedValue, currentRow, 1, Qt::AlignCenter, incr->IsFormulaOk()); // calculated value
+            AddCell(table, calculatedValue, row, 1, Qt::AlignCenter, incr->IsFormulaOk()); // calculated value
 
             QString const formula = VTranslateVars::TryFormulaToUser(
                 incr->GetFormula(), VAbstractApplication::VApp()->Settings()->GetOsSeparator());
 
-            AddCell(table, formula, currentRow, 2, Qt::AlignVCenter); // formula
-
-            if (table->columnSpan(currentRow, 1) > 1)
-            {
-                table->setSpan(currentRow, 1, 1, 1);
-            }
+            AddCell(table, formula, row, 2, Qt::AlignVCenter); // formula
         }
         else if (incr->GetType() == VarType::IncrementSeparator)
         {
-            AddSeparatorCell(table, incr->GetName(), currentRow, 0, Qt::AlignVCenter); // name
-            AddCell(table, incr->GetDescription(), currentRow, 1, Qt::AlignCenter);    // description
-            table->setSpan(currentRow, 1, 1, 2);
+            AddSeparatorCell(table, incr->GetName(), row, 0, Qt::AlignVCenter);    // name
+            AddCell(table, incr->GetDescription(), row, 1, Qt::AlignCenter);       // description
+            table->setSpan(row, 1, 1, 2);
         }
     }
 
@@ -1901,15 +2122,20 @@ void DialogIncrements::RemoveIncrement()
         return;
     }
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
+    // A group line is not a row of the table of variables: there is nothing to take out.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
 
     if (button == ui->toolButtonRemove)
     {
-        m_patternDoc->RemoveIncrement(nameField->text());
+        m_patternDoc->RemoveIncrement(name);
     }
     else if (button == ui->toolButtonRemovePC)
     {
-        m_patternDoc->RemovePreviewCalculation(nameField->text());
+        m_patternDoc->RemovePreviewCalculation(name);
     }
 
     m_hasChanges = true;
@@ -1946,21 +2172,31 @@ void DialogIncrements::MoveUp()
         return;
     }
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
+    // A group line is not a row of the table of variables: there is nothing to move.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
 
     if (button == ui->toolButtonUp)
     {
-        m_patternDoc->MoveUpIncrement(nameField->text());
+        m_patternDoc->MoveUpIncrement(name);
     }
     else if (button == ui->toolButtonUpPC)
     {
-        m_patternDoc->MoveUpPreviewCalculation(nameField->text());
+        m_patternDoc->MoveUpPreviewCalculation(name);
     }
 
     m_hasChanges = true;
     LocalUpdateTree();
 
-    table->selectRow(row - 1);
+    // Found by its own name, not by arithmetic on the index it had: a group's heading may sit just above the row,
+    // and what the reader must be left looking at is the row, not whatever landed one place higher.
+    if (const int moved = RowOfIncrement(table, name); moved != -1)
+    {
+        table->selectRow(moved);
+    }
     table->repaint(); // Force repain to fix paint artifacts on Mac OS X
 }
 
@@ -1991,21 +2227,30 @@ void DialogIncrements::MoveDown()
         return;
     }
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
+    // A group line is not a row of the table of variables: there is nothing to move.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
 
     if (button == ui->toolButtonDown)
     {
-        m_patternDoc->MoveDownIncrement(nameField->text());
+        m_patternDoc->MoveDownIncrement(name);
     }
     else if (button == ui->toolButtonDownPC)
     {
-        m_patternDoc->MoveDownPreviewCalculation(nameField->text());
+        m_patternDoc->MoveDownPreviewCalculation(name);
     }
 
     m_hasChanges = true;
     LocalUpdateTree();
 
-    table->selectRow(row + 1);
+    // Found by its own name, for the same reason as above.
+    if (const int moved = RowOfIncrement(table, name); moved != -1)
+    {
+        table->selectRow(moved);
+    }
     table->repaint(); // Force repain to fix paint artifacts on Mac OS X
 }
 
@@ -2036,6 +2281,14 @@ void DialogIncrements::SaveIncrName(const QString &text)
         return;
     }
 
+    // A group line is not an increment: there is nothing to rename, and no name of its own to rewrite in the
+    // formulas — a group's name is the instance's, which no formula reads.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
+
     QTableWidgetItem *nameField = table->item(row, 0);
 
     QString newName = text.isEmpty() ? GetCustomName() : CustomIncrSign + text;
@@ -2054,11 +2307,11 @@ void DialogIncrements::SaveIncrName(const QString &text)
         newName = name;
     }
 
-    m_patternDoc->SetIncrementName(nameField->text(), newName);
+    m_patternDoc->SetIncrementName(name, newName);
     QVector<VFormulaField> expression = m_patternDoc->ListIncrementExpressions();
-    m_patternDoc->ReplaceNameInFormula(expression, nameField->text(), newName);
+    m_patternDoc->ReplaceNameInFormula(expression, name, newName);
 
-    CacheRename(nameField->text(), newName);
+    CacheRename(name, newName);
 
     m_hasChanges = true;
     if (updateFlag)
@@ -2102,10 +2355,15 @@ void DialogIncrements::SaveIncrUnits()
         return;
     }
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
+    // A group line is not an increment: there is nothing to switch to degrees.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
 
     const auto units = static_cast<IncrUnits>(combo->currentData().toInt());
-    m_patternDoc->SetIncrementSpecialUnits(nameField->text(), units == IncrUnits::Degrees);
+    m_patternDoc->SetIncrementSpecialUnits(name, units == IncrUnits::Degrees);
     LocalUpdateTree();
 
     {
@@ -2145,8 +2403,14 @@ void DialogIncrements::SaveIncrDescription()
 
     const QTextCursor cursor = textEdit->textCursor();
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
-    m_patternDoc->SetIncrementDescription(nameField->text(), textEdit->toPlainText());
+    // A group line is not an increment: there is nothing to describe.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
+
+    m_patternDoc->SetIncrementDescription(name, textEdit->toPlainText());
     LocalUpdateTree();
 
     {
@@ -2186,10 +2450,16 @@ void DialogIncrements::SaveIncrFormula()
         return;
     }
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
+    // A group line is not an increment: the container would throw on its name. The panel below is switched off for
+    // such a row, so nothing can be typed into it — this guard is the last word, not a convenience.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
 
     QString const text = textEdit->toPlainText();
-    QSharedPointer<VIncrement> const incr = m_data->GetVariable<VIncrement>(nameField->text());
+    QSharedPointer<VIncrement> const incr = m_data->GetVariable<VIncrement>(name);
 
     if (const QTableWidgetItem *formulaField = table->item(row, 2); formulaField->text() == text)
     {
@@ -2236,7 +2506,7 @@ void DialogIncrements::SaveIncrFormula()
     {
         const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
             text, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-        m_patternDoc->SetIncrementFormula(nameField->text(), formula);
+        m_patternDoc->SetIncrementFormula(name, formula);
     }
     catch (qmu::QmuParserError &e) // Just in case something bad will happen
     {
@@ -2345,8 +2615,14 @@ void DialogIncrements::Fx()
         return;
     }
 
-    const QTableWidgetItem *nameField = table->item(row, 0);
-    QSharedPointer<VIncrement> const incr = m_data->GetVariable<VIncrement>(nameField->text());
+    // A group line is not an increment: the container would throw on its name.
+    const QString name = RowIncrementName(table, row);
+    if (name.isEmpty())
+    {
+        return;
+    }
+
+    QSharedPointer<VIncrement> const incr = m_data->GetVariable<VIncrement>(name);
 
     QScopedPointer<DialogEditWrongFormula> const dialog(new DialogEditWrongFormula(incr->GetData(), NULL_ID, this));
     dialog->setWindowTitle(tr("Edit increment"));
@@ -2361,7 +2637,8 @@ void DialogIncrements::Fx()
     {
         // Fix the bug #492. https://bitbucket.org/dismine/valentina/issues/492/valentina-crashes-when-add-an-increment
         // Because of the bug need to take QTableWidgetItem twice time. Previous update "killed" the pointer.
-        m_patternDoc->SetIncrementFormula(table->item(row, 0)->text(), dialog->GetFormula());
+        // The name is the one read at the top of this function, so there is nothing to read a second time.
+        m_patternDoc->SetIncrementFormula(name, dialog->GetFormula());
 
         m_hasChanges = true;
         LocalUpdateTree();

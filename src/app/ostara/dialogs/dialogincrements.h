@@ -74,6 +74,7 @@ protected:
     auto IsValid() const -> bool final { return true; }
 private slots:
     void ShowIncrementDetails();
+    void OnIncrementCellClicked(int row, int column);
     void AddIncrement();
     void AddSeparator();
     void RemoveIncrement();
@@ -124,8 +125,23 @@ private:
 
     template <typename T> void FillTable(const QMap<QString, T> &varTable, QTableWidget *table);
 
-    static void FillIncrementsTable(QTableWidget *table, const QMap<QString, QSharedPointer<VIncrement>> &increments,
-                                    bool takePreviewCalculations);
+    void FillIncrementsTable(QTableWidget *table, const QMap<QString, QSharedPointer<VIncrement>> &increments,
+                             bool takePreviewCalculations);
+
+    /// The increment name a row stands for, an empty string when the row is not an increment — a group line, or no
+    /// row at all. Both tables identify a row by the text of its first column, which for a group line is the group's
+    /// name: every action asks this before believing it holds an increment.
+    static auto RowIncrementName(const QTableWidget *table, int row) -> QString;
+    /// The group a group line stands for, NULL_ID for any other row — what rides in the row's own marker.
+    static auto RowGroupId(const QTableWidget *table, int row) -> quint32;
+    /// The row that lists one increment, -1 when it is not listed. Up and down find their row by name: a group line
+    /// may sit just above a group's first member, where arithmetic on the index would land on the heading.
+    static auto RowOfIncrement(const QTableWidget *table, const QString &name) -> int;
+    /// The caret a group line wears: pointing right while the group is folded, down while it is open.
+    static auto GroupCaret(bool collapsed) -> QIcon;
+    /// Fold or unfold one group in one table, and only its own rows: the line answers, nothing is rebuilt, so the
+    /// reader keeps their place. The state is written with the document, so it survives the dialog.
+    void ToggleIncrementGroup(QTableWidget *table, int groupRow);
 
     void FillIncrements();
     void FillPreviewCalculations();
@@ -143,6 +159,11 @@ private:
         -> QTableWidgetItem *;
     static auto AddSeparatorCell(QTableWidget *table, const QString &text, int row, int column, int aligment,
                                  bool ok = true) -> QTableWidgetItem *;
+    /// The line of a group: its caret and its name in the very column an increment uses for its own name, in bold,
+    /// and nothing in the two columns that hold a value and a formula — a group computes nothing. The id and the kind
+    /// ride on the item, which is the only way a click can later tell this line from an increment's.
+    static auto AddGroupCell(QTableWidget *table, quint32 groupId, const QString &name, bool collapsed, int row)
+        -> QTableWidgetItem *;
 
     auto GetCustomName() const -> QString;
     static auto ClearIncrementName(const QString &name) -> QString;

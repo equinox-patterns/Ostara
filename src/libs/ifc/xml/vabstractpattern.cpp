@@ -3155,6 +3155,56 @@ void VAbstractPattern::RemoveIncrementGroup(quint32 id)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::DropEmptyIncrementGroups(bool previewCalculation)
+{
+    QDomElement incrementGroups = ExistingIncrementGroups(IncrementGroupsTag(previewCalculation));
+    if (incrementGroups.isNull())
+    {
+        return;
+    }
+
+    // What the table still holds, read once: the rows that carry a group are exactly the groups that are held.
+    QSet<quint32> filed;
+    const QMap<QString, quint32> rowGroups = IncrementRowGroups(previewCalculation);
+    for (const quint32 id : rowGroups)
+    {
+        filed.insert(id);
+    }
+
+    bool dropped = false;
+
+    for (QDomElement group = incrementGroups.firstChildElement(TagIncrementGroup); not group.isNull();)
+    {
+        // Taken before the removal: the sibling chain does not survive its own node going away.
+        const QDomElement next = group.nextSiblingElement(TagIncrementGroup);
+
+        const quint32 id = GetParametrUInt(group, AttrId, NULL_ID_STR);
+        if (not filed.contains(id))
+        {
+            incrementGroups.removeChild(group);
+            dropped = true;
+        }
+
+        group = next;
+    }
+
+    if (not dropped)
+    {
+        return;
+    }
+
+    modified = true;
+    emit patternChanged(false);
+
+    // And the list goes when its last group leaves it, as everywhere else: an empty `<incrementGroups>` is noise.
+    if (incrementGroups.childNodes().isEmpty())
+    {
+        QDomNode root = incrementGroups.parentNode();
+        root.removeChild(incrementGroups);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetIncrementGroupName(quint32 id) -> QString
 {
     if (QDomElement const incrementGroup = FindElementById(id, TagIncrementGroup); incrementGroup.isElement())
@@ -3230,6 +3280,33 @@ auto VAbstractPattern::FindIncrementInTable(const QString &incrementsTag, const 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IncrementRowGroups(bool previewCalculation) -> QMap<QString, quint32>
+{
+    QMap<QString, quint32> rowGroups;
+
+    QDomElement const table = documentElement().firstChildElement(IncrementTableTag(previewCalculation));
+    if (table.isNull())
+    {
+        return rowGroups;
+    }
+
+    for (QDomNode node = table.firstChild(); not node.isNull(); node = node.nextSibling())
+    {
+        if (const QDomElement increment = node.toElement();
+            not increment.isNull() && increment.tagName() == TagIncrement)
+        {
+            const quint32 groupId = GetParametrUInt(increment, AttrGroupId, NULL_ID_STR);
+            if (groupId != NULL_ID)
+            {
+                rowGroups.insert(increment.attribute(AttrName), groupId);
+            }
+        }
+    }
+
+    return rowGroups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetIncrementGroup(const QString &incrementName, bool previewCalculation) -> quint32
 {
     QDomElement const increment = FindIncrementInTable(IncrementTableTag(previewCalculation), incrementName);
@@ -3264,6 +3341,12 @@ void VAbstractPattern::SetIncrementGroup(const QString &incrementName, quint32 g
                                         [](quint32 value) noexcept -> bool { return value == NULL_ID; });
         modified = true;
         emit patternChanged(false);
+
+        // A row leaving every group can be the last one a group held.
+        if (groupId == NULL_ID)
+        {
+            DropEmptyIncrementGroups(previewCalculation);
+        }
     }
 }
 

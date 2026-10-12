@@ -51,6 +51,7 @@
 #include "core/opiecedocument.h"
 #include "core/opiecebuilder.h"
 #include "core/opiecelibrary.h"
+#include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
 #include <QCoreApplication>
 #include <QDir>
 #include <QDomElement>
@@ -873,11 +874,18 @@ void ProbeIncrementGroups(VPattern *doc, VContainer *pattern)
 
     // 5. Le pli : ecrit quand il est plie, retire sinon.
     const QString groupsTag = VAbstractPattern::TagIncrementGroups;
-    const auto collapsedAttr = [doc, &groupsTag]() -> QString {
-        const QDomElement group = doc->documentElement()
-                                      .firstChildElement(groupsTag)
-                                      .firstChildElement(VAbstractPattern::TagIncrementGroup);
-        return group.attribute(VAbstractPattern::AttrCollapsed);
+    const auto collapsedAttr = [doc, &groupsTag, groupId]() -> QString {
+        const QDomElement list = doc->documentElement().firstChildElement(groupsTag);
+        for (QDomNode node = list.firstChild(); not node.isNull(); node = node.nextSibling())
+        {
+            if (const QDomElement group = node.toElement();
+                not group.isNull() && group.tagName() == VAbstractPattern::TagIncrementGroup
+                && group.attribute(VAbstractPattern::AttrId).toUInt() == groupId)
+            {
+                return group.attribute(VAbstractPattern::AttrCollapsed);
+            }
+        }
+        return {};
     };
     doc->SetIncrementGroupCollapsed(groupId, true);
     const bool folded = doc->GetIncrementGroupCollapsed(groupId);
@@ -927,6 +935,157 @@ void ProbeIncrementGroups(VPattern *doc, VContainer *pattern)
     {
         qInfo() << "GROUPS: 10. ENREGISTREMENT REFUSE ->" << error;
     }
+
+    // 11. Une ligne seule dans un groupe : la retirer emporte le groupe.
+    const quint32 soloId = pattern->getNextId();
+    doc->InsertIncrementGroup(soloId, QStringLiteral("Groupe d'une ligne"));
+    doc->SetIncrementGroup(QStringLiteral("#Epaule"), soloId);
+    const qsizetype beforeSolo = doc->GetIncrementGroups().size();
+    doc->RemoveIncrement(QStringLiteral("#Epaule"));
+    qInfo() << "GROUPS: 11. une ligne seule -> avant =" << beforeSolo
+            << "| apres =" << doc->GetIncrementGroups().size() << "| groupe encore la ="
+            << (not doc->GetIncrementGroupName(soloId).isEmpty());
+
+    // 12. Deux lignes dans un groupe : la premiere partie, le groupe reste et la survivante le garde.
+    const quint32 pairId = pattern->getNextId();
+    doc->InsertIncrementGroup(pairId, QStringLiteral("Groupe de deux lignes"));
+    doc->SetIncrementGroup(QStringLiteral("#TailleSansPinces_2"), pairId);
+    doc->SetIncrementGroup(QStringLiteral("#Poitrine"), pairId);
+    const qsizetype beforePair = doc->GetIncrementGroups().size();
+    doc->RemoveIncrement(QStringLiteral("#TailleSansPinces_2"));
+    const qsizetype afterFirst = doc->GetIncrementGroups().size();
+    const bool survivorKeeps = doc->GetIncrementGroup(QStringLiteral("#Poitrine")) == pairId;
+    doc->RemoveIncrement(QStringLiteral("#Poitrine"));
+    qInfo() << "GROUPS: 12. deux lignes -> avant =" << beforePair << "| apres la premiere =" << afterFirst
+            << "(le groupe tient) | la survivante garde son groupe =" << survivorKeeps
+            << "| apres la seconde, groupe encore la ="
+            << (not doc->GetIncrementGroupName(pairId).isEmpty());
+
+    // 13. Une ligne qui quitte son groupe sans etre supprimee emporte le groupe aussi.
+    const quint32 leftId = pattern->getNextId();
+    doc->InsertIncrementGroup(leftId, QStringLiteral("Groupe delaisse"));
+    doc->SetIncrementGroup(QStringLiteral("#Bassin"), leftId);
+    const qsizetype beforeLeft = doc->GetIncrementGroups().size();
+    doc->SetIncrementGroup(QStringLiteral("#Bassin"), NULL_ID);
+    qInfo() << "GROUPS: 13. ligne delaissee -> avant =" << beforeLeft
+            << "| apres =" << doc->GetIncrementGroups().size() << "| groupe encore la ="
+            << (not doc->GetIncrementGroupName(leftId).isEmpty());
+
+    // 14. Et le dernier groupe parti emporte la liste : il ne reste alors que le groupe 821 et sa ligne.
+    doc->SetIncrementGroup(QStringLiteral("#Cou"), NULL_ID);
+    qInfo() << "GROUPS: 14. plus aucun groupe -> groupes =" << doc->GetIncrementGroups().size()
+            << "| liste encore la ="
+            << (not doc->documentElement().firstChildElement(VAbstractPattern::TagIncrementGroups).isNull());
+}
+
+// TEMPORARY — sonde de la table des incréments, à retirer à la fin du chantier.
+// Construit la dialogue sur le document chargé et lit ce que la table montre vraiment : les lignes de groupe, le
+// masquage des membres d'un groupe plié, le caret, et l'état écrit dans le document.
+void ProbeIncrementGroupsUi(VPattern *doc, VContainer *pattern)
+{
+    if (pattern == nullptr || doc == nullptr)
+    {
+        qInfo() << "GROUPS-UI: no document loaded";
+        return;
+    }
+
+    DialogIncrements dialog(pattern, doc);
+
+    auto *increments = dialog.findChild<QTableWidget *>(QStringLiteral("tableWidgetIncrement"));
+    auto *preview = dialog.findChild<QTableWidget *>(QStringLiteral("tableWidgetPC"));
+
+    if (increments == nullptr || preview == nullptr)
+    {
+        qInfo() << "GROUPS-UI: tables not found";
+        return;
+    }
+
+    const auto dumpTable = [](const QString &label, QTableWidget *table) {
+        qInfo() << "GROUPS-UI:" << label << "-> lignes =" << table->rowCount();
+        for (int row = 0; row < table->rowCount(); ++row)
+        {
+            const QTableWidgetItem *item = table->item(row, 0);
+            if (item == nullptr)
+            {
+                qInfo() << "GROUPS-UI:   ligne" << row << "VIDE";
+                continue;
+            }
+
+            const auto kind = item->data(Qt::UserRole + 1).toUInt();
+            qInfo() << "GROUPS-UI:   ligne" << row << (kind == 1 ? "[GROUPE]" : "[incr. ]")
+                    << "| texte =" << item->text() << "| id =" << item->data(Qt::UserRole).toUInt()
+                    << "| masquee =" << table->isRowHidden(row)
+                    << "| caret =" << (not item->icon().isNull()) << "| gras =" << item->font().bold();
+        }
+    };
+
+    dumpTable(QStringLiteral("table des increments"), increments);
+    dumpTable(QStringLiteral("table des calculs preliminaires"), preview);
+
+    const auto groupById = [doc](quint32 id) -> QDomElement {
+        for (const QString &tag : {VAbstractPattern::TagIncrementGroups, VAbstractPattern::TagPreviewCalculationGroups})
+        {
+            const QDomElement list = doc->documentElement().firstChildElement(tag);
+            for (QDomNode node = list.firstChild(); not node.isNull(); node = node.nextSibling())
+            {
+                if (const QDomElement group = node.toElement();
+                    not group.isNull() && group.tagName() == VAbstractPattern::TagIncrementGroup
+                    && group.attribute(VAbstractPattern::AttrId).toUInt() == id)
+                {
+                    return group;
+                }
+            }
+        }
+        return {};
+    };
+
+    // La premiere ligne de groupe d'une table, pliee par le signal que la table emet vraiment.
+    const auto clickGroupRow = [&groupById, &dumpTable](QTableWidget *table, const QString &label) {
+        int groupRow = -1;
+        for (int row = 0; row < table->rowCount(); ++row)
+        {
+            const QTableWidgetItem *item = table->item(row, 0);
+            if (item != nullptr && item->data(Qt::UserRole + 1).toUInt() == 1)
+            {
+                groupRow = row;
+                break;
+            }
+        }
+
+        if (groupRow == -1)
+        {
+            qInfo() << "GROUPS-UI:" << label << "-> aucune ligne de groupe";
+            return;
+        }
+
+        const quint32 groupId = table->item(groupRow, 0)->data(Qt::UserRole).toUInt();
+
+        QMetaObject::invokeMethod(table, "cellClicked", Qt::DirectConnection, Q_ARG(int, groupRow), Q_ARG(int, 0));
+
+        const QDomElement group = groupById(groupId);
+        qInfo() << "GROUPS-UI:" << label << "-> clic sur la ligne" << groupRow << "| groupe" << groupId
+                << "| nom =" << group.attribute(VAbstractPattern::AttrName)
+                << "| collapse =" << group.attribute(VAbstractPattern::AttrCollapsed);
+
+        dumpTable(label + QStringLiteral(" apres le clic"), table);
+    };
+
+    clickGroupRow(increments, QStringLiteral("table des increments"));
+    clickGroupRow(preview, QStringLiteral("table des calculs preliminaires"));
+
+    // Et l'enregistrement : deux groupes replies, un dans chaque liste, et c'est le schema qui tranche.
+    if (QString error; doc->SaveDocument(QStringLiteral("/tmp/probe_ui_folded.ostara"), error))
+    {
+        qInfo() << "GROUPS-UI: ENREGISTREMENT OK -> /tmp/probe_ui_folded.ostara";
+    }
+    else
+    {
+        qInfo() << "GROUPS-UI: ENREGISTREMENT REFUSE ->" << error;
+    }
+
+    // Deplie a nouveau, pour laisser le document dans son etat de depart.
+    clickGroupRow(increments, QStringLiteral("table des increments, second clic"));
+    clickGroupRow(preview, QStringLiteral("table des calculs preliminaires, second clic"));
 }
 
 void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
@@ -1246,6 +1405,10 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_INCREMENT_GROUPS_UI"))
+        {
+            ProbeIncrementGroupsUi(doc, pattern); // TEMPORARY — sonde de faisabilité, à retirer
         }
         else if (qEnvironmentVariableIsSet("OSTARA_PIECE_GROUPS"))
         {
