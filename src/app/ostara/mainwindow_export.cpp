@@ -51,6 +51,7 @@
 #include "core/opiecedocument.h"
 #include "core/opiecebuilder.h"
 #include "core/opiecelibrary.h"
+#include "core/opieceimport.h" // TEMPORARY — sonde de l'import, à retirer
 #include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
 #include <QCoreApplication>
 #include <QDir>
@@ -1088,6 +1089,123 @@ void ProbeIncrementGroupsUi(VPattern *doc, VContainer *pattern)
     clickGroupRow(preview, QStringLiteral("table des calculs preliminaires, second clic"));
 }
 
+// TEMPORARY — sonde de l'import des incréments, à retirer à la fin du chantier.
+// Fait entrer dans le patron les incréments d'une pièce de la bibliothèque, et lit ce que le patron en a fait.
+void ProbePieceImport(VPattern *doc, VContainer *pattern)
+{
+    if (pattern == nullptr || doc == nullptr)
+    {
+        qInfo() << "IMPORT: no document loaded";
+        return;
+    }
+
+    OPieceDocument piece;
+    QString loadError;
+    const QString piecePath = qEnvironmentVariable("OSTARA_PIECE_IMPORT_FILE",
+                                                   QStringLiteral("/tmp/probe_piece_Buste.opiece"));
+    if (not OPieceLibrary::Load(piecePath, &piece, &loadError))
+    {
+        qInfo() << "IMPORT: piece illisible ->" << loadError;
+        return;
+    }
+
+    const auto Table = [doc](bool preview) -> QDomElement {
+        return doc->documentElement().firstChildElement(preview ? VAbstractPattern::TagPreviewCalculations
+                                                               : VAbstractPattern::TagIncrements);
+    };
+
+    const auto CountRows = [&Table](bool preview) {
+        int count = 0;
+        for (QDomElement row = Table(preview).firstChildElement(VAbstractPattern::TagIncrement); not row.isNull();
+             row = row.nextSiblingElement(VAbstractPattern::TagIncrement))
+        {
+            ++count;
+        }
+        return count;
+    };
+
+    const auto CountInGroup = [&Table](bool preview, quint32 id) {
+        int count = 0;
+        for (QDomElement row = Table(preview).firstChildElement(VAbstractPattern::TagIncrement); not row.isNull();
+             row = row.nextSiblingElement(VAbstractPattern::TagIncrement))
+        {
+            if (row.attribute(VAbstractPattern::AttrGroupId).toUInt() == id)
+            {
+                ++count;
+            }
+        }
+        return count;
+    };
+
+    const auto DumpGroups = [doc, &CountInGroup]() {
+        for (const bool preview : {false, true})
+        {
+            const QMap<quint32, VIncrementGroupData> groups = doc->GetIncrementGroups(preview);
+            qInfo() << "IMPORT:" << (preview ? "calculs preliminaires" : "table des increments")
+                    << "-> groupes =" << groups.size();
+            for (auto it = groups.constBegin(); it != groups.constEnd(); ++it)
+            {
+                qInfo() << "IMPORT:   groupe" << it.key() << "| nom =" << it.value().name
+                        << "| lignes rangees =" << CountInGroup(preview, it.key());
+            }
+        }
+    };
+
+    const auto Report = [](const QString &label, const OPieceImport::IncrementReport &r) {
+        qInfo() << "IMPORT:" << label << "-> ajoutes =" << r.added << "| gardes =" << r.kept
+                << "| groupes crees =" << r.groupsAdded << "| conflits =" << r.clashes.size();
+        for (const OPieceImport::IncrementClash &clash : r.clashes)
+        {
+            qInfo() << "IMPORT:   conflit sur" << clash.name << "| calculs preliminaires =" << clash.previewCalculation
+                    << "| definition differente =" << clash.differentDefinition;
+        }
+    };
+
+    qInfo() << "IMPORT: piece -> nom =" << piece.PieceName() << "| lignes ="
+            << piece.Increments().childNodes().count() + piece.PreviewCalculations().childNodes().count()
+            << "| groupes que la piece porte ="
+            << piece.IncrementGroups().childNodes().count()
+                   + piece.PreviewCalculationGroups().childNodes().count();
+    qInfo() << "IMPORT: patron avant -> increments =" << CountRows(false) << "| calculs =" << CountRows(true);
+    DumpGroups();
+
+    Report(QStringLiteral("1er import"),
+           OPieceImport::ImportIncrements(piece, doc, pattern, QStringLiteral("Buste")));
+    qInfo() << "IMPORT: patron apres 1 -> increments =" << CountRows(false) << "| calculs =" << CountRows(true);
+    DumpGroups();
+
+    // Le deuxieme import ne doit rien ajouter et ne creer aucun second groupe : le premier import gagne.
+    Report(QStringLiteral("2e import"),
+           OPieceImport::ImportIncrements(piece, doc, pattern, QStringLiteral("Buste")));
+    qInfo() << "IMPORT: patron apres 2 -> increments =" << CountRows(false) << "| calculs =" << CountRows(true);
+    DumpGroups();
+
+    // Une definition changee cote patron : la piece doit le signaler sans rien arbitrer. On ne touche pas a une
+    // ligne que la piece ne porte pas.
+    const QString touched = QStringLiteral("#Cou");
+    if (QDomElement row = doc->IncrementRow(touched, false);
+        not row.isNull() && row.hasAttribute(VAbstractPattern::AttrFormula))
+    {
+        const QString before = row.attribute(VAbstractPattern::AttrFormula);
+        row.setAttribute(VAbstractPattern::AttrFormula, QStringLiteral("42"));
+
+        Report(QStringLiteral("3e import, une definition changee"),
+               OPieceImport::ImportIncrements(piece, doc, pattern, QStringLiteral("Buste")));
+        qInfo() << "IMPORT: la definition du patron est intacte ="
+                << (doc->IncrementRow(touched, false).attribute(VAbstractPattern::AttrFormula) == QStringLiteral("42"))
+                << "(formule ecrite = 42, formule de la piece =" << before << ")";
+    }
+
+    if (QString error; doc->SaveDocument(QStringLiteral("/tmp/probe_import.ostara"), error))
+    {
+        qInfo() << "IMPORT: ENREGISTREMENT OK -> /tmp/probe_import.ostara";
+    }
+    else
+    {
+        qInfo() << "IMPORT: ENREGISTREMENT REFUSE ->" << error;
+    }
+}
+
 void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
 {
     if (pattern == nullptr || doc == nullptr)
@@ -1405,6 +1523,10 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_IMPORT"))
+        {
+            ProbePieceImport(doc, pattern); // TEMPORARY — sonde de faisabilité, à retirer
         }
         else if (qEnvironmentVariableIsSet("OSTARA_INCREMENT_GROUPS_UI"))
         {

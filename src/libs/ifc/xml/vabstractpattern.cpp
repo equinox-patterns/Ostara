@@ -3307,9 +3307,15 @@ auto VAbstractPattern::IncrementRowGroups(bool previewCalculation) -> QMap<QStri
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IncrementRow(const QString &incrementName, bool previewCalculation) const -> QDomElement
+{
+    return FindIncrementInTable(IncrementTableTag(previewCalculation), incrementName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetIncrementGroup(const QString &incrementName, bool previewCalculation) -> quint32
 {
-    QDomElement const increment = FindIncrementInTable(IncrementTableTag(previewCalculation), incrementName);
+    QDomElement const increment = IncrementRow(incrementName, previewCalculation);
     if (not increment.isElement())
     {
         return NULL_ID;

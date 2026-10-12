@@ -171,7 +171,14 @@ auto CollectRows(const QDomElement &section, const QSet<QString> &names) -> QDom
     {
         if (names.contains(row.attribute(VAbstractPattern::AttrName)))
         {
-            collected.appendChild(row.cloneNode(true));
+            QDomElement kept = row.cloneNode(true).toElement();
+
+            // The group of a row is a **filing of the pattern it lives in**, and it is the import that files what
+            // arrives, under the instance's own name: carrying the origin's id would point at a group the piece does
+            // not hold, and the reader would see its increments scattered loose.
+            kept.removeAttribute(VAbstractPattern::AttrGroupId);
+
+            collected.appendChild(kept);
         }
     }
 

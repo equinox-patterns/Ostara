@@ -466,6 +466,10 @@ public:
     /// variables rebuilds itself on every keystroke, so asking per row would walk the table again for every row.
     /// A row left loose is simply absent from the map.
     auto IncrementRowGroups(bool previewCalculation = false) -> QMap<QString, quint32>;
+    /// The `<increment>` a name designates **in one table**, a null element when that table does not hold it. A name
+    /// is unique inside its table, not across the two, so the table has to be named — a piece arriving has to know
+    /// whether the pattern already holds a row of that name, and which one it is.
+    auto IncrementRow(const QString &incrementName, bool previewCalculation = false) const -> QDomElement;
     /// The group one row is filed under, NULL_ID when it is loose — or when the group it names is not in the
     /// document any more, which a file edited by hand can hold. A row is never in two groups: nothing to choose.
     /// The name has to say which table it is read from: a name is unique inside its table, not across the two.
