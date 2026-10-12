@@ -33,6 +33,7 @@
 #include <QVector>
 
 class OPieceDocument;
+class VAbstractPattern;
 class VContainer;
 class VPattern;
 
@@ -76,6 +77,26 @@ struct IncrementReport
 auto ImportIncrements(const OPieceDocument &piece, VPattern *host, VContainer *data, const QString &instanceName)
     -> IncrementReport;
 
+/**
+ * @brief Whether @p piece may enter @p host at all, judging by the unit its lengths are written in.
+ *
+ * **The unit belongs to the file, not to the piece.** A pattern holds one unit from end to end, and a piece cut
+ * in centimetres and read into a pattern in inches would give lengths that are wrong by a factor of two and a
+ * half, silently and everywhere. Nothing is ever converted: the piece is **refused**, and told why.
+ *
+ * The unit of the piece is read as a **word of the schema** (`mm`, `cm`, `inch`), never through
+ * `StrToUnits` — that one falls back to centimetres on anything it does not know, which would make an unreadable
+ * unit pass for a piece in centimetres. A piece that says nothing, or says a unit a piece may not carry, is
+ * refused for that reason rather than compared.
+ *
+ * @param piece the library piece about to be read; it is not modified.
+ * @param host the pattern it would enter, asked for the unit of the **file** — and, when the file has none yet,
+ *             for the unit the application is working in.
+ * @param error written with what to tell the reader. Never a code, always a sentence: the one who reads it does
+ *              not solve the problem, and has to know what to do instead.
+ * @return true when the piece may enter. False when it is refused, @p error saying why.
+ */
+auto CheckUnit(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
 /**
  * @brief Writes the origin of @p piece on @p block, as the block enters the pattern.
  *

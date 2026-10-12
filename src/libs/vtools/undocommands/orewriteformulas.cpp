@@ -35,9 +35,9 @@
 #include "../../vmisc/def.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-auto RewriteDocumentFormulas(VAbstractPattern *doc, const std::function<QString(const QString &)> &map) -> void
+auto RewriteFormulas(QDomElement &root, const std::function<QString(const QString &)> &map) -> void
 {
-    if (doc == nullptr)
+    if (root.isNull())
     {
         return;
     }
@@ -56,7 +56,7 @@ auto RewriteDocumentFormulas(VAbstractPattern *doc, const std::function<QString(
 
     for (const QString &tagName : validTags)
     {
-        const QDomNodeList elements = doc->elementsByTagName(tagName);
+        const QDomNodeList elements = root.elementsByTagName(tagName);
         for (int i = 0; i < elements.size(); ++i)
         {
             QDomElement element = elements.at(i).toElement();
@@ -90,4 +90,16 @@ auto RewriteDocumentFormulas(VAbstractPattern *doc, const std::function<QString(
             }
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto RewriteDocumentFormulas(VAbstractPattern *doc, const std::function<QString(const QString &)> &map) -> void
+{
+    if (doc == nullptr)
+    {
+        return;
+    }
+
+    QDomElement root = doc->documentElement();
+    RewriteFormulas(root, map);
 }

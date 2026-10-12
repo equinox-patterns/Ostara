@@ -52,6 +52,7 @@
 #include "core/opiecebuilder.h"
 #include "core/opiecelibrary.h"
 #include "core/opieceimport.h" // TEMPORARY — sonde de l'import, à retirer
+#include "core/opiecemark.h"   // TEMPORARY — sonde du marquage, à retirer
 #include "core/opieceremap.h" // TEMPORARY — la sonde d'insertion éprouve la règle du produit
 #include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
 #include <QCoreApplication>
@@ -742,6 +743,168 @@ void ProbeCompareBlocks(const QDomElement &before,
 
 // Seconde question, celle du produit : un bloc se relit-il comme une pièce, et le fichier obtenu passe-t-il
 // son propre schéma ? Rien ici n'appartient au produit.
+// TEMPORARY — sonde du marquage, à retirer à la fin du chantier.
+// Aplatit un élément en une ligne par chemin : ses attributs triés, et son texte quand il n'a pas d'enfant.
+// Deux arbres issus du même document donnent ainsi deux listes comparables ligne à ligne, dans l'ordre.
+void ProbeFlatten(const QDomElement &element, const QString &path, QStringList &lines)
+{
+    QStringList attributes;
+    const QDomNamedNodeMap attrs = element.attributes();
+    for (int i = 0; i < attrs.count(); ++i)
+    {
+        const QDomAttr attribute = attrs.item(i).toAttr();
+        attributes.append(attribute.name() + QStringLiteral("=") + attribute.value());
+    }
+    attributes.sort();
+    lines.append(path + QStringLiteral("|") + attributes.join(QStringLiteral(" ")));
+
+    if (element.firstChildElement().isNull())
+    {
+        lines.append(path + QStringLiteral("|text=") + element.text());
+    }
+
+    int index = 0;
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        ProbeFlatten(child, path + QStringLiteral("/") + child.tagName() + QStringLiteral("[") + QString::number(index)
+                                + QStringLiteral("]"),
+                     lines);
+        ++index;
+    }
+}
+
+// TEMPORARY — les valeurs qui portent encore une marque après la découpe, et les clés de la table qu'elles
+// contiennent : de quoi dire si la table ignorait le nom ou si la réécriture l'a manqué.
+void ProbeResidues(const QDomElement &element, const QString &path, const QHash<QString, QString> &offered)
+{
+    const QDomNamedNodeMap attrs = element.attributes();
+    for (int i = 0; i < attrs.count(); ++i)
+    {
+        const QDomAttr attribute = attrs.item(i).toAttr();
+        if (not attribute.value().contains(QStringLiteral("__P")))
+        {
+            continue;
+        }
+
+        QStringList contained;
+        for (auto it = offered.constBegin(); it != offered.constEnd(); ++it)
+        {
+            if (not attribute.value().contains(it.key()))
+            {
+                continue;
+            }
+
+            contained.append(it.key() + QStringLiteral(" -> ") + it.value());
+        }
+
+        qInfo() << "MARK:     RESIDU" << path + QStringLiteral("/@") + attribute.name() << "=" << attribute.value()
+                << "| cles contenues =" << contained;
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        ProbeResidues(child, path + QStringLiteral("/") + child.tagName(), offered);
+    }
+}
+
+// TEMPORARY — le va-et-vient du marquage : tous les noms de la pièce reçoivent `__P<n>`, puis le retirent, et le
+// DOM doit revenir **exactement** à ce qu'il était — formules comprises, car c'est là que le marquage peut casser
+// une pièce en silence. Rien ici n'appartient au produit : c'est la mesure du §4 de la spec.
+void ProbeMarkRoundTrip(OPieceDocument &piece, VContainer *pattern)
+{
+    if (pattern == nullptr)
+    {
+        return;
+    }
+
+    QDomElement envelope = piece.documentElement();
+
+    QStringList before;
+    ProbeFlatten(envelope, envelope.tagName(), before);
+    const auto marksBefore = static_cast<int>(piece.toString().count(QStringLiteral("__P")));
+
+    QSet<QString> taken;
+    const QHash<QString, QSharedPointer<VInternalVariable>> *variables = pattern->DataVariables();
+    if (variables != nullptr)
+    {
+        for (auto it = variables->constBegin(); it != variables->constEnd(); ++it)
+        {
+            taken.insert(it.key());
+        }
+    }
+
+    const int number = OPieceMark::HighestNumber(envelope) + 1;
+    const QHash<QString, QString> table = OPieceMark::TableFor(envelope, taken, number);
+    qInfo() << "MARK:" << piece.PieceName() << "| noms declares =" << OPieceMark::DeclaredNames(envelope).size()
+            << "| noms du conteneur =" << taken.size() << "| numero tire du fichier =" << number
+            << "| conflit =" << (table.isEmpty() ? QStringLiteral("non") : QStringLiteral("oui"))
+            << "| table =" << table.size() << "| marques avant =" << marksBefore;
+
+    if (table.isEmpty())
+    {
+        qInfo() << "MARK:   rien a marquer, la piece reste telle quelle";
+        return;
+    }
+
+    const OPieceMark::Report marked = OPieceMark::Rename(envelope, table);
+    const QStringList markedNames = OPieceMark::DeclaredNames(envelope);
+    int carrying = 0;
+    for (const QString &name : markedNames)
+    {
+        if (OPieceMark::Number(name) == number)
+        {
+            ++carrying;
+        }
+    }
+    qInfo() << "MARK:   marque -> table rencontree =" << marked.names << "| emplacements =" << marked.written
+            << "| noms apres =" << markedNames.size() << "| portant la marque =" << carrying
+            << "| marques ecrites =" << piece.toString().count(QStringLiteral("__P"));
+
+    // TEMPORARY — ce que la table de découpe offrira : les noms marques du DOM, tels qu'ils sont maintenant.
+    QHash<QString, QString> offered;
+    for (const QString &name : OPieceMark::DeclaredNames(envelope))
+    {
+        if (OPieceMark::Number(name) > 0)
+        {
+            offered.insert(name, OPieceMark::Unmarked(name));
+        }
+    }
+
+    const OPieceMark::Report stripped = OPieceMark::Unmark(envelope);
+    const auto marksAfter = static_cast<int>(piece.toString().count(QStringLiteral("__P")));
+    qInfo() << "MARK:   demarque -> table rencontree =" << stripped.names << "| emplacements =" << stripped.written
+            << "| marques restantes =" << marksAfter
+            << "| plus grand numero residuel =" << OPieceMark::HighestNumber(envelope);
+
+    QStringList after;
+    ProbeFlatten(envelope, envelope.tagName(), after);
+
+    int differences = 0;
+    QStringList samples;
+    for (int i = 0; i < qMax(before.size(), after.size()); ++i)
+    {
+        if (before.value(i) == after.value(i))
+        {
+            continue;
+        }
+
+        ++differences;
+        if (samples.size() < 10)
+        {
+            samples.append(QStringLiteral("AVANT ") + before.value(i) + QStringLiteral("  /  APRES ")
+                           + after.value(i));
+        }
+    }
+
+    qInfo() << "MARK:   va-et-vient -> lignes =" << before.size() << "| ecarts =" << differences;
+    for (const QString &sample : samples)
+    {
+        qInfo() << "MARK:     ECART" << sample;
+    }
+
+    ProbeResidues(envelope, envelope.tagName(), offered);
+}
+
 void ProbeBuildPiece(VPattern *doc, VContainer *pattern)
 {
     const QDomElement root = doc->documentElement();
@@ -817,6 +980,8 @@ void ProbeBuildPiece(VPattern *doc, VContainer *pattern)
         {
             qInfo() << "PIECE-BUILD:   RELECTURE ECHOUEE ->" << loadError;
         }
+
+        ProbeMarkRoundTrip(piece, pattern); // TEMPORARY — sonde du marquage
     }
 }
 
@@ -1131,6 +1296,33 @@ void ProbePieceImport(VPattern *doc, VContainer *pattern)
     {
         qInfo() << "IMPORT: piece illisible ->" << loadError;
         return;
+    }
+
+    // TEMPORARY — le garde-fou d'unité : la pièce telle quelle, puis la même en inch, en unité inconnue et sans
+    // unité. Rien ici n'appartient au produit.
+    {
+        const auto Check = [doc](const OPieceDocument &candidate, const QString &label) -> void
+        {
+            QString refusal;
+            const bool accepted = OPieceImport::CheckUnit(candidate, doc, refusal);
+            qInfo() << "IMPORT: unite" << label << "| piece =" << candidate.Unit()
+                    << "| patron =" << UnitsToStr(doc->Units(), true) << "| acceptee =" << accepted
+                    << "| motif =" << refusal;
+        };
+
+        Check(piece, QStringLiteral("telle quelle"));
+
+        OPieceDocument inches;
+        inches.Create(QStringLiteral("inch"));
+        Check(inches, QStringLiteral("en inch"));
+
+        OPieceDocument unknown;
+        unknown.Create(QStringLiteral("furlong"));
+        Check(unknown, QStringLiteral("unite inconnue"));
+
+        OPieceDocument silent;
+        silent.Create(QString());
+        Check(silent, QStringLiteral("sans unite"));
     }
 
     const auto Table = [doc](bool preview) -> QDomElement {

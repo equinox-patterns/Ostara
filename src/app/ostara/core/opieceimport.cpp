@@ -30,13 +30,44 @@
 #include "literals.h"
 #include "opiecedocument.h"
 #include "vcontainer.h"
+#include "vmisc/vabstractvalapplication.h"
 #include "xml/vabstractpattern.h"
 #include "xml/vpattern.h"
 
+#include <QCoreApplication>
 #include <QDomNode>
 
 namespace
 {
+/// The units a piece may carry — `units` of the piece schema, which the pattern schema shares. Read as words,
+/// never through `StrToUnits`: that one answers centimetres to anything it does not know, and an unreadable unit
+/// would then pass for a piece in centimetres.
+auto PieceUnits() -> const QHash<QString, Unit> &
+{
+    static const QHash<QString, Unit> units{{unitMM, Unit::Mm}, {unitCM, Unit::Cm}, {unitINCH, Unit::Inch}};
+    return units;
+}
+
+/// The unit @p piece says its lengths are written in, or `Unit::LAST_UNIT_DO_NOT_USE` when it says nothing, or
+/// says something no piece may carry.
+auto UnitOf(const OPieceDocument &piece) -> Unit
+{
+    return PieceUnits().value(piece.Unit().trimmed(), Unit::LAST_UNIT_DO_NOT_USE);
+}
+
+/// The unit of the pattern the piece would enter: the unit of the **file**, and the one the application is
+/// working in when the file does not say yet — a pattern in memory has not been written, and its unit is the
+/// unit of the work.
+auto UnitOf(const VAbstractPattern *host) -> Unit
+{
+    if (host != nullptr && host->Units() != Unit::LAST_UNIT_DO_NOT_USE)
+    {
+        return host->Units();
+    }
+
+    return VAbstractValApplication::VApp() == nullptr ? Unit::Cm : VAbstractValApplication::VApp()->patternUnits();
+}
+
 /// What a row says about itself, taken whole so two definitions can be compared without deciding anything.
 struct RowDefinition
 {
@@ -235,4 +266,38 @@ void OPieceImport::SetOrigin(QDomElement &block, const OPieceDocument &piece)
 
     block.setAttribute(OPieceDocument::AttrLibraryId, piece.LibraryId());
     block.setAttribute(OPieceDocument::AttrCategory, piece.PieceName());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::CheckUnit(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool
+{
+    const QString carried = piece.Unit().trimmed();
+    const Unit pieceUnit = UnitOf(piece);
+    if (pieceUnit == Unit::LAST_UNIT_DO_NOT_USE)
+    {
+        error = carried.isEmpty()
+                    ? QCoreApplication::translate("OPieceImport",
+                                                  "The piece does not say which unit its lengths are written in, "
+                                                  "and a piece is written in millimetres, centimetres or inches. "
+                                                  "It cannot be read as it stands.")
+                    : QCoreApplication::translate("OPieceImport",
+                                                  "The piece says its lengths are written in %1, which is not a "
+                                                  "unit a piece may carry: a piece is written in millimetres, "
+                                                  "centimetres or inches. It cannot be read as it stands.")
+                          .arg(carried);
+        return false;
+    }
+
+    const Unit hostUnit = UnitOf(host);
+    if (pieceUnit != hostUnit)
+    {
+        error = QCoreApplication::translate("OPieceImport",
+                                            "The piece is in %1 and this pattern is in %2. A pattern holds one "
+                                            "unit from end to end, and a piece is never converted: import it into "
+                                            "a pattern of its own unit.")
+                    .arg(UnitsToStr(pieceUnit, true), UnitsToStr(hostUnit, true));
+        return false;
+    }
+
+    return true;
 }

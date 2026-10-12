@@ -28,6 +28,7 @@
 
 #include "def.h"
 #include "ifcdef.h"
+#include "opiecemark.h"
 #include "vcontainer.h"
 #include "vformula.h"
 #include "variables/vinternalvariable.h"
@@ -423,6 +424,12 @@ auto OPieceBuilder::Build(VAbstractPattern *doc,
 
     // Last, because the block closes the sequence. Its identity is minted here and never moves again.
     piece->SetDraw(block, name, QUuid::createUuid().toString());
+
+    // `__P<n>` is a **mark, not a name**: it says which file the block entered, and a library piece belongs to
+    // no file. It is removed here — **after** the roles have been matched on the block's own names, which are
+    // still marked at that moment, and on the piece's own DOM, because the block read so far is the pattern's.
+    QDomElement envelope = piece->documentElement();
+    OPieceMark::Unmark(envelope);
 
     return true;
 }

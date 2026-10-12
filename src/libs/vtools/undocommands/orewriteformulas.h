@@ -26,10 +26,19 @@
 #ifndef OREWRITEFORMULAS_H
 #define OREWRITEFORMULAS_H
 
+#include <QDomElement>
 #include <QString>
 #include <functional>
 
 class VAbstractPattern;
+
+/** @brief Rewrite every formula of @a root, token by token, through @a map.
+ *
+ *  The same walk as `RewriteDocumentFormulas`, rooted on an element instead of a document: the block of a piece
+ *  is not a document yet when its names change, and its formulas have to be rewritten where it stands — without
+ *  reaching into the pattern it came from, which is what rewriting the whole document would do.
+ */
+auto RewriteFormulas(QDomElement &root, const std::function<QString(const QString &)> &map) -> void;
 
 /** @brief Rewrite every formula of @a doc, token by token, through @a map.
  *
