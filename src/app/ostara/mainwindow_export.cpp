@@ -52,6 +52,7 @@
 #include "core/opiecebuilder.h"
 #include "core/opiecelibrary.h"
 #include "core/opieceimport.h" // TEMPORARY — sonde de l'import, à retirer
+#include "core/opieceremap.h" // TEMPORARY — la sonde d'insertion éprouve la règle du produit
 #include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
 #include <QCoreApplication>
 #include <QDir>
@@ -629,72 +630,6 @@ void ProbeCollectDeclaredIds(const QDomElement &element, QSet<QString> &declared
     }
 }
 
-void ProbeRemapIds(QDomElement &element, VContainer *pattern, QHash<QString, quint32> &idMap, int &remapped)
-{
-    // Liste blanche des attributs qui portent un id SANS le dire dans leur nom — source : le XSD.
-    // Une règle fondée sur la VALEUR est fausse : les ids 1..N se confondent avec les énumérations
-    // (sense, axisType, crossPoint, aScale…), et le fichier ne passe plus la validation du schéma.
-    static const QStringList namedAttributes{
-        QStringLiteral("object"),      QStringLiteral("tool"),        QStringLiteral("point"),
-        QStringLiteral("side1"),       QStringLiteral("side2"),       QStringLiteral("curve1"),
-        QStringLiteral("curve2"),      QStringLiteral("notch"),       QStringLiteral("firstPoint"),
-        QStringLiteral("secondPoint"), QStringLiteral("thirdPoint"),  QStringLiteral("basePoint"),
-        QStringLiteral("pShoulder"),   QStringLiteral("p1Line"),      QStringLiteral("p2Line"),
-        QStringLiteral("p1Line1"),     QStringLiteral("p1Line2"),     QStringLiteral("p2Line1"),
-        QStringLiteral("p2Line2"),     QStringLiteral("spline"),      QStringLiteral("splinePath"),
-        QStringLiteral("apex"),        QStringLiteral("extendPoint"), QStringLiteral("notchCurve1"),
-        QStringLiteral("notchCurve2"), QStringLiteral("notchPoint"),  QStringLiteral("center"),
-        QStringLiteral("arc"),         QStringLiteral("elArc"),       QStringLiteral("curve"),
-        QStringLiteral("firstArc"),    QStringLiteral("secondArc"),   QStringLiteral("c1Center"),
-        QStringLiteral("c2Center"),    QStringLiteral("tangent"),     QStringLiteral("cCenter"),
-        QStringLiteral("point1"),      QStringLiteral("point2"),      QStringLiteral("point3"),
-        QStringLiteral("point4"),      QStringLiteral("dartP1"),      QStringLiteral("dartP2"),
-        QStringLiteral("dartP3"),      QStringLiteral("baseLineP1"),  QStringLiteral("baseLineP2"),
-        QStringLiteral("pSpline"),     QStringLiteral("duplicate"),   QStringLiteral("origin"),
-        QStringLiteral("target"),      QStringLiteral("line"),        QStringLiteral("foldLine"),
-        QStringLiteral("copy"),        QStringLiteral("departure"),   QStringLiteral("place"),
-        QStringLiteral("end"),         QStringLiteral("pleat"),       QStringLiteral("start"),
-        QStringLiteral("pivot"),       QStringLiteral("line1"),       QStringLiteral("line2"),
-        QStringLiteral("inner"),       QStringLiteral("outer"),       QStringLiteral("cap1"),
-        QStringLiteral("cap2"),        QStringLiteral("cap1Ref"),     QStringLiteral("cap2Ref"),
-        QStringLiteral("p1"),          QStringLiteral("p2"),          QStringLiteral("path"),
-        QStringLiteral("piece"),       QStringLiteral("gradedAlignPoint"),
-        QStringLiteral("gradedAlignPointMember")};
-
-    if (element.hasAttributes())
-    {
-        const QDomNamedNodeMap attrs = element.attributes();
-        for (int i = 0; i < attrs.count(); ++i)
-        {
-            QDomAttr attr = attrs.item(i).toAttr();
-            const QString name = attr.name();
-            const QString value = attr.value();
-
-            const bool byName = name == QStringLiteral("id")
-                                || name.contains(QStringLiteral("id"), Qt::CaseInsensitive)
-                                || namedAttributes.contains(name);
-            bool isNumber = false;
-            value.toUInt(&isNumber);
-            if (not byName || not isNumber)
-            {
-                continue;
-            }
-
-            if (not idMap.contains(value))
-            {
-                idMap.insert(value, pattern->getNextId());
-            }
-            attr.setValue(QString::number(idMap.value(value)));
-            ++remapped;
-        }
-    }
-
-    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
-    {
-        ProbeRemapIds(child, pattern, idMap, remapped);
-    }
-}
-
 // Marque chaque nom déclaré dans la copie — les points, lignes et courbes — du marqueur de pièce.
 // C'est CE renommage qui doit faire disparaître la divergence entre le DOM et le conteneur.
 void ProbeMarkNames(QDomElement &element, int &renamed)
@@ -713,6 +648,92 @@ void ProbeMarkNames(QDomElement &element, int &renamed)
     for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
     {
         ProbeMarkNames(child, renamed);
+    }
+}
+
+// Compare le bloc copié à son original, attribut par attribut, et dit ce qui a changé. Ce qui a changé DOIT
+// être un emplacement d'identifiant de la règle ; tout le reste est une anomalie, et c'est là que se verrait un
+// indice de pliage (departure, place, pleat, end) pris pour un id.
+void ProbeCompareBlocks(const QDomElement &before,
+                        const QDomElement &after,
+                        QMap<QString, int> &perSlot,
+                        QStringList &unexpected)
+{
+    QList<QPair<QDomElement, QDomElement>> pending;
+    pending.append({before, after});
+
+    while (not pending.isEmpty())
+    {
+        const QPair<QDomElement, QDomElement> pair = pending.takeLast();
+        if (pair.first.tagName() != pair.second.tagName())
+        {
+            unexpected.append(QStringLiteral("structure : <%1> face à <%2>")
+                                  .arg(pair.first.tagName(), pair.second.tagName()));
+            continue;
+        }
+
+        const QDomNamedNodeMap attributes = pair.first.attributes();
+        for (int i = 0; i < attributes.count(); ++i)
+        {
+            const QDomAttr attribute = attributes.item(i).toAttr();
+            const QString name = attribute.name();
+            const QString was = attribute.value();
+            const QString now = pair.second.attribute(name);
+            if (was == now || name == AttrName)
+            {
+                continue;
+            }
+
+            const QString slot = pair.first.tagName() + QStringLiteral("/@") + name;
+            if (name == QStringLiteral("nodeIds"))
+            {
+                // Une seule valeur par id de la liste, comme la règle les compte.
+                const QStringList ones = was.split(QLatin1Char(','));
+                const QStringList others = now.split(QLatin1Char(','));
+                for (int j = 0; j < qMin(ones.size(), others.size()); ++j)
+                {
+                    if (ones.at(j) != others.at(j))
+                    {
+                        ++perSlot[slot];
+                    }
+                }
+                continue;
+            }
+
+            if (not OPieceRemap::IdSlots().contains(slot))
+            {
+                unexpected.append(QStringLiteral("%1 : %2 -> %3").arg(slot, was, now));
+                continue;
+            }
+            ++perSlot[slot];
+        }
+
+        // Le texte ne se compare que sur les éléments de valeur : QDomElement::text() rend le texte de TOUS les
+        // descendants, donc un conteneur « change » dès qu'un enfant change — ce n'est pas un emplacement.
+        if (pair.first.firstChildElement().isNull() && pair.second.firstChildElement().isNull())
+        {
+            const QString textWas = pair.first.text().trimmed();
+            const QString textNow = pair.second.text().trimmed();
+            if (textWas != textNow)
+            {
+                const QString element = pair.first.tagName();
+                if (OPieceRemap::IdElements().contains(element))
+                {
+                    ++perSlot[QStringLiteral("<") + element + QStringLiteral(">")];
+                }
+                else
+                {
+                    unexpected.append(QStringLiteral("<%1> : %2 -> %3").arg(element, textWas, textNow));
+                }
+            }
+        }
+
+        QDomElement one = pair.first.firstChildElement();
+        QDomElement other = pair.second.firstChildElement();
+        for (; not one.isNull() && not other.isNull(); one = one.nextSiblingElement(), other = other.nextSiblingElement())
+        {
+            pending.append({one, other});
+        }
     }
 }
 
@@ -1329,7 +1350,10 @@ void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
         return;
     }
 
-    const QDomElement source = draws.at(0).toElement();
+    // Le bloc à copier : le premier, ou celui que OSTARA_PIECE_DRAW désigne — les pièces plissées ne sont pas
+    // toujours la première du fichier, et ce sont elles qui éprouvent la règle des indices.
+    const int drawIndex = qEnvironmentVariableIntValue("OSTARA_PIECE_DRAW");
+    const QDomElement source = draws.at(qBound(0, drawIndex, static_cast<int>(draws.size()) - 1)).toElement();
     const QString sourceName = source.attribute(AttrName);
     const qsizetype variablesBefore = pattern->DataVariables()->size();
 
@@ -1352,9 +1376,31 @@ void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
     int namesMarked = 0;
     ProbeMarkNames(clone, namesMarked);
 
-    QHash<QString, quint32> idMap;
-    int remapped = 0;
-    ProbeRemapIds(clone, pattern, idMap, remapped);
+    // La règle n'est plus écrite ici : elle est celle du produit, lue dans le schéma par OPieceRemap.
+    QStringList rule = OPieceRemap::IdSlots().values();
+    rule.sort();
+    qInfo() << "PIECE-PROBE: regle |" << rule.size() << "slots |" << rule;
+    qInfo() << "PIECE-PROBE: regle | elements de valeur =" << OPieceRemap::IdElements().values();
+
+    const OPieceRemap::Report remap = OPieceRemap::RemapIds(clone, pattern);
+
+    // Ce que la copie a réellement changé par rapport à son original, et ce qu'elle n'aurait pas dû toucher.
+    {
+        QMap<QString, int> perSlot;
+        QStringList unexpected;
+        ProbeCompareBlocks(source, clone, perSlot, unexpected);
+
+        int total = 0;
+        QStringList detail;
+        for (auto it = perSlot.constBegin(); it != perSlot.constEnd(); ++it)
+        {
+            total += it.value();
+            detail.append(it.key() + QLatin1Char('=') + QString::number(it.value()));
+        }
+        qInfo() << "PIECE-PROBE: comparaison | valeurs changees =" << total << "| remap.written =" << remap.written
+                << "| anomalies (hors name) =" << unexpected.size() << unexpected.mid(0, 12);
+        qInfo() << "PIECE-PROBE: comparaison |" << detail;
+    }
 
     QSet<QString> namesBefore;
     {
@@ -1379,8 +1425,8 @@ void ProbeRuntimeBlockInsertion(VContainer *pattern, VPattern *doc)
     }
 
     qInfo() << "PIECE-PROBE: block" << sourceName << "->" << cloneName << "| inserted =" << inserted
-            << "| declared ids =" << declared.size() << "| distinct ids remapped =" << idMap.size()
-            << "| attributes rewritten =" << remapped << "| names marked =" << namesMarked;
+            << "| declared ids =" << declared.size() << "| distinct ids remapped =" << remap.ids
+            << "| slots rewritten =" << remap.written << "| names marked =" << namesMarked;
 
     try
     {
