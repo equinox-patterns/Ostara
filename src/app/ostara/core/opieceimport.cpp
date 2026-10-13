@@ -29,6 +29,7 @@
 #include "ifcdef.h"
 #include "literals.h"
 #include "opiecedocument.h"
+#include "opiecemark.h"
 #include "vcontainer.h"
 #include "vmisc/vabstractvalapplication.h"
 #include "xml/vabstractpattern.h"
@@ -332,11 +333,12 @@ auto OPieceImport::CheckMeasurements(const OPieceDocument &piece, const VAbstrac
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPieceImport::CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool
+auto OPieceImport::References(const OPieceDocument &piece, const VAbstractPattern *host) -> QVector<Reference>
 {
+    QVector<Reference> references;
     if (host == nullptr)
     {
-        return true;
+        return references;
     }
 
     // The blocks of the host, in the order the document holds them: what a value can be read back from.
@@ -348,42 +350,149 @@ auto OPieceImport::CheckDependencies(const OPieceDocument &piece, const VAbstrac
         blocks.append(draw);
     }
 
-    // A candidate is looked for by the key that survives the longest first: the identity a piece keeps when it is
-    // renamed in the library, then the name it wore, and only then the name of the block — which a block drawn by
-    // hand carries alone.
-    const auto held = [&blocks](const QString &attribute, const QString &value)
+    // **Toutes** les valeurs d'une même clé sont gardées : deux instances de la même pièce de bibliothèque portent la
+    // même identité et la même catégorie, et c'est précisément ce que le lecteur doit départager.
+    const auto holders = [&blocks](const QString &attribute, const QStringList &values) -> QStringList
     {
-        if (value.isEmpty())
-        {
-            return false;
-        }
-
+        QStringList names;
         for (const QDomElement &draw : blocks)
         {
-            if (draw.attribute(attribute) == value)
+            const QString value = draw.attribute(attribute);
+            const QString name = draw.attribute(VAbstractPattern::AttrName);
+            if (not value.isEmpty() && values.contains(value) && not names.contains(name))
             {
-                return true;
+                names.append(name);
             }
         }
-        return false;
+        return names;
     };
 
+    // Le choix se fait par **pièce lue**, jamais par objet : une pièce lit le `Buste` ou elle lit le `Buste 2`, et
+    // ses six jetons se décident d'un coup. Les dépendances sont donc réunies par origine, dans l'ordre du fichier.
+    struct Origin
+    {
+        QStringList tokens{};
+        QStringList libraryIds{};
+        QStringList categories{};
+    };
+
+    QStringList order;
+    QHash<QString, Origin> byOrigin;
     for (const OPieceDocument::Dependency &dependency : piece.Dependencies())
     {
-        if (held(OPieceDocument::AttrLibraryId, dependency.libraryId)
-            || held(OPieceDocument::AttrCategory, dependency.category)
-            || held(VAbstractPattern::AttrName, dependency.origin))
+        const QString origin = dependency.origin.isEmpty() ? dependency.token : dependency.origin;
+        if (not byOrigin.contains(origin))
+        {
+            order.append(origin);
+        }
+
+        Origin &held = byOrigin[origin];
+        held.tokens.append(dependency.token);
+        if (not dependency.libraryId.isEmpty())
+        {
+            held.libraryIds.append(dependency.libraryId);
+        }
+
+        // Les deux façons dont la pièce nomme ce qu'elle lit : son `origin`, et sa `category` quand elle l'a
+        // enregistrée. Elles sont de même force.
+        held.categories.append(dependency.origin);
+        if (not dependency.category.isEmpty())
+        {
+            held.categories.append(dependency.category);
+        }
+
+        held.libraryIds.removeDuplicates();
+        held.categories.removeDuplicates();
+    }
+
+    references.reserve(order.size());
+    for (const QString &origin : std::as_const(order))
+    {
+        const Origin &held = byOrigin.value(origin);
+
+        // La clé la plus forte qui trouve **quelque chose** décide — l'identité qui survit à un renommage dans la
+        // bibliothèque, puis la **catégorie** du bloc candidat : le nom de la pièce de bibliothèque dont il vient,
+        // que la pièce qui le lit nomme par son `origin`. Le nom du bloc ne vient qu'ensuite, qu'un bloc tracé à la
+        // main porte seul.
+        //
+        // Comparer les deux `category` — ce que faisait cette recherche — laissait la seconde instance invisible :
+        // les dépendances de la Manche ne portent que leur `origin`, et `Buste 2` ne se reconnaît qu'à sa catégorie
+        // (mesuré le 13-10-2026 : `Manche.opiece` → `origin="Buste"`, `TestPieces.ostara` → deux blocs de même
+        // `libraryId` et même `category`, nommés `Buste` et `Buste 2`).
+        QStringList candidates = holders(OPieceDocument::AttrLibraryId, held.libraryIds);
+        if (candidates.isEmpty())
+        {
+            candidates = holders(OPieceDocument::AttrCategory, held.categories);
+        }
+        if (candidates.isEmpty())
+        {
+            candidates = holders(VAbstractPattern::AttrName, held.categories);
+        }
+
+        references.append(Reference{origin, held.tokens, candidates});
+    }
+
+    return references;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::ChosenNames(const OPieceDocument &piece,
+                               const VAbstractPattern *host,
+                               const QHash<QString, QString> &chosen) -> QHash<QString, QString>
+{
+    QHash<QString, QString> table;
+    if (host == nullptr || chosen.isEmpty())
+    {
+        return table;
+    }
+
+    const QDomElement root = host->documentElement();
+    for (const OPieceDocument::Dependency &dependency : piece.Dependencies())
+    {
+        // Le choix est celui de la **pièce lue** : il vaut pour tous les jetons qu'elle porte.
+        const QString blockName = chosen.value(dependency.origin.isEmpty() ? dependency.token : dependency.origin);
+        if (blockName.isEmpty())
+        {
+            continue; // Rien de choisi : la citation reste telle quelle.
+        }
+
+        for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+             draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+        {
+            if (draw.attribute(VAbstractPattern::AttrName) != blockName)
+            {
+                continue;
+            }
+
+            // La marque de l'instance choisie : celle qui est entrée la première n'en porte aucune, et ses noms sont
+            // ceux que la pièce écrit déjà — rien n'est réécrit.
+            if (const int number = OPieceMark::HighestNumber(draw); number > 0)
+            {
+                table.insert(dependency.token, OPieceMark::Marked(dependency.token, number));
+            }
+            break;
+        }
+    }
+
+    return table;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool
+{
+    for (const Reference &reference : References(piece, host))
+    {
+        if (not reference.candidates.isEmpty())
         {
             continue;
         }
 
         // Nothing holds it. What is missing is said by the value itself when nothing names it: the one who reads
         // the message has to be able to go and look for the piece it comes from.
-        const QString missing = dependency.origin.isEmpty() ? dependency.token : dependency.origin;
         error = QCoreApplication::translate("OPieceImport",
                                             "This piece reads %1, and no piece of this pattern declares it. "
                                             "Import the piece it comes from first.")
-                    .arg(missing);
+                    .arg(reference.origin.isEmpty() ? reference.tokens.value(0) : reference.origin);
         return false;
     }
 

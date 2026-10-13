@@ -859,11 +859,25 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
     // not — and the mark the pattern proposes for them. Nothing is written yet, and nothing is decided here.
     OPieceInsert::Proposal proposal = OPieceInsert::Propose(piece, doc, pattern, instanceName);
 
-    // The dialog is opened when there is something to decide, which is an alias to look at: a piece that carries
-    // none enters in one gesture, the gesture of every other import.
-    if (not proposal.aliases.isEmpty())
+    // Ce que la pièce lit ailleurs et que **plusieurs** blocs du patron peuvent lui offrir : deux instances de la
+    // même pièce de bibliothèque portent la même identité et la même catégorie, et c'est au lecteur de dire sur
+    // laquelle la pièce se base (`Buste` ou `Buste 2`). Un seul candidat ne se demande pas : c'est le lien
+    // silencieux, et la formule marche telle quelle.
+    QVector<OPieceImport::Reference> ambiguous;
+    for (const OPieceImport::Reference &reference : OPieceImport::References(piece, doc))
     {
-        OPieceImportDialog dialog(proposal, blockNames, OPieceInsert::Keys(pattern), this);
+        if (reference.candidates.size() > 1)
+        {
+            ambiguous.append(reference);
+        }
+    }
+
+    // The dialog is opened when there is something to decide, which is an alias to look at or a value read
+    // elsewhere that several pieces can satisfy: a piece that asks nothing enters in one gesture, the gesture of
+    // every other import.
+    if (not proposal.aliases.isEmpty() || not ambiguous.isEmpty())
+    {
+        OPieceImportDialog dialog(proposal, blockNames, OPieceInsert::Keys(pattern), ambiguous, this);
         if (dialog.exec() != QDialog::Accepted)
         {
             return;
@@ -871,6 +885,16 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
 
         proposal.instanceName = dialog.InstanceName();
         proposal.table = dialog.Table();
+
+        // Les citations de la pièce vers l'instance choisie : `Curve_dos` devient `Curve_dos__P1` quand c'est la
+        // seconde instance qui est choisie, et **rien** quand c'est la première — ses noms sont ceux que la pièce
+        // écrit déjà. Le renommage passe par la même porte que la marque, donc par les mêmes formes de jetons.
+        if (const QHash<QString, QString> bound = OPieceImport::ChosenNames(piece, doc, dialog.ChosenReferences());
+            not bound.isEmpty())
+        {
+            QDomElement root = piece.documentElement();
+            OPieceMark::Rename(root, bound);
+        }
     }
 
     // Where it takes place, decided before anything is written: a piece brings a whole construction with it, and

@@ -1326,12 +1326,26 @@ auto VContainer::DataDependencyVariables() const -> QHash<QString, QList<quint32
 
     for (const auto &var : *d->variables)
     {
+        // `CurrentLength` et `CurrentSeamAllowance` ne nomment **aucun** objet : ce sont les variables du **contexte**
+        // d'un outil — « la courbe sur laquelle je me construis » — et le conteneur n'en garde qu'une, la dernière
+        // enregistrée. En faire une arête du graphe relie donc deux pièces **indépendantes** : mesuré le 13-10-2026
+        // sur deux imports de la même pièce de bibliothèque, la spline `dos` du premier recevait une arête vers
+        // quatorze points du second, qui devenait « dépendant » du premier — sa suppression refusée, alors que leurs
+        // fichiers ne partagent pas un seul id.
+        const QString name = var->GetName();
+        const QString alias = var->GetAlias();
+        const auto isContext = [](const QString &key) { return key == currentLength || key == currentSeamAllowance; };
+        if (isContext(name) || isContext(alias))
+        {
+            continue;
+        }
+
         if (types.contains(var->GetType()))
         {
             auto const references = var->GetReferences();
-            varData.insert(var->GetName(), references);
+            varData.insert(name, references);
 
-            if (const QString alias = var->GetAlias(); !alias.isEmpty())
+            if (!alias.isEmpty())
             {
                 varData.insert(alias, references);
             }

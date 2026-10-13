@@ -27,8 +27,12 @@
 #include "ui_opieceimportdialog.h"
 
 #include "../qmuparser/qmudef.h"
+#include "vmisc/FactoryWidgets.h"
 
+#include <QComboBox>
 #include <QDialogButtonBox>
+#include <QFormLayout>
+#include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
@@ -37,6 +41,9 @@
 #include <QRegularExpressionValidator>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QVBoxLayout>
+
+#include <utility>
 
 namespace
 {
@@ -47,8 +54,14 @@ constexpr int kAlias = 1;
 
 //---------------------------------------------------------------------------------------------------------------------
 OPieceImportDialog::OPieceImportDialog(const OPieceInsert::Proposal &proposal, const QStringList &blockNames,
-                                       const QSet<QString> &taken, QWidget *parent)
-    : QDialog(parent), ui(new Ui::OPieceImportDialog), m_proposal(proposal), m_blockNames(blockNames), m_taken(taken)
+                                       const QSet<QString> &taken, const QVector<OPieceImport::Reference> &references,
+                                       QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::OPieceImportDialog),
+      m_proposal(proposal),
+      m_blockNames(blockNames),
+      m_taken(taken),
+      m_references(references)
 {
     ui->setupUi(this);
 
@@ -58,6 +71,8 @@ OPieceImportDialog::OPieceImportDialog(const OPieceInsert::Proposal &proposal, c
 
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &OPieceImportDialog::CheckState);
 
+    // L'ordre des trois moments de la dialogue : le nom, ce qui est lu ailleurs, puis les alias (§5).
+    FillReferences();
     FillAliases();
     CheckState();
 }
@@ -103,6 +118,51 @@ auto OPieceImportDialog::Table() const -> QHash<QString, QString>
     }
 
     return table;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImportDialog::ChosenReferences() const -> QHash<QString, QString>
+{
+    QHash<QString, QString> chosen;
+    for (auto box = m_referenceBoxes.constBegin(); box != m_referenceBoxes.constEnd(); ++box)
+    {
+        if (box.value() != nullptr && box.value()->currentIndex() >= 0)
+        {
+            chosen.insert(box.key(), box.value()->currentText());
+        }
+    }
+    return chosen;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceImportDialog::FillReferences()
+{
+    if (m_references.isEmpty())
+    {
+        return;
+    }
+
+    auto *group = new QGroupBox(tr("Reference pieces"), this);
+    auto *layout = new QFormLayout(group);
+
+    for (const OPieceImport::Reference &reference : std::as_const(m_references))
+    {
+        auto *combo = MakeComboBox(group);
+        combo->addItems(reference.candidates);
+
+        // Le bloc qui est entré le premier est celui dont les noms sont ceux que la pièce écrit déjà : c'est le
+        // choix par défaut, et le seul qui n'ait rien à réécrire.
+        combo->setCurrentIndex(0);
+
+        layout->addRow(tr("Read %1 from:", "the piece this one reads values in").arg(reference.origin), combo);
+        m_referenceBoxes.insert(reference.origin, combo);
+    }
+
+    // Le groupe se glisse avant les boutons, après le nom et ses alias : le troisième moment de la dialogue (§5).
+    if (auto *vertical = findChild<QVBoxLayout *>(QStringLiteral("verticalLayout")); vertical != nullptr)
+    {
+        vertical->insertWidget(vertical->count() - 1, group);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

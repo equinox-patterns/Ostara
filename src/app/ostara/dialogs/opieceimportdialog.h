@@ -26,6 +26,7 @@
 #ifndef OPIECEIMPORTDIALOG_H
 #define OPIECEIMPORTDIALOG_H
 
+#include "../core/opieceimport.h"
 #include "../core/opieceinsert.h"
 
 #include <QDialog>
@@ -33,11 +34,13 @@
 #include <QSet>
 #include <QString>
 #include <QStringList>
+#include <QVector>
 
 namespace Ui {
 class OPieceImportDialog;
 }
 
+class QComboBox;
 class QLabel;
 
 /**
@@ -61,9 +64,12 @@ public:
      * @param proposal what the piece asks — its aliases, and the marks the pattern proposes.
      * @param blockNames the names the pattern's pieces already wear, which the instance name has to stay out of.
      * @param taken the keys the pattern's container answers to, which no alias may take the place of.
+     * @param references the values the piece reads elsewhere that **several** blocks of the pattern can satisfy: one
+     *        combo each, so that the piece is based on the instance the reader names. Empty when every dependency
+     *        has one candidate or none — the second case being refused before the dialogue opens.
      */
     OPieceImportDialog(const OPieceInsert::Proposal &proposal, const QStringList &blockNames, const QSet<QString> &taken,
-                       QWidget *parent = nullptr);
+                       const QVector<OPieceImport::Reference> &references, QWidget *parent = nullptr);
     ~OPieceImportDialog() override;
 
     /// @brief The name the block will wear — the one the top bar will show.
@@ -72,6 +78,9 @@ public:
     /// @brief The renamings to apply: every name the piece declares, with the aliases as they were left here.
     auto Table() const -> QHash<QString, QString>;
 
+    /// @brief Le bloc choisi pour chaque valeur lue ailleurs : `jeton → nom du bloc`, vide quand rien n'a été demandé.
+    auto ChosenReferences() const -> QHash<QString, QString>;
+
 private slots:
     void CheckState();
 
@@ -79,6 +88,9 @@ private:
     Q_DISABLE_COPY_MOVE(OPieceImportDialog) // NOLINT
 
     void FillAliases();
+
+    /// @brief Les valeurs lues ailleurs que plusieurs blocs peuvent satisfaire : un combo chacune, avant les alias.
+    void FillReferences();
 
     /// @brief Le genre d'objet qui porte l'alias : `Ligne`, `Courbe`, `Arc`, `Arc elliptique`.
     static auto ObjectText(const OPieceMark::Alias &alias) -> QString;
@@ -93,6 +105,8 @@ private:
     OPieceInsert::Proposal m_proposal{};
     QStringList m_blockNames{};
     QSet<QString> m_taken{};
+    QVector<OPieceImport::Reference> m_references{};
+    QHash<QString, QComboBox *> m_referenceBoxes{};
 };
 
 #endif // OPIECEIMPORTDIALOG_H

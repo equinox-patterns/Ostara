@@ -1134,10 +1134,11 @@ auto OPieceMark::Rename(QDomElement &root, const QHash<QString, QString> &rename
 
     report.names = static_cast<int>(labels.size() + aliases.size() + roles.size() + pieces.size());
 
-    if (labels.isEmpty() && aliases.isEmpty() && roles.isEmpty() && pieces.isEmpty())
-    {
-        return report;
-    }
+    // **Aucun retour hâtif ici.** Une table peut ne nommer aucun nom **déclaré** et réécrire quand même des formules :
+    // c'est le cas des citations d'une **autre** pièce, données en jetons entiers (`Curve_dos`), que la première
+    // branche de `Token` reconnaît telle quelle. Le retour qui existait ici rendait la réécriture muette, et
+    // l'instance choisie à l'import n'était jamais prise en compte (mesuré le 13-10-2026 : la Manche entrait en
+    // citant `Curve_dos` alors que `Buste 2` avait été choisi).
 
     // The longest alias first: two of them can head the same token — a curve named `Em` and one named `Em_R1` —
     // and the whole name is the one the container answers to.

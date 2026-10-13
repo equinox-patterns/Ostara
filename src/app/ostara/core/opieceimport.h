@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QHash>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 
 class OPieceDocument;
@@ -132,6 +133,47 @@ auto HostUnit(const VAbstractPattern *host) -> Unit;
  *
  * @param error written with what to tell the reader: what the piece reads, and what to do about it.
  * @return true when every value the piece reads is declared by some block of @p host.
+ */
+/**
+ * @brief Une **pièce** que @p piece lit ailleurs, et les blocs du patron qui peuvent la lui fournir.
+ *
+ * Le choix se fait par **pièce lue**, jamais par objet : une pièce lit le `Buste` ou elle lit le `Buste 2`, et
+ * jamais un mélange des deux — c'est ce que la dialogue demande, une fois, et c'est ce que la réécriture applique à
+ * **toutes** les formules de la pièce.
+ *
+ * Une pièce lue est cherchée par la clé qui survit le plus longtemps : l'identité qu'une pièce de bibliothèque garde
+ * quand on la renomme (`libraryId`), puis la **catégorie** du bloc candidat — le nom de la pièce de bibliothèque
+ * dont il vient, que la pièce qui le lit nomme par son `origin` —, et seulement ensuite le nom du bloc, qu'un bloc
+ * tracé à la main porte seul. **Plusieurs** blocs peuvent répondre : deux instances de la même pièce de
+ * bibliothèque portent la même identité et la même catégorie, et c'est alors au lecteur de dire laquelle.
+ */
+struct Reference
+{
+    QString origin{};          ///< la pièce lue, telle que @p piece la nomme — `Buste`.
+    QStringList tokens{};      ///< les jetons que @p piece cite de cette pièce, dans l'ordre du fichier.
+    QStringList candidates{};  ///< les noms des blocs du patron qui peuvent la fournir, dans l'ordre du document.
+};
+
+/// Chaque pièce que @p piece lit ailleurs, et qui peut la lui fournir dans @p host. Vide quand elle ne lit rien.
+auto References(const OPieceDocument &piece, const VAbstractPattern *host) -> QVector<Reference>;
+
+/**
+ * @brief Le renommage des citations de @p piece vers l'instance choisie, **pour toutes ses formules**.
+ *
+ * Une instance entrée sous une marque répond aux noms **marqués** : la pièce qui se base sur elle doit citer
+ * `Curve_dos__P1` et non `Curve_dos`. Le bloc choisi donne sa marque (`OPieceMark::HighestNumber`), et un bloc sans
+ * marque — celui qui est entré le premier — ne fait **rien** réécrire : ses noms sont ceux que la pièce écrit déjà.
+ *
+ * @param chosen le bloc choisi pour chaque pièce lue (`origin` → nom du bloc), tel que la dialogue le rend.
+ * @return une table `jeton → jeton marqué`, à appliquer par `OPieceMark::Rename`.
+ */
+auto ChosenNames(const OPieceDocument &piece,
+                 const VAbstractPattern *host,
+                 const QHash<QString, QString> &chosen) -> QHash<QString, QString>;
+
+/**
+ * @brief Whether every value @p piece reads can be read back from @p host — built on References, so that the refusal
+ * and the choice cannot diverge: what one calls missing is exactly what the other proposes to bind.
  */
 auto CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
 
