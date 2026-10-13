@@ -51,15 +51,16 @@ auto CurveAliasPrefixes(CurveAliasType type) -> QStringList
                                "Angle1Curve", "Angle2Curve",     "C1LengthCurve",   "C2LengthCurve", "Handle1Curve",
                                "Handle2Curve", "Curve",          "RadiusArc",       "Angle1Arc",     "Angle2Arc",
                                "Angle1ElArc", "Angle2ElArc",     "Arc",             "ElArc",         "Radius1ElArc",
-                               "Radius2ElArc", "RotationElArc"};
+                               "Radius2ElArc", "RotationElArc",   "Radius"};
     }
     else if (type == CurveAliasType::Arc)
     {
-        prefixes = QStringList{"RadiusArc", "Angle1Arc", "Angle2Arc", "Arc"};
+        prefixes = QStringList{"RadiusArc", "Angle1Arc", "Angle2Arc", "Arc", "Radius"};
     }
     else if (type == CurveAliasType::ElArc)
     {
-        prefixes = QStringList{"Angle1ElArc", "Angle2ElArc", "ElArc", "Radius1ElArc", "Radius2ElArc", "RotationElArc"};
+        prefixes = QStringList{"Angle1ElArc", "Angle2ElArc",   "ElArc",   "Radius1ElArc",
+                               "Radius2ElArc", "RotationElArc", "Radius"};
     }
     else if (type == CurveAliasType::Spline)
     {

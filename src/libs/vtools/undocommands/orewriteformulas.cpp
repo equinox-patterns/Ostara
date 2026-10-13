@@ -45,51 +45,46 @@ auto RewriteFormulas(QDomElement &root, const std::function<QString(const QStrin
     // Check if all tags handled when we have new tool
     Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
 
-    const QStringList validTags = {VAbstractPattern::TagPoint,
-                                   VAbstractPattern::TagOperation,
-                                   VAbstractPattern::TagArc,
-                                   VAbstractPattern::TagElArc,
-                                   VAbstractPattern::TagSpline,
-                                   VAbstractPattern::TagPath,
-                                   VAbstractPattern::TagTools,
-                                   VAbstractPattern::TagDetail};
-
-    for (const QString &tagName : validTags)
+    // **Tout** élément est visité, et **tout** attribut est lu : lequel porte une formule est l'affaire de l'outil,
+    // pas de cette fonction, et une formule qui n'en est pas une revient inchangée du mapping.
+    //
+    // Une liste de balises laissait échapper les formules qui ne vivent pas sur l'élément de l'outil lui-même :
+    // celles d'un `<pathPoint>` (`angle1`, `angle2`, `length1`, `length2`), d'un `<increment>` (`formula`), d'un
+    // `<node>` de pièce (`seamAllowanceBefore`) ou d'un `figure`/`item` d'opération. C'est ainsi qu'une citation
+    // `AngleLigne_M_M1` a **survécu** au rôle donné à sa ligne : la réécriture ne la voyait pas, la pièce ne
+    // pouvait plus s'enregistrer, et le refus nommait un nom composé que plus personne ne lisait ailleurs
+    // (mesuré le 13-10-2026 : `BustedeBase.ostara`, `<pathPoint angle2="AngleLine_M_M1">`).
+    const std::function<void(QDomElement &)> rewrite = [&map, &rewrite](QDomElement &element) -> void
     {
-        const QDomNodeList elements = root.elementsByTagName(tagName);
-        for (int i = 0; i < elements.size(); ++i)
+        const QDomNamedNodeMap attrs = element.attributes();
+        for (int j = 0; j < attrs.size(); ++j)
         {
-            QDomElement element = elements.at(i).toElement();
-            if (element.isNull())
+            const QDomAttr attr = attrs.item(j).toAttr();
+            if (attr.isNull())
             {
                 continue;
             }
 
-            const QDomNamedNodeMap attrs = element.attributes();
-            for (int j = 0; j < attrs.size(); ++j)
+            const QString formula = attr.value();
+            if (formula.isEmpty())
             {
-                const QDomAttr attr = attrs.item(j).toAttr();
-                if (attr.isNull())
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                // Every attribute is read: which of them holds a formula is the tool's business, not this
-                // function's, and a formula that is not one comes back unchanged from the mapping.
-                const QString formula = attr.value();
-                if (formula.isEmpty())
-                {
-                    continue;
-                }
-
-                const QString rewritten = VFormula::MapTokens(formula, map);
-                if (rewritten != formula)
-                {
-                    element.setAttribute(attr.name(), rewritten);
-                }
+            const QString rewritten = VFormula::MapTokens(formula, map);
+            if (rewritten != formula)
+            {
+                element.setAttribute(attr.name(), rewritten);
             }
         }
-    }
+
+        for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+        {
+            rewrite(child);
+        }
+    };
+
+    rewrite(root);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

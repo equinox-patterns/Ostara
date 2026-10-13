@@ -42,9 +42,11 @@ auto RewriteFormulas(QDomElement &root, const std::function<QString(const QStrin
 
 /** @brief Rewrite every formula of @a doc, token by token, through @a map.
  *
- *  The one place that knows where a formula lives in a pattern: the attributes of the elements a tool writes, in
- *  every block and every piece. A name is read all over a file — a point's formula, a piece's seam allowance, a
- *  label — and no dependency graph knows all of them, which is why renaming something takes the file as a whole.
+ *  The one place that knows where a formula lives in a pattern: **every** element is visited and **every**
+ *  attribute is read, in every block and every piece — a formula lives on the tool's own element as much as on a
+ *  `<pathPoint>`, an `<increment>` or a `<node>`, and a list of tags leaves the second kind behind. A name is read
+ *  all over a file — a point's formula, a piece's seam allowance, a label — and no dependency graph knows all of
+ *  them, which is why renaming something takes the file as a whole.
  *
  *  @a map is handed each token exactly as the calculator reads it and returns what to write in its place. A
  *  formula the parser cannot read is left untouched: reporting it belongs to the calculator.
