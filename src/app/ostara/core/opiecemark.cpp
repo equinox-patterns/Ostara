@@ -27,6 +27,8 @@
 
 #include "opiecemark.h"
 
+#include "../vgeometry/vabstractcurve.h"
+#include "../vpatterndb/vcontainer.h"
 #include "ifcdef.h"
 #include "undocommands/orewriteformulas.h"
 #include "undocommands/renametoken.h"
@@ -134,6 +136,58 @@ auto KindOf(const QString &key, const QString &attribute) -> Kind
     }
 
     return attribute.contains(QStringLiteral("alias"), Qt::CaseInsensitive) ? Kind::Alias : Kind::Name;
+}
+
+/// L'**attribut** qui porte le nom de l'objet dont @p attribute porte l'alias, tel que le fichier l'écrit à côté :
+/// `curveName1` pour `alias1`, `curve1Name1` pour `curve1Alias1`. Le couple est la règle du fichier, et elle vaut
+/// pour tout fichier : rien à deviner, rien à écrire à la main.
+///
+/// Vide pour un `alias` seul : il appartient à une courbe entière — dont le nom n'est pas dans le fichier — ou à
+/// un point qu'une opération place, et l'alias d'un point n'est pas une tête de courbe. Ces deux-là passent par le
+/// conteneur, qui seul sait de quel objet il s'agit.
+auto PartnerAttribute(const QDomElement &element, const QString &attribute) -> QString
+{
+    if (attribute.startsWith(QStringLiteral("alias")))
+    {
+        // `alias1` n'a pas de `name1` à lui : le nom du segment est celui que la coupe compose, `curveName1`.
+        const QString numbered = QStringLiteral("curveName") + attribute.mid(5);
+        return element.hasAttribute(numbered) ? numbered : QString();
+    }
+
+    const qsizetype at = attribute.indexOf(QStringLiteral("alias"), 0, Qt::CaseInsensitive);
+    if (at < 0)
+    {
+        return {};
+    }
+
+    QString partner = attribute;
+    partner.replace(at, 5, attribute.at(at).isUpper() ? QStringLiteral("Name") : QStringLiteral("name"));
+    return element.hasAttribute(partner) ? partner : QString();
+}
+
+/// Le nom qu'une **courbe entière** répond : le patron le compose sur ses points — `P1_P4` pour une spline,
+/// `Premier_Dernier` pour un chemin, le centre et son id pour un arc — et le fichier ne l'écrit nulle part. Il
+/// n'existe donc qu'après la lecture, dans le conteneur.
+///
+/// Vide quand l'objet de l'élément n'est pas une courbe : l'alias d'un point ou d'un item n'est pas une tête de
+/// courbe, et la passe ne le touche pas.
+auto PublishedName(const QDomElement &element, const VContainer *data) -> QString
+{
+    if (data == nullptr)
+    {
+        return {};
+    }
+
+    const QHash<quint32, QSharedPointer<VGObject>> *objects = data->CalculationGObjects();
+    const QString id = element.attribute(QStringLiteral("id"));
+    if (objects == nullptr || id.isEmpty())
+    {
+        return {};
+    }
+
+    const QSharedPointer<VAbstractCurve> curve
+        = qSharedPointerDynamicCast<VAbstractCurve>(objects->value(id.toUInt()));
+    return curve.isNull() ? QString() : curve->HeadlessName();
 }
 
 /// The type a declaration carries, without its prefix — the schema writes `xs:nameSuffix`.
@@ -836,6 +890,110 @@ auto OPieceMark::HighestNumber(const QDomElement &root) -> int
     }
 
     return highest;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::UseAliases(const QDomElement &root, const VContainer *data) -> int
+{
+    if (root.isNull())
+    {
+        return 0;
+    }
+
+    // Ce qu'une formule doit écrire quand l'objet porte un alias : le nom qu'elle emploie encore, et l'alias qui
+    // prend sa place. Le nom est celui que le fichier écrit à côté de l'alias ; à défaut — une courbe entière — il
+    // vient du conteneur, et la passe tourne alors après la lecture.
+    QVector<QPair<QString, QString>> curves;
+    QVector<QPair<QString, QString>> roles;
+
+    QDomElement element = root;
+    WalkNames(element, QString(),
+              [&curves, &roles, data](const Declared &declared) -> QString
+              {
+                  const QString &key = declared.slot->key;
+
+                  // Le rôle d'une ligne : la paire de points est ce qu'une formule écrit tant qu'il n'y a pas de
+                  // rôle. `VChangeLineRoleName` la réécrit déjà au geste ; ici, c'est le fichier au repos.
+                  if (key == kRolePair)
+                  {
+                      const QStringList points
+                          = declared.element.attribute(QStringLiteral("points")).split(QLatin1Char(' '), Qt::SkipEmptyParts);
+                      const QString role = declared.element.attribute(QStringLiteral("name"));
+                      if (points.size() == 2 && not role.isEmpty())
+                      {
+                          const QPair<QString, QString> pair{points.at(0) + QLatin1Char('_') + points.at(1), role};
+                          if (pair.first != pair.second && not roles.contains(pair))
+                          {
+                              roles.append(pair);
+                          }
+                      }
+
+                      return declared.value; // Lecture seule : la passe ne touche pas aux noms déclarés.
+                  }
+
+                  if (declared.value.isEmpty())
+                  {
+                      return declared.value;
+                  }
+
+                  const QString attribute = key.section(QLatin1Char('@'), -1);
+                  const QString partner = PartnerAttribute(declared.element, attribute);
+                  // La **valeur** de l'attribut, pas son nom : c'est elle qu'une formule écrit après la tête.
+                  QString name = partner.isEmpty() ? QString() : declared.element.attribute(partner);
+                  if (name.isEmpty())
+                  {
+                      name = PublishedName(declared.element, data);
+                  }
+
+                  if (name.isEmpty() || name == declared.value)
+                  {
+                      return declared.value;
+                  }
+
+                  const QPair<QString, QString> pair{name, declared.value};
+                  if (not curves.contains(pair))
+                  {
+                      curves.append(pair);
+                  }
+
+                  return declared.value;
+              });
+
+    if (curves.isEmpty() && roles.isEmpty())
+    {
+        return 0;
+    }
+
+    int written = 0;
+    QDomElement envelope = root;
+    RewriteFormulas(envelope,
+                    [&curves, &roles, &written](const QString &token) -> QString
+                    {
+                        // La plus longue d'abord : deux noms peuvent finir le même jeton — `Em` et `Em_R1` — et
+                        // c'est le nom entier que le conteneur lit.
+                        for (const auto &[name, alias] : curves)
+                        {
+                            const QString mapped = ReplaceTokenAlias(token, CurveAliasType::All, name, alias);
+                            if (mapped != token)
+                            {
+                                ++written;
+                                return mapped;
+                            }
+                        }
+
+                        for (const auto &[pair, role] : roles)
+                        {
+                            if (token == line_ + pair || token == angleLine_ + pair)
+                            {
+                                ++written;
+                                return token.startsWith(angleLine_) ? angleLine_ + role : line_ + role;
+                            }
+                        }
+
+                        return token;
+                    });
+
+    return written;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

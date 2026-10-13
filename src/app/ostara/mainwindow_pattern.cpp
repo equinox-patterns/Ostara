@@ -170,6 +170,14 @@ void MainWindow::FullParseFile()
         {
             qCDebug(vMainWindow, "Curve heads normalised: %d token(s).", written);
         }
+
+        // L'alias est prioritaire : ce qui cite encore le nom composé d'un objet qui porte un alias est corrigé
+        // ici, **avant** la lecture — les outils lisent donc les formules déjà justes, et la fenêtre des options
+        // comme le navigateur de propriétés montrent l'alias du premier coup (demande de Sophie, 13-10-2026).
+        if (const int named = OPieceMark::UseAliases(doc->documentElement()); named > 0)
+        {
+            qCDebug(vMainWindow, "Aliases used: %d token(s).", named);
+        }
     }
 
     // A full reparse tears down all tools and the VContainer. A tool options dialog still open now references
@@ -222,12 +230,20 @@ void MainWindow::FullParseFile()
         return;
     }
 
+    // Une courbe entière — spline, chemin, arc, volant — n'écrit son nom nulle part : le patron le compose sur ses
+    // points, et il n'existe qu'ici, une fois la lecture faite. La passe d'avant la lecture a déjà corrigé ce que
+    // le fichier portait lui-même ; celle-ci finit le travail, et la relecture est ce qui met les formules
+    // corrigées sous les yeux des outils (mêmes commandes que le nommage : `LiteParseTree`).
+    if (OPieceMark::UseAliases(doc->documentElement(), pattern) > 0)
+    {
+        doc->LiteParseTree(Document::FullLiteParse);
+    }
+
     QString patternPiece;
     if (m_comboBoxDraws->currentIndex() != -1)
     {
         patternPiece = m_comboBoxDraws->itemText(m_comboBoxDraws->currentIndex());
     }
-
     {
         const QSignalBlocker blocker(m_comboBoxDraws);
         m_comboBoxDraws->clear();
@@ -717,6 +733,13 @@ void MainWindow::ActionSavePiece_triggered()
                 undoStack->push(new OPieceName::NameCurves(doc, curves));
             }
             undoStack->endMacro();
+
+            // Le nommage réécrit les formules **d'autres pièces** — `Manche` appelait `Courbe_R1_Eb+1` — mais les
+            // outils gardent le texte qu'ils ont lu. Sans cette relecture, le navigateur de propriétés continuait
+            // d'afficher l'ancien nom jusqu'à ce qu'on rouvre la formule (relevé de Sophie, 13-10-2026 : « si je
+            // clique sur assistant formule, ça se maj »). C'est la relecture que `VChangeLineRoleName` demande déjà
+            // quand il change un rôle.
+            doc->LiteParseTree(Document::FullLiteParse);
             named = true;
         }
 

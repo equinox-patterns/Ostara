@@ -675,7 +675,8 @@ void VToolAbstractArc::ProcessArcToolOptions(const QDomElement &oldDomElement,
                                                   CurveKeyInFormulas(arc, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  arc->HeadlessName());
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 
@@ -813,7 +814,8 @@ void VToolAbstractOffsetCurve::ProcessOffsetCurveToolOptions(const QDomElement &
                                                   CurveKeyInFormulas(offsetCurve, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  offsetCurve->HeadlessName());
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 
@@ -1186,7 +1188,8 @@ void VToolAbstractBezier::ProcessSplineToolOptions(const QDomElement &oldDomElem
                                                   CurveKeyInFormulas(oldSpline, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  oldSpline->HeadlessName());
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 
@@ -1236,7 +1239,8 @@ void VToolAbstractBezier::ProcessSplinePathToolOptions(const QDomElement &oldDom
                                                   CurveKeyInFormulas(oldSplinePath, changes.newAliasSuffix),
                                                   doc,
                                                   m_id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  oldSplinePath->HeadlessName());
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 

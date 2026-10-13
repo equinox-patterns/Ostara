@@ -434,8 +434,13 @@ void VToolCut::ProcessToolCutOptions(const QDomElement &oldDomElement,
 
     if (changes.AliasSuffix1Changed())
     {
-        const auto *renameAlias
-            = new RenameAlias(curveType, changes.oldAliasSuffix1, changes.newAliasSuffix1, doc, m_segment1Id, newGroup);
+        const auto *renameAlias = new RenameAlias(curveType,
+                                                  changes.oldAliasSuffix1,
+                                                  changes.newAliasSuffix1,
+                                                  doc,
+                                                  m_segment1Id,
+                                                  newGroup,
+                                                  changes.oldName1);
         if (!changes.AliasSuffix2Changed())
         {
             connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
@@ -444,8 +449,13 @@ void VToolCut::ProcessToolCutOptions(const QDomElement &oldDomElement,
 
     if (changes.AliasSuffix2Changed())
     {
-        const auto *renameAlias
-            = new RenameAlias(curveType, changes.oldAliasSuffix2, changes.newAliasSuffix2, doc, m_segment2Id, newGroup);
+        const auto *renameAlias = new RenameAlias(curveType,
+                                                  changes.oldAliasSuffix2,
+                                                  changes.newAliasSuffix2,
+                                                  doc,
+                                                  m_segment2Id,
+                                                  newGroup,
+                                                  changes.oldName2);
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 
@@ -825,6 +835,19 @@ void VToolCut::UpdateNameField(VToolCutNameField field, const QString &value)
 
     const QString label = VAbstractTool::data.GeometricObject<VPointF>(m_id)->name();
 
+    // Ce qui appelle un segment, c'est **son nom** tant qu'aucun alias ne lui a été donné : la formule écrit
+    // `Courbe_R3_Ef`. Donner l'ancien alias quand il est vide ne réécrivait donc rien du tout — `ReplaceTokenAlias`
+    // rend le jeton tel quel dès que l'ancien nom est vide — et l'alias posé restait sans effet sur les citations
+    // alors qu'il existait bel et bien (mesuré le 13-10-2026 : l'alias `RepereDevant1` écrit sur le segment de
+    // `R3`, et la manche citait toujours `Courbe_R3_Ef+1`). C'est le repli que `CurveKeyInFormulas` emploie déjà
+    // pour une spline (`vtoolabstractcurve.cpp:87`), et il vaut dans les deux sens : effacer l'alias ramène au nom.
+    const auto KeyInFormulas = [](const QString &name, const QString &alias) -> QString
+    {
+        return alias.isEmpty() ? name : alias;
+    };
+    const QString key1 = KeyInFormulas(m_name1, m_aliasSuffix1);
+    const QString key2 = KeyInFormulas(m_name2, m_aliasSuffix2);
+
     // Build changes struct
     ToolChanges const changes = {.oldLabel = label,
                                  .newLabel = label,
@@ -832,10 +855,12 @@ void VToolCut::UpdateNameField(VToolCutNameField field, const QString &value)
                                  .newName1 = (field == VToolCutNameField::Name1) ? value : m_name1,
                                  .oldName2 = m_name2,
                                  .newName2 = (field == VToolCutNameField::Name2) ? value : m_name2,
-                                 .oldAliasSuffix1 = m_aliasSuffix1,
-                                 .newAliasSuffix1 = (field == VToolCutNameField::AliasSuffix1) ? value : m_aliasSuffix1,
-                                 .oldAliasSuffix2 = m_aliasSuffix2,
-                                 .newAliasSuffix2 = (field == VToolCutNameField::AliasSuffix2) ? value : m_aliasSuffix2};
+                                 .oldAliasSuffix1 = key1,
+                                 .newAliasSuffix1
+                                 = (field == VToolCutNameField::AliasSuffix1) ? KeyInFormulas(m_name1, value) : key1,
+                                 .oldAliasSuffix2 = key2,
+                                 .newAliasSuffix2
+                                 = (field == VToolCutNameField::AliasSuffix2) ? KeyInFormulas(m_name2, value) : key2};
 
     // Update the appropriate member variable
     switch (field)

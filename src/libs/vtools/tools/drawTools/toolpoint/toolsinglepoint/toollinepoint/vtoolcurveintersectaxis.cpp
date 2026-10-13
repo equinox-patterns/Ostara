@@ -189,8 +189,13 @@ void VToolCurveIntersectAxis::ProcessToolOptions(const QDomElement &oldDomElemen
 
     if (changes.AliasSuffix1Changed())
     {
-        const auto *renameAlias
-            = new RenameAlias(curveType, changes.oldAliasSuffix1, changes.newAliasSuffix1, doc, m_segment1Id, newGroup);
+        const auto *renameAlias = new RenameAlias(curveType,
+                                                  changes.oldAliasSuffix1,
+                                                  changes.newAliasSuffix1,
+                                                  doc,
+                                                  m_segment1Id,
+                                                  newGroup,
+                                                  changes.oldName1);
         if (!changes.AliasSuffix2Changed())
         {
             connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
@@ -199,8 +204,14 @@ void VToolCurveIntersectAxis::ProcessToolOptions(const QDomElement &oldDomElemen
 
     if (changes.AliasSuffix2Changed())
     {
-        const auto *renameAlias
-            = new RenameAlias(curveType, changes.oldAliasSuffix1, changes.newAliasSuffix1, doc, m_segment2Id, newGroup);
+        // Le segment 2 était renommé avec les clés du segment 1 : ses citations ne suivaient donc jamais.
+        const auto *renameAlias = new RenameAlias(curveType,
+                                                  changes.oldAliasSuffix2,
+                                                  changes.newAliasSuffix2,
+                                                  doc,
+                                                  m_segment2Id,
+                                                  newGroup,
+                                                  changes.oldName2);
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
 

@@ -41,10 +41,17 @@ auto CurveAliasPrefixes(CurveAliasType type) -> QStringList
 
     if (type == CurveAliasType::All)
     {
+        // **`Curve_` en fait partie** : depuis que `Spl_` et `SplPath_` s'écrivent `Curve_` dans les formules,
+        // un segment ou une courbe est cité `Curve_R3_Ef` — et il manquait à cette liste, si bien que la
+        // réécriture ne trouvait aucun jeton à remplacer : l'ancien nom restait dans les formules des autres
+        // pièces (mesuré le 13-10-2026 : `Curve_R3_Ef` intact alors que l'alias `RepereDevant1` était écrit, et
+        // le refus d'enregistrement citait un nom composé qui n'existait plus).
         prefixes = QStringList{"Angle1Spl",   "Angle2Spl",       "Angle1SplPath",   "Angle2SplPath", "C1LengthSpl",
                                "C2LengthSpl", "C1LengthSplPath", "C2LengthSplPath", "Spl",           "SplPath",
-                               "RadiusArc",   "Angle1Arc",       "Angle2Arc",       "Angle1ElArc",   "Angle2ElArc",
-                               "Arc",         "ElArc",           "Radius1ElArc",    "Radius2ElArc",  "RotationElArc"};
+                               "Angle1Curve", "Angle2Curve",     "C1LengthCurve",   "C2LengthCurve", "Handle1Curve",
+                               "Handle2Curve", "Curve",          "RadiusArc",       "Angle1Arc",     "Angle2Arc",
+                               "Angle1ElArc", "Angle2ElArc",     "Arc",             "ElArc",         "Radius1ElArc",
+                               "Radius2ElArc", "RotationElArc"};
     }
     else if (type == CurveAliasType::Arc)
     {
@@ -56,11 +63,21 @@ auto CurveAliasPrefixes(CurveAliasType type) -> QStringList
     }
     else if (type == CurveAliasType::Spline)
     {
-        prefixes = QStringList{"Angle1Spl", "Angle2Spl", "C1LengthSpl", "C2LengthSpl", "Spl"};
+        prefixes = QStringList{"Angle1Spl",      "Angle2Spl",       "C1LengthSpl",     "C2LengthSpl", "Spl",
+                               "Angle1Curve",    "Angle2Curve",     "C1LengthCurve",   "C2LengthCurve", "Handle1Curve",
+                               "Handle2Curve",   "Curve"};
     }
     else if (type == CurveAliasType::SplinePath)
     {
-        prefixes = QStringList{"Angle1SplPath", "Angle2SplPath", "C1LengthSplPath", "C2LengthSplPath", "SplPath"};
+        // Un chemin est cité par les mêmes têtes qu'une courbe, et ces têtes s'écrivent `Curve_` : la relecture
+        // d'ouverture (`OPieceMark::NormaliseCurveHeads`) écrit `Curve_` — seul ou derrière les six préfixes — pour
+        // `SplPath_` comme pour `Spl_`, si bien que `SplPath` seul ne retrouvait plus aucun jeton du document.
+        // Mesuré le 13-10-2026 sur le fichier de Sophie : un chemin dont l'alias s'écrit `Curve_dos` dans les
+        // formules (`Curve_dos*0.65`, `Curve_dos+1`), et l'alias posé depuis le dock ne réécrivait rien — l'outil
+        // passe pourtant bien par cette liste (`ProcessSplinePathToolOptions` → `RenameAlias`, `vtoolabstractcurve.cpp`).
+        prefixes = QStringList{"Angle1SplPath", "Angle2SplPath",   "C1LengthSplPath", "C2LengthSplPath", "SplPath",
+                               "Angle1Curve",   "Angle2Curve",     "C1LengthCurve",   "C2LengthCurve",   "Handle1Curve",
+                               "Handle2Curve",  "Curve"};
     }
 
     return prefixes;

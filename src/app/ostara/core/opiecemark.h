@@ -35,6 +35,8 @@
 #include <QStringList>
 #include <QVector>
 
+class VContainer;
+
 /**
  * @brief The names a piece declares, and the mark that keeps them apart from the ones the pattern already holds.
  *
@@ -174,6 +176,27 @@ auto ObjectOf(const QString &slot) -> AliasOf;
  * @return le nombre de jetons réécrits — zéro quand le fichier était déjà propre.
  */
 auto NormaliseCurveHeads(const QDomElement &root) -> int;
+
+/**
+ * @brief Écrire l'alias là où une formule cite encore le **nom composé** de l'objet — à l'ouverture du fichier.
+ *
+ * Un alias est prioritaire : dès qu'un objet en porte un, c'est lui qu'une formule doit employer. Les fichiers
+ * écrits avant que le renommage ne répare les citations gardent pourtant le nom que le patron compose sur les
+ * points (`Courbe_R3_Ef`), et personne ne va les corriger à la main.
+ *
+ * La règle est celle du fichier, pour **tout** fichier : le **nom** d'un objet est écrit à côté de son alias —
+ * `curveName2` à côté de `alias2`, `curve1Name1` à côté de `curve1Alias1`, `name` à côté de l'`alias` d'une
+ * courbe ou d'un `item` — et c'est ce couple qui dit quoi réécrire. Le rôle d'une ligne se lit de même, la paire
+ * de points à côté du rôle dans `<lineNames>`.
+ *
+ * Une **courbe entière** (spline, chemin, arc, volant) n'écrit son nom nulle part : le patron le compose sur ses
+ * points à la lecture. Ce couple-là ne peut donc être lu qu'**après** la lecture, avec @p data — la seconde passe —
+ * et son résultat demande une relecture pour que les outils le voient.
+ *
+ * @param data le conteneur du patron, quand la lecture est faite. Nul à la première passe.
+ * @return le nombre de jetons réécrits — zéro quand le fichier était déjà à jour.
+ */
+auto UseAliases(const QDomElement &root, const VContainer *data = nullptr) -> int;
 
 /// Whether @p taken already answers to @p name — the name itself, or the same name under one of the heads the
 /// container builds on it (`Spl_devant` for the alias `devant`). The one reading of « déjà pris » in the product.

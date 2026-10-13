@@ -183,12 +183,27 @@ class RenameAlias : public AbstractObjectRename
     Q_OBJECT // NOLINT
 
 public:
+    /**
+     * @brief Renommer l'alias d'une courbe — et réparer les formules qui l'appelaient encore par son nom composé.
+     *
+     * Un objet qui prend un alias peut être cité de **deux** façons : par son ancien alias (`Courbe_RepereDos`) et
+     * par le nom que le patron compose sur ses points (`Courbe_R1_Eb`), qu'une formule écrite avant l'alias porte
+     * toujours. Les deux formes désignent le même objet, et les deux doivent suivre — sinon l'alias posé reste sans
+     * effet et la relecture qui suit remet le nom composé sous les yeux de l'utilisateur (relevé de Sophie,
+     * 13-10-2026 : « au lieu de forcer l'alias, ça force toujours le nom composé avec les points »).
+     * `VChangeLineRoleName` fait déjà les deux pour une ligne : le rôle *et* la paire de points qu'elle joint.
+     *
+     * @param composedName le nom composé de l'objet quand l'appelant le connaît : les deux noms d'un segment
+     *                     (`curveName1`, `curveName2`), ou celui que la courbe compose sur ses points
+     *                     (`HeadlessName()`). Vide quand il n'y en a pas d'autre.
+     */
     RenameAlias(CurveAliasType type,
                 QString oldAlias,
                 QString newAlias,
                 VAbstractPattern *doc,
                 quint32 id,
-                QUndoCommand *parent = nullptr);
+                QUndoCommand *parent = nullptr,
+                QString composedName = {});
     ~RenameAlias() override = default;
 
     static auto CurveType(GOType objType) -> CurveAliasType;
@@ -202,6 +217,7 @@ private:
     CurveAliasType m_type;
     QString m_oldAlias;
     QString m_newAlias;
+    QString m_composedName;
 };
 
 class RenameArc : public AbstractObjectRename

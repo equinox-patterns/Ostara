@@ -628,12 +628,18 @@ void RenamePair::ProcessLineNames()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-RenameAlias::RenameAlias(
-    CurveAliasType type, QString oldAlias, QString newAlias, VAbstractPattern *doc, quint32 id, QUndoCommand *parent)
+RenameAlias::RenameAlias(CurveAliasType type,
+                         QString oldAlias,
+                         QString newAlias,
+                         VAbstractPattern *doc,
+                         quint32 id,
+                         QUndoCommand *parent,
+                         QString composedName)
   : AbstractObjectRename(doc, id, parent),
     m_type(type),
     m_oldAlias(std::move(oldAlias)),
-    m_newAlias(std::move(newAlias))
+    m_newAlias(std::move(newAlias)),
+    m_composedName(std::move(composedName))
 {
 }
 
@@ -679,9 +685,19 @@ auto RenameAlias::ProcessToken(const QString &token) const -> QString
 
     if (ProcessType() == OperationType::Redo)
     {
-        return ReplaceTokenAlias(token, m_type, m_oldAlias, m_newAlias);
+        // Les **deux** formes d'un même objet : l'ancien alias, et le nom composé que le patron bâtit sur ses
+        // points — qu'une formule écrite avant l'alias porte encore. Une seule des deux était cherchée, si bien
+        // qu'un fichier citant `Courbe_R1_Eb` gardait le nom composé et que l'alias posé restait sans effet.
+        const QString byAlias = ReplaceTokenAlias(token, m_type, m_oldAlias, m_newAlias);
+        if (byAlias != token || m_composedName.isEmpty() || m_composedName == m_oldAlias)
+        {
+            return byAlias;
+        }
+
+        return ReplaceTokenAlias(token, m_type, m_composedName, m_newAlias);
     }
 
+    // Le retour : la forme qui précédait — l'ancien alias quand il y en avait un, son nom composé sinon.
     return ReplaceTokenAlias(token, m_type, m_newAlias, m_oldAlias);
 }
 

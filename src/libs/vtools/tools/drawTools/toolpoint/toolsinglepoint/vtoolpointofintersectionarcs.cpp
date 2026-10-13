@@ -198,17 +198,20 @@ void VToolPointOfIntersectionArcs::ProcessToolOptions(const QDomElement &oldDomE
                                           changes.newArc1AliasSuffix1,
                                           doc,
                                           m_arc1Segment1Id,
-                                          newGroup);
+                                          newGroup,
+                                          changes.oldArc1Name1);
     }
 
     if (changes.Arc1AliasSuffix2Changed())
     {
+        // Le segment 2 était renommé avec les clés du segment 1 : ses citations ne suivaient donc jamais.
         renameCommands << new RenameAlias(curve1Type,
-                                          changes.oldArc1AliasSuffix1,
-                                          changes.newArc1AliasSuffix1,
+                                          changes.oldArc1AliasSuffix2,
+                                          changes.newArc1AliasSuffix2,
                                           doc,
                                           m_arc1Segment2Id,
-                                          newGroup);
+                                          newGroup,
+                                          changes.oldArc1Name2);
     }
 
     if (changes.Arc2Name1Changed())
@@ -238,17 +241,20 @@ void VToolPointOfIntersectionArcs::ProcessToolOptions(const QDomElement &oldDomE
                                           changes.newArc2AliasSuffix1,
                                           doc,
                                           m_arc2Segment1Id,
-                                          newGroup);
+                                          newGroup,
+                                          changes.oldArc2Name1);
     }
 
     if (changes.Arc2AliasSuffix2Changed())
     {
+        // Le segment 2 était renommé avec les clés du segment 1 : ses citations ne suivaient donc jamais.
         renameCommands << new RenameAlias(curve2Type,
-                                          changes.oldArc2AliasSuffix1,
-                                          changes.newArc2AliasSuffix1,
+                                          changes.oldArc2AliasSuffix2,
+                                          changes.newArc2AliasSuffix2,
                                           doc,
                                           m_arc2Segment2Id,
-                                          newGroup);
+                                          newGroup,
+                                          changes.oldArc2Name2);
     }
 
     if (!renameCommands.isEmpty())

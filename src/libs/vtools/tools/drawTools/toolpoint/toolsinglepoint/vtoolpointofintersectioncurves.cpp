@@ -216,7 +216,8 @@ void VToolPointOfIntersectionCurves::ProcessToolOptions(const QDomElement &oldDo
                                                   changes.newCurve1AliasSuffix1,
                                                   doc,
                                                   m_curve1Segment1Id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  changes.oldCurve1Name1);
         if (!changes.Curve2Name1Changed() && !changes.Curve2Name2Changed() && !changes.Curve1AliasSuffix2Changed()
             && !changes.Curve2AliasSuffix1Changed() && !changes.Curve2AliasSuffix2Changed())
         {
@@ -226,12 +227,14 @@ void VToolPointOfIntersectionCurves::ProcessToolOptions(const QDomElement &oldDo
 
     if (changes.Curve1AliasSuffix2Changed())
     {
+        // Le segment 2 était renommé avec les clés du segment 1 : ses citations ne suivaient donc jamais.
         const auto *renameAlias = new RenameAlias(curve1Type,
-                                                  changes.oldCurve1AliasSuffix1,
-                                                  changes.newCurve1AliasSuffix1,
+                                                  changes.oldCurve1AliasSuffix2,
+                                                  changes.newCurve1AliasSuffix2,
                                                   doc,
                                                   m_curve1Segment2Id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  changes.oldCurve1Name2);
         if (!changes.Curve2Name1Changed() && !changes.Curve2Name2Changed() && !changes.Curve2AliasSuffix1Changed()
             && !changes.Curve2AliasSuffix2Changed())
         {
@@ -240,7 +243,7 @@ void VToolPointOfIntersectionCurves::ProcessToolOptions(const QDomElement &oldDo
     }
 
     const QSharedPointer<VAbstractCurve> curve2 = VAbstractTool::data.GeometricObject<VAbstractCurve>(secondCurveId);
-    const CurveAliasType curve2Type = RenameAlias::CurveType(curve1->getType());
+    const CurveAliasType curve2Type = RenameAlias::CurveType(curve2->getType());
 
     if (changes.Curve2Name1Changed())
     {
@@ -278,7 +281,8 @@ void VToolPointOfIntersectionCurves::ProcessToolOptions(const QDomElement &oldDo
                                                   changes.newCurve2AliasSuffix1,
                                                   doc,
                                                   m_curve2Segment1Id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  changes.oldCurve2Name1);
         if (!changes.Curve2AliasSuffix2Changed())
         {
             connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
@@ -287,12 +291,14 @@ void VToolPointOfIntersectionCurves::ProcessToolOptions(const QDomElement &oldDo
 
     if (changes.Curve2AliasSuffix2Changed())
     {
+        // Le segment 2 était renommé avec les clés du segment 1 : ses citations ne suivaient donc jamais.
         const auto *renameAlias = new RenameAlias(curve2Type,
-                                                  changes.oldCurve2AliasSuffix1,
-                                                  changes.newCurve2AliasSuffix1,
+                                                  changes.oldCurve2AliasSuffix2,
+                                                  changes.newCurve2AliasSuffix2,
                                                   doc,
                                                   m_curve2Segment2Id,
-                                                  newGroup);
+                                                  newGroup,
+                                                  changes.oldCurve2Name2);
 
         connect(renameAlias, &RenameLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     }
