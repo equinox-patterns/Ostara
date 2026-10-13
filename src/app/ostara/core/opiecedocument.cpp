@@ -39,8 +39,10 @@ const QString kTagIncrementGroups = QStringLiteral("incrementGroups");
 const QString kTagPreviewCalculations = QStringLiteral("previewCalculations");
 const QString kTagPreviewCalculationGroups = QStringLiteral("previewCalculationGroups");
 const QString kTagDependencies = QStringLiteral("dependencies");
+const QString kTagMeasurements = QStringLiteral("measurements");
 const QString kTagLineNames = QStringLiteral("lineNames");
 const QString kTagDependency = QStringLiteral("dependency");
+const QString kTagMeasurement = QStringLiteral("measurement");
 const QString kTagDraw = QStringLiteral("draw");
 
 const QString kAttrName = QStringLiteral("name");
@@ -65,6 +67,7 @@ auto SectionOrder() -> const QStringList &
                                    kTagPreviewCalculations,
                                    kTagPreviewCalculationGroups,
                                    kTagDependencies,
+                                   kTagMeasurements,
                                    kTagLineNames,
                                    kTagDraw};
     return order;
@@ -284,9 +287,17 @@ void OPieceDocument::SetLineNames(const QDomElement &source)
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceDocument::SetDependencies(const QList<Dependency> &dependencies)
 {
+    // A piece that needs nothing from elsewhere says nothing — and a piece whose needs are gone **stops saying
+    // it**: a section left behind would be the model disagreeing with the document, the same rule as
+    // SetMeasurements and SetLineNames.
     if (dependencies.isEmpty())
     {
-        return; // A piece that needs nothing from elsewhere says nothing.
+        QDomElement root = documentElement();
+        if (const QDomElement previous = ExistingSection(kTagDependencies); not previous.isNull())
+        {
+            root.removeChild(previous);
+        }
+        return;
     }
 
     QDomElement target = Section(kTagDependencies);
@@ -327,4 +338,49 @@ auto OPieceDocument::Dependencies() const -> QList<Dependency>
     }
 
     return dependencies;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceDocument::SetMeasurements(const QStringList &measurements)
+{
+    QStringList names = measurements;
+    names.removeDuplicates();
+    names.sort();
+
+    // A piece that reads none of them says nothing — and a piece that stops reading them **stops saying it**:
+    // a section left behind would be the model disagreeing with the document.
+    if (names.isEmpty())
+    {
+        QDomElement root = documentElement();
+        if (const QDomElement previous = ExistingSection(kTagMeasurements); not previous.isNull())
+        {
+            root.removeChild(previous);
+        }
+        return;
+    }
+
+    QDomElement target = Section(kTagMeasurements);
+    RemoveAllChildren(target);
+
+    for (const QString &name : names)
+    {
+        QDomElement element = createElement(kTagMeasurement);
+        element.setAttribute(kAttrName, name);
+        target.appendChild(element);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceDocument::Measurements() const -> QStringList
+{
+    QStringList measurements;
+
+    const QDomElement section = ExistingSection(kTagMeasurements);
+    for (QDomElement element = section.firstChildElement(kTagMeasurement); not element.isNull();
+         element = element.nextSiblingElement(kTagMeasurement))
+    {
+        measurements.append(element.attribute(kAttrName));
+    }
+
+    return measurements;
 }

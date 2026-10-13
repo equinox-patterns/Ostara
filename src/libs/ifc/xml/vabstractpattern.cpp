@@ -2010,6 +2010,15 @@ auto VAbstractPattern::ListSplineExpressions() const -> QVector<VFormulaField>
         ReadExpressionAttribute(expressions, dom, AttrLength);
         ReadExpressionAttribute(expressions, dom, AttrAngle);
 
+        // Les quatre attributs que le schéma déclare **sur la spline elle-même** et que le parseur traite comme des
+        // formules (`vpattern_splineparsers.cpp`). Ils n'étaient lus que sur les `<pathPoint>` : une mesure citée là
+        // échappait à tout ce qui lit les formules — la vérification des mesures, le marquage, l'attribution des
+        // dépendances (mesuré le 13-10-2026).
+        ReadExpressionAttribute(expressions, dom, AttrAngle1);
+        ReadExpressionAttribute(expressions, dom, AttrAngle2);
+        ReadExpressionAttribute(expressions, dom, AttrLength1);
+        ReadExpressionAttribute(expressions, dom, AttrLength2);
+
         const QDomNodeList offestNodes = dom.elementsByTagName(TagOffset);
         for (int i = 0; i < offestNodes.size(); ++i)
         {
@@ -3139,6 +3148,29 @@ void VAbstractPattern::RemoveIncrementGroup(quint32 id)
     if (incrementGroups.isNull())
     {
         return;
+    }
+
+    // Les lignes que ce groupe tenait ne doivent pas garder un `groupId` qui ne mène plus nulle part : le groupe
+    // s'en va, elles redeviennent des lignes sans groupe. Le retrait **délibéré** d'un groupe n'a encore aucun
+    // appelant — la règle du produit est qu'un groupe s'en va quand sa dernière ligne le quitte — mais la fonction
+    // est publique : celui qui l'appellera n'a pas à connaître cette obligation, et un lien mort dans le fichier
+    // ne se voit qu'à la relecture suivante.
+    for (const QString &tag : {TagIncrements, TagPreviewCalculations})
+    {
+        const QDomElement section = documentElement().firstChildElement(tag);
+        if (section.isNull())
+        {
+            continue;
+        }
+
+        for (QDomElement row = section.firstChildElement(TagIncrement); not row.isNull();
+             row = row.nextSiblingElement(TagIncrement))
+        {
+            if (GetParametrUInt(row, AttrGroupId, NULL_ID_STR) == id)
+            {
+                row.removeAttribute(AttrGroupId);
+            }
+        }
     }
 
     incrementGroups.removeChild(incrementGroup);

@@ -625,38 +625,49 @@ void MainWindow::ActionNewDraw_triggered()
     // The same dialog as the first piece, minus the unit — the unit belongs to the pattern, not to the
     // piece — and with the layer the piece starts in. A piece name is unique among the pieces of its
     // pattern, and the list of taken names is what lets the dialog refuse a duplicate before accepting.
-    DialogNewPattern dialog(pattern, patternPieceName, DialogNewPattern::Creation::Piece, this);
-    QStringList taken;
-    taken.reserve(m_comboBoxDraws->count());
-    for (int i = 0; i < m_comboBoxDraws->count(); ++i)
+    //
+    // It is asked again as long as the piece taken from the library cannot enter: such a refusal leaves the
+    // pattern exactly as it was — no block, no increment, no name — so there is nothing to repair, and the reader
+    // is given back the window where the answer is his: another piece, or one of his own.
+    while (true)
     {
-        taken.append(m_comboBoxDraws->itemText(i));
-    }
-    dialog.SetTakenNames(taken);
+        DialogNewPattern dialog(pattern, patternPieceName, DialogNewPattern::Creation::Piece, this);
+        QStringList taken;
+        taken.reserve(m_comboBoxDraws->count());
+        for (int i = 0; i < m_comboBoxDraws->count(); ++i)
+        {
+            taken.append(m_comboBoxDraws->itemText(i));
+        }
+        dialog.SetTakenNames(taken);
 
-    // The library is given to the dialog, the way it is given to the piece library window: the caller is what
-    // knows which folder it is talking about, and a dialog that reads the settings itself cannot be measured.
-    // The unit too: a piece of another unit is not a choice, since the insertion would refuse it.
-    dialog.SetLibraryDirectory(OPieceLibrary::DefaultDirectory());
-    dialog.SetLibraryUnit(OPieceImport::HostUnit(doc));
+        // The library is given to the dialog, the way it is given to the piece library window: the caller is what
+        // knows which folder it is talking about, and a dialog that reads the settings itself cannot be measured.
+        // The unit too: a piece of another unit is not a choice, since the insertion would refuse it.
+        dialog.SetLibraryDirectory(OPieceLibrary::DefaultDirectory());
+        dialog.SetLibraryUnit(OPieceImport::HostUnit(doc));
 
-    if (dialog.exec() != QDialog::Accepted)
-    {
+        if (dialog.exec() != QDialog::Accepted)
+        {
+            return;
+        }
+
+        // Two answers behind one window: a piece named by hand, or a piece taken from the library. The second
+        // brings its own name, its layers and its increments, so it goes in through the insertion and nothing else
+        // of this dialog is read.
+        if (const QString imported = dialog.ImportedPath(); not imported.isEmpty())
+        {
+            if (not InsertLibraryPiece(imported))
+            {
+                continue;
+            }
+            return;
+        }
+
+        qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(dialog.name()));
+
+        AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle());
         return;
     }
-
-    // Two answers behind one window: a piece named by hand, or a piece taken from the library. The second
-    // brings its own name, its layers and its increments, so it goes in through the insertion and nothing else
-    // of this dialog is read.
-    if (const QString imported = dialog.ImportedPath(); not imported.isEmpty())
-    {
-        InsertLibraryPiece(imported);
-        return;
-    }
-
-    qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(dialog.name()));
-
-    AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle());
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionSavePiece_triggered()
@@ -800,11 +811,11 @@ void MainWindow::ActionPieceLibrary()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::InsertLibraryPiece(const QString &filePath)
+auto MainWindow::InsertLibraryPiece(const QString &filePath) -> bool
 {
     if (doc == nullptr || pattern == nullptr || filePath.isEmpty())
     {
-        return;
+        return false;
     }
 
     OPieceDocument piece;
@@ -812,14 +823,15 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
     if (not OPieceLibrary::Load(filePath, &piece, &error))
     {
         QMessageBox::warning(this, tr("Piece library"), error);
-        return;
+        return false;
     }
 
     // What the piece may not do, said before anything is touched: a pattern that holds no measurement table to
-    // read the piece against, a piece of another unit, and a piece whose values live in a piece this pattern does
-    // not hold. All three are refusals, never silent entries — and the first one is the only one the user can
-    // repair on the spot, so the table is asked for and the insertion carries on once it is loaded.
-    if (not OPieceImport::CheckMeasurements(piece, doc, error))
+    // read the piece against — or one that does not define what the piece reads —, a piece of another unit, and a
+    // piece whose values live in a piece this pattern does not hold. All of them are refusals, never silent
+    // entries — and the measurements are the only thing the user can repair on the spot, so the table is asked
+    // for and the insertion carries on once it is loaded.
+    if (not OPieceImport::CheckMeasurements(piece, doc, pattern, error))
     {
         QMessageBox ask(QMessageBox::Question, tr("Piece library"), error, QMessageBox::NoButton, this);
         QPushButton *const load = ask.addButton(tr("Load a measurement table"), QMessageBox::AcceptRole);
@@ -834,16 +846,23 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
         // The table is only there once the chosen file has been read: a cancelled question, a cancelled file
         // dialog, or a legacy table that still has to be converted all leave the pattern without one — and the
         // piece has then nothing to be read with.
-        if (not OPieceImport::CheckMeasurements(piece, doc, error))
+        if (not OPieceImport::CheckMeasurements(piece, doc, pattern, error))
         {
-            return;
+            // A table that **is** there and still does not define what the piece reads is another matter: it is
+            // not a deliberate nothing, and the reader has to be told which measurement is missing rather than
+            // watch the piece not enter.
+            if (not doc->MPath().isEmpty())
+            {
+                QMessageBox::warning(this, tr("Piece library"), error);
+            }
+            return false;
         }
     }
 
     if (not OPieceImport::CheckUnit(piece, doc, error) || not OPieceImport::CheckDependencies(piece, doc, error))
     {
         QMessageBox::warning(this, tr("Piece library"), error);
-        return;
+        return false;
     }
 
     // The instance name is the piece's own, and a second one takes the next free name: the block name is what the
@@ -880,7 +899,7 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
         OPieceImportDialog dialog(proposal, blockNames, OPieceInsert::Keys(pattern), ambiguous, this);
         if (dialog.exec() != QDialog::Accepted)
         {
-            return;
+            return false;
         }
 
         proposal.instanceName = dialog.InstanceName();
@@ -908,7 +927,7 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
     if (not prepared.IsReady())
     {
         QMessageBox::warning(this, tr("Piece library"), tr("This piece holds no block to insert."));
-        return;
+        return false;
     }
 
     // One gesture: the block, the increments it brings, the groups that hold them and the names of its lines all
@@ -935,6 +954,8 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
 
     statusBar()->showMessage(tr("Piece inserted: %1").arg(prepared.instanceName), 5000);
     qCDebug(vMainWindow, "Piece %s inserted as %s.", qUtf8Printable(filePath), qUtf8Printable(prepared.instanceName));
+
+    return true;
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionShowMainPath_triggered(bool checked)

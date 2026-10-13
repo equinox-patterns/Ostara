@@ -792,9 +792,14 @@ private:
     /// @brief Insert the library piece held in @p filePath into the open pattern, as one undoable gesture.
     ///
     /// Everything the piece may not do is refused before anything is touched — another unit, a value no piece of
-    /// this pattern declares — and the piece enters with its names marked when they collide, its ids renewed, its
-    /// increments, its groups and its role names all in the same command.
-    void InsertLibraryPiece(const QString &filePath);
+    /// this pattern declares, a measurement table that does not define what the piece reads — and the piece enters
+    /// with its names marked when they collide, its ids renewed, its increments, its groups and its role names all
+    /// in the same command.
+    ///
+    /// @return true when the piece entered. **A caller that gave a pattern its first reason to exist must read
+    /// it**: a refusal leaves the document without the block that was asked for, and it is the caller that knows
+    /// whether such a document has anything left to be.
+    auto InsertLibraryPiece(const QString &filePath) -> bool;
 
     /// Write the piece @p blockName into the library under the name @p name.
     ///

@@ -166,25 +166,6 @@ auto VPattern::MakeEmptyIncrement(const QString &name, IncrementType type) -> QD
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VPattern::FindIncrement(const QString &name) const -> QDomElement
-{
-    QDomNodeList const list = elementsByTagName(TagIncrement);
-
-    for (int i = 0; i < list.size(); ++i)
-    {
-        if (const QDomElement domElement = list.at(i).toElement(); not domElement.isNull())
-        {
-            if (const QString parameter = domElement.attribute(AttrName); parameter == name)
-            {
-                return domElement;
-            }
-        }
-    }
-
-    return {};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VPattern::NewEmptyIncrement(const QString &type, const QString &name, IncrementType varType)
 {
     const QDomElement element = MakeEmptyIncrement(name, varType);
@@ -199,7 +180,7 @@ void VPattern::NewEmptyIncrementAfter(const QString &type, const QString &after,
                                       IncrementType varType)
 {
     const QDomElement element = MakeEmptyIncrement(name, varType);
-    const QDomElement sibling = FindIncrement(after);
+    const QDomElement sibling = FindIncrementInTable(type, after);
 
     const QDomNodeList list = elementsByTagName(type);
 
@@ -218,7 +199,7 @@ void VPattern::NewEmptyIncrementAfter(const QString &type, const QString &after,
 void VPattern::RemoveIncrement(const QString &type, const QString &name)
 {
     const QDomNodeList list = elementsByTagName(type);
-    list.at(0).removeChild(FindIncrement(name));
+    list.at(0).removeChild(FindIncrementInTable(type, name));
     emit patternChanged(false);
 
     // The rows of one table are filed in its own list: what is dropped is the list of the table the row just left.
@@ -230,7 +211,7 @@ void VPattern::RemoveIncrement(const QString &type, const QString &name)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::MoveUpIncrement(const QString &type, const QString &name)
 {
-    if (const QDomElement node = FindIncrement(name); not node.isNull())
+    if (const QDomElement node = FindIncrementInTable(type, name); not node.isNull())
     {
         const QDomElement prSibling = node.previousSiblingElement(TagIncrement);
         if (not prSibling.isNull())
@@ -244,7 +225,7 @@ void VPattern::MoveUpIncrement(const QString &type, const QString &name)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::MoveDownIncrement(const QString &type, const QString &name)
 {
-    if (const QDomElement node = FindIncrement(name); not node.isNull())
+    if (const QDomElement node = FindIncrementInTable(type, name); not node.isNull())
     {
         const QDomElement nextSibling = node.nextSiblingElement(TagIncrement);
         if (not nextSibling.isNull())
@@ -256,9 +237,9 @@ void VPattern::MoveDownIncrement(const QString &type, const QString &name)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VPattern::SetIncrementAttribute(const QString &name, const QString &attr, const QString &text)
+void VPattern::SetIncrementAttribute(const QString &type, const QString &name, const QString &attr, const QString &text)
 {
-    if (QDomElement node = FindIncrement(name); not node.isNull())
+    if (QDomElement node = FindIncrementInTable(type, name); not node.isNull())
     {
         SetAttribute(node, attr, text);
         emit patternChanged(false);
@@ -375,25 +356,49 @@ void VPattern::MoveDownPreviewCalculation(const QString &name)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::SetIncrementName(const QString &name, const QString &text)
 {
-    SetIncrementAttribute(name, AttrName, text);
+    SetIncrementAttribute(TagIncrements, name, AttrName, text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SetPreviewCalculationName(const QString &name, const QString &text)
+{
+    SetIncrementAttribute(TagPreviewCalculations, name, AttrName, text);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::SetIncrementFormula(const QString &name, const QString &text)
 {
-    SetIncrementAttribute(name, AttrFormula, text);
+    SetIncrementAttribute(TagIncrements, name, AttrFormula, text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SetPreviewCalculationFormula(const QString &name, const QString &text)
+{
+    SetIncrementAttribute(TagPreviewCalculations, name, AttrFormula, text);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::SetIncrementDescription(const QString &name, const QString &text)
 {
+    SetIncrementDescription(TagIncrements, name, text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SetPreviewCalculationDescription(const QString &name, const QString &text)
+{
+    SetIncrementDescription(TagPreviewCalculations, name, text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SetIncrementDescription(const QString &type, const QString &name, const QString &text)
+{
     if (not text.isEmpty())
     {
-        SetIncrementAttribute(name, AttrDescription, text);
+        SetIncrementAttribute(type, name, AttrDescription, text);
     }
     else
     {
-        if (QDomElement node = FindIncrement(name); not node.isNull())
+        if (QDomElement node = FindIncrementInTable(type, name); not node.isNull())
         {
             node.removeAttribute(AttrDescription);
             emit patternChanged(false);
@@ -404,7 +409,19 @@ void VPattern::SetIncrementDescription(const QString &name, const QString &text)
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::SetIncrementSpecialUnits(const QString &name, bool special)
 {
-    if (QDomElement node = FindIncrement(name); not node.isNull())
+    SetIncrementSpecialUnits(TagIncrements, name, special);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SetPreviewCalculationSpecialUnits(const QString &name, bool special)
+{
+    SetIncrementSpecialUnits(TagPreviewCalculations, name, special);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPattern::SetIncrementSpecialUnits(const QString &type, const QString &name, bool special)
+{
+    if (QDomElement node = FindIncrementInTable(type, name); not node.isNull())
     {
         SetAttributeOrRemoveIf<bool>(node, AttrSpecialUnits, special,
                                      [](bool special) noexcept { return not special; });

@@ -4,7 +4,10 @@
 
      This schema is about the envelope, and only the envelope. A piece carries a <draw> and its increments; it
      carries nothing of the pattern it came from — no cartouche, no watermark, no size ranges, no materials, no
-     measurements. That is what the format says, and that is what this file enforces.
+     measurement *values*. The measurements its formulas read it does not carry either: it names them, because
+     a formula citing `@TP` has to find one, and the pattern that receives the block has to be able to say
+     which one its own table does not define. That is what the format says, and that is what this file
+     enforces.
 
      The body of the block is accepted as it stands. It is the very text the .ostara schema validated on the way
      out, and the pattern that receives the block validates it again, against its own schema, at its next save:
@@ -64,6 +67,21 @@
                        the library where a name would not. -->
                   <xs:attribute name="libraryId" type="libraryIdentity"/>
                   <xs:attribute name="category" type="xs:string"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <!-- The measurements the piece reads, named as its own formulas cite them.
+             A piece does not carry their values — they come from the measurement table the pattern is opened
+             with — so the only thing it can say is which ones it needs. The import asks the table, and names
+             the one it does not define rather than let the block draw a value nobody has. -->
+        <xs:element name="measurements" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="measurement" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="name" type="shortName" use="required"/>
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

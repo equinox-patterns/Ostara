@@ -155,17 +155,20 @@ void ImportTable(const QDomElement &rows,
         if (type != IncrementType::Separator)
         {
             // A separator holds no formula: writing one would be forced back to '0' at the next reading.
-            host->SetIncrementFormula(name, row.attribute(VAbstractPattern::AttrFormula));
+            previewCalculation ? host->SetPreviewCalculationFormula(name, row.attribute(VAbstractPattern::AttrFormula))
+                               : host->SetIncrementFormula(name, row.attribute(VAbstractPattern::AttrFormula));
         }
 
         if (row.attribute(VAbstractPattern::AttrSpecialUnits) == trueStr)
         {
-            host->SetIncrementSpecialUnits(name, true);
+            previewCalculation ? host->SetPreviewCalculationSpecialUnits(name, true)
+                               : host->SetIncrementSpecialUnits(name, true);
         }
 
         if (const QString description = row.attribute(AttrDescription); not description.isEmpty())
         {
-            host->SetIncrementDescription(name, description);
+            previewCalculation ? host->SetPreviewCalculationDescription(name, description)
+                               : host->SetIncrementDescription(name, description);
         }
 
         host->SetIncrementGroup(name, GroupForNewRows(), previewCalculation);
@@ -316,19 +319,50 @@ auto OPieceImport::HostUnit(const VAbstractPattern *host) -> Unit
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPieceImport::CheckMeasurements(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool
+auto OPieceImport::CheckMeasurements(const OPieceDocument &piece,
+                                     const VAbstractPattern *host,
+                                     const VContainer *data,
+                                     QString &error) -> bool
 {
-    Q_UNUSED(piece)
+    if (host != nullptr && host->MPath().isEmpty())
+    {
+        error = QCoreApplication::translate("OPieceImport",
+                                            "This pattern has no measurement table yet, and a piece is read against "
+                                            "one: its formulas are evaluated with the measurements of the table. Load "
+                                            "a measurement table, then insert the piece.");
+        return false;
+    }
 
-    if (host == nullptr || not host->MPath().isEmpty())
+    // The piece names the measurements its formulas read; the table the pattern is loaded with is what defines
+    // them. One it does not define is a value nobody has — and the block would draw nothing there rather than
+    // say so.
+    const QStringList read = piece.Measurements();
+    if (read.isEmpty() || data == nullptr)
+    {
+        return true;
+    }
+
+    const QMap<QString, QSharedPointer<VMeasurement>> defined = data->DataMeasurements();
+
+    QStringList missing;
+    for (const QString &name : read)
+    {
+        if (not defined.contains(name))
+        {
+            missing.append(name);
+        }
+    }
+
+    if (missing.isEmpty())
     {
         return true;
     }
 
     error = QCoreApplication::translate("OPieceImport",
-                                        "This pattern has no measurement table yet, and a piece is read against "
-                                        "one: its formulas are evaluated with the measurements of the table. Load "
-                                        "a measurement table, then insert the piece.");
+                                        "The measurement table of this pattern does not define every measurement "
+                                        "the piece reads.\n\nMissing: %1\n\nLoad a measurement table that defines "
+                                        "them, then insert the piece.")
+                .arg(missing.join(QStringLiteral(", ")));
     return false;
 }
 

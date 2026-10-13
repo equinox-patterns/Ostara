@@ -626,12 +626,22 @@ void MainWindow::Clear()
  */
 void MainWindow::on_actionNew_triggered()
 {
-    if (m_comboBoxDraws->count() == 0)
+    if (m_comboBoxDraws->count() != 0)
     {
-        // Switch to editor first so the dialog opens over the canvas,
-        // not over the WelcomeScreen.
-        ShowEditor();
+        OpenNewValentina();
+        return;
+    }
 
+    // Switch to editor first so the dialog opens over the canvas,
+    // not over the WelcomeScreen.
+    ShowEditor();
+
+    // The dialog, and the piece it may carry. It is asked again as long as that piece cannot enter: a pattern was
+    // asked for **from a piece**, and a pattern born without it is not what was asked for — the empty block the
+    // old fallback created was a substitute nobody wanted. The document is cleared and the question asked again,
+    // so the reader is back at the dialog with the table he loaded still in hand.
+    while (true)
+    {
         qCDebug(vMainWindow, "New PP.");
         QString patternPieceName = tr("Pattern piece %1").arg(m_comboBoxDraws->count() + 1);
         qCDebug(vMainWindow, "Generated PP name: %s", qUtf8Printable(patternPieceName));
@@ -641,18 +651,16 @@ void MainWindow::on_actionNew_triggered()
         // The library is given to the dialog here as well, and the unit is the one the dialog is asking about:
         // changing it re-reads the library, since a piece of another unit could not enter this pattern.
         newPattern.SetLibraryDirectory(OPieceLibrary::DefaultDirectory());
-        if (newPattern.exec() == QDialog::Accepted)
-        {
-            patternPieceName = newPattern.name();
-            VAbstractValApplication::VApp()->SetPatternUnits(newPattern.PatternUnit());
-            qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(patternPieceName));
-        }
-        else
+        if (newPattern.exec() != QDialog::Accepted)
         {
             qCDebug(vMainWindow, "Creation a new pattern was canceled.");
             emit patternClosed();
             return;
         }
+
+        patternPieceName = newPattern.name();
+        VAbstractValApplication::VApp()->SetPatternUnits(newPattern.PatternUnit());
+        qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(patternPieceName));
 
         // Set scene size to size scene view
         VMainGraphicsView::NewSceneRect(m_sceneDraw, ui->view);
@@ -662,22 +670,20 @@ void MainWindow::on_actionNew_triggered()
         {
             // The pattern is born from a piece of the library instead of one drawn here. The file has to exist
             // **before** the block: a block is inserted into a document, and a pattern that has never been
-            // written has no root at all — the same CreateEmptyFile the first base point asks for.
+            // written has no root at all — the same CreateEmptyFile the first base point asks for. It also has
+            // to exist **before** the measurement table can be chosen: the path of that table is written in the
+            // document.
             if (doc->CountPatternBlockTags() == 0)
             {
                 doc->CreateEmptyFile();
             }
 
-            InsertLibraryPiece(imported);
-
-            // The insertion can still not happen — a pattern is born without a measurement table, the piece needs
-            // one, and the reader may refuse it. The pattern is already born by then (a block has to be inserted
-            // **into** a document), so it is given the piece it would have had: the empty one the other branch
-            // creates, rather than a document the schema would refuse to save.
-            if (doc->CountPatternBlockTags() == 0)
+            if (not InsertLibraryPiece(imported))
             {
-                AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(),
-                      newPattern.LayerPenStyle());
+                // Nothing entered, and nothing was asked for: the document born to hold the piece has nothing
+                // left to be. Cleared, and the dialog asked again.
+                Clear();
+                continue;
             }
         }
         else
@@ -697,10 +703,8 @@ void MainWindow::on_actionNew_triggered()
 
 
         m_sceneDraw->SetAcceptDrop(true);
-    }
-    else
-    {
-        OpenNewValentina();
+
+        return;
     }
 }
 

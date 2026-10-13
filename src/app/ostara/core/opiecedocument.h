@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 /**
  * @brief A piece of the library: one block of a pattern, its increments, and what it needs from elsewhere.
@@ -41,7 +42,8 @@
  * it reads from another piece.
  *
  * What the envelope leaves out is the point of it: a piece carries no cartouche, no watermark, no size
- * ranges, no measurements — nothing that belongs to a pattern rather than to a piece. The pattern that
+ * ranges, no measurement *values* — nothing that belongs to a pattern rather than to a piece. What it reads
+ * from the measurement table it names, because a formula citing `@TP` has to find one: the pattern that
  * receives the block validates it against its own schema at the next save, so the block's own content is
  * accepted here as it stands rather than described a second time.
  */
@@ -116,6 +118,15 @@ public:
 
     void SetDependencies(const QList<Dependency> &dependencies);
     auto Dependencies() const -> QList<Dependency>;
+
+    /**
+     * @brief The measurements the piece reads, named as its formulas cite them: `@TP`, `@TT`…
+     *
+     * A piece does not carry them — they come from the measurement table the pattern is opened with — so all
+     * it can say is *which* ones it needs. Written in order, so the same piece always writes the same file.
+     */
+    void SetMeasurements(const QStringList &measurements);
+    auto Measurements() const -> QStringList;
 
     /**
      * @brief The names the piece gives to its own lines, and the pair of points each one joins.

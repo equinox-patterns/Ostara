@@ -93,9 +93,16 @@ public:
     void MoveDownPreviewCalculation(const QString &name);
 
     void SetIncrementName(const QString &name, const QString &text);
+    void SetPreviewCalculationName(const QString &name, const QString &text);
+
     void SetIncrementFormula(const QString &name, const QString &text);
+    void SetPreviewCalculationFormula(const QString &name, const QString &text);
+
     void SetIncrementDescription(const QString &name, const QString &text);
+    void SetPreviewCalculationDescription(const QString &name, const QString &text);
+
     void SetIncrementSpecialUnits(const QString &name, bool special);
+    void SetPreviewCalculationSpecialUnits(const QString &name, bool special);
 
     void ReplaceNameInFormula(QVector<VFormulaField> &expressions, const QString &name, const QString &newName);
 
@@ -338,7 +345,6 @@ private:
     void SyncChildGeometryToDom();
 
     auto MakeEmptyIncrement(const QString &name, IncrementType type) -> QDomElement;
-    auto FindIncrement(const QString &name) const -> QDomElement;
 
     void NewEmptyIncrement(const QString &type, const QString &name, IncrementType varType);
     void NewEmptyIncrementAfter(const QString &type, const QString &after, const QString &name, IncrementType varType);
@@ -346,7 +352,15 @@ private:
     void MoveUpIncrement(const QString &type, const QString &name);
     void MoveDownIncrement(const QString &type, const QString &name);
 
-    void SetIncrementAttribute(const QString &name, const QString &attr, const QString &text);
+    /** @brief Writes @p attr on the row @p name **of the table @p type**.
+     *
+     * `type` is `TagIncrements` or `TagPreviewCalculations`: the same name can live in both tables, and a row
+     * belongs to the one the caller is editing. A search of the whole document answers the first in document
+     * order — `<increments>` always comes first — and would write in the wrong table. */
+    void SetIncrementAttribute(const QString &type, const QString &name, const QString &attr, const QString &text);
+
+    void SetIncrementDescription(const QString &type, const QString &name, const QString &text);
+    void SetIncrementSpecialUnits(const QString &type, const QString &name, bool special);
 
     auto LastDrawName() const -> QString;
     auto LastToolId() const -> quint32;

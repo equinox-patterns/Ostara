@@ -1639,6 +1639,16 @@ void DialogIncrements::ImportCSVIncrements(bool incrementMode,
             importedNames.insert(iName);
             increment.name = iName;
 
+            // Le nom peut déjà vivre dans l'**autre** table : les deux versent dans le même conteneur, mais un
+            // fichier écrit par un CSV antérieur peut porter les deux. Comme les écritures plus bas passent par une
+            // recherche qui balaie le document et s'arrête à la **première** ligne, elles atterriraient sur la ligne
+            // de l'autre table, en silence — on refuse, ici, avant que quoi que ce soit soit créé.
+            if (not m_patternDoc->IncrementRow(iName, !incrementMode).isNull())
+            {
+                ShowError(tr("Increment '%1' already exists in the other table.").arg(iName));
+                continue;
+            }
+
             const int valueColumn = map.at(static_cast<int>(IncrementsColumns::Value));
             QString rawValue = csv.text(i, valueColumn);
 
@@ -1676,16 +1686,19 @@ void DialogIncrements::ImportCSVIncrements(bool incrementMode,
         incrementMode ? m_patternDoc->AddEmptyIncrement(icr.name, IncrementType::Increment)
                       : m_patternDoc->AddEmptyPreviewCalculation(icr.name, IncrementType::Increment);
 
-        m_patternDoc->SetIncrementFormula(icr.name, icr.value);
+        incrementMode ? m_patternDoc->SetIncrementFormula(icr.name, icr.value)
+                      : m_patternDoc->SetPreviewCalculationFormula(icr.name, icr.value);
 
         if (icr.specialUnits)
         {
-            m_patternDoc->SetIncrementSpecialUnits(icr.name, icr.specialUnits);
+            incrementMode ? m_patternDoc->SetIncrementSpecialUnits(icr.name, icr.specialUnits)
+                          : m_patternDoc->SetPreviewCalculationSpecialUnits(icr.name, icr.specialUnits);
         }
 
         if (not icr.description.isEmpty())
         {
-            m_patternDoc->SetIncrementDescription(icr.name, icr.description);
+            incrementMode ? m_patternDoc->SetIncrementDescription(icr.name, icr.description)
+                          : m_patternDoc->SetPreviewCalculationDescription(icr.name, icr.description);
         }
     }
 
@@ -2307,7 +2320,8 @@ void DialogIncrements::SaveIncrName(const QString &text)
         newName = name;
     }
 
-    m_patternDoc->SetIncrementName(name, newName);
+    table == ui->tableWidgetPC ? m_patternDoc->SetPreviewCalculationName(name, newName)
+                               : m_patternDoc->SetIncrementName(name, newName);
     QVector<VFormulaField> expression = m_patternDoc->ListIncrementExpressions();
     m_patternDoc->ReplaceNameInFormula(expression, name, newName);
 
@@ -2363,7 +2377,8 @@ void DialogIncrements::SaveIncrUnits()
     }
 
     const auto units = static_cast<IncrUnits>(combo->currentData().toInt());
-    m_patternDoc->SetIncrementSpecialUnits(name, units == IncrUnits::Degrees);
+    table == ui->tableWidgetPC ? m_patternDoc->SetPreviewCalculationSpecialUnits(name, units == IncrUnits::Degrees)
+                               : m_patternDoc->SetIncrementSpecialUnits(name, units == IncrUnits::Degrees);
     LocalUpdateTree();
 
     {
@@ -2410,7 +2425,8 @@ void DialogIncrements::SaveIncrDescription()
         return;
     }
 
-    m_patternDoc->SetIncrementDescription(name, textEdit->toPlainText());
+    table == ui->tableWidgetPC ? m_patternDoc->SetPreviewCalculationDescription(name, textEdit->toPlainText())
+                               : m_patternDoc->SetIncrementDescription(name, textEdit->toPlainText());
     LocalUpdateTree();
 
     {
@@ -2506,7 +2522,8 @@ void DialogIncrements::SaveIncrFormula()
     {
         const QString formula = VAbstractApplication::VApp()->TrVars()->FormulaFromUser(
             text, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
-        m_patternDoc->SetIncrementFormula(name, formula);
+        table == ui->tableWidgetPC ? m_patternDoc->SetPreviewCalculationFormula(name, formula)
+                                   : m_patternDoc->SetIncrementFormula(name, formula);
     }
     catch (qmu::QmuParserError &e) // Just in case something bad will happen
     {
@@ -2638,7 +2655,8 @@ void DialogIncrements::Fx()
         // Fix the bug #492. https://bitbucket.org/dismine/valentina/issues/492/valentina-crashes-when-add-an-increment
         // Because of the bug need to take QTableWidgetItem twice time. Previous update "killed" the pointer.
         // The name is the one read at the top of this function, so there is nothing to read a second time.
-        m_patternDoc->SetIncrementFormula(name, dialog->GetFormula());
+        incrementMode ? m_patternDoc->SetIncrementFormula(name, dialog->GetFormula())
+                      : m_patternDoc->SetPreviewCalculationFormula(name, dialog->GetFormula());
 
         m_hasChanges = true;
         LocalUpdateTree();

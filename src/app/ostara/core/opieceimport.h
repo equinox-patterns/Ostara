@@ -178,7 +178,8 @@ auto ChosenNames(const OPieceDocument &piece,
 auto CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
 
 /**
- * @brief Whether @p host holds the measurement table a piece is read against.
+ * @brief Whether @p host holds the measurement table a piece is read against — and whether that table defines
+ * every measurement the piece reads.
  *
  * A piece does not carry its measurements: the table is shared by every pattern of a file, and the formulas the
  * piece brings are evaluated *with* it. A pattern that holds no table therefore has nothing to read a piece with
@@ -187,11 +188,20 @@ auto CheckDependencies(const OPieceDocument &piece, const VAbstractPattern *host
  * editor. So the refusal is asked **before** anything is written, and it is the caller's to answer: the canvas is
  * where a measurement table is loaded.
  *
+ * A table that *is* loaded can still be missing what the piece reads — a piece cut from a pattern built on another
+ * table, opened in a pattern built on this one. The two refusals are one question, and they have one answer: load a
+ * table. Which is why they are asked here rather than one here and one in the caller.
+ *
+ * @param piece the piece that would enter, asked which measurements its formulas read.
  * @param host the pattern the piece would enter, asked whether it holds a measurement table at all.
+ * @param data the pattern's own data, asked which measurements the loaded table defines.
  * @param error written with what to tell the reader — the refusal, then what to do about it.
- * @return true when the pattern holds a measurement table.
+ * @return true when the pattern holds a table that defines every measurement the piece reads.
  */
-auto CheckMeasurements(const OPieceDocument &piece, const VAbstractPattern *host, QString &error) -> bool;
+auto CheckMeasurements(const OPieceDocument &piece,
+                       const VAbstractPattern *host,
+                       const VContainer *data,
+                       QString &error) -> bool;
 
 /**
  * @brief Writes the origin of @p piece on @p block, as the block enters the pattern.

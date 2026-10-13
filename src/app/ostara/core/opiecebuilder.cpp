@@ -411,6 +411,7 @@ auto OPieceBuilder::Build(VAbstractPattern *doc,
     const QHash<QString, QSharedPointer<VInternalVariable>> *variables = data->DataVariables();
 
     QSet<QString> carried;              // the increments the piece takes with it
+    QSet<QString> measurements;         // the measurements it reads from the pattern's own table
     QMap<QString, Origin> dependencies; // the values it reads from elsewhere, and where they come from
     QSet<QString> walked;
 
@@ -438,8 +439,12 @@ auto OPieceBuilder::Build(VAbstractPattern *doc,
             switch (found.value()->GetType())
             {
                 case VarType::Measurement:
+                    // From the .omt: every pattern of the file shares them, so the piece carries none of
+                    // them — it names the ones it reads, and the import asks the table for those.
+                    measurements.insert(token);
+                    break;
+
                 case VarType::MeasurementSeparator:
-                    // From the .omt: every pattern of the file shares them, they are not a piece's to carry.
                     break;
 
                 case VarType::Increment:
@@ -508,6 +513,7 @@ auto OPieceBuilder::Build(VAbstractPattern *doc,
     piece->SetLineNames(CollectLineRoles(root, pointNames));
 
     piece->SetDependencies(needed);
+    piece->SetMeasurements(measurements.values());
 
     // Last, because the block closes the sequence. Its identity is minted here and never moves again.
     piece->SetDraw(block, name, QUuid::createUuid().toString());

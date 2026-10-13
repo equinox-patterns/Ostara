@@ -787,7 +787,11 @@ private:
     /// The `<increment>` a name designates, **looked up in one table only**. A name is unique inside its table, not
     /// across the two: the same `#Cou` can live in both, and a scan of the whole document would answer with whichever
     /// comes first in document order — the wrong row to file under a group, or to read a group from.
+    // `protected` pour que `VPattern` — qui reçoit le tag de la table — puisse chercher **dans cette table** au
+    // lieu du balayage global. Le commentaire au-dessus dit déjà pourquoi : un nom peut vivre dans les deux tables.
+protected:
     auto FindIncrementInTable(const QString &incrementsTag, const QString &name) const -> QDomElement;
+private:
     auto ListPointExpressions() const -> QVector<VFormulaField>;
     auto ListArcExpressions() const -> QVector<VFormulaField>;
     auto ListElArcExpressions() const -> QVector<VFormulaField>;

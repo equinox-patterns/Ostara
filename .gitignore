@@ -44,6 +44,8 @@ rcc/
 man/
 build/
 build_cmake/
+# Le banc d'essai CMake (`cmake -S . -B build_test -DBUILD_TESTING=ON`) : ses objets ne sont pas du produit.
+build_test/
 .vscode/
 
 # Ignore Coverity Scan Build Tool
