@@ -953,21 +953,6 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
             // and a double click always inserts something that works.
             const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
 
-            // TEMPORARY — sonde de l'assistant : ce que l'objet s'appelle, ce qu'il porte comme alias, ce que la
-            // ligne afficherait, et si la forme `Curve_` existe dans le conteneur. À retirer.
-            {
-                QFile trace(QStringLiteral("/tmp/ostara_assistant.log"));
-                if (trace.open(QIODevice::Append | QIODevice::Text))
-                {
-                    QTextStream out(&trace);
-                    out << "ROW nom=" << var->GetName() << " alias=" << var->GetAlias()
-                        << " display=" << display << " affiche=" << trVars->VarToUser(display)
-                        << " type=" << static_cast<int>(var->GetType())
-                        << "\n";
-                }
-            }
-
-
             // The switch hides what a formula may not name: the objects nobody has named. The question is asked
             // of the object, not of a name: a line is judged by the pair of points it joins, a curve by its own
             // alias. Asked through a name — the one the row shows — it would answer a different question, and
