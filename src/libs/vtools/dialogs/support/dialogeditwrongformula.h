@@ -203,6 +203,11 @@ private:
     void Arc();
 
     /** @brief Whether a curve length belongs to an arc — `Arc_…` or `ElArc_…` — and so to the "Arc" category. */
+    /// @brief L'objet porte-t-il la tête d'un **arc** — `Arc_…` ou `ElArc_…`, seule ou derrière l'un des six
+    /// préfixes (`C1Length`, `C2Length`, `Angle1`, `Angle2`, `Handle1`, `Handle2`), comme `Angle1Arc_Y_21` ?
+    /// Une seule règle pour toute la répartition des catégories : tout ce qui est relatif à un arc va dans « Arc ».
+    static auto IsArcName(const QString &name) -> bool;
+
     static auto IsArcCurve(const QSharedPointer<VCurveLength> &var) -> bool;
 
     void ShowMeasurements(const QList<QSharedPointer<VMeasurement>> &vars);

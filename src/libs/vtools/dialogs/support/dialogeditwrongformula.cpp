@@ -131,39 +131,6 @@ auto CurveHeadsUser(const VTranslateVars *trVars, const VContainer *data, const 
 } // namespace
 
 
-namespace
-{
-/// La tête `Curve_` d'un nom qui en porte une autre (`SplPath_`, `Spl_`) — les six préfixes des longueurs, des
-/// angles et des poignées. Le conteneur enregistre **plusieurs têtes pour un même objet**, la migration
-/// d'ouverture ne réécrit que les **formules**, et l'assistant lit les clés du conteneur : il montrait donc
-/// `SplPath_XX` quand le navigateur de propriétés disait déjà `Courbe_XX`. Même règle que
-/// `OPieceMark::NormaliseCurveHeads`, écrite des deux côtés de la frontière application / bibliothèque.
-auto CurveHead(const QString &name) -> QString
-{
-    static const QStringList prefixes{QString(),           QStringLiteral("C1Length"), QStringLiteral("C2Length"),
-                                      QStringLiteral("Angle1"), QStringLiteral("Angle2"), QStringLiteral("Handle1"),
-                                      QStringLiteral("Handle2")};
-    for (const QString &prefix : prefixes)
-    {
-        if (not name.startsWith(prefix))
-        {
-            continue;
-        }
-
-        const QString rest = name.mid(prefix.size());
-        for (const QString &head : {QStringLiteral("SplPath_"), QStringLiteral("Spl_")})
-        {
-            if (rest.startsWith(head))
-            {
-                return prefix + QStringLiteral("Curve_") + rest.mid(head.size());
-            }
-        }
-    }
-
-    return name;
-}
-} // namespace
-
 
 template <class T> class QSharedPointer;
 
@@ -346,6 +313,16 @@ void DialogEditWrongFormula::ValChanged(int row)
         name = VAbstractApplication::VApp()->TrVars()->VarFromUser(name);
     }
 
+    // **Ce n'est pas la page qui dit ce qu'un objet est, c'est l'objet.** La catégorie « Arc » réunit des
+    // longueurs — enregistrées comme des longueurs de courbe, type 5 — et des rayons : demander le rayon d'une
+    // longueur levait `ExceptionBadId` (« Name = 'Arc_Y_21', type = 5. ») au lieu d'afficher la description. Le
+    // type de la variable tranche donc, et une ligne dont le type n'est pas celui de la page ne lève plus rien.
+    VarType type = VarType::Unknown;
+    if (const QSharedPointer<VInternalVariable> anyVar = m_data->DataVariables()->value(name); not anyVar.isNull())
+    {
+        type = anyVar->GetType();
+    }
+
     try
     {
         if (ui->radioButtonStandardTable->isChecked())
@@ -357,37 +334,37 @@ void DialogEditWrongFormula::ValChanged(int row)
             const QSharedPointer<VIncrement> incr = m_data->GetVariable<VIncrement>(name);
             SetDescription(item->text(), *incr->GetValue(), incr->IsSpecialUnits(), incr->GetDescription());
         }
-        else if (ui->radioButtonLengthLine->isChecked())
+        else if (ui->radioButtonLengthLine->isChecked() && type == VarType::LineLength)
         {
             const bool specialUnits = false;
             SetDescription(item->text(), *m_data->GetVariable<VLengthLine>(name)->GetValue(), specialUnits,
                            tr("Line length"));
         }
-        else if (ui->radioButtonLengthSpline->isChecked())
+        else if (ui->radioButtonLengthSpline->isChecked() && type == VarType::CurveLength)
         {
             const bool specialUnits = false;
             SetDescription(item->text(), *m_data->GetVariable<VCurveLength>(name)->GetValue(), specialUnits,
                            tr("Curve length"));
         }
-        else if (ui->radioButtonAngleLine->isChecked())
+        else if (ui->radioButtonAngleLine->isChecked() && type == VarType::LineAngle)
         {
             const bool specialUnits = true;
             SetDescription(item->text(), *m_data->GetVariable<VLineAngle>(name)->GetValue(), specialUnits,
                            tr("Line Angle"));
         }
-        else if (ui->radioButtonRadiusesArcs->isChecked())
+        else if (ui->radioButtonRadiusesArcs->isChecked() && type == VarType::ArcRadius)
         {
             const bool specialUnits = false;
             SetDescription(item->text(), *m_data->GetVariable<VArcRadius>(name)->GetValue(), specialUnits,
                            tr("Arc radius"));
         }
-        else if (ui->radioButtonAnglesCurves->isChecked())
+        else if (ui->radioButtonAnglesCurves->isChecked() && type == VarType::CurveAngle)
         {
             const bool specialUnits = true;
             SetDescription(item->text(), *m_data->GetVariable<VCurveAngle>(name)->GetValue(), specialUnits,
                            tr("Curve angle"));
         }
-        else if (ui->radioButtonCLength->isChecked())
+        else if (ui->radioButtonCLength->isChecked() && type == VarType::CurveCLength)
         {
             const bool specialUnits = false;
             SetDescription(item->text(), *m_data->GetVariable<VCurveCLength>(name)->GetValue(), specialUnits,
@@ -475,10 +452,32 @@ void DialogEditWrongFormula::RadiusArcs()
  *  the two apart: an arc is `Arc_…` or `ElArc_…`, a spline `Spl_…` or `SplPath…`. The name is read rather than
  *  the tool, because the variable is all this list has.
  */
+auto DialogEditWrongFormula::IsArcName(const QString &name) -> bool
+{
+    static const QStringList prefixes{QString(),           QStringLiteral("C1Length"), QStringLiteral("C2Length"),
+                                      QStringLiteral("Angle1"), QStringLiteral("Angle2"), QStringLiteral("Handle1"),
+                                      QStringLiteral("Handle2")};
+    for (const QString &prefix : prefixes)
+    {
+        if (not name.startsWith(prefix))
+        {
+            continue;
+        }
+
+        const QString rest = name.mid(prefix.size());
+        if (rest.startsWith(arc_) || rest.startsWith(elarc_))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogEditWrongFormula::IsArcCurve(const QSharedPointer<VCurveLength> &var) -> bool
 {
-    const QString name = var->GetName();
-    return name.startsWith(arc_) || name.startsWith(elarc_);
+    return IsArcName(var->GetName());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -507,14 +506,55 @@ void DialogEditWrongFormula::Arc()
         vars.append(var);
     }
 
+    // Ses longueurs de contrôle aussi : « tout ce qui est relatif à un arc va dans Arc ».
+    for (const auto &var : m_data->DataCurvesCLength())
+    {
+        if (IsArcName(var->GetName()))
+        {
+            vars.append(var);
+        }
+    }
+
+    // Ses angles aussi : un arc est un arc, et la catégorie « Arc » le lit **en entier** — longueur, rayon,
+    // angles. Les angles d'arc sont enregistrés comme des angles de courbe (même classe, même variable), donc
+    // seul le nom les distingue, exactement comme pour les longueurs (`IsArcCurve`).
+    for (const auto &var : m_data->DataAnglesCurves())
+    {
+        if (IsArcName(var->GetName()))
+        {
+            vars.append(var);
+        }
+    }
+
     ShowVariable(vars, true, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AnglesCurves show in list angles of curves variables
+ *
+ * Curves only: an arc is read in the "Arc" category, which holds its length, its radius and its angles together.
+ * Listing an arc's angle here too would offer the same object twice, in two categories that would then disagree
+ * on what it is — the same rule `LengthCurves` applies to the lengths.
+ */
 void DialogEditWrongFormula::AnglesCurves()
 {
     SetCategoryCheckBoxes(false, true);
-    ShowVariable(m_data->DataAnglesCurves().values(), false, true);
+
+    auto angles = m_data->DataAnglesCurves().values();
+    for (auto it = angles.begin(); it != angles.end();)
+    {
+        if (IsArcName((*it)->GetName()))
+        {
+            it = angles.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    ShowVariable(angles, true, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -541,10 +581,30 @@ void DialogEditWrongFormula::LengthCurves()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief CurvesCLength shows the lengths to the control points
+ *
+ * Curves only: an arc's own control-point lengths are read in the "Arc" category, like its length, its radius and
+ * its angles — one rule for the whole distribution, so an arc is never offered half here and half there.
+ */
 void DialogEditWrongFormula::CurvesCLength()
 {
     SetCategoryCheckBoxes(false, true);
-    ShowVariable(m_data->DataCurvesCLength().values(), false, true);
+
+    auto lengths = m_data->DataCurvesCLength().values();
+    for (auto it = lengths.begin(); it != lengths.end();)
+    {
+        if (IsArcName((*it)->GetName()))
+        {
+            it = lengths.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+
+    ShowVariable(lengths, true, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -891,18 +951,7 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
             // named line, `Line_Y_Y1` for one nobody named, `#Cou` for an increment. It is never blank — every
             // object that reaches this list has a name the calculator resolves — so the list can always be read
             // and a double click always inserts something that works.
-            // **Aucun `Spl_` ni `SplPath_` en frontend.** La migration d'ouverture ne réécrit que les formules ;
-            // l'assistant, lui, lisait les clés du conteneur **et insérait ce qu'il lisait** : valider une ligne
-            // remettait `SplPath_XX` dans la formule, et le navigateur de propriétés le réaffichait. La forme
-            // `Curve_` s'écrit donc ici, une fois : la ligne la montre, la ligne l'insère, et le doublon éventuel
-            // (`SplPath_XX` et `Curve_XX` sont le même objet) tombe sur la déduplication du nom, plus bas.
-            QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
-            if (const QString canonical = CurveHead(display);
-                canonical != display && m_data != nullptr && m_data->DataVariables() != nullptr
-                && m_data->DataVariables()->contains(canonical))
-            {
-                display = canonical;
-            }
+            const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
 
             // TEMPORARY — sonde de l'assistant : ce que l'objet s'appelle, ce qu'il porte comme alias, ce que la
             // ligne afficherait, et si la forme `Curve_` existe dans le conteneur. À retirer.
@@ -912,12 +961,8 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
                 {
                     QTextStream out(&trace);
                     out << "ROW nom=" << var->GetName() << " alias=" << var->GetAlias()
-                        << " display=" << display << " canonical=" << CurveHead(display)
-                        << " affiche=" << trVars->VarToUser(display)
-                        << " canonique_existe="
-                        << (m_data != nullptr && m_data->DataVariables() != nullptr
-                                ? m_data->DataVariables()->contains(CurveHead(display))
-                                : false)
+                        << " display=" << display << " affiche=" << trVars->VarToUser(display)
+                        << " type=" << static_cast<int>(var->GetType())
                         << "\n";
                 }
             }
