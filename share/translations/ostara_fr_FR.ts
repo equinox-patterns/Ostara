@@ -17353,6 +17353,16 @@ Cette action ne peut pas être annulée.</translation>
     <name>OPieceBuilder</name>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp"/>
+        <source>This piece calls %1 by a name the pattern composes. A composed name cannot travel into a library piece: give that object an alias, then call it by its alias.</source>
+        <translation>Cette pièce appelle %1 par un nom que le patron compose. Un nom composé ne peut pas voyager dans une pièce de bibliothèque : donnez un alias à cet objet, puis appelez-le par son alias.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecebuilder.cpp"/>
+        <source>%1 calls %2 of this piece by a name the pattern composes. A composed name cannot travel into a library piece: give that object an alias, then call it by its alias.</source>
+        <translation>%1 appelle %2 de cette pièce par un nom que le patron compose. Un nom composé ne peut pas voyager dans une pièce de bibliothèque : donnez un alias à cet objet, puis appelez-le par son alias.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opiecebuilder.cpp"/>
         <source>There is no block named %1.</source>
         <translation>Aucun bloc ne porte le nom %1.</translation>
     </message>
@@ -17478,6 +17488,99 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/core/opieceimport.cpp"/>
         <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
         <translation>Ce patron n&apos;a pas encore de tableau de mesures, et une pièce se lit contre un tableau : ses formules sont évaluées avec les mesures du tableau. Chargez un tableau de mesures, puis insérez la pièce.</translation>
+    </message>
+</context>
+<context>
+    <name>OPieceImportDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui"/>
+        <source>Insert a piece</source>
+        <translation>Insérer une pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui"/>
+        <source>Piece name</source>
+        <translation>Nom de la pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui"/>
+        <source>Name:</source>
+        <translation>Nom :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui"/>
+        <source>Unique pattern piece name</source>
+        <translation>Nom unique de l&apos;élément de patron</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui"/>
+        <source>Names of the piece&apos;s objects</source>
+        <translation>Noms des objets de la pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Insert the piece</source>
+        <translation>Insérer la pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Object</source>
+        <translation>Objet</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Line</source>
+        <translation>Ligne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Curve</source>
+        <translation>Courbe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Arc</source>
+        <translation>Arc</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Elliptical arc</source>
+        <translation>Arc elliptique</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>The piece needs a name.</source>
+        <translation>La pièce a besoin d&apos;un nom.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>A piece of this pattern already wears this name.</source>
+        <translation>Une pièce de ce patron porte déjà ce nom.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>Two names cannot be the same.</source>
+        <translation>Deux noms ne peuvent pas être identiques.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>A name cannot be empty.</source>
+        <translation>Un nom ne peut pas être vide.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>A name cannot hold a space nor a reserved character.</source>
+        <translation>Un nom ne peut pas contenir d&apos;espace ni de caractère réservé.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp"/>
+        <source>The pattern already answers to %1.</source>
+        <translation>Le patron répond déjà à %1.</translation>
     </message>
 </context>
 <context>
@@ -17807,6 +17910,71 @@ Cette action ne peut pas être annulée.</translation>
 </context>
 <context>
     <name>OSavePieceDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>The pattern already answers to %1.</source>
+        <translation>Le patron répond déjà à %1.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>Objects with no name</source>
+        <translation>Objets sans nom</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
+        <source>This piece shares objects that have no name. Please name them.</source>
+        <translation>Cette pièce partage des objets sans nom. Veuillez les nommer.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Object</source>
+        <translation>Objet</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Name</source>
+        <translation>Nom</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Called in</source>
+        <translation>Appelé dans</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Line</source>
+        <translation>Ligne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Curve</source>
+        <translation>Courbe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Arc</source>
+        <translation>Arc</translation>
+    </message>
+    <message numerus="no">
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Elliptical arc</source>
+        <translation>Arc elliptique</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>A name cannot be empty.</source>
+        <translation>Un nom ne peut pas être vide.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>A name cannot hold a space nor a reserved character.</source>
+        <translation>Un nom ne peut pas contenir d&apos;espace ni de caractère réservé.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp"/>
+        <source>Two names cannot be the same.</source>
+        <translation>Deux noms ne peuvent pas être identiques.</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui"/>
         <source>A piece is written as a file in the library, so its name cannot hold a slash.</source>
@@ -28010,7 +28178,44 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     </message>
 </context>
 <context>
+    <name>VInteractiveTool</name>
+    <message>
+        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp"/>
+        <source>Cannot Delete Object</source>
+        <translation>Suppression impossible</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp"/>
+        <source>This object cannot be deleted because it is being used by other items.</source>
+        <translation>Cet objet ne peut pas être supprimé car il est utilisé par d&apos;autres.</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp"/>
+        <source>Please resolve the dependencies before attempting to delete this object.</source>
+        <translation>Résolvez les dépendances avant de tenter de supprimer cet objet.</translation>
+    </message>
+</context>
+<context>
     <name>VToolBasePoint</name>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp"/>
+        <source>Delete piece</source>
+        <translation>Supprimer la pièce</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp"/>
+        <source>This action will delete the piece %1.</source>
+        <translation>Cette action va supprimer la pièce %1.</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp"/>
+        <source>This piece cannot be deleted yet: the pattern is not fully solved.</source>
+        <translation>Cette pièce ne peut pas être supprimée pour l&apos;instant : le patron n&apos;est pas entièrement résolu.</translation>
+    </message>
+    <message>
+        <source>This piece cannot be deleted: %1 depends on it.</source>
+        <translation>Cette pièce ne peut pas être supprimée : %1 en dépend.</translation>
+    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="375"/>
         <source>Point name</source>

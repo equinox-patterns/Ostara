@@ -57,12 +57,16 @@
 #include "core/opiecelibrary.h"
 #include "core/opieceimport.h"
 #include "core/opieceinsert.h"
+#include "core/opiecemark.h"
+#include "core/opiecename.h"
+#include "../vtools/undocommands/vchangelinerolename.h"
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "core/odetailspropertybrowser.h"
 #include "dialogs/dialognewpattern.h"
 #include "dialogs/oexportfiledialog.h"
 #include "dialogs/opiecelibrarydialog.h"
+#include "dialogs/opieceimportdialog.h"
 #include "dialogs/osavepiecedialog.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
@@ -156,6 +160,17 @@ void MainWindow::UpdateDetailsList()
 void MainWindow::FullParseFile()
 {
     qCDebug(vMainWindow, "Full parsing file");
+
+    // Le fichier se nettoie ici, avant d'être lu : `Spl_` et `SplPath_` s'écrivent `Curve_` là où une formule cite
+    // une courbe. Les trois têtes mènent au même objet, et le produit n'en garde qu'une — sans quoi chacun
+    // corrige à la main des jetons que le patron sait réécrire.
+    if (doc != nullptr)
+    {
+        if (const int written = OPieceMark::NormaliseCurveHeads(doc->documentElement()); written > 0)
+        {
+            qCDebug(vMainWindow, "Curve heads normalised: %d token(s).", written);
+        }
+    }
 
     // A full reparse tears down all tools and the VContainer. A tool options dialog still open now references
     // freed data, and accepting it would crash, so it is rejected before the teardown — unless it drives a tool
@@ -645,12 +660,64 @@ void MainWindow::ActionSavePiece_triggered()
     // one under that name: the question is the door, and the only way through it is to name the piece
     // something else. A cancelled dialog leaves the library exactly as it was.
     const QDir library(OPieceLibrary::DefaultDirectory());
+
+    // Ce que la pièce emploie sans que personne l'ait nommé : une ligne connue par sa paire, une courbe connue
+    // par la route qui la bâtit. La fenêtre les montre tous, le nom donné à chacun est écrit dans le patron — et
+    // les formules qui les appelaient, chez les autres pièces comprises, sont réparées dans le même geste.
+    const QVector<OPieceName::Blocker> blockers = OPieceName::Blockers(doc, pattern, blockName);
+    // Une seule liste : deux appels rendraient deux temporaires différents, et les itérateurs de l'un ne vont pas
+    // avec la fin de l'autre — la taille qui en sort est un hasard, et le `reserve` qui suit tombe en bad_alloc.
+    const QStringList declared = OPieceMark::DeclaredNames(doc->documentElement());
+    const QSet<QString> taken(declared.begin(), declared.end());
+    bool named = false;
+
     while (true)
     {
-        OSavePieceDialog dialog(blockName, this);
+        OSavePieceDialog dialog(blockName, named ? QVector<OPieceName::Blocker>() : blockers, taken, this);
         if (dialog.exec() != QDialog::Accepted)
         {
             return;
+        }
+
+        if (not named && not blockers.isEmpty())
+        {
+            const QStringList names = dialog.Names();
+            QUndoStack *const undoStack = VAbstractApplication::VApp()->getUndoStack();
+
+            // Une seule opération : nommer les objets d'une pièce est une intention, et un seul Ctrl+Z la reprend.
+            undoStack->beginMacro(tr("name the objects of a piece"));
+            QVector<QPair<QString, QString>> curves;
+            for (int i = 0; i < blockers.size() && i < names.size(); ++i)
+            {
+                const OPieceName::Blocker &blocker = blockers.at(i);
+                if (names.at(i).isEmpty())
+                {
+                    continue;
+                }
+
+                if (blocker.pairKey.isEmpty())
+                {
+                    // La courbe reçoit son alias par son outil — et ses citations par le nom composé, que
+                    // l'outil ne connaît pas, sont réparées juste après, sur le document entier.
+                    if (NameCurveObject(doc, pattern, blocker.curveId, names.at(i)))
+                    {
+                        curves.append({blocker.name, names.at(i)});
+                    }
+                }
+                else
+                {
+                    auto *command = new VChangeLineRoleName(doc, blocker.pairKey,
+                                                            pattern->LineRoleName(blocker.pairKey), names.at(i));
+                    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+                    undoStack->push(command);
+                }
+            }
+            if (not curves.isEmpty())
+            {
+                undoStack->push(new OPieceName::NameCurves(doc, curves));
+            }
+            undoStack->endMacro();
+            named = true;
         }
 
         const QString name = dialog.name();
@@ -669,6 +736,16 @@ void MainWindow::SavePieceToLibrary(const QString &blockName, const QString &nam
 {
     OPieceDocument piece;
     QString error;
+
+    // Ce qu'une pièce ne peut pas emporter, dit avant toute écriture : une formule qui cite un objet par un nom
+    // que le patron compose. Seul un nom **donné** — un alias — porte une identité et suit son objet d'un fichier
+    // à l'autre ; un nom composé, lui, ne dit rien de qui il désignait.
+    if (not OPieceBuilder::CheckCitations(doc, blockName, error))
+    {
+        QMessageBox::warning(this, tr("Save piece"), error);
+        return;
+    }
+
     if (not OPieceBuilder::Build(doc, pattern, blockName, name, &piece, error))
     {
         QMessageBox::warning(this, tr("Save piece"), error);
@@ -749,10 +826,28 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
     // The instance name is the piece's own, and a second one takes the next free name: the block name is what the
     // top bar shows, and two blocks cannot wear the same one.
     QString instanceName = piece.PieceName();
-    const QStringList taken = doc->PatternBlockMapper()->GetBlockNames();
-    for (int suffix = 2; taken.contains(instanceName) && suffix < 100; ++suffix)
+    const QStringList blockNames = doc->PatternBlockMapper()->GetBlockNames();
+    for (int suffix = 2; blockNames.contains(instanceName) && suffix < 100; ++suffix)
     {
         instanceName = piece.PieceName() + QLatin1Char(' ') + QString::number(suffix);
+    }
+
+    // What the piece asks before it enters: the name it would wear, every alias it carries — cited by a formula or
+    // not — and the mark the pattern proposes for them. Nothing is written yet, and nothing is decided here.
+    OPieceInsert::Proposal proposal = OPieceInsert::Propose(piece, doc, pattern, instanceName);
+
+    // The dialog is opened when there is something to decide, which is an alias to look at: a piece that carries
+    // none enters in one gesture, the gesture of every other import.
+    if (not proposal.aliases.isEmpty())
+    {
+        OPieceImportDialog dialog(proposal, blockNames, OPieceInsert::Keys(pattern), this);
+        if (dialog.exec() != QDialog::Accepted)
+        {
+            return;
+        }
+
+        proposal.instanceName = dialog.InstanceName();
+        proposal.table = dialog.Table();
     }
 
     // Where it takes place, decided before anything is written: a piece brings a whole construction with it, and
@@ -762,7 +857,7 @@ void MainWindow::InsertLibraryPiece(const QString &filePath)
     const QPointF anchorTarget(VAbstractValApplication::VApp()->fromPixel(beyond.x()),
                                VAbstractValApplication::VApp()->fromPixel(beyond.y()));
 
-    const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, doc, pattern, instanceName, anchorTarget);
+    const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, pattern, proposal, anchorTarget);
     if (not prepared.IsReady())
     {
         QMessageBox::warning(this, tr("Piece library"), tr("This piece holds no block to insert."));

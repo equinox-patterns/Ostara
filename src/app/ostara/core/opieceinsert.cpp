@@ -32,6 +32,7 @@
 
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
+#include "../ifc/xml/vdomdocument.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../vpatterndb/variables/vinternalvariable.h"
 #include "../vpatterndb/vcontainer.h"
@@ -115,12 +116,73 @@ void Place(QDomElement &block, const QPointF &target)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPieceInsert::Prepare(const OPieceDocument &piece, VPattern *doc, VContainer *data, const QString &instanceName,
+auto OPieceInsert::Keys(VContainer *data) -> QSet<QString>
+{
+    QSet<QString> taken;
+
+    if (const QHash<QString, QSharedPointer<VInternalVariable>> *variables = data == nullptr ? nullptr : data->DataVariables();
+        variables != nullptr)
+    {
+        for (auto it = variables->constBegin(); it != variables->constEnd(); ++it)
+        {
+            taken.insert(it.key());
+        }
+    }
+
+    return taken;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceInsert::Propose(const OPieceDocument &piece, VPattern *doc, VContainer *data, const QString &instanceName)
+    -> Proposal
+{
+    Proposal proposal;
+    proposal.instanceName = instanceName;
+
+    if (doc == nullptr || data == nullptr || piece.DrawElement().isNull())
+    {
+        return proposal;
+    }
+
+    // What the pattern **answers to**, not only the names it holds: the container keeps one key per object, and
+    // that key is what an alias of the piece would overwrite in silence. Only the tail is compared, which is what
+    // the heads the container builds on a name have in common.
+    const QSet<QString> taken = Keys(data);
+
+    // The piece's **envelope**, not only its block: the names of its line roles live at the root of a `.opiece`,
+    // and a role the mark forgets is a copy that reads the original's lines. The aliases the dialog shows and the
+    // table it proposes are therefore read from the same place, and cannot disagree.
+    const QDomElement root = piece.documentElement();
+    proposal.aliases = OPieceMark::Aliases(root);
+
+    // The names of the piece's own line roles: they live at the root of its envelope, so the walk over the block
+    // will not meet them — and yet a formula of the block cites them by `Line_<role>` and `AngleLine_<role>`.
+    for (QDomElement row = piece.LineNames().firstChildElement(VDomDocument::TagLine); not row.isNull();
+         row = row.nextSiblingElement(VDomDocument::TagLine))
+    {
+        const QString role = row.attribute(VAbstractPattern::AttrName);
+        if (not role.isEmpty())
+        {
+            proposal.roles.append(role);
+        }
+    }
+
+    // The number comes from the **pattern**, never from the piece: the marks will live in the pattern, and two
+    // pieces entering one after the other have to wear P1 and then P2.
+    proposal.number = OPieceMark::HighestNumber(doc->documentElement()) + 1;
+    proposal.collides = OPieceMark::Collides(root, taken);
+    proposal.table = OPieceMark::TableFor(root, taken, proposal.number);
+
+    return proposal;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceInsert::Prepare(const OPieceDocument &piece, VContainer *data, const Proposal &proposal,
                            const QPointF &anchorTarget) -> Prepared
 {
     Prepared prepared;
 
-    if (doc == nullptr || data == nullptr)
+    if (data == nullptr || not proposal.IsReady())
     {
         return prepared;
     }
@@ -137,33 +199,19 @@ auto OPieceInsert::Prepare(const OPieceDocument &piece, VPattern *doc, VContaine
     // instance came from once it has a name of its own.
     OPieceImport::SetOrigin(block, piece);
 
-    prepared.instanceName = instanceName;
-    block.setAttribute(VAbstractPattern::AttrName, instanceName);
+    prepared.instanceName = proposal.instanceName;
+    block.setAttribute(VAbstractPattern::AttrName, proposal.instanceName);
 
     // The place it takes, in the pattern's own unit: the piece keeps its shape and its distances, it simply does
     // not stand where the block it was saved from still stands.
     Place(block, anchorTarget);
 
-    // The marking is decided on what the pattern **answers to**, not only on the names it holds: the container
-    // answers to an alias under a head, and to a piece under its area. All of the piece's names or none of them,
-    // and an empty table means the piece keeps its names as they are.
-    QSet<QString> taken;
-    if (const QHash<QString, QSharedPointer<VInternalVariable>> *variables = data->DataVariables();
-        variables != nullptr)
-    {
-        for (auto it = variables->constBegin(); it != variables->constEnd(); ++it)
-        {
-            taken.insert(it.key());
-        }
-    }
-
-    // The number comes from the **pattern**, never from the piece: the marks will live in the pattern, and two
-    // pieces entering one after the other have to wear P1 and then P2.
-    const int number = OPieceMark::HighestNumber(doc->documentElement()) + 1;
-    prepared.renamed = OPieceMark::TableFor(block, taken, number);
+    // The table the window decided — every name of the piece, or the marks it kept. Empty means the piece keeps
+    // its names exactly as they are: what to mark is never decided here, since a dialog may have been asked.
+    prepared.renamed = proposal.table;
     if (not prepared.renamed.isEmpty())
     {
-        OPieceMark::Rename(block, prepared.renamed);
+        OPieceMark::Rename(block, prepared.renamed, proposal.roles);
     }
 
     // The ids last: they depend on no name, and the remapping leaves what the marking wrote alone.

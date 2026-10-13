@@ -26,8 +26,13 @@
 #ifndef OSAVEPIECEDIALOG_H
 #define OSAVEPIECEDIALOG_H
 
+#include "../core/opiecename.h"
+
 #include <QDialog>
 #include <QString>
+#include <QSet>
+#include <QStringList>
+#include <QVector>
 
 namespace Ui {
 class OSavePieceDialog;
@@ -48,11 +53,23 @@ class OSavePieceDialog : public QDialog
     Q_OBJECT // NOLINT
 
 public:
-    explicit OSavePieceDialog(const QString &pieceName, QWidget *parent = nullptr);
+    /**
+     * @param blockers les objets sans nom que la pièce emploie : la fenêtre les montre, et le nom donné à chacun
+     *                 sera écrit dans le patron avant l'enregistrement. Vide, la fenêtre est celle d'avant.
+     */
+    /**
+     * @param taken les noms que le patron déclare déjà — noms et alias de tous ses objets : un alias qui en
+     *              prend un n'est pas libre, et la fenêtre le dit **avant** que l'outil ne refuse.
+     */
+    explicit OSavePieceDialog(const QString &pieceName, const QVector<OPieceName::Blocker> &blockers = {},
+                              const QSet<QString> &taken = {}, QWidget *parent = nullptr);
     ~OSavePieceDialog() override;
 
     /// @brief The name given, meaningful once accepted.
     auto name() const -> QString;
+
+    /// @brief Les noms donnés aux objets sans nom, dans l'ordre où la fenêtre les montre.
+    auto Names() const -> QStringList;
 
 protected:
     void changeEvent(QEvent *event) override;
@@ -63,7 +80,18 @@ private slots:
 private:
     Q_DISABLE_COPY_MOVE(OSavePieceDialog) // NOLINT
 
+    /// @brief Montrer les objets sans nom : la nature, le nom proposé, et la formule qui les appelle.
+    void FillBlockers();
+
+    /// @brief La nature d'un objet, dite comme l'utilisateur la lit : `Ligne`, `Courbe`, `Arc`, `Arc elliptique`.
+    auto ObjectText(const OPieceMark::AliasOf &of) const -> QString;
+
+    /// @brief Ce qui ne va pas dans @p typed, s'il y a quelque chose : vide, mal formé, ou donné deux fois.
+    auto NameProblem(const QString &typed, const QStringList &others) const -> QString;
+
     Ui::OSavePieceDialog *ui;
+    QVector<OPieceName::Blocker> m_blockers{};
+    QSet<QString> m_taken{};
 };
 
 #endif // OSAVEPIECEDIALOG_H

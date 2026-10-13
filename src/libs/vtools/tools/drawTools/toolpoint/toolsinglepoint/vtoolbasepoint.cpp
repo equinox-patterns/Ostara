@@ -37,6 +37,12 @@
 #include <QGraphicsView>
 #include <QList>
 #include <QMessageBox>
+
+namespace
+{
+/// Au-dessus des autres points, eux-mêmes au-dessus de la pièce et des objets.
+constexpr qreal kBasePointZ = 12.;
+} // namespace
 #include <QPen>
 #include <QPointF>
 #include <QPolygonF>
@@ -80,6 +86,11 @@ VToolBasePoint::VToolBasePoint(const VToolBasePointInitData &initData, QGraphics
   : VToolSinglePoint(initData.doc, initData.data, initData.id, initData.notes, parent),
     m_indexPatternBlock(initData.doc->PatternBlockMapper()->GetActiveId())
 {
+    // L'ancre de la pièce passe **au-dessus des autres points** : le premier point tracé depuis elle est au même
+    // endroit, et à profondeur égale c'est le dernier ajouté que le clic prend — `Tm` prenait le clic droit du
+    // point de base, et son menu avec. Tous les points sont au-dessus des objets (`VToolSinglePoint`) ; le point
+    // de base est au-dessus des points.
+    setZValue(kBasePointZ);
     SetColorRole(VColorRole::BasePointColor);
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
@@ -133,11 +144,8 @@ void VToolBasePoint::ShowVisualization(bool show)
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolBasePoint::IsRemovable() const -> RemoveStatus
 {
-    if (doc->CountPatternBlockTags() <= 1)
-    {
-        return RemoveStatus::Locked; // One pattern block
-    }
-
+    // La dernière pièce du patron peut être supprimée : un canvas vide est un état accepté, et la fenêtre propose
+    // alors une nouvelle pièce. C'était le seul cas où le geste ne disait rien du tout.
     if (!doc->IsPatternGraphComplete())
     {
         return RemoveStatus::Pending; // Data not ready yet
@@ -271,8 +279,21 @@ auto VToolBasePoint::PatternPieceName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolBasePoint::DeleteToolWithConfirm(bool ask)
 {
+    // Le point de base porte la pièce : le supprimer, c'est supprimer **la pièce**, et le dire avec son nom —
+    // c'est elle qu'on supprime, pas un point.
+    const QString pieceName = doc->PatternBlockMapper()->FindName(m_indexPatternBlock);
+
     if (IsRemovable() != RemoveStatus::Removable)
     {
+        // Un refus se dit, et il dit pourquoi. Deux raisons, et la seconde était muette : une autre pièce en
+        // dépend — et c'est elle qu'on nomme — ou le patron n'est pas encore entièrement résolu, auquel cas rien
+        // ne dit qui dépend de quoi, et la suppression attend.
+        const QStringList dependent = DependentPieces();
+        QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Delete piece"),
+                                 dependent.isEmpty()
+                                     ? tr("This piece cannot be deleted yet: the pattern is not fully solved.")
+                                     : tr("This piece cannot be deleted: %1 depends on it.")
+                                           .arg(dependent.join(QStringLiteral(", "))));
         return;
     }
 
@@ -281,7 +302,10 @@ void VToolBasePoint::DeleteToolWithConfirm(bool ask)
     if (ask)
     {
         qCDebug(vTool, "Asking.");
-        if (ConfirmDeletion() == QMessageBox::No)
+        const QMessageBox::StandardButton answer
+            = QMessageBox::question(VAbstractValApplication::VApp()->getMainWindow(), tr("Delete piece"),
+                                    tr("This action will delete the piece %1.").arg(pieceName));
+        if (answer == QMessageBox::No)
         {
             qCDebug(vTool, "User said no.");
             return;
@@ -293,8 +317,52 @@ void VToolBasePoint::DeleteToolWithConfirm(bool ask)
     connect(deletePP, &DeletePatternPiece::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
     VAbstractApplication::VApp()->getUndoStack()->push(deletePP);
 
+    // La dernière pièce laisse un canvas vide : c'est permis, et la fenêtre propose alors une pièce — c'est elle
+    // qui sait quelle dialog ouvrir, la bibliothèque n'en connaît aucune.
+    // La dernière pièce laisse un canvas vide : c'est permis, et la fenêtre propose alors une pièce. La
+    // bibliothèque ne connaît aucune dialog : c'est donc la fenêtre qui est appelée, par le nom de son geste.
+    if (doc->CountPatternBlockTags() == 0 && VAbstractValApplication::VApp() != nullptr)
+    {
+        QMetaObject::invokeMethod(VAbstractValApplication::VApp()->getMainWindow(), "ActionNewDraw_triggered");
+    }
+
     // Throw exception, this will help prevent case when we forget to immediately quit function.
     throw VExceptionToolWasDeleted(QStringLiteral("Tool was used after deleting."));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolBasePoint::DependentPieces() const -> QStringList
+{
+    const VPatternGraph *patternGraph = doc->PatternGraph();
+    if (patternGraph == nullptr)
+    {
+        return {};
+    }
+
+    // Même filtre que `IsRemovable()` : ce qui dépend de ce point **hors de sa propre pièce**, et rien d'autre.
+    auto Filter = [this](const auto &node) -> auto
+    {
+        return node.indexPatternBlock != m_indexPatternBlock && node.type != VNodeType::MODELING_TOOL
+               && node.type != VNodeType::MODELING_OBJECT;
+    };
+
+    const auto dependecies = patternGraph->TryGetDependentNodes(m_id, 1000, Filter);
+    if (not dependecies)
+    {
+        return {};
+    }
+
+    QStringList pieces;
+    for (const auto &node : dependecies.value())
+    {
+        const QString name = doc->PatternBlockMapper()->FindName(node.indexPatternBlock);
+        if (not name.isEmpty() && not pieces.contains(name))
+        {
+            pieces.append(name);
+        }
+    }
+
+    return pieces;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

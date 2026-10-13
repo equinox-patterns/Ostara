@@ -54,6 +54,18 @@ namespace OPieceBuilder
  *
  * @p error says why when the block is not there. The caller owns @p piece and may reuse it afterwards.
  */
+/**
+ * @brief Ce qu'une pièce ne peut pas emporter : une formule qui cite un objet par un nom que le patron **compose**.
+ *
+ * Un nom composé — `Em_R1`, `A11_A16__o2`, `A1_A3` — n'est donné par personne : il ne peut donc pas porter
+ * d'identité, et rien ne le suit d'un fichier à l'autre. Seul un **alias**, un nom donné, le peut. Deux refus,
+ * et le second est celui qui protège la pièce d'ici : les formules **de la pièce** ne citent aucun nom composé,
+ * et **aucune autre pièce du canvas** ne cite un nom composé de celle qu'on enregistre.
+ *
+ * @param error dit le jeton fautif, et — quand la formule est ailleurs — le bloc qui le porte.
+ */
+auto CheckCitations(VAbstractPattern *doc, const QString &blockName, QString &error) -> bool;
+
 auto Build(VAbstractPattern *doc,
            VContainer *data,
            const QString &blockName,

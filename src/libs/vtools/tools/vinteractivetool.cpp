@@ -108,7 +108,16 @@ void VInteractiveTool::DeleteToolWithConfirm(bool ask)
         throw VExceptionToolWasDeleted(QStringLiteral("Tool was used after deleting."));
     }
 
-    qCDebug(vTool, "Can't delete, tool has dependencies.");
+    // Un refus se dit : c'est ici que le savoir vit — l'outil qui refuse, et la raison — et le clic droit comme
+    // la touche Suppr passent par là. Le point de base, lui, a ses propres mots, qui nomment la pièce.
+    QMessageBox messageBox;
+    messageBox.setIcon(QMessageBox::Warning);
+    messageBox.setWindowTitle(tr("Cannot Delete Object"));
+    messageBox.setText(tr("This object cannot be deleted because it is being used by other items."));
+    messageBox.setInformativeText(tr("Please resolve the dependencies before attempting to delete this object."));
+    messageBox.setDefaultButton(QMessageBox::Ok);
+    messageBox.setStandardButtons(QMessageBox::Ok);
+    messageBox.exec();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

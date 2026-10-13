@@ -223,7 +223,11 @@ void VControlPointSpline::Init()
 {
     SetOnlyPoint(true);
     this->setBrush(QBrush(Qt::NoBrush));
-    this->setZValue(100);
+    // **Sous les points, au-dessus de la pièce.** La PB affichée suit la **sélection**, et Qt sélectionne par
+    // profondeur : à 100, une poignée — invisible tant que sa courbe n'est pas active — gagnait la sélection
+    // contre le point qu'elle longe (trace du 13-10-2026 : poignée de `M13` à Z=100 contre le point `B1` à Z=11,
+    // et c'est la courbe qui s'ouvrait). Visible, elle reste cliquable là où aucun point ne la recouvre.
+    this->setZValue(10.5);
 
     controlLine = new VScaledLine(VColorRole::ControlLineColor, this);
     controlLine->SetBoldLine(false);

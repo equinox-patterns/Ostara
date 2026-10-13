@@ -29,14 +29,23 @@
 #include "ui_osavepiecedialog.h"
 
 #include "def.h"
+#include "../qmuparser/qmudef.h"
 
 #include <QEvent>
+#include <QHeaderView>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QSet>
+#include <QTableWidget>
+#include <QTableWidgetItem>
 
 //---------------------------------------------------------------------------------------------------------------------
-OSavePieceDialog::OSavePieceDialog(const QString &pieceName, QWidget *parent)
-    : QDialog(parent), ui(new Ui::OSavePieceDialog)
+OSavePieceDialog::OSavePieceDialog(const QString &pieceName, const QVector<OPieceName::Blocker> &blockers,
+                                   const QSet<QString> &taken, QWidget *parent)
+    : QDialog(parent), ui(new Ui::OSavePieceDialog), m_blockers(blockers), m_taken(taken)
 {
     ui->setupUi(this);
 
@@ -44,8 +53,103 @@ OSavePieceDialog::OSavePieceDialog(const QString &pieceName, QWidget *parent)
     // patterns can hold a piece of the same name without it being the same piece.
     ui->lineEditName->setText(pieceName);
 
+    FillBlockers();
     CheckState();
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &OSavePieceDialog::CheckState);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSavePieceDialog::FillBlockers()
+{
+    // Rien à nommer : la fenêtre est celle d'avant, et le groupe n'existe pas pour l'utilisateur.
+    if (m_blockers.isEmpty())
+    {
+        ui->groupNames->setVisible(false);
+        return;
+    }
+
+    ui->tableNames->setColumnCount(3);
+    ui->tableNames->setHorizontalHeaderLabels({tr("Object"), tr("Name"), tr("Called in")});
+    ui->tableNames->verticalHeader()->setVisible(false);
+    ui->tableNames->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableNames->setRowCount(static_cast<int>(m_blockers.size()));
+
+    for (int row = 0; row < m_blockers.size(); ++row)
+    {
+        const OPieceName::Blocker &blocker = m_blockers.at(row);
+
+        auto *object = new QTableWidgetItem(ObjectText(blocker.of));
+        object->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        ui->tableNames->setItem(row, 0, object);
+
+        // Le nom proposé est celui que la pièce emploie aujourd'hui : le garder est une réponse, le changer en
+        // est une autre, et c'est la formule de droite qui dit dans quel contexte il faut le décider.
+        auto *edit = new QLineEdit(blocker.name, ui->tableNames);
+        edit->setValidator(new QRegularExpressionValidator(QRegularExpression(NameRegExp()), edit));
+        connect(edit, &QLineEdit::textChanged, this, &OSavePieceDialog::CheckState);
+        ui->tableNames->setCellWidget(row, 1, edit);
+
+        auto *formula = new QTableWidgetItem(blocker.formula);
+        formula->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+        formula->setToolTip(blocker.formula);
+        ui->tableNames->setItem(row, 2, formula);
+    }
+
+    ui->tableNames->resizeColumnsToContents();
+    ui->tableNames->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSavePieceDialog::ObjectText(const OPieceMark::AliasOf &of) const -> QString
+{
+    switch (of)
+    {
+        case OPieceMark::AliasOf::Line:
+            return tr("Line");
+        case OPieceMark::AliasOf::Arc:
+            return tr("Arc");
+        case OPieceMark::AliasOf::EllipticalArc:
+            return tr("Elliptical arc");
+        case OPieceMark::AliasOf::Curve:
+            break;
+    }
+
+    return tr("Curve");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSavePieceDialog::NameProblem(const QString &typed, const QStringList &others) const -> QString
+{
+    if (typed.isEmpty())
+    {
+        return tr("A name cannot be empty.");
+    }
+
+    if (QRegularExpression const rx(NameRegExp()); not rx.match(typed).hasMatch())
+    {
+        return tr("A name cannot hold a space nor a reserved character.");
+    }
+
+    if (others.contains(typed))
+    {
+        return tr("Two names cannot be the same.");
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSavePieceDialog::Names() const -> QStringList
+{
+    QStringList names;
+    names.reserve(m_blockers.size());
+    for (int row = 0; row < m_blockers.size(); ++row)
+    {
+        const auto *edit = qobject_cast<QLineEdit *>(ui->tableNames->cellWidget(row, 1));
+        names.append(edit == nullptr ? QString() : edit->text().trimmed());
+    }
+
+    return names;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -85,5 +189,31 @@ void OSavePieceDialog::CheckState()
     const bool isFileName = not name.contains(QLatin1Char('/')) && not name.contains(QLatin1Char('\\'));
 
     ui->labelHint->setVisible(not name.isEmpty() && not isFileName);
-    bOk->setEnabled(not name.isEmpty() && isFileName);
+
+    // Chaque objet sans nom doit recevoir un nom que le schéma accepte, et deux objets ne peuvent pas porter le
+    // même : tant qu'un champ ne dit rien de valable, l'enregistrement n'est pas à portée.
+    QString problem;
+    const QStringList names = Names();
+    for (int row = 0; row < names.size() && problem.isEmpty(); ++row)
+    {
+        QStringList others = names;
+        others.removeAt(row);
+        problem = NameProblem(names.at(row), others);
+
+        // Un alias déjà porté par un autre objet du patron n'est pas libre — et l'objet qu'on nomme ici ne se
+        // refuse pas lui-même : c'est **son** nom d'aujourd'hui, celui que la fenêtre propose, qu'on écarte.
+        if (problem.isEmpty() && row < m_blockers.size())
+        {
+            QSet<QString> taken = m_taken;
+            taken.remove(m_blockers.at(row).name);
+            if (OPieceMark::AnswersTo(taken, names.at(row)))
+            {
+                problem = tr("The pattern already answers to %1.").arg(names.at(row));
+            }
+        }
+    }
+    ui->labelNamesProblem->setText(problem);
+    ui->labelNamesProblem->setVisible(not problem.isEmpty());
+
+    bOk->setEnabled(not name.isEmpty() && isFileName && problem.isEmpty());
 }

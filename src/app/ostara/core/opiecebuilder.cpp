@@ -294,6 +294,75 @@ auto CollectRows(const QDomElement &section, const QSet<QString> &names) -> QDom
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief Le nom du bloc où vit @p node — vide quand il n'y en a pas (une ligne d'incrément, un calcul). */
+auto BlockOf(const QDomNode &node) -> QString
+{
+    for (QDomNode parent = node; not parent.isNull(); parent = parent.parentNode())
+    {
+        const QDomElement element = parent.toElement();
+        if (not element.isNull() && element.tagName() == VAbstractPattern::TagDraw)
+        {
+            return element.attribute(VAbstractPattern::AttrName);
+        }
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceBuilder::CheckCitations(VAbstractPattern *doc, const QString &blockName, QString &error) -> bool
+{
+    if (doc == nullptr)
+    {
+        return true;
+    }
+
+    const QDomElement block = doc->PatternBlockMapper()->GetElement(blockName);
+    if (block.isNull())
+    {
+        return true;
+    }
+
+    // Les noms composés du document, et ceux de la pièce : une formule de la pièce ne peut citer aucun nom composé
+    // — celui d'un de ses objets comme celui d'un objet qu'elle lit ailleurs, puisque c'est exactement le lien
+    // qu'un renommage casse — et aucune autre pièce du canvas ne peut citer un nom composé **de celle-ci**.
+    const QSet<QString> everywhere = OPieceMark::ComposedNames(doc->documentElement());
+    const QSet<QString> ofThisPiece = OPieceMark::ComposedNames(block);
+
+    for (const VFormulaField &field : doc->ListExpressions())
+    {
+        const bool inside = IsInside(field.element, block);
+        const QString other = BlockOf(field.element);
+
+        // Une formule qui n'appartient à aucun bloc — une ligne d'incrément du patron, un calcul d'aperçu — n'est
+        // à personne en propre : le premier import l'a gagnée, et rien ne dit qu'elle vient de cette pièce.
+        if (not inside && other.isEmpty())
+        {
+            continue;
+        }
+
+        const QString cited = OPieceMark::ComposedCited(field.expression, inside ? everywhere : ofThisPiece);
+        if (cited.isEmpty())
+        {
+            continue;
+        }
+
+        error = inside ? QCoreApplication::translate("OPieceBuilder",
+                                                     "This piece calls %1 by a name the pattern composes. A composed "
+                                                     "name cannot travel into a library piece: give that object an "
+                                                     "alias, then call it by its alias.")
+                            .arg(cited)
+                       : QCoreApplication::translate("OPieceBuilder",
+                                                     "%1 calls %2 of this piece by a name the pattern composes. A "
+                                                     "composed name cannot travel into a library piece: give that "
+                                                     "object an alias, then call it by its alias.")
+                            .arg(other, cited);
+        return false;
+    }
+
+    return true;
+}
+
 auto OPieceBuilder::Build(VAbstractPattern *doc,
                           VContainer *data,
                           const QString &blockName,

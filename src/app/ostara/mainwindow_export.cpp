@@ -47,6 +47,7 @@
 #include "../vgeometry/vgobject.h"
 #include "../vpatterndb/variables/vcurvevariable.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "../vtools/dialogs/dialogtoolbox.h" // TEMPORARY — sonde des objets à nommer, à retirer
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "core/vapplication.h"
 #include "core/opiecedocument.h"
@@ -55,15 +56,19 @@
 #include "core/opieceimport.h" // TEMPORARY — sonde de l'import, à retirer
 #include "core/opieceinsert.h" // TEMPORARY — sonde de l'insertion, à retirer
 #include "core/opiecemark.h"   // TEMPORARY — sonde du marquage, à retirer
+#include "core/opiecename.h"    // TEMPORARY — sonde des objets à nommer, à retirer
 #include "core/opieceremap.h" // TEMPORARY — la sonde d'insertion éprouve la règle du produit
 #include "dialogs/dialogincrements.h" // TEMPORARY — sonde de la table des incréments, à retirer
 #include "dialogs/dialognewpattern.h" // TEMPORARY — sonde de la dialog « nouvelle pièce », à retirer
 #include "dialogs/opiecelibrarydialog.h" // TEMPORARY — sonde de la fenêtre de bibliothèque, à retirer
+#include "dialogs/opieceimportdialog.h" // TEMPORARY — sonde de la dialog d'import, à retirer
 #include <QCoreApplication>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
+#include <QGraphicsItem>
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
@@ -2169,6 +2174,128 @@ auto ProbeFirstPosition(const QDomElement &block) -> QPointF
     return ProbePositionIn(block);
 }
 
+void ProbePick(VPattern *doc, const QString &pointName)
+{
+    // Le point nomme, son outil, et **tout** ce que la scene trouve a sa position, dans l'ordre.
+    for (QDomElement draw = doc->documentElement().firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        for (QDomElement point = draw.firstChildElement(QStringLiteral("calculation"))
+                                      .firstChildElement(QStringLiteral("point"));
+             not point.isNull(); point = point.nextSiblingElement(QStringLiteral("point")))
+        {
+            if (point.attribute(QStringLiteral("name")) != pointName)
+            {
+                continue;
+            }
+
+            const quint32 id = point.attribute(QStringLiteral("id")).toUInt();
+            VDataTool *tool = VAbstractPattern::FindTool(id);
+            qInfo() << "PICK:" << pointName << "| bloc =" << draw.attribute(VAbstractPattern::AttrName)
+                    << "| id =" << id << "| type =" << point.attribute(QStringLiteral("type"))
+                    << "| outil =" << (tool == nullptr ? QStringLiteral("aucun")
+                                                       : QString::fromLatin1(tool->metaObject()->className()));
+
+            auto *item = dynamic_cast<QGraphicsItem *>(tool);
+            if (item != nullptr)
+            {
+                qInfo() << "PICK:   Z =" << item->zValue() << "| visible =" << item->isVisible()
+                        << "| selectionnable =" << (item->flags() & QGraphicsItem::ItemIsSelectable)
+                        << "| pos =" << item->pos() << "| scenePos =" << item->scenePos()
+                        << "| boite =" << item->boundingRect();
+            }
+
+            if (auto *scene = VAbstractValApplication::VApp()->getCurrentScene(); scene != nullptr && item != nullptr)
+            {
+                const QList<QGraphicsItem *> found = scene->items(item->scenePos(), Qt::IntersectsItemShape,
+                                                                  Qt::DescendingOrder);
+                int rank = 0;
+                for (QGraphicsItem *under : found)
+                {
+                    const auto *asTool = dynamic_cast<const QObject *>(dynamic_cast<const QGraphicsItem *>(under));
+                    qInfo() << "PICK:   sous le curseur" << rank++ << "| Z =" << under->zValue()
+                            << "| classe =" << (asTool == nullptr ? QStringLiteral("item")
+                                                                 : QString::fromLatin1(asTool->metaObject()->className()))
+                            << "| selectionnable =" << bool(under->flags() & QGraphicsItem::ItemIsSelectable);
+                }
+            }
+            return;
+        }
+    }
+
+    qInfo() << "PICK:" << pointName << "| introuvable";
+}
+
+void ProbeCitations(VPattern *doc, VContainer *pattern)
+{
+    const QStringList blocks = doc->PatternBlockMapper()->GetBlockNames();
+    qInfo() << "CITATIONS: blocs =" << blocks;
+
+    for (const QString &block : blocks)
+    {
+        const QDomElement element = doc->PatternBlockMapper()->GetElement(block);
+        const QSet<QString> composed = OPieceMark::ComposedNames(element);
+        qInfo() << "CITATIONS:" << block << "| noms composes =" << composed.size()
+                << "| exemple =" << QStringList(composed.constBegin(), composed.constEnd()).mid(0, 6);
+
+        QString error;
+        const bool accepted = OPieceBuilder::CheckCitations(doc, block, error);
+        qInfo() << "CITATIONS:" << block << "| enregistrable =" << accepted << "| refus =" << error;
+    }
+
+    // Ce que la fenetre d'enregistrement montrera, et par quel chemin chaque nom s'appliquera.
+    for (const QString &block : blocks)
+    {
+        for (const OPieceName::Blocker &blocker : OPieceName::Blockers(doc, pattern, block))
+        {
+            const VDataTool *tool = VAbstractPattern::FindTool(blocker.curveId);
+            qInfo() << "CITATIONS: a nommer | piece =" << block << "| nom =" << blocker.name
+                    << "| nature =" << static_cast<int>(blocker.of) << "| slot =" << blocker.slot
+                    << "| paire =" << blocker.pairKey << "| courbe =" << blocker.curveId
+                    << "| outil =" << (tool == nullptr ? QStringLiteral("aucun")
+                                                       : QString::fromLatin1(tool->metaObject()->className()))
+                    << "| formule =" << blocker.formula.left(40);
+        }
+    }
+
+    // Le detail : quelles formules du bloc citent un nom compose, et lesquelles viennent des autres blocs.
+    for (const QString &block : blocks)
+    {
+        const QDomElement element = doc->PatternBlockMapper()->GetElement(block);
+        const QSet<QString> everywhere = OPieceMark::ComposedNames(doc->documentElement());
+        const QSet<QString> ofThisPiece = OPieceMark::ComposedNames(element);
+
+        for (const VFormulaField &field : doc->ListExpressions())
+        {
+            bool inside = false;
+            for (QDomNode parent = field.element; not parent.isNull(); parent = parent.parentNode())
+            {
+                if (parent == element)
+                {
+                    inside = true;
+                    break;
+                }
+            }
+
+            const QString cited = OPieceMark::ComposedCited(field.expression, inside ? everywhere : ofThisPiece);
+            if (not cited.isEmpty())
+            {
+                qInfo() << "CITATIONS:" << block << (inside ? "| chez elle :" : "| chez une autre :") << cited
+                        << "| champ =" << field.attribute << "| formule =" << field.expression.left(60);
+
+                // Ce que la fenêtre montrera : les objets sans nom que cette formule cite, et le nom proposé.
+                for (const DialogNameObject::Object &object : UnnamedObjects(pattern, field.expression))
+                {
+                    qInfo() << "CITATIONS:   a nommer | objet ="
+                            << (object.pairKey.isEmpty() ? object.typeHead : QStringLiteral("Ligne"))
+                            << "| nom propose =" << object.suffix << "| paire =" << object.pairKey
+                            << "| courbe =" << object.curveId << "| montre =" << object.shown;
+                }
+            }
+        }
+    }
+}
+
 void ProbePieceInsert(VPattern *doc, VContainer *pattern, const QString &piecePath, const QPointF &anchorTarget)
 {
     OPieceDocument piece;
@@ -2223,7 +2350,104 @@ void ProbePieceInsert(VPattern *doc, VContainer *pattern, const QString &piecePa
     const QString mancheBeforeText = ProbeSectionText(mancheBefore);
 
     const QString instanceName = ProbeUniqueInstance(doc, piece.PieceName());
-    const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, doc, pattern, instanceName, anchorTarget);
+
+    // Ce que la pièce demande : **tous** ses alias, cités par une formule ou non, et la marque que le patron propose.
+    const OPieceInsert::Proposal proposal = OPieceInsert::Propose(piece, doc, pattern, instanceName);
+    qInfo() << "INSERT: proposition | alias =" << proposal.aliases.size() << "| marque =" << proposal.number
+            << "| collision =" << proposal.collides << "| noms dans la table =" << proposal.table.size();
+    for (const OPieceMark::Alias &alias : proposal.aliases)
+    {
+        qInfo() << "INSERT: alias |" << alias.name << "| slots =" << alias.writtenIn.join(QStringLiteral(" , "))
+                << "| porteurs =" << alias.owners.join(QStringLiteral(" , "))
+                << "| propose =" << proposal.table.value(alias.name, alias.name);
+    }
+
+    // La fenêtre, telle qu'elle s'ouvre — et la table qu'elle rend quand on n'y touche pas.
+    {
+        const QSet<QString> keys = OPieceInsert::Keys(pattern);
+        qInfo() << "INSERT: cles du conteneur | taille =" << keys.size() << "| Em =" << keys.contains(QStringLiteral("Em"))
+                << "| Line_Angle180 =" << keys.contains(QStringLiteral("Line_Angle180"));
+
+        // La règle « le patron y répond » : les noms nus des points de l'hote, et les alias de la pièce.
+        const QDomElement firstDraw = doc->documentElement().firstChildElement(VAbstractPattern::TagDraw);
+        QStringList hosted;
+        for (QDomElement point = firstDraw.firstChildElement(QStringLiteral("calculation"))
+                                      .firstChildElement(QStringLiteral("point"));
+             not point.isNull() && hosted.size() < 6; point = point.nextSiblingElement(QStringLiteral("point")))
+        {
+            const QString name = point.attribute(QStringLiteral("name"));
+            if (not name.isEmpty())
+            {
+                hosted.append(name + (OPieceMark::AnswersTo(keys, name) ? QStringLiteral("=OUI") : QStringLiteral("=non")));
+            }
+        }
+        QStringList answered;
+        for (const OPieceMark::Alias &alias : proposal.aliases)
+        {
+            if (OPieceMark::AnswersTo(keys, alias.name))
+            {
+                answered.append(alias.name);
+            }
+        }
+        qInfo() << "INSERT: noms de points de l'hote, le patron y repond =" << hosted;
+        qInfo() << "INSERT: alias deja pris par le patron =" << answered << "(" << answered.size() << "sur"
+                << proposal.aliases.size() << ")";
+
+        OPieceImportDialog dialog(proposal, doc->PatternBlockMapper()->GetBlockNames(), OPieceInsert::Keys(pattern));
+        auto *table = dialog.findChild<QTableWidget *>(QStringLiteral("tableAliases"));
+        auto *nameEdit = dialog.findChild<QLineEdit *>(QStringLiteral("lineEditName"));
+        auto *box = dialog.findChild<QDialogButtonBox *>(QStringLiteral("buttonBox"));
+        QPushButton *ok = box == nullptr ? nullptr : box->button(QDialogButtonBox::Ok);
+        auto *aliasProblem = dialog.findChild<QLabel *>(QStringLiteral("labelAliasProblem"));
+
+        qInfo() << "INSERT: dialog | nom =" << (nameEdit == nullptr ? QString() : nameEdit->text())
+                << "| lignes =" << (table == nullptr ? -1 : table->rowCount())
+                << "| bouton =" << (ok == nullptr ? QString() : ok->text())
+                << "| OK actif =" << (ok != nullptr && ok->isEnabled());
+
+        if (table != nullptr)
+        {
+            for (int row = 0; row < table->rowCount(); ++row)
+            {
+                const auto *edit = qobject_cast<QLineEdit *>(table->cellWidget(row, 1));
+                qInfo() << "INSERT: ligne" << row
+                        << "| objet =" << (table->item(row, 0) == nullptr ? QString() : table->item(row, 0)->text())
+                        << "| nom =" << (edit == nullptr ? QString() : edit->text());
+            }
+
+            const QHash<QString, QString> untouched = dialog.Table();
+            bool same = untouched.size() == proposal.table.size();
+            for (auto it = proposal.table.constBegin(); same && it != proposal.table.constEnd(); ++it)
+            {
+                same = untouched.value(it.key()) == it.value();
+            }
+            qInfo() << "INSERT: dialog | table rendue identique a la proposition =" << same
+                    << "| noms =" << untouched.size();
+
+            if (table->rowCount() > 0)
+            {
+                auto *first = qobject_cast<QLineEdit *>(table->cellWidget(0, 1));
+                const auto state = [&](const QString &label)
+                {
+                    qInfo() << "INSERT: dialog" << label << "| OK actif =" << (ok != nullptr && ok->isEnabled())
+                            << "| phrase =" << (aliasProblem == nullptr ? QString() : aliasProblem->text());
+                };
+
+                first->setText(QStringLiteral("Em"));
+                state(QStringLiteral("alias deja pris (Em)"));
+                first->setText(QStringLiteral("deux mots"));
+                state(QStringLiteral("forme refusee"));
+                first->setText(QStringLiteral("AliasdeSonde"));
+                state(QStringLiteral("alias libre"));
+                qInfo() << "INSERT: dialog | table apres une main |"
+                        << dialog.Table().value(proposal.aliases.first().name) << "| noms =" << dialog.Table().size();
+                first->setText(QString());
+                state(QStringLiteral("alias vide"));
+            }
+        }
+    }
+
+    const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, pattern, proposal, anchorTarget);
     qInfo() << "INSERT: prepare | instance =" << prepared.instanceName << "| bloc pret =" << prepared.IsReady()
             << "| noms renommes =" << prepared.renamed.size() << "| marque posee ="
             << (prepared.renamed.isEmpty() ? QStringLiteral("non") : QStringLiteral("oui"))
@@ -2362,6 +2586,14 @@ void MainWindow::ProcessCMD()
             {
                 return;
             }
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_CITATIONS"))
+        {
+            ProbeCitations(doc, pattern); // TEMPORARY — sonde, à retirer
+        }
+        else if (qEnvironmentVariableIsSet("OSTARA_PIECE_PICK"))
+        {
+            ProbePick(doc, qEnvironmentVariable("OSTARA_PIECE_PICK")); // TEMPORARY — sonde, à retirer
         }
         else if (qEnvironmentVariableIsSet("OSTARA_PIECE_INSERT"))
         {

@@ -60,6 +60,7 @@
 #include "../tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "support/dialognameobject.h"
+#include "../tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcut.h"
 
 #include <qnumeric.h>
 #include <QBuffer>
@@ -537,29 +538,78 @@ auto InternalFormula(const QString &formula, const VContainer *data) -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formula) -> bool
+auto NameCurveObject(VAbstractPattern *doc, const VContainer *data, quint32 curveId, const QString &name) -> bool
 {
-    
-    if (data == nullptr || formula.isEmpty())
+    if (doc == nullptr || data == nullptr || name.isEmpty())
     {
+        return false;
+    }
+
+    // L'outil de la courbe d'abord : c'est lui qui écrit l'alias, vérifie qu'il est libre et pousse la commande
+    // qui répare les formules du fichier.
+    if (auto *tool = qobject_cast<VToolAbstractCurve *>(VAbstractPattern::FindTool(curveId)); tool != nullptr)
+    {
+        tool->SetAliasSuffix(name);
         return true;
     }
 
-    VAbstractPattern *const doc = VAbstractValApplication::VApp()->getCurrentDocument();
-    if (doc == nullptr)
+    // Un segment de coupe n'a pas d'outil à lui : il appartient à l'outil du **point** qui le déclare, et l'index
+    // du segment est celui de l'alias — `segment2Id` se nomme par `SetAliasSuffix2`. Même lecture que
+    // `CollectDeclaredIds`, qui attribue une dépendance par ces quatre attributs.
+    const QDomNodeList points = doc->documentElement().elementsByTagName(QStringLiteral("point"));
+    for (int i = 0; i < points.count(); ++i)
     {
-        return true; // Nothing can be written, so there is nothing to ask for either.
+        const QDomElement point = points.at(i).toElement();
+        if (point.isNull())
+        {
+            continue;
+        }
+
+        for (int segment = 1; segment <= 2; ++segment)
+        {
+            const QString attribute = QStringLiteral("segment%1Id").arg(segment);
+            if (point.attribute(attribute).toUInt() != curveId)
+            {
+                continue;
+            }
+
+            auto *tool = qobject_cast<VToolCut *>(VAbstractPattern::FindTool(point.attribute(VAbstractPattern::AttrId).toUInt()));
+            if (tool == nullptr)
+            {
+                continue;
+            }
+
+            if (segment == 1)
+            {
+                tool->SetAliasSuffix1(name);
+            }
+            else
+            {
+                tool->SetAliasSuffix2(name);
+            }
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto UnnamedObjects(const VContainer *data, const QString &formula) -> QList<DialogNameObject::Object>
+{
+    QList<DialogNameObject::Object> objects;
+    if (data == nullptr || formula.isEmpty())
+    {
+        return objects;
     }
 
     const QHash<QString, QSharedPointer<VInternalVariable>> *const vars = data->DataVariables();
     if (vars == nullptr)
     {
-        return true;
+        return objects;
     }
 
     const VTranslateVars *const trVars = VAbstractApplication::VApp()->TrVars();
-
-    QList<DialogNameObject::Object> objects;
     QStringList collected; // the objects already asked about, by the pair of a line or the tool of a curve
 
     // Token by token, with the calculator's own reading of the formula: a name is only ever read as a whole token,
@@ -619,6 +669,26 @@ auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formul
                             return token;
                         });
 
+    return objects;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formula) -> bool
+{
+    
+    if (data == nullptr || formula.isEmpty())
+    {
+        return true;
+    }
+
+    VAbstractPattern *const doc = VAbstractValApplication::VApp()->getCurrentDocument();
+    if (doc == nullptr)
+    {
+        return true; // Nothing can be written, so there is nothing to ask for either.
+    }
+
+    const QList<DialogNameObject::Object> objects = UnnamedObjects(data, formula);
+
     if (objects.isEmpty())
     {
         return true; // Nothing is unnamed: every object the formula uses already answers to a name.
@@ -646,13 +716,9 @@ auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formul
 
         if (object.pairKey.isEmpty())
         {
-            // The tool writes the alias, checks that it is free and pushes its own command, which repairs the
-            // formulas of the file: a curve is named the same way here and in the Options dock.
-            auto *tool = qobject_cast<VToolAbstractCurve *>(VAbstractPattern::FindTool(object.curveId));
-            if (tool != nullptr)
-            {
-                tool->SetAliasSuffix(names.at(i));
-            }
+            // L'outil écrit l'alias, vérifie qu'il est libre et pousse sa commande, qui répare les formules du
+            // fichier — et pour un segment de coupe, c'est l'outil du point qui le déclare qui s'en charge.
+            NameCurveObject(doc, data, object.curveId, names.at(i));
         }
         else
         {

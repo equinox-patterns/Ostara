@@ -239,6 +239,14 @@ auto SlotOf(const QString &parentTag, const QString &tag, const QString &attribu
 
 // ── Walking the names ────────────────────────────────────────────────────────────────────────────────────────
 
+/// One name met by the walk: its value, the slot it fills, and the element that carries it.
+struct Declared
+{
+    QString value{};
+    const Slot *slot{nullptr};
+    QDomElement element{};
+};
+
 /**
  * @brief Hands every declared name of @p element and its descendants to @p map, which returns what to write in
  * its place; a value it returns unchanged is left alone.
@@ -246,7 +254,7 @@ auto SlotOf(const QString &parentTag, const QString &tag, const QString &attribu
  * @p element is a handle: what the walk writes goes into the document it points at, whether that is the block of
  * a piece or the envelope of a `.opiece`.
  */
-void WalkNames(QDomElement element, const QString &parentTag, const std::function<QString(const QString &, Kind)> &map)
+void WalkNames(QDomElement element, const QString &parentTag, const std::function<QString(const Declared &)> &map)
 {
     if (element.isNull())
     {
@@ -273,7 +281,7 @@ void WalkNames(QDomElement element, const QString &parentTag, const std::functio
         const QString value = attribute.value();
         if (not slot->list)
         {
-            const QString written = map(value, slot->kind);
+            const QString written = map(Declared{value, slot, element});
             if (written != value)
             {
                 attribute.setValue(written);
@@ -286,7 +294,7 @@ void WalkNames(QDomElement element, const QString &parentTag, const std::functio
         written.reserve(names.size());
         for (const QString &name : names)
         {
-            written.append(map(name, slot->kind));
+            written.append(map(Declared{name, slot, element}));
         }
 
         const QString joined = written.join(QLatin1Char(' '));
@@ -301,6 +309,155 @@ void WalkNames(QDomElement element, const QString &parentTag, const std::functio
         WalkNames(child, tag, map);
     }
 }
+
+/// The name of the object that wears @p declared, as the pattern's own dialogs write it: the points a role joins,
+/// the name of the point that carries the alias — and nothing when the slot **is** the name (an alias names its
+/// own curve, and a `.opiece` gives a spline no other name).
+auto OwnerOf(const Declared &declared) -> QString
+{
+    const QDomElement &element = declared.element;
+
+    if (element.hasAttribute(QStringLiteral("points"))) // une ligne de `<lineNames>`
+    {
+        return element.attribute(QStringLiteral("points"));
+    }
+
+    if (declared.slot != nullptr && declared.slot->key.endsWith(QStringLiteral("/@name")))
+    {
+        return {};
+    }
+
+    return element.attribute(QStringLiteral("name"));
+}
+
+/// L'élément d'un slot `parent/element/@attribute` : le dernier mot avant l'attribut.
+auto ElementOf(const QString &slot) -> QString
+{
+    const qsizetype attribute = slot.lastIndexOf(QLatin1Char('@'));
+    QString before = attribute < 0 ? slot : slot.left(attribute);
+    if (before.endsWith(QLatin1Char('/')))
+    {
+        before.chop(1);
+    }
+
+    return before.section(QLatin1Char('/'), -1);
+}
+
+/// De quoi le nom écrit dans @p slot est le nom. Le schéma dit l'élément, et ce que les outils produisent est une
+/// courbe : le segment d'une coupe, le chemin d'une spline, le volant d'une opération.
+auto ObjectOfSlot(const QString &slotKey) -> OPieceMark::AliasOf
+{
+    if (slotKey.startsWith(QStringLiteral("lineNames/")))
+    {
+        return OPieceMark::AliasOf::Line;
+    }
+
+    const QString element = ElementOf(slotKey);
+    if (element == QStringLiteral("arc"))
+    {
+        return OPieceMark::AliasOf::Arc;
+    }
+    if (element == QStringLiteral("elArc"))
+    {
+        return OPieceMark::AliasOf::EllipticalArc;
+    }
+
+    return OPieceMark::AliasOf::Curve;
+}
+
+/// Whether the role @p declared carries is more than the pair of points it joins — the one name of the schema
+/// whose default is composed rather than written: `A1_A3` is the line between `A1` and `A3`, `ProfondeurEmmanchure`
+/// is a name somebody gave.
+auto RoleGiven(const Declared &declared) -> bool
+{
+    const QStringList pair = declared.element.attribute(QStringLiteral("points"))
+                                 .split(QLatin1Char(' '), Qt::SkipEmptyParts);
+    return declared.value != pair.join(QLatin1Char('_'));
+}
+
+/// Whether the name @p declared carries is one somebody **gave as an alias** — what a dialog can ask about, and
+/// what `Aliases()` is made of. A point's name and a `<detail>`'s name are given too, but they are not aliases:
+/// see Composed(), which tells the names a formula may cite from the ones it may not.
+auto Given(const Declared &declared) -> bool
+{
+    const Slot *slot = declared.slot;
+    if (slot == nullptr)
+    {
+        return false;
+    }
+
+    const QString attribute = slot->key.section(QLatin1Char('@'), 1, 1);
+    if (attribute.contains(QStringLiteral("alias"), Qt::CaseInsensitive))
+    {
+        return true;
+    }
+
+    return slot->kind == Kind::Role && RoleGiven(declared);
+}
+
+/// Whether the name @p declared carries is one the code **composed** — a name nobody gave, which therefore
+/// carries no identity and cannot follow its object into a library piece. Everything else — an alias, the role of
+/// a line that was named, the name of a point, the name of a `<detail>`, the name of a point an operation places,
+/// the offset of a graduated curve — was given, and is cited as it stands.
+auto Composed(const Declared &declared) -> bool
+{
+    const Slot *slot = declared.slot;
+    if (slot == nullptr)
+    {
+        return false;
+    }
+
+    if (Given(declared) || slot->kind == Kind::Piece)
+    {
+        return false;
+    }
+
+    if (slot->kind == Kind::Role)
+    {
+        return true; // un rôle qui n'est que la paire qu'il joint : le conteneur le compose
+    }
+
+    static const QSet<QString> composedSlots{
+        QStringLiteral("calculation/spline/@name"),
+        QStringLiteral("source/item/@name"),
+        QStringLiteral("operation/@suffix"),
+    };
+    if (composedSlots.contains(slot->key))
+    {
+        return true;
+    }
+
+    // Les noms des segments d'une coupe — `curveName1`, `curve1Name2`… — sont bâtis sur les points qu'elle joint.
+    const QString attribute = slot->key.section(QLatin1Char('@'), 1, 1);
+    return attribute.startsWith(QStringLiteral("curve")) && attribute.contains(QStringLiteral("Name"));
+}
+
+/// The names a point answers to: its own, and the three a three-point tool adds.
+void CollectPointNames(const QDomElement &element, const QString &parentTag, QStringList &names)
+{
+    const QString tag = element.tagName();
+
+    if (tag == QStringLiteral("point") && parentTag == QStringLiteral("calculation"))
+    {
+        static const QStringList attributes{QStringLiteral("name"), QStringLiteral("name1"), QStringLiteral("name2"),
+                                            QStringLiteral("name3")};
+        for (const QString &attribute : attributes)
+        {
+            const QString value = element.attribute(attribute);
+            if (not value.isEmpty() && not names.contains(value))
+            {
+                names.append(value);
+            }
+        }
+    }
+
+    for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+    {
+        CollectPointNames(child, tag, names);
+    }
+}
+
+
 
 // ── The mark ─────────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -450,17 +607,223 @@ auto OPieceMark::DeclaredNames(const QDomElement &root) -> QStringList
 
     QDomElement element = root;
     WalkNames(element, QString(),
-              [&names, &seen](const QString &value, Kind) -> QString
+              [&names, &seen](const Declared &declared) -> QString
               {
-                  if (not value.isEmpty() && not seen.contains(value))
+                  if (not declared.value.isEmpty() && not seen.contains(declared.value))
                   {
-                      seen.insert(value);
-                      names.append(value);
+                      seen.insert(declared.value);
+                      names.append(declared.value);
                   }
-                  return value;
+                  return declared.value;
               });
 
     return names;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::Aliases(const QDomElement &root) -> QVector<Alias>
+{
+    QVector<Alias> aliases;
+    QHash<QString, int> rowOf; // la valeur de l'alias → sa ligne
+
+    QDomElement element = root;
+    WalkNames(element, QString(),
+              [&aliases, &rowOf](const Declared &declared) -> QString
+              {
+                  const Slot *slot = declared.slot;
+                  const QString &value = declared.value;
+
+                  // Un alias, et rien d'autre : le nom qu'on a **donné** à un objet — jamais celui que le code a
+                  // composé à partir des noms qu'il joint (`A1_A3`, `Em_R1`, `A11_A16__o2`). Les noms d'objet,
+                  // eux, la marque les départage sans rien demander à personne.
+                  if (value.isEmpty() || not Given(declared))
+                  {
+                      return value;
+                  }
+
+                  const QString owner = OwnerOf(declared);
+
+                  // Une ligne par alias, jamais par objet : deux objets qui portent le même nom n'en font qu'un,
+                  // et une réécriture les touche tous les deux.
+                  if (const auto known = rowOf.constFind(value); known != rowOf.constEnd())
+                  {
+                      Alias &row = aliases[known.value()];
+                      if (not owner.isEmpty() && not row.owners.contains(owner))
+                      {
+                          row.owners.append(owner);
+                      }
+                      if (not row.writtenIn.contains(slot->key))
+                      {
+                          row.writtenIn.append(slot->key);
+                      }
+                      return value;
+                  }
+
+                  Alias row;
+                  row.name = value;
+                  row.of = ObjectOfSlot(slot->key);
+                  row.writtenIn.append(slot->key);
+                  if (not owner.isEmpty())
+                  {
+                      row.owners.append(owner);
+                  }
+
+                  rowOf.insert(value, static_cast<int>(aliases.size()));
+                  aliases.append(row);
+                  return value;
+              });
+
+    return aliases;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::ComposedNames(const QDomElement &root) -> QSet<QString>
+{
+    QSet<QString> composed;
+    QSet<QString> given;
+
+    QDomElement element = root;
+    WalkNames(element, QString(),
+              [&composed, &given](const Declared &declared) -> QString
+              {
+                  if (declared.value.isEmpty())
+                  {
+                      return declared.value;
+                  }
+
+                  if (Composed(declared))
+                  {
+                      composed.insert(declared.value);
+                  }
+                  else
+                  {
+                      given.insert(declared.value);
+                  }
+                  return declared.value;
+              });
+
+    // Les noms **dérivés** d'une ligne : deux noms de points joints, que personne n'écrit dans le fichier et que
+    // le conteneur répond pourtant (`Line_A_B`, `AngleLine_A_B`). Sauf quand ce nom-là a été donné à autre chose.
+    QStringList points;
+    CollectPointNames(root, QString(), points);
+    for (const QString &first : points)
+    {
+        for (const QString &second : points)
+        {
+            const QString derived = first + QLatin1Char('_') + second;
+            if (not given.contains(derived))
+            {
+                composed.insert(derived);
+            }
+        }
+    }
+
+    return composed;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::ComposedCited(const QString &expression, const QSet<QString> &composed) -> QString
+{
+    if (expression.isEmpty() || composed.isEmpty())
+    {
+        return {};
+    }
+
+    // Ce que le calculateur lit comme un nom : un jeton, et les noms qu'il porte sont ses fins de `_`. Le plus
+    // long d'abord, parce que c'est celui que le conteneur lit quand deux noms finissent le même jeton.
+    static const QRegularExpression identifier(QStringLiteral("[A-Za-z_@#][A-Za-z0-9_@#]*"));
+
+    auto tokens = identifier.globalMatch(expression);
+    while (tokens.hasNext())
+    {
+        QString candidate = tokens.next().captured();
+        while (not candidate.isEmpty())
+        {
+            if (composed.contains(candidate))
+            {
+                return candidate;
+            }
+
+            const qsizetype cut = candidate.indexOf(QLatin1Char('_'));
+            if (cut < 0)
+            {
+                break;
+            }
+            candidate = candidate.mid(cut + 1);
+        }
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::Carriers(const QDomElement &root) -> QHash<QString, Carrier>
+{
+    QHash<QString, Carrier> carriers;
+
+    QDomElement element = root;
+    WalkNames(element, QString(),
+              [&carriers](const Declared &declared) -> QString
+              {
+                  if (not declared.value.isEmpty() && not carriers.contains(declared.value))
+                  {
+                      carriers.insert(declared.value, Carrier{declared.element, declared.slot->key});
+                  }
+                  return declared.value;
+              });
+
+    return carriers;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::ObjectOf(const QString &slot) -> AliasOf
+{
+    return ObjectOfSlot(slot);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::NormaliseCurveHeads(const QDomElement &root) -> int
+{
+    int written = 0;
+
+    // Les têtes d'une courbe : `Spl_`, `SplPath_` — seules, ou derrière l'un des six préfixes que la dialog
+    // assistant formule emploie déjà en `Courbe` : la longueur d'une courbe (`C1Length`, `C2Length`), son angle
+    // (`Angle1`, `Angle2`), la distance d'un point de contrôle (`Handle1`, `Handle2`). Le préfixe est ce qui dit
+    // que le `Spl_` qui suit est une tête et non un morceau de nom donné par quelqu'un.
+    // Les six préfixes des trois familles que la dialog assistant formule écrit déjà en `Courbe` : la longueur
+    // d'une courbe (`C1Length`, `C2Length`), son angle (`Angle1`, `Angle2`), la distance d'un point de contrôle
+    // (`Handle1`, `Handle2`) — décidé par Sophie le 13-10-2026. Mesuré pour les angles et les poignées
+    // (`Angle2Curve_dos`, `Handle1Curve_dos`) ; les longueurs ne sont pas employées dans ses fichiers, mais la
+    // règle les couvre comme les autres.
+    static const QStringList prefixes{QString(),           QStringLiteral("C1Length"), QStringLiteral("C2Length"),
+                                      QStringLiteral("Angle1"), QStringLiteral("Angle2"), QStringLiteral("Handle1"),
+                                      QStringLiteral("Handle2")};
+
+    QDomElement element = root;
+    RewriteFormulas(element,
+                    [&written](const QString &token) -> QString
+                    {
+                        for (const QString &prefix : prefixes)
+                        {
+                            if (not token.startsWith(prefix))
+                            {
+                                continue;
+                            }
+
+                            const QString rest = token.mid(prefix.size());
+                            for (const QString &head : {QStringLiteral("SplPath_"), QStringLiteral("Spl_")})
+                            {
+                                if (rest.startsWith(head))
+                                {
+                                    ++written;
+                                    return prefix + QStringLiteral("Curve_") + rest.mid(head.size());
+                                }
+                            }
+                        }
+                        return token;
+                    });
+
+    return written;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -476,9 +839,9 @@ auto OPieceMark::HighestNumber(const QDomElement &root) -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPieceMark::Collides(const QDomElement &root, const QSet<QString> &taken) -> bool
+auto OPieceMark::AnswersTo(const QSet<QString> &taken, const QString &name) -> bool
 {
-    if (taken.isEmpty())
+    if (taken.isEmpty() || name.isEmpty())
     {
         return false;
     }
@@ -487,20 +850,36 @@ auto OPieceMark::Collides(const QDomElement &root, const QSet<QString> &taken) -
     // overwrite: the name itself under a point, or the same name under a head — `Spl_devant` for an alias, the
     // area of a piece for a `<detail>`, `Line_Em_Pro` for the label `Pro` of a line the pattern already holds.
     // Only the tail is looked for, which is what the heads have in common and all this needs to know about them.
-    for (const QString &name : DeclaredNames(root))
+    if (taken.contains(name))
     {
-        if (taken.contains(name))
+        return true;
+    }
+
+    const QString tail = QStringLiteral("_") + name;
+    for (auto it = taken.constBegin(); it != taken.constEnd(); ++it)
+    {
+        if ((*it).endsWith(tail))
         {
             return true;
         }
+    }
 
-        const QString tail = QStringLiteral("_") + name;
-        for (auto it = taken.constBegin(); it != taken.constEnd(); ++it)
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::Collides(const QDomElement &root, const QSet<QString> &taken) -> bool
+{
+    if (taken.isEmpty())
+    {
+        return false;
+    }
+
+    for (const QString &name : DeclaredNames(root))
+    {
+        if (AnswersTo(taken, name))
         {
-            if ((*it).endsWith(tail))
-            {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -526,7 +905,8 @@ auto OPieceMark::TableFor(const QDomElement &root, const QSet<QString> &taken, i
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPieceMark::Rename(QDomElement &root, const QHash<QString, QString> &renamed) -> Report
+auto OPieceMark::Rename(QDomElement &root, const QHash<QString, QString> &renamed, const QStringList &roleNames)
+    -> Report
 {
     Report report;
     if (root.isNull() || renamed.isEmpty())
@@ -542,8 +922,9 @@ auto OPieceMark::Rename(QDomElement &root, const QHash<QString, QString> &rename
     QVector<QPair<QString, QString>> pieces;
 
     const auto Now = [&renamed, &report, &labels, &aliases, &roles,
-                      &pieces](const QString &value, Kind kind) -> QString
+                      &pieces](const Declared &declared) -> QString
     {
+        const QString &value = declared.value;
         const auto known = renamed.constFind(value);
         if (known == renamed.constEnd())
         {
@@ -551,7 +932,7 @@ auto OPieceMark::Rename(QDomElement &root, const QHash<QString, QString> &rename
         }
 
         ++report.written;
-        switch (kind)
+        switch (declared.slot->kind)
         {
             case Kind::Alias:
                 aliases.append({value, known.value()});
@@ -572,6 +953,27 @@ auto OPieceMark::Rename(QDomElement &root, const QHash<QString, QString> &rename
 
     QDomElement element = root;
     WalkNames(element, QString(), Now);
+
+    // A block does not carry its piece's `<lineNames>`: the walk then meets no role slot, and the tokens a formula
+    // builds on the role — `Line_<role>`, `AngleLine_<role>` — would keep reading the roles of the pattern. The
+    // caller knows which names are roles, because it is holding the piece, so it says them.
+    for (const QString &roleName : roleNames)
+    {
+        const auto known = renamed.constFind(roleName);
+        if (known == renamed.constEnd() || known.value() == roleName)
+        {
+            continue;
+        }
+
+        const bool met = std::any_of(roles.cbegin(), roles.cend(),
+                                     [&roleName](const QPair<QString, QString> &pair)
+                                     { return pair.first == roleName; });
+        if (not met)
+        {
+            roles.append({roleName, known.value()});
+        }
+    }
+
     report.names = static_cast<int>(labels.size() + aliases.size() + roles.size() + pieces.size());
 
     if (labels.isEmpty() && aliases.isEmpty() && roles.isEmpty() && pieces.isEmpty())

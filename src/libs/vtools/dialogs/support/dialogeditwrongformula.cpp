@@ -26,6 +26,8 @@
  **
  *************************************************************************/
 
+#include <QFile>
+#include <QTextStream>
 #include "dialogeditwrongformula.h"
 
 #include <QAbstractItemView>
@@ -78,6 +80,90 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../undocommands/vchangelinerolename.h"
 #include "ui_dialogeditwrongformula.h"
+
+namespace
+{
+/// @brief La formule telle qu'elle doit s'**afficher** : jamais `Spl_` ni `SplPath_`.
+///
+/// La conversion vers la forme utilisateur rend l'alias de l'objet, donc parfois son ancienne tête — et valider
+/// la remettait dans le patron (relevé de Sophie, 13-10-2026 : le point portait `Courbe_RepereDos+1`, l'éditeur
+/// affichait `SplPath_RepereDos+1`). La tête `Curve_` s'écrit donc ici, dans le **texte montré**, et seulement
+/// quand elle existe vraiment dans le conteneur : un nom qui ne résout pas ne vaut pas mieux qu'un ancien.
+auto CurveHeadsUser(const VTranslateVars *trVars, const VContainer *data, const QString &formula) -> QString
+{
+    static const QStringList prefixes{QString(),           QStringLiteral("C1Length"), QStringLiteral("C2Length"),
+                                      QStringLiteral("Angle1"), QStringLiteral("Angle2"), QStringLiteral("Handle1"),
+                                      QStringLiteral("Handle2")};
+    if (trVars == nullptr || data == nullptr || data->DataVariables() == nullptr)
+    {
+        return formula;
+    }
+
+    QString out = formula;
+    for (const QString &prefix : prefixes)
+    {
+        for (const QString &head : {QStringLiteral("SplPath_"), QStringLiteral("Spl_")})
+        {
+            const QString old = prefix + head;
+            qsizetype from = 0;
+            while ((from = out.indexOf(old, from)) >= 0)
+            {
+                qsizetype end = from + old.size();
+                while (end < out.size() && (out.at(end).isLetterOrNumber() || out.at(end) == QLatin1Char('_')
+                                            || out.at(end) == QLatin1Char('\'')))
+                {
+                    ++end;
+                }
+
+                const QString canonical = prefix + QStringLiteral("Curve_") + out.mid(from + old.size(),
+                                                                                      end - from - old.size());
+                if (data->DataVariables()->contains(canonical))
+                {
+                    out.replace(from, end - from, trVars->VarToUser(canonical));
+                }
+                from += 1;
+            }
+        }
+    }
+
+    return out;
+}
+} // namespace
+
+
+namespace
+{
+/// La tête `Curve_` d'un nom qui en porte une autre (`SplPath_`, `Spl_`) — les six préfixes des longueurs, des
+/// angles et des poignées. Le conteneur enregistre **plusieurs têtes pour un même objet**, la migration
+/// d'ouverture ne réécrit que les **formules**, et l'assistant lit les clés du conteneur : il montrait donc
+/// `SplPath_XX` quand le navigateur de propriétés disait déjà `Courbe_XX`. Même règle que
+/// `OPieceMark::NormaliseCurveHeads`, écrite des deux côtés de la frontière application / bibliothèque.
+auto CurveHead(const QString &name) -> QString
+{
+    static const QStringList prefixes{QString(),           QStringLiteral("C1Length"), QStringLiteral("C2Length"),
+                                      QStringLiteral("Angle1"), QStringLiteral("Angle2"), QStringLiteral("Handle1"),
+                                      QStringLiteral("Handle2")};
+    for (const QString &prefix : prefixes)
+    {
+        if (not name.startsWith(prefix))
+        {
+            continue;
+        }
+
+        const QString rest = name.mid(prefix.size());
+        for (const QString &head : {QStringLiteral("SplPath_"), QStringLiteral("Spl_")})
+        {
+            if (rest.startsWith(head))
+            {
+                return prefix + QStringLiteral("Curve_") + rest.mid(head.size());
+            }
+        }
+    }
+
+    return name;
+}
+} // namespace
+
 
 template <class T> class QSharedPointer;
 
@@ -197,7 +283,9 @@ void DialogEditWrongFormula::EvalFormula()
     QString displayed = typed;
     if (repaired != internal)
     {
-        displayed = trVars->FormulaToUser(repaired, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+        displayed = CurveHeadsUser(trVars, m_data,
+                                   trVars->FormulaToUser(repaired,
+                                                         VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
         QSignalBlocker blocker(ui->plainTextEditFormula);
         ui->plainTextEditFormula->setPlainText(displayed);
         MoveCursorToEnd(ui->plainTextEditFormula);
@@ -216,6 +304,7 @@ void DialogEditWrongFormula::EvalFormula()
             // In the very words the list uses, so the row can be found: the name is the alias when there is one,
             // the object's own name otherwise — exactly what ShowVariable writes on the row.
             const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
+
             m_unnamedObject = trVars->VarToUser(display);
         }
     }
@@ -621,7 +710,9 @@ void DialogEditWrongFormula::SetFormula(const QString &value)
         return;
     }
 
-    formula = trVars->FormulaToUser(internal, VAbstractApplication::VApp()->Settings()->GetOsSeparator());
+    formula = CurveHeadsUser(trVars, m_data,
+                             trVars->FormulaToUser(internal,
+                                                   VAbstractApplication::VApp()->Settings()->GetOsSeparator()));
     ui->plainTextEditFormula->setPlainText(formula);
     MoveCursorToEnd(ui->plainTextEditFormula);
     ui->plainTextEditFormula->selectAll();
@@ -800,7 +891,37 @@ template <class T> void DialogEditWrongFormula::ShowVariable(const QList<T> &var
             // named line, `Line_Y_Y1` for one nobody named, `#Cou` for an increment. It is never blank — every
             // object that reaches this list has a name the calculator resolves — so the list can always be read
             // and a double click always inserts something that works.
-            const QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
+            // **Aucun `Spl_` ni `SplPath_` en frontend.** La migration d'ouverture ne réécrit que les formules ;
+            // l'assistant, lui, lisait les clés du conteneur **et insérait ce qu'il lisait** : valider une ligne
+            // remettait `SplPath_XX` dans la formule, et le navigateur de propriétés le réaffichait. La forme
+            // `Curve_` s'écrit donc ici, une fois : la ligne la montre, la ligne l'insère, et le doublon éventuel
+            // (`SplPath_XX` et `Curve_XX` sont le même objet) tombe sur la déduplication du nom, plus bas.
+            QString display = SimplifiedName(var->GetAlias().isEmpty() ? var->GetName() : var->GetAlias());
+            if (const QString canonical = CurveHead(display);
+                canonical != display && m_data != nullptr && m_data->DataVariables() != nullptr
+                && m_data->DataVariables()->contains(canonical))
+            {
+                display = canonical;
+            }
+
+            // TEMPORARY — sonde de l'assistant : ce que l'objet s'appelle, ce qu'il porte comme alias, ce que la
+            // ligne afficherait, et si la forme `Curve_` existe dans le conteneur. À retirer.
+            {
+                QFile trace(QStringLiteral("/tmp/ostara_assistant.log"));
+                if (trace.open(QIODevice::Append | QIODevice::Text))
+                {
+                    QTextStream out(&trace);
+                    out << "ROW nom=" << var->GetName() << " alias=" << var->GetAlias()
+                        << " display=" << display << " canonical=" << CurveHead(display)
+                        << " affiche=" << trVars->VarToUser(display)
+                        << " canonique_existe="
+                        << (m_data != nullptr && m_data->DataVariables() != nullptr
+                                ? m_data->DataVariables()->contains(CurveHead(display))
+                                : false)
+                        << "\n";
+                }
+            }
+
 
             // The switch hides what a formula may not name: the objects nobody has named. The question is asked
             // of the object, not of a name: a line is judged by the pair of points it joins, a curve by its own

@@ -502,21 +502,11 @@ auto VDrawTool::CreateRemoveAction(QMenu &menu) -> QAction *
  */
 void VDrawTool::HandleRemoveAction()
 {
-    if (IsRemovable() == RemoveStatus::Removable)
-    {
-        qCDebug(vTool, "Deleting tool.");
-        DeleteToolWithConfirm(); // do not catch exception here
-        return;                  // Leave this method immediately after call!!!
-    }
-
-    QMessageBox messageBox;
-    messageBox.setIcon(QMessageBox::Warning);
-    messageBox.setWindowTitle(tr("Cannot Delete Object"));
-    messageBox.setText(tr("This object cannot be deleted because it is being used by other items."));
-    messageBox.setInformativeText(tr("Please resolve the dependencies before attempting to delete this object."));
-    messageBox.setDefaultButton(QMessageBox::Ok);
-    messageBox.setStandardButtons(QMessageBox::Ok);
-    messageBox.exec();
+    // Une seule route pour supprimer un objet, que le geste vienne du clic droit ou de la touche Suppr : c'est
+    // l'outil qui sait s'il est supprimable, et **pourquoi** il ne l'est pas — un point de base, lui, demande en
+    // nommant la pièce et explique quelle pièce en dépend. Ce chemin, lui, se taisait derrière une phrase
+    // générique qui ne disait ni la pièce ni la raison.
+    DeleteToolWithConfirm(); // do not catch exception here
 }
 
 //---------------------------------------------------------------------------------------------------------------------

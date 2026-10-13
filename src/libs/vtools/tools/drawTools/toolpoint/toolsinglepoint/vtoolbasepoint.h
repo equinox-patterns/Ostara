@@ -87,6 +87,10 @@ protected:
     void AddToFile() override;
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
     void DeleteToolWithConfirm(bool ask = true) override;
+
+    /// @brief Le nom des pièces qui dépendent de ce point, hors de sa propre pièce — ce qui interdit de le
+    /// supprimer, et ce que le refus nomme.
+    auto DependentPieces() const -> QStringList;
     void SaveDialog(QDomElement &domElement) override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

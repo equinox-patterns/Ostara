@@ -38,6 +38,7 @@
 #include "../vgeometry/vgeometrydef.h"
 #include "../vmisc/typedef.h"
 #include "../vpatterndb/variables/vinternalvariable.h"
+#include "support/dialognameobject.h"
 
 class QPlainTextEdit;
 class QPushButton;
@@ -144,6 +145,27 @@ auto UnnamedObjectMessage(const QString &token, const VContainer *container,
  *
  *  @a formula is in internal notation, the one the calculator reads.
  *  @return false when the user cancelled, and then the caller must do nothing at all. */
+/**
+ * @brief Les objets **sans nom** qu'une expression cite : ce qu'il faut nommer pour qu'elle puisse voyager.
+ *
+ * Un objet sans nom est un objet auquel personne n'a donné d'alias : une ligne que le conteneur ne connaît que
+ * par la paire de points qu'elle joint, une courbe qui ne répond que par la route sur laquelle elle est bâtie.
+ * C'est la lecture de `NameUnnamedObjects`, sortie ici pour que la fenêtre qui enregistre une pièce montre
+ * exactement les objets que cette dialog-là nommerait — même règle, un seul endroit.
+ */
+auto UnnamedObjects(const VContainer *data, const QString &formula) -> QList<DialogNameObject::Object>;
+
+/**
+ * @brief Nommer une courbe par l'outil qui la porte — et par celui du point qui déclare son segment.
+ *
+ * Une courbe n'appartient pas toujours à un outil : un segment de coupe est déclaré par le **point** qui le
+ * coupe, sous `segment1Id`…`segment4Id`, et aucun outil ne porte l'identifiant de la courbe. Sans ce détour, la
+ * dialog nommait la ligne, prenait le nom, et n'écrivait rien — en silence (`FindTool` répondait vide).
+ *
+ * @return vrai quand l'alias a été écrit — l'outil pousse alors sa propre commande, qui répare les formules.
+ */
+auto NameCurveObject(VAbstractPattern *doc, const VContainer *data, quint32 curveId, const QString &name) -> bool;
+
 auto NameUnnamedObjects(QWidget *parent, const VContainer *data, QString &formula) -> bool;
 void ChangeColor(QWidget *widget, const QColor &color);
 auto OkColor(const QWidget *widget) -> QColor;

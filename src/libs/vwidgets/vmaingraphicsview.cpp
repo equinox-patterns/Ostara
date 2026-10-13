@@ -28,6 +28,11 @@
 
 #include "vmaingraphicsview.h"
 
+#include "vscenepoint.h"
+
+#include <QFile>
+#include <QTextStream>
+
 #include <QApplication>
 #include <QContextMenuEvent>
 #include <QCursor>
@@ -141,11 +146,37 @@ auto PrepareScrolling(qreal scheduledScrollings, QWheelEvent *wheel_event) -> qr
  */
 auto PrioritizeItems(const QList<QGraphicsItem *> &list, const QPointF &scenePos) -> QList<QGraphicsItem *>
 {
+    // **Un point, quel qu'il soit, avant tout.** Les points de contrôle d'une spline en sont : `M13` est un point
+    // du patron comme un autre, et il ne doit pas passer après un autre point parce qu'il porte une courbe —
+    // entre deux points, c'est la distance au curseur qui décide, comme partout ailleurs.
+    QList<QGraphicsItem *> points;
     QList<QGraphicsItem *> prioritized;
     QList<QGraphicsItem *> nonPrioritized;
     for (auto *item : list)
     {
-        if (item && item->type() == VControlPointSpline::Type)
+        // **Ce qui n'est pas visible à l'écran ne prend pas le clic.** Une poignée de courbe n'apparaît que
+        // lorsque la courbe est active : invisible, elle captait pourtant le clic à la place du point qu'elle
+        // longe (trace du 13-10-2026 : poignée de `M13` à 5,7 px du curseur, invisible, contre le point `B1` à
+        // 10,9 px). Une poignée visible, elle, reste cliquable — c'est ainsi qu'on édite une courbe.
+        if (item == nullptr || not item->isVisible())
+        {
+            continue;
+        }
+
+        // Un point est ce qu'on vise : un objet posé dessus — une courbe, la pièce, un tracé — ne peut pas le
+        // prendre. Sans cette tête de liste, le tri par proximité du **centre de la boîte englobante** donnait la
+        // courbe au clic gauche quand le centre du point était plus loin du curseur, alors que le clic droit, qui
+        // prend l'item au sens de la scène, trouvait bien le point.
+        // **Un point avant une poignée de courbe.** La poignée (`VControlPointSpline`) est bien un point pour
+        // Qt, mais c'est une poignée : elle n'apparaît qu'avec sa courbe active, et à 5,7 px du curseur elle
+        // passait devant le point `B1` à 10,9 px — et une poignée appartient à sa courbe, donc la PB de la courbe
+        // s'ouvrait (trace du 13-10-2026, /tmp/ostara_pick.log). Sans point sous le curseur, la poignée reste la
+        // première : on édite toujours une courbe.
+        if (dynamic_cast<VScenePoint *>(item) != nullptr && item->type() != VControlPointSpline::Type)
+        {
+            points.append(item);
+        }
+        else if (item && item->type() == VControlPointSpline::Type)
         {
             prioritized.append(item);
         }
@@ -163,10 +194,11 @@ auto PrioritizeItems(const QList<QGraphicsItem *> &list, const QPointF &scenePos
         return distA < distB;
     };
 
+    std::sort(points.begin(), points.end(), byProximity);
     std::sort(prioritized.begin(), prioritized.end(), byProximity);
     std::sort(nonPrioritized.begin(), nonPrioritized.end(), byProximity);
 
-    return prioritized + nonPrioritized;
+    return points + prioritized + nonPrioritized;
 }
 } // namespace
 

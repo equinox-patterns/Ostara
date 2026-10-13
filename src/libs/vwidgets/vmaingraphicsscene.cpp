@@ -26,7 +26,11 @@
  **
  *************************************************************************/
 
+#include "vscenepoint.h"
 #include "vmaingraphicsscene.h"
+
+#include <QFile>
+#include <QTextStream>
 
 #include <QEvent>
 #include <QGraphicsItem>
@@ -106,6 +110,20 @@ auto VMainGraphicsScene::ItemToRaise(const QPointF &scenePos) const -> QGraphics
         return nullptr;
     }
 
+    // **Un point, quel qu'il soit, passe avant tout.** Ce n'est pas la distance qui décide quand un point est
+    // sous le curseur : le point est ce qu'on vise, et un objet posé dessus — une courbe, la pièce, un tracé — ne
+    // peut pas le prendre. `ClosestHoverItem` élisait l'objet dont le **centre** est le plus proche du curseur :
+    // une courbe dont le tracé passe par le point gagnait donc le clic, et c'est sa PB qui s'ouvrait (mesuré sur
+    // `R2'`, quand Options trouvait bien le point). Un point enfant d'un outil ne se lève pas seul : c'est son
+    // item de premier niveau qui monte, comme le reste de cette fonction le fait déjà.
+    for (QGraphicsItem *item : under)
+    {
+        if (dynamic_cast<VScenePoint *>(item) != nullptr)
+        {
+            return item->topLevelItem();
+        }
+    }
+
     QGraphicsItem *closest = ClosestHoverItem(scenePos);
     QGraphicsItem *topmost = under.constFirst();
     if (closest == nullptr || closest == topmost)
@@ -151,6 +169,34 @@ void VMainGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
  * @brief mousePressEvent mouse press events.
  * @param event mouse press event
  */
+/**
+ * @brief L'item sous @p pos, **un point avant tout**.
+ *
+ * Un point est ce qu'on vise : un objet posé dessus — une courbe, la pièce, un tracé — ne peut pas le prendre.
+ * `itemAt` rendait l'item du dessus par profondeur et, à profondeur égale, le dernier ajouté : le clic gauche
+ * ouvrait la courbe qu'un point recouvre, là où le clic droit, lui, trouvait le point. Un seul choix, ici.
+ */
+auto PickItem(QGraphicsScene *scene, const QPointF &pos, const QTransform &deviceTransform) -> QGraphicsItem *
+{
+    const QList<QGraphicsItem *> items = scene->items(pos, Qt::IntersectsItemShape, Qt::DescendingOrder,
+                                                      deviceTransform);
+    for (QGraphicsItem *item : items)
+    {
+        // Un item invisible ne prend pas le clic : c'est la règle partout (voir VMainGraphicsView::PrioritizeItems).
+        if (not item->isVisible())
+        {
+            continue;
+        }
+
+        if (dynamic_cast<VScenePoint *>(item) != nullptr)
+        {
+            return item;
+        }
+    }
+
+    return items.isEmpty() ? nullptr : items.first();
+}
+
 void VMainGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && event->type() != QEvent::GraphicsSceneMouseDoubleClick)
@@ -163,7 +209,9 @@ void VMainGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             deviceTransform = view->transform();
         }
-        emit ItemByMousePress(itemAt(event->scenePos(), deviceTransform));
+        QGraphicsItem *picked = PickItem(this, event->scenePos(), deviceTransform);
+
+        emit ItemByMousePress(picked);
     }
 
     // Mirror the hover dispatch (mouseMoveEvent): when several items overlap, a point must win

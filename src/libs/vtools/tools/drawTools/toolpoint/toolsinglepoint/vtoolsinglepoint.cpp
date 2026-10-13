@@ -86,11 +86,19 @@ QT_WARNING_POP
  * @param id object id in container.
  * @param parent parent object.
  */
+/// La profondeur d'un point : **la priorité absolue sur le canvas**, quel que soit le point — il passe avant les
+/// lignes, les courbes et le tracé de tout autre outil, parce qu'un point est ce qu'on vise et ce qu'on attrape.
+/// À profondeur égale, c'est le dernier objet ajouté que le clic prend : un point posé sur un autre prenait le
+/// clic droit du premier, et son menu avec. **Au-dessus de la pièce elle-même** (`VToolSeamAllowance`, posée à
+/// 10) : un point qui se trouve sur le contour était recouvert par lui, et c'est la pièce que le clic ouvrait.
+static constexpr qreal kPointZ = 11.;
+
 VToolSinglePoint::VToolSinglePoint(VAbstractPattern *doc, VContainer *data, quint32 id, const QString &notes,
                                    QGraphicsItem *parent)
   : VAbstractPoint(doc, data, id, notes),
     VScenePoint(VColorRole::PatternColor, parent)
 {
+    setZValue(kPointZ);
     connect(m_namePoint, &VGraphicsSimpleTextItem::ShowContextMenu, this, &VToolSinglePoint::contextMenuEvent);
     connect(m_namePoint, &VGraphicsSimpleTextItem::DeleteTool, this, &VToolSinglePoint::DeleteFromLabel);
     connect(m_namePoint, &VGraphicsSimpleTextItem::PointChoosed, this, &VToolSinglePoint::PointChoosed);

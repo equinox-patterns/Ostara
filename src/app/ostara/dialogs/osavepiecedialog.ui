@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>440</width>
-    <height>113</height>
+    <width>640</width>
+    <height>430</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -59,6 +59,51 @@
      <property name="text">
       <string>A piece is written as a file in the library, so its name cannot hold a slash.</string>
      </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupNames">
+     <property name="title">
+      <string>Objects with no name</string>
+     </property>
+     <layout class="QVBoxLayout" name="namesLayout">
+      <item>
+       <widget class="QLabel" name="labelNames">
+        <property name="text">
+         <string>This piece shares objects that have no name. Please name them.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tableNames">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>170</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelNamesProblem">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>

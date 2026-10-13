@@ -46,6 +46,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/vtranslatevars.h"
 
+
 using namespace Qt::Literals::StringLiterals;
 
 //---------------------------------------------------------------------------------------------------------------------

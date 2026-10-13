@@ -27,6 +27,7 @@
 #define OPIECEINSERT_H
 
 #include "opiecedocument.h"
+#include "opiecemark.h"
 
 #include "../vtools/undocommands/vundocommand.h"
 
@@ -34,6 +35,7 @@
 #include <QHash>
 #include <QPointF>
 #include <QString>
+#include <QVector>
 
 class VContainer;
 class VPattern;
@@ -57,21 +59,56 @@ struct Prepared
 };
 
 /**
- * @brief Make @p piece ready to enter @p doc under the name @p instanceName, without touching anything.
+ * @brief What a piece asks before it enters: the name it would wear, the aliases it carries, and the table proposed.
  *
- * Four things, in this order, and the order matters: the **origin** is written while the block still carries the
- * piece's name; the block is **renamed** to its instance name; its names are **marked** — all of them or none,
- * decided on what the pattern already answers to; and its ids are **renewed** by the schema's own rule.
+ * Read from the pattern alone, and from nothing of the piece's own: the name a block may wear is the pattern's to
+ * say, and so is the mark, since the marks of two pieces entering one after the other have to differ.
+ */
+struct Proposal
+{
+    QString instanceName{};               ///< le nom que le bloc prendrait dans le patron.
+    int number{0};                        ///< le numéro de marque que le patron donnerait.
+    bool collides{false};                 ///< vrai quand le patron répond déjà à un des noms de la pièce.
+    QStringList roles{};                  ///< les noms de rôle de la pièce : hors du bloc, donc à dire à part.
+    QVector<OPieceMark::Alias> aliases{}; ///< les alias de la pièce, dans l'ordre du fichier.
+    QHash<QString, QString> table{};      ///< les noms d'avant et d'après — vide quand rien ne collide.
+
+    /// Le vrai quand la proposition a pu être lue : le patron et son conteneur étaient là.
+    auto IsReady() const -> bool { return number > 0; }
+};
+
+/**
+ * @brief The keys @p data answers to, one per object it holds — what an alias of a piece would overwrite in silence.
  *
- * @param doc the pattern the piece would enter, asked for two things: the highest mark it already carries, and
- *            whether it answers to the piece's names.
- * @param data the pattern's container, asked for the keys it answers to and for the counter the new ids come from.
+ * Read here rather than twice: the proposal, the mark and the window that validates a typed alias all read the
+ * same keys, so a name the window accepts is a name the marking does not have to fear.
+ */
+auto Keys(VContainer *data) -> QSet<QString>;
+
+/**
+ * @brief What @p piece would ask of @p doc, without touching anything — what a dialog is shown, and what a caller
+ * that asks nobody passes straight to Prepare.
+ *
+ * @param doc the pattern, asked for two things: the highest mark it already carries, and whether it answers to the
+ *            piece's names.
+ * @param data the pattern's container, which holds one key per object — the keys an alias would overwrite.
+ */
+auto Propose(const OPieceDocument &piece, VPattern *doc, VContainer *data, const QString &instanceName) -> Proposal;
+
+/**
+ * @brief Make @p piece ready to enter the pattern @p proposal was read from, without touching anything.
+ *
+ * Three things, in this order, and the order matters: the **origin** is written while the block still carries the
+ * piece's name; the block is **renamed** to its instance name; the names @p proposal decides are **marked**; and
+ * its ids are **renewed** by the schema's own rule.
+ *
+ * @param data the pattern's container, asked for the counter the new ids come from.
  * @param anchorTarget where the construction must start, **in the pattern's own unit** — the place a base point of
  *                     the block takes, and every other object with it. The caller decides it, because it is the
  *                     canvas that knows what is already drawn (see MainWindow::PositionBeyondDrawn).
  * @return a block ready to insert, or a block-less result when there is nothing to prepare.
  */
-auto Prepare(const OPieceDocument &piece, VPattern *doc, VContainer *data, const QString &instanceName,
+auto Prepare(const OPieceDocument &piece, VContainer *data, const Proposal &proposal,
              const QPointF &anchorTarget) -> Prepared;
 
 /**

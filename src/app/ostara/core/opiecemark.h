@@ -33,6 +33,7 @@
 #include <QSet>
 #include <QString>
 #include <QStringList>
+#include <QVector>
 
 /**
  * @brief The names a piece declares, and the mark that keeps them apart from the ones the pattern already holds.
@@ -86,6 +87,98 @@ auto NameListSlots() -> const QSet<QString> &;
 /// Every name @p root declares, in the order they are met, without repetition.
 auto DeclaredNames(const QDomElement &root) -> QStringList;
 
+/**
+ * @brief De quoi un alias est le nom — la seule chose qu'une fenêtre a besoin de dire pour savoir de quoi on parle.
+ */
+enum class AliasOf : quint8
+{
+    Line,          ///< le rôle d'une ligne : `Line_<rôle>`, `AngleLine_<rôle>`.
+    Curve,         ///< une spline, un chemin de spline, le segment qu'une coupe produit, un volant.
+    Arc,           ///< un arc.
+    EllipticalArc, ///< un arc elliptique.
+};
+
+/**
+ * @brief One **alias** a piece carries: what it is called, what kind of object wears it, and where it is written.
+ *
+ * An alias is a **key the container answers to**, not a label: the container builds a head on it — `Spl_dos` for
+ * the alias of a spline, `SplPath_Em_R1` for the name of a segment, `Line_Angle180` and `AngleLine_Angle180` for
+ * the name of a line's role — and overwrites in silence a key that is already there. Two objects that agree on
+ * one alias are **one** row, because a rename is indexed by the name, never by the object.
+ *
+ * An **alias** is a name that was given; the names the code composes out of the objects' own names are read
+ * beside it and never asked about — see Aliases().
+ */
+struct Alias
+{
+    QString name{};       ///< la valeur écrite dans le fichier — le suffixe ; c'est elle que la fenêtre montre.
+    AliasOf of{AliasOf::Curve}; ///< le genre d'objet qui la porte : `Ligne`, `Courbe`, `Arc`, `Arc elliptique`.
+    QStringList writtenIn{};    ///< les slots du schéma qui l'écrivent, `parent/element/@attribute`.
+    QStringList owners{};       ///< les objets qui la portent, nommés comme l'utilisateur les connaît (`R1`).
+};
+
+/// Every alias @p root carries, in the order they are met, **one row per distinct value** — whether a formula
+/// cites it or not, and whether or not the object is used anywhere: what a piece entering a pattern decides is
+/// the name it will wear, not what reads it.
+///
+/// An alias is a name **somebody gave**, never one the code **composed** out of the objects it names: `dos` for a
+/// spline, `devant` for another, `Angle180` for a line whose pair of points is `A1 A3` — as opposed to `Em_R1`,
+/// `A14LSubCurve` and `A11_A16__o2`, which are the names of segments and of a spline the tools built out of the
+/// objects' own names, and which say nothing a dialog could ask about.
+auto Aliases(const QDomElement &root) -> QVector<Alias>;
+
+/**
+ * @brief The names @p root declares that the code **composed**, and that a formula therefore may not cite.
+ *
+ * A name that was **given** — an `alias`, the role of a line once it is more than the pair it joins, the name of
+ * a point, the name of a `<detail>` — can carry an identity, and follow its object from one file to another. A
+ * name the code **composed** cannot: the segments a cut names (`curveName1`, `curve1Name2`…), the technical name
+ * of a spline, the name an operation gives the point it places, its `suffix`, and the **derived** name of a line,
+ * `A1_A3`, which nobody writes down and which the container answers all the same.
+ */
+auto ComposedNames(const QDomElement &root) -> QSet<QString>;
+
+/**
+ * @brief The token of @p expression that cites one of @p composed, empty when it cites none.
+ *
+ * The **longest** name wins, because that is the one the container reads when two of them end the same token —
+ * a curve named `Em` and one named `A1_Em`.
+ */
+auto ComposedCited(const QString &expression, const QSet<QString> &composed) -> QString;
+
+/// @brief L'endroit qui écrit un nom : l'élément lui-même, et le slot du schéma qui le porte.
+struct Carrier
+{
+    QDomElement element{}; ///< l'élément à écrire — le `<point>` d'un segment, la `<spline>` d'un nom.
+    QString slot{};        ///< le slot, `parent/element/@attribute`.
+};
+
+/// L'élément qui écrit chaque nom déclaré par @p root, dans l'ordre du fichier. Le premier gagne : deux objets
+/// du même nom n'en font qu'un pour le conteneur, et c'est lui que la dialog nommerait.
+auto Carriers(const QDomElement &root) -> QHash<QString, Carrier>;
+
+/// De quoi un nom écrit dans @p slot est le nom : `Ligne` pour un rôle, `Arc` et `Arc elliptique` pour ce que le
+/// schéma nomme ainsi, et `Courbe` pour tout le reste — le segment d'une coupe, un chemin de spline, un volant.
+auto ObjectOf(const QString &slot) -> AliasOf;
+
+/**
+ * @brief Écrire `Curve_` là où une formule cite une courbe par `Spl_` ou `SplPath_`.
+ *
+ * Les trois têtes mènent au **même** objet : `Spl_dos`, `SplPath_dos` et `Curve_dos` sont la même spline. Le
+ * produit n'en garde qu'une — celle que le lecteur de formules écrit lui-même — et le fichier se nettoie à
+ * l'ouverture, sinon chacun corrige à la main des jetons que le patron sait réécrire.
+ *
+ * Seules les têtes **entières** sont touchées : `C2LengthSplPath_R1_Eb` et `Angle2SplPath_dos` portent leur
+ * `SplPath_` au milieu d'une tête composée, qui n'est pas ce que l'utilisateur écrit.
+ *
+ * @return le nombre de jetons réécrits — zéro quand le fichier était déjà propre.
+ */
+auto NormaliseCurveHeads(const QDomElement &root) -> int;
+
+/// Whether @p taken already answers to @p name — the name itself, or the same name under one of the heads the
+/// container builds on it (`Spl_devant` for the alias `devant`). The one reading of « déjà pris » in the product.
+auto AnswersTo(const QSet<QString> &taken, const QString &name) -> bool;
+
 /// The highest mark @p root carries, 0 when it carries none. The file's own answer to "which number next".
 auto HighestNumber(const QDomElement &root) -> int;
 
@@ -118,8 +211,12 @@ auto TableFor(const QDomElement &root, const QSet<QString> &taken, int number) -
  * tokens leaves the piece pointing at objects that no longer exist. The two passes are therefore one, and the
  * same call serves both directions — the mark a piece takes when it enters a file, and the mark it loses when
  * it is saved.
+ *
+ * @param roleNames the roles of the piece @p root belongs to, when @p root is its `<draw>` alone: the names of
+ *                  the roles are written in the piece's own `<lineNames>`, which a block does not carry, so the
+ *                  walk meets no role slot — and `Line_<role>` would keep pointing at the pattern's own roles.
  */
-auto Rename(QDomElement &root, const QHash<QString, QString> &renamed) -> Report;
+auto Rename(QDomElement &root, const QHash<QString, QString> &renamed, const QStringList &roleNames = {}) -> Report;
 
 /// Removes the mark of @p root: the names, and the formulas that cite them.
 auto Unmark(QDomElement &root) -> Report;
