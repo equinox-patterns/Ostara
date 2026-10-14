@@ -1868,37 +1868,37 @@
 <context>
     <name>DialogExportToCSV</name>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="36"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="32"/>
         <source>With header</source>
         <translation>Com cabeçalho</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="51"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="47"/>
         <source>Codec:</source>
         <translation>Codec:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="92"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="88"/>
         <source>Separator</source>
         <translation>Separador</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="116"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="112"/>
         <source>Tab</source>
         <translation>Tabulação</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="148"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="144"/>
         <source>Comma</source>
         <translation>Vírgula</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="132"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="128"/>
         <source>Semicolon</source>
         <translation>Ponto-e-vírgula</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="167"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="163"/>
         <source>Space</source>
         <translation>Espaço</translation>
     </message>
@@ -1908,12 +1908,12 @@
         <translation>Opções</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="180"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="176"/>
         <source>Preview</source>
         <translation>Prévia</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="30"/>
+        <location filename="../../src/libs/vmisc/dialogs/dialogexporttocsv.ui" line="26"/>
         <source>Global</source>
         <comment>Options</comment>
         <translation>Global</translation>
@@ -1978,22 +1978,22 @@
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar cálculo completo na caixa de mensagem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="318"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="317"/>
         <source>Formula wizard</source>
         <translation>Assistente de fórmulas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="340"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="339"/>
         <source>Description:</source>
         <translation>Descrição:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="371"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="370"/>
         <source>Move measurement up</source>
         <translation>Mover medida para cima</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="388"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="386"/>
         <source>Move measurement down</source>
         <translation>Mover medida para baixo</translation>
     </message>
@@ -2684,44 +2684,44 @@ Values and intervals will not be imported.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="154"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="609"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="607"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="159"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="614"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="612"/>
         <source>The calculated value</source>
         <translation>Valor calculado</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="931"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="934"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="927"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="930"/>
         <source>Lines</source>
         <translation>Linhas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="959"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1001"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="955"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="997"/>
         <source>Line</source>
         <translation>Linha</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="964"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1048"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1090"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="960"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1044"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1086"/>
         <source>Length</source>
         <translation>Comprimento</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1043"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1085"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1127"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1039"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1081"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1123"/>
         <source>Curve</source>
         <translation>Curva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1169"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1165"/>
         <source>Arc</source>
         <translation>Arco</translation>
     </message>
@@ -2731,81 +2731,81 @@ Values and intervals will not be imported.</source>
         <translation>Tabelas de variáveis</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="973"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="976"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="969"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="972"/>
         <source>Lines angles</source>
         <translation>Ângulos das linhas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1006"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1132"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1002"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1128"/>
         <source>Angle</source>
         <translation>Ângulo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1015"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1018"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1011"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1014"/>
         <source>Lengths curves</source>
         <translation>Comprimentos de curvas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1099"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1102"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1095"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1098"/>
         <source>Angles curves</source>
         <translation>Ângulo das curvas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1141"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1144"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1137"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1140"/>
         <source>Radiuses arcs</source>
         <translation>Raios dos arcos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1174"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1170"/>
         <source>Radius</source>
         <translation>Raio</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="164"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="619"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="617"/>
         <source>Formula</source>
         <translation>Fórmula</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="176"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="179"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="631"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="634"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="629"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="632"/>
         <source>Details</source>
         <translation>Moldes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="193"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="648"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="646"/>
         <source>Move measurement up</source>
         <translation>Mover medida para cima</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="210"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="665"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="209"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="662"/>
         <source>Move measurement down</source>
         <translation>Mover medida para baixo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="321"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="770"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="319"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="766"/>
         <source>Name:</source>
         <translation>Nome:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="345"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="787"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="343"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="783"/>
         <source>Calculated value:</source>
         <translation>Valor calculado:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="359"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="801"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="357"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="797"/>
         <source>Formula:</source>
         <translation>Fórmula:</translation>
     </message>
@@ -2814,8 +2814,8 @@ Values and intervals will not be imported.</source>
         <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar cálculo completo na caixa de mensagem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="414"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="856"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="412"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="852"/>
         <source>Description:</source>
         <translation>Descrição:</translation>
     </message>
@@ -2828,15 +2828,15 @@ Values and intervals will not be imported.</source>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="557"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="580"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="591"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2154"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2160"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2156"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2162"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="557"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2154"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2160"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2156"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2162"/>
         <source>Empty field.</source>
         <translation>Campo vazio.</translation>
     </message>
@@ -2927,46 +2927,46 @@ Values and intervals will not be imported.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1512"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1577"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1578"/>
         <source>Comma-Separated Values</source>
         <translation>Valores separados por vírgula</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1579"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1580"/>
         <source>values</source>
         <translation>valores</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2243"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2245"/>
         <source>Edit increment</source>
         <translation>Editar incremento</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="331"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="329"/>
         <source>Unique increment name</source>
         <translation>Nome único de incremento</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="383"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="825"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="381"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="821"/>
         <source>Calculation</source>
         <translation>Fórmula</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="396"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="838"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="394"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="834"/>
         <source>Formula wizard</source>
         <translation>Assistente de fórmulas</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="60"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="515"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="513"/>
         <source>Search</source>
         <translation>Buscar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1057"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1060"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1053"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="1056"/>
         <source>Curves control point lengths</source>
         <translation>Comprimentos dos pontos de controle da curva</translation>
     </message>
@@ -2976,25 +2976,25 @@ Values and intervals will not be imported.</source>
         <translation>Resultado inválido. O valor é infinito ou não é um valor numérico. Verifique seus cálculos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="442"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="897"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="440"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="893"/>
         <source>Refresh a pattern with all changes you made</source>
         <translation>Atualizar molde com todas as alterações realizadas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="445"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="900"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="443"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="896"/>
         <source>Refresh</source>
         <translation>Atualizar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="501"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="504"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="499"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="502"/>
         <source>Preview calculations</source>
         <translation>Prévia dos cálculos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="780"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="776"/>
         <source>Unique variable name</source>
         <translation>Nome único de variável</translation>
     </message>
@@ -3016,7 +3016,7 @@ Values and intervals will not be imported.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="74"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="529"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="527"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1073"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1104"/>
         <source>0 results</source>
@@ -3060,22 +3060,22 @@ O significado das classes de caracteres \w, \d, etc., bem como o significado de 
         <translation type="vanished">F3</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="263"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="718"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1582"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="261"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="714"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1583"/>
         <source>Export to CSV</source>
         <translation>Exportar para CSV</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="279"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="728"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="277"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="724"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1516"/>
         <source>Import from CSV</source>
         <translation>Importar de CSV</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="338"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="912"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="336"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="908"/>
         <source>Units:</source>
         <translation>Unidades:</translation>
     </message>
@@ -9551,6 +9551,11 @@ This action cannot be undone.</source>
         <translation>Salvar molde</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1244"/>
+        <source>Export Final Measurements to CSV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1252"/>
         <source>Load Measurements</source>
         <translation>Carregar medidas</translation>
@@ -10866,11 +10871,6 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1142"/>
-        <source>Final Measurements (Tape)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="148"/>
         <source>Information block</source>
         <translation type="unfinished"></translation>
@@ -10932,6 +10932,11 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="1142"/>
+        <source>Final Measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1161"/>
         <source>Assembly marks</source>
         <translation type="unfinished"></translation>
@@ -10979,11 +10984,6 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1233"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow.ui" line="1244"/>
-        <source>Export Final Measurements to CSV (Tape)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11762,94 +11762,94 @@ This action cannot be undone.</source>
 <context>
     <name>MainWindowsNoGUI</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1656"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1658"/>
         <source>unnamed</source>
         <translation>sem nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="479"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="480"/>
         <source>Couldn&apos;t prepare data for creation layout</source>
         <translation>Não foi possível preparar os dados para a criação do plano de corte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="575"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="791"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1103"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="577"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="793"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1105"/>
         <source>Can&apos;t create a path</source>
         <translation>Não foi possível criar um caminho</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1336"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1339"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1338"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1341"/>
         <source>Preparing details for layout</source>
         <translation>Preparando moldes para o encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1068"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1521"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1070"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1523"/>
         <source>Pattern</source>
         <translation>Modelagem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1673"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1675"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1674"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1676"/>
         <source>Value</source>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1701"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1713"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1731"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1703"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1715"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1733"/>
         <source>Export final measurements error.</source>
         <translation>Erro ao exportar as medidas finais.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1703"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1705"/>
         <source>Value in line %1 is infinite or NaN. Please, check your calculations.</source>
         <translation>O valor na linha %1 é infinito ou não é um número. Verifique seus cálculos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1714"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1716"/>
         <source>Parser error at line %1: %2.</source>
         <translation>Erro de análise na linha %1: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1732"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1734"/>
         <source>File error %1.</source>
         <translation>Erro de arquivo %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="482"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="483"/>
         <source>One or more pattern pieces are bigger than the paper format you selected. Please, select a bigger paper format.</source>
         <translation>Uma ou mais peças são maiores do que o formato de papel selecionado. Selecione um formato de papel maior.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1675"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1677"/>
         <source>Description</source>
         <translation>Descrição</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1786"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1788"/>
         <source>Measurement file has unknown format.</source>
         <translation>Arquivo de medidas tem formato desconhecido.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1809"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1872"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1811"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1874"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1873"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1875"/>
         <source>Measurement file doesn&apos;t include all required measurements.</source>
         <translation>O arquivo de medidas não inclui todas as medidas necessárias.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1879"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1881"/>
         <source>Measurement file doesn&apos;t include all required measurements.
 
 Missing: %1
@@ -11862,39 +11862,39 @@ Faltando: %1
 Deseja selecionar outro arquivo?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1882"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1884"/>
         <source>Missing Measurements</source>
         <translation>Medidas ausentes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1905"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1907"/>
         <source>Select Measurement File</source>
         <translation>Selecione o arquivo de medidas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1897"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1901"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1899"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1903"/>
         <source>Multisize measurements</source>
         <translation>Medidas tamanhos múltiplos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1897"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1901"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1899"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1903"/>
         <source>Individual measurements</source>
         <translation>Medidas individuais</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1874"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1876"/>
         <source>Please, additionally provide: %1</source>
         <translation>Por favor, forneça adicionalmente: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="486"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="487"/>
         <source>Timeout.</source>
         <translation>Timeout.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="489"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="490"/>
         <source>Process has been stoped because of exception.</source>
         <translation>O processo foi interrompido devido a uma exceção.</translation>
     </message>
@@ -22785,85 +22785,85 @@ Do you want to continue?</source>
 <context>
     <name>VAbstractMainWindow</name>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="169"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="170"/>
         <source>Confirm format rewriting</source>
         <translation>Confirmar reescrever formato</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="170"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="171"/>
         <source>This file is using previous format version v%1. The current is v%2. Saving the file with this app version will update the format version for this file. This may prevent you from be able to open the file with older app versions. Do you really want to continue?</source>
         <translation>O arquivo foi salvo usando formato de versão anterior v%1. A atual é v%2. 
 Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em uma versão anterior do programa. Deseja continuar?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="202"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="203"/>
         <source>Comma-Separated Values</source>
         <translation>Valores separados por vírgula</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="204"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="205"/>
         <source>values</source>
         <translation>valores</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="206"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="207"/>
         <source>Export to CSV</source>
         <translation>Exportar para CSV</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="296"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="297"/>
         <source>Cannot set permissions for %1 to writable.</source>
         <translation>Não foi possível atribuir acesso de gravação a %1.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="297"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="298"/>
         <source>Could not save the file.</source>
         <translation>Não foi possível salvar o arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="321"/>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="327"/>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="334"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="322"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="328"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="335"/>
         <source>Locking file</source>
         <translation>Arquivo bloqueado</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="322"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="323"/>
         <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Este arquivo já foi aberto em outra janela. Ignore caso deseje continuar (não recomendado, pode causar corrupção dos dados).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="328"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="329"/>
         <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Não foi possível criar o arquivo bloqueado, por falta de permissões. Ignore caso deseje continuar (não recomendado, pode causar corrupção dos dados).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="335"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="336"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Ocorreu um erro desconhecido, como por exemplo, uma partição cheia impediu a gravação do arquivo bloqueado. Ignore caso deseje continuar (não recomendado, pode causar corrupção dos dados).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="356"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="357"/>
         <source>This file already opened in another window.</source>
         <translation>Este arquivo já foi aberto em outra janela.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="360"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="361"/>
         <source>The lock file could not be created, for lack of permissions.</source>
         <translation>Não foi possível criar o arquivo bloqueado, por falta de permissões.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="364"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="365"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file.</source>
         <translation>Ocorreu um erro desconhecido, como por exemplo, uma partição cheia impediu a gravação do arquivo bloqueado.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="278"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="279"/>
         <source>The file has no write permissions.</source>
         <translation>O arquivo não tem permissões para gravação.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="279"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="280"/>
         <source>Do you want to change the permissions?</source>
         <translation>Deseja alterar as permissões?</translation>
     </message>

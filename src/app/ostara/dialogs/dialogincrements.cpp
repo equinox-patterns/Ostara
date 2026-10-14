@@ -1530,6 +1530,7 @@ void DialogIncrements::ImportIncrements()
     }
 
     DialogExportToCSV dialog(this);
+    dialog.setWindowIcon(VTheme::ThemedIcon(QStringLiteral("file-arrow-up")));
     dialog.SetWithHeader(VAbstractApplication::VApp()->Settings()->GetCSVWithHeader());
     dialog.SetSelectedMib(VAbstractApplication::VApp()->Settings()->GetCSVCodec());
     dialog.SetSeparator(VAbstractApplication::VApp()->Settings()->GetCSVSeparator());
@@ -1598,6 +1599,7 @@ void DialogIncrements::ExportIncrements()
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
 
     DialogExportToCSV dialog(this);
+    dialog.setWindowIcon(VTheme::ThemedIcon(QStringLiteral("file-arrow-up")));
     dialog.SetWithHeader(settings->GetCSVWithHeader());
     dialog.SetSelectedMib(settings->GetCSVCodec());
     dialog.SetSeparator(settings->GetCSVSeparator());

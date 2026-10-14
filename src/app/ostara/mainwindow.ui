@@ -1139,7 +1139,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Final Measurements (Tape)</string>
+    <string>Final Measurements</string>
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+I</string>
@@ -1241,7 +1241,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Export Final Measurements to CSV (Tape)</string>
+    <string>Export Final Measurements to CSV</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

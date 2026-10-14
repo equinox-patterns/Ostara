@@ -286,8 +286,7 @@
             <string notr="true"/>
            </property>
            <property name="icon">
-            <iconset theme="go-down">
-             <normaloff>../../../libs/vtools/dialogs/support</normaloff>../../../libs/vtools/dialogs/support</iconset>
+            <iconset theme="go-down"/>
            </property>
            <property name="iconSize">
             <size>
@@ -374,8 +373,7 @@
             <string notr="true"/>
            </property>
            <property name="icon">
-            <iconset theme="go-up">
-             <normaloff>../../tape</normaloff>../../tape</iconset>
+            <iconset theme="go-up"/>
            </property>
           </widget>
          </item>
@@ -391,8 +389,7 @@
             <string notr="true"/>
            </property>
            <property name="icon">
-            <iconset theme="go-down">
-             <normaloff>../../tape</normaloff>../../tape</iconset>
+            <iconset theme="go-down"/>
            </property>
           </widget>
          </item>

@@ -60,6 +60,10 @@ public:
     static auto GetPixmapResource(const QString &root, const QString &iconName) -> QPixmap;
     static auto GetResourceName(const QString &root, const QString &iconName) -> QString;
 
+    /// The icon of the active theme, from its base name: `:/icons/{light,dark}/<baseName>_{light,dark}.svg`.
+    /// The one place that knows how a themed icon is named — the idiom was copied by hand in six files.
+    static auto ThemedIcon(const QString &baseName) -> QIcon;
+
     static auto ColorSheme() -> VColorSheme;
     static auto DefaultThemeName() -> QString;
     static void InitApplicationStyle();

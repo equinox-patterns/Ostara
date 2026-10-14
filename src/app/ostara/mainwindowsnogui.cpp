@@ -55,6 +55,7 @@
 #include "dialogs/dialogsavelayout.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 #include "widgets/InfoBlock/oinfoblockexport.h"
+#include "vtheme.h"
 #include <QAction>
 #include <QSet>
 
@@ -505,6 +506,7 @@ void MainWindowsNoGUI::ExportFMeasurementsToCSV()
     }
 
     DialogExportToCSV dialog(this);
+    dialog.setWindowIcon(VTheme::ThemedIcon(QStringLiteral("file-arrow-up")));
     dialog.SetWithHeader(VAbstractApplication::VApp()->Settings()->GetCSVWithHeader());
     dialog.SetSelectedMib(VAbstractApplication::VApp()->Settings()->GetCSVCodec());
     dialog.SetSeparator(VAbstractApplication::VApp()->Settings()->GetCSVSeparator());

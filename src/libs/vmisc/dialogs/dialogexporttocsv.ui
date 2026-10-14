@@ -16,10 +16,6 @@
   <property name="windowTitle">
    <string>Options</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../../../app/tape/share/resources/tapeicon.qrc">
-    <normaloff>:/tapeicon/64x64/logo.png</normaloff>:/tapeicon/64x64/logo.png</iconset>
-  </property>
   <property name="modal">
    <bool>true</bool>
   </property>
@@ -221,7 +217,6 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../app/tape/share/resources/tapeicon.qrc"/>
  </resources>
  <connections>
   <connection>

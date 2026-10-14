@@ -32,6 +32,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vsysexits.h"
 #include "../vpropertyexplorer/checkablemessagebox.h"
+#include "../vtheme/vtheme.h"
 #include "dialogs/dialogexporttocsv.h"
 
 #include <QAction>
@@ -394,6 +395,7 @@ void VAbstractMainWindow::ExportDataToCSV()
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
 
     DialogExportToCSV dialog(this);
+    dialog.setWindowIcon(VTheme::ThemedIcon(QStringLiteral("file-arrow-up")));
     dialog.SetWithHeader(settings->GetCSVWithHeader());
     dialog.SetSelectedMib(settings->GetCSVCodec());
     dialog.SetSeparator(settings->GetCSVSeparator());

@@ -500,6 +500,13 @@ auto VTheme::GetResourceName(const QString &root, const QString &iconName) -> QS
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VTheme::ThemedIcon(const QString &baseName) -> QIcon
+{
+    const QString theme = ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark") : QStringLiteral("light");
+    return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 VTheme::VTheme(QObject *parent)
   : QObject(parent)
 {
