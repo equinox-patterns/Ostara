@@ -1068,7 +1068,8 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
                                      << OToolMoveBatch::ToolType      /*7*/
                                      << OToolPleat::ToolType          /*8*/
                                      << OToolDartCap::ToolType        /*9*/
-                                     << OToolFlounceSpiral::ToolType; /*10*/
+                                     << OToolFlounceSpiral::ToolType /*10*/
+                                     << OToolPleat::ToolTypeMid;      /*11*/
 
     switch (opers.indexOf(type))
     {
@@ -1104,6 +1105,11 @@ void VPattern::ParseOperationElement(VMainGraphicsScene *scene, QDomElement &dom
             break;
         case 10: // OToolFlounceSpiral::ToolType
             ParseToolFlounceSpiral(scene, domElement, parse);
+            break;
+        case 11: // OToolPleat::ToolTypeMid
+            // The same tool, the same element, and the one word that says the line the user drew is the middle of
+            // its pleat: ExtractPleat reads it on the element itself (see OPleatOrigin).
+            ParseToolPleat(scene, domElement, parse);
             break;
         default:
             throw VException(tr("Unknown operation type '%1'.").arg(type));

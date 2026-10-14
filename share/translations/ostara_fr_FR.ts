@@ -9081,6 +9081,11 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Pli</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="541"/>
+        <source>Middle pleat tool</source>
+        <translation>Pli milieu</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="136"/>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="734"/>
         <source>Tools</source>
@@ -9678,14 +9683,29 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Sélectionnez les objets du contour &lt;b&gt;dans l&apos;ordre&lt;/b&gt; : tous dans le sens horaire ou tous dans le sens antihoraire, sans jamais mélanger les deux - les points des lignes de départ comprises. Puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp"/>
+        <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the two points of the middle line included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
+        <translation>Sélectionnez les objets du contour &lt;b&gt;dans l&apos;ordre&lt;/b&gt; : tous dans le sens horaire ou tous dans le sens antihoraire, sans jamais mélanger les deux - les deux points de la ligne du milieu compris. Puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2755"/>
         <source>Pleat</source>
         <translation>Pli</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2779"/>
+        <source>Middle pleat</source>
+        <translation>Pli milieu</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2758"/>
         <source>Pleat: fold the fabric back on itself along a departure line</source>
         <translation>Pli : replier le tissu sur lui-même le long d&apos;une ligne de départ du pli</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.ui" line="2782"/>
+        <source>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</source>
+        <translation>Pli milieu : poser un pli au centre d&apos;une pièce, sur la ligne de son milieu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="14"/>
@@ -14568,6 +14588,11 @@ Cette action ne peut pas être annulée.</translation>
 </context>
 <context>
     <name>ODialogPleat</name>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="374"/>
+        <source>Middle pleat</source>
+        <translation>Pli milieu</translation>
+    </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="96"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1202"/>
@@ -23601,6 +23626,12 @@ Voulez-vous continuer ?</translation>
         <translation>Outil « Pli »</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="537"/>
+        <source>Tool &apos;Middle pleat&apos;</source>
+        <comment>shortcut for action</comment>
+        <translation>Outil « Pli milieu »</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
         <source>Zoom in</source>
         <comment>shortcut for action</comment>
@@ -25173,6 +25204,12 @@ Voulez-vous continuer ?</translation>
         <source>Pleat</source>
         <comment>operation</comment>
         <translation>Pli</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
+        <source>Middle pleat</source>
+        <comment>operation</comment>
+        <translation>Pli milieu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
@@ -28973,6 +29010,11 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="396"/>
         <source>Tool pleat</source>
         <translation>Outil pli</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp"/>
+        <source>Tool middle pleat</source>
+        <translation>Outil pli milieu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="913"/>

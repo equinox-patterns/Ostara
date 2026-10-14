@@ -60,6 +60,7 @@ class QGraphicsSceneContextMenuEvent;
 using namespace Qt::Literals::StringLiterals;
 
 const QString OToolPleat::ToolType = QStringLiteral("pleat");
+const QString OToolPleat::ToolTypeMid = QStringLiteral("pleatMid");
 const QString OToolPleat::TagPleats = QStringLiteral("pleats");
 const QString OToolPleat::AttrFirstPoint = QStringLiteral("firstPoint");
 const QString OToolPleat::AttrSecondPoint = QStringLiteral("secondPoint");
@@ -116,9 +117,9 @@ auto PleatValues(quint32 idTool, const QVector<OPleatDeparture> &departures, con
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief The whole plan of the pleats: how far each line was carried, and the mark of each end of each pleat. */
 auto MakePlan(quint32 idTool, const QVector<OPleatDeparture> &departures, const QVector<SourceItem> &source,
-              const VContainer *data) -> OPleatPlan
+              const VContainer *data, OPleatOrigin origin) -> OPleatPlan
 {
-    return OPleatRule::Compose(departures, PleatValues(idTool, departures, data), source, data);
+    return OPleatRule::Compose(departures, PleatValues(idTool, departures, data), source, data, origin);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -318,7 +319,8 @@ void CreateDestination(OToolPleatInitData &initData)
         OPleatSupport::Resolve(departure.second, initData.data);
     }
 
-    const OPleatPlan plan = MakePlan(initData.id, initData.departures, initData.source, initData.data);
+    const OPleatPlan plan = MakePlan(initData.id, initData.departures, initData.source, initData.data,
+                                     initData.origin);
     const OOperationDestination<OPleatTransform> destination((OPleatTransform(plan)));
 
     if (initData.typeCreation == Source::FromGui)
@@ -348,6 +350,7 @@ OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent
   : VAbstractOperation(initData, parent),
     m_departures(initData.departures),
     m_foldLine(initData.foldLine),
+    m_origin(initData.origin),
     m_display(initData.display)
 {
     InitOperatedObjects();
@@ -380,7 +383,7 @@ auto OToolPleat::SyncDestination(const QVector<SourceItem> &source) -> QVector<D
         return m_destination;
     }
 
-    const OPleatPlan plan = MakePlan(m_id, m_departures, source, getData());
+    const OPleatPlan plan = MakePlan(m_id, m_departures, source, getData(), m_origin);
     const OOperationDestination<OPleatTransform> destination((OPleatTransform(plan)));
 
     QVector<DestinationItem> newDestination;
@@ -428,6 +431,7 @@ void OToolPleat::SetDialog()
     }
 
     dialogTool->CheckDependencyTreeComplete();
+    dialogTool->SetOrigin(m_origin);
     dialogTool->SetPleat(m_departures, m_foldLine);
     dialogTool->SetDisplay(m_display);
     dialogTool->SetFigureObjectsInUse(FigureObjectsInUse());
@@ -519,6 +523,7 @@ auto OToolPleat::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *
     OToolPleatInitData initData;
     initData.departures = dialogTool->GetDepartures();
     initData.foldLine = dialogTool->IsFoldLineShown();
+    initData.origin = dialogTool->Origin();
     initData.display = dialogTool->GetDisplay();
     initData.source = dialogTool->GetSourceObjects();
     initData.lines = OOperationLines::Collect(dialogTool->GetLineSources());
@@ -713,7 +718,7 @@ void OToolPleat::SyncDisplay(const QVector<SourceItem> &source)
         OPleatSupport::Resolve(departure.second, getData());
     }
 
-    const OPleatPlan plan = MakePlan(m_id, m_departures, source, getData());
+    const OPleatPlan plan = MakePlan(m_id, m_departures, source, getData(), m_origin);
     OPleatDisplay::EnsureIds(m_display, m_departures, m_foldLine, plan, source, m_destination, getData());
 }
 
@@ -1069,7 +1074,7 @@ void OToolPleat::SetVisualization()
         visual->SetPreviewLines(lines);
 
         // No line is being edited here: the ends of every line are drawn at the same light.
-        visual->SetPleat(m_departures, OPleatEnd{}, -1);
+        visual->SetPleat(m_departures, OPleatEnd{}, -1, m_origin);
         visual->SetMode(Mode::Show);
         visual->RefreshGeometry();
     }
@@ -1145,7 +1150,8 @@ void OToolPleat::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 //---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::SavePleat(QDomElement &tag) const
 {
-    doc->SetAttribute(tag, AttrType, ToolType);
+    // The one word that says which of the two the operation is (see OPleatOrigin).
+    doc->SetAttribute(tag, AttrType, m_origin == OPleatOrigin::Middle ? ToolTypeMid : ToolType);
     doc->SetAttribute(tag, AttrFoldLine, m_foldLine);
 
     SaveDepartures(doc, tag, m_departures);
@@ -1203,6 +1209,10 @@ void OToolPleat::SaveDepartures(VAbstractPattern *doc, QDomElement &tag,
 //---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::ExtractPleat(const QDomElement &domElement, OToolPleatInitData &initData)
 {
+    initData.origin = (VAbstractPattern::GetParametrString(domElement, AttrType, ToolType) == ToolTypeMid)
+                          ? OPleatOrigin::Middle
+                          : OPleatOrigin::FirstArm;
+
     initData.foldLine = VAbstractPattern::GetParametrBool(domElement, AttrFoldLine, trueStr);
     initData.departures.clear();
 
@@ -1213,6 +1223,11 @@ void OToolPleat::ExtractPleat(const QDomElement &domElement, OToolPleatInitData 
              item = item.nextSiblingElement(VAbstractOperation::TagItem))
         {
             initData.departures.append(DepartureOf(item));
+
+            if (initData.origin == OPleatOrigin::Middle)
+            {
+                break; // a pleat given by its middle is one pleat: the first line is read, and only it
+            }
         }
 
         break; // Only the first element is read, exactly as the operation lines are: an operation has one.

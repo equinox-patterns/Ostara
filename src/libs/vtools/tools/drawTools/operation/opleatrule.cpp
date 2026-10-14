@@ -262,12 +262,12 @@ auto OPleatPlan::Place(const OPleatEnd &prise, int departure, int line) const ->
     // What the pleats took this point with: its own pleat is the line itself, and is added place by place.
     QPointF carried = moves.value(prise.pointId, QPointF());
     const int index = static_cast<int>(sources.indexOf(prise.pointId));
-    if (place.start >= 0 && index >= place.start && index <= place.last)
+    if (place.given <= 0. && place.start >= 0 && index >= place.start && index <= place.last)
     {
         carried -= place.step * place.pleats;
     }
 
-    return prise.position + carried + place.step * line;
+    return prise.position + carried + place.step * (line - place.given);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -323,7 +323,8 @@ auto OPleatFailureText(OPleatFailure failure) -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVector<qreal> &values,
-                         const QVector<SourceItem> &source, const VContainer *data) -> OPleatPlan
+                         const QVector<SourceItem> &source, const VContainer *data, OPleatOrigin origin)
+    -> OPleatPlan
 {
     OPleatPlan plan;
 
@@ -382,6 +383,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
         place.normal = NormalOf(departure, side);
         place.step = place.normal * (2. * values.at(index)); // one pleat takes twice the value it shows
         place.pleats = (departure.kind == OPleatKind::Double) ? 2 : 1;
+        place.given = (origin == OPleatOrigin::Middle) ? place.pleats / 2. : 0.;
     }
 
     // The pleats are numbered in the order the user gave their lines, which is the order the figure holds them
@@ -400,12 +402,36 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
     {
         QPointF move;
 
-        for (const OPleatPlace &place : std::as_const(plan.places))
+        for (int departure = 0; departure < plan.places.size(); ++departure)
         {
-            if (place.start >= 0 && index >= place.start && index <= place.last)
+            const OPleatPlace &place = plan.places.at(departure);
+
+            if (place.given <= 0.)
             {
-                move += place.step * place.pleats;
+                if (place.start >= 0 && index >= place.start && index <= place.last)
+                {
+                    move += place.step * place.pleats;
+                }
+
+                continue;
             }
+
+            // **The variant of the pleat laid on the middle of a piece: the two halves of the outline travel, in
+            // opposite directions, by the value of the pleat times the number of pleats it holds** — one value for a
+            // simple pleat, two for a double, because a double holds two pleats inside it. The pleat taken on its
+            // first arm, by contrast, carries one region two values per pleat. The two points the user drew are the
+            // bounds of both halves and stand on the fold: they do not move, and their two copies are the arms.
+            // Everything else is the pleat, unchanged (see PleatMid.md).
+            const OPleatDeparture &line = departures.at(departure);
+            const quint32 id = source.at(index).id;
+            if (id == line.first.pointId || id == line.second.pointId)
+            {
+                continue;
+            }
+
+            const bool inFirstRun = place.start >= 0 && index >= place.start && index <= place.last;
+            const QPointF half = place.step * (place.pleats / 2.);
+            move += (inFirstRun ? half : -half);
         }
 
         plan.moves.insert(source.at(index).id, move);
@@ -470,7 +496,138 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     return plan;
                 }
 
-                const QPointF e = edge.edgeDirection / directionLength;
+                // **The edge read at the point is the line the departure line is drawn on.** A construction line
+                // through the point is answered, because that is what the tool **of the point** draws — and such a
+                // line is parallel to the fold, so no cap can be built on it and the pleat is refused, even when the
+                // piece's edge runs through that very point, drawn by other tools (the two segments of a hem) or by
+                // a curve that **starts** there (a shoulder spline).
+                //
+                // The reading is therefore taken again **with the side the fabric goes**: the outline at the point,
+                // chosen by that side. It happens only where the pleat would be refused, so nothing that is read
+                // today is read differently.
+                QPointF directionHere = edge.edgeDirection;
+                if (qAbs(Dot(directionHere / directionLength, u)) > kPleatParallelCosine)
+                {
+                    // ① a curve carries the edge — the reader is asked with the side the fabric goes; ② the point's
+                    // own tool may draw the edge itself. Both are read here.
+                    const bool sense = edge.secondSense != (rank == 1);
+                    const QPointF read
+                        = OEdgeReader::Direction(edge.pointId, sense ? -place.normal : place.normal, data);
+                    if (not read.isNull())
+                    {
+                        directionHere = read;
+                    }
+
+                    // ③ **The last resort of the cascade: the line to the neighbour in the selection.** When no
+                    // curve answers (①) and the point's own tool draws a line that is not the piece's edge (②), the
+                    // **order of the selected points** answers: the point just before, or just after, the way the
+                    // sense goes — two points always make a line. A pleat has two senses and the edge of a piece may
+                    // offer only one; that is not a refusal, it is the case where the sense is forced (see
+                    // PleatMid.md).
+                    const qreal lengthHere = QLineF(QPointF(), directionHere).length();
+                    if (lengthHere <= kDirectionTolerance
+                        || qAbs(Dot(directionHere / lengthHere, u)) > kPleatParallelCosine)
+                    {
+                        int at = -1;
+                        for (int index = 0; index < plan.sources.size(); ++index)
+                        {
+                            if (plan.sources.at(index) == edge.pointId)
+                            {
+                                at = index;
+                                break;
+                            }
+                        }
+
+                        const int way = sense ? 1 : -1; // the sense the cap follows: the point before it, or after
+                        for (const int side_ : {way, -way})
+                        {
+                            const int neighbour = at + side_;
+                            if (at < 0 || neighbour < 0 || neighbour >= plan.sources.size())
+                            {
+                                continue; // nothing on that side: the piece's edge, which is no refusal
+                            }
+
+                            const QPointF other = OEdgeReader::Position(plan.sources.at(neighbour), data);
+                            const QPointF line = other - edge.position;
+                            if (QLineF(QPointF(), line).length() > kDirectionTolerance)
+                            {
+                                directionHere = line;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                const QPointF e = directionHere / QLineF(QPointF(), directionHere).length();
+                // **Where a curve carries the edge, it decides first.** A tangent only meets a curve where it is
+                // taken: an edge whose tangent at the point is parallel to the move is *not* flat when the curve it
+                // belongs to bends away from it — and reading it flat would draw no cap at all on an edge that is
+                // plainly there (PleatMid.md, and the pleat taken on its first arm met this first). The flat edge is
+                // the one no curve carries: a straight tracing, whose tangent is the whole of it.
+                const bool secondSense = edge.secondSense != (rank == 1);
+
+                // Where a curve carries the edge, the cap is read on the curve itself: its apex is the point where
+                // that curve meets the fold line — the fold line then runs from edge to edge — and its two sides
+                // are the piece of the edge that runs to that point and that piece flipped about the fold line,
+                // which is what the fold does to it (see OPleatCapRule). A tangent only meets a curve where it is
+                // taken: the V followed the right axis and the wrong shape, and the fold left the difference.
+                //
+                // Which edge, and which fold line, is what the sense decides, since the two lines of the opening
+                // are two places of the same departure line:
+                //
+                // - the first sense follows the edge **as it is drawn**, the one that leaves the point into the
+                //   region — the notch reads the other one, being counted on the side the fold leaves free — and
+                //   the fold line is read where it stands;
+                // - the second one follows the edge **the move carries**, that is the outline on the other side of
+                //   the point: the piece's edge runs through it, and the fabric comes back from there. That side
+                //   is a step further, so the fold line is read a step back, and the whole figure lands a step on:
+                //   on the place the move carried the line to, which is where that V opens.
+                const QPointF side = secondSense ? -place.normal : place.normal;
+                const QPointF carry = (plan.Place(edge, departure, rank) - edge.position)
+                                      + (secondSense ? place.step : QPointF{});
+                // **The cap of a pleat laid on the middle of a piece is a portion of the edge**, taken from the arm
+                // over the value of the pleat, turned over by the arm and then by the fold line — never a line read
+                // across the pleat (see PleatMid.md, and Sophie's drawing: BustedeBase.ostara, 1052 to 1076). The
+                // arm is the copy of the line the user drew, so the portion is read on the edge as the pattern drew
+                // it and carried there; the tip is where the arm's turning lays it on the fold line.
+                if (place.given > 0.)
+                {
+                    // **Which arm this cap is read on.** A simple pleat has one fold and two arms, and the sense
+                    // says which of the two its cap leans on. A double has two folds and an arm for **each** of its
+                    // pleats: the first is read on the piece's near arm, the second on the far one — its own arm,
+                    // whichever way the folds lie.
+                    const int armHere = (place.pleats > 1) ? (rank == 0 ? 0 : place.pleats)
+                                                           : (secondSense ? rank + 1 : rank);
+                    const QPointF armPoint = plan.Place(edge, departure, armHere);
+                    const OPleatCapSides portion = OPleatCapRule::Portion(
+                        edge, side, QLineF(armPoint, armPoint + (centre1 - centre0)), QLineF(centre0, centre1),
+                        values.at(departure), armPoint - edge.position, data);
+
+                    if (not portion.edge.isNull() && not portion.image.isNull())
+                    {
+                        const QVector<QPointF> points = portion.edge->GetPoints();
+                        mark.point = portion.tip.isNull() && not points.isEmpty() ? points.last() : portion.tip;
+                        mark.portion = portion.edge;
+                        mark.turned = portion.image;
+                        mark.place = armHere;
+                        plan.marks.append(mark);
+                        continue;
+                    }
+                }
+
+                const OPleatCapPlacement curved
+                    = OPleatCapRule::Curved(edge, side, QLineF(centre0 - carry, centre1 - carry), carry, data);
+                if (not curved.point.isNull())
+                {
+                    mark.point = curved.point;
+                    mark.edgeId = curved.edgeId;
+                    mark.length = curved.length;
+                    mark.fromStart = curved.fromStart;
+                    mark.place = secondSense ? rank + 1 : rank;
+                    plan.marks.append(mark);
+                    continue;
+                }
+
                 const qreal alongMove = Dot(e, place.normal);
 
                 if (qAbs(alongMove) > kPleatParallelCosine)
@@ -498,40 +655,6 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 // is the whole difference between a pleat and the one beside it — so its cap opens the other way.
                 // Swapping the two ends of its opening is what says so, and it is the only difference: the sides
                 // still join the same two lines, only the point of the V moves to the other side of them.
-                const bool secondSense = edge.secondSense != (rank == 1);
-
-                // Where a curve carries the edge, the cap is read on the curve itself: its apex is the point where
-                // that curve meets the fold line — the fold line then runs from edge to edge — and its two sides
-                // are the piece of the edge that runs to that point and that piece flipped about the fold line,
-                // which is what the fold does to it (see OPleatCapRule). A tangent only meets a curve where it is
-                // taken: the V followed the right axis and the wrong shape, and the fold left the difference.
-                //
-                // Which edge, and which fold line, is what the sense decides, since the two lines of the opening
-                // are two places of the same departure line:
-                //
-                // - the first sense follows the edge **as it is drawn**, the one that leaves the point into the
-                //   region — the notch reads the other one, being counted on the side the fold leaves free — and
-                //   the fold line is read where it stands;
-                // - the second one follows the edge **the move carries**, that is the outline on the other side of
-                //   the point: the piece's edge runs through it, and the fabric comes back from there. That side
-                //   is a step further, so the fold line is read a step back, and the whole figure lands a step on:
-                //   on the place the move carried the line to, which is where that V opens.
-                const QPointF side = secondSense ? -place.normal : place.normal;
-                const QPointF carry = (plan.Place(edge, departure, rank) - edge.position)
-                                      + (secondSense ? place.step : QPointF{});
-                const OPleatCapPlacement curved
-                    = OPleatCapRule::Curved(edge, side, QLineF(centre0 - carry, centre1 - carry), carry, data);
-                if (not curved.point.isNull())
-                {
-                    mark.point = curved.point;
-                    mark.edgeId = curved.edgeId;
-                    mark.length = curved.length;
-                    mark.fromStart = curved.fromStart;
-                    mark.place = secondSense ? rank + 1 : rank;
-                    plan.marks.append(mark);
-                    continue;
-                }
-
                 const QPointF base = secondSense ? copy : origin;
                 const QPointF carrier = base + e * (QLineF(QPointF(), place.step).length() * kCarrierDistance);
 

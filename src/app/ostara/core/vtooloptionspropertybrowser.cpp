@@ -241,7 +241,7 @@ void VToolOptionsPropertyBrowser::ClearPropertyBrowser()
 void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were used in switch.");
 
     switch (item->type())
     {
@@ -393,8 +393,13 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<OToolMoveBatch>(item, tr("Tool move by batch"), MoveBatchProperties());
             break;
         case OToolPleat::Type:
-            ShowToolOptions<OToolPleat>(item, tr("Tool pleat"), PleatProperties());
+        {
+            // The two tools of the family share this class: the header says which one the dock is showing.
+            const auto *pleat = qgraphicsitem_cast<OToolPleat *>(item);
+            const bool middle = pleat != nullptr && pleat->Origin() == OPleatOrigin::Middle;
+            ShowToolOptions<OToolPleat>(item, middle ? tr("Tool middle pleat") : tr("Tool pleat"), PleatProperties());
             break;
+        }
         case OToolFlounceSpiral::Type:
             ShowToolOptions<OToolFlounceSpiral>(item, tr("Flounce spiral"), FlounceSpiralProperties());
             break;
@@ -433,7 +438,7 @@ void VToolOptionsPropertyBrowser::UpdateOptions()
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {
@@ -652,7 +657,7 @@ void VToolOptionsPropertyBrowser::userChangedData(VPE::VProperty *property)
     }
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were used in switch.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were used in switch.");
 
     switch (m_currentItem->type())
     {

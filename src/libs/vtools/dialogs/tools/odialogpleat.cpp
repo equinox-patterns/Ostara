@@ -26,6 +26,9 @@
 
 #include "odialogpleat.h"
 
+#include <QFile>
+#include <QTextStream>
+
 #include <algorithm>
 
 #include <QCheckBox>
@@ -72,10 +75,6 @@ constexpr int kPenIconWidth = 80;
 constexpr int kPenIconHeight = 14;
 constexpr int kColorIconSize = 20;
 constexpr int kTableHeight = 90;
-
-/** How parallel to a departure line an edge has to be for no cap to exist there — the same tolerance the rule
- *  itself uses to say that the two lines never meet. */
-constexpr qreal kUnusableEdgeTolerance = kPleatTolerance;
 
 /** What a departure line that holds no value yet is given while the gesture runs: the caps are judged on the
  *  canvas, and a cap is a direction — no value, however small, changes the answer. */
@@ -361,6 +360,26 @@ auto ODialogPleat::BoxInUse(int pleat, int end, bool notch) const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODialogPleat::SetOrigin(OPleatOrigin origin)
+{
+    m_origin = origin;
+
+    if (not Middle())
+    {
+        return;
+    }
+
+    // A pleat laid on its middle is one pleat, and the line the user drew is that middle: there is no series of lines
+    // to show, to add or to take away. The table and its two buttons say nothing here, and are left out of the window.
+    m_table->hide();
+    m_add->hide();
+    m_remove->hide();
+    m_editorRow = 0;
+    setWindowTitle(tr("Middle pleat"));
+    RefreshCapLabels();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODialogPleat::SetDisplay(const OPleatDisplay &display)
 {
     m_display = display;
@@ -408,7 +427,7 @@ auto ODialogPleat::Values(const QVector<OPleatDeparture> &departures, bool nomin
 auto ODialogPleat::MakePlan(bool nominal) const -> OPleatPlan
 {
     const QVector<OPleatDeparture> departures = ShownDepartures();
-    return OPleatRule::Compose(departures, Values(departures, nominal), GetSourceObjects(), &data);
+    return OPleatRule::Compose(departures, Values(departures, nominal), GetSourceObjects(), &data, m_origin);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -501,6 +520,53 @@ void ODialogPleat::RefreshNotchState()
     ui->checkBoxCap1Sense->setEnabled(cap1 && !double_);
     ui->checkBoxCap2Sense->setEnabled(cap2 && !double_);
 
+    // **A pleat read at the edge of a piece has only one sense.** The fabric lies on one side only, so the other
+    // sense has no edge to follow — and that is not a refusal: the box is held on the sense the pleat can take,
+    // greyed and ticked for sense 2, greyed and clear for sense 1. As long as **one** sense exists, the pleat exists
+    // (see PleatMid.md).
+    const auto senseBuilds = [this, row](int end, bool sense)
+    {
+        if (row < 0 || row >= m_departures.size())
+        {
+            return false;
+        }
+
+        OPleatDeparture &departure = m_departures[row];
+        bool &kept = (end == 0) ? departure.first.secondSense : departure.second.secondSense;
+        const bool stood = kept;
+        kept = sense;
+        const bool builds = MakePlan(true).failure == OPleatFailure::None;
+        kept = stood; // the pattern is asked, never changed: what the user chose is put back as it was
+        return builds;
+    };
+
+    const auto holdSense = [this, row, &senseBuilds](int end, QCheckBox *box)
+    {
+        if (box == nullptr || !box->isEnabled())
+        {
+            return;
+        }
+
+        const bool buildsSecond = senseBuilds(end, true);
+        const bool buildsFirst = senseBuilds(end, false);
+        if (buildsSecond == buildsFirst)
+        {
+            return; // both stand, or neither does: the sense stays the user's to choose, and the refusal is said
+        }
+
+        const QSignalBlocker block(box);
+        box->setChecked(buildsSecond);
+        box->setEnabled(false);
+        if (row >= 0 && row < m_departures.size())
+        {
+            bool &kept = (end == 0) ? m_departures[row].first.secondSense : m_departures[row].second.secondSense;
+            kept = buildsSecond;
+        }
+    };
+
+    holdSense(0, ui->checkBoxCap1Sense);
+    holdSense(1, ui->checkBoxCap2Sense);
+
     // The kind is not a box: it is the second fold itself. Going back to a simple pleat would take the objects of that
     // fold out of the file, so the combo is held too as long as one of them is used.
     const bool secondFoldInUse = pleats == 2
@@ -532,7 +598,7 @@ void ODialogPleat::RefreshFigure()
     operation->SetInPattern(this->toolId != NULL_ID);
     operation->SetObjects(SourceToObjects(GetSourceObjects()));
     operation->SetPreviewLines(PreviewLines());
-    operation->SetPleat(m_applied, m_pending, m_editorRow);
+    operation->SetPleat(m_applied, m_pending, m_editorRow, m_origin);
 
     if (not VAbstractValApplication::VApp()->getCurrentScene()->items().contains(operation))
     {
@@ -634,97 +700,79 @@ auto ODialogPleat::EdgePrompt(int rank) const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODialogPleat::DiscardUnusableEdges(int departure)
-{
-    // What the tool read, and what no cap can be built from, is not an answer. The dialog has no way of its own to
-    // name an edge: it would open on a plan its OK refuses, with nothing in the window able to fix it. The point is
-    // asked for on the canvas instead, and the dialog opens only once every cap it needs can be built.
-    if (departure < 0 || departure >= m_departures.size())
-    {
-        return;
-    }
-
-    OPleatDeparture &line = m_departures[departure];
-
-    const QPointF fold = line.second.position - line.first.position;
-    const qreal foldLength = QLineF(QPointF(), fold).length();
-
-    if (foldLength > 0.)
-    {
-        // An edge that runs along the departure line meets it nowhere: the two lines are parallel, and no cap
-        // exists. It is the line of the fold itself — or a construction line drawn through both points of the
-        // departure line — and never the edge of the piece.
-        const QPointF alongFold = fold / foldLength;
-        for (int rank = 0; rank < 2; ++rank)
-        {
-            OPleatEnd &end = (rank == 1) ? line.second : line.first;
-            if (not end.showCap || end.edgePointId != NULL_ID)
-            {
-                continue; // no cap there, or the user has already said which point carries its edge
-            }
-
-            const qreal length = QLineF(QPointF(), end.edgeDirection).length();
-            if (length <= kUnusableEdgeTolerance)
-            {
-                continue; // nothing was read: the point is asked for anyway
-            }
-
-            const QPointF edge = end.edgeDirection / length;
-            if (qAbs(edge.x() * alongFold.x() + edge.y() * alongFold.y()) > kPleatParallelCosine)
-            {
-                end.edgeDirection = QPointF();
-            }
-        }
-    }
-
-    if (MakePlan(true).failure != OPleatFailure::EdgeAlongFold)
-    {
-        return; // the plan complains about something else, or about nothing
-    }
-
-    // The plan still refuses an edge for a reason of its own: nothing the tool read may be trusted, and the user is
-    // asked for both ends it concerns.
-    for (int rank = 0; rank < 2; ++rank)
-    {
-        OPleatEnd &end = (rank == 1) ? line.second : line.first;
-        if (end.showCap && end.edgePointId == NULL_ID
-            && QLineF(QPointF(), end.edgeDirection).length() > kUnusableEdgeTolerance)
-        {
-            end.edgeDirection = QPointF();
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto ODialogPleat::AskForEdge() -> bool
 {
-    for (int departure = 0; departure < m_departures.size(); ++departure)
+    // **What is asked about is the plan, never a direction read here.** Whether a cap can be built is a question
+    // about the piece's edge, and the edge is read by the rule, **with the side that cap goes**: at a point where
+    // two curves meet, or on the middle line of a piece — where the arms are copies of the point the user drew and
+    // the edge beside it is two edges — a direction read at the point says nothing about the branch a cap follows.
+    // The old test read it here, found the construction line that runs through the point, called it parallel to the
+    // fold line and threw it away: the user was asked for a point on a cap the rule could build by itself (see
+    // PleatMid.md, and OPleatRule).
+    const OPleatPlan plan = MakePlan(true);
+
     {
-        DiscardUnusableEdges(departure);
+        // ⚠️ TRACE TEMPORAIRE (15-10-2026) — à RETIRER une fois le pli milieu réglé.
+        QFile file(QStringLiteral("/tmp/ostara-pleatmid.log"));
+        if (file.open(QIODevice::Append | QIODevice::Text))
+        {
+            QTextStream(&file) << "[ODialogPleat] AskForEdge : mode=" << (Middle() ? "milieu" : "premier bras")
+                               << " echec=" << static_cast<int>(plan.failure) << " marques=" << plan.marks.size()
+                               << '\n';
+        }
+    }
+
+    if (plan.failure == OPleatFailure::None)
+    {
+        return true; // every cap the operation asks for is built: nothing to ask
+    }
+
+    if (plan.failure != OPleatFailure::UnresolvedEdge && plan.failure != OPleatFailure::EdgeAlongFold)
+    {
+        // The plan complains about something else — a side, a value, a line — and the window is what says it.
+        return true;
     }
 
     for (int departure = 0; departure < m_departures.size(); ++departure)
     {
         const OPleatDeparture &line = m_departures.at(departure);
+        const OPleatPlace place = plan.places.value(departure, OPleatPlace{});
 
-        for (int rank = 0; rank < 2; ++rank)
+        for (int rank = 0; rank < place.pleats; ++rank)
         {
-            const OPleatEnd &end = (rank == 0) ? line.first : line.second;
-            if (not end.showCap || end.edgePointId != NULL_ID)
-            {
-                continue; // no cap there, or the user has already said which point carries its edge
-            }
+            const int pleat = place.firstPleat + rank;
 
-            if (QLineF(QPointF(), end.edgeDirection).length() > kUnusableEdgeTolerance)
+            for (int end = 0; end < 2; ++end)
             {
-                continue; // the tool read the edge from the point's own tool: nothing to ask
-            }
+                const OPleatEnd &edge = (end == 0) ? line.first : line.second;
+                if (not edge.showCap || edge.edgePointId != NULL_ID)
+                {
+                    continue; // no cap there, or the user has already said which point carries its edge
+                }
 
-            m_edgeDeparture = departure;
-            m_edgeRank = rank;
-            m_step = Step::Edge;
-            emit ToolTip(EdgePrompt(rank));
-            return false;
+                if (plan.Mark(pleat, end) != nullptr)
+                {
+                    continue; // the rule built that cap: it needs no point from the user
+                }
+
+                // That cap is the one the rule could not build: the point that carries its edge is asked for, and
+                // the gesture stops there until it has one.
+                {
+                    // ⚠️ TRACE TEMPORAIRE (15-10-2026) — à RETIRER une fois le pli milieu réglé.
+                    QFile file(QStringLiteral("/tmp/ostara-pleatmid.log"));
+                    if (file.open(QIODevice::Append | QIODevice::Text))
+                    {
+                        QTextStream(&file) << "[ODialogPleat] point demandé : pli=" << pleat << " bout=" << end
+                                           << " (0 = vert, 1 = rouge)\n";
+                    }
+                }
+
+                m_edgeDeparture = departure;
+                m_edgeRank = end;
+                m_step = Step::Edge;
+                emit ToolTip(EdgePrompt(end));
+                return false;
+            }
         }
     }
 
@@ -1094,11 +1142,19 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
             m_pointRank = 0;
             RefreshCapLabels();
 
-            // The line is complete: its caps are asked for, and the gesture then goes on with the next departure
-            // line — that is what "several pleats in one pass" means. Enter is what opens the dialog.
+            // The line is complete: its caps are asked for. A pleat given by its middle is a single one — its line
+            // defines one middle, and a second line would be a second pleat — so the window opens at once, exactly as
+            // Enter opens it for the pleat taken on its first arm, which goes on with the next line.
             if (AskForEdge())
             {
-                emit ToolTip(PointPrompt());
+                if (Middle())
+                {
+                    GoToEditing(0);
+                }
+                else
+                {
+                    emit ToolTip(PointPrompt());
+                }
             }
         }
 
@@ -1153,11 +1209,19 @@ void ODialogPleat::ChosenObject(quint32 id, const SceneObject &type)
         {
             // The edge was the last thing the gesture was missing: it goes back to picking the points of the next
             // line, where Enter opens the window. Without this the step stayed on the edge — the next click rewrote
-            // the edge it had just been given, and the window could never be opened again.
+            // the edge it had just been given, and the window could never be opened again. A single pleat has no next
+            // line: its window opens here.
             m_applied = m_departures;
-            m_step = Step::Points;
-            m_pointRank = 0;
-            emit ToolTip(PointPrompt());
+            if (Middle())
+            {
+                GoToEditing(0);
+            }
+            else
+            {
+                m_step = Step::Points;
+                m_pointRank = 0;
+                emit ToolTip(PointPrompt());
+            }
             RefreshFigure();
         }
     }
@@ -1200,6 +1264,10 @@ void ODialogPleat::changeEvent(QEvent *event)
         ui->retranslateUi(this);
         m_formulaValue->setLabelText(tr("Value of the finished pleat:"));
         m_table->setHorizontalHeaderLabels({tr("Pleat"), tr("Value"), tr("Kind")});
+        if (Middle())
+        {
+            setWindowTitle(tr("Middle pleat"));
+        }
         m_add->setText(tr("Add a pleat"));
         m_remove->setText(tr("Remove the pleat"));
         m_kind->setItemText(0, tr("Simple"));

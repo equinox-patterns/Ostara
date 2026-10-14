@@ -66,6 +66,7 @@
 #include <QtGlobal>
 
 #include "../../toolsdef.h"
+#include "vgeometry/vabstractcurve.h"
 #include "opleatend.h"
 
 class VContainer;
@@ -75,6 +76,16 @@ enum class OPleatKind : int
 {
     Simple = 1,
     Double = 2
+};
+
+/** @brief Which place of its pleat the line the user drew **is**: the first arm, or the middle.
+ *
+ *  The only thing that tells the pleat taken from the fabric's edge from the one laid at the centre of a piece (see
+ *  PleatMid.md): the places then run from the line the user drew, one step apart. */
+enum class OPleatOrigin : int
+{
+    FirstArm = 0,
+    Middle = 1
 };
 
 /** @brief The side of the departure line a pleat is built on: the side the fabric of its region is on.
@@ -148,6 +159,11 @@ struct OPleatPlace
 {
     QPointF normal{};
     QPointF step{};
+
+    /** @brief The place the line the user drew stands at, counted in steps from its own first arm: 0 when that line
+     *  **is** the first arm, half the pleats when it is the middle. */
+    qreal given{0.};
+
     int pleats{1};
     int firstPleat{0};
     int start{-1};
@@ -189,6 +205,12 @@ struct OPleatMark
      *  drawn, the one the move carried it to when it follows the edge the move carries — the two sides of the V then
      *  start from the two places, and the order of the two is what tells one sense from the other. */
     int place{0};
+
+    /** @brief The two sides of the cap, built by the plan itself when the pleat is laid on the **middle** of a piece:
+     *  the portion of the edge turned over by the arm, and what the fold makes of it. The figure then draws these,
+     *  and never asks the cap rule again — the cap is a portion of the edge, not a line read across the pleat. */
+    QSharedPointer<VAbstractCurve> portion{};
+    QSharedPointer<VAbstractCurve> turned{};
 };
 
 /**
@@ -293,7 +315,8 @@ public:
      *  ordered selection: its order is the contract, and the region of a pleat is the run that lies between the
      *  two points of its line. */
     static auto Compose(const QVector<OPleatDeparture> &departures, const QVector<qreal> &values,
-                        const QVector<SourceItem> &source, const VContainer *data) -> OPleatPlan;
+                        const QVector<SourceItem> &source, const VContainer *data,
+                        OPleatOrigin origin = OPleatOrigin::FirstArm) -> OPleatPlan;
 
 private:
     Q_DISABLE_COPY_MOVE(OPleatRule) // NOLINT

@@ -302,6 +302,87 @@ auto OPleatCapRule::Curved(const OPleatEnd &end, const QPointF &side, const QLin
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPleatCapRule::Portion(const OPleatEnd &end, const QPointF &side, const QLineF &armLine,
+                            const QLineF &foldLine, qreal value, const QPointF &armOffset, const VContainer *data)
+    -> OPleatCapSides
+{
+    OPleatCapSides sides;
+
+    if (end.edgePointId != NULL_ID || data == nullptr || value <= 0. || armLine.isNull() || foldLine.isNull())
+    {
+        return sides; // a designated edge is a line, and a line has no portion to follow
+    }
+
+    const OEdgeCarrier carrier = OEdgeReader::Carrier(end.pointId, side, data);
+    if (carrier.objectId == NULL_ID || not data->HasObject(carrier.objectId))
+    {
+        return sides; // no curve carries the edge: the two straight tracings are exact, and they stay
+    }
+
+    const QSharedPointer<VAbstractCurve> curve
+        = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carrier.objectId));
+    qreal from = -1.;
+    qreal fullLength = 0.;
+    if (curve.isNull() || not StandsOn(curve, end.position, &from, &fullLength))
+    {
+        return sides;
+    }
+
+    const bool fromStart = from <= fullLength / 2.;
+
+    try
+    {
+        // **The portion: the edge, from the arm, over the value of the pleat.** Measured along the curve, as the
+        // drawing measures it — a line follows the same rule, its own length being its direction.
+        const qreal cut = fromStart ? (from + value) : (from - value);
+        if (cut < 0. || cut > fullLength)
+        {
+            return sides; // the edge is shorter than the value: there is no portion to take
+        }
+
+        const OPleatNotchHalves halves = OPleatNotchRule::Cut(curve, cut, QString(), {}, {});
+        const QSharedPointer<VAbstractCurve> portion = fromStart ? halves.first : halves.second;
+        if (portion.isNull())
+        {
+            return sides;
+        }
+
+        // The edge is read where the pattern drew it, and a pleat only translates: the portion is carried to the
+        // place of this arm, then turned over by the arm — that is what lays its far end on the fold line — and
+        // turned over again by the fold line, which is what the fold does to it.
+        const QSharedPointer<VAbstractCurve> atArm = MovedCurve(portion, armOffset);
+        sides.edge = FlippedCurve(atArm, armLine);
+        sides.image = FlippedCurve(sides.edge, foldLine);
+
+        if (sides.edge.isNull() || sides.image.isNull())
+        {
+            return OPleatCapSides{};
+        }
+
+        // The tip: where the side the arm turned over meets the fold line. Its far end is the meeting the drawing
+        // shows; when the portion runs past it, the crossing is what the fold reads.
+        const QVector<QPointF> points = sides.edge->GetPoints();
+        if (not points.isEmpty())
+        {
+            sides.tip = points.last();
+        }
+
+        for (const QSharedPointer<VAbstractCurve> &one : {sides.edge, sides.image})
+        {
+            one->SetDerivative(true);
+            one->SetColor(curve->GetColor());
+            one->SetPenStyle(curve->GetPenStyle());
+        }
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        sides = OPleatCapSides{};
+    }
+
+    return sides;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPleatCapRule::Sides(const OPleatMark &mark, const OPleatEnd &prise, const QPointF &origin, const QLineF &foldLine,
                           const QString &apexName, const VContainer *data) -> OPleatCapSides
 {

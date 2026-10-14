@@ -56,11 +56,13 @@ OVisToolPleat::OVisToolPleat(const VContainer *data, QGraphicsItem *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OVisToolPleat::SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, int active)
+void OVisToolPleat::SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, int active,
+                             OPleatOrigin origin)
 {
     m_departures = departures;
     m_pending = pending;
     m_active = active;
+    m_origin = origin;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -133,7 +135,7 @@ void OVisToolPleat::RefreshGeometry()
         return;
     }
 
-    const OPleatPlan plan = OPleatRule::Compose(m_departures, Values(), Source(), GetData());
+    const OPleatPlan plan = OPleatRule::Compose(m_departures, Values(), Source(), GetData(), m_origin);
     if (plan.failure != OPleatFailure::None)
     {
         // A pleat the rule refuses is no pleat: the objects that travel are shown as they are, and only the gesture

@@ -1440,7 +1440,7 @@ void VPattern::DrawToolsCommonAttributes(const QDomElement &domElement, quint32 
 auto VPattern::ActiveDrawBoundingRect() const -> QRectF
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were used.");
 
     QRectF rec;
 
@@ -1529,6 +1529,7 @@ auto VPattern::ActiveDrawBoundingRect() const -> QRectF
             case Tool::Spread:
             case Tool::MoveBatch:
             case Tool::Pleat:
+            case Tool::PleatMid:
             case Tool::FlounceSpiral:
             case Tool::DartCap: // a dart cap is an operation now: its figure, and not a point's line
                 rec = ToolBoundingRect<VAbstractOperation>(rec, tool.GetId());

@@ -99,6 +99,7 @@ auto BorrowedToolIcons() -> const QHash<QString, QString> &
                                                   {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")},
                                                   {QStringLiteral("move_batch"), QStringLiteral("el_arc.png")},
                                                   {QStringLiteral("pleat"), QStringLiteral("triangle.png")},
+                                                  {QStringLiteral("pleat_mid"), QStringLiteral("height.png")},
                                                   {QStringLiteral("flounce_spiral"), QStringLiteral("point_of_intersection_circles.png")}};
     return borrowed;
 }
@@ -536,6 +537,8 @@ void DrawToolBar::InitializeGroups()
             {QStringLiteral("move_batch"),               tr("Move by batch tool"),                              nullptr, nullptr},
             // Same again: the pleat borrows the icon of the triangle.
             {QStringLiteral("pleat"),                    tr("Pleat tool"),                                      nullptr, nullptr},
+            // Same again: the middle pleat borrows the icon of the perpendicular point on a segment.
+            {QStringLiteral("pleat_mid"),                tr("Middle pleat tool"),                               nullptr, nullptr},
             // Same again: the flounce spiral waits for artwork of its own and borrows the icon of the point at
             // the intersection of two circles, which is the construction it draws.
             {QStringLiteral("flounce_spiral"),           tr("Flounce spiral tool"),                             nullptr, nullptr},
@@ -709,6 +712,19 @@ void DrawToolBar::InitializeGroups()
         btn->setIconSize(QSize(24, 24));
         btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("triangle.png")));
         m_buttonMap.insert(QStringLiteral("pleat"), btn);
+    }
+
+    // The middle pleat borrows the icon of the perpendicular point on a segment — the same one its action carries.
+    if (!m_buttonMap.contains(QStringLiteral("pleat_mid")))
+    {
+        auto *btn = new QToolButton(m_root);
+        btn->setObjectName(QStringLiteral("drawToolBtn"));
+        btn->setAutoRaise(true);
+        btn->setCheckable(true);
+        btn->setFixedSize(kButtonSize, kButtonSize);
+        btn->setIconSize(QSize(24, 24));
+        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("height.png")));
+        m_buttonMap.insert(QStringLiteral("pleat_mid"), btn);
     }
 
     // Update the button pointer in the ToolItem

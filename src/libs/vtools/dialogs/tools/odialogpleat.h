@@ -71,6 +71,16 @@ public:
     auto GetDisplay() const -> OPleatDisplay;
 
     void SetPleat(const QVector<OPleatDeparture> &departures, bool foldLine);
+
+    /** @brief Which of the two tools of the family this window is: the pleat taken on its first arm, or the one laid
+     *  at the centre of a piece (see OPleatOrigin).
+     *
+     *  A pleat given by its middle is a **single** one — one line defines one middle — so the table of the lines and
+     *  its two buttons have nothing to say and are not shown, and the gesture opens the window as soon as the line is
+     *  laid instead of asking for the next one. Set once, when the window is built for the gesture; a window opened
+     *  on an existing pleat is told by the tool itself (see OToolPleat::SetDialog). */
+    void SetOrigin(OPleatOrigin origin);
+    auto Origin() const -> OPleatOrigin { return m_origin; }
     void SetDisplay(const OPleatDisplay &display);
 
     /** @brief The objects of the figure another tool is built on (see OToolPleat::FigureObjectsInUse): the boxes that
@@ -132,6 +142,9 @@ private:
 
     QVector<OPleatDeparture> m_departures{};
 
+    /** Where the line the user draws sits among the places of its pleat: the tool's own nature (see SetOrigin). */
+    OPleatOrigin m_origin{OPleatOrigin::FirstArm};
+
     /** The departure lines the canvas shows: the ones the tool holds, or, for a pleat not yet built, the ones the
      *  gesture has just laid. What the editor holds is NOT it — a value, a kind, a cap or a notch changed in the
      *  window waits for Apply, and the canvas must not move before it (see RefreshFigure). */
@@ -156,6 +169,9 @@ private:
      *  edited has been named already, a pleat being built has not. */
     bool m_sourcesNamed{false};
     int m_namedPleats{0};
+
+    /** @brief True when the line the user drew is the **middle** of its pleat (see SetOrigin). */
+    auto Middle() const -> bool { return m_origin == OPleatOrigin::Middle; }
 
     /** @brief How many pleats the departure lines make: one per simple line, two per double one. */
     auto Pleats() const -> int;
@@ -202,13 +218,6 @@ private:
 
     /** @brief The status bar's question while an edge is missing: which cap, said by its colour, and what to click. */
     auto EdgePrompt(int rank) const -> QString;
-
-    /** @brief Drop the edges the tool read that no cap can be built from, at one departure line.
-     *
-     *  The dialog has no way of its own to answer a cap it cannot build: opening it on such a plan would leave the
-     *  OK refusing, with nothing in the window able to name an edge. What the tool read and cannot use is therefore
-     *  not an answer — the point is asked for on the canvas instead (see AskForEdge). */
-    void DiscardUnusableEdges(int departure);
 
     /** @brief Name every object that travels after the copy it will become: <name>__m1 for one pleat, __m2 for two,
      *  and so on — the generation the manual construction gave them, so the two are told apart on the canvas.

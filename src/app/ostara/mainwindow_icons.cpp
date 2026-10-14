@@ -37,7 +37,7 @@ void MainWindow::SetupDrawToolsIcons()
     const auto resource = QStringLiteral("toolicon");
 
     // This check helps to find missed tools
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were handled.");
 
     ui->actionLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("line.png")));
     ui->actionEndLineTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("segment.png")));
@@ -102,6 +102,8 @@ void MainWindow::SetupDrawToolsIcons()
     ui->actionMoveBatchTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("el_arc.png")));
     // The pleat reuses the triangle icon (see Pleat.md).
     ui->actionPleatTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("triangle.png")));
+    // The middle pleat borrows the icon of the perpendicular point on a segment (see PleatMid.md).
+    ui->actionPleatMidTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("height.png")));
     ui->actionTrueDartsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("true_darts.png")));
     ui->actionNewDetailTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("new_detail.png")));
     ui->actionUnionDetailsTool->setIcon(VTheme::GetIconResource(resource, QStringLiteral("union.png")));

@@ -30,8 +30,12 @@
 // there rather than keep a second copy of the same value.
 #include "opleatrule.h"
 
+#include <algorithm>
+
 #include <QLineF>
+#include <QPair>
 #include <QPointF>
+#include <QSet>
 #include <QSharedPointer>
 #include <QVector>
 
@@ -373,6 +377,86 @@ void CandidatesFromCurves(const QPointF &position, const VContainer *data, quint
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief The **segments** of the pattern that meet a point, each with the way that runs from the point into it.
+ *
+ *  A curve is looked for in the whole pattern; a segment was not — only the one the point's **own** tool draws
+ *  through it was read, and every other tool's was ignored. Yet the two are one question: what does the outline look
+ *  like where this point stands. Leaving it half answered is what refused a pleat whose edge is a hem, drawn as two
+ *  segments by the tools of **its** two ends and not by the tool of the point the user clicked. */
+void CandidatesFromSegments(const QPointF &position, const QPointF &side, const VContainer *data,
+                           QVector<OEdgeCarrier> *candidates)
+{
+    const auto *objects = data->CalculationGObjects();
+    if (objects == nullptr)
+    {
+        return;
+    }
+
+    // Kept apart and sorted before being handed over: the pattern is a hash, and a hash has no order of its own —
+    // two segments meeting at a point would be read in a different order from one parse to the next.
+    QVector<QPair<qreal, QPointF>> found;
+
+    QSet<quint32> read;
+    for (auto it = objects->constBegin(); it != objects->constEnd(); ++it)
+    {
+        const QSharedPointer<VGObject> &object = it.value();
+        if (qSharedPointerDynamicCast<VPointF>(object).isNull())
+        {
+            continue; // only a point knows the tool that drew it, and only that tool knows its segments
+        }
+
+        const quint32 sourceId = (object->getIdObject() != NULL_ID) ? object->getIdObject() : it.key();
+        if (read.contains(sourceId))
+        {
+            continue; // one tool answers once, whichever of its points is read
+        }
+        read.insert(sourceId);
+
+        auto *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::FindTool(sourceId));
+        if (tool == nullptr)
+        {
+            continue;
+        }
+
+        for (const VDrawnSegment &segment : tool->DrawnSegments())
+        {
+            const QPointF first = OEdgeReader::Position(segment.point1, data);
+            const QPointF second = OEdgeReader::Position(segment.point2, data);
+
+            QPointF other;
+            if (QLineF(first, position).length() <= accuracyPointOnLine)
+            {
+                other = second;
+            }
+            else if (QLineF(second, position).length() <= accuracyPointOnLine)
+            {
+                other = first;
+            }
+            else
+            {
+                continue; // that segment does not meet the point
+            }
+
+            const QPointF inward = other - position; // into the segment, away from the point
+            const qreal length = QLineF(QPointF(), inward).length();
+            if (length > kDirectionTolerance)
+            {
+                found.append({Dot(inward / length, side), inward});
+            }
+        }
+    }
+
+    std::sort(found.begin(), found.end(),
+              [](const QPair<qreal, QPointF> &left, const QPair<qreal, QPointF> &right)
+              { return left.first > right.first; });
+
+    for (const QPair<qreal, QPointF> &one : std::as_const(found))
+    {
+        candidates->append({NULL_ID, one.second});
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /** @brief The candidate that leaves the point the way @a side points, or none.
  *
  *  At a cut both halves end at the point and leave it in opposite directions: the side is the only thing that tells
@@ -572,6 +656,43 @@ auto OEdgeReader::Direction(quint32 pointId, const VContainer *data) -> QPointF
         // into a parse, which would refuse the whole pattern for a cap the pleat can do without.
         return {};
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OEdgeReader::Direction(quint32 pointId, const QPointF &side, const VContainer *data) -> QPointF
+{
+    if (data == nullptr || not data->HasObject(pointId) || side.isNull())
+    {
+        return Direction(pointId, data);
+    }
+
+    try
+    {
+        const QSharedPointer<VGObject> object = data->GetGObject(pointId);
+        const QSharedPointer<VPointF> point = qSharedPointerDynamicCast<VPointF>(object);
+        if (point.isNull())
+        {
+            return Direction(pointId, data);
+        }
+
+        const QPointF position = static_cast<QPointF>(*point);
+
+        // The outline the point stands on, and the branch that leaves it the way the fabric goes.
+        QVector<OEdgeCarrier> candidates;
+        CandidatesFromCurves(position, data, NULL_ID, &candidates);
+        CandidatesFromSegments(position, side, data, &candidates);
+
+        if (const OEdgeCarrier chosen = ChosenCarrier(candidates, side); not chosen.inward.isNull())
+        {
+            return chosen.inward;
+        }
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        // fall through to the plain reading, which knows how to answer nothing
+    }
+
+    return Direction(pointId, data);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

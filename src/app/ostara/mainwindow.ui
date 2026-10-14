@@ -2761,6 +2761,27 @@
      <enum>QAction::MenuRole::NoRole</enum>
     </property>
    </action>
+   <action name="actionPleatMidTool">
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="icon">
+     <iconset resource="share/resources/toolicon.qrc">
+      <normaloff>:/toolicon/light/height.png</normaloff>:/toolicon/light/height.png</iconset>
+    </property>
+    <property name="text">
+     <string>Middle pleat</string>
+    </property>
+    <property name="toolTip">
+     <string>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</string>
+    </property>
+    <property name="menuRole">
+     <enum>QAction::MenuRole::NoRole</enum>
+    </property>
+   </action>
    <action name="actionMoveBatchTool">
     <property name="checkable">
      <bool>true</bool>

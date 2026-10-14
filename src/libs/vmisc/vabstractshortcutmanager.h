@@ -139,6 +139,7 @@ enum class VShortcutAction : quint8
     ToolMoveBatch,
     ToolPleat,
     ToolFlounceSpiral,
+    ToolPleatMid,
     LAST_ONE_DO_NOT_USE
 };
 

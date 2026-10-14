@@ -781,8 +781,12 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
         const int place_ = resolved.place;
         const int other = (place_ == rank) ? rank + 1 : rank;
 
+        // A cap the plan built itself — a pleat laid on the middle of a piece — is drawn as it was read: a portion
+        // of the edge turned over by the arm and by the fold line (see OPleatCapRule::Portion).
         const OPleatCapSides sides
-            = OPleatCapRule::Sides(resolved, prise, plan.Place(prise, departure, place_),
+            = (not resolved.portion.isNull() && not resolved.turned.isNull())
+                  ? OPleatCapSides{resolved.portion, resolved.turned, resolved.point}
+                  : OPleatCapRule::Sides(resolved, prise, plan.Place(prise, departure, place_),
                                    QLineF(plan.Place(line.first, departure, rank) + shift,
                                           plan.Place(line.second, departure, rank) + shift),
                                    mark.name, data);

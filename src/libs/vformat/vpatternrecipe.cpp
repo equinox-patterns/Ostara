@@ -373,7 +373,7 @@ auto VPatternRecipe::Draft(const QDomElement &draft) -> QDomElement
 auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QDomElement
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were used in history.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were used in history.");
 
     if (const QDomElement domElem = m_pattern->FindElementById(tool.GetId());
         not domElem.isElement() && tool.IsMandatory())
@@ -493,6 +493,7 @@ auto VPatternRecipe::Step(const VToolRecord &tool, const VContainer &data) -> QD
             case Tool::MoveBatch:
                 return MoveBatch(tool, data);
             case Tool::Pleat:
+            case Tool::PleatMid: // the same step, and the type it carries says which of the two it was
                 return Pleat(tool, data);
             case Tool::FlounceSpiral:
                 return FlounceSpiral(tool, data);
@@ -1362,7 +1363,10 @@ auto VPatternRecipe::Pleat(const VToolRecord &record, const VContainer &data) ->
 
     QDomElement step = createElement(TagStep);
 
-    SetAttribute(step, AttrType, OToolPleat::ToolType);
+    // The word read back by the pattern's parser, and the one that says whether the line is the first arm of the
+    // pleat or its middle (see OPleatOrigin): the step replays the pleat it was built from, either way.
+    SetAttribute(step, AttrType,
+                 tool->Origin() == OPleatOrigin::Middle ? OToolPleat::ToolTypeMid : OToolPleat::ToolType);
 
     // The prise, the value and what each end draws: everything the fold is recomputed from.
     SavePleat(tool, step);

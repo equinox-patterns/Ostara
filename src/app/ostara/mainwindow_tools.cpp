@@ -775,6 +775,26 @@ void MainWindow::ToolPleat(bool checked)
                                          &MainWindow::ApplyDrawDialog<OToolPleat>);
 }
 
+void MainWindow::ToolPleatMid(bool checked)
+{
+    ToolSelectOperationObjects();
+    ToolSelectOperationLines();
+    const QString tooltip =
+        tr("Select the objects of the contour <b>in order</b>: all clockwise or all anticlockwise, "
+           "never mixing the two - the two points of the middle line included. Then <b>%1</b> to confirm")
+            .arg(VModifierKey::EnterKey());
+    SetToolButtonWithApply<ODialogPleat>(checked, Tool::PleatMid, QString(), tooltip,
+                                         &MainWindow::ClosedDrawDialogWithApply<OToolPleat>,
+                                         &MainWindow::ApplyDrawDialog<OToolPleat>);
+
+    // The window is the pleat's own, told which of the two tools of the family it is building: the same rule, and
+    // the one value that says the line the user draws is the middle of its pleat (see OPleatOrigin).
+    if (auto *dialog = qobject_cast<ODialogPleat *>(m_dialogTool.data()))
+    {
+        dialog->SetOrigin(OPleatOrigin::Middle);
+    }
+}
+
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ClosedDialogPiecePath(int result)
@@ -1080,7 +1100,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     auto *dialogTool = new Dialog(pattern, doc, 0, this);
 
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Check if need to extend.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Check if need to extend.");
 
     switch (t)
     {
@@ -1102,6 +1122,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         case Tool::Spread:
         case Tool::MoveBatch:
         case Tool::Pleat:
+        case Tool::PleatMid:
         case Tool::FlounceSpiral:
             // The groups of layers the operation's own layer may join, offered in its dialog.
             dialogTool->SetLayerGroups(doc->LayerGroupNames());
@@ -1534,7 +1555,7 @@ void MainWindow::ApplyPieceDialog(VMainGraphicsScene *scene)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     if (not m_dialogTool.isNull())
@@ -1770,6 +1791,9 @@ void MainWindow::CancelTool()
         case Tool::Pleat:
             ui->actionPleatTool->setChecked(false);
             break;
+        case Tool::PleatMid:
+            ui->actionPleatMidTool->setChecked(false);
+            break;
         case Tool::FlounceSpiral:
             ui->actionFlounceSpiralTool->setChecked(false);
             break;
@@ -1869,7 +1893,7 @@ void MainWindow::ArrowTool(bool checked)
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78, "Not all tools were handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79, "Not all tools were handled.");
 
     if (m_currentTool == m_lastUsedTool)
     {
@@ -2106,6 +2130,10 @@ void MainWindow::LastUsedTool()
         case Tool::Pleat:
             ui->actionPleatTool->setChecked(true);
             ToolPleat(true);
+            break;
+        case Tool::PleatMid:
+            ui->actionPleatMidTool->setChecked(true);
+            ToolPleatMid(true);
             break;
         case Tool::FlounceSpiral:
             ui->actionFlounceSpiralTool->setChecked(true);

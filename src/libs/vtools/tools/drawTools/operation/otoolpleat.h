@@ -65,6 +65,10 @@ struct OToolPleatInitData : VAbstractOperationInitData
      *  where both of them are. */
     bool foldLine{true};
 
+    /** @brief The variant: which place of its pleat the line the user drew is — its first arm, or its middle. A pleat
+     *  laid on the middle is a single one, and the tool then holds exactly one departure line. */
+    OPleatOrigin origin{OPleatOrigin::FirstArm};
+
     OPleatDisplay display{};
 };
 
@@ -90,6 +94,10 @@ public:
     static void SaveDepartures(VAbstractPattern *doc, QDomElement &tag, const QVector<OPleatDeparture> &departures);
 
     static const QString ToolType;
+
+    /** @brief The operation type of the pleat given by its **middle**: the same tool, and the one word that tells the
+     *  two apart (see OPleatOrigin). */
+    static const QString ToolTypeMid;
     static const QString TagPleats;
     static const QString AttrFirstPoint;
     static const QString AttrSecondPoint;
@@ -117,6 +125,8 @@ public:
      *  each end, and the value and the kind of the pleat taken on each of them. Where the ends are, and which way the
      *  edge runs there, are recomputed by every parse. */
     auto Departures() const -> const QVector<OPleatDeparture> & { return m_departures; }
+
+    auto Origin() const -> OPleatOrigin { return m_origin; }
 
     auto IsFoldLineShown() const -> bool { return m_foldLine; }
     void SetFoldLineShown(bool show);
@@ -199,6 +209,7 @@ private:
 
     QVector<OPleatDeparture> m_departures{};
     bool m_foldLine{true};
+    OPleatOrigin m_origin{OPleatOrigin::FirstArm};
     OPleatDisplay m_display{};
 
     /** @brief The two points of the departure line of the first pleat: the fold the whole operation is taken on, and

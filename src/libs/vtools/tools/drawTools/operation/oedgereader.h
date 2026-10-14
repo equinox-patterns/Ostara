@@ -86,6 +86,19 @@ public:
      *  The answer is never normalized, and its orientation carries no meaning: the caller reads a line. */
     static auto Direction(quint32 pointId, const VContainer *data) -> QPointF;
 
+    /** @brief The way the edge runs at a point, read **from one side only**: the outline the point stands on — the
+     *  curves that end there **or** start there, and the segments **of any tool** that meet it — and, among them, the
+     *  one that leaves the point the way @a side points.
+     *
+     *  The plain reading asks only the tool **of the point**, and stops at the first segment that tool draws: a
+     *  construction line drawn through the point is then answered, even when the piece's edge runs through it too —
+     *  and when that construction line happens to be parallel to the fold, no cap is ever built on an edge that is
+     *  plainly drawn. Two segments of **other** tools make the hem of a piece, and a spline that **starts** at a
+     *  shoulder point carries its edge: neither was read (see PleatMid.md).
+     *
+     *  Empty when nothing runs that way: the caller then has nothing to build with, exactly as before. */
+    static auto Direction(quint32 pointId, const QPointF &side, const VContainer *data) -> QPointF;
+
     /** @brief The edge at @a pointId, taken on the side @a side points to.
      *
      *  Where @a Direction answers a line, this answers *which* object carries it and which of the two ways along

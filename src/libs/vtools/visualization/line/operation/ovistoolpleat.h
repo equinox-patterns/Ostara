@@ -71,7 +71,8 @@ public:
      *  @a active is the departure line the dialog is editing, or -1 when there is none: its two ends are the only
      *  ones drawn bright, and the ends of the other lines are dimmed. The colour tells the two ends of a line
      *  apart — green for the first, red for the second — and never which line it is; the light is what says that. */
-    void SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, int active);
+    void SetPleat(const QVector<OPleatDeparture> &departures, const OPleatEnd &pending, int active,
+                  OPleatOrigin origin);
 
     /** @brief Tell the preview that the pleat is already in the pattern.
      *
@@ -94,6 +95,7 @@ private:
     QVector<OPleatDeparture> m_departures{};
     OPleatEnd m_pending{};
     int m_active{-1};
+    OPleatOrigin m_origin{OPleatOrigin::FirstArm};
 
     /** True when the pleat is in the pattern: the preview then keeps the ends of the gesture, and hides what the
      *  pattern draws itself (see SetInPattern). */

@@ -82,6 +82,9 @@ struct OPleatCapSides
 {
     QSharedPointer<VAbstractCurve> edge{};
     QSharedPointer<VAbstractCurve> image{};
+
+    /** @brief Where the side turned over by the arm meets the fold line: the tip of the cap (see PleatMid.md). */
+    QPointF tip{};
 };
 
 /**
@@ -117,6 +120,20 @@ public:
      *
      *  Both are null when the curve is of a kind no cut can split, or when the container no longer holds the edge:
      *  the caller then has nothing to place, exactly as it has nothing for a turned-off cap. */
+    /** @brief The cap of a pleat laid on the **middle** of a piece, built the way the drawing does it.
+     *
+     *  The portion of the edge is taken **from the arm**, along the curve, over the **value of the pleat**; it is
+     *  turned over **by the arm** — which brings its far end onto the fold line, since the arm stands a value from
+     *  it — and then turned over **by the fold line**, which brings it to the other arm. The side the fold carries
+     *  is the first of the two, and @a tip is the point where it meets the fold line: the tip is on the fold line,
+     *  and it is **computed from the arm** (see PleatMid.md and the drawing of 15-10-2026).
+     *
+     *  @a armLine is the arm, @a foldLine the fold line, both read where the pattern draws the edge; @a armOffset
+     *  carries the edge to the place of that arm. Both pointers are null when no curve carries the edge, when the
+     *  edge is shorter than the value, or when the geometry refuses to be read. */
+    static auto Portion(const OPleatEnd &end, const QPointF &side, const QLineF &armLine, const QLineF &foldLine,
+                        qreal value, const QPointF &armOffset, const VContainer *data) -> OPleatCapSides;
+
     static auto Sides(const OPleatMark &mark, const OPleatEnd &prise, const QPointF &origin, const QLineF &foldLine,
                       const QString &apexName, const VContainer *data) -> OPleatCapSides;
 
