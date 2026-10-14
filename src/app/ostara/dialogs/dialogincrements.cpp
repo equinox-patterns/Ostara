@@ -2331,6 +2331,39 @@ auto DialogIncrements::eventFilter(QObject *object, QEvent *event) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief PlaceDialog open the dialog centred on the screen.
+ *
+ * DialogTool places a tool dialog in the upper third so it can grow downward and keep its OK/Cancel/Apply buttons
+ * visible. This dialog has no such buttons — its edits are written as they are made and applied on close — and it is
+ * the size of a workbench, so it opens centred instead. Same idiom as DialogGroup, DialogNewPattern and
+ * OExportTemplateWindow, and it has to be called from showEvent by hand: this dialog's showEvent deliberately skips
+ * DialogTool's, which is the only caller of PlaceDialog — the position came from the window manager before.
+ */
+void DialogIncrements::PlaceDialog()
+{
+    if (const QScreen *screen = this->screen())
+    {
+        const QRect available = screen->availableGeometry();
+        QRect frame = frameGeometry();
+        frame.moveCenter(available.center());
+
+        // Larger than the screen, it cannot be centred on it: pinned to the top and the left, so what it loses is
+        // the far edge rather than both.
+        if (frame.height() > available.height())
+        {
+            frame.moveTop(available.top());
+        }
+        if (frame.width() > available.width())
+        {
+            frame.moveLeft(available.left());
+        }
+
+        move(frame.topLeft());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogIncrements::showEvent(QShowEvent *event)
 {
     // Skip DialogTool implementation
@@ -2350,6 +2383,10 @@ void DialogIncrements::showEvent(QShowEvent *event)
     {
         resize(sz);
     }
+
+    // After the resize, so the dialog is centred on the size it is about to open at and not on the one the .ui
+    // holds. Only on the first show, like the resize above: a dialog the reader has moved stays where they put it.
+    PlaceDialog();
 
     isInitialized = true; // first show windows are held
 }

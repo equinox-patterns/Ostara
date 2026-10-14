@@ -71,6 +71,7 @@ protected:
     auto eventFilter(QObject *object, QEvent *event) -> bool override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void PlaceDialog() override;
     auto IsValid() const -> bool final { return true; }
 private slots:
     void ShowIncrementDetails();
