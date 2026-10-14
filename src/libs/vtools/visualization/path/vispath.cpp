@@ -39,7 +39,8 @@ VisPath::VisPath(const VContainer *data, QGraphicsItem *parent)
   : Visualization(data),
     VCurvePathItem(VColorRole::VisMainColor, parent)
 {
-    setZValue(1); // Show on top real tool
+    // Above everything the pattern draws: the piece is at 10 and the points at 11 and 12 (see kPreviewZ).
+    setZValue(kPreviewZ);
     VisPath::InitPen();
 }
 

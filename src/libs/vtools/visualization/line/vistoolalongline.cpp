@@ -46,7 +46,7 @@
 VisToolAlongLine::VisToolAlongLine(const VContainer *data, QGraphicsItem *parent)
   : VisLine(data, parent)
 {
-    setZValue(2); // Show on top real tool
+    setZValue(kPreviewZ); // Above the pattern's piece and points, not merely above a real tool (see kPreviewZ)
 
     m_lineP1 = InitPoint(VColorRole::VisMainColor, this);
     m_lineP2 = InitPoint(VColorRole::VisMainColor, this); //-V656

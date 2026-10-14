@@ -43,7 +43,8 @@ VisLine::VisLine(const VContainer *data, QGraphicsItem *parent)
   : Visualization(data),
     VScaledLine(VColorRole::VisMainColor, parent)
 {
-    this->setZValue(1); // Show on top of a real tool
+    // Above everything the pattern draws: the piece is at 10 and the points at 11 and 12 (see kPreviewZ).
+    this->setZValue(kPreviewZ);
     SetShowArrows(true);
     VisLine::InitPen();
 }

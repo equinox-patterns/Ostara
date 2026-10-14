@@ -35,7 +35,7 @@
 VisToolSpecialPoint::VisToolSpecialPoint(const VContainer *data, QGraphicsItem *parent)
   : VisLine(data, parent)
 {
-    setZValue(2); // Show on top real tool
+    setZValue(kPreviewZ); // Above the pattern's piece and points, not merely above a real tool (see kPreviewZ)
     setPen(QPen(Qt::NoPen));
 
     m_point = new VSimplePoint(NULL_ID, VColorRole::VisMainColor);

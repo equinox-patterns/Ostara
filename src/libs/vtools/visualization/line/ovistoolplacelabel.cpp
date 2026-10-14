@@ -37,7 +37,7 @@
 OVisToolPlaceLabel::OVisToolPlaceLabel(const VContainer *data, QGraphicsItem *parent)
   : VisLine(data, parent)
 {
-    setZValue(2); // Show on top of the real points
+    setZValue(kPreviewZ); // Above the pattern's points, which are at 11 and 12 (see kPreviewZ)
     setPen(QPen(Qt::NoPen));
 }
 

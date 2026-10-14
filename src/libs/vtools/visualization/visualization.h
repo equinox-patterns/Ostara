@@ -127,6 +127,23 @@ protected:
      *  and curves sit at the 1 InitItem gives them. */
     static constexpr qreal kMarkZ = 2.;
 
+    /** @brief The Z of every preview of a tool — the single number the two roots of the previews share, `VisLine`
+     *  and `VisPath`, and the whole of its meaning is a comparison with **the pattern**.
+     *
+     *  The pattern's own table, which this value answers, is written in three files: the piece at **10**
+     *  (`vtoolseamallowance.cpp`), the handle of a curve at **10,5** (`vcontrolpointspline.cpp`), a point at **11**
+     *  (`vtoolsinglepoint.cpp`, `kPointZ`) and the base point at **12** (`vtoolbasepoint.cpp`, `kBasePointZ`).
+     *
+     *  ⚠️ **The previews were left at 1 on 13-10-2026** (`47ff6de3`), the very commit that raised the points and the
+     *  piece to 10-12: every one of them — the orange echo of the objects the user picks, and the green and red dots
+     *  of the gesture, in **every** operation — passed nine levels under the piece and under the points, where
+     *  nothing could be read. This number is what puts them back above, and the two roots are the only two places it
+     *  is applied: a preview item is a child of its root, so one Z lifts the whole group.
+     *
+     *  The two dots of the gesture stay above the echo by their own Z (@a kMarkZ), which is **relative** to this one
+     *  and did not move — the rule of 10-10-2026 (see InitMark) still holds. */
+    static constexpr qreal kPreviewZ = 12.5;
+
     static auto GetPointItem(QVector<VScaledEllipse *> &points, quint32 i, VColorRole role, QGraphicsItem *parent)
         -> VScaledEllipse *;
     static auto GetCurveItem(QVector<VCurvePathItem *> &curves, quint32 i, VColorRole role, QGraphicsItem *parent)
