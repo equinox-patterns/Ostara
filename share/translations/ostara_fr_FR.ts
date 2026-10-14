@@ -52,7 +52,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/addpatternpiece.cpp" line="46"/>
         <source>add pattern piece %1</source>
-        <translation>Ajouter un élément de patron %1</translation>
+        <translation>Ajouter une pièce de patron %1</translation>
     </message>
 </context>
 <context>
@@ -209,7 +209,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/deletepatternpiece.cpp" line="45"/>
         <source>delete pattern block</source>
-        <translation>supprimer élément de patron</translation>
+        <translation>supprimer une pièce de patron</translation>
     </message>
 </context>
 <context>
@@ -4792,7 +4792,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="102"/>
         <source>New pattern piece</source>
-        <translation>Nouvel élément de patron</translation>
+        <translation>Nouvelle pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="160"/>
@@ -4802,7 +4802,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="166"/>
         <source>Anything worth remembering about this piece…</source>
-        <translation>Ce que vous voulez retenir de cet élément de patron…</translation>
+        <translation>Ce que vous voulez retenir de cette pièce de patron…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="188"/>
@@ -4842,17 +4842,17 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="41"/>
         <source>Pattern piece name:</source>
-        <translation>Nom de l&apos;élément de patron :</translation>
+        <translation>Nom de la pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="48"/>
         <source>Unique pattern piece name</source>
-        <translation>Nom unique de l&apos;élément de patron</translation>
+        <translation>Nom unique de la pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="51"/>
         <source>Choose unique pattern piece name.</source>
-        <translation>Choisir un nom unique pour l&apos;élément de patron.</translation>
+        <translation>Choisir un nom unique pour la pièce.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="17"/>
@@ -9628,7 +9628,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="671"/>
         <source>Save the active pattern piece to the piece library</source>
-        <translation>Enregistrer l&apos;élément de patron actif dans la bibliothèque de pièces</translation>
+        <translation>Enregistrer la pièce de patron active dans la bibliothèque de pièces</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="763"/>
@@ -9866,12 +9866,12 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="651"/>
         <source>New pattern piece</source>
-        <translation>Nouvel élément de patron</translation>
+        <translation>Nouvelle pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="654"/>
         <source>Add new pattern piece</source>
-        <translation>Ajouter un nouvel élément de patron</translation>
+        <translation>Ajouter une nouvelle pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="789"/>
@@ -9931,7 +9931,7 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="646"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="620"/>
         <source>Pattern piece %1</source>
-        <translation>Élément de patron %1</translation>
+        <translation>Pièce de patron %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="242"/>
@@ -10194,12 +10194,12 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="177"/>
         <source>Pattern piece:</source>
-        <translation>Élément de patron :</translation>
+        <translation>Pièce de patron :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="179"/>
         <source>Enter a new label for the pattern piece.</source>
-        <translation>Saisir un nouveau nom pour cet élément de patron.</translation>
+        <translation>Saisir un nouveau nom pour cette pièce de patron.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="846"/>
@@ -10297,7 +10297,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="686"/>
         <source>Config pattern piece</source>
-        <translation>Configurer l&apos;élément de patron</translation>
+        <translation>Configurer la pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="64"/>
@@ -10536,7 +10536,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="585"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Phase de traçage et construction des éléments de patron. Ces éléments constituent l&apos;étape préalable pour passer à la suite : l&apos;extraction et la mise en forme des pièces en &amp;quot;mode Pièces&amp;quot;. Avant de pouvoir passer en &amp;quot;mode Pièces&amp;quot;, vous devrez avoir extrait au moins un contour principal de pièce depuis le mode Traçage.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Phase de traçage et construction des pièces de patron. Ces pièces constituent l&apos;étape préalable pour passer à la suite : l&apos;extraction et la mise en forme des pièces en &amp;quot;mode Pièces&amp;quot;. Avant de pouvoir passer en &amp;quot;mode Pièces&amp;quot;, vous devrez avoir extrait au moins un contour principal de pièce depuis le mode Traçage.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="609"/>
@@ -10571,7 +10571,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="482"/>
         <source>add a pattern piece</source>
-        <translation>ajouter un élément de patron</translation>
+        <translation>ajouter une pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="739"/>
@@ -10760,7 +10760,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1128"/>
         <source>zoom fit best current pattern piece</source>
-        <translation>Zoom optimal sur élément de patron actif</translation>
+        <translation>Zoom optimal sur la pièce de patron active</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2527"/>
@@ -10836,7 +10836,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1300"/>
         <source>Next pattern piece</source>
-        <translation>Élément de patron suivant</translation>
+        <translation>Pièce de patron suivante</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1303"/>
@@ -10846,7 +10846,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1314"/>
         <source>Previous pattern piece</source>
-        <translation>Élément de patron précédent</translation>
+        <translation>Pièce de patron précédente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1317"/>
@@ -10899,7 +10899,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="326"/>
         <source>Create new pattern piece to start working.</source>
-        <translation>Créer un nouvel élément de patron pour commencer.</translation>
+        <translation>Créer une nouvelle pièce de patron pour commencer.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_welcome.cpp" line="180"/>
@@ -11025,7 +11025,7 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="718"/>
         <source>name the objects of a piece</source>
-        <translation>nommer les objets d&apos;un élément de patron</translation>
+        <translation>nommer les objets d&apos;une pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="368"/>
@@ -17645,7 +17645,7 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="46"/>
         <source>Unique pattern piece name</source>
-        <translation>Nom unique de l&apos;élément de patron</translation>
+        <translation>Nom unique de la pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="66"/>
@@ -18294,7 +18294,7 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="35"/>
         <source>Pattern piece name:</source>
-        <translation>Nom de l&apos;élément de patron :</translation>
+        <translation>Nom de la pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="17"/>
@@ -20048,7 +20048,7 @@ L&apos;enregistrer avant de le quitter ?</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.ui" line="198"/>
         <source>Double click calls Zoom fit best for current pattern piece</source>
-        <translation>Double-clic = zoom optimal sur l&apos;élément de patron en cours</translation>
+        <translation>Double-clic = zoom optimal sur la pièce de patron en cours</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesconfigurationpage.ui" line="221"/>
@@ -21995,7 +21995,7 @@ This option will take an affect after restart.</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/renamepp.cpp" line="47"/>
         <source>rename pattern block</source>
-        <translation>renommer élément de patron</translation>
+        <translation>renommer une pièce de patron</translation>
     </message>
 </context>
 <context>
@@ -22983,7 +22983,7 @@ Voulez-vous continuer ?</translation>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabpaths.ui" line="430"/>
         <source>Name of detail:</source>
-        <translation>Nom de la pièce de patron :</translation>
+        <translation>Nom de la pièce :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabpaths.ui" line="413"/>
@@ -23718,19 +23718,19 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
         <source>New pattern piece</source>
         <comment>shortcut for action</comment>
-        <translation>Nouvel élément de patron</translation>
+        <translation>Nouvelle pièce de patron</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
         <source>Next pattern piece</source>
         <comment>shortcut for action</comment>
-        <translation>Élément de patron suivant</translation>
+        <translation>Pièce de patron suivante</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
         <source>Previous pattern piece</source>
         <comment>shortcut for action</comment>
-        <translation>Élément de patron précédent</translation>
+        <translation>Pièce de patron précédente</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
@@ -29035,7 +29035,7 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="376"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="379"/>
         <source>Pattern piece:</source>
-        <translation>Élément de patron :</translation>
+        <translation>Pièce de patron :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="249"/>
@@ -31589,12 +31589,12 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="901"/>
         <source>The layer &quot;%1&quot; is the only one of this piece. An object must always belong to a layer, so a piece keeps at least one - add another layer first, then delete this one.</source>
-        <translation>Le calque « %1 » est le seul de cet élément de patron. Un objet doit toujours appartenir à un calque, donc un élément de patron en garde au moins un - ajoutez un autre calque, puis supprimez celui-ci.</translation>
+        <translation>Le calque « %1 » est le seul de cette pièce de patron. Un objet doit toujours appartenir à un calque, donc une pièce de patron en garde au moins un - ajoutez un autre calque, puis supprimez celui-ci.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1055"/>
         <source>This is the only layer of this piece - there is no other layer to transfer to.</source>
-        <translation>C’est le seul calque de cet élément de patron - il n’y a pas d’autre calque où transférer.</translation>
+        <translation>C’est le seul calque de cette pièce de patron - il n’y a pas d’autre calque où transférer.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1061"/>

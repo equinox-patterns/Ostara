@@ -689,8 +689,7 @@ void MainWindow::on_actionNew_triggered()
         else
         {
             // The piece and the layer it starts in, in one gesture — see AddPP.
-            AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle(),
-                  newPattern.Notes());
+            AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle());
         }
 
         // Normalize to Draw mode (mirrors LoadPattern) so the Details dock/content

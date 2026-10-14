@@ -871,10 +871,8 @@ private:
     /// A new pattern piece AND the layer it starts in: the two are born together, because no object may
     /// ever live outside a layer — and a fresh piece already holds one (its base point). One undo macro
     /// around the whole thing, so a single Ctrl+Z takes the piece and its layer away.
-    ///
-    /// @p notes is what the reader wrote about the piece, written on the block itself — empty means none.
     void AddPP(const QString &PPName, const QString &layerName, const QString &layerColor,
-               const QString &layerPenStyle, const QString &notes);
+               const QString &layerPenStyle);
     /// Write that first layer, put the piece's base point in it and make it the active one. Called from
     /// AddPP, inside its macro; every write is a command so the macro has something to undo.
     void CreateFirstLayer(const QString &layerName, const QString &layerColor, const QString &layerPenStyle,

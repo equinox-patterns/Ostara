@@ -43,7 +43,6 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QMessageBox>
@@ -54,10 +53,8 @@
 
 namespace
 {
-// The .ui's second row, "Units:" — the one a piece added to an existing pattern does not ask. It sits **under**
-// the notes row this dialog inserts, hence the index.
-constexpr int kNotesRow = 1;
-constexpr int kUnitRow = 2;
+// The .ui's second row, "Units:" — the one a piece added to an existing pattern does not ask.
+constexpr int kUnitRow = 1;
 
 // The line-style items carry an ICON ONLY, with no text to fall back on: without the thumbnail size Qt
 // shrinks them to an unreadable 16x16. 80x14 is the size the tool dialogs declare in their .ui
@@ -65,9 +62,6 @@ constexpr int kUnitRow = 2;
 constexpr int kPenIconWidth = 80;
 constexpr int kPenIconHeight = 14;
 constexpr int kColorIconSize = 20;
-
-// Three lines of notes: enough to say something useful, little enough that the dialog stays a dialog.
-constexpr int kNotesHeight = 64;
 
 // 80 % of the row: 8 parts of rule against 1 part of air on each side (welcomeSeparator,
 // templateLanguageSeparator). Stretch factors, not a fixed width, so the rule follows the dialog.
@@ -159,14 +153,6 @@ void DialogNewPattern::BuildLayerFields()
 
     m_layerName = new QLineEdit(tr("Construction"), this);
 
-    // What the reader wants to say about the piece, right under its name: a piece is more than a name, and this is
-    // the only place it can be said. It goes on the block, so it travels into the library with the piece and comes
-    // back with an instance imported from there — and it is never a second truth: an empty note is no attribute.
-    m_notes = new QPlainTextEdit(this);
-    m_notes->setPlaceholderText(tr("Anything worth remembering about this piece…"));
-    m_notes->setTabChangesFocus(true);
-    m_notes->setFixedHeight(kNotesHeight);
-
     m_layerPenStyle = MakeComboBox(this);
     m_layerPenStyle->setMinimumWidth(80);
     m_layerPenStyle->setMaximumWidth(110);
@@ -185,7 +171,6 @@ void DialogNewPattern::BuildLayerFields()
     InitColorCombo(m_layerColor);
     SetColorComboCurrentName(m_layerColor, ColorBlack);
 
-    ui->formLayout->insertRow(kNotesRow, tr("Notes:"), m_notes);
     ui->formLayout->addRow(ruleBar);
     ui->formLayout->addRow(tr("First layer name:"), m_layerName);
     ui->formLayout->addRow(tr("Pen style:"), m_layerPenStyle);
@@ -423,8 +408,3 @@ auto DialogNewPattern::name() const -> QString
     return ui->lineEditName->text();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto DialogNewPattern::Notes() const -> QString
-{
-    return m_notes != nullptr ? m_notes->toPlainText() : QString();
-}

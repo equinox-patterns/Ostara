@@ -665,7 +665,7 @@ void MainWindow::ActionNewDraw_triggered()
 
         qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(dialog.name()));
 
-        AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle(), dialog.Notes());
+        AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle());
         return;
     }
 }

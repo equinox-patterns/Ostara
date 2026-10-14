@@ -36,7 +36,6 @@
 
 class QComboBox;
 class QLineEdit;
-class QPlainTextEdit;
 class VContainer;
 
 namespace Ui
@@ -61,11 +60,6 @@ public:
     ~DialogNewPattern() override;
     auto name() const -> QString;
     auto PatternUnit() const -> Unit;
-
-    /// What the reader wants to say about the piece — free text, and the only thing a piece says besides its
-    /// name. It is written on the block, so it travels into the library with the piece and comes back with an
-    /// instance imported from there.
-    auto Notes() const -> QString;
 
     /// The piece names this pattern already uses. A piece cannot share its name with another one, and the
     /// dialog says so by keeping OK down rather than by asking the question again after the fact.
@@ -106,7 +100,6 @@ private:
     VContainer *m_data;
     bool m_isInitialized{false};
     QStringList m_takenNames;
-    QPlainTextEdit *m_notes{nullptr};
     QLineEdit *m_layerName{nullptr};
     QComboBox *m_layerPenStyle{nullptr};
     QComboBox *m_layerColor{nullptr};
