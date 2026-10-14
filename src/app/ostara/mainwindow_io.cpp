@@ -689,7 +689,8 @@ void MainWindow::on_actionNew_triggered()
         else
         {
             // The piece and the layer it starts in, in one gesture — see AddPP.
-            AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle());
+            AddPP(patternPieceName, newPattern.LayerName(), newPattern.LayerColor(), newPattern.LayerPenStyle(),
+                  newPattern.Notes());
         }
 
         // Normalize to Draw mode (mirrors LoadPattern) so the Details dock/content
@@ -956,7 +957,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             if (hadLabels)
             {
                 QMessageBox::information(this, tr("Labels not supported"),
-                    tr("This pattern contains Valentina labels. Ostara does not use them — they have been "
+                    tr("This pattern contains Valentina labels. Ostara does not use them - they have been "
                        "replaced by the Information block. Conversion is not automatic, your labels have not been "
                        "preserved. The original .val file remains intact."));
             }
@@ -966,7 +967,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             if (hadPinGrainlines)
             {
                 QMessageBox::information(this, tr("Grainlines anchored to pins"),
-                    tr("This pattern contains grainlines anchored to pins. Ostara no longer uses them — these "
+                    tr("This pattern contains grainlines anchored to pins. Ostara no longer uses them - these "
                        "grainlines have been disabled. Please place them again in the Details mode. Conversion is not "
                        "automatic. The original .val file remains intact."));
             }
@@ -1428,7 +1429,7 @@ auto MainWindow::GetMeasurementFileName() -> QString
         return {};
     }
 
-    auto shownName = QStringLiteral("  —  ");
+    auto shownName = QStringLiteral("  -  ");
     shownName += QFileInfo(AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath())).fileName();
 
     return shownName;

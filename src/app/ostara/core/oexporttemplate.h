@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   17/09/2026
  **
- **  @brief  One saved assembly-mark template — a name, and the three blocks it draws with.
+ **  @brief  One saved assembly-mark template - a name, and the three blocks it draws with.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -46,10 +46,10 @@ class QDomDocument;
  * **A default-constructed one is what a new template is.** Its three blocks keep the values their
  * own headers declare, which is the state the editor opens in; the template shipped with the
  * installation is a *file*, written by OExportTemplateStorage, and is not what this starts from.
- * Sophie's decision, 17-09-2026.
+ * Decided on 17-09-2026.
  *
  * Serialised as XML against `://schema/assemblymark_template/v1.0.0.xsd`, in a `.oamt` file under
- * ~/Ostara/PDFTemplate — the cartouche's arrangement, one format further on.
+ * ~/Ostara/PDFTemplate - the cartouche's arrangement, one format further on.
  */
 struct OExportTemplate
 {

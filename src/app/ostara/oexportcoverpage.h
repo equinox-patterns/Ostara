@@ -68,7 +68,7 @@ auto SeatOf(const OExportPrintModel *model) -> Seat;
 /// @brief The block a reserved cover page occupies — **the page's own rectangle**, at the
 ///        document margin from the plan's top-left corner. Empty unless the seat is InSheet.
 ///
-/// ⚠️ **The page's size and not an A4's**, decided by Sophie on 22-09-2026: *« le rectangle doit
+/// ⚠️ **The page's size and not an A4's**, decided on 22-09-2026: *« le rectangle doit
 /// faire la taille de la cover page »*. The block was 210 × 297 first — an A4's own rectangle at
 /// the absolute corner — and that was wrong: **the page already carries its own margin**, and a
 /// block larger than the page invented a second one, giving the nesting away for nothing.

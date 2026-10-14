@@ -68,6 +68,13 @@ public:
     /// @brief The name given, meaningful once accepted.
     auto name() const -> QString;
 
+    /// @brief What the reader wants to remember about the piece — written **on the block**, so the `.opiece` the
+    /// caller is about to write carries it, and the pattern's own piece carries the same text from then on.
+    auto notes() const -> QString;
+
+    /// @brief Shows @p notes in the field: the note the piece already has, so saving again does not lose it.
+    void SetNotes(const QString &notes);
+
     /// @brief Les noms donnés aux objets sans nom, dans l'ordre où la fenêtre les montre.
     auto Names() const -> QStringList;
 

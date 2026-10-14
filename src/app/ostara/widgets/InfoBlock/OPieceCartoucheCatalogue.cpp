@@ -169,11 +169,11 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
         MakeSection("pieceNumber",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Piece number"),
                     QT_TRANSLATE_NOOP("OTemplateSection", "The piece number and its total, e.g. 1 of 10. The total shown here is an "
-                                      "example — it is computed automatically from the number of pieces in the layout."),
+                                      "example - it is computed automatically from the number of pieces in the layout."),
                     {kPieceNumberStyle, kPieceSeparator, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("cut",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Cut (Fabric / Interfacing / Lining)"),
-                    QT_TRANSLATE_NOOP("OTemplateSection", "One section covers all three fabrics — no need to add Cut several times. "
+                    QT_TRANSLATE_NOOP("OTemplateSection", "One section covers all three fabrics - no need to add Cut several times. "
                                       "The values here are only an example so you can see how the section "
                                       "renders: in the pieces, the cut quantities are entered per piece and are "
                                       "empty by default."),

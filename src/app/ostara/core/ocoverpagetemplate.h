@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   18/09/2026
  **
- **  @brief  A cover page template — the pattern's informations, laid out once.
+ **  @brief  A cover page template - the pattern's informations, laid out once.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>

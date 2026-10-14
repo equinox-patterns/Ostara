@@ -4,9 +4,9 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   14/10/2026
  **
- **  @brief  L'enveloppe d'une pièce de bibliothèque : ses sections sont écrites **dans l'ordre du schéma**
- **          (`opiece/v1.0.0.xsd`), quel que soit l'ordre des appels, et les mesures qu'une pièce lit y sont
- **          **nommées**, une fois chacune.
+ **  @brief  The envelope of a library piece: its sections are written **in the order of the schema**
+ **          (`opiece/v1.0.0.xsd`), whatever the order of the calls, and the measurements a piece reads are
+ **          **named** there, once each.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -41,6 +41,7 @@ public:
 private slots:
     void SectionsAreWrittenInTheSchemaOrder();
     void MeasurementsAreNamedOnceAndInOrder();
+    void NotesAreCarriedByTheBlock();
     void EmptySectionsLeaveTheDocument();
     void TheWrittenEnvelopeIsLeftForTheSchemaToRead();
 };

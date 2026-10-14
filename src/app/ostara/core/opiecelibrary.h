@@ -58,7 +58,9 @@ struct Summary
     QString path{};      ///< the file, as the library holds it.
     QString name{};      ///< the name the piece wears — its file's name when the file could not be read.
     QString unit{};      ///< the unit of the pattern it was cut from (`mm`, `cm`, `inch`).
+    QString notes{};     ///< what the reader wrote about the piece; empty when she wrote nothing.
     QList<OPieceDocument::Dependency> dependencies{}; ///< what it reads without declaring it.
+    QStringList measurements{}; ///< the measurements its formulas read, as its own block names them.
     QDateTime modified{};///< when the file was last written.
     QString error{};     ///< why the file could not be read; empty when it could.
 };
@@ -93,10 +95,21 @@ auto Summaries(const QString &dirPath) -> QList<Summary>;
 auto Needs(const Summary &summary) -> QString;
 
 /**
- * @brief The same, told at length: one line per value, and who declares it.
+ * @brief The whole line a table cell holds: the pieces it needs, and how many measurements it reads.
+ *
+ * `Needs` is a **fragment** and says nothing when there is nothing to say — in the dialog that imports, it is one
+ * word inside a sentence. A table cell cannot be empty: an empty cell reads like a piece nobody looked at. So the
+ * opening line is written once, here, beside the summary: `Buste, Manche, 4 measurements`, or `Nothing`.
+ */
+auto NeedsLine(const Summary &summary) -> QString;
+
+/**
+ * @brief The same, told at length: what it reads elsewhere — one line per value, and who declares it — then the
+ * measurements its formulas read.
  *
  * The case nothing declares is **shown rather than hidden** — it is exactly the one the import refuses, and it
- * is better seen in the library than met as a refusal.
+ * is better seen in the library than met as a refusal. The measurements are named too: a piece enters a pattern
+ * whose table has to define them, and this is where that can be seen before the refusal.
  */
 auto Details(const Summary &summary) -> QString;
 
@@ -105,6 +118,25 @@ auto Load(const QString &filePath, OPieceDocument *piece, QString *error) -> boo
 
 /** @brief Writes @p piece to @p filePath, creating the folder, validated before anything is committed. */
 auto Save(OPieceDocument *piece, const QString &filePath, QString *error) -> bool;
+
+/**
+ * @brief Writes @p notes on the piece held in @p filePath, and saves it back.
+ *
+ * The note belongs to the piece, so it is written **in the library file** and read again from there: nothing keeps
+ * a second copy that could disagree with it. An empty text removes the attribute rather than writing an empty one.
+ */
+auto SetNotes(const QString &filePath, const QString &notes, QString *error) -> bool;
+
+/**
+ * @brief Copies the piece of @p sourcePath into @p targetPath, after reading it **and validating it**.
+ *
+ * A file that does not open, whose root is not a piece, or that the piece schema refuses is refused with its
+ * reason rather than landing in the library as a line the window would then have to explain. The bar is the one
+ * the library writes its own pieces with, so what enters is what it would have written. What is copied is then
+ * the file itself — byte for byte — because a piece is its own document: the file keeps the name the reader gave
+ * it, and the piece keeps the name it was written under, exactly as Export does.
+ */
+auto Import(const QString &sourcePath, const QString &targetPath, QString *error) -> bool;
 } // namespace OPieceLibrary
 
 #endif // OPIECELIBRARY_H

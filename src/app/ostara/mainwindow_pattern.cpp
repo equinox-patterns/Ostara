@@ -7,7 +7,7 @@
  **  @brief  Pattern parse/undo/state and status/message methods
  **          extracted from mainwindow.cpp
  **
- **  @note   Extracted from mainwindow.cpp by Sophie Denys <contact@sophiedenys.com>
+ **  @note   Extracted from mainwindow.cpp <contact@sophiedenys.com>
  **          as part of Ostara refactoring.
  **
  **  @copyright
@@ -173,7 +173,7 @@ void MainWindow::FullParseFile()
 
         // L'alias est prioritaire : ce qui cite encore le nom composé d'un objet qui porte un alias est corrigé
         // ici, **avant** la lecture — les outils lisent donc les formules déjà justes, et la fenêtre des options
-        // comme le navigateur de propriétés montrent l'alias du premier coup (demande de Sophie, 13-10-2026).
+        // comme le navigateur de propriétés montrent l'alias du premier coup (demandé le 13-10-2026).
         if (const int named = OPieceMark::UseAliases(doc->documentElement()); named > 0)
         {
             qCDebug(vMainWindow, "Aliases used: %d token(s).", named);
@@ -665,7 +665,7 @@ void MainWindow::ActionNewDraw_triggered()
 
         qCDebug(vMainWindow, "PP name: %s", qUtf8Printable(dialog.name()));
 
-        AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle());
+        AddPP(dialog.name(), dialog.LayerName(), dialog.LayerColor(), dialog.LayerPenStyle(), dialog.Notes());
         return;
     }
 }
@@ -701,6 +701,9 @@ void MainWindow::ActionSavePiece_triggered()
     while (true)
     {
         OSavePieceDialog dialog(blockName, named ? QVector<OPieceName::Blocker>() : blockers, taken, this);
+        // Ce que le lecteur a déjà écrit sur la pièce : la fenêtre le montre, donc enregistrer de nouveau ne le
+        // perd pas — et ce qui est montré est exactement ce qui sera écrit, dans le fichier comme sur le bloc.
+        dialog.SetNotes(doc->BlockNotes(blockName));
         if (dialog.exec() != QDialog::Accepted)
         {
             return;
@@ -747,7 +750,7 @@ void MainWindow::ActionSavePiece_triggered()
 
             // Le nommage réécrit les formules **d'autres pièces** — `Manche` appelait `Courbe_R1_Eb+1` — mais les
             // outils gardent le texte qu'ils ont lu. Sans cette relecture, le navigateur de propriétés continuait
-            // d'afficher l'ancien nom jusqu'à ce qu'on rouvre la formule (relevé de Sophie, 13-10-2026 : « si je
+            // d'afficher l'ancien nom jusqu'à ce qu'on rouvre la formule (relevé le 13-10-2026 : « si je
             // clique sur assistant formule, ça se maj »). C'est la relecture que `VChangeLineRoleName` demande déjà
             // quand il change un rôle.
             doc->LiteParseTree(Document::FullLiteParse);
@@ -759,14 +762,15 @@ void MainWindow::ActionSavePiece_triggered()
 
         if (OExportFileDialog::ConfirmOverwrite(this, filePath, tr("Save piece")))
         {
-            SavePieceToLibrary(blockName, name, filePath);
+            SavePieceToLibrary(blockName, name, filePath, dialog.notes());
             return;
         }
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SavePieceToLibrary(const QString &blockName, const QString &name, const QString &filePath)
+void MainWindow::SavePieceToLibrary(const QString &blockName, const QString &name, const QString &filePath,
+                                   const QString &notes)
 {
     OPieceDocument piece;
     QString error;
@@ -786,11 +790,19 @@ void MainWindow::SavePieceToLibrary(const QString &blockName, const QString &nam
         return;
     }
 
+    // Ce que le lecteur a écrit dans la fenêtre, **après** la fabrication : le bloc a pu arriver avec sa propre
+    // note, et ce que la fenêtre montre est ce qui doit partir.
+    piece.SetNotes(notes);
+
     if (not OPieceLibrary::Save(&piece, filePath, &error))
     {
         QMessageBox::warning(this, tr("Save piece"), error);
         return;
     }
+
+    // Et le patron garde la même note : une seule vérité, celle du bloc, dont le fichier vient d'être copié. Le
+    // bloc est donc modifié par l'enregistrement — comme il l'est déjà quand la fenêtre nomme ses objets sans nom.
+    doc->SetBlockNotes(blockName, notes);
 
     statusBar()->showMessage(tr("Piece saved: %1").arg(QFileInfo(filePath).fileName()), 5000);
     qCDebug(vMainWindow, "Piece %s saved.", qUtf8Printable(filePath));

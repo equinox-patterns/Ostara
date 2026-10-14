@@ -39,7 +39,7 @@
 OCoverSizeRangeDialog::OCoverSizeRangeDialog(const Config &config, QWidget *parent)
   : QDialog(parent), m_config(config), m_chosen(config.current)
 {
-    setWindowTitle(tr("Cover page — size range for the preview"));
+    setWindowTitle(tr("Cover page - size range for the preview"));
     BuildUi();
 }
 

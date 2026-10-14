@@ -6,7 +6,7 @@
  **
  **  @brief  Menu/action-building and enable-state methods extracted from mainwindow.cpp
  **
- **  @note   Extracted from mainwindow.cpp by Sophie Denys <contact@sophiedenys.com>
+ **  @note   Extracted from mainwindow.cpp <contact@sophiedenys.com>
  **          as part of Ostara refactoring.
  **
  **  @copyright
@@ -329,7 +329,7 @@ void MainWindow::CreateMenus()
     // application's edits; it is not right here. These two sit in the Piece menu, next to the
     // pattern's own commands, where a label reading "Undo Move a piece on the plan" is longer
     // than every entry around it and tells the user what they just did themselves. Plain "Undo"
-    // and "Redo", no detail — Sophie's call, after seeing it in the menu.
+    // and "Redo", no detail — A call made after seeing it in the menu.
     //
     // Nothing that carries information is given up: the enabled state, which is the part the user
     // actually reads, still comes from the group through UpdateUndoRedoActions below.

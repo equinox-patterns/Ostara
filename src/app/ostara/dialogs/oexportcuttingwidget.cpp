@@ -689,15 +689,15 @@ void OExportCuttingWidget::Retranslate()
     m_edgeMarginUnit->setText(UnitsToStr(Unit::Cm, true));
     m_edgeMarginEdit->setText(OExportUnitFormat::Format(m_edgeMarginMm, Unit::Cm));
     m_edgeMarginLabel->setToolTip(
-        tr("The space kept between the pieces and the fabric's edges. It is a margin for error — "
-           "cloth is not always cut straight — so every rectangle of the plan keeps it on THREE "
+        tr("The space kept between the pieces and the fabric's edges. It is a margin for error - "
+           "cloth is not always cut straight - so every rectangle of the plan keeps it on THREE "
            "sides: all of them except the fold. A piece cut on the fold keeps its fold line on the "
            "fold, which is straight by construction."));
 
     m_foldedCheck->setText(tr("Folded fabric"));
     m_foldedCheck->setToolTip(
         tr("The fabric is folded in two along its length, and the halves are traced on the folded "
-           "cloth — the fold gives the second half. The nesting then runs on HALF the fabric width: "
+           "cloth - the fold gives the second half. The nesting then runs on HALF the fabric width: "
            "140 entered here means a plan laid out on 70. A piece cut on the fold keeps its fold "
            "line on the fold and stays folded; a piece cut twice is laid once, and the fold mirrors "
            "it."));
@@ -705,7 +705,7 @@ void OExportCuttingWidget::Retranslate()
     m_oneWayCheck->setText(tr("One-way layout"));
     m_oneWayCheck->setToolTip(
         tr("No piece is turned a half-turn: every piece takes the fabric's direction the same way. "
-           "Tick it for a cloth that has one — velvet, checks, a print. A piece cut on the cross "
+           "Tick it for a cloth that has one - velvet, checks, a print. A piece cut on the cross "
            "keeps that freedom; it is simply never laid upside down."));
 
     // Each axis row is named by the measurement table itself, exactly as the Details top bar names

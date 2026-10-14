@@ -153,7 +153,7 @@ void OThumbnailStylesPage::OnUnitToggled(bool centimeters, bool checked)
         return;
     }
 
-    // ⚠️ **A miniature always states a unit — decision of Sophie, 25-09-2026.** Unchecking the last
+    // ⚠️ **A miniature always states a unit — decided on 25-09-2026.** Unchecking the last
     // unit checked is not refused and shows no message: it hands the answer to the other unit, in one
     // click, exactly as the Details panel's own pair of switches does for a piece. With neither, the
     // miniature prints no value at all (see OThumbnailTextBuilder::ValueText) — a block holding a

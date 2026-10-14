@@ -394,7 +394,7 @@ void VAbstractApplication::LoadTranslation(QString locale)
 
     if (locale.isEmpty())
     {
-        qDebug() << "Default locale (English — no translation needed)";
+        qDebug() << "Default locale (English - no translation needed)";
         InitTrVars(); // Must still be called — initializes m_trVars
         return;
     }

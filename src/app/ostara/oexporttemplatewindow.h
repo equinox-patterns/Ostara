@@ -60,7 +60,7 @@ public:
     void OpenOnTab(int tab);
 
 signals:
-    /** @brief The editor saved a template — forwarded, so that the canvas can be redrawn. */
+    /** @brief The editor saved a template - forwarded, so that the canvas can be redrawn. */
     void TemplateSaved();
 
 protected:

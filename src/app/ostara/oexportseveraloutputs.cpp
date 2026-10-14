@@ -53,7 +53,7 @@
  * les mêmes identifiants, puis les range par catégorie.
  *
  * **Un plan de coupe n'est d'aucun des deux lots.** Sa sortie sera HPGL/PLT et elle est reportée
- * (décision de Sophie, 24-09-2026) : sa cellule d'export est déjà éteinte dans le dock, et il est
+ * (décidé le 24-09-2026) : sa cellule d'export est déjà éteinte dans le dock, et il est
  * aussi absent des deux pages — sinon le lot serait la porte de derrière de ce que la cellule
  * refuse.
  *

@@ -4,16 +4,16 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   14/10/2026
  **
- **  @brief  L'enveloppe d'une pièce : `<version>`, `<unit>`, les deux tables d'incréments, `<dependencies>`,
- **          `<measurements>`, `<lineNames>`, `<draw>` — et **dans cet ordre**, parce que `<piece>` est une
- **          `<xs:sequence>` : une section écrite hors de son rang ne fait pas une pièce qui se lit mal, elle
- **          fait une pièce qui ne s'écrit pas du tout.
+ **  @brief  The envelope of a piece: `<version>`, `<unit>`, the two increment tables, `<dependencies>`,
+ **          `<measurements>`, `<lineNames>`, `<draw>` - and **in that order**, because `<piece>` is an
+ **          `<xs:sequence>`: a section written out of its rank does not make a piece that reads badly, it
+ **          makes a piece that cannot be written at all.
  **
- **          Les sections sont demandées **dans le désordre**, exprès : c'est `Section()` qui les range, et un
- **          essai qui les demanderait dans l'ordre ne prouverait rien.
+ **          The sections are asked for **in the wrong order**, on purpose: `Section()` is what places them, and a
+ **          test that asked for them in order would prove nothing.
  **
- **          Le troisième essai écrit l'enveloppe dans `/tmp/ostara-test/` et **l'y laisse** : c'est le fichier
- **          que le schéma vérifie de l'extérieur, avec
+ **          The third test writes the envelope to `/tmp/ostara-test/` and **leaves it there**: it is the file
+ **          the schema checks from the outside, with
  **          `xmllint --noout --schema src/libs/ifc/schema/opiece/v1.0.0.xsd /tmp/ostara-test/enveloppe-piece.opiece`.
  **
  **  @copyright
@@ -48,7 +48,7 @@
 
 namespace
 {
-/// L'ordre des sections de `<piece>`, tel que l'`<xs:sequence>` de `opiece/v1.0.0.xsd` le donne.
+/// The order of the sections of `<piece>`, as the `<xs:sequence>` of `opiece/v1.0.0.xsd` gives it.
 const QStringList kSchemaOrder{QStringLiteral("version"),
                                QStringLiteral("unit"),
                                QStringLiteral("increments"),
@@ -60,12 +60,12 @@ const QStringList kSchemaOrder{QStringLiteral("version"),
                                QStringLiteral("lineNames"),
                                QStringLiteral("draw")};
 
-/// Où l'essai écrit l'enveloppe, pour que le schéma puisse la relire de l'extérieur.
+/// Where the test writes the envelope, so the schema can read it back from the outside.
 const QString kEnvelopePath = QStringLiteral("/tmp/ostara-test/enveloppe-piece.opiece");
 
 const QString kLibraryId = QStringLiteral("{2dbbd77a-123f-4cd0-b56e-3cccf0ef1679}");
 
-/// Un morceau de document à copier. Il vient d'un document **à lui** : `importNode` importe d'un autre document.
+/// A document fragment to copy. It comes from a document **of its own**: `importNode` imports from another one.
 auto Fragment(const QString &xml) -> QDomElement
 {
     QDomDocument source;
@@ -73,7 +73,7 @@ auto Fragment(const QString &xml) -> QDomElement
     return source.documentElement();
 }
 
-/// L'enveloppe complète, demandée dans le désordre : chaque section doit trouver son rang toute seule.
+/// The whole envelope, asked for in the wrong order: every section has to find its rank by itself.
 auto FillEnvelope(OPieceDocument &piece) -> void
 {
     piece.Create(QStringLiteral("cm"));
@@ -94,9 +94,13 @@ auto FillEnvelope(OPieceDocument &piece) -> void
 
     piece.SetLineNames(Fragment(QStringLiteral("<lineNames><line points=\"A B\" name=\"RepereDos\"/>"
                                                "</lineNames>")));
+
+    // And what the reader wrote about the piece: the note lives on the block, so it travels with it. The text is
+    // **multiline** on purpose: that is the shape an XML attribute has to carry.
+    piece.SetNotes(QStringLiteral("Buste de base\nà retoucher"));
 }
 
-/// Les sections de l'enveloppe, dans l'ordre où elles ont été écrites.
+/// The sections of the envelope, in the order they were written.
 auto SectionsOf(const OPieceDocument &piece) -> QStringList
 {
     QStringList tags;
@@ -123,20 +127,20 @@ void TST_PieceEnvelope::SectionsAreWrittenInTheSchemaOrder()
     OPieceDocument piece;
     FillEnvelope(piece);
 
-    // Le désordre des appels ne doit rien laisser passer : chaque section est à son rang, et `<measurements>`
+    // The wrong order of the calls must let nothing slip: every section is at its rank, and `<measurements>`
     // entre `<dependencies>` et `<lineNames>`.
     QCOMPARE(SectionsOf(piece),
              QStringList({QStringLiteral("version"), QStringLiteral("unit"), QStringLiteral("increments"),
                           QStringLiteral("previewCalculations"), QStringLiteral("dependencies"),
                           QStringLiteral("measurements"), QStringLiteral("lineNames"), QStringLiteral("draw")}));
 
-    // Et le rang de chacune est bien celui du schéma, sans trou ni doublon.
+    // And the rank of each one is the schema's, with no gap and no duplicate.
     int previous = -1;
     for (const QString &tag : SectionsOf(piece))
     {
         const qsizetype rank = kSchemaOrder.indexOf(tag);
-        QVERIFY2(rank >= 0, qPrintable(QStringLiteral("section inconnue du schéma : %1").arg(tag)));
-        QVERIFY2(rank > previous, qPrintable(QStringLiteral("section hors de son rang : %1").arg(tag)));
+        QVERIFY2(rank >= 0, qPrintable(QStringLiteral("section unknown to the schema: %1").arg(tag)));
+        QVERIFY2(rank > previous, qPrintable(QStringLiteral("section out of its rank: %1").arg(tag)));
         previous = static_cast<int>(rank);
     }
 }
@@ -147,18 +151,37 @@ void TST_PieceEnvelope::MeasurementsAreNamedOnceAndInOrder()
     OPieceDocument piece;
     piece.Create(QStringLiteral("cm"));
 
-    // Le même nom demandé deux fois, et dans le désordre : la pièce n'en garde qu'un, et les range.
+    // The same name asked for twice, and out of order: the piece keeps only one, and sorts them.
     piece.SetMeasurements({QStringLiteral("@TT"), QStringLiteral("@TP"), QStringLiteral("@TP")});
 
     QCOMPARE(piece.Measurements(), QStringList({QStringLiteral("@TP"), QStringLiteral("@TT")}));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void TST_PieceEnvelope::NotesAreCarriedByTheBlock()
+{
+    OPieceDocument piece;
+    piece.Create(QStringLiteral("cm"));
+    piece.SetDraw(Fragment(QStringLiteral("<draw/>")), QStringLiteral("Buste"), kLibraryId);
+
+    // The note is an attribute **of the block**: that is what makes it travel into the piece and come back with it.
+    piece.SetNotes(QStringLiteral("Buste de base\nà retoucher"));
+    QCOMPARE(piece.Notes(), QStringLiteral("Buste de base\nà retoucher"));
+    QCOMPARE(piece.DrawElement().attribute(QStringLiteral("notes")), QStringLiteral("Buste de base\nà retoucher"));
+
+    // And empty means absent: a piece nobody said anything about carries no empty attribute.
+    piece.SetNotes(QString());
+    QCOMPARE(piece.Notes(), QString());
+    QVERIFY2(not piece.DrawElement().hasAttribute(QStringLiteral("notes")),
+             "a note emptied leaves the attribute out");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void TST_PieceEnvelope::EmptySectionsLeaveTheDocument()
 {
-    // Une pièce qui ne lit rien n'écrit pas la section du tout : la même règle pour les mesures, les dépendances
-    // et les noms de lignes — un setter qui laisse ce que l'appelant vient de vider ferait dire au document le
-    // contraire du modèle.
+    // A piece that reads nothing does not write the section at all: the same rule for measurements, dependencies
+    // and line names - a setter that kept what the caller just emptied would make the document say the
+    // opposite of the model.
     OPieceDocument empty;
     empty.Create(QStringLiteral("cm"));
     empty.SetMeasurements({QStringLiteral("@TP")});
@@ -168,9 +191,9 @@ void TST_PieceEnvelope::EmptySectionsLeaveTheDocument()
     empty.SetDependencies({});
 
     QVERIFY2(empty.documentElement().firstChildElement(QStringLiteral("measurements")).isNull(),
-             "les mesures remplacées par rien laissent la section dehors");
+             "measurements replaced by nothing leave the section out");
     QVERIFY2(empty.documentElement().firstChildElement(QStringLiteral("dependencies")).isNull(),
-             "les dépendances remplacées par rien laissent la section dehors");
+             "dependencies replaced by nothing leave the section out");
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -179,17 +202,17 @@ void TST_PieceEnvelope::TheWrittenEnvelopeIsLeftForTheSchemaToRead()
     OPieceDocument piece;
     FillEnvelope(piece);
 
-    QVERIFY2(QDir().mkpath(QFileInfo(kEnvelopePath).absolutePath()), "le dossier d'essai doit se créer");
+    QVERIFY2(QDir().mkpath(QFileInfo(kEnvelopePath).absolutePath()), "the test folder must be created");
 
     QFile file(kEnvelopePath);
-    QVERIFY2(file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text), "le fichier doit s'ouvrir");
+    QVERIFY2(file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text), "the file must open");
 
     QTextStream stream(&file);
     stream << piece.toString(4);
     file.close();
 
-    QVERIFY2(QFileInfo(kEnvelopePath).size() > 0, "l'enveloppe écrite ne doit pas être vide");
-    qInfo("enveloppe écrite : %s", qUtf8Printable(kEnvelopePath));
+    QVERIFY2(QFileInfo(kEnvelopePath).size() > 0, "the written envelope must not be empty");
+    qInfo("envelope written: %s", qUtf8Printable(kEnvelopePath));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

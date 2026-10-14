@@ -829,7 +829,7 @@ void ODialogPleat::RefreshRow(int row)
     };
 
     cell(0, tr("Pleat %1").arg(row + 1));
-    cell(1, departure.value.isEmpty() ? QStringLiteral("—") : departure.value);
+    cell(1, departure.value.isEmpty() ? QStringLiteral("-") : departure.value);
     cell(2, departure.kind == OPleatKind::Double ? tr("Double") : tr("Simple"));
 }
 

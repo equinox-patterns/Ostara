@@ -147,7 +147,7 @@ private:
     };
 
     /**
-     * @brief Writes the assembly marks' template — the body SaveTemplate() used to be.
+     * @brief Writes the assembly marks' template - the body SaveTemplate() used to be.
      *
      * SaveTemplate() now answers for the whole window, and the two families are written by two
      * different hands: this is the one that knows about frames, marks and pagination.
@@ -208,10 +208,10 @@ private:
      */
     void ApplyMenuRow();
 
-    /** @brief The three blocks as one template — what gets written. */
+    /** @brief The three blocks as one template - what gets written. */
     auto Template() const -> OExportTemplate;
 
-    /** @brief The three blocks taken from one template — what a file and a new template give. */
+    /** @brief The three blocks taken from one template - what a file and a new template give. */
     void SetTemplate(const OExportTemplate &tpl);
 
     QTabWidget *m_tabs{nullptr};

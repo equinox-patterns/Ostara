@@ -802,7 +802,7 @@ void VWidgetDetails::OnPieceClickedForGroup(quint32 pieceId)
     {
         m_selectedPiecesForGroup.insert(pieceId);
         tool->SetGroupSelectionHighlight(true);
-        emit ShowStatusTip(tr("%1 piece(s) selected — Enter to confirm, Esc to cancel")
+        emit ShowStatusTip(tr("%1 piece(s) selected - Enter to confirm, Esc to cancel")
                                .arg(m_selectedPiecesForGroup.size()));
     }
 }
@@ -817,7 +817,7 @@ void VWidgetDetails::ValidateGroupSelection()
 
     if (m_selectedPiecesForGroup.size() < 2)
     {
-        emit ShowStatusTip(tr("Less than 2 pieces selected — cancelled"));
+        emit ShowStatusTip(tr("Less than 2 pieces selected - cancelled"));
         CancelGroupSelection();
         return;
     }

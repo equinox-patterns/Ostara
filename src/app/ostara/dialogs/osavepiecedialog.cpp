@@ -65,6 +65,13 @@ void OSavePieceDialog::FillBlockers()
     if (m_blockers.isEmpty())
     {
         ui->groupNames->setVisible(false);
+
+        // La géométrie du .ui réserve la hauteur du groupe (430) : caché, il ne prend plus de place mais la
+        // fenêtre la garde, et le vide se voit sous les notes. Elle se réduit donc à ce qu'elle montre — en
+        // gardant la largeur que le .ui lui donne, sinon elle rétrécirait aussi en largeur.
+        const int width = this->width();
+        adjustSize();
+        resize(width, this->height());
         return;
     }
 
@@ -173,6 +180,18 @@ void OSavePieceDialog::changeEvent(QEvent *event)
 auto OSavePieceDialog::name() const -> QString
 {
     return ui->lineEditName->text();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSavePieceDialog::notes() const -> QString
+{
+    return ui->plainTextEditNotes->toPlainText();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSavePieceDialog::SetNotes(const QString &notes)
+{
+    ui->plainTextEditNotes->setPlainText(notes);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

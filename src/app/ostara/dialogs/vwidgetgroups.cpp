@@ -753,7 +753,7 @@ void VWidgetGroups::ActionTransferLayerGroup(quint32 id)
     if (content.isEmpty())
     {
         QMessageBox::information(this, tr("Empty group"),
-                                 tr("The group \"%1\" holds no layer — there is nothing to transfer.")
+                                 tr("The group \"%1\" holds no layer - there is nothing to transfer.")
                                      .arg(m_doc->GetLayerGroupName(id)));
         return;
     }
@@ -826,7 +826,7 @@ void VWidgetGroups::SetLayerGroupVisibility(quint32 groupId, bool visible)
     if (layers.isEmpty())
     {
         // Said rather than done silently: the eye of an empty group cannot do what it promises.
-        emit ShowStatusTip(tr("The group \"%1\" holds no layer yet — there is nothing to show or hide.")
+        emit ShowStatusTip(tr("The group \"%1\" holds no layer yet - there is nothing to show or hide.")
                                .arg(m_doc->GetLayerGroupName(groupId)));
         return;
     }
@@ -899,7 +899,7 @@ void VWidgetGroups::ActionDeleteLayer(quint32 id)
     {
         QMessageBox::information(this, tr("Last layer"),
                                  tr("The layer \"%1\" is the only one of this piece. An object must always belong "
-                                    "to a layer, so a piece keeps at least one — add another layer first, then "
+                                    "to a layer, so a piece keeps at least one - add another layer first, then "
                                     "delete this one.").arg(m_doc->GetGroupName(id)));
         return;
     }
@@ -1052,14 +1052,14 @@ auto VWidgetGroups::RefusalReason(quint32 layerId, ObjectSelection mode) -> QStr
 {
     if (mode == ObjectSelection::Transferring && m_doc->GetGroups().size() < 2)
     {
-        return tr("This is the only layer of this piece — there is no other layer to transfer to.");
+        return tr("This is the only layer of this piece - there is no other layer to transfer to.");
     }
 
     if (mode != ObjectSelection::Adding && LayerItems(layerId).isEmpty())
     {
         return mode == ObjectSelection::Transferring
-                   ? tr("This layer holds no object — there is nothing to transfer.")
-                   : tr("This layer holds no object — there is nothing to remove.");
+                   ? tr("This layer holds no object - there is nothing to transfer.")
+                   : tr("This layer holds no object - there is nothing to remove.");
     }
 
     return {};
@@ -1312,9 +1312,9 @@ void VWidgetGroups::UpdateSelectionTip()
         // A transfer has one more question to ask, and "confirm" there would promise a move the dialog can still
         // call off.
         emit ShowStatusTip(m_objectSelection == ObjectSelection::Transferring
-                               ? tr("%n object(s) selected — Enter to choose the layer they move to, Escape cancels.",
+                               ? tr("%n object(s) selected - Enter to choose the layer they move to, Escape cancels.",
                                     "", count)
-                               : tr("%n object(s) selected — Enter to confirm, Escape cancels.", "", count));
+                               : tr("%n object(s) selected - Enter to confirm, Escape cancels.", "", count));
         return;
     }
 
@@ -1322,7 +1322,7 @@ void VWidgetGroups::UpdateSelectionTip()
     {
         // Nothing to say here about the invariant that holds for a removal: a transfer writes into the target
         // before it takes out of the source, so every object the layer holds may leave it.
-        emit ShowStatusTip(tr("Select the objects to transfer, then press Enter to choose the layer they move to — "
+        emit ShowStatusTip(tr("Select the objects to transfer, then press Enter to choose the layer they move to - "
                               "Escape cancels. Magenta is this layer's content, and every object of it can move."));
         return;
     }
@@ -1332,18 +1332,18 @@ void VWidgetGroups::UpdateSelectionTip()
         // The invariant, spelled out, and said again on every pass: it is the only reason a click can be refused.
         if (m_candidateObjects.isEmpty())
         {
-            emit ShowStatusTip(tr("No object of this layer is shared with another layer — an object must always "
+            emit ShowStatusTip(tr("No object of this layer is shared with another layer - an object must always "
                                   "belong to at least one layer, so there is nothing to remove here."));
             return;
         }
 
-        emit ShowStatusTip(tr("Select the objects to remove, then press Enter to confirm — Escape cancels. Magenta "
+        emit ShowStatusTip(tr("Select the objects to remove, then press Enter to confirm - Escape cancels. Magenta "
                               "is what can be removed: an object must always stay in one layer, so only what "
                               "another layer holds can go."));
         return;
     }
 
-    emit ShowStatusTip(tr("Select the objects to add, then press Enter to confirm — Escape cancels. Magenta is this "
+    emit ShowStatusTip(tr("Select the objects to add, then press Enter to confirm - Escape cancels. Magenta is this "
                           "layer's content, so those cannot be added again."));
 }
 
@@ -1362,7 +1362,7 @@ void VWidgetGroups::ExplainRefusal(const QPair<quint32, quint32> &object)
     const QMap<quint32, QString> holders = m_doc->GetGroupsContainingItem(object.second, object.first, true);
     if (holders.contains(m_selectionLayerId))
     {
-        emit ShowStatusTip(tr("This object belongs only to this layer — an object must always belong to at least "
+        emit ShowStatusTip(tr("This object belongs only to this layer - an object must always belong to at least "
                               "one layer, so it cannot be removed."));
     }
     else
@@ -1374,7 +1374,7 @@ void VWidgetGroups::ExplainRefusal(const QPair<quint32, quint32> &object)
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetGroups::ExplainAddRefusal()
 {
-    emit ShowStatusTip(tr("This object is already in this layer — a layer holds an object once."));
+    emit ShowStatusTip(tr("This object is already in this layer - a layer holds an object once."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1979,7 +1979,7 @@ void VWidgetGroups::FillLayerGroupRow(int row,
     SetActionCell(ui->tableWidget, row, kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark),
                   tr("Move layers of this group to another one"));
     SetActionCell(ui->tableWidget, row, kDelete, MakeCellIcon(QStringLiteral("trash"), dark),
-                  tr("Delete the group — allowed once it holds no layer"));
+                  tr("Delete the group - allowed once it holds no layer"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

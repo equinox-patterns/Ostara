@@ -1102,7 +1102,7 @@ void ODetailsPieceWidget::OnAddPassmarks()
         }
     }
 
-    emit ShowStatusTip(tr("Click points to add passmarks — Enter to confirm, Esc to cancel"));
+    emit ShowStatusTip(tr("Click points to add passmarks - Enter to confirm, Esc to cancel"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1142,7 +1142,7 @@ void ODetailsPieceWidget::OnRemovePassmarks()
         emit HighlightNode(labelId, true, QColor(255, 165, 0)); // orange
     }
 
-    emit ShowStatusTip(tr("Click passmark points and internal marks to remove — Enter to confirm, Esc to cancel"));
+    emit ShowStatusTip(tr("Click passmark points and internal marks to remove - Enter to confirm, Esc to cancel"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1184,7 +1184,7 @@ void ODetailsPieceWidget::OnPlaceLabelSelectedForPassmark(quint32 labelId)
     }
 
     const auto count = m_selectedPassmarkNodeIds.size() + m_selectedPlaceLabelIds.size();
-    emit ShowStatusTip(tr("%1 mark(s) selected — Enter to confirm, Esc to cancel").arg(count));
+    emit ShowStatusTip(tr("%1 mark(s) selected - Enter to confirm, Esc to cancel").arg(count));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1295,7 +1295,7 @@ void ODetailsPieceWidget::OnNodeSelectedForAlignPoint(quint32 nodeId)
     // click that landed on another piece of the canvas is not worth dropping the workflow over.
     if (m_pendingDet.GetPath().indexOfNode(nodeId) == -1)
     {
-        emit ShowStatusTip(tr("This point is not on the piece outline — click a point of the piece"));
+        emit ShowStatusTip(tr("This point is not on the piece outline - click a point of the piece"));
         return;
     }
 
@@ -1504,7 +1504,7 @@ void ODetailsPieceWidget::OnNodeSelectedForPassmark(quint32 nodeId)
     }
 
     const auto count = m_selectedPassmarkNodeIds.size() + m_selectedPlaceLabelIds.size();
-    emit ShowStatusTip(tr("%1 mark(s) selected — Enter to confirm, Esc to cancel").arg(count));
+    emit ShowStatusTip(tr("%1 mark(s) selected - Enter to confirm, Esc to cancel").arg(count));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

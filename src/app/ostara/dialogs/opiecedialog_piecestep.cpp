@@ -70,7 +70,7 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
     numberRow->setSpacing(4);
     m_numberSpin = new QSpinBox();
     m_numberSpin->setRange(0, 99);
-    m_numberSpin->setSpecialValueText(QStringLiteral("—"));
+    m_numberSpin->setSpecialValueText(QStringLiteral("-"));
     numberRow->addWidget(m_numberSpin);
     m_totalLabel = new QLabel();
     numberRow->addWidget(m_totalLabel);

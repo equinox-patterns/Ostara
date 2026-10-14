@@ -846,7 +846,7 @@ auto OPieceMark::NormaliseCurveHeads(const QDomElement &root) -> int
     // que le `Spl_` qui suit est une tête et non un morceau de nom donné par quelqu'un.
     // Les six préfixes des trois familles que la dialog assistant formule écrit déjà en `Courbe` : la longueur
     // d'une courbe (`C1Length`, `C2Length`), son angle (`Angle1`, `Angle2`), la distance d'un point de contrôle
-    // (`Handle1`, `Handle2`) — décidé par Sophie le 13-10-2026. Mesuré pour les angles et les poignées
+    // (`Handle1`, `Handle2`) — décidé le 13-10-2026. Mesuré pour les angles et les poignées
     // (`Angle2Curve_dos`, `Handle1Curve_dos`) ; les longueurs ne sont pas employées dans ses fichiers, mais la
     // règle les couvre comme les autres.
     static const QStringList prefixes{QString(),           QStringLiteral("C1Length"), QStringLiteral("C2Length"),

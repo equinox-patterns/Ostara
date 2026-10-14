@@ -73,7 +73,7 @@ auto CurveAliasPrefixes(CurveAliasType type) -> QStringList
         // Un chemin est cité par les mêmes têtes qu'une courbe, et ces têtes s'écrivent `Curve_` : la relecture
         // d'ouverture (`OPieceMark::NormaliseCurveHeads`) écrit `Curve_` — seul ou derrière les six préfixes — pour
         // `SplPath_` comme pour `Spl_`, si bien que `SplPath` seul ne retrouvait plus aucun jeton du document.
-        // Mesuré le 13-10-2026 sur le fichier de Sophie : un chemin dont l'alias s'écrit `Curve_dos` dans les
+        // Mesuré le 13-10-2026 sur BustedeBase : un chemin dont l'alias s'écrit `Curve_dos` dans les
         // formules (`Curve_dos*0.65`, `Curve_dos+1`), et l'alias posé depuis le dock ne réécrivait rien — l'outil
         // passe pourtant bien par cette liste (`ProcessSplinePathToolOptions` → `RenameAlias`, `vtoolabstractcurve.cpp`).
         prefixes = QStringList{"Angle1SplPath", "Angle2SplPath",   "C1LengthSplPath", "C2LengthSplPath", "SplPath",

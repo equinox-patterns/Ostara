@@ -48,7 +48,7 @@ class QTabWidget;
  * traverse l'onglet : exporter les PDF ne touche pas aux SVG, et réciproquement.
  *
  * **Le plan de coupe a son onglet, et il est désactivé.** Il n'a aucun format aujourd'hui — sa
- * sortie sera HPGL/PLT, et elle est reportée (décision de Sophie, 24-09-2026). L'onglet reste donc
+ * sortie sera HPGL/PLT, et elle est reportée (décidé le 24-09-2026). L'onglet reste donc
  * là, avec ce qu'il attend écrit dedans, plutôt que d'être absent : un onglet qui manque se lirait
  * comme un oubli, et un onglet ouvert sur le vide comme une panne.
  *

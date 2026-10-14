@@ -285,7 +285,7 @@ public:
     static auto GetDefFoldLineLabelFontWeight() -> QFont::Weight;
     void SetFoldLineLabelFontWeight(QFont::Weight weight);
 
-    /// The face the fold-line label is written in — a NAME, never a number (decision of Sophie,
+    /// The face the fold-line label is written in — a NAME, never a number (decided on
     /// 22-09-2026 : « que les vraies graisses de la font »). A settings file written before the face
     /// was named holds the number instead (@ref GetFoldLineLabelFontWeight), and the callers resolve
     /// it; the same fallback the section editor and the Thumbnail page make.

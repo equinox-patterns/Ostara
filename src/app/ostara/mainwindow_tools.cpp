@@ -349,7 +349,7 @@ void MainWindow::ToolDartCap(bool checked)
     // the opening — and the tool then drew, silently, a cap built from the wrong point.
     const QString tooltip =
         tr("Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point "
-           "that carries the edge when no curve does — then <b>%1</b> to confirm")
+           "that carries the edge when no curve does - then <b>%1</b> to confirm")
             .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<ODialogDartCap>(
         checked, Tool::DartCap, QStringLiteral("intersect_cursor.png"), tooltip,
@@ -768,7 +768,7 @@ void MainWindow::ToolPleat(bool checked)
     ToolSelectOperationLines();
     const QString tooltip =
         tr("Select the objects of the contour <b>in order</b>: all clockwise or all anticlockwise, "
-           "never mixing the two — the points of the departure lines included. Then <b>%1</b> to confirm")
+           "never mixing the two - the points of the departure lines included. Then <b>%1</b> to confirm")
             .arg(VModifierKey::EnterKey());
     SetToolButtonWithApply<ODialogPleat>(checked, Tool::Pleat, QString(), tooltip,
                                          &MainWindow::ClosedDrawDialogWithApply<OToolPleat>,

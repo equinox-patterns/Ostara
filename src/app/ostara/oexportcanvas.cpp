@@ -262,7 +262,7 @@ private:
 /// The cover page, drawn at the size it will be printed.
 ///
 /// **It resolves nothing.** The bands arrive already resolved by OExportCoverPage::Of, which read
-/// the run, the document and the template — the canvas places and paints, and looking a template up
+/// the run, the document and the template - the canvas places and paints, and looking a template up
 /// here would be a second place deciding what is drawn.
 ///
 /// INERT, for the reason AssemblyMarksItem and ArtboardGridItem are: the hover raises whatever it
@@ -286,7 +286,7 @@ public:
     {
         // **Scale 1 — the page is drawn at the size it will be printed**, which is what makes the
         // canvas evidence about the paper rather than a picture of it (nomenclature spec §6, and
-        // Sophie's decision of 18-09-2026: a logo of two centimetres is two centimetres on a page
+        // Decided on 18-09-2026: a logo of two centimetres is two centimetres on a page
         // of nineteen, on screen as on paper).
         OCoverPageRender::Paint(*painter, m_page, m_bands, 1.0);
     }
@@ -738,7 +738,7 @@ auto MirrorDecor(const QPointF &topLeft, const QSizeF &size, qreal rotation, qre
 /// back with empty content when the tool is gone or the reference drawing was never captured, and the
 /// canvas draws nothing then either — so dropping it here is not a loss.
 ///
-/// ⚠️ **Un plan de coupe n'en porte aucune** (décision de Sophie). Ce n'est pas un détail de
+/// ⚠️ **Un plan de coupe n'en porte aucune** (décidé). Ce n'est pas un détail de
 /// dessin : la règle est posée **ici**, à la résolution, pour qu'aucun record n'existe et qu'aucun des
 /// trois chemins ne puisse en dessiner un par mégarde — le champ est vide, pas caché.
 ///
@@ -859,7 +859,7 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     decor.thumbnails = ResolveOwnerMiniatures(owner, isGroup, ownerId, range, miniatureBoxes, pattern,
                                               cuttingPlan);
 
-    // A cutting plan carries no block and no annotation either (Sophie's decision), and the rule is
+    // A cutting plan carries no block and no annotation either (decided), and the rule is
     // posed here, at resolution, exactly like the miniature's just above: both fields stay empty,
     // they are never hidden, so none of the three paths — canvas, image, PDF — can draw one by
     // mistake, and there is no guard to forget in a fourth. The fold-line caption obeys the same
@@ -1256,8 +1256,8 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
     {
         // ⚠️ **The frozen placement wins.** It was resolved at generation, while the document was still
         // on the reference layer's size; the live branch below reads the document, so it would draw the
-        // group's grainline at whatever size the document is on NOW. That is exactly the defect Sophie
-        // found by changing the Details size and coming back to the plan.
+        // group's grainline at whatever size the document is on NOW. That is exactly the defect found
+        // by changing the Details size and coming back to the plan.
         if (frozen != nullptr && frozen->grainline.resolved)
         {
             const OGraded::GrainlinePlacement placement{frozen->grainline.pos,
@@ -1451,7 +1451,7 @@ auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 gro
     // Les enfants d'une PIÈCE sont re-matérialisés à chaque mise à la taille : `VPattern::Parse` les
     // parcourt. Ceux d'un GROUPE, non — le parse ne connaît que `DataPieces()`, et le seul écrivain de
     // leurs positions est `OPieceGroupHolderItem::Refresh`, atteint uniquement par `CheckLayout`, qui ne
-    // part jamais en mode Export. La position stockée est donc celle de la dernière fois que Sophie a
+    // part jamais en mode Export. La position stockée est donc celle de la dernière fois où l'on a
     // REGARDÉ le groupe dans la scène Details, et l'export la relisait telle quelle.
     //
     // ⚠️ **Et l'origine du détenteur se déduit, elle ne se devine pas.** `RefRect(groupe, data, origine)`
@@ -1669,7 +1669,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         // deux bords, lui, en a trois, et leurs côtés sont fixés par zone.
         //
         // Et les rectangles ne se dessinent **qu'à partir de deux** : une seule zone EST la
-        // colonne, et le trait du bac la dessine déjà. **Noir à 75 %, tirets 20 / 10** (Sophie,
+        // colonne, et le trait du bac la dessine déjà. **Noir à 75 %, tirets 20 / 10** (choisi le
         // 25-09) : le pointillé noir à 50 % ne se lisait pas sur le bac blanc, et c'est ce trait qui
         // dit où s'arrête chaque zone. Purement visuel : la ligne du milieu d'un plan à deux bords
         // est celle où les deux lisières se rejoignent, et aucune pièce ne la traverse — non parce

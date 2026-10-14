@@ -806,7 +806,11 @@ private:
     /// The piece is cut from the pattern as it stands — its names marked, its increments, its dependencies
     /// and its identity gathered — and written to @p filePath. Nothing is written if anything is refused:
     /// a piece that cannot be cut, or a file the schema will not accept, is said and left alone.
-    void SavePieceToLibrary(const QString &blockName, const QString &name, const QString &filePath);
+    ///
+    /// @p notes is what the reader wrote about the piece in the save window: it goes into the file **and** onto the
+    /// block, so the pattern's piece and the library's piece say the same thing from then on.
+    void SavePieceToLibrary(const QString &blockName, const QString &name, const QString &filePath,
+                            const QString &notes);
 
     void SaveCurrentScene();
     void RestoreCurrentScene();
@@ -867,8 +871,10 @@ private:
     /// A new pattern piece AND the layer it starts in: the two are born together, because no object may
     /// ever live outside a layer — and a fresh piece already holds one (its base point). One undo macro
     /// around the whole thing, so a single Ctrl+Z takes the piece and its layer away.
+    ///
+    /// @p notes is what the reader wrote about the piece, written on the block itself — empty means none.
     void AddPP(const QString &PPName, const QString &layerName, const QString &layerColor,
-               const QString &layerPenStyle);
+               const QString &layerPenStyle, const QString &notes);
     /// Write that first layer, put the piece's base point in it and make it the active one. Called from
     /// AddPP, inside its macro; every write is a command so the macro has something to undo.
     void CreateFirstLayer(const QString &layerName, const QString &layerColor, const QString &layerPenStyle,

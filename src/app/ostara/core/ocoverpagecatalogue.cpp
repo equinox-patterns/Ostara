@@ -596,7 +596,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
         MakeSection("freeText",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Free text"),
                     QT_TRANSLATE_NOOP("OTemplateSection",
-                                      "A text of your own — written here, so that every cover page "
+                                      "A text of your own - written here, so that every cover page "
                                       "made with this template says it, or filled in for each "
                                       "pattern."),
                     freeTextFields),
@@ -637,7 +637,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
                     QT_TRANSLATE_NOOP("OTemplateSection",
                                       "What the marks on the pattern mean: one line per symbol your "
                                       "library holds as permanent, followed by the ones this pattern "
-                                      "chose — in their own order. Symbols themselves are written and "
+                                      "chose - in their own order. Symbols themselves are written and "
                                       "ordered in the Symbols page; the ones that wait to be chosen "
                                       "are picked per pattern, in the Cover page dock."),
                     symbolsFields),

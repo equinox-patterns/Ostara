@@ -129,7 +129,7 @@ auto GroupDirection(const OPieceGroup &group) -> Direction;
 /// which the matrix does not touch. So a mirrored copy kept the original's angle: a 45° bias became
 /// 135° on the copy, and the copy was turned as though it were still at 45° — its grain read
 /// **horizontal** where it had to read vertical. The plan looked right; only the grainline said
-/// otherwise. Found by Sophie, not by me.
+/// otherwise. Found by hand.
 ///
 /// A reflection about a vertical axis sends an angle @c a to @c 180 - a, whichever axis the
 /// direction came from — a piece's own grainline or its group's.

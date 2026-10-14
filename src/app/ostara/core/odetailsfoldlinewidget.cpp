@@ -132,7 +132,7 @@ void ODetailsFoldLineWidget::ConnectControls()
                 m_selectState = FoldLineSelectState::WaitingFirstPoint;
                 m_firstPoint = 0;
                 m_defineBtn->setText(tr("Cancel"));
-                emit ShowStatusTip(tr("Select the first point of the foldline — respect clockwise direction"));
+                emit ShowStatusTip(tr("Select the first point of the foldline - respect clockwise direction"));
                 break;
             case FoldLineSelectState::WaitingFirstPoint:
                 ResetSelectionHighlight();
@@ -145,7 +145,7 @@ void ODetailsFoldLineWidget::ConnectControls()
                 ResetSelectionHighlight();
                 m_selectState = FoldLineSelectState::WaitingFirstPoint;
                 m_firstPoint = 0;
-                emit ShowStatusTip(tr("Select the first point of the foldline — respect clockwise direction"));
+                emit ShowStatusTip(tr("Select the first point of the foldline - respect clockwise direction"));
                 break;
         }
     });
@@ -349,7 +349,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
         m_firstPoint = 0;
         m_defineBtn->setText(tr("Define foldline"));
         m_statusLabel->setText(QStringLiteral("<span style='color:#D2691E;'>⚠ %1</span>")
-                                   .arg(tr("Error — wrong piece. Start over.")));
+                                   .arg(tr("Error - wrong piece. Start over.")));
         emit ShowStatusTip(QString());
         return;
     }
@@ -359,7 +359,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
         m_firstPoint = nodeId;
         m_selectState = FoldLineSelectState::WaitingSecondPoint;
         emit HighlightNode(m_firstPoint, true);
-        emit ShowStatusTip(tr("Select the second point of the foldline — respect clockwise direction"));
+        emit ShowStatusTip(tr("Select the second point of the foldline - respect clockwise direction"));
         return;
     }
 
@@ -374,7 +374,7 @@ void ODetailsFoldLineWidget::OnNodeSelected(quint32 nodeId)
         m_firstPoint = 0;
         m_defineBtn->setText(tr("Define foldline"));
         m_statusLabel->setText(QStringLiteral("<span style='color:#D2691E;'>⚠ %1</span>")
-                                   .arg(tr("Error — invalid points. Start over.")));
+                                   .arg(tr("Error - invalid points. Start over.")));
         emit ShowStatusTip(QString());
         return;
     }

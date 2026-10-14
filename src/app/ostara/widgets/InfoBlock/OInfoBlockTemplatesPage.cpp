@@ -127,7 +127,7 @@ public:
         if (languages.isEmpty())
         {
             painter->drawText(option.rect.adjusted(4, 0, -4, 0), Qt::AlignVCenter | Qt::AlignLeft,
-                              QStringLiteral("—"));
+                              QStringLiteral("-"));
             painter->restore();
             return;
         }

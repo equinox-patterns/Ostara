@@ -64,7 +64,7 @@ const QString kFallbackName = QStringLiteral("template");
 /**
  * @brief @p name as a file name — what cannot be kept is dropped, not refused.
  *
- * Sophie's rule for the end user is one click and no technical problem. A message saying a name
+ * The rule for the end user is one click and no technical problem. A message saying a name
  * contains an illegal character names a problem the user cannot see and did not make; taking the
  * character out does what she meant, which was to call a template something.
  */

@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   24/08/2026
  **
- **  @brief  Live preview of a cartouche template — one stacked line per section.
+ **  @brief  Live preview of a cartouche template - one stacked line per section.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>

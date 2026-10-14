@@ -5,8 +5,8 @@
  **  @date   3 11, 2016
  **
  **  @brief  Shared helpers for DialogSeamAllowance.
- **  @note   Extracted from dialogseamallowance.cpp by Sophie Denys
- **          <contact@sophiedenys.com> as part of Ostara refactoring.
+ **  @note   Extracted from dialogseamallowance.cpp
+ **          as part of the Ostara refactoring.
  **
  **  @copyright
  **  This source code is part of the Valentina project, a pattern making

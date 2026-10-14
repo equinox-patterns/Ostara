@@ -65,7 +65,7 @@ void OExportPdfDialog::Retranslate()
     m_layoutLayerCheck->setText(tr("Add Layout layer"));
     m_layoutLayerCheck->setToolTip(
         tr("Write the layout as one of the PDF's layers, so a printer can switch it off.\n"
-           "Left unchecked, the layout is printed with the plan and cannot be switched off —\n"
+           "Left unchecked, the layout is printed with the plan and cannot be switched off -\n"
            "which is the safer setting: a plan printed without its information block, its\n"
            "folds and its annotations looks perfectly normal."));
 }

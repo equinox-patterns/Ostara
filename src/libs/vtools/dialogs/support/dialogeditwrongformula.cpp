@@ -86,7 +86,7 @@ namespace
 /// @brief La formule telle qu'elle doit s'**afficher** : jamais `Spl_` ni `SplPath_`.
 ///
 /// La conversion vers la forme utilisateur rend l'alias de l'objet, donc parfois son ancienne tête — et valider
-/// la remettait dans le patron (relevé de Sophie, 13-10-2026 : le point portait `Courbe_RepereDos+1`, l'éditeur
+/// la remettait dans le patron (relevé le 13-10-2026 : le point portait `Courbe_RepereDos+1`, l'éditeur
 /// affichait `SplPath_RepereDos+1`). La tête `Curve_` s'écrit donc ici, dans le **texte montré**, et seulement
 /// quand elle existe vraiment dans le conteneur : un nom qui ne résout pas ne vaut pas mieux qu'un ancien.
 auto CurveHeadsUser(const VTranslateVars *trVars, const VContainer *data, const QString &formula) -> QString

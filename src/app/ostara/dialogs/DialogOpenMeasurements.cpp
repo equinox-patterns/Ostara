@@ -54,7 +54,7 @@ void DialogOpenMeasurements::SetupUI()
     mainLayout->setSpacing(16);
 
     // --- Section 1: Multi-tailles from library ---
-    auto *omtGroup = new QGroupBox(tr("Multi-size — Library (.omt)"));
+    auto *omtGroup = new QGroupBox(tr("Multi-size - Library (.omt)"));
     auto *omtLayout = new QVBoxLayout(omtGroup);
 
     m_omtList = new QListWidget();
@@ -73,7 +73,7 @@ void DialogOpenMeasurements::SetupUI()
     mainLayout->addWidget(omtGroup);
 
     // --- Section 2: Taille unique from library ---
-    auto *otuGroup = new QGroupBox(tr("Single size — Library (.otu)"));
+    auto *otuGroup = new QGroupBox(tr("Single size - Library (.otu)"));
     auto *otuLayout = new QVBoxLayout(otuGroup);
 
     m_otuList = new QListWidget();

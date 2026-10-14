@@ -95,7 +95,7 @@ inline double FindIncrementForTransition(const GroupIncrement &gi, const QString
         }
     }
     qWarning() << "FindIncrementForTransition: sourceValue" << sourceValue
-                << "not covered by any range — ranges may be stale after grid modification";
+                << "not covered by any range - ranges may be stale after grid modification";
     return 0.0;
 }
 

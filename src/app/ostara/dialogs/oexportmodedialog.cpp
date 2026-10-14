@@ -83,8 +83,8 @@ constexpr int kPlotterFavoritesTabIndex = 3;
 /// minimum (`QLayout::SetDefaultConstraint` yields to a widget that already has one), so whatever
 /// the formula below forgets is not merely cramped — it is cut. Measured on a bench (French labels,
 /// default style): the inner tab bar asks for 537 px, +kTabBarChrome = 577, so this constant was the
-/// binding value and the dialog opened at 560 whatever the list page needed. Raised on Sophie's
-/// order (25-09) so the page that holds the runs — their rows and their bottom bar — has room to
+/// binding value and the dialog opened at 560 whatever the list page needed. Raised on
+/// request (25-09) so the page that holds the runs — their rows and their bottom bar — has room to
 /// spare, the vertical scrollbar included.
 constexpr int kMinDialogWidth = 800;
 
@@ -473,7 +473,7 @@ auto OExportModeDialog::CurrentName() const -> QString
     //    l'utilisatrice remplit celui du plan de coupe nommait la ligne d'après des combos que
     //    PERSONNE n'a touchés — ils restent sur leur première entrée, donc sur les plus petites
     //    valeurs du patron. La laize, elle, était déjà lue au bon endroit, d'où un nom dont seule
-    //    la fin changeait. Trouvé par Sophie.
+    //    la fin changeait. Trouvé.
     const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
     const bool plotter = m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex;
 
@@ -655,7 +655,7 @@ auto OExportModeDialog::BatchJobs() const -> QVector<BatchJob>
 
     const int innerTab = m_listTabs != nullptr ? m_listTabs->currentIndex() : kWorkingListTabIndex;
 
-    // Le sous-onglet EN COURS, et lui seul (décision de Sophie, 25-09). Le lot tournait les quatre
+    // Le sous-onglet EN COURS, et lui seul (décidé le 25-09). Le lot tournait les quatre
     // à la fois — la liste de travail ET les trois jeux de favoris — donc des runs que l'utilisatrice
     // n'avait pas sous les yeux, et qu'elle oubliait qu'elle lançait.
     if (innerTab == kWorkingListTabIndex)

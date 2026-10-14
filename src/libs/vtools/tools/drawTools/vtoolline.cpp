@@ -246,7 +246,7 @@ auto VToolLine::shape() const -> QPainterPath
     // A line drawn with the Line tool IS an object of its own, and its hit area must not depend on what it looks
     // like: with the style "none" the base answers an empty path, so the line could be neither hovered, nor
     // clicked, nor right-clicked, nor framed by the Dependencies dock — while it still counted as a user of its
-    // two endpoints and blocked their deletion. Measured on Sophie's BustedeBase: C4 could not be deleted because
+    // two endpoints and blocked their deletion. Measured on BustedeBase: C4 could not be deleted because
     // of a "none" line C4–C2 that nothing on the canvas allowed to pick. Its own geometry answers instead.
     return LineHitPath();
 }

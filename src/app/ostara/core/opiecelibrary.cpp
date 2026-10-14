@@ -99,7 +99,9 @@ auto OPieceLibrary::Summaries(const QString &dirPath) -> QList<Summary>
         {
             summary.name = piece.PieceName();
             summary.unit = piece.Unit();
+            summary.notes = piece.Notes();
             summary.dependencies = piece.Dependencies();
+            summary.measurements = piece.Measurements();
         }
         else
         {
@@ -179,7 +181,7 @@ auto OPieceLibrary::Needs(const Summary &summary) -> QString
     if (not summary.error.isEmpty())
     {
         // A file that cannot be read has nothing to say about what it needs, and the dash says exactly that.
-        return QStringLiteral("—");
+        return QStringLiteral("-");
     }
 
     QStringList pieces;
@@ -193,6 +195,34 @@ auto OPieceLibrary::Needs(const Summary &summary) -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::NeedsLine(const Summary &summary) -> QString
+{
+    if (not summary.error.isEmpty())
+    {
+        // A file that cannot be read has nothing to say about what it needs, and the dash says exactly that.
+        return QStringLiteral("-");
+    }
+
+    QStringList parts;
+    if (const QString needs = Needs(summary); not needs.isEmpty())
+    {
+        parts.append(needs);
+    }
+
+    // What it reads from the table counts too, and it counts as a **number**: a piece can read fifteen
+    // measurements, and fifteen names would push everything else out of the cell. The names are in the details.
+    if (not summary.measurements.isEmpty())
+    {
+        parts.append(QCoreApplication::translate("OPieceLibrary", "%n measurement(s)", nullptr,
+                                                 static_cast<int>(summary.measurements.size())));
+    }
+
+    // Nothing at all is said rather than left blank: an empty cell reads like a piece nobody looked at.
+    return parts.isEmpty() ? QCoreApplication::translate("OPieceLibrary", "Nothing")
+                           : parts.join(QStringLiteral(", "));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPieceLibrary::Details(const Summary &summary) -> QString
 {
     if (not summary.error.isEmpty())
@@ -200,24 +230,113 @@ auto OPieceLibrary::Details(const Summary &summary) -> QString
         return QCoreApplication::translate("OPieceLibrary", "This piece could not be read: %1").arg(summary.error);
     }
 
+    QStringList lines{QCoreApplication::translate("OPieceLibrary", "From other pieces:")};
     if (summary.dependencies.isEmpty())
     {
-        return QCoreApplication::translate("OPieceLibrary",
-                                           "It needs nothing: everything it reads, it declares.");
+        lines.append(QStringLiteral("    ")
+                     + QCoreApplication::translate("OPieceLibrary",
+                                                   "Nothing: everything it reads, it declares."));
+    }
+    else
+    {
+        for (const OPieceDocument::Dependency &dependency : summary.dependencies)
+        {
+            // The value, and then who declares it. When nothing does, the value is shown alone rather than hidden:
+            // it is exactly the case the import will refuse, and it is better seen here than there.
+            lines.append(dependency.origin.isEmpty()
+                             ? QStringLiteral("    ")
+                                   + QCoreApplication::translate("OPieceLibrary", "%1 - no piece declares it")
+                                         .arg(dependency.token)
+                             : QStringLiteral("    ") + dependency.token + QStringLiteral(" ← ")
+                                   + dependency.origin);
+        }
     }
 
-    QStringList lines{QCoreApplication::translate("OPieceLibrary", "Needs:")};
-    for (const OPieceDocument::Dependency &dependency : summary.dependencies)
+    // And the table: a piece enters a pattern whose measurements have to define these, and this is where that is
+    // seen before the refusal rather than as one.
+    lines.append(QString());
+    lines.append(QCoreApplication::translate("OPieceLibrary", "Measurements it reads:"));
+    if (summary.measurements.isEmpty())
     {
-        // The value, and then who declares it. When nothing does, the value is shown alone rather than hidden:
-        // it is exactly the case the import will refuse, and it is better seen here than there.
-        lines.append(dependency.origin.isEmpty()
-                         ? QStringLiteral("    ")
-                               + QCoreApplication::translate("OPieceLibrary", "%1 — no piece declares it")
-                                     .arg(dependency.token)
-                         : QStringLiteral("    ") + dependency.token + QStringLiteral(" ← ")
-                               + dependency.origin);
+        lines.append(QStringLiteral("    ") + QCoreApplication::translate("OPieceLibrary", "None."));
+    }
+    else
+    {
+        for (const QString &measurement : summary.measurements)
+        {
+            lines.append(QStringLiteral("    ") + measurement);
+        }
     }
 
     return lines.join(QLatin1Char('\n'));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::SetNotes(const QString &filePath, const QString &notes, QString *error) -> bool
+{
+    OPieceDocument piece;
+    if (not Load(filePath, &piece, error))
+    {
+        return false;
+    }
+
+    piece.SetNotes(notes);
+    return Save(&piece, filePath, error);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Import(const QString &sourcePath, const QString &targetPath, QString *error) -> bool
+{
+    // Read first, copy after: a file that does not open, whose root is not a piece, or that the piece schema
+    // refuses, must not land in the library — it would be a line the window then has to explain on every visit.
+    QFile source(sourcePath);
+    if (not source.open(QIODevice::ReadOnly))
+    {
+        if (error != nullptr)
+        {
+            *error = QCoreApplication::translate("OPieceLibrary", "This file is not a piece: %1")
+                         .arg(source.errorString());
+        }
+        return false;
+    }
+    const QByteArray data = source.readAll();
+    source.close();
+
+    OPieceDocument piece;
+    QString reason;
+    if (not Load(sourcePath, &piece, &reason))
+    {
+        if (error != nullptr)
+        {
+            *error = QCoreApplication::translate("OPieceLibrary", "This file is not a piece: %1").arg(reason);
+        }
+        return false;
+    }
+
+    // And the schema, because a file can be well-formed XML and still not be a piece: this is the same bar the
+    // library writes its own pieces with, so what enters is what it would have written.
+    if (not VDomDocument::ValidateXMLData(piece.SaveSchema(), data, sourcePath, reason))
+    {
+        if (error != nullptr)
+        {
+            *error = QCoreApplication::translate("OPieceLibrary", "This piece does not match the piece format: %1")
+                         .arg(reason);
+        }
+        return false;
+    }
+
+    QDir().mkpath(QFileInfo(targetPath).absolutePath());
+
+    // The file keeps the name the reader gave it, and the piece keeps the name it was written under — the same
+    // rule as Export. What binds the two is the identity inside the file, never a file name.
+    if (not QFile::copy(sourcePath, targetPath))
+    {
+        if (error != nullptr)
+        {
+            *error = QCoreApplication::translate("OPieceLibrary", "The piece could not be copied to the library.");
+        }
+        return false;
+    }
+
+    return true;
 }

@@ -1120,7 +1120,7 @@ void MainWindow::DeleteExportOutput(quint32 id)
 void MainWindow::ExportOutputToPdf(quint32 id)
 {
     // Un plan de coupe n'a **aucun export** aujourd'hui : sa sortie sera HPGL/PLT, et elle est
-    // reportée (décision de Sophie, 24-09-2026). La cellule du dock est déjà dessinée désactivée
+    // reportée (décidé le 24-09-2026). La cellule du dock est déjà dessinée désactivée
     // pour ces lignes ; cette garde est la **même** décision prise là où le chemin commence, pour
     // qu'aucun autre appel ne l'ouvre en PDF par mégarde — le PDF générique l'acceptait, et son
     // rendu était mauvais (CuttingPlan §8).

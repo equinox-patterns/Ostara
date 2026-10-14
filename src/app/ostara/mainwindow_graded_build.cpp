@@ -349,7 +349,7 @@ void MainWindow::BuildGradedScene()
         {
             // A piece that cannot be prepared for a graded size must not crash the mode entry —
             // skip the remaining sizes; the restore below still runs and the partial scene is shown.
-            qWarning("Graded capture failed for a size — %s", qUtf8Printable(e.ErrorMessage()));
+            qWarning("Graded capture failed for a size - %s", qUtf8Printable(e.ErrorMessage()));
             break;
         }
 

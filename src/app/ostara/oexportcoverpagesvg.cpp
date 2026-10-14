@@ -106,7 +106,7 @@ auto OExportCoverPageSvg::Write(const QString &fileName, const OExportCoverPage:
         //
         // Outlined, the page carried whole letterforms and no face at all: faithful by construction
         // and impossible to edit — and it made the cover page the only document in the file drawn by
-        // another route than the rest, which is exactly what Sophie refused: *what the app shows is
+        // another route than the rest, which is exactly what is refused here: *what the app shows is
         // what the PDF prints.* The layout layer's own text is words; the page must read like it.
         //
         // What a `<text>` needs to be faithful is the FACE and not a weight NUMBER: `ostara:font-face`

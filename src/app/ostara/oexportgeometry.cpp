@@ -626,7 +626,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         {
             // A piece whose contour cannot be built is not nestable — it is dropped,
             // and said out loud rather than silently missing from the result.
-            qWarning() << "Export mode: piece" << piece.GetName() << "skipped —" << e.ErrorMessage();
+            qWarning() << "Export mode: piece" << piece.GetName() << "skipped -" << e.ErrorMessage();
             if (m_diagnostics.size() < kMaxDiagnostics)
             {
                 m_diagnostics.append(QStringLiteral("piece '%1': %2").arg(piece.GetName(), e.ErrorMessage()));
@@ -726,7 +726,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // ── Le miroir — APRÈS la direction, jamais avant ──────────────────────────────────
             //
             // Pas de miroir sauf demande explicite : `Force flipping` est le seul chemin. Décision
-            // de Sophie — le legacy retournait une pièce sans qu'on demande rien, et un plan de
+            // — le legacy retournait une pièce sans qu'on demande rien, et un plan de
             // coupe qui retourne tout seul est faux sans le dire.
             //
             // ⚠️ Le miroir va dans la MATRICE, et les deux lecteurs doivent l'appliquer : le moteur
@@ -737,7 +737,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // ⚠️ Et il vient **après** la direction, parce qu'il en CHANGE l'angle : la matrice ne
             // touche pas la ligne de droit-fil, donc le moteur lirait l'angle d'avant le miroir et
             // tournerait la pièce comme si elle n'était pas retournée. Un biais à 45° sortait à
-            // l'horizontale au lieu de la verticale. Trouvé par Sophie.
+            // l'horizontale au lieu de la verticale. Trouvé.
             if (piece.IsForceFlipping())
             {
                 const QPointF centre = geometry.piece.DetailBoundingRect().center();
@@ -752,7 +752,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 
         // ── La quantité ─────────────────────────────────────────────────────────────────────────
         //
-        // Le membre d'abord, sinon le groupe, sinon 1 — décision de Sophie. Rien dans ce chemin ne
+        // Le membre d'abord, sinon le groupe, sinon 1 — décidé. Rien dans ce chemin ne
         // lisait la quantité jusqu'ici : c'est la section Cut du cartouche, et une pièce se coupe
         // rarement une seule fois.
         //
@@ -784,7 +784,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // donc deux pièces, la seconde étant le miroir de la première — c'est le pli qui la
             // fait. Poser « cut » fois en donnerait le double. C'est la moitié qu'on pose,
             // **arrondie au-dessus** : 1 reste 1 (la pièce sera coupée en double, et c'est sans
-            // conséquence), 3 devient 2, 5 devient 3. Décision de Sophie.
+            // conséquence), 3 devient 2, 5 devient 3. Décidé.
             //
             // Une pièce **au pli** ne se divise pas : une pose sur le pli donne UNE pièce entière,
             // pas deux — le pli n'y ajoute pas une seconde pièce, il complète la première.

@@ -356,7 +356,7 @@ void StyleGuideWindow::BuildUI()
 
     // ── QScrollBar ──
     {
-        mainLayout->addWidget(SectionLabel(QStringLiteral("QScrollBar — vertical")));
+        mainLayout->addWidget(SectionLabel(QStringLiteral("QScrollBar - vertical")));
 
         auto *vsb = new QScrollBar(Qt::Vertical);
         vsb->setRange(0, 100);
@@ -366,7 +366,7 @@ void StyleGuideWindow::BuildUI()
         mainLayout->addWidget(WidgetRow(QStringLiteral("vertical"), {vsb}));
     }
     {
-        mainLayout->addWidget(SectionLabel(QStringLiteral("QScrollBar — horizontal")));
+        mainLayout->addWidget(SectionLabel(QStringLiteral("QScrollBar - horizontal")));
 
         auto *hsb = new QScrollBar(Qt::Horizontal);
         hsb->setRange(0, 100);
@@ -389,7 +389,7 @@ void StyleGuideWindow::BuildUI()
 
     // ── QSplitter ──
     {
-        mainLayout->addWidget(SectionLabel(QStringLiteral("QSplitter — horizontal")));
+        mainLayout->addWidget(SectionLabel(QStringLiteral("QSplitter - horizontal")));
 
         auto *split = new QSplitter(Qt::Horizontal);
         auto *left = new QFrame();
@@ -406,7 +406,7 @@ void StyleGuideWindow::BuildUI()
     {
         mainLayout->addWidget(SectionLabel(QStringLiteral("QLabel")));
 
-        auto *standard = new QLabel(QStringLiteral("QLabel — standard text"));
+        auto *standard = new QLabel(QStringLiteral("QLabel - standard text"));
         auto *centered = new QLabel(QStringLiteral("Centered"));
         centered->setAlignment(Qt::AlignCenter);
 
@@ -509,7 +509,7 @@ StyleGuideWindow::StyleGuideWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setObjectName(QStringLiteral("styleGuideWindow"));
-    setWindowTitle(QStringLiteral("Style Guide — Ostara Widgets"));
+    setWindowTitle(QStringLiteral("Style Guide - Ostara Widgets"));
     resize(960, 720);
     BuildUI();
 }

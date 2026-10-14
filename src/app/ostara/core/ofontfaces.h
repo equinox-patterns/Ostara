@@ -42,7 +42,7 @@ class QComboBox;
  * installed here (eighteen faces for Jost, eighteen for Inter, six for Helvetica). A weight is a
  * number; a face has a name, and only the family knows it.
  *
- * ⚠️ **The italic faces are not offered — decision of Sophie, 22-09-2026.** A template sets a FACE,
+ * ⚠️ **The italic faces are not offered — decided on 22-09-2026.** A template sets a FACE,
  * and the PDF redraws the words from their outlines: the re-emission reads the family, the size and
  * the weight, and never `font-style`. An italic chosen here would therefore be drawn UPRIGHT, in
  * silence — and a page is supposed to look the way the application shows it. The frontend's answer

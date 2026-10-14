@@ -1935,7 +1935,7 @@ auto VCommonSettings::WidthBoldLine() const -> qreal
 {
     // Three times the hairline, the weight the bold has always had. One and a half, then twice, were tried and both
     // are invisible on screen: the hairline is 1.5 px at 100%, and neither 2.3 px nor 3 px reads as a bolder stroke
-    // (Sophie, 09-10-2026). What hid the points was never this width but the order the points are painted in.
+    // (09-10-2026). What hid the points was never this width but the order the points are painted in.
     return WidthMainLine();
 }
 

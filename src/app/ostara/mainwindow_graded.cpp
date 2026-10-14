@@ -240,7 +240,7 @@ bool MainWindow::EnterGradedMode()
         }
         QMessageBox::warning(this, tr("Graded mode"),
                              tr("The stored size range no longer matches the loaded "
-                                "measurements table. It was removed — please, create a new one."),
+                                "measurements table. It was removed - please, create a new one."),
                              QMessageBox::Ok);
     }
 

@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   17/09/2026
  **
- **  @brief  Draws the assembly marks of a template — frame, scissors, marks and pagination.
+ **  @brief  Draws the assembly marks of a template - frame, scissors, marks and pagination.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>

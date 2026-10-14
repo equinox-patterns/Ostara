@@ -467,7 +467,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::AddPP(const QString &PPName, const QString &layerName, const QString &layerColor,
-                       const QString &layerPenStyle)
+                       const QString &layerPenStyle, const QString &notes)
 {
     VPatternBlockMapper *blocks = doc->PatternBlockMapper();
     if (int const id = blocks->GetId(PPName); !blocks->SetActiveById(id))
@@ -501,6 +501,11 @@ void MainWindow::AddPP(const QString &PPName, const QString &layerName, const QS
 
     auto *spoint = VToolBasePoint::Create(initData);
     emit ui->view->itemClicked(spoint);
+
+    // What the reader said about the piece, on the block the command just created. Written here and not carried by
+    // the command on purpose: the command holds **that** element, so a Ctrl+Z takes the note away with the piece
+    // and a Ctrl+Y brings it back — the note is an attribute of the block, never a second thing to keep in step.
+    doc->SetBlockNotes(PPName, notes);
 
     // The piece exists in the document from here on (the undo command ran synchronously), so its first
     // layer can be written into it — and the base point, the only object a fresh piece holds, goes in.

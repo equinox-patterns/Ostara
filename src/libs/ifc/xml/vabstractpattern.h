@@ -218,6 +218,19 @@ public:
     auto GetNotes() const -> QString;
     void SetNotes(const QString &text);
 
+    /**
+     * @brief What the reader wrote about the block @p blockName — free text, and held **by the block itself**.
+     *
+     * A pattern's own notes belong to the pattern (`GetNotes`); these belong to one piece: they travel with it
+     * into a `.opiece`, come back with an instance imported from the library, and nothing converts them. Empty
+     * means absent — a piece nobody wrote about carries no attribute.
+     */
+    auto BlockNotes(const QString &blockName) const -> QString;
+    void SetBlockNotes(const QString &blockName, const QString &notes);
+
+    /** @brief The `<draw>` element named @p blockName, or a null element when no block wears that name. */
+    auto BlockElement(const QString &blockName) const -> QDomElement;
+
     auto GetPatternName() const -> QString;
     void SetPatternName(const QString &name);
 

@@ -101,6 +101,19 @@ public:
     auto LibraryId() const -> QString;
 
     /**
+     * @brief What the reader wrote about the piece — free text, and the only thing it says besides its name.
+     *
+     * It is carried **by the block**: the pattern writes it on its `<draw>`, the piece copies the block as it
+     * stands, and an instance imported from the library brings it back. Nothing else holds it, and nothing
+     * converts it.
+     */
+    auto Notes() const -> QString;
+
+    /** @brief Writes @p notes on the block. Empty **removes** the attribute: a piece nobody wrote about says
+     * nothing, the way an empty section is not written at all. */
+    void SetNotes(const QString &notes);
+
+    /**
      * @brief The two increment tables the piece uses, and the groups they are filed under.
      *
      * Only the rows matter: the sections are copied row by row, so a piece carries its increments and

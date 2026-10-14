@@ -337,7 +337,7 @@ void OExportPlotterWidget::Retranslate()
     }
 
     m_matLabel->setText(tr("Cutting mat:"));
-    m_matLabel->setToolTip(tr("The area your plotter can really cut — what its own software shows "
+    m_matLabel->setToolTip(tr("The area your plotter can really cut - what its own software shows "
                               "you, not the size of the mat itself.\n\n"
                               "A piece larger than it is cut into pieces at the mat borders, to be "
                               "put back together like a puzzle. A smaller mat means more, smaller, "

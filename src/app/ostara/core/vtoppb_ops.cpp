@@ -6,7 +6,7 @@
  **
  **  @brief  ops property browser methods — declarative descriptors
  **
- **  @note   Extracted from vtooloptionspropertybrowser.cpp by Sophie Denys <contact@sophiedenys.com>
+ **  @note   Extracted from vtooloptionspropertybrowser.cpp <contact@sophiedenys.com>
  **          as part of Ostara refactoring.
  **
  **  @copyright
@@ -143,7 +143,7 @@ auto CopyStyleTitle(const VAbstractOperation::CopyStyle &style) -> QString
  *
  *  A value no picture stands for — `default` on a copy that inherits the pen of the object it comes from, a value
  *  read back from an older file — must not be shown as the first entry of the list: that is a lie about what is on
- *  screen, and Sophie hit exactly that (01-10-2026). The entry that matches the pen the object is DRAWN with is
+ *  screen, and found exactly that (01-10-2026). The entry that matches the pen the object is DRAWN with is
  *  the honest answer, and the pen is what the drawing asks for anyway (LineStyleToPenStyle). */
 auto StyleIndex(const QMap<QString, QIcon> &styles, const QString &penStyle) -> vpesizetype
 {
@@ -169,7 +169,7 @@ auto StyleIndex(const QMap<QString, QIcon> &styles, const QString &penStyle) -> 
  *  belongs to the whole figure.
  *
  *  The pleats write explicit values, so their lines never take the pen of the layer they are put in — an exception
- *  Sophie asked for (see Pleat.md). A pen only redraws lines, so each setter edits the options with a lite parse,
+ *  asked for (see Pleat.md). A pen only redraws lines, so each setter edits the options with a lite parse,
  *  exactly as the display of a slash-and-spread does. */
 template <class Tool> auto PleatGroup() -> PropertyDesc
 {
@@ -534,7 +534,7 @@ auto RotationProperties() -> std::vector<PropertyDesc>
                  // No point among the sources: there is no length to measure, and the row says so rather than
                  // showing a zero that would read as a real value.
                  auto *prop = new VPE::VLabelProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));
-                 prop->setValue(QStringLiteral("—"));
+                 prop->setValue(QStringLiteral("-"));
                  return prop;
              }
              auto *prop = new VFormulaProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:")));

@@ -133,7 +133,7 @@ OThumbnailConfigWidget::OThumbnailConfigWidget(QWidget *parent) : QWidget(parent
         Commit();
     });
 
-    // ⚠️ **A miniature always states a unit — decision of Sophie, 25-09-2026.** Unchecking the last unit
+    // ⚠️ **A miniature always states a unit — decided on 25-09-2026.** Unchecking the last unit
     // checked is not refused and shows no message: it hands the answer to the other unit, in one click —
     // centimetres off puts inches on, and the other way round. With neither, the miniature prints no
     // value at all (see OThumbnailTextBuilder::ValueText): a block holding a drawing captioned about
@@ -204,7 +204,7 @@ void OThumbnailConfigWidget::RetranslateUI()
 {
     ApplyTexts();
     m_hintLabel->setText(tr("The thumbnail draws the piece with its seam allowances, its notches and its internal "
-                            "paths, at the reference size of each axis — so it keeps showing the same size when the "
+                            "paths, at the reference size of each axis - so it keeps showing the same size when the "
                             "active size changes. Move and resize it directly on the canvas."));
     m_seamHint->setText(tr("How many times each value is printed. To place them, click the thumbnail once to select "
                            "it, then once more to open it: the values and the legend can then be dragged."));

@@ -161,7 +161,7 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
 
     if (section.typeId == QLatin1String("patternName"))
     {
-        // Nothing to draw while the editor is drawing the template — no pattern is loaded, so the
+        // Nothing to draw while the editor is drawing the template - no pattern is loaded, so the
         // name the pattern would give is not there to be written.
         return data.name.isEmpty() ? QVector<OCartoucheRenderLine>()
                                    : OCartouchePainter::TextLines(data.name, font, lineSpacing);

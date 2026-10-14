@@ -4,10 +4,10 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   14/10/2026
  **
- **  @brief  Un nom peut vivre dans **les deux** tables d'incréments — `<increments>` (« Évolutions ») et
- **          `<previewCalculations>` (« Calculs préliminaires ») — et c'est un état que le produit doit savoir
- **          tenir : une ligne se cherche donc **dans la table qu'on lui nomme**. Un balayage du document, lui,
- **          répond la première ligne en ordre document, `<increments>` venant toujours en premier.
+ **  @brief  A name can live in **both** increment tables - `<increments>` and
+ **          `<previewCalculations>` - and that is a state the product has to hold:
+ **          a row is therefore looked for **in the table it is given**. A scan of the document, on the other
+ **          answers the first row in document order, `<increments>` always coming first.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -36,7 +36,7 @@
 
 namespace
 {
-/// Un document concret, réduit au nécessaire : la machinerie des incréments vit dans `VAbstractPattern`.
+/// A concrete document, reduced to what is needed: the increment machinery lives in `VAbstractPattern`.
 class TestDoc : public VAbstractPattern
 {
 public:
@@ -59,12 +59,12 @@ public:
     }
     void LiteParseTree(const Document &parse) override { Q_UNUSED(parse) }
 
-    // La recherche par table est `protected` — c'est ce qui permet à `VPattern` de s'en servir ; l'essai la rend
-    // lisible pour vérifier ce qu'elle répond.
+    // The lookup by table is `protected` - that is what lets `VPattern` use it; the test makes it
+    // readable to check what it answers.
     using VAbstractPattern::FindIncrementInTable;
 };
 
-/// Le même nom dans **les deux** tables, avec une formule distincte pour dire laquelle a répondu.
+/// The same name in **both** tables, with a distinct formula to say which one answered.
 const QString kBothTables = QStringLiteral(R"(<?xml version="1.0" encoding="UTF-8"?>
 <pattern>
     <version>1.0.0</version>
@@ -88,14 +88,14 @@ TST_IncrementTables::TST_IncrementTables(QObject *parent)
 void TST_IncrementTables::IncrementRowIsReadInItsOwnTable()
 {
     TestDoc doc;
-    QVERIFY2(doc.setContent(kBothTables.toUtf8()), "le document d'essai doit se lire");
+    QVERIFY2(doc.setContent(kBothTables.toUtf8()), "the test document must be read");
 
     const QDomElement increments = doc.IncrementRow(QStringLiteral("#Cou"), false);
     const QDomElement preview = doc.IncrementRow(QStringLiteral("#Cou"), true);
 
-    QVERIFY2(not increments.isNull(), "la ligne de <increments> doit être trouvée");
-    QVERIFY2(not preview.isNull(), "la ligne de <previewCalculations> doit être trouvée");
-    QVERIFY2(increments != preview, "les deux tables portent deux lignes distinctes, pas la même");
+    QVERIFY2(not increments.isNull(), "the row of <increments> must be found");
+    QVERIFY2(not preview.isNull(), "the row of <previewCalculations> must be found");
+    QVERIFY2(increments != preview, "the two tables hold two distinct rows, not the same one");
 
     QCOMPARE(increments.attribute(QStringLiteral("formula")), QStringLiteral("1"));
     QCOMPARE(preview.attribute(QStringLiteral("formula")), QStringLiteral("2"));
@@ -105,15 +105,15 @@ void TST_IncrementTables::IncrementRowIsReadInItsOwnTable()
 void TST_IncrementTables::FindIncrementInTableIsReadInItsOwnTable()
 {
     TestDoc doc;
-    QVERIFY2(doc.setContent(kBothTables.toUtf8()), "le document d'essai doit se lire");
+    QVERIFY2(doc.setContent(kBothTables.toUtf8()), "the test document must be read");
 
     const QDomElement increments
         = doc.FindIncrementInTable(VAbstractPattern::TagIncrements, QStringLiteral("#Cou"));
     const QDomElement preview
         = doc.FindIncrementInTable(VAbstractPattern::TagPreviewCalculations, QStringLiteral("#Cou"));
 
-    QVERIFY2(not increments.isNull() && not preview.isNull(), "chaque table doit répondre sa ligne");
-    QVERIFY2(increments != preview, "un nom dans les deux tables : deux lignes, jamais la même");
+    QVERIFY2(not increments.isNull() && not preview.isNull(), "every table must answer its own row");
+    QVERIFY2(increments != preview, "a name in both tables: two rows, never the same one");
     QCOMPARE(increments.attribute(QStringLiteral("formula")), QStringLiteral("1"));
     QCOMPARE(preview.attribute(QStringLiteral("formula")), QStringLiteral("2"));
 }

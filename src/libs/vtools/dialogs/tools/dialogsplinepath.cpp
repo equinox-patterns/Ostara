@@ -93,7 +93,7 @@ constexpr int pointColumnCount = 5;
 // What a handle the point does not have shows in its two cells — the dash the pleat table uses for an empty value.
 auto NotUsedCell() -> QString
 {
-    return QStringLiteral("—");
+    return QStringLiteral("-");
 }
 } // namespace
 

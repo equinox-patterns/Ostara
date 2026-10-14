@@ -616,7 +616,7 @@ auto VDrawTool::GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, qui
             // An operation produces a SET of copies, each an object of its own, and a click works on the one it
             // landed on — never on the whole set. That is also what the layer of an operation already does: it
             // holds the sources that were picked, never all of them, so the copies can be hidden and filed one by
-            // one (asked for by Sophie, 01-10-2026: "je ne peux pas ajouter la courbe spécifiquement dans un
+            // one (asked for on 01-10-2026: "je ne peux pas ajouter la courbe spécifiquement dans un
             // calque"). Every other tool draws ONE figure whose parts travel together — a rectangle, a double
             // point, a dart cap — and the whole figure is what goes in or out (§5quinquies).
             if (element.tagName() == VAbstractPattern::TagOperation)

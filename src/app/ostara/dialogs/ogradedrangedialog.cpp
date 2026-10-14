@@ -54,7 +54,7 @@ OGradedRangeDialog::OGradedRangeDialog(const Config &config, QWidget *parent)
   , m_config(config)
   , m_sizeAxis(config.declaredAxis)
 {
-    setWindowTitle(tr("Graded mode — size range"));
+    setWindowTitle(tr("Graded mode - size range"));
 
     // The step-3 form (range + export settings) must stay wide enough for the
     // export path field — the form would otherwise hug its minimum width and the

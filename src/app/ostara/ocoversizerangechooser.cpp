@@ -46,7 +46,7 @@ auto SummaryOf(const OCoverGradedAxis &range) -> QString
     {
         return QCoreApplication::translate("OCoverSizeRangeChooser", "No size range chosen");
     }
-    return QCoreApplication::translate("OCoverSizeRangeChooser", "%1 — from %2 to %3")
+    return QCoreApplication::translate("OCoverSizeRangeChooser", "%1 - from %2 to %3")
         .arg(range.axis, range.minValue, range.maxValue);
 }
 } // namespace

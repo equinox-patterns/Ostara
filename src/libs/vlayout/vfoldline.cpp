@@ -110,7 +110,7 @@ auto VFoldLine::Create(const VPiece &piece, const VContainer *data, VAbstractPat
 
     {
         QFont font(settings->GetFoldLineLabelFontFamily());
-        // **A face NAME, never a number** (decision of Sophie, 22-09-2026). A settings file written
+        // **A face NAME, never a number** (decided on 22-09-2026). A settings file written
         // before the face was named holds the weight instead, and that is what the fallback reads —
         // the two cannot disagree, because a number is resolved exactly as the editor's Weight control
         // resolves it.

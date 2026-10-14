@@ -48,6 +48,7 @@ const QString kTagDraw = QStringLiteral("draw");
 const QString kAttrName = QStringLiteral("name");
 const QString kAttrToken = QStringLiteral("token");
 const QString kAttrOrigin = QStringLiteral("origin");
+const QString kAttrNotes = QStringLiteral("notes");
 
 const QString kPieceVersion = QStringLiteral("1.0.0");
 
@@ -199,6 +200,31 @@ auto OPieceDocument::PieceName() const -> QString
 auto OPieceDocument::LibraryId() const -> QString
 {
     return DrawElement().attribute(OPieceDocument::AttrLibraryId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceDocument::Notes() const -> QString
+{
+    return DrawElement().attribute(kAttrNotes);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceDocument::SetNotes(const QString &notes)
+{
+    QDomElement draw = DrawElement();
+    if (draw.isNull())
+    {
+        return;
+    }
+
+    if (notes.isEmpty())
+    {
+        draw.removeAttribute(kAttrNotes);
+    }
+    else
+    {
+        draw.setAttribute(kAttrNotes, notes);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

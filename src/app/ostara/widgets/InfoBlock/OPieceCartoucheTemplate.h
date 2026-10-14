@@ -37,7 +37,7 @@
 class QDomDocument;
 
 /**
- * @brief Cartouche template — a named, ordered list of section instances.
+ * @brief Cartouche template - a named, ordered list of section instances.
  *
  * The template is stored globally in ~/Ostara/CartoucheTemplates as a `.oct`
  * file. It carries no geometry: the pattern only stores the template reference,
@@ -46,7 +46,7 @@ class QDomDocument;
 class OPieceCartoucheTemplate : public OTemplateSectionHost
 {
 public:
-    /// One section *instance* of a template — a type id plus concrete options.
+    /// One section *instance* of a template - a type id plus concrete options.
     struct Section
     {
         QString typeId;

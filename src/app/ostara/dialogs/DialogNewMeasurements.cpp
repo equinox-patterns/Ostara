@@ -122,7 +122,7 @@ DialogNewMeasurements::DialogNewMeasurements(QWidget *parent)
 
     m_templateCombo = new QComboBox();
     m_templateCombo->setView(new QListView());
-    m_templateCombo->addItem(tr("— No template —"));
+    m_templateCombo->addItem(tr("No template"));
 
     const QString libPath = VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary();
     const QStringList favs = VAbstractApplication::VApp()->Settings()->GetMeasurementFavorites();

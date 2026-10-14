@@ -68,7 +68,7 @@ struct OExportPieceDecor
     /// A record rather than an item, for the same reason the blocks and the annotations are: nobody
     /// ever placed a miniature on the export scene, and the frame it is drawn in is the owner's.
     ///
-    /// ⚠️ **Un plan de coupe n'en porte aucune** (décision de Sophie) : un plan de coupe dit
+    /// ⚠️ **Un plan de coupe n'en porte aucune** (décidé) : un plan de coupe dit
     /// quoi tailler, la miniature est une aide de papier. La règle est posée **à la résolution**, dans
     /// `ResolveOwnerMiniatures`, et non au dessin — un record jamais fait ne peut pas être dessiné par
     /// mégarde. Le champ est donc vide sur tout run de coupe, et sur lui seul.

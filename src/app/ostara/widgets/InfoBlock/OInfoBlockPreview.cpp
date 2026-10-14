@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   24/08/2026
  **
- **  @brief  Live preview of a cartouche template — one stacked line per section.
+ **  @brief  Live preview of a cartouche template - one stacked line per section.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -262,7 +262,7 @@ void OInfoBlockPreview::paintEvent(QPaintEvent *event)
         {
             // Sample "1 of 1" / "01 of 01": the preview goes through the very same formatter as
             // the canvas, so the style shown here is the one the cartouche will render. The total
-            // is an example — it is computed automatically from the pieces in the layout.
+            // is an example - it is computed automatically from the pieces in the layout.
             const QString style = options.value(OPieceCartoucheNumber::kStyle).toString();
             line = Compose(FormatPieceNumber(1, style), FormatPieceNumber(1, style), separator);
         }

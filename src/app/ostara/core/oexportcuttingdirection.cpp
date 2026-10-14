@@ -169,7 +169,7 @@ auto OExportCuttingDirection::PieceDirection(const VLayoutPiece &piece) -> Direc
     // seam line here instead — or the other one only when the main path happens to be hidden — left
     // a piece the guard had let through with NO constraint at all. The engine then placed it
     // wherever the annealing liked, and nothing said so: one piece of a plan, laid at random, in a
-    // plan that looked finished. Found by Sophie, who saw a single piece facing the wrong way and
+    // plan that looked finished. Found by hand: a single piece facing the wrong way and
     // fixed it by adding a grainline.
     const QLineF fold = FoldLine(piece);
     if (not fold.isNull())
@@ -181,7 +181,7 @@ auto OExportCuttingDirection::PieceDirection(const VLayoutPiece &piece) -> Direc
         // le même dans les deux cas — `{g−90, g+90}` et `{g+90, g+270}` sont identiques — mais
         // **l'index 0 de la banque ne l'est pas**, et le moteur PART de là. Rien dans sa fonction
         // objectif ne préfère un sens à l'autre : la pièce reste donc retournée si l'angle de
-        // départ l'est. Trouvé par Sophie : une pièce au pli sortait à l'envers, et ajouter une
+        // départ l'est. Trouvé : une pièce au pli sortait à l'envers, et ajouter une
         // grainline la remettait d'aplomb — la grainline, elle, a un sens qu'elle a dessiné.
         //
         // On ramène donc l'angle du pli sur un demi-tour : les deux ordres donnent la MÊME
@@ -246,7 +246,7 @@ auto OExportCuttingDirection::AllowedAngles(const Direction &direction, bool one
     if (direction.arrows == GrainlineArrowDirection::fourWays)
     {
         // The cross — TWO axes: droit-fil, and contre-fil. Both are legitimate, so the one-way
-        // option keeps them both and takes one sense of each. Sophie, on what the cross means.
+        // option keeps them both and takes one sense of each. That is what the cross means here.
         if (oneWay)
         {
             return {Normalized(base), Normalized(base + 90.0)};

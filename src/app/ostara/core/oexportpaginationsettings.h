@@ -82,7 +82,7 @@ auto OExportPaginationForms() -> const QVector<OExportPaginationFormModel> &;
 /**
  * @brief How far a corner number is set back from each of the two edges it hugs, in millimetres.
  *
- * Half a centimetre — Sophie's figure, 17-09-2026, and it is not a taste: a printer cannot put
+ * Half a centimetre — chosen on 17-09-2026, and it is not a taste: a printer cannot put
  * ink on the last few millimetres of a sheet, so a number closer to the edge than this would be
  * the one mark of the decor that a print could lose.
  */
@@ -101,7 +101,7 @@ constexpr qreal kPaginationCornerInsetMm = 5.0;
  * template and inherits its style, so it needs a way of saying « whatever the template uses »; a
  * page number is the whole of what it is, and nothing above it to inherit from. Every setting
  * therefore carries a real value, and the four below are what the number is until another one is
- * chosen — a decision of Sophie's, 17-09-2026.
+ * chosen — decided on 17-09-2026.
  */
 struct OExportPaginationTextStyle
 {
@@ -109,7 +109,7 @@ struct OExportPaginationTextStyle
     QString fontFamily;
 
     /**
-     * The FACE the number is set in — a name, never a number (decision of Sophie, 22-09-2026 : « que
+     * The FACE the number is set in — a name, never a number (decided on 22-09-2026 : « que
      * les vraies graisses de la font »). Empty is the family's Regular.
      *
      * ⚠️ A template written before the faces were named holds a **weight** in the same attribute:

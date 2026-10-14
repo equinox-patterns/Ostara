@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   14/10/2026
  **
- **  @brief  Les deux tables d'incréments : une ligne se cherche **dans sa table**, jamais dans le document.
+ **  @brief  The two increment tables: a row is looked for **in its own table**, never in the document.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -38,9 +38,9 @@ public:
     ~TST_IncrementTables() override = default;
 
 private slots:
-    /// `IncrementRow` rend la ligne de la table qu'on lui nomme, même quand le nom vit dans les deux.
+    /// `IncrementRow` answers the row of the table it is given, even when the name lives in both.
     void IncrementRowIsReadInItsOwnTable();
-    /// `FindIncrementInTable` — la recherche qui a remplacé le balayage du document.
+    /// `FindIncrementInTable` - the lookup that replaced the scan of the document.
     void FindIncrementInTableIsReadInItsOwnTable();
 
 private:

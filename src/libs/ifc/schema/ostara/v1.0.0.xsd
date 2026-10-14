@@ -1294,6 +1294,11 @@
                  the piece was saved under. An aid for reading and for offering the plausible ones — the link
                  itself is the identity, never this. -->
             <xs:attribute name="category" type="xs:string"/>
+            <!-- What the reader wrote about the piece. Free text, and the only place a piece can say more than its
+                 name — a pattern's own notes belong to the pattern, this belongs to this block. It travels with
+                 the block: copied into a `.opiece` and back, so a piece of the library keeps the note it was
+                 written with, and an imported instance brings it along. -->
+            <xs:attribute name="notes" type="xs:string"/>
           </xs:complexType>
         </xs:element>
         <xs:element name="pieceGroups" minOccurs="0" maxOccurs="1">

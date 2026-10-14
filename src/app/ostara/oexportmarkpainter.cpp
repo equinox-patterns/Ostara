@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   17/09/2026
  **
- **  @brief  Draws the assembly marks of a template — frame, scissors, marks and pagination.
+ **  @brief  Draws the assembly marks of a template - frame, scissors, marks and pagination.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -520,7 +520,7 @@ void OExportMarkPainter::ApplyTextStyle(QPainter &painter,
     {
         font.setFamily(style.fontFamily);
     }
-    // **A face NAME, never a number** (decision of Sophie, 22-09-2026 : « que les vraies graisses de
+    // **A face NAME, never a number** (decided on 22-09-2026 : « que les vraies graisses de
     // la font »). An old template holds a weight in the same field, and that is what the fallback
     // reads: a number names no face, but it is the only thing such a file says — and Qt resolves it
     // exactly the face the editor's Weight control showed for it.

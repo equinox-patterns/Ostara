@@ -406,13 +406,13 @@ void DialogManageMeasurements::PopulateTable()
         // --- Column 3: Creation date ---
         QString createdStr = entry.created.isValid()
             ? entry.created.toString(QStringLiteral("dd/MM/yyyy HH:mm"))
-            : QStringLiteral("—");
+            : QStringLiteral("-");
         m_table->setItem(i, 3, new QTableWidgetItem(createdStr));
 
         // --- Column 4: Modification date ---
         QString modifiedStr = entry.modified.isValid()
             ? entry.modified.toString(QStringLiteral("dd/MM/yyyy HH:mm"))
-            : QStringLiteral("—");
+            : QStringLiteral("-");
         m_table->setItem(i, 4, new QTableWidgetItem(modifiedStr));
 
         // --- Column 5: Edit ---

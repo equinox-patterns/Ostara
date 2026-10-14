@@ -117,6 +117,10 @@
             <!-- The identity of the library piece: stable across a rename in the library, so that a piece
                  already imported somewhere still knows which piece it came from. -->
             <xs:attribute name="libraryId" type="libraryIdentity" use="required"/>
+            <!-- What the reader wrote about the piece, carried by the block it came from. Free text: it is the
+                 only thing a piece can say about itself besides its name, and the reader sees it in the library
+                 before choosing the piece. -->
+            <xs:attribute name="notes" type="xs:string"/>
           </xs:complexType>
         </xs:element>
       </xs:sequence>

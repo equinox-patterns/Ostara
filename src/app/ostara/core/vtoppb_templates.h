@@ -6,7 +6,7 @@
  **
  **  @brief  Template definitions for VToolOptionsPropertyBrowser
  **
- **  @note   Extracted from vtooloptionspropertybrowser.cpp by Sophie Denys
+ **  @note   Extracted from vtooloptionspropertybrowser.cpp
  **          as part of Ostara refactoring.
  **
  **  @copyright

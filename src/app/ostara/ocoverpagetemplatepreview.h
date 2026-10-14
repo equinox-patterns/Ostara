@@ -45,7 +45,7 @@ class VAbstractPattern;
  *
  * **The page is 19 × 25.9 cm and keeps its proportions** whatever the pane is given: it is the
  * shape of a page that is being shown, and a page stretched to fill its pane would not be one.
- * The page is the preview's own business and not a property of the template — one template is
+ * The page is the preview's own business and not a property of the template - one template is
  * written for the PDF export of any pattern, and nothing chosen here is saved.
  *
  * **What it draws today is the skeleton, not the drawing.** Each information stands for itself as

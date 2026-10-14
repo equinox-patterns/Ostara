@@ -236,7 +236,7 @@ void OTemplateSectionEditor::Rebuild()
             {
                 // ── What the font really has, and not a list of nine numbers ────────────────
                 //
-                // **Décision de Sophie, 22-09-2026** — « ça ne devrait être que les vraies graisses
+                // **Décidé le 22-09-2026** — « ça ne devrait être que les vraies graisses
                 // de la font, pas des choix génériques qui n'existent pas. » **Regular est sur
                 // toutes les familles**, le reste appartient à la famille : c'est la règle
                 // d'Illustrator, et la seule qui puisse être vraie d'une police qu'on n'a pas vue.
@@ -399,7 +399,7 @@ void OTemplateSectionEditor::Rebuild()
                         // asked to print. The hint says the rest, since where each language goes is
                         // what the choice actually decides.
                         label = tr("In brackets");
-                        hint = tr("The first language is written plainly, the others in brackets — "
+                        hint = tr("The first language is written plainly, the others in brackets - "
                                   "Tailles (Sizes).");
                     }
                     entries.append({label, value, hint});
@@ -467,7 +467,7 @@ void OTemplateSectionEditor::Rebuild()
                 if (logos.isEmpty())
                 {
                     combo->setEnabled(false);
-                    combo->addItem(tr("No logos yet — add them in the Logo page"));
+                    combo->addItem(tr("No logos yet - add them in the Logo page"));
                 }
                 else
                 {

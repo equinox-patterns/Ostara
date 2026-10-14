@@ -903,7 +903,7 @@ void ODetailsGroupWidget::OnMemberDefineClicked(quint32 pieceId)
     m_foldLinePath = m_data->GetPiece(pieceId).GetPath();
     SetMemberFoldLineSelecting(pieceId, true);
     emit StartFoldLineMember(pieceId);
-    emit ShowStatusTip(tr("Select the first point of the foldline — respect clockwise direction"));
+    emit ShowStatusTip(tr("Select the first point of the foldline - respect clockwise direction"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -959,7 +959,7 @@ void ODetailsGroupWidget::OnNodeSelectedForFoldLine(quint32 nodeId)
     if (m_foldLineFirstPoint == NULL_ID)
     {
         m_foldLineFirstPoint = nodeId;
-        emit ShowStatusTip(tr("Select the second point of the foldline — respect clockwise direction"));
+        emit ShowStatusTip(tr("Select the second point of the foldline - respect clockwise direction"));
         return;
     }
 
@@ -971,7 +971,7 @@ void ODetailsGroupWidget::OnNodeSelectedForFoldLine(quint32 nodeId)
     {
         ResetFoldLineHighlight();
         m_foldLineFirstPoint = NULL_ID;
-        emit ShowStatusTip(tr("Invalid points — start over"));
+        emit ShowStatusTip(tr("Invalid points - start over"));
         return;
     }
 

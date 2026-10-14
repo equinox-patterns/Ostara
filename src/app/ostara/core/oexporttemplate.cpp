@@ -166,7 +166,7 @@ void WriteTextStyle(QDomElement &element, const OExportPaginationTextStyle &styl
     {
         element.setAttribute(kAttrFontFamily, style.fontFamily);
     }
-    // **A face NAME, not a number** (decision of Sophie, 22-09-2026: « que les vraies graisses de la
+    // **A face NAME, not a number** (decided on 22-09-2026: « que les vraies graisses de la
     // font »). The attribute keeps its name, so a template written before the faces were named stays
     // readable — it holds the number there, and both ends resolve it (see FillFontFaces). Empty is
     // the family's Regular, and is not written at all, like an empty family.

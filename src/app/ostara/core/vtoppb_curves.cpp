@@ -6,7 +6,7 @@
  **
  **  @brief  curves property browser methods — declarative descriptors
  **
- **  @note   Extracted from vtooloptionspropertybrowser.cpp by Sophie Denys <contact@sophiedenys.com>
+ **  @note   Extracted from vtooloptionspropertybrowser.cpp <contact@sophiedenys.com>
  **          as part of Ostara refactoring.
  **
  **  @copyright
@@ -973,7 +973,7 @@ auto SplineProperties() -> std::vector<PropertyDesc>
 {
     return {
         // No read-only "Name:" row: it repeated the technical name the "Curve:" row already carries, and nothing
-        // could be edited there (Sophie, 08-10-2026).
+        // could be edited there (08-10-2026).
         MakeStringPropWithValidator<VToolSpline>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
         MakeSplineHandleGroup<VToolSpline>(QStringLiteral("firstHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First handle:")),
                                            &VSpline::GetC1LengthFormula, &VSpline::SetC1Length,

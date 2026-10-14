@@ -94,7 +94,7 @@ auto OToolArmholeCurveCollector::NextToolTip() const -> QString
         case Carrure:
             return tr("Select the chest/back width point");
         case Perpendicular:
-            return tr("Select the perpendicular point — or click the shoulder point to skip the "
+            return tr("Select the perpendicular point - or click the shoulder point to skip the "
                       "perpendicular.");
         case Shoulder:
             return tr("Select the shoulder point. If you skipped the perpendicular, click the shoulder "

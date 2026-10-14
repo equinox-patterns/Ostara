@@ -189,7 +189,7 @@ public:
      * Un objet qui prend un alias peut être cité de **deux** façons : par son ancien alias (`Courbe_RepereDos`) et
      * par le nom que le patron compose sur ses points (`Courbe_R1_Eb`), qu'une formule écrite avant l'alias porte
      * toujours. Les deux formes désignent le même objet, et les deux doivent suivre — sinon l'alias posé reste sans
-     * effet et la relecture qui suit remet le nom composé sous les yeux de l'utilisateur (relevé de Sophie,
+     * effet et la relecture qui suit remet le nom composé sous les yeux de l'utilisateur (relevé le
      * 13-10-2026 : « au lieu de forcer l'alias, ça force toujours le nom composé avec les points »).
      * `VChangeLineRoleName` fait déjà les deux pour une ligne : le rôle *et* la paire de points qu'elle joint.
      *

@@ -92,7 +92,7 @@ auto Resolve(const QString &name, OExportTemplate *tpl) -> bool;
 /** @brief The name the shipped template carries, and the key of the favourite that points at it. */
 auto DefaultTemplateName() -> QString;
 
-/** @brief The template the installation starts from — Sophie's list of 17-09-2026. */
+/** @brief The template the installation starts from — the list of 17-09-2026. */
 auto ShippedTemplate() -> OExportTemplate;
 
 /**

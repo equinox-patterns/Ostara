@@ -77,7 +77,7 @@ auto InitPointItem(VColorRole role, QGraphicsItem *parent, qreal z = 0) -> VScal
     point->setPos(QPointF());
     // The point IS a point of the path, so its centre lies on the curve: stacked behind its parent, the bold stroke
     // runs right through the middle of the disc and the mark can hardly be read. The disc is painted after the curve
-    // instead, and stays whole whatever the weight of the line it sits on (Sophie, 09-10-2026).
+    // instead, and stays whole whatever the weight of the line it sits on (09-10-2026).
     point->setZValue(z);
     point->setVisible(false);
     point->setAcceptedMouseButtons(Qt::NoButton);

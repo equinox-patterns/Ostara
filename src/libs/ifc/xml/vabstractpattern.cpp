@@ -999,6 +999,46 @@ void VAbstractPattern::SetNotes(const QString &text)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::BlockNotes(const QString &blockName) const -> QString
+{
+    const QDomElement block = BlockElement(blockName);
+    return block.isNull() ? QString() : block.attribute(AttrNotes);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::SetBlockNotes(const QString &blockName, const QString &notes)
+{
+    QDomElement block = BlockElement(blockName);
+    if (block.isNull())
+    {
+        return;
+    }
+
+    // Empty is absent: a piece nobody wrote a note about carries no attribute, the way an empty section is not
+    // written at all.
+    SetAttributeOrRemoveIf<QString>(block, AttrNotes, notes, [](const QString &text) noexcept
+                                    { return text.isEmpty(); });
+    modified = true;
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::BlockElement(const QString &blockName) const -> QDomElement
+{
+    const QDomElement root = documentElement();
+    for (QDomElement draw = root.firstChildElement(TagDraw); not draw.isNull();
+         draw = draw.nextSiblingElement(TagDraw))
+    {
+        if (draw.attribute(AttrName) == blockName)
+        {
+            return draw;
+        }
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::GetPatternName() const -> QString
 {
     return m_patternName;

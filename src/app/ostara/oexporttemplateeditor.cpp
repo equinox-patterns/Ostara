@@ -224,7 +224,7 @@ void OExportTemplateEditor::RetranslateUI()
     m_menuList->item(MenuCreateTemplate)->setText(tr("Create a template"));
     m_menuList->item(MenuCustomMarks)->setText(tr("Custom marks"));
 
-    // The sheet being previewed is not a property of the template — one template decorates any
+    // The sheet being previewed is not a property of the template - one template decorates any
     // tiled format — so the label presents the row as a way of looking, not as a setting.
     m_formatLabel->setText(tr("Preview format:"));
 

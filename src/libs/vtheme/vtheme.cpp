@@ -236,7 +236,7 @@ void VTheme::InitFonts()
     }
     else
     {
-        qWarning() << "VTheme::InitFonts — Failed to load Inter font";
+        qWarning() << "VTheme::InitFonts - Failed to load Inter font";
     }
 
     // ── Phosphor — icon font (regular) ──
@@ -244,7 +244,7 @@ void VTheme::InitFonts()
             QStringLiteral(":/fonts/phosphor/regular/Phosphor.ttf"));
         id == -1)
     {
-        qWarning() << "VTheme::InitFonts — Failed to load Phosphor Regular font";
+        qWarning() << "VTheme::InitFonts - Failed to load Phosphor Regular font";
     }
 
     // ── Phosphor Fill — icon font (filled variant) ──
@@ -252,10 +252,10 @@ void VTheme::InitFonts()
             QStringLiteral(":/fonts/phosphor/fill/Phosphor-Fill.ttf"));
         id == -1)
     {
-        qWarning() << "VTheme::InitFonts — Failed to load Phosphor Fill font";
+        qWarning() << "VTheme::InitFonts - Failed to load Phosphor Fill font";
     }
 
-    qDebug() << "VTheme::InitFonts — Inter + Phosphor loaded";
+    qDebug() << "VTheme::InitFonts - Inter + Phosphor loaded";
 }
 
 //---------------------------------------------------------------------------------------------------------------------
