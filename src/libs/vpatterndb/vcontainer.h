@@ -619,6 +619,31 @@ void VContainer::AddVariable(const QSharedPointer<T> &var, const QString &name, 
 {
     AddVariable(var, name);
 
+    // The simplified form belongs to registering a variable, exactly as the one-argument overload does it: a route
+    // must not cost the variable its simplified name. A segment of a spline path goes through here and nowhere
+    // else, so without this it answered to `SplPath_A_C_Seg_1` and not to `Curve_A_C_Seg_1` — which is the form
+    // the file cites once the curve heads are normalised at opening, and the parse then refused the whole pattern.
+    const QString simplified = SimplifiedName(name);
+    if (simplified != name)
+    {
+        AddVariable(var, simplified);
+    }
+
+    // And the alias the variable carries, which a route must not cost it either: a segment of a curve that has an
+    // alias sets one of its own (`SplPath_dos_Seg_1`, `Angle1SplPath_dos_Seg_1`), the formula assistant offers it
+    // because the variable reads under it, and nothing used to register it — so a formula built from the assistant
+    // named a segment that no lookup answered.
+    if (not var->GetAlias().isEmpty())
+    {
+        AddVariable(var, var->GetAlias());
+
+        const QString simplifiedAlias = SimplifiedName(var->GetAlias());
+        if (simplifiedAlias != var->GetAlias())
+        {
+            AddVariable(var, simplifiedAlias);
+        }
+    }
+
     if (route.isEmpty() || route == name || route == var->GetAlias())
     {
         return;
