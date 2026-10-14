@@ -43,7 +43,7 @@ auto RewriteFormulas(QDomElement &root, const std::function<QString(const QStrin
     }
 
     // Check if all tags handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79);
 
     // **Tout** élément est visité, et **tout** attribut est lu : lequel porte une formule est l'affaire de l'outil,
     // pas de cette fonction, et une formule qui n'en est pas une revient inchangée du mapping.

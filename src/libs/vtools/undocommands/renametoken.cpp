@@ -89,7 +89,7 @@ auto CurveAliasPrefixes(CurveAliasType type) -> QStringList
 auto ReplaceTokenLabel(const QString &token, const QString &oldLabel, const QString &newLabel) -> QString
 {
     // Check if all variable types handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79);
 
     // Token patterns with possible duplicate suffix or ID at the end
     const QStringList twoLabelPrefixes = {"Line",
@@ -205,7 +205,7 @@ auto ReplaceTokenPair(const QString &token,
                       quint32 newDuplicate) -> QString
 {
     // Check if all variable types handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79);
 
     if (newPair.first == newPair.second)
     {
@@ -263,7 +263,7 @@ auto ReplaceTokenAlias(const QString &token, CurveAliasType type, const QString 
     -> QString
 {
     // Check if all variable types handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79);
 
     QStringList const prefixes = CurveAliasPrefixes(type);
 
@@ -301,7 +301,7 @@ auto ReplaceTokenSegmentCurve(const QString &token,
                               const QString &rightSub) -> QString
 {
     // Check if all variable types handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79);
 
     QStringList const prefixes = CurveAliasPrefixes(type);
 
@@ -361,7 +361,7 @@ auto ReplaceTokenArc(const QString &token,
                      quint32 newDuplicate) -> QString
 {
     // Check if all variable types handled when we have new tool
-    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 78);
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 79);
 
     QStringList prefixes;
 
