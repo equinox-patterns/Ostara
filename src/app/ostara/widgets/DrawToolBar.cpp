@@ -53,6 +53,12 @@ constexpr int kRowH       = kButtonSize + kSpacing;
 constexpr int kFixedWidth = 50;
 constexpr int kCaretH     = 16;
 
+// The narrowest the palette may be dragged to: one column of icons. The content never constrains the dock — the
+// root widget is Ignored with a zero minimum, and minimumSizeHint() is null on purpose (see the constructor).
+// A floor computed from the longest group header instead — "Export templates" — used to land just above the
+// three-column threshold of ComputeColumns(), so the palette could be widened but never narrowed again.
+constexpr int kMinPaletteWidth = kButtonSize + kMargins;
+
 // Mode bitmask for group visibility filtering
 constexpr int kModeDraw   = 1 << 0; // Draw::Calculation
 constexpr int kModeDetail = 1 << 1; // Draw::Modeling
@@ -126,6 +132,39 @@ auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
     const auto shortcut = VModifierKey::Sequence(action->shortcuts().constFirst()).toLower();
     return QStringLiteral("%1 (%2)").arg(toolName, shortcut);
 }
+
+/// The name of a group, above its icons. It elides its own text because the palette can be dragged down to a
+/// single column, where the longest name — "Export templates" — is wider than the dock itself.
+///
+/// It follows the drag on its own: the layout is rebuilt only when the column count changes, so the elision
+/// cannot wait for BuildLayout(). The full name stays readable through the tooltip.
+class GroupHeaderLabel : public QLabel
+{
+public:
+    GroupHeaderLabel(const QString &name, QWidget *parent)
+      : QLabel(name, parent),
+        m_name(name)
+    {
+        setToolTip(name);
+    }
+
+protected:
+    void resizeEvent(QResizeEvent *event) override
+    {
+        QLabel::resizeEvent(event);
+        // contentsRect(), not rect(): the padding of the style sheet is not room for text.
+        const QString shown = fontMetrics().elidedText(m_name, Qt::ElideRight, contentsRect().width());
+        // Set it only when it changes — setText() invalidates the geometry, and a resize that always rewrote the
+        // text would ask for another resize for nothing.
+        if (shown != QLabel::text())
+        {
+            QLabel::setText(shown);
+        }
+    }
+
+private:
+    QString m_name;
+};
 } // anonymous namespace
 
 // ── DrawToolBar ───────────────────────────────────────────────────────────────
@@ -152,9 +191,11 @@ DrawToolBar::DrawToolBar(QWidget *parent)
     setWidget(m_root);
 
     InitializeGroups();
-    setMinimumWidth(ComputeMinWidth());
+    // One column is the floor: the palette has to be narrowable back to a single file of icons.
+    setMinimumWidth(kMinPaletteWidth);
     BuildLayout();
-    resize(ComputeMinWidth() + 4, 100);
+    // Wider than that by default: the width the group headers need to be read in full.
+    resize(ComputeDefaultWidth() + 4, 100);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -229,7 +270,7 @@ void DrawToolBar::SetMode(const Draw mode)
 
     if (mode == Draw::Calculation)
     {
-        setMinimumWidth(ComputeMinWidth());
+        setMinimumWidth(kMinPaletteWidth);
         setMaximumWidth(QWIDGETSIZE_MAX);
     }
     else
@@ -359,13 +400,16 @@ void DrawToolBar::resizeEvent(QResizeEvent *event)
         return;
     }
 
+    // width()/height() rather than event->size(): a resize event delivered late (a hidden dock that was resized
+    // while it was away) carries an older size, while these are the size the layout would actually be built for —
+    // the same pair ComputeColumns() and BuildLayout() read.
     const int newCols = ComputeColumns();
-    const int newH = event->size().height();
+    const int newH = height();
 
+    // m_lastColCount and m_lastHeight describe what BuildLayout() last drew — it is their only writer, so that
+    // a rebuild asked from anywhere else cannot leave them describing a layout that is no longer on screen.
     if (newCols != m_lastColCount || qAbs(newH - m_lastHeight) > 10)
     {
-        m_lastColCount = newCols;
-        m_lastHeight = newH;
         BuildLayout();
     }
 }
@@ -394,10 +438,11 @@ int DrawToolBar::ComputeColumns() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int DrawToolBar::ComputeMinWidth() const
+int DrawToolBar::ComputeDefaultWidth() const
 {
-    // Use the same font as the group headers: Inter 11px.
-    // QApplication::font() = Inter (set by VTheme::InitFonts).
+    // The width the palette opens with when no width has been saved: the longest group name, measured in the
+    // font of the headers (Inter 11px, set by VTheme::InitFonts), plus the margins and a little safety. It is
+    // deliberately NOT a minimum — the floor is kMinPaletteWidth, or the palette could never be narrowed.
     QFont f = QApplication::font();
     f.setPixelSize(11);
     const QFontMetrics fm(f);
@@ -763,6 +808,15 @@ void DrawToolBar::BuildLayout()
     const int cols = ComputeColumns();
     const int availH = qMax(100, height() - kMargins);
 
+    // What this call is about to draw, and the height its row budget is based on. resizeEvent() compares the
+    // columns it would need against these to decide whether a rebuild is worth it, so they describe the LAYOUT
+    // ON SCREEN and belong here, not only in resizeEvent(): BuildLayout() is also reached from SetMode(),
+    // SetActions() and RetranslateGroups(), where the width is not the one the last resize event saw. Recorded
+    // only there, they lied — the palette kept showing a single column at a width that fitted three, until a
+    // resize changed the column count and forced the rebuild.
+    m_lastColCount = cols;
+    m_lastHeight = height();
+
     // ── 1. Filter groups by mode ─────────────────────────────────────────
     QVector<int> visibleIdx;
     int totalToolCount = 0;
@@ -882,7 +936,7 @@ void DrawToolBar::BuildLayout()
         {
             if (!compactMode)
             {
-                auto *header = new QLabel(group.name, m_root);
+                auto *header = new GroupHeaderLabel(group.name, m_root);
                 header->setObjectName(QStringLiteral("toolGroupHeader"));
                 header->setAlignment(Qt::AlignCenter);
                 header->setStyleSheet(QStringLiteral("color: %1; font-size: 11px;").arg(
@@ -895,7 +949,7 @@ void DrawToolBar::BuildLayout()
 
         if (!compactMode)
         {
-            auto *header = new QLabel(group.name, m_root);
+            auto *header = new GroupHeaderLabel(group.name, m_root);
             header->setObjectName(QStringLiteral("toolGroupHeader"));
             header->setAlignment(Qt::AlignCenter);
             header->setStyleSheet(

@@ -73,7 +73,7 @@ private:
 
     void BuildLayout();
     int  ComputeColumns() const;
-    int  ComputeMinWidth() const;
+    int  ComputeDefaultWidth() const;
     void InitializeGroups();
     void ApplyStoredActions();
     void UpdateBackground();
