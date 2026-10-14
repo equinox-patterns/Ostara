@@ -32,14 +32,11 @@
 #include "themeDef.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
-#include "../vmisc/vmodifierkey.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vpatterndb/calculator.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
 #include "../vtools/dialogs/support/dialogeditwrongformula.h"
 #include "ui_dialogfinalmeasurements.h"
-
-#include <QMenu>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -51,8 +48,7 @@ DialogFinalMeasurements::DialogFinalMeasurements(VPattern *doc, QWidget *parent)
     ui(new Ui::DialogFinalMeasurements),
     m_doc(doc),
     m_data(doc->GetCompleteData()),
-    m_measurements(doc->GetFinalMeasurements()),
-    m_searchHistory(new QMenu(this))
+    m_measurements(doc->GetFinalMeasurements())
 {
     ui->setupUi(this);
 
@@ -105,20 +101,6 @@ DialogFinalMeasurements::DialogFinalMeasurements(VPattern *doc, QWidget *parent)
     {
         ui->tableWidget->selectRow(0);
     }
-
-    m_shortcuts.insert(VShortcutAction::CaseSensitiveMatch, ui->toolButtonCaseSensitive);
-    m_shortcuts.insert(VShortcutAction::WholeWordMatch, ui->toolButtonWholeWord);
-    m_shortcuts.insert(VShortcutAction::RegexMatch, ui->toolButtonRegexp);
-    m_shortcuts.insert(VShortcutAction::SearchHistory, ui->pushButtonSearch);
-    m_shortcuts.insert(VShortcutAction::RegexMatchUnicodeProperties, ui->toolButtonUseUnicodeProperties);
-    m_shortcuts.insert(VShortcutAction::FindNext, ui->toolButtonFindNext);
-    m_shortcuts.insert(VShortcutAction::FindPrevious, ui->toolButtonFindNext);
-
-    if (VAbstractShortcutManager  const*manager = VAbstractApplication::VApp()->GetShortcutManager())
-    {
-        connect(manager, &VAbstractShortcutManager::ShortcutsUpdated, this, &DialogFinalMeasurements::UpdateShortcuts);
-        UpdateShortcuts();
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -135,12 +117,6 @@ void DialogFinalMeasurements::closeEvent(QCloseEvent *event)
     ui->lineEditName->blockSignals(true);
     ui->plainTextEditDescription->blockSignals(true);
 
-    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    settings->SetFinalMeasurementsSearchOptionMatchCase(m_search->IsMatchCase());
-    settings->SetFinalMeasurementsSearchOptionWholeWord(m_search->IsMatchWord());
-    settings->SetFinalMeasurementsSearchOptionRegexp(m_search->IsMatchRegexp());
-    settings->SetFinalMeasurementsSearchOptionUseUnicodeProperties(m_search->IsUseUnicodePreperties());
-
     QDialog::closeEvent(event);
 }
 
@@ -152,7 +128,6 @@ void DialogFinalMeasurements::changeEvent(QEvent *event)
         // retranslate designer form (single inheritance approach)
         ui->retranslateUi(this);
         ui->lineEditFind->setPlaceholderText(m_search->SearchPlaceholder());
-        UpdateSearchControlsTooltips();
         FullUpdateFromFile();
     }
 
@@ -506,16 +481,6 @@ void DialogFinalMeasurements::FullUpdateFromFile()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogFinalMeasurements::UpdateShortcuts()
-{
-    if (VAbstractShortcutManager *manager = VAbstractApplication::VApp()->GetShortcutManager())
-    {
-        manager->UpdateButtonShortcut(m_shortcuts);
-        UpdateSearchControlsTooltips();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void DialogFinalMeasurements::FillFinalMeasurements(bool freshCall)
 {
     const QSignalBlocker blocker(ui->tableWidget);
@@ -759,49 +724,16 @@ void DialogFinalMeasurements::InitSearch()
 {
     m_search = QSharedPointer<VTableSearch>(new VTableSearch(ui->tableWidget));
 
-    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    m_search->SetUseUnicodePreperties(settings->GetFinalMeasurementsSearchOptionUseUnicodeProperties());
-    m_search->SetMatchWord(settings->GetFinalMeasurementsSearchOptionWholeWord());
-    m_search->SetMatchRegexp(settings->GetFinalMeasurementsSearchOptionRegexp());
-    m_search->SetMatchCase(settings->GetFinalMeasurementsSearchOptionMatchCase());
-
+    // The search is plain text, whatever the case. The dialog no longer offers the modes that used to be read from
+    // the settings here, and a VTableSearch with no mode set is exactly that: a plain, case-insensitive match.
     ui->lineEditFind->setPlaceholderText(m_search->SearchPlaceholder());
-
-    UpdateSearchControlsTooltips();
 
     connect(ui->lineEditFind, &QLineEdit::textEdited, this, [this](const QString &term) { m_search->Find(term); });
     connect(ui->lineEditFind, &QLineEdit::editingFinished, this,
-            [this]()
-            {
-                SaveSearchRequest();
-                InitSearchHistory();
-                m_search->Find(ui->lineEditFind->text());
-            });
-    connect(ui->toolButtonFindPrevious, &QToolButton::clicked, this,
-            [this]()
-            {
-                SaveSearchRequest();
-                InitSearchHistory();
-                m_search->FindPrevious();
-                ui->labelResults->setText(
-                    QStringLiteral("%1/%2").arg(m_search->MatchIndex() + 1).arg(m_search->MatchCount()));
-            });
-    connect(ui->toolButtonFindNext, &QToolButton::clicked, this,
-            [this]()
-            {
-                SaveSearchRequest();
-                InitSearchHistory();
-                m_search->FindNext();
-                ui->labelResults->setText(
-                    QStringLiteral("%1/%2").arg(m_search->MatchIndex() + 1).arg(m_search->MatchCount()));
-            });
-
+            [this]() { m_search->Find(ui->lineEditFind->text()); });
     connect(m_search.data(), &VTableSearch::HasResult, this,
             [this](bool state)
             {
-                ui->toolButtonFindPrevious->setEnabled(state);
-                ui->toolButtonFindNext->setEnabled(state);
-
                 if (state)
                 {
                     ui->labelResults->setText(
@@ -829,146 +761,7 @@ void DialogFinalMeasurements::InitSearch()
                     ui->labelResults->setPalette(palette);
                 }
             });
-
-    connect(ui->toolButtonCaseSensitive, &QToolButton::toggled, this,
-            [this](bool checked)
-            {
-                m_search->SetMatchCase(checked);
-                m_search->Find(ui->lineEditFind->text());
-                ui->lineEditFind->setPlaceholderText(m_search->SearchPlaceholder());
-            });
-
-    connect(ui->toolButtonWholeWord, &QToolButton::toggled, this,
-            [this](bool checked)
-            {
-                m_search->SetMatchWord(checked);
-                m_search->Find(ui->lineEditFind->text());
-                ui->lineEditFind->setPlaceholderText(m_search->SearchPlaceholder());
-            });
-
-    connect(ui->toolButtonRegexp, &QToolButton::toggled, this,
-            [this](bool checked)
-            {
-                m_search->SetMatchRegexp(checked);
-
-                if (checked)
-                {
-                    {
-                        const QSignalBlocker blocker(ui->toolButtonWholeWord);
-                        ui->toolButtonWholeWord->setChecked(false);
-                    }
-                    ui->toolButtonWholeWord->setEnabled(false);
-
-                    ui->toolButtonUseUnicodeProperties->setEnabled(true);
-                }
-                else
-                {
-                    ui->toolButtonWholeWord->setEnabled(true);
-
-                    {
-                        const QSignalBlocker blocker(ui->toolButtonUseUnicodeProperties);
-                        ui->toolButtonUseUnicodeProperties->setChecked(false);
-                    }
-                    ui->toolButtonUseUnicodeProperties->setEnabled(false);
-                }
-                m_search->Find(ui->lineEditFind->text());
-                ui->lineEditFind->setPlaceholderText(m_search->SearchPlaceholder());
-            });
-
-    connect(ui->toolButtonUseUnicodeProperties, &QToolButton::toggled, this,
-            [this](bool checked)
-            {
-                m_search->SetUseUnicodePreperties(checked);
-                m_search->Find(ui->lineEditFind->text());
-            });
-
-    m_searchHistory->setStyleSheet(QStringLiteral("QMenu { menu-scrollable: 1; }"));
-    InitSearchHistory();
-    ui->pushButtonSearch->setMenu(m_searchHistory);
-    ui->pushButtonSearch->setProperty("hasMenu", true);
-    ui->pushButtonSearch->style()->unpolish(ui->pushButtonSearch);
-    ui->pushButtonSearch->style()->polish(ui->pushButtonSearch);
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogFinalMeasurements::InitSearchHistory()
-{
-    QStringList const searchHistory =
-        VAbstractValApplication::VApp()->ValentinaSettings()->GetFinalMeasurementsSearchHistory();
-    m_searchHistory->clear();
-
-    if (searchHistory.isEmpty())
-    {
-        QAction *action = m_searchHistory->addAction('<'_L1 + tr("Empty", "list") + '>'_L1);
-        action->setDisabled(true);
-        return;
-    }
-
-    for (const auto &term : searchHistory)
-    {
-        QAction *action = m_searchHistory->addAction(term);
-        action->setData(term);
-        connect(action, &QAction::triggered, this,
-                [this]()
-                {
-                    auto *action = qobject_cast<QAction *>(sender());
-                    if (action != nullptr)
-                    {
-                        QString const term = action->data().toString();
-                        ui->lineEditFind->setText(term);
-                        m_search->Find(term);
-                        ui->lineEditFind->setFocus();
-                    }
-                });
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogFinalMeasurements::SaveSearchRequest()
-{
-    QStringList searchHistory =
-        VAbstractValApplication::VApp()->ValentinaSettings()->GetFinalMeasurementsSearchHistory();
-    QString const term = ui->lineEditFind->text();
-    if (term.isEmpty())
-    {
-        return;
-    }
-
-    searchHistory.removeAll(term);
-    searchHistory.prepend(term);
-    while (searchHistory.size() > VTableSearch::MaxHistoryRecords)
-    {
-        searchHistory.removeLast();
-    }
-    VAbstractValApplication::VApp()->ValentinaSettings()->SetFinalMeasurementsSearchHistory(searchHistory);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogFinalMeasurements::UpdateSearchControlsTooltips()
-{
-    auto UpdateToolTip = [this](QAbstractButton *button)
-    {
-        if (button->toolTip().contains("%1"_L1))
-        {
-            m_serachButtonTooltips.insert(button, button->toolTip());
-            button->setToolTip(button->toolTip().arg(VModifierKey::Sequence(button->shortcut())));
-        }
-        else if (m_serachButtonTooltips.contains(button))
-        {
-            QString const tooltip = m_serachButtonTooltips.value(button);
-            button->setToolTip(tooltip.arg(VModifierKey::Sequence(button->shortcut())));
-        }
-    };
-
-    UpdateToolTip(ui->toolButtonCaseSensitive);
-    UpdateToolTip(ui->toolButtonWholeWord);
-    UpdateToolTip(ui->toolButtonRegexp);
-    UpdateToolTip(ui->toolButtonUseUnicodeProperties);
-    UpdateToolTip(ui->pushButtonSearch);
-    UpdateToolTip(ui->toolButtonFindPrevious);
-    UpdateToolTip(ui->toolButtonFindNext);
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void DialogFinalMeasurements::InitIcons()
 {

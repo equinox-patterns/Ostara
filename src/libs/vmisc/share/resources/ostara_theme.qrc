@@ -37,6 +37,7 @@
         <file alias="magnifying-glass_light.svg">../../../../../share/themes/icons/light/magnifying-glass_light.svg</file>
         <file alias="floppy-disk_light.svg">../../../../../share/themes/icons/light/floppy-disk_light.svg</file>
         <file alias="file-arrow-up_light.svg">../../../../../share/themes/icons/light/file-arrow-up_light.svg</file>
+        <file alias="file-arrow-down_light.svg">../../../../../share/themes/icons/light/file-arrow-down_light.svg</file>
         <file alias="gear-six_light.svg">../../../../../share/themes/icons/light/gear-six_light.svg</file>
         <file alias="star_light.svg">../../../../../share/themes/icons/light/star_light.svg</file>
         <file alias="star-fill_light.svg">../../../../../share/themes/icons/light/star-fill_light.svg</file>
@@ -138,6 +139,7 @@
         <file alias="magnifying-glass_dark.svg">../../../../../share/themes/icons/dark/magnifying-glass_dark.svg</file>
         <file alias="floppy-disk_dark.svg">../../../../../share/themes/icons/dark/floppy-disk_dark.svg</file>
         <file alias="file-arrow-up_dark.svg">../../../../../share/themes/icons/dark/file-arrow-up_dark.svg</file>
+        <file alias="file-arrow-down_dark.svg">../../../../../share/themes/icons/dark/file-arrow-down_dark.svg</file>
         <file alias="gear-six_dark.svg">../../../../../share/themes/icons/dark/gear-six_dark.svg</file>
         <file alias="star_dark.svg">../../../../../share/themes/icons/dark/star_dark.svg</file>
         <file alias="star-fill_dark.svg">../../../../../share/themes/icons/dark/star-fill_dark.svg</file>

@@ -76,7 +76,6 @@ private slots:
     void ShowIncrementDetails();
     void OnIncrementCellClicked(int row, int column);
     void AddIncrement();
-    void AddSeparator();
     void RemoveIncrement();
     void MoveUp();
     void MoveDown();
@@ -84,10 +83,8 @@ private slots:
     void SaveIncrUnits();
     void SaveIncrDescription();
     void SaveIncrFormula();
-    void DeployFormula();
     void Fx();
     void RefreshPattern();
-    void UpdateShortcuts();
     void ImportIncrements();
     void ExportIncrements();
 
@@ -107,21 +104,12 @@ private:
     /** @brief m_completeData need to show all internal variables */
     VContainer m_completeData;
 
-    int m_formulaBaseHeight{0};
-    int m_formulaBaseHeightPC{0};
-
     QSharedPointer<VTableSearch> m_search{};
     QSharedPointer<VTableSearch> m_searchPC{};
 
     bool m_hasChanges{false};
 
     QVector<QPair<QString, QString>> m_renameList{};
-
-    QMenu *m_searchHistory;
-    QMenu *m_searchHistoryPC;
-
-    QMultiHash<VShortcutAction, QAbstractButton *> m_shortcuts{};
-    QHash<QAbstractButton *, QString> m_serachButtonTooltips{};
 
     template <typename T> void FillTable(const QMap<QString, T> &varTable, QTableWidget *table);
 
@@ -181,19 +169,17 @@ private:
 
     void ShowTableIncrementDetails(QTableWidget *table);
 
-    auto InitVarTypeMenu(QMenu *menu, bool incrementTab) -> QMenu *;
 
     void AddNewIncrement(IncrementType type);
 
     void InitSearch();
-    void InitIncrementsSearchHistory();
-    void InitPreviewCalculationsSearchHistory();
-    void SaveIncrementsSearchRequest();
-    void SavePreviewCalculationsSearchRequest();
-    void UpdateSearchControlsTooltips();
     static void InitIncrementUnits(QComboBox *combo);
 
     void InitIcons();
+
+    /// The list and the panel of details share the width of each tab, half and half, and keep that half when the
+    /// dialog is resized. Which pane a tab puts on each side is the .ui's business — this only settles the share.
+    void InitSplitterHalves();
 
     auto CheckIncrementName(const QString &name, const QSet<QString> &importedNames) const -> QString;
     void ShowError(const QString &text);

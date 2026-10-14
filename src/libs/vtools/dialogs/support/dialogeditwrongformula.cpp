@@ -797,28 +797,37 @@ void DialogEditWrongFormula::setPostfix(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Narrow the list of input sources to what the caller's context can offer.
+ *
+ * The three setters chain into one another: the measurements mode drops the increments, the increments mode drops the
+ * preview calculations, and both drop the six sources the table of variables does not read — the lengths of lines and
+ * of curves, the angles, the arc radii, the angles of curves and the lengths to the control points. Those are removed
+ * rather than greyed out, the idiom ShowPieceArea already follows: a greyed entry one cannot pick is only noise, and
+ * a short list reads faster than a long one with dead rows in it.
+ */
 void DialogEditWrongFormula::SetMeasurementsMode()
 {
-    ui->radioButtonIncrements->setDisabled(true);
+    ui->radioButtonIncrements->setVisible(false);
     SetIncrementsMode();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::SetIncrementsMode()
 {
-    ui->radioButtonPC->setDisabled(true);
+    ui->radioButtonPC->setVisible(false);
     SetPreviewCalculationsMode();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogEditWrongFormula::SetPreviewCalculationsMode()
 {
-    ui->radioButtonLengthLine->setDisabled(true);
-    ui->radioButtonLengthSpline->setDisabled(true);
-    ui->radioButtonAngleLine->setDisabled(true);
-    ui->radioButtonRadiusesArcs->setDisabled(true);
-    ui->radioButtonAnglesCurves->setDisabled(true);
-    ui->radioButtonCLength->setDisabled(true);
+    ui->radioButtonLengthLine->setVisible(false);
+    ui->radioButtonLengthSpline->setVisible(false);
+    ui->radioButtonAngleLine->setVisible(false);
+    ui->radioButtonRadiusesArcs->setVisible(false);
+    ui->radioButtonAnglesCurves->setVisible(false);
+    ui->radioButtonCLength->setVisible(false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

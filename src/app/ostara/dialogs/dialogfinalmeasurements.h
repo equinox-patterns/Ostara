@@ -71,7 +71,6 @@ private slots:
     void DeployFormula();
     void Fx();
     void FullUpdateFromFile();
-    void UpdateShortcuts();
 
 private:
     Q_DISABLE_COPY_MOVE(DialogFinalMeasurements) // NOLINT
@@ -83,11 +82,6 @@ private:
     QSharedPointer<VTableSearch> m_search{};
     int formulaBaseHeight{0};
     bool m_isInitialized{false};
-
-    QMenu *m_searchHistory;
-
-    QMultiHash<VShortcutAction, QAbstractButton *> m_shortcuts{};
-    QHash<QAbstractButton *, QString> m_serachButtonTooltips{};
 
     void FillFinalMeasurements(bool freshCall = false);
 
@@ -103,9 +97,6 @@ private:
     auto EvalFormula(const QString &formula, bool &ok) -> qreal;
 
     void InitSearch();
-    void InitSearchHistory();
-    void SaveSearchRequest();
-    void UpdateSearchControlsTooltips();
 
     void InitIcons();
 };
