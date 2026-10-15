@@ -29,13 +29,15 @@
 
 #include "oexportbatchpage.h"
 
+#include "../oexportcuttingfile.h"
+
 #include <QDialog>
 #include <QString>
 #include <QVector>
 
+class OExportCuttingFileOptions;
 class QDialogButtonBox;
 class QEvent;
-class QLabel;
 class QPushButton;
 class QTabWidget;
 
@@ -43,14 +45,15 @@ class QTabWidget;
  * @brief Écrire plusieurs générations d'un coup — le bouton « Export several outputs » du dock.
  *
  * **Une catégorie à la fois, et c'est la catégorie qui décide du format** : Print écrit un PDF par
- * génération, Plotter un SVG par génération. Les deux pages sont donc indépendantes — chacune son
- * dossier, ses lignes, ses noms — et le bouton d'export n'écrit que la page courante. Rien ne
- * traverse l'onglet : exporter les PDF ne touche pas aux SVG, et réciproquement.
+ * génération, Plotter un SVG par génération, Cutting un fichier de découpe par génération — DXF,
+ * PLT ou HPGL. Les trois pages sont indépendantes — chacune son dossier, ses lignes, ses noms — et le
+ * bouton d'export n'écrit que la page courante. Rien ne traverse l'onglet : exporter les PDF ne touche
+ * pas aux SVG, et réciproquement.
  *
- * **Le plan de coupe a son onglet, et il est désactivé.** Il n'a aucun format aujourd'hui — sa
- * sortie sera HPGL/PLT, et elle est reportée (décidé le 24-09-2026). L'onglet reste donc
- * là, avec ce qu'il attend écrit dedans, plutôt que d'être absent : un onglet qui manque se lirait
- * comme un oubli, et un onglet ouvert sur le vide comme une panne.
+ * **Un lot, un réglage.** Le format et les options d'une page valent pour **toutes** ses lignes,
+ * exactement comme la case « mise en page » du PDF : on n'écrit pas un plan de coupe en DXF et le
+ * suivant en PLT. Qui veut deux jeux d'options fait deux lots — c'est la règle du lot, et elle vaut
+ * aussi pour le plan de coupe.
  *
  * **La question d'écrasement est posée fichier par fichier**, comme l'export d'une seule
  * génération : le lot ne demande rien avant de commencer, il demande en écrivant — et une réponse
@@ -73,10 +76,12 @@ public:
         Plotter
     };
 
+    /// @param cuttingRows les générations de plan de coupe à offrir, dans l'ordre du dock.
     /// @param printRows   les générations de print à offrir, dans l'ordre du dock.
     /// @param plotterRows les générations de plotter à offrir, dans l'ordre du dock.
-    /// @param directory   le dossier sur lequel les deux pages s'ouvrent.
-    explicit OExportBatchDialog(const QVector<OExportBatchPage::Row> &printRows,
+    /// @param directory   le dossier sur lequel les pages s'ouvrent.
+    explicit OExportBatchDialog(const QVector<OExportBatchPage::Row> &cuttingRows,
+                                const QVector<OExportBatchPage::Row> &printRows,
                                 const QVector<OExportBatchPage::Row> &plotterRows,
                                 const QString &directory, QWidget *parent = nullptr);
 
@@ -92,6 +97,12 @@ public:
     /// @brief L'option de calque de décor de la page courante — fausse partout sauf en Print.
     auto AddLayoutLayer() const -> bool;
 
+    /// @brief Le réglage commun du lot de plans de coupe — format, sous-type et options.
+    ///
+    /// **Le même pour toutes les lignes de la page** : un lot est un format, comme la case « mise en
+    /// page » d'un lot de PDF vaut pour tous ses PDF. N'a de sens que si @ref Category vaut Cutting.
+    auto CuttingOptions() const -> OExportCuttingFile::Options;
+
 protected:
     void changeEvent(QEvent *event) override;
 
@@ -102,9 +113,7 @@ private slots:
 private:
     void Retranslate();
 
-    /// La page de la catégorie courante — **nulle** pour l'onglet du plan de coupe, qui n'a ni
-    /// dossier ni lignes. Tout ce qui se lit d'une page passe par ici, et chaque lecteur répond à
-    /// la nullité plutôt que de supposer qu'un onglet désactivé ne peut pas être courant.
+    /// La page de la catégorie courante. Tout ce qui se lit d'une page passe par ici.
     auto CurrentPage() const -> OExportBatchPage *;
 
     /// Le bouton d'export suit la page : une catégorie sans génération s'exporte à vide, donc pas
@@ -112,7 +121,8 @@ private:
     void UpdateExportButton();
 
     QTabWidget *m_tabs{nullptr};
-    QLabel *m_cuttingLabel{nullptr};
+    OExportCuttingFileOptions *m_cuttingOptions{nullptr};
+    OExportBatchPage *m_cuttingPage{nullptr};
     OExportBatchPage *m_printPage{nullptr};
     OExportBatchPage *m_plotterPage{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};

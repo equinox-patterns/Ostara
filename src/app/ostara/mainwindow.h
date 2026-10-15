@@ -415,6 +415,13 @@ private slots:
     /// un seul endroit qui décide ce qu'un run produit, sans une colonne de plus ni un menu.
     void ExportOutputToPlotterSvg(quint32 id);
 
+    /// @brief Write the plan of @p id as a cutting file — DXF, PLT or HPGL.
+    ///
+    /// Le **même bouton** encore, et le troisième type de run : un plan de coupe part chez une
+    /// machine, à 100 %, avec les options de l'export du mode Details **moins l'échelle**
+    /// (`CuttingPlan.md` §24).
+    void ExportOutputToCuttingFile(quint32 id);
+
     /** @brief Write the plan the canvas is showing as an image — SVG or PNG. Asks where, what
      *         format and what size, once, and does the rest.
      *

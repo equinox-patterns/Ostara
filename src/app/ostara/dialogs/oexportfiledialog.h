@@ -109,6 +109,13 @@ protected:
     /// ligne du tableau vivent les boutons, ni à les déplacer quand elle en ajoute une seconde.
     void AddOption(QWidget *option);
 
+    /// @brief Change l'extension du format — et le nom avec elle.
+    ///
+    /// Un dialogue qui offre **plusieurs** formats ne peut pas garder l'extension de son
+    /// constructeur : le `.dxf` d'un choix deviendrait un `.dxf.plt` au suivant. Ce que
+    /// l'utilisatrice a tapé est conservé ; seule l'ancienne extension est retirée.
+    void SetSuffix(const QString &suffix);
+
 private slots:
     void OnBrowse();
     void OnAccept();

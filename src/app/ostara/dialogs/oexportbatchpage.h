@@ -78,6 +78,12 @@ public:
     /// @brief Le dossier de la page, tel que tapé ou parcouru.
     auto Directory() const -> QString;
 
+    /// @brief Change l'extension des noms — le format de la catégorie a changé.
+    ///
+    /// Le plan de coupe offre **trois** formats : l'extension des lignes suit celui qui est choisi,
+    /// et elle est remplacée plutôt qu'empilée — sans quoi « plan.dxf » deviendrait « plan.dxf.plt ».
+    void SetSuffix(const QString &suffix);
+
     /// @brief Les lignes encore cochées, avec leur nom tel qu'il est, prêtes à être écrites.
     auto Chosen() const -> QVector<Row>;
 

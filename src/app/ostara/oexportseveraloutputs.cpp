@@ -32,6 +32,7 @@
 #include "dialogs/oexportfiledialog.h"
 #include "core/oexporttemplate.h"
 #include "core/oexporttemplatestorage.h"
+#include "oexportcuttingfile.h"
 #include "oexportfolder.h"
 #include "oexportpdf.h"
 #include "oexportplottersvg.h"
@@ -52,10 +53,10 @@
  * résolu par la règle qui vit ici et nulle part ailleurs. Le lot ne la réinvente pas : il demande
  * les mêmes identifiants, puis les range par catégorie.
  *
- * **Un plan de coupe n'est d'aucun des deux lots.** Sa sortie sera HPGL/PLT et elle est reportée
- * (décidé le 24-09-2026) : sa cellule d'export est déjà éteinte dans le dock, et il est
- * aussi absent des deux pages — sinon le lot serait la porte de derrière de ce que la cellule
- * refuse.
+ * **Un plan de coupe est une troisième catégorie**, à côté de Print et de Plotter : il a un format
+ * depuis le 15-10-2026 — DXF, PLT ou HPGL, choisi dans la page du lot (`CuttingPlan.md` §24). Comme
+ * la case « mise en page » d'un lot de PDF, **le réglage vaut pour toutes ses lignes** : un lot est un
+ * format, et qui veut deux jeux d'options fait deux lots.
  *
  * **Aucun nesting n'est relancé.** Une génération porte son résultat : le lot écrit ce que le dock
  * affiche, et une correction à la main reste ce qu'elle était — c'est la même règle que l'export
@@ -70,20 +71,27 @@ void MainWindow::ExportSeveralOutputs()
         return;
     }
 
+    QVector<OExportBatchPage::Row> cuttingRows;
     QVector<OExportBatchPage::Row> printRows;
     QVector<OExportBatchPage::Row> plotterRows;
 
     for (const quint32 id : VisibleExportOutputIds())
     {
         const OExportOutput *output = m_exportOutputs.Find(id);
-        if (output == nullptr || output->cuttingPlan)
+        if (output == nullptr)
         {
             continue;
         }
 
+        // Le plan de coupe a sa catégorie, à côté des deux autres : il a un format depuis le
+        // 15-10-2026 — DXF, PLT ou HPGL (`CuttingPlan.md` §24) — et le lot le prend comme les autres.
         if (output->plotterPlan)
         {
             plotterRows.append({output->id, output->name});
+        }
+        else if (output->cuttingPlan)
+        {
+            cuttingRows.append({output->id, output->name});
         }
         else
         {
@@ -91,14 +99,14 @@ void MainWindow::ExportSeveralOutputs()
         }
     }
 
-    if (printRows.isEmpty() && plotterRows.isEmpty())
+    if (cuttingRows.isEmpty() && printRows.isEmpty() && plotterRows.isEmpty())
     {
         return; // rien à offrir : le bouton du dock est éteint pour cette raison, et le resterait
     }
 
     // Le dossier : le dernier utilisé par un export, et non celui d'une gamme — un lot traverse
     // plusieurs gammes, il n'y en a pas une dont le dossier vaudrait pour toutes (`LastExportFolder`).
-    OExportBatchDialog dialog(printRows, plotterRows, LastExportFolder(), this);
+    OExportBatchDialog dialog(cuttingRows, printRows, plotterRows, LastExportFolder(), this);
     if (dialog.exec() != QDialog::Accepted)
     {
         return;
@@ -107,6 +115,11 @@ void MainWindow::ExportSeveralOutputs()
     const OExportBatchDialog::OutputCategory category = dialog.Category();
     const QString folder = dialog.Directory();
     const bool addLayoutLayer = dialog.AddLayoutLayer();
+
+    // Le réglage du lot de plans de coupe : format, sous-type et options, **les mêmes pour toutes les
+    // lignes** — comme la case « mise en page » d'un lot de PDF. Il n'est lu que si la catégorie est
+    // celle-là, et il est lu ici parce que le dialogue meurt avec ce qui suit.
+    const OExportCuttingFile::Options cuttingOptions = dialog.CuttingOptions();
 
     QStringList written;
     QStringList failed;
@@ -133,7 +146,15 @@ void MainWindow::ExportSeveralOutputs()
         }
 
         bool ok = false;
-        if (category == OExportBatchDialog::OutputCategory::Plotter)
+        if (category == OExportBatchDialog::OutputCategory::Cutting)
+        {
+            // Le plan de coupe s'écrit avec le réglage **commun** de la page — un lot est un format —
+            // et l'écrivain du mode Export : DXF, PLT ou HPGL, à 100 %, avec les options du mode
+            // Details moins l'échelle (`CuttingPlan.md` §24). Une génération dont le nesting a échoué
+            // n'a pas de plan à écrire, et le lot le dit sur sa ligne.
+            ok = output->result.ok && OExportCuttingFile::Write(path, *output, cuttingOptions);
+        }
+        else if (category == OExportBatchDialog::OutputCategory::Plotter)
         {
             // Un run plotter dont le nesting a échoué n'a pas de géométrie à écrire. L'export d'une
             // seule génération sort en silence sur ce cas ; ici le lot le dit sur sa ligne, ce qui

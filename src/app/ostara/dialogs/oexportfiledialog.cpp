@@ -123,6 +123,32 @@ void OExportFileDialog::AddOption(QWidget *option)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportFileDialog::SetSuffix(const QString &suffix)
+{
+    if (suffix == m_suffix)
+    {
+        return;
+    }
+
+    // L'ancienne extension est RETIRÉE du champ, pas empilée : un dialogue qui change de format ne
+    // doit pas transformer « plan.dxf » en « plan.dxf.plt ». Le reste du nom est ce que
+    // l'utilisatrice a écrit, et il ne bouge pas.
+    //
+    // ⚠️ On retire l'ANCIENNE extension : sa longueur est prise avant que `m_suffix` ne change, sans
+    // quoi `.dxf` et `.plt` ne se retireraient l'un l'autre que par hasard — ils n'ont pas la même.
+    const QString previous = m_suffix;
+    const QString typed = m_nameEdit->text().trimmed();
+    const bool carried = !previous.isEmpty() && typed.endsWith(previous, Qt::CaseInsensitive);
+
+    m_suffix = suffix;
+
+    if (carried)
+    {
+        m_nameEdit->setText(typed.chopped(previous.size()));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportFileDialog::ConfirmOverwrite(QWidget *parent, const QString &filePath, const QString &title) -> bool
 {
     if (!QFileInfo::exists(filePath))

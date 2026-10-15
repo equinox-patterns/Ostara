@@ -372,13 +372,11 @@ void OWidgetOutputs::Populate()
         exportItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
         if (output.cuttingPlan)
         {
-            // A cutting plan has no export today — HPGL/PLT comes later — so its cell is drawn
-            // disabled, exactly like a star on a pattern with no measurements table: a cell that
-            // says why, rather than a button that would write a PDF nobody asked for. A disabled
-            // item is not clickable, and that is what keeps `exportRequested` from ever carrying
-            // one.
-            exportItem->setFlags(exportItem->flags() & ~Qt::ItemIsEnabled);
-            exportItem->setToolTip(tr("A cutting plan has no export yet"));
+            // Un plan de coupe s'exporte aussi, mais **pas dans le même fichier** : DXF, PLT ou HPGL,
+            // à 100 %, avec les options du mode Details moins l'échelle (CuttingPlan §24). La cellule
+            // est donc active, et sa bulle dit ce que le clic va demander — le format — là où le PDF
+            // et le SVG plotter ont le leur.
+            exportItem->setToolTip(tr("Export as a cutting file (DXF, PLT, HPGL)"));
         }
         else
         {
@@ -408,26 +406,14 @@ void OWidgetOutputs::UpdateExportSeveralState()
         return;
     }
 
-    // A batch is asked for when there is something to batch, and there are two ways of having
-    // nothing — which do not say the same thing. An empty dock is a dock waiting for its first
-    // generation; a dock full of cutting plans holds generations that have no export yet. The
-    // tooltip says which one it is: a disabled control that keeps its reason to itself is a
-    // control the user cannot act on (rules §4.3), and the star already answers this way.
-    bool hasExportable = false;
-    for (const OExportOutputRow &output : m_outputs)
-    {
-        if (!output.cuttingPlan)
-        {
-            hasExportable = true;
-            break;
-        }
-    }
+    // Un lot se demande quand il y a quelque chose à y mettre. Les trois catégories ont un format :
+    // PDF pour un print, SVG pour un plotter, DXF/PLT/HPGL pour un plan de coupe (CuttingPlan §24) —
+    // donc toute génération du dock est exportable, et le bouton ne suit que la liste.
+    const bool hasExportable = !m_outputs.isEmpty();
 
     m_exportSeveralButton->setEnabled(hasExportable);
-    m_exportSeveralButton->setToolTip(hasExportable
-                                          ? tr("Export several outputs at once")
-                                          : (m_outputs.isEmpty() ? tr("There is no output to export yet")
-                                                                 : tr("A cutting plan has no export yet")));
+    m_exportSeveralButton->setToolTip(hasExportable ? tr("Export several outputs at once")
+                                                    : tr("There is no output to export yet"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

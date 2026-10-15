@@ -15183,11 +15183,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Traceur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="247"/>
-        <source>Coming soon</source>
-        <translation>Bientôt disponible</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="258"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
@@ -15237,6 +15232,67 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="119"/>
         <source>These choices apply to every favorite of this batch.</source>
         <translation>Ces choix s&apos;appliquent à tous les favoris de ce lot.</translation>
+    </message>
+</context>
+<context>
+    <name>OExportCuttingFileOptions</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="79"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation>Exporte les pièces comme si leur contour principal était visible : chaque pièce a alors sa ligne de coupe et sa ligne de couture. Rien n&apos;est modifié dans le patron.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="241"/>
+        <source>By standard</source>
+        <translation>Standard</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="256"/>
+        <source>File format:</source>
+        <translation>Format du fichier :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="257"/>
+        <source>Type:</source>
+        <translation>Type :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="258"/>
+        <source>Binary form</source>
+        <translation>Format binaire</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="259"/>
+        <source>Text as paths</source>
+        <translation>Texte en chemins</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="260"/>
+        <source>Show grainline</source>
+        <translation>Exporter le droit-fil</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="261"/>
+        <source>Boundary together with notches</source>
+        <translation>Intégrer la marge de couture dans les crans d&apos;assemblage</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="262"/>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation>Afficher le contour principal, même quand les pièces le cachent</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="263"/>
+        <source>Compatibility:</source>
+        <translation>Compatibilité :</translation>
+    </message>
+</context>
+<context>
+    <name>OExportCuttingFileDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="66"/>
+        <source>Export the cutting plan</source>
+        <translation>Exporter le plan de coupe</translation>
     </message>
 </context>
 <context>
@@ -19740,10 +19796,9 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Actualiser</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="381"/>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="430"/>
-        <source>A cutting plan has no export yet</source>
-        <translation>Un plan de coupe n&apos;a pas encore d&apos;export</translation>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="378"/>
+        <source>Export as a cutting file (DXF, PLT, HPGL)</source>
+        <translation>Exporter comme fichier de découpe (DXF, PLT, HPGL)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="385"/>

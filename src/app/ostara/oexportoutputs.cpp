@@ -39,6 +39,7 @@
 #include "oexportartboards.h"
 #include "oexportcanvas.h"
 #include "oexportcoverpage.h"
+#include "oexportcuttingfile.h"
 #include "oexportfolder.h"
 #include "oexportpdf.h"
 #include "oexportplanimage.h"
@@ -47,6 +48,7 @@
 #include "oexportplottersvg.h"
 #include "oexportsheets.h"
 
+#include "dialogs/oexportcuttingfiledialog.h"
 #include "dialogs/oexportimagedialog.h"
 #include "dialogs/oexportfiledialog.h"
 #include "dialogs/oexportimagelistdialog.h"
@@ -1143,14 +1145,14 @@ void MainWindow::DeleteExportOutput(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ExportOutputToPdf(quint32 id)
 {
-    // Un plan de coupe n'a **aucun export** aujourd'hui : sa sortie sera HPGL/PLT, et elle est
-    // reportée (décidé le 24-09-2026). La cellule du dock est déjà dessinée désactivée
-    // pour ces lignes ; cette garde est la **même** décision prise là où le chemin commence, pour
-    // qu'aucun autre appel ne l'ouvre en PDF par mégarde — le PDF générique l'acceptait, et son
-    // rendu était mauvais (CuttingPlan §8).
+    // Un plan de coupe a **son** fichier, et pas un PDF : DXF, PLT ou HPGL, à 100 %, avec les
+    // options de l'export du mode Details moins l'échelle (CuttingPlan §24). Le même bouton du dock
+    // l'ouvre — le dock reste le seul endroit qui décide ce qu'un run produit, sans une colonne de
+    // plus ni un menu.
     if (const OExportOutput *cutting = m_exportOutputs.Find(id);
         cutting != nullptr && cutting->cuttingPlan)
     {
+        ExportOutputToCuttingFile(id);
         return;
     }
 
@@ -1240,6 +1242,43 @@ void MainWindow::ExportOutputToPlotterSvg(quint32 id)
     }
 
     if (!OExportPlotterSvg::Write(dialog.FullPath(), *existing, pattern, doc))
+    {
+        QMessageBox::warning(this, tr("Export mode"),
+                             tr("\"%1\" could not be exported.").arg(existing->name));
+        return;
+    }
+
+    // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
+    RememberExportFolder(dialog.Directory());
+
+    QMessageBox::information(this, tr("Export mode"),
+                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ExportOutputToCuttingFile(quint32 id)
+{
+    const OExportOutput *existing = m_exportOutputs.Find(id);
+    if (existing == nullptr || !existing->result.ok)
+    {
+        return;
+    }
+
+    // Où il s'ouvre : le dossier de la gamme quand elle en a un, sinon le dernier dossier d'export,
+    // sinon Documents — la règle d'`ExportFolder`, celle du PDF et du plotter.
+    //
+    // Ce qu'on y demande est ce que le mode Details demande pour les mêmes moteurs : le format, son
+    // sous-type, et les options — **sauf l'échelle**. Un plan de coupe sort à 100 %, toujours : il
+    // part chez une machine, et une échelle réduite produirait un plan qui a l'air juste et qui
+    // coupe faux (`CuttingPlan.md` §24.2).
+    OExportCuttingFileDialog dialog(existing->name, ExportFolder(*existing), this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        // Elle a fermé le dialogue : rien à dire, et rien à faire.
+        return;
+    }
+
+    if (!OExportCuttingFile::Write(dialog.FullPath(), *existing, dialog.Options()))
     {
         QMessageBox::warning(this, tr("Export mode"),
                              tr("\"%1\" could not be exported.").arg(existing->name));

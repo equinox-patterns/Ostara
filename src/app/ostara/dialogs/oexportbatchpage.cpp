@@ -118,6 +118,33 @@ auto OExportBatchPage::Directory() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportBatchPage::SetSuffix(const QString &suffix)
+{
+    if (suffix == m_suffix)
+    {
+        return;
+    }
+
+    // ⚠️ On retire l'ANCIENNE extension, dont la longueur est lue avant que `m_suffix` ne change :
+    // `.dxf` et `.plt` ne se retireraient l'un l'autre que par hasard, ils n'ont pas la même.
+    for (QLineEdit *name : m_names)
+    {
+        if (name == nullptr)
+        {
+            continue;
+        }
+
+        const QString typed = name->text().trimmed();
+        if (!m_suffix.isEmpty() && typed.endsWith(m_suffix, Qt::CaseInsensitive))
+        {
+            name->setText(typed.chopped(m_suffix.size()));
+        }
+    }
+
+    m_suffix = suffix;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportBatchPage::NameOf(int row) const -> QString
 {
     if (row < 0 || row >= m_names.size() || m_names.at(row) == nullptr)

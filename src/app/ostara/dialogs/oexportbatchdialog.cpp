@@ -36,6 +36,8 @@
 #include <QTabWidget>
 #include <QVBoxLayout>
 
+#include "oexportcuttingfileoptions.h"
+
 namespace
 {
 
@@ -51,7 +53,8 @@ constexpr auto kSvgSuffix = ".svg";
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-OExportBatchDialog::OExportBatchDialog(const QVector<OExportBatchPage::Row> &printRows,
+OExportBatchDialog::OExportBatchDialog(const QVector<OExportBatchPage::Row> &cuttingRows,
+                                       const QVector<OExportBatchPage::Row> &printRows,
                                        const QVector<OExportBatchPage::Row> &plotterRows,
                                        const QString &directory, QWidget *parent)
   : QDialog(parent)
@@ -67,15 +70,25 @@ OExportBatchDialog::OExportBatchDialog(const QVector<OExportBatchPage::Row> &pri
     m_tabs->setElideMode(Qt::ElideNone);
     m_tabs->setUsesScrollButtons(false);
 
-    // ── Le plan de coupe : présent, désactivé, et il dit ce qu'il attend ──
+    // ── Le plan de coupe : son réglage, puis ses générations ──
+    //
+    // Le réglage est AU-DESSUS des lignes, et il vaut pour toutes : un lot est un format — comme la
+    // case « mise en page » d'un lot de PDF vaut pour tous ses PDF. Qui veut deux jeux d'options
+    // fait deux lots.
     auto *cuttingTab = new QWidget(this);
     auto *cuttingLayout = new QVBoxLayout(cuttingTab);
-    m_cuttingLabel = new QLabel(cuttingTab);
-    m_cuttingLabel->setAlignment(Qt::AlignCenter);
-    m_cuttingLabel->setWordWrap(true);
+
+    m_cuttingOptions = new OExportCuttingFileOptions(cuttingTab);
+    cuttingLayout->addWidget(m_cuttingOptions);
+
+    m_cuttingPage = new OExportBatchPage(cuttingRows, m_cuttingOptions->Suffix(), directory, false, cuttingTab);
+    cuttingLayout->addWidget(m_cuttingPage);
     cuttingLayout->addStretch();
-    cuttingLayout->addWidget(m_cuttingLabel);
-    cuttingLayout->addStretch();
+
+    // L'extension des lignes suit le format choisi : c'est la seule chose que le réglage impose aux
+    // noms, et c'est ce qui empêche un `.dxf` d'annoncer un `.plt`.
+    connect(m_cuttingOptions, &OExportCuttingFileOptions::FormatChanged, this,
+            [this] { m_cuttingPage->SetSuffix(m_cuttingOptions->Suffix()); });
 
     // ── Print et Plotter : une page chacun, et leur propre format ──
     m_printPage = new OExportBatchPage(printRows, QLatin1String(kPdfSuffix), directory, true, this);
@@ -85,15 +98,19 @@ OExportBatchDialog::OExportBatchDialog(const QVector<OExportBatchPage::Row> &pri
     m_tabs->addTab(m_printPage, QString());
     m_tabs->addTab(m_plotterPage, QString());
 
-    // L'onglet du plan de coupe est **désactivé** : il n'y a rien à y décrire tant qu'il n'a pas de
-    // format. Désactivé plutôt qu'absent — sa place est tenue, et l'index des deux autres ne bouge
-    // pas le jour où HPGL lui donnera un contenu.
-    m_tabs->setTabEnabled(kCuttingTab, false);
-
-    // On ouvre sur une page qui a quelque chose à montrer : Print d'abord, Plotter quand il n'y a
-    // que du plotter. Une page vide s'ouvrirait sur une question à laquelle il n'y a pas de réponse.
-    const bool printFirst = !printRows.isEmpty() || plotterRows.isEmpty();
-    m_tabs->setCurrentIndex(printFirst ? kPrintTab : kPlotterTab);
+    // On ouvre sur une page qui a quelque chose à montrer : Print d'abord, Plotter quand il n'y a que
+    // du plotter, le plan de coupe quand il est le seul à en avoir — une page vide s'ouvrirait sur
+    // une question à laquelle il n'y a pas de réponse.
+    int opening = kPrintTab;
+    if (printRows.isEmpty() && !plotterRows.isEmpty())
+    {
+        opening = kPlotterTab;
+    }
+    else if (printRows.isEmpty() && plotterRows.isEmpty() && !cuttingRows.isEmpty())
+    {
+        opening = kCuttingTab;
+    }
+    m_tabs->setCurrentIndex(opening);
     connect(m_tabs, &QTabWidget::currentChanged, this, &OExportBatchDialog::OnTabChanged);
 
     layout->addWidget(m_tabs);
@@ -127,6 +144,8 @@ auto OExportBatchDialog::CurrentPage() const -> OExportBatchPage *
 {
     switch (m_tabs->currentIndex())
     {
+        case kCuttingTab:
+            return m_cuttingPage;
         case kPrintTab:
             return m_printPage;
         case kPlotterTab:
@@ -172,6 +191,12 @@ auto OExportBatchDialog::AddLayoutLayer() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportBatchDialog::CuttingOptions() const -> OExportCuttingFile::Options
+{
+    return m_cuttingOptions != nullptr ? m_cuttingOptions->Options() : OExportCuttingFile::Options();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportBatchDialog::OnTabChanged(int index)
 {
     Q_UNUSED(index)
@@ -200,8 +225,8 @@ void OExportBatchDialog::OnAccept()
     OExportBatchPage *page = CurrentPage();
     if (page == nullptr)
     {
-        // L'onglet du plan de coupe, qui est désactivé — donc jamais courant. La garde est là pour
-        // que la question « quel format ? » ait une réponse même le jour où il s'ouvrira.
+        // Un index d'onglet hors liste — jamais courant, mais la question « quel format ? » doit
+        // avoir une réponse même là.
         return;
     }
 
@@ -242,9 +267,6 @@ void OExportBatchDialog::Retranslate()
     m_tabs->setTabText(kCuttingTab, tr("Cutting plan"));
     m_tabs->setTabText(kPrintTab, tr("Print"));
     m_tabs->setTabText(kPlotterTab, tr("Plotter"));
-
-    // Ce que l'onglet attend, écrit dedans : sa sortie sera HPGL/PLT, et elle est reportée.
-    m_cuttingLabel->setText(tr("Coming soon"));
 
     const QList<QAbstractButton *> buttons = m_buttonBox->buttons();
     for (QAbstractButton *button : buttons)
