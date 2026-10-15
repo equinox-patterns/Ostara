@@ -30,6 +30,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "widgets/TopBar.h"
+#include "dialogs/DialogMeasurementLink.h"
+#include "dialogs/DialogOpenMeasurements.h"
 #include "vmisc/FactoryWidgets.h"
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
@@ -44,6 +46,7 @@
 #include "../vmisc/vsysexits.h"
 #include "core/vapplication.h"
 #include <QComboBox>
+#include <QFileDialog>
 #include <QFontMetrics>
 #include <QLabel>
 #include <QTimer>
@@ -447,114 +450,55 @@ void MainWindow::InitDimensionControls()
 
 
 //---------------------------------------------------------------------------------------------------------------------
-auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QString &path) -> QString
+auto MainWindow::ResolveMeasurementTable(const QString &patternPath, const QString &recordedPath) -> QString
 {
-    if (path.isEmpty())
+    // The table the pattern points at is there: there is nothing to ask.
+    if (not recordedPath.isEmpty() && QFileInfo::exists(recordedPath))
     {
-        return path;
-    }
-
-    auto FindLocation = [this](const QString &filter, const QString &dirPath, const QString &selectedName)
-    {
-        QFileDialog dialog(this, tr("Open file"), dirPath, filter);
-        dialog.selectFile(selectedName);
-        dialog.setFileMode(QFileDialog::ExistingFile);
-        dialog.setOption(QFileDialog::DontUseNativeDialog,
-                         VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
-
-        QString mPath;
-        if (dialog.exec() == QDialog::Accepted)
-        {
-            mPath = dialog.selectedFiles().value(0);
-        }
-
-        return mPath;
-    };
-
-    QFileInfo const table(path);
-    if (table.exists())
-    {
-        return path;
+        return recordedPath;
     }
 
     if (not VApplication::IsGUIMode())
     {
-        return {}; // console mode doesn't support fixing path to a measurement file
+        return {}; // console mode cannot ask for a measurement table
     }
 
-    const QString text = tr("The measurements file <br/><br/> <b>%1</b> <br/><br/> could not be found. Do you "
-                            "want to update the file location?")
-                             .arg(path);
-
-    if (QMessageBox::StandardButton const res = QMessageBox::question(
-            this, tr("Loading measurements file"), text, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-        res == QMessageBox::No)
+    // The link cannot be used: the file was moved or deleted, or the pattern never carried one. Valentina's own
+    // answer — "do you want to update the file location?" and a raw picker filtered on the four extensions — is
+    // deliberately not used here: the library is the reader's normal source for a table, and searching the computer
+    // is one gesture away from the same dialog.
+    DialogMeasurementLink dlg(recordedPath, this);
+    if (dlg.exec() != QDialog::Accepted)
     {
         return {};
     }
 
-    MeasurementsType patternType;
-    if (table.suffix() == "omt"_L1 || table.suffix() == "vst"_L1)
-    {
-        patternType = MeasurementsType::Multisize;
-    }
-    else if (table.suffix() == "otu"_L1 || table.suffix() == "vit"_L1)
-    {
-        patternType = MeasurementsType::Individual;
-    }
-    else
-    {
-        patternType = MeasurementsType::Unknown;
-    }
-
-    auto DirPath = [patternPath, table](const QString &defPath, QString &selectedName)
-    {
-        QString dirPath;
-        const QDir patternDir = QFileInfo(patternPath).absoluteDir();
-        if (QString measurements = table.fileName(); patternDir.exists(measurements))
-        {
-            selectedName = measurements;
-            dirPath = patternDir.absolutePath();
-        }
-        else if (patternDir.exists(measurements.replace(' '_L1, '_'_L1)))
-        {
-            selectedName = measurements.replace(' '_L1, '_'_L1);
-            dirPath = patternDir.absolutePath();
-        }
-        else
-        {
-            dirPath = defPath;
-        }
-        return dirPath;
-    };
-
     QString mPath;
-    if (patternType == MeasurementsType::Multisize)
+    if (dlg.SelectedChoice() == DialogMeasurementLink::Choice::SearchFile)
     {
-        const QString filter =
-            tr("Multisize measurements") + " (*.omt *.vst);;"_L1 + tr("Individual measurements") + " (*.otu *.vit)"_L1;
-        // Use standard path to multisize measurements
-        QString selectedName;
-        const QString dirPath =
-            DirPath(VAbstractValApplication::VApp()->ValentinaSettings()->GetPathMultisizeMeasurements(), selectedName);
-        mPath = FindLocation(filter, dirPath, selectedName);
-        if (!mPath.isEmpty())
+        // Where the file used to be is the likeliest place to find it again; next to the pattern otherwise.
+        QString dir = QFileInfo(patternPath).absoluteDir().absolutePath();
+        if (const QDir recordedDir = QFileInfo(recordedPath).absoluteDir(); not recordedPath.isEmpty() && recordedDir.exists())
         {
-            VAbstractValApplication::VApp()->ValentinaSettings()->SetPathMultisizeMeasurements(mPath);
+            dir = recordedDir.absolutePath();
+        }
+
+        QFileDialog dialog(this, tr("Find the measurements file"), dir, DialogOpenMeasurements::MeasurementTablesFilter());
+        dialog.setFileMode(QFileDialog::ExistingFile);
+        dialog.setOption(QFileDialog::DontUseNativeDialog,
+                         VAbstractApplication::VApp()->Settings()->IsDontUseNativeDialog());
+
+        if (dialog.exec() == QDialog::Accepted)
+        {
+            mPath = dialog.selectedFiles().value(0);
         }
     }
     else
     {
-        const QString filter =
-            tr("Individual measurements") + " (*.otu *.vit);;"_L1 + tr("Multisize measurements") + " (*.omt *.vst)"_L1;
-        // Use standard path to individual measurements
-        QString selectedName;
-        const QString dirPath = DirPath(
-            VAbstractValApplication::VApp()->ValentinaSettings()->GetPathIndividualMeasurements(), selectedName);
-        mPath = FindLocation(filter, dirPath, selectedName);
-        if (!mPath.isEmpty())
+        DialogOpenMeasurements open(this);
+        if (open.exec() == QDialog::Accepted)
         {
-            VAbstractValApplication::VApp()->ValentinaSettings()->SetPathIndividualMeasurements(mPath);
+            mPath = open.selectedPath();
         }
     }
 
@@ -566,7 +510,7 @@ auto MainWindow::CheckPathToMeasurements(const QString &patternPath, const QStri
     QScopedPointer<VMeasurements> const m(new VMeasurements(pattern));
     m->setXMLContent(mPath);
 
-    patternType = m->Type();
+    const MeasurementsType patternType = m->Type();
 
     if (patternType == MeasurementsType::Unknown)
     {

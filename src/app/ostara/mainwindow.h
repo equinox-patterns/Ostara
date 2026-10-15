@@ -855,7 +855,10 @@ private:
     /// are refused, exactly like the "Config pattern piece" menu entry, and the undo command keeps the top bar
     /// combo in step.
     void RenameActivePatternPiece(const QString &name);
-    auto CheckPathToMeasurements(const QString &patternPath, const QString &path) -> QString;
+    /// The measurement table @p recordedPath names, or one the reader designates when that link cannot be used —
+    /// the file is gone, or the pattern never carried a link. She either searches for the file on the computer or
+    /// takes a table from the library. Empty when she gives up, which aborts the opening.
+    auto ResolveMeasurementTable(const QString &patternPath, const QString &recordedPath) -> QString;
     void ChangePP(int index, bool zoomBestFit = true);
     /**
      * @brief EndVisualization try show dialog after and working with tool visualization.

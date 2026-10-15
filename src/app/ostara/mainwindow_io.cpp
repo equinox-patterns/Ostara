@@ -1030,41 +1030,32 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         const QString path = AbsoluteMPath(fileName, doc->MPath());
         QString fixedMPath;
 
-        // See issue #976. Pattern can lost link to measurements
-        if (path.isEmpty() && doc->RequiresMeasurements())
+        // A pattern that reads measurements needs a table: the one it points at, or one the reader designates when
+        // that link cannot be used. A pattern that reads none is left alone. A reader who gives up aborts the
+        // opening — the drawing's formulas read measurements nobody would hold.
+        if (not path.isEmpty() || doc->RequiresMeasurements())
         {
-            const auto fakePath = QStringLiteral("unknown_measurements.vit");
-            // Check if exist
-            fixedMPath = CheckPathToMeasurements(fileName, fakePath);
+            fixedMPath = ResolveMeasurementTable(fileName, path);
             if (fixedMPath.isEmpty())
             {
                 VAbstractValApplication::VApp()->setOpeningPattern(); // End opening file
                 Clear();
-                qCCritical(vMainWindow, "%s",
-                           qUtf8Printable(tr("The measurements file '%1' could not be found.").arg(fakePath)));
+                if (path.isEmpty())
+                {
+                    qCCritical(vMainWindow, "%s",
+                               qUtf8Printable(tr("The pattern reads measurements and no table was chosen.")));
+                }
+                else
+                {
+                    qCCritical(vMainWindow, "%s",
+                               qUtf8Printable(tr("The measurements file '%1' could not be found.").arg(path)));
+                }
                 if (not VApplication::IsGUIMode())
                 {
                     QCoreApplication::exit(V_EX_NOINPUT);
                 }
                 return false;
             }
-        }
-        else if (not path.isEmpty())
-        {
-          // Check if exist
-          fixedMPath = CheckPathToMeasurements(fileName, path);
-          if (fixedMPath.isEmpty())
-          {
-              VAbstractValApplication::VApp()->setOpeningPattern(); // End opening file
-              Clear();
-              qCCritical(vMainWindow, "%s",
-                         qUtf8Printable(tr("The measurements file '%1' could not be found.").arg(path)));
-              if (not VApplication::IsGUIMode())
-              {
-                  QCoreApplication::exit(V_EX_NOINPUT);
-              }
-              return false;
-          }
         }
 
         if (not fixedMPath.isEmpty())

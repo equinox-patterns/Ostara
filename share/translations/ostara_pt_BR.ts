@@ -4214,6 +4214,45 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
+    <name>DialogMeasurementLink</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="41"/>
+        <source>Measurements table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="41"/>
+        <source>Legacy measurement file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="49"/>
+        <source>This pattern reads measurements and no table is linked to it.
+
+Ostara uses the .omt/.otu format. Choose how to proceed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="54"/>
+        <source>The pattern is linked to a legacy Tape file:
+
+%1
+
+but it could not be found. Ostara uses the .omt/.otu format. Choose how to proceed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="65"/>
+        <source>Search for the file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="66"/>
+        <source>Replace with an existing .omt/.otu</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogMeasurementsCSVColumns</name>
     <message>
         <source>Full name:</source>
@@ -4871,7 +4910,7 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="146"/>
+        <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="149"/>
         <source>Open measurement table</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7084,7 +7123,7 @@ This action cannot be undone.</source>
         <translation>Salvar Plano de Corte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="581"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="361"/>
         <source>File name:</source>
         <translation>Nome do arquivo:</translation>
     </message>
@@ -7109,8 +7148,8 @@ This action cannot be undone.</source>
         <translation>Selecionar caminho para diretório de destino</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="594"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="597"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="374"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="377"/>
         <source>File base name</source>
         <translation>Nome do arquivo base</translation>
     </message>
@@ -7140,45 +7179,49 @@ This action cannot be undone.</source>
         <translation>Contorno com piques</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="164"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="162"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="165"/>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="174"/>
         <source>Compatibility:</source>
         <translation>Compatibilidade:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="176"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="186"/>
         <source>Not available</source>
         <comment>options</comment>
         <translation>Indisponível</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="345"/>
         <source>Margins</source>
-        <translation>Margens</translation>
+        <translation type="vanished">Margens</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="378"/>
         <source>Right:</source>
-        <translation>Direita:</translation>
+        <translation type="vanished">Direita:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="365"/>
         <source>Left:</source>
-        <translation>Esquerda:</translation>
+        <translation type="vanished">Esquerda:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="440"/>
         <source>Top:</source>
-        <translation>Superior:</translation>
+        <translation type="vanished">Superior:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="463"/>
         <source>Bottom:</source>
-        <translation>Inferior:</translation>
+        <translation type="vanished">Inferior:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="488"/>
         <source>Paper format</source>
-        <translation>Formato do papel</translation>
+        <translation type="vanished">Formato do papel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="58"/>
@@ -7186,22 +7229,16 @@ This action cannot be undone.</source>
         <translation>Navegar…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="385"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="404"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="447"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="470"/>
         <source>cm</source>
-        <translation>cm</translation>
+        <translation type="vanished">cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="494"/>
         <source>Templates:</source>
-        <translation>Modelos:</translation>
+        <translation type="vanished">Modelos:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="504"/>
         <source>Orientation:</source>
-        <translation>Orientação:</translation>
+        <translation type="vanished">Orientação:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="116"/>
@@ -7209,17 +7246,17 @@ This action cannot be undone.</source>
         <translation>Opções</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="202"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="212"/>
         <source>Scale</source>
         <translation>Escala</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="210"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="220"/>
         <source>Horizontal:</source>
         <translation>Horizontal:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="217"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="227"/>
         <source>Vertical:</source>
         <translation>Vertical:</translation>
     </message>
@@ -7227,54 +7264,54 @@ This action cannot be undone.</source>
 <context>
     <name>DialogSaveLayout</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="172"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="178"/>
         <source>Tried to use out of range file format type number.</source>
         <translation>Formato de arquivo inválido ou não suportado.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="180"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="186"/>
         <source>Selected not present file format.</source>
         <translation>O formato de arquivo selecionado não está disponível.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="197"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="203"/>
         <source>Selected not present file format type.</source>
         <translation>O tipo de arquivo selecionado não é suportado.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="378"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="925"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="396"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="931"/>
         <source>By standard</source>
         <translation>Por padrão</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="466"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="484"/>
         <source>Name conflict</source>
         <translation>Conflito de nomes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="467"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="485"/>
         <source>Folder already contain file with name %1. Rewrite all conflict file names?</source>
         <translation>O diretório já contém um arquivo com o nome %1. Reescrever todos os nomes de arquivos com conflito?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="535"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="539"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="552"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="556"/>
         <source>Example:</source>
         <translation>Exemplo:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="138"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="146"/>
         <source>Select folder</source>
         <translation>Selecionar diretório</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="405"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="423"/>
         <source>The destination directory doesn&apos;t exists or is not readable.</source>
         <translation>O diretório de destino não existe ou não é legível.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="98"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="99"/>
         <source>The base filename does not match a regular expression.</source>
         <translation>O nome do arquivo base não coincide com a expressão regular.</translation>
     </message>
@@ -7357,13 +7394,23 @@ This action cannot be undone.</source>
         <translation>Compatibilidade:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="227"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="207"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="210"/>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="237"/>
         <source>File name:</source>
         <translation>Nome do arquivo:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="240"/>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="243"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="250"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="253"/>
         <source>File base name</source>
         <translation>Nome do arquivo base</translation>
     </message>
@@ -7393,28 +7440,28 @@ This action cannot be undone.</source>
         <translation>O tipo de arquivo selecionado não é suportado.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="388"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="400"/>
         <source>The destination directory doesn&apos;t exists or is not readable.</source>
         <translation>O diretório de destino não existe ou não é legível.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="527"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="539"/>
         <source>Name conflict</source>
         <translation>Conflito de nomes</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="528"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="540"/>
         <source>Folder already contain file with name %1. Rewrite all conflict file names?</source>
         <translation>O diretório já contém um arquivo com o nome %1. Reescrever todos os nomes de arquivos com conflito?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="587"/>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="591"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="599"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="603"/>
         <source>Example:</source>
         <translation>Exemplo:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="701"/>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.cpp" line="717"/>
         <source>By standard</source>
         <translation>Por padrão</translation>
     </message>
@@ -9873,13 +9920,12 @@ This action cannot be undone.</source>
         <translation>Salvar como</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1344"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1335"/>
         <source>Could not save file</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="475"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="459"/>
         <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="69"/>
         <source>Open file</source>
         <translation>Abrir arquivo</translation>
@@ -9945,19 +9991,19 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="845"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1176"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="92"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="610"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1167"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="95"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="554"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1301"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1292"/>
         <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
         <translation>Valentina não fechou corretamente. Deseja abrir novamente os arquivos (%1) que estavam abertos?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1303"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1294"/>
         <source>Reopen files.</source>
         <translation>Reabrir arquivos.</translation>
     </message>
@@ -10139,8 +10185,8 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="820"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="278"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="285"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="292"/>
         <source>Detail mode</source>
         <translation>Modo Molde</translation>
     </message>
@@ -10148,8 +10194,8 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="886"/>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="899"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="227"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="354"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="432"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="361"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="439"/>
         <location filename="../../src/app/ostara/mainwindow_scenes.cpp" line="222"/>
         <source>Layout mode</source>
         <translation>Modo Encaixe</translation>
@@ -10187,7 +10233,7 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="488"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="495"/>
         <source>You can&apos;t export empty scene.</source>
         <translation>Não foi possível exportar, a área de trabalho está vazia.</translation>
     </message>
@@ -10202,59 +10248,57 @@ This action cannot be undone.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1386"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1377"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela. Expectativa de colisão ao executar 2 cópias do programa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="573"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="517"/>
         <source>Measurement file has unknown format.</source>
         <translation>Arquivo de medidas tem formato desconhecido.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="596"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="540"/>
         <source>Measurement files types have not match.</source>
         <translation>Os tipos de arquivos de medidas não têm correspondência.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="374"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="377"/>
         <source>Couldn&apos;t update measurements.</source>
         <translation>Não foi possível atualizar as medidas.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1044"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1061"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1051"/>
         <source>The measurements file &apos;%1&apos; could not be found.</source>
         <translation>O arquivo de medidas &apos;%1&apos; não foi encontrado.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="490"/>
         <source>Loading measurements file</source>
-        <translation>Carregando arquivo de medidas</translation>
+        <translation type="vanished">Carregando arquivo de medidas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="881"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="925"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="969"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="825"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="869"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="913"/>
         <source>The method %1 does nothing in GUI mode</source>
         <translation>O método%1 não faz nada no modo GUI</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="209"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="295"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="536"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="576"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="302"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="543"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="583"/>
         <source>Export error.</source>
         <translation>Erro de exportação.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="286"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="293"/>
         <source>The files were successfully exported to:
 %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="669"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="676"/>
         <source>Please, provide one input file.</source>
         <translation>Por favor, forneça um arquivo de entrada.</translation>
     </message>
@@ -10380,9 +10424,8 @@ This action cannot be undone.</source>
         <translation>Selecione o ponto da tangente</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="485"/>
         <source>The measurements file &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt; could not be found. Do you want to update the file location?</source>
-        <translation>O arquivo de medidas &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt; não foi encontrado. Deseja atualizar o local do arquivo?</translation>
+        <translation type="vanished">O arquivo de medidas &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt; não foi encontrado. Deseja atualizar o local do arquivo?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2221"/>
@@ -10425,12 +10468,12 @@ This action cannot be undone.</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1415"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1406"/>
         <source>untitled.ostara</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1457"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1448"/>
         <source>read only</source>
         <translation>somente leitura</translation>
     </message>
@@ -10450,16 +10493,12 @@ This action cannot be undone.</source>
         <translation>Editar atual</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="535"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="549"/>
         <source>Individual measurements</source>
-        <translation>Medidas individuais</translation>
+        <translation type="vanished">Medidas individuais</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="535"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="549"/>
         <source>Multisize measurements</source>
-        <translation>Medidas tamanhos múltiplos</translation>
+        <translation type="vanished">Medidas tamanhos múltiplos</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="352"/>
@@ -10509,22 +10548,22 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="228"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="355"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="433"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="362"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="440"/>
         <source>You don&apos;t have enough details to export. Please, include at least one detail in layout.</source>
         <translation>Não existem moldes suficientes para exportar. Inclua pelo menos um molde no plano de corte.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="241"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="368"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="446"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="375"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="453"/>
         <source>Export details</source>
         <translation>Exportar modelagem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="241"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="368"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="446"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="375"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="453"/>
         <source>Can&apos;t export details.</source>
         <translation>Não foi possível exportar modelagem.</translation>
     </message>
@@ -10559,17 +10598,17 @@ This action cannot be undone.</source>
         <translation>Salvar…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="498"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="505"/>
         <source>You can&apos;t export empty scene. Please, include at least one detail in layout.</source>
         <translation>Não foi possível exportar. Inclua pelo menos uma peça no plano de corte.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="603"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="610"/>
         <source>Export final measurements error.</source>
         <translation>Erro ao exportar as medidas finais.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="604"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="611"/>
         <source>Destination path is empty.</source>
         <translation>O caminho de destino está vazio.</translation>
     </message>
@@ -10628,7 +10667,7 @@ This action cannot be undone.</source>
         <translation type="vanished">Selecione o ponto central da etiqueta de posição</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1152"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1143"/>
         <source>The measurements file &apos;%1&apos; could not be found or provides not enough information.</source>
         <translation>O arquivo de medidas &apos;%1&apos; não foi localizado ou não fornece informações suficientes.</translation>
     </message>
@@ -10677,22 +10716,22 @@ This action cannot be undone.</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1387"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="308"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="315"/>
         <source>Export recipe</source>
         <translation>Exportar histórico</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="306"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="313"/>
         <source>Recipe files</source>
         <translation>Arquivos de histórico</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="308"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="315"/>
         <source>recipe</source>
         <translation>histórico</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="321"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="328"/>
         <source>Could not save recipe. %1</source>
         <translation>Não foi possível salvar o histórico. %1</translation>
     </message>
@@ -11234,18 +11273,18 @@ This action cannot be undone.</source>
         <translation>Atualizar encaixe manual</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="402"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="476"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="409"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="483"/>
         <source>Unable to prepare raw layout data.</source>
         <translation>Não foi possível preparar dados brutos do plano de corte.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="408"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="415"/>
         <source>Manual layout files</source>
         <translation>Arquivos de encaixe manual</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="415"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="422"/>
         <source>Select manual layout</source>
         <translation>Selecionar encaixe manual</translation>
     </message>
@@ -11275,12 +11314,17 @@ This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1081"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1046"/>
+        <source>The pattern reads measurements and no table was chosen.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1072"/>
         <source>Legacy measurement file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1082"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1073"/>
         <source>The pattern is linked to a legacy Tape file:
 
 %1
@@ -11289,62 +11333,67 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1085"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1076"/>
         <source>Convert this file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1086"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1077"/>
         <source>Replace with existing .%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="862"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="486"/>
+        <source>Find the measurements file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="806"/>
         <source>Not supported dimension A value &apos;%1&apos; for this pattern file.</source>
         <translation>O valor &apos;%1&apos; da dimensão A não é compatível com esse molde.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="869"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="813"/>
         <source>Couldn&apos;t set dimension A. Need a file with multisize measurements.</source>
         <translation>Não foi possível definir a dimensão A. É necessário uma tabela de medidas de tamanhos múltiplos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="875"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="819"/>
         <source>Couldn&apos;t set dimension A. File wasn&apos;t opened.</source>
         <translation>Não foi possível definir a dimensão A. O arquivo não foi aberto.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="906"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="850"/>
         <source>Not supported dimension B value &apos;%1&apos; for this pattern file.</source>
         <translation>O valor &apos;%1&apos; da dimensão B não é compatível com esse molde.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="913"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="857"/>
         <source>Couldn&apos;t set dimension B. Need a file with multisize measurements.</source>
         <translation>Não foi possível definir a dimensão B. É necessário uma tabela de medidas de tamanhos múltiplos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="919"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="863"/>
         <source>Couldn&apos;t set dimension B. File wasn&apos;t opened.</source>
         <translation>Não foi possível definir a dimensão B. O arquivo não foi aberto.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="950"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="894"/>
         <source>Not supported dimension C value &apos;%1&apos; for this pattern file.</source>
         <translation>O valor &apos;%1&apos; da dimensão C não é compatível com esse molde.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="957"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="901"/>
         <source>Couldn&apos;t set dimension C. Need a file with multisize measurements.</source>
         <translation>Não foi possível definir a dimensão C. É necessário uma tabela de medidas de tamanhos múltiplos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="963"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="907"/>
         <source>Couldn&apos;t set dimension C. File wasn&apos;t opened.</source>
         <translation>Não foi possível definir a dimensão C. O arquivo não foi aberto.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="326"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="333"/>
         <source>Could not create recipe file. %1</source>
         <translation>Não foi possível criar o arquivo de histórico. %1</translation>
     </message>
@@ -11506,7 +11555,7 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="691"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="884"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1133"/>
         <source>A favorite already has this name. Choose another name.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11563,7 +11612,7 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="279"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="286"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="625"/>
         <source>The file &quot;%1&quot; was successfully exported to:
 %2</source>
@@ -11591,18 +11640,20 @@ Do you want to replace it?</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportmode.cpp" line="74"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="688"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="732"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="884"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1073"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1179"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1187"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1220"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1228"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1363"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1374"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="203"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="215"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="929"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="948"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1133"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1322"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1428"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1436"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1469"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1477"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1533"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1540"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1675"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1686"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="234"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="246"/>
         <source>Export mode</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11612,33 +11663,33 @@ Do you want to replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="119"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="142"/>
         <source>hour</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="123"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="146"/>
         <source>minute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="127"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="134"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="150"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="157"/>
         <source>second</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="140"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="163"/>
         <source>%1 and %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="188"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="211"/>
         <source>Mat %1 × %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="192"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="215"/>
         <source> · %n piece(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11646,7 +11697,7 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="197"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="220"/>
         <source> · %n mat(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11654,19 +11705,20 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="200"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="223"/>
         <source>Canvas %1 × %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="204"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="240"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="276"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="227"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="263"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="308"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="335"/>
         <source> · %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="235"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="258"/>
         <source> · %n pages (cover page included)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11674,7 +11726,7 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="237"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="260"/>
         <source> · %n pages</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11682,54 +11734,81 @@ Do you want to replace it?</source>
         </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="255"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="287"/>
         <source>Canvas: half fabric width %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="260"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="273"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="292"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="297"/>
         <source>Fabric width %1 · length %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="362"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="323"/>
+        <source>Fabric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="330"/>
+        <source>Lining</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="430"/>
         <source>Nesting. Please, wait.</source>
         <translation type="unfinished">Agrupando. Por favor, aguarde.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="582"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="722"/>
         <source>Single size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="689"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="933"/>
         <source>This size range carries no piece to nest.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="941"/>
+        <source>A cutting plan only takes the pieces whose %1 cut quantity is filled in (Details mode, Dock Options, Piece, Information).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="944"/>
+        <source>lining</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="945"/>
+        <source>fabric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1323"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1180"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1429"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1470"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1534"/>
         <source>&quot;%1&quot; could not be exported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1188"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1229"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1437"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1478"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1541"/>
         <source>&quot;%1&quot; was exported to
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1355"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="181"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1667"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="212"/>
         <source>%n file(s) written to %1</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11737,8 +11816,8 @@ This action cannot be undone.</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1371"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="212"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1683"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="243"/>
         <source>%n file(s) could not be written:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11746,12 +11825,12 @@ This action cannot be undone.</source>
         </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="223"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="246"/>
         <source>%1 × %2 %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="195"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="226"/>
         <source>%n file(s) left untouched:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -11762,7 +11841,7 @@ This action cannot be undone.</source>
 <context>
     <name>MainWindowsNoGUI</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1658"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1675"/>
         <source>unnamed</source>
         <translation>sem nome</translation>
     </message>
@@ -11779,46 +11858,46 @@ This action cannot be undone.</source>
         <translation>Não foi possível criar um caminho</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1338"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1341"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1340"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1343"/>
         <source>Preparing details for layout</source>
         <translation>Preparando moldes para o encaixe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1070"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1523"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1540"/>
         <source>Pattern</source>
         <translation>Modelagem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1675"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1692"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1676"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1693"/>
         <source>Value</source>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1703"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1715"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1733"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1720"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1732"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1750"/>
         <source>Export final measurements error.</source>
         <translation>Erro ao exportar as medidas finais.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1705"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1722"/>
         <source>Value in line %1 is infinite or NaN. Please, check your calculations.</source>
         <translation>O valor na linha %1 é infinito ou não é um número. Verifique seus cálculos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1716"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1733"/>
         <source>Parser error at line %1: %2.</source>
         <translation>Erro de análise na linha %1: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1734"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1751"/>
         <source>File error %1.</source>
         <translation>Erro de arquivo %1.</translation>
     </message>
@@ -11828,28 +11907,28 @@ This action cannot be undone.</source>
         <translation>Uma ou mais peças são maiores do que o formato de papel selecionado. Selecione um formato de papel maior.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1677"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1694"/>
         <source>Description</source>
         <translation>Descrição</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1788"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1805"/>
         <source>Measurement file has unknown format.</source>
         <translation>Arquivo de medidas tem formato desconhecido.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1811"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1874"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1828"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1891"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1875"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1892"/>
         <source>Measurement file doesn&apos;t include all required measurements.</source>
         <translation>O arquivo de medidas não inclui todas as medidas necessárias.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1881"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1898"/>
         <source>Measurement file doesn&apos;t include all required measurements.
 
 Missing: %1
@@ -11862,29 +11941,29 @@ Faltando: %1
 Deseja selecionar outro arquivo?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1884"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1901"/>
         <source>Missing Measurements</source>
         <translation>Medidas ausentes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1907"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1924"/>
         <source>Select Measurement File</source>
         <translation>Selecione o arquivo de medidas</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1899"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1903"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1916"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1920"/>
         <source>Multisize measurements</source>
         <translation>Medidas tamanhos múltiplos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1899"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1903"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1916"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1920"/>
         <source>Individual measurements</source>
         <translation>Medidas individuais</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1876"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1893"/>
         <source>Please, additionally provide: %1</source>
         <translation>Por favor, forneça adicionalmente: %1</translation>
     </message>
@@ -14790,65 +14869,60 @@ This action cannot be undone.</source>
 <context>
     <name>OExportBatchDialog</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="193"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="218"/>
         <source>Export the ticked generations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="194"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="219"/>
         <source>There is no output to export here.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="213"/>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="221"/>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="229"/>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="255"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="238"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="246"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="254"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="277"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="213"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="238"/>
         <source>That folder does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="221"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="246"/>
         <source>No generation is ticked.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="229"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="254"/>
         <source>Every ticked generation needs a name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="240"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="265"/>
         <source>Export several outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="242"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="267"/>
         <source>Cutting plan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="243"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="268"/>
         <source>Print</source>
         <translation type="unfinished">Imprimir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="244"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="269"/>
         <source>Plotter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="247"/>
-        <source>Coming soon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="258"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="280"/>
         <source>Cancel</source>
         <translation type="unfinished">Cancelar</translation>
     </message>
@@ -14856,27 +14930,27 @@ This action cannot be undone.</source>
 <context>
     <name>OExportBatchPage</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="197"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="229"/>
         <source>Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="209"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="241"/>
         <source>Folder:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="214"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="246"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="221"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="253"/>
         <source>Add Layout layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="226"/>
+        <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="258"/>
         <source>There is no output to export here.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14900,59 +14974,153 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
+    <name>OExportCuttingFile</name>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="235"/>
+        <source>Lining</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="236"/>
+        <source>Fabric</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OExportCuttingFileDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="102"/>
+        <source>Export the cutting plan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="109"/>
+        <source>Fabric:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="110"/>
+        <source>Lining:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OExportCuttingFileOptions</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="58"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="225"/>
+        <source>By standard</source>
+        <translation type="unfinished">Por padrão</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="239"/>
+        <source>File format:</source>
+        <translation type="unfinished">Formato do arquivo:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="240"/>
+        <source>Type:</source>
+        <translation type="unfinished">Tipo:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="241"/>
+        <source>Binary form</source>
+        <translation type="unfinished">Forma binária</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="242"/>
+        <source>Text as paths</source>
+        <translation type="unfinished">Texto como caminhos</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="243"/>
+        <source>Show grainline</source>
+        <translation type="unfinished">Mostrar sentido do fio</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="244"/>
+        <source>Boundary together with notches</source>
+        <translation type="unfinished">Contorno com piques</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="245"/>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="246"/>
+        <source>Compatibility:</source>
+        <translation type="unfinished">Compatibilidade:</translation>
+    </message>
+</context>
+<context>
     <name>OExportCuttingWidget</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="648"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="844"/>
         <source>Fabric width:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="667"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="866"/>
+        <source>Lining</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="867"/>
+        <source>Lining width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="879"/>
         <source>Sizes to cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="668"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="880"/>
         <source>Single size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="669"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="881"/>
         <source>Several sizes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="684"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="896"/>
         <source>Space between pieces:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="688"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="900"/>
         <source>Space from the edges:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="692"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="904"/>
         <source>The space kept between the pieces and the fabric&apos;s edges. It is a margin for error - cloth is not always cut straight - so every rectangle of the plan keeps it on THREE sides: all of them except the fold. A piece cut on the fold keeps its fold line on the fold, which is straight by construction.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="697"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="909"/>
         <source>Folded fabric</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="699"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="911"/>
         <source>The fabric is folded in two along its length, and the halves are traced on the folded cloth - the fold gives the second half. The nesting then runs on HALF the fabric width: 140 entered here means a plan laid out on 70. A piece cut on the fold keeps its fold line on the fold and stays folded; a piece cut twice is laid once, and the fold mirrors it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="705"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="917"/>
         <source>One-way layout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="707"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="919"/>
         <source>No piece is turned a half-turn: every piece takes the fabric&apos;s direction the same way. Tick it for a cloth that has one - velvet, checks, a print. A piece cut on the cross keeps that freedom; it is simply never laid upside down.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14987,50 +15155,50 @@ Star a generation in the Outputs dock to keep its recipe here.</source>
 <context>
     <name>OExportFileDialog</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="66"/>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="133"/>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="155"/>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="163"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="68"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="274"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="302"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="311"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="134"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="275"/>
         <source>%1 already exists. Replace it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="143"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="284"/>
         <source>Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="155"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="302"/>
         <source>The file needs a name.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="163"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="311"/>
         <source>That folder does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="182"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="333"/>
         <source>Export the plan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="183"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="334"/>
         <source>File name:</source>
         <translation type="unfinished">Nome do arquivo:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="184"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="335"/>
         <source>Folder:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="185"/>
+        <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="336"/>
         <source>Browse...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15271,18 +15439,18 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
     <name>OExportModeDialog</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="106"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1175"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1195"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1177"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1197"/>
         <source>List to generate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="824"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1178"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="844"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1198"/>
         <source>Cutting plan</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15293,7 +15461,7 @@ They are not kept: closing the pattern takes them with the session.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="825"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="845"/>
         <source>The nesting cannot invent a direction, and these pieces have none:
 
 %1
@@ -15302,68 +15470,78 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="961"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1190"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="981"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1210"/>
         <source>%1 was added to the list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1023"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1037"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1055"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1043"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1057"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1075"/>
         <source>Add to list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1029"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1044"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1059"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1049"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1064"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1079"/>
         <source>Generate this output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="994"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1014"/>
         <source>Generate the whole list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="995"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="544"/>
+        <source>Cut-%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="562"/>
+        <source>Plot-%1x%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1015"/>
         <source>Generate the checked favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1069"/>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1075"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1089"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1095"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1179"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1199"/>
         <source>Print</source>
         <translation type="unfinished">Imprimir</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1180"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1200"/>
         <source>Plotter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1185"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1205"/>
         <source>Working list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1186"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1206"/>
         <source>Cutting plan favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1187"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1207"/>
         <source>Print favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1188"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1208"/>
         <source>Plotter favorites</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19070,13 +19248,13 @@ Save it before leaving it?</source>
     <name>OWidgetOutputs</name>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="174"/>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="610"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="596"/>
         <source>Add an output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="179"/>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="611"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="597"/>
         <source>Export several outputs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19101,12 +19279,17 @@ Save it before leaving it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="428"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="379"/>
+        <source>Export as a cutting file (DXF, PLT, HPGL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="415"/>
         <source>Export several outputs at once</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="429"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="416"/>
         <source>There is no output to export yet</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19116,18 +19299,12 @@ Save it before leaving it?</source>
         <translation type="unfinished">Atualizar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="381"/>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="430"/>
-        <source>A cutting plan has no export yet</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="385"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="383"/>
         <source>Export</source>
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="392"/>
+        <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="390"/>
         <source>Delete</source>
         <translation type="unfinished">Excluir</translation>
     </message>
@@ -20473,12 +20650,12 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Erro de compatibilidade nos Dados Brutos de Encaixe V: a versão de classe real é %1 e a versão de classe &apos;esperada&apos; é %2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiecepath_p.h" line="105"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiecepath_p.h" line="116"/>
         <source>VLayoutPiecePathData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
         <translation>Erro de incompatibilidade do prefixo VLayoutPieceData: actualStreamHeader = 0x%1 e streamHeader = 0x%2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiecepath_p.h" line="118"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiecepath_p.h" line="129"/>
         <source>VLayoutPiecePathData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
         <translation>Erro de compatibilidade nos Dados de Caminho da Peça no Encaixe: a versão real da classe é %1 e a versão da classe &apos;esperada&apos; é %2</translation>
     </message>
@@ -20696,7 +20873,7 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>A peça &apos;%1&apos; possui uma margem de encaixe inválida. Verifique a margem de costura para checar seu comportamento.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="449"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="451"/>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3164"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>Peça &apos;%1&apos;. Margem de costura inválida.</translation>
@@ -20739,8 +20916,8 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Não foi possível calcular tamanho do pique para ponto &apos;%1&apos;. Motivo: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="157"/>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="219"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="159"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="221"/>
         <source>Passmark &apos;%1&apos; is not part of piece &apos;%2&apos;.</source>
         <translation>Pique &apos;%1&apos; não é parte da peça &apos;%2&apos;.</translation>
     </message>
@@ -20804,22 +20981,22 @@ Esta opção terá efeito após reinicialização.</translation>
         <translation>Erro no caminho &apos;%1&apos;. O cálculo do segmento para a curva &apos;%2&apos; falhou. %3</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="230"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="232"/>
         <source>Cannot prepare builtin passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark is empty.</source>
         <translation>Não foi possível preparar o pique embutido &apos;%1&apos; para a peça &apos;%2&apos;. O pique está vazio.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="244"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="246"/>
         <source>Cannot prepare builtin  passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark base line is empty.</source>
         <translation>Não foi possível preparar o pique embutido &apos;%1&apos; para a peça &apos;%2&apos;. A linha de base do pique está vazia.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="169"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="171"/>
         <source>Cannot prepare passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark base line is empty.</source>
         <translation>Não foi possível preparar o pique &apos;%1&apos; para a peça &apos;%2&apos;. A linha de base do pique está vazia.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="181"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="183"/>
         <source>Cannot prepare passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark is empty.</source>
         <translation>Não foi possível preparar o pique &apos;%1&apos; para a peça &apos;%2&apos;. O pique está vazio.</translation>
     </message>
@@ -20877,7 +21054,7 @@ Esta opção terá efeito após reinicialização.</translation>
     <message>
         <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="220"/>
         <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="270"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3231"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3234"/>
         <source>Cannot set printer margins</source>
         <translation>Não foi possível definir as margens da impressora</translation>
     </message>
@@ -24498,18 +24675,18 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="541"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="740"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="791"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="765"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="816"/>
         <source>Can&apos;t cast object</source>
         <translation>Não foi possível converter o objeto</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="647"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="672"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="657"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="682"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25221,89 +25398,89 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 <context>
     <name>VLayoutExporter</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="274"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="286"/>
         <source>Can&apos;t save file &apos;%1&apos;. Error: %2.</source>
         <translation>Não foi possível salvar arquivo &apos;%1&apos;. Erro: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="563"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="577"/>
         <source>Cannot set printer page size</source>
         <translation>Não foi possível definir tamanho da página</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="579"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="593"/>
         <source>Cannot set printer margins</source>
         <translation>Não foi possível definir as margens da impressora</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="586"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="600"/>
         <source>Can&apos;t open file &apos;%1&apos;</source>
         <translation>Não foi possível abrir o arquivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="427"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="441"/>
         <source>Export raw layout data failed. %1.</source>
         <translation>Falha ao exportar dados brutos de encaixe. %1.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="531"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="545"/>
         <source>Creating file &apos;%1&apos; failed! %2</source>
         <translation>Criação do arquivo &apos;%1&apos; falhou! %2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="381"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="394"/>
         <source>Can&apos;t create an AAMA dxf file.</source>
         <translation>Não foi possível criar um arquivo AAMA dxf.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="212"/>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="249"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="224"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="261"/>
         <source>Can&apos;t create an image %1x%2 for &apos;%3&apos;. The image is too large or empty.</source>
         <translation>Não é possível criar uma imagem %1x%2 para &apos;%3&apos;. A imagem é muito grande ou está vazia.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="403"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="417"/>
         <source>Can&apos;t create an ASTM dxf file.</source>
         <translation>Não foi possível criar um arquivo ASTM dxf.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="449"/>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="470"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="463"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="484"/>
         <source>Can&apos;t create an HP-GL file.</source>
         <translation>Não foi possível criar um arquivo HP-GL.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="603"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="617"/>
         <source>(flat) files</source>
         <translation>arquivos (flat)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="604"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="618"/>
         <source>files</source>
         <translation>arquivos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="613"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="627"/>
         <source>Image files</source>
         <translation>Arquivos de imagem</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="643"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="657"/>
         <source>tiled</source>
         <translation>mosaico</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="645"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="659"/>
         <source>Numerical control</source>
         <translation>Controle numérico</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="647"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="661"/>
         <source>Raw Layout Data</source>
         <translation>Dados brutos de encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="355"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="367"/>
         <source>Can&apos;t create a flat dxf file.</source>
         <translation>Não foi possível criar um arquivo flat dxf.</translation>
     </message>
@@ -25311,7 +25488,7 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 <context>
     <name>VLayoutPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="466"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="468"/>
         <source>Piece %1 doesn&apos;t have shape.</source>
         <translation>Peça %1 não possui forma.</translation>
     </message>
@@ -26238,147 +26415,147 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
     </message>
     <message>
         <location filename="../../src/app/puzzle/vpmainwindow.ui" line="2310"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="5132"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="5137"/>
         <source>Preferences</source>
         <translation>Preferências</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="488"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="489"/>
         <source>File &apos;%1&apos; doesn&apos;t exist!</source>
         <translation>O arquivo &apos;%1&apos; não existe!</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="532"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="542"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="552"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="533"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="543"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="553"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="638"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="639"/>
         <source>Fail to create layout.</source>
         <translation>Não foi possível criar encaixe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3452"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3455"/>
         <source>Could not extract data from file &apos;%1&apos;. %2</source>
         <translation>Não foi possível extrair dados de arquivo &apos;%1&apos;. %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="931"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1019"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="932"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1020"/>
         <source>Centimeters</source>
         <translation>Centímetros</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="930"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1018"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="931"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1019"/>
         <source>Millimiters</source>
         <translation>Milímetros</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="932"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1020"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="933"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1021"/>
         <source>Inches</source>
         <translation>Polegadas</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1803"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1804"/>
         <source>Scale:</source>
         <translation>Escala:</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1834"/>
         <source>untitled %1.vlt</source>
         <translation>sem título %1.vlt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1833"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1834"/>
         <source>untitled.vlt</source>
         <translation>sem_título.vlt</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1840"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1841"/>
         <source>read only</source>
         <translation>somente leitura</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1906"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1907"/>
         <source>Cannot read settings from a malformed .INI file.</source>
         <translation>As configurações não podem ser lidas, arquivo .INI inválido.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1923"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1924"/>
         <source>Cannot save settings. Access denied.</source>
         <translation>Acesso negado. Configuração não pode ser salva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2831"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3185"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3362"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2834"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3188"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3365"/>
         <source>Failed to open file, is it writable?</source>
         <translation>Não foi possível abrir arquivo, arquivo apenas em modo leitura?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1978"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1979"/>
         <source>&amp;New Window</source>
         <translation>&amp;Nova Janela</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1935"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1936"/>
         <source>Layout has been modified. Do you want to save your changes?</source>
         <translation>Encaixe foi modificado. Salvar alterações?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3785"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3847"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3788"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3850"/>
         <source>Layout files</source>
         <translation>Arquivos de encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3789"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3937"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4879"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3792"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3940"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4884"/>
         <source>Open file</source>
         <translation>Abrir arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3830"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3833"/>
         <source>Could not save the file</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3849"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3852"/>
         <source>layout</source>
         <translation>encaixe</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3861"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3864"/>
         <source>Save as</source>
         <translation>Salvar como</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3891"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3894"/>
         <source>Failed to lock. This file already opened in another window.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3901"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3904"/>
         <source>Could not save file</source>
         <translation>Não foi possível salvar o arquivo</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3922"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3925"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Falha ao bloquear. Este arquivo já foi aberto em outra janela. Expectativa de colisão ao executar 2 cópias do programa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3932"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3935"/>
         <source>Raw Layout files</source>
         <translation>Arquivos de encaixe brutos</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3950"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3953"/>
         <source>About Qt</source>
         <translation>Sobre Qt</translation>
     </message>
@@ -26648,157 +26825,157 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Diretório de Configurações</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="533"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="534"/>
         <source>Unable to read a layout file. %1</source>
         <translation>Não foi possível ler o arquivo de encaixe. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="543"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="544"/>
         <source>Failed to read %1</source>
         <translation> Falha ao ler %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="743"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3753"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="744"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3756"/>
         <source>&amp;Undo</source>
         <translation>&amp;Desfazer</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="749"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3754"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="750"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3757"/>
         <source>&amp;Redo</source>
         <translation>&amp;Refazer</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="933"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1021"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="934"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1022"/>
         <source>Pixels</source>
         <translation>Píxels</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1934"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1935"/>
         <source>Unsaved changes</source>
         <translation>Alterações não salvas</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1944"/>
         <source>Save…</source>
         <translation>Salvar…</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1943"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1944"/>
         <source>Save</source>
         <translation>Salvar</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1948"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="1949"/>
         <source>Don&apos;t Save</source>
         <translation>Não salvar</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2423"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2488"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2424"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2491"/>
         <source>Can&apos;t create a path</source>
         <translation>Não foi possível criar um caminho</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2710"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2713"/>
         <source>Can&apos;t open file &apos;%1&apos;</source>
         <translation>Não foi possível abrir o arquivo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2724"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3238"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="2727"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3241"/>
         <source>Failed in flushing page to disk, disk full?</source>
         <translation>Falhou em mover a página ao disco, disco cheio?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3073"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3100"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3129"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3076"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3103"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3132"/>
         <source>The layout is invalid.</source>
         <translation>Encaixe inválido.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3074"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3077"/>
         <source>The layout is invalid. Piece out of bound. Do you want to continue export?</source>
         <translation>Encaixe inválido. Peça fora da área de impressão. Continuar exportando?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3101"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3104"/>
         <source>The layout is invalid. Pieces superposition. Do you want to continue export?</source>
         <translation>Encaixe inválido. Peças em sobreposição. Continuar exportando?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3130"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3133"/>
         <source>The layout is invalid. One or several pieces are closer than minimally allowed. Do you want to continue export?</source>
         <translation>Encaixe inválido. Uma ou várias peças estão mais próximas do que minimamente permitidas. Continuar exportando?</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4219"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4222"/>
         <source>Sheet %1</source>
         <translation>Folha %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3528"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3531"/>
         <source>translate pieces</source>
         <translation>traduzir peças</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3645"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3648"/>
         <source>rotate pieces</source>
         <translation>girar peças</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4426"/>
         <source>untitled %1</source>
         <translation>sem título %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4423"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4426"/>
         <source>untitled</source>
         <translation>sem título</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4508"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4559"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4513"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4564"/>
         <source>For printing multipages document all sheet should have the same size.</source>
         <translation>Para imprimir documentos de várias páginas, todas as folhas devem ter o mesmo tamanho.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4520"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4571"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4606"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4644"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4699"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4743"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4776"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4812"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4525"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4576"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4611"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4649"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4704"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4748"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4781"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4817"/>
         <source>Print error</source>
         <translation>Erro de impressão</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4521"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4572"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4607"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4645"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4700"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4744"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4777"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4813"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4526"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4577"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4612"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4650"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4705"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4749"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4782"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4818"/>
         <source>Cannot proceed because there are no available printers in your system.</source>
         <translation>Não foi possível continuar porque não existem impressoras disponíveis no seu sistema.</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4876"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4881"/>
         <source>Watermark files</source>
         <translation>Arquivos de marca d&apos;água</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4532"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4583"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4618"/>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4656"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4537"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4588"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4623"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4661"/>
         <source>Unable to get sheet page settings</source>
         <translation>Não foi possível obter as configurações de folha</translation>
     </message>
@@ -26838,12 +27015,12 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Tem efeito apenas quando impresso pelo aplicativo. Para exportar utilizando o mosaico, use a configuração dedicada</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4473"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="4477"/>
         <source>sheet</source>
         <translation>folha</translation>
     </message>
     <message>
-        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3474"/>
+        <location filename="../../src/app/puzzle/vpmainwindow.cpp" line="3477"/>
         <source>Piece %1 invalid. %2</source>
         <translation>Peça %1 inválida. %2</translation>
     </message>
@@ -27413,7 +27590,7 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1142"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1165"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1170"/>
         <source>Error creating or updating a piece path</source>
         <translation>Erro ao criar ou atualizar o caminho da peça</translation>
     </message>

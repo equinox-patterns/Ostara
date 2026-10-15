@@ -138,14 +138,17 @@ void DialogOpenMeasurements::PopulateLists()
     }
 }
 
+auto DialogOpenMeasurements::MeasurementTablesFilter() -> QString
+{
+    return tr("Measurement tables (*.omt *.otu *.vst *.vit);;All files (*)");
+}
+
 void DialogOpenMeasurements::OnBrowse()
 {
-    QString filter = tr("Measurement tables (*.omt *.otu *.vst *.vit);;"
-                        "All files (*)");
-    QString path = QFileDialog::getOpenFileName(this,
+    const QString path = QFileDialog::getOpenFileName(this,
         tr("Open measurement table"),
         VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary(),
-        filter);
+        MeasurementTablesFilter());
 
     if (!path.isEmpty())
     {

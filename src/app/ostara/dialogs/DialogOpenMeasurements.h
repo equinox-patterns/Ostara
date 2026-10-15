@@ -45,6 +45,11 @@ public:
     explicit DialogOpenMeasurements(QWidget *parent = nullptr);
     ~DialogOpenMeasurements() override = default;
 
+    /// The one filter that names every measurement table format Ostara reads: .omt/.otu of its own, .vst/.vit of
+    /// Tape. Named here so that the search a reader makes from this dialog and the one she makes when a pattern's
+    /// link is unusable cannot come to read different formats.
+    static auto MeasurementTablesFilter() -> QString;
+
     /// Selected file path, or empty if cancelled.
     auto selectedPath() const -> QString;
 
