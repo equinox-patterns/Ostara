@@ -114,17 +114,30 @@ private:
     Q_DISABLE_COPY_MOVE(DialogSaveLayout) // NOLINT
     Ui::DialogSaveLAyout *ui;
     int m_count;
-    bool m_isInitialized{false};
     Draw m_mode;
     bool m_tiledExportMode{false};
     bool m_scaleConnected{true};
 
+    // Tiled PDF page setup. The dialog carries no margin and no paper widget any more: what a tiled PDF
+    // uses is read from the settings, unless the command line sets it here (the console export uses this
+    // dialog as a plain data holder, it never shows it).
+    QMarginsF m_tiledMargins{};
+    bool m_tiledMarginsSet{false};
+    PaperSizeTemplate m_tiledPageFormat{PaperSizeTemplate::A0};
+    bool m_tiledPageFormatSet{false};
+    PageOrientation m_tiledOrientation{PageOrientation::Portrait};
+    bool m_tiledOrientationSet{false};
+
     void ReadSettings();
     void WriteSettings() const;
+
+    /// @brief FitHeightToContent locks the height on the rows the dialog currently shows.
+    void FitHeightToContent();
 
     void InitDxfCompatibility();
     void InitFileFormats();
     void InitFileFormatTypes(LayoutExportFileFormat format);
+    void SelectFirstAvailableFormat();
 };
 
 #endif // DIALOGSAVELAYOUT_H

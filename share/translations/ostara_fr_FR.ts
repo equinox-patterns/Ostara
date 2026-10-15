@@ -7328,8 +7328,8 @@ Cette action ne peut pas être annulée.</translation>
     <name>DialogSaveLayout</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="174"/>
-        <source>Show the main path (DXF export only)</source>
-        <translation>Afficher le contour principal (export DXF uniquement)</translation>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation>Afficher le contour principal, même quand les pièces le cachent</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="177"/>
@@ -7393,8 +7393,8 @@ Cette action ne peut pas être annulée.</translation>
     <name>DialogSaveManualLayout</name>
     <message>
         <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="181"/>
-        <source>Show the main path (DXF export only)</source>
-        <translation>Afficher le contour principal (export DXF uniquement)</translation>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation>Afficher le contour principal, même quand les pièces le cachent</translation>
     </message>
     <message>
         <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="184"/>

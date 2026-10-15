@@ -31,6 +31,7 @@
 #include "vexception.h"
 #include "../vlayout/vlayoutexporter.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "vmisc/FactoryWidgets.h"
 #include "ui_dialogsavelayout.h"
 
 #include <QDir>
@@ -99,6 +100,13 @@ DialogSaveLayout::DialogSaveLayout(int count, Draw mode, const QString &fileName
         }
     }
 
+    // The combos come from the .ui, so they take ApplyComboBoxView instead of the MakeComboBox factory:
+    // both give the combo the application's own popup view, because the native macOS popup ignores the
+    // stylesheet (Modifications/Ostara/rules.md §3.4).
+    ApplyComboBoxView(ui->comboBoxFormat);
+    ApplyComboBoxView(ui->comboBoxFormatType);
+    ApplyComboBoxView(ui->comboBoxDxfCompatibility);
+
     InitFileFormats();
     connect(ui->comboBoxFormatType,
             QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -148,8 +156,6 @@ DialogSaveLayout::DialogSaveLayout(int count, Draw mode, const QString &fileName
     connect(ui->lineEditPath, &QLineEdit::textChanged, this, &DialogSaveLayout::PathChanged);
 
     ui->lineEditPath->setText(VAbstractValApplication::VApp()->ValentinaSettings()->GetPathLayoutExport());
-
-    InitTileTemplates(ui->comboBoxTemplates);
 
     connect(ui->toolButtonScaleConnected, &QToolButton::clicked, this, &DialogSaveLayout::ToggleScaleConnection);
 
@@ -527,8 +533,6 @@ void DialogSaveLayout::ShowExample()
     const bool hasValues = ui->comboBoxFormatType->currentIndex() != -1;
     ui->groupBoxFormatOptions->setEnabled(hasValues);
     ui->groupBoxScale->setEnabled(hasValues);
-    ui->groupBoxMargins->setEnabled(hasValues);
-    ui->groupBoxPaperFormat->setEnabled(hasValues);
 
     QPushButton *bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     SCASSERT(bOk != nullptr)
@@ -536,6 +540,7 @@ void DialogSaveLayout::ShowExample()
 
     if (!hasValues)
     {
+        FitHeightToContent();
         return;
     }
 
@@ -551,9 +556,6 @@ void DialogSaveLayout::ShowExample()
         example = tr("Example:") + FileName() + VLayoutExporter::ExportFormatSuffix(currentFormat);
     }
     ui->labelExample->setText(example);
-
-    ui->groupBoxPaperFormat->setEnabled(false);
-    ui->groupBoxMargins->setEnabled(false);
 
     ui->labelOptionsNotAvailable->setVisible(false);
     ui->checkBoxBinaryDXF->setVisible(false);
@@ -578,8 +580,9 @@ void DialogSaveLayout::ShowExample()
             ui->checkBoxShowMainPath->setVisible(true);
             break;
         case LayoutExportFormats::PDFTiled:
-            ui->groupBoxPaperFormat->setEnabled(true);
-            ui->groupBoxMargins->setEnabled(true);
+            // Tiled PDF is out of the dialog's file formats (see InitFileFormats), so it is only reachable
+            // from the command line: the page format, the margins and the orientation then come from the
+            // settings, exactly like they used to come from the fields the dialog no longer carries.
             ui->checkBoxTextAsPaths->setVisible(true);
             if (settings->GetSingleLineFonts() || settings->GetSingleStrokeOutlineFont())
             {
@@ -634,6 +637,8 @@ void DialogSaveLayout::ShowExample()
             ui->labelOptionsNotAvailable->setVisible(true);
             break;
     }
+
+    FitHeightToContent();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -688,66 +693,74 @@ void DialogSaveLayout::SetTiledExportMode(bool tiledExportMode)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSaveLayout::SetTiledMargins(QMarginsF margins)
 {
-    // read Margins top, right, bottom, left
-    margins = UnitConvertor(margins, Unit::Mm, VAbstractValApplication::VApp()->patternUnits());
-
-    ui->doubleSpinBoxLeftField->setValue(margins.left());
-    ui->doubleSpinBoxTopField->setValue(margins.top());
-    ui->doubleSpinBoxRightField->setValue(margins.right());
-    ui->doubleSpinBoxBottomField->setValue(margins.bottom());
+    // The command line export is the only caller: the value is carried until the pages are generated.
+    m_tiledMargins = margins;
+    m_tiledMarginsSet = true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogSaveLayout::GetTiledMargins() const -> QMarginsF
 {
-    auto const margins = QMarginsF(ui->doubleSpinBoxLeftField->value(), ui->doubleSpinBoxTopField->value(),
-                                   ui->doubleSpinBoxRightField->value(), ui->doubleSpinBoxBottomField->value());
+    if (m_tiledMarginsSet)
+    {
+        return m_tiledMargins;
+    }
 
-    return UnitConvertor(margins, VAbstractValApplication::VApp()->patternUnits(), Unit::Mm);
+    // The dialog carries no margin field any more: the margins are the ones remembered in the settings.
+    return VAbstractValApplication::VApp()->ValentinaSettings()->GetTiledPDFMargins(Unit::Mm);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSaveLayout::SetTiledPageFormat(PaperSizeTemplate format)
 {
-    int const index = ui->comboBoxTemplates->findData(static_cast<int>(format));
-    if (index != -1)
-    {
-        ui->comboBoxTemplates->setCurrentIndex(index);
-    }
+    // The command line export is the only caller, exactly like SetTiledMargins.
+    m_tiledPageFormat = format;
+    m_tiledPageFormatSet = true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogSaveLayout::GetTiledPageFormat() const -> VAbstractLayoutDialog::PaperSizeTemplate
 {
-    if (ui->comboBoxTemplates->currentIndex() != -1)
+    if (m_tiledPageFormatSet)
     {
-        return static_cast<PaperSizeTemplate>(ui->comboBoxTemplates->currentData().toInt());
+        return m_tiledPageFormat;
     }
+
+    // The dialog carries no paper field any more: recognize the paper size remembered in the settings.
+    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    const QSizeF size = RoundTemplateSize(settings->GetTiledPDFPaperWidth(Unit::Mm),
+                                          settings->GetTiledPDFPaperHeight(Unit::Mm), Unit::Mm);
+
+    const auto max = static_cast<int>(PaperSizeTemplate::Custom);
+    for (int i = 0; i < max; ++i)
+    {
+        if (size == GetTemplateSize(static_cast<PaperSizeTemplate>(i), Unit::Mm))
+        {
+            return static_cast<PaperSizeTemplate>(i);
+        }
+    }
+
     return PaperSizeTemplate::A0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSaveLayout::SetTiledPageOrientation(PageOrientation orientation)
 {
-    if (orientation == PageOrientation::Portrait)
-    {
-        ui->toolButtonPortrait->setChecked(true);
-    }
-    else
-    {
-        ui->toolButtonLandscape->setChecked(true);
-    }
+    // The command line export is the only caller, exactly like SetTiledMargins.
+    m_tiledOrientation = orientation;
+    m_tiledOrientationSet = true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogSaveLayout::GetTiledPageOrientation() const -> PageOrientation
 {
-    if (ui->toolButtonPortrait->isChecked())
+    if (m_tiledOrientationSet)
     {
-        return PageOrientation::Portrait;
+        return m_tiledOrientation;
     }
 
-    return PageOrientation::Landscape;
+    // The dialog carries no orientation button any more: use the one remembered in the settings.
+    return VAbstractValApplication::VApp()->ValentinaSettings()->GetTiledPDFOrientation();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -795,66 +808,42 @@ void DialogSaveLayout::showEvent(QShowEvent *event)
         return;
     }
 
-    if (m_isInitialized)
+    FitHeightToContent();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// @brief FitHeightToContent locks the height of the dialog on the height of the rows it shows. Those rows depend on
+/// the file format (see ShowExample), so the height is recomputed every time they change: a height locked once and for
+/// all left an empty strip under a format that showed fewer rows, and cut off the bottom of a taller one.
+void DialogSaveLayout::FitHeightToContent()
+{
+    if (layout() == nullptr)
     {
         return;
     }
-    // do your init stuff here
 
-    setFixedHeight(size().height());
+    // Showing or hiding a row marks only the innermost layout dirty: the layouts in between keep the height of
+    // the previous state until the next full layout pass. Invalidate the whole tree and deliver the requests Qt
+    // has already posted — without that, the window keeps the height of the format that showed the most rows,
+    // which is exactly the empty strip this method exists to remove.
+    for (QLayout *childLayout : findChildren<QLayout *>())
+    {
+        childLayout->invalidate();
+    }
+    QApplication::sendPostedEvents(nullptr, QEvent::LayoutRequest);
 
-    m_isInitialized = true; // first show windows are held
+    layout()->activate();
+    setFixedHeight(layout()->minimumSize().height());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ReadSettings reads the values of the variables needed for the save layout dialog, for instance
- * the margins, teamplte and orientation of tiled pdf. Then sets the corresponding
- * elements of the dialog to these values.
+ * the file format of the previous export. Then sets the corresponding elements of the dialog to these values.
  */
 void DialogSaveLayout::ReadSettings()
 {
     VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    const Unit unit = VAbstractValApplication::VApp()->patternUnits();
-
-    // read Margins top, right, bottom, left
-    const QMarginsF margins = settings->GetTiledPDFMargins(unit);
-
-    ui->doubleSpinBoxLeftField->setValue(margins.left());
-    ui->doubleSpinBoxTopField->setValue(margins.top());
-    ui->doubleSpinBoxRightField->setValue(margins.right());
-    ui->doubleSpinBoxBottomField->setValue(margins.bottom());
-
-    ui->doubleSpinBoxLeftField->setSuffix(UnitsToStr(unit, true));
-    ui->doubleSpinBoxTopField->setSuffix(UnitsToStr(unit, true));
-    ui->doubleSpinBoxRightField->setSuffix(UnitsToStr(unit, true));
-    ui->doubleSpinBoxBottomField->setSuffix(UnitsToStr(unit, true));
-
-    // read Template
-    const QSizeF size = VAbstractLayoutDialog::RoundTemplateSize(settings->GetTiledPDFPaperWidth(Unit::Mm),
-                                                                 settings->GetTiledPDFPaperHeight(Unit::Mm), Unit::Mm);
-
-    const auto max = static_cast<int>(PaperSizeTemplate::Custom);
-    for (int i = 0; i < max; ++i)
-    {
-
-        const QSizeF tmplSize = GetTemplateSize(static_cast<PaperSizeTemplate>(i), Unit::Mm);
-        if (size == tmplSize)
-        {
-            ui->comboBoxTemplates->setCurrentIndex(i);
-            break;
-        }
-    }
-
-    // read Orientation
-    if (settings->GetTiledPDFOrientation() == PageOrientation::Portrait)
-    {
-        ui->toolButtonPortrait->setChecked(true);
-    }
-    else
-    {
-        ui->toolButtonLandscape->setChecked(true);
-    }
 
     if (m_mode != Draw::Layout)
     {
@@ -865,6 +854,7 @@ void DialogSaveLayout::ReadSettings()
         catch (VException &e)
         {
             qDebug() << qUtf8Printable(e.ErrorMessage());
+            SelectFirstAvailableFormat();
         }
     }
     else
@@ -876,6 +866,7 @@ void DialogSaveLayout::ReadSettings()
         catch (VException &e)
         {
             qDebug() << qUtf8Printable(e.ErrorMessage());
+            SelectFirstAvailableFormat();
         }
         SetShowGrainline(settings->GetShowGrainline());
     }
@@ -885,9 +876,31 @@ void DialogSaveLayout::ReadSettings()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// @brief SelectFirstAvailableFormat selects the first file format the dialog offers, with its first type. It is the
+/// fallback when the format remembered in the settings is not offered any more (PDF, RLD...): without it the dialog
+/// would open on an empty type list — which looks broken, and leaves the OK button disabled for no visible reason.
+void DialogSaveLayout::SelectFirstAvailableFormat()
+{
+    if (ui->comboBoxFormat->count() == 0)
+    {
+        return;
+    }
+
+    const int index = ui->comboBoxFormat->currentIndex() < 0 ? 0 : ui->comboBoxFormat->currentIndex();
+
+    {
+        const QSignalBlocker blocker(ui->comboBoxFormat);
+        ui->comboBoxFormat->setCurrentIndex(index);
+        InitFileFormatTypes(static_cast<LayoutExportFileFormat>(ui->comboBoxFormat->itemData(index).toInt()));
+    }
+
+    ui->comboBoxFormatType->setCurrentIndex(0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief WriteSettings writes the values of some variables (like the margins, template and orientation of tiled pdf)
- * of the save layout dialog into the settings.
+ * @brief WriteSettings writes the values of some variables (like the file format of the last export) of the save
+ * layout dialog into the settings.
  */
 void DialogSaveLayout::WriteSettings() const
 {
@@ -897,29 +910,6 @@ void DialogSaveLayout::WriteSettings() const
     }
 
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    const Unit unit = VAbstractValApplication::VApp()->patternUnits();
-
-    // write Margins top, right, bottom, left
-    auto const margins = QMarginsF(ui->doubleSpinBoxLeftField->value(), ui->doubleSpinBoxTopField->value(),
-                                   ui->doubleSpinBoxRightField->value(), ui->doubleSpinBoxBottomField->value());
-    settings->SetTiledPDFMargins(margins, unit);
-
-    // write Template
-    const auto temp = static_cast<PaperSizeTemplate>(ui->comboBoxTemplates->currentData().toInt());
-    const QSizeF size = GetTemplateSize(temp, Unit::Mm);
-
-    settings->SetTiledPDFPaperHeight(size.height(), Unit::Mm);
-    settings->SetTiledPDFPaperWidth(size.width(), Unit::Mm);
-
-    // write Orientation
-    if (ui->toolButtonPortrait->isChecked())
-    {
-        settings->SetTiledPDFOrientation(PageOrientation::Portrait);
-    }
-    else
-    {
-        settings->SetTiledPDFOrientation(PageOrientation::Landscape);
-    }
 
     if (m_mode != Draw::Layout)
     {
@@ -958,13 +948,22 @@ void DialogSaveLayout::InitFileFormats()
 
     Q_STATIC_ASSERT_X(static_cast<int>(LayoutExportFileFormat::COUNT) == 10, "Update to cover all cases.");
 
-    AddItem("PDF"_L1, LayoutExportFileFormat::PDF);
+    // PDF and RLD are disconnected from the dialog: no one exports them from here any more. Their pipeline is
+    // left untouched, and the console export — which uses this dialog as a plain data holder and never shows
+    // it — keeps both, so nothing that worked from the command line stops working.
+    const bool guiMode = VApplication::IsGUIMode();
+
+    if (not guiMode)
+    {
+        AddItem("PDF"_L1, LayoutExportFileFormat::PDF);
+    }
+
     AddItem("SVG"_L1, LayoutExportFileFormat::SVG);
     AddItem("PNG"_L1, LayoutExportFileFormat::PNG);
     // AddItem("OBJ"_L1, LayoutExportFileFormat::OBJ); // Temporarily unavailable
     AddItem("DXF"_L1, LayoutExportFileFormat::DXF);
     // AddItem("NC"_L1, LayoutExportFileFormat::NC);// No support for now
-    if (m_mode != Draw::Layout)
+    if (m_mode != Draw::Layout && not guiMode)
     {
         AddItem("RLD"_L1, LayoutExportFileFormat::RLD);
     }
