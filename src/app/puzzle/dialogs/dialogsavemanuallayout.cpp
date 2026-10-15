@@ -305,6 +305,18 @@ void DialogSaveManualLayout::SetDxfCompatibility(DXFApparelCompatibility type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogSaveManualLayout::IsShowMainPath() const -> bool
+{
+    return ui->checkBoxShowMainPath->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSaveManualLayout::SetShowMainPath(bool value)
+{
+    ui->checkBoxShowMainPath->setChecked(value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogSaveManualLayout::SetShowGrainline(bool show)
 {
     switch (Format())
@@ -602,6 +614,7 @@ void DialogSaveManualLayout::ShowExample()
     ui->checkBoxShowGrainline->setVisible(false);
     ui->labelDxfCompatibility->setVisible(false);
     ui->comboBoxDxfCompatibility->setVisible(false);
+    ui->checkBoxShowMainPath->setVisible(false);
     ui->checkBoxHideRuler->setVisible(false);
 
     const bool editableTextAsPaths = !settings->GetSingleLineFonts() && !settings->GetSingleStrokeOutlineFont();
@@ -613,6 +626,7 @@ void DialogSaveManualLayout::ShowExample()
             ui->checkBoxBinaryDXF->setVisible(true);
             ui->labelDxfCompatibility->setVisible(true);
             ui->comboBoxDxfCompatibility->setVisible(true);
+            ui->checkBoxShowMainPath->setVisible(true);
             break;
         case LayoutExportFormats::PDFTiled:
             ui->checkBoxTextAsPaths->setVisible(editableTextAsPaths);
@@ -673,6 +687,7 @@ void DialogSaveManualLayout::ReadSettings()
     }
     SetShowGrainline(settings->GetShowGrainline());
     SetDxfCompatibility(static_cast<DXFApparelCompatibility>(settings->GetDxfCompatibility()));
+    SetShowMainPath(settings->IsShowMainPath());
     SetHideRuler(settings->GetHideRuler());
     SetTilesScheme(settings->GetTilesScheme());
     SetTextAsPaths(settings->GetTextAsPaths());
@@ -690,6 +705,7 @@ void DialogSaveManualLayout::WriteSettings() const
     settings->SetLayoutExportFormat(static_cast<qint8>(Format()));
     settings->SetShowGrainline(IsShowGrainline());
     settings->SetDxfCompatibility(static_cast<qint8>(DxfCompatibility()));
+    settings->SetShowMainPath(IsShowMainPath());
     settings->SetHideRuler(IsHideRuler());
     settings->SetTilesScheme(IsTilesScheme());
     settings->SetTextAsPaths(IsTextAsPaths());
@@ -706,7 +722,8 @@ void DialogSaveManualLayout::InitDxfCompatibility()
                                           QVariant(static_cast<int>(DXFApparelCompatibility::RPCADV09)));
     ui->comboBoxDxfCompatibility->addItem("Richpeace CAD V10"_L1,
                                           QVariant(static_cast<int>(DXFApparelCompatibility::RPCADV10)));
-    ui->comboBoxDxfCompatibility->addItem("Clo3D"_L1, QVariant(static_cast<int>(DXFApparelCompatibility::CLO3D)));
+    ui->comboBoxDxfCompatibility->addItem("Clo3D/Style3D"_L1,
+                                          QVariant(static_cast<int>(DXFApparelCompatibility::CLO3D)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

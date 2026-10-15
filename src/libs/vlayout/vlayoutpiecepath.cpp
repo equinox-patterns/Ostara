@@ -140,6 +140,30 @@ void VLayoutPiecePath::SetCutPath(bool cut)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VLayoutPiecePath::IsFirstToCuttingContour() const -> bool
+{
+    return d->m_firstToCuttingContour;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VLayoutPiecePath::SetFirstToCuttingContour(bool value)
+{
+    d->m_firstToCuttingContour = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VLayoutPiecePath::IsLastToCuttingContour() const -> bool
+{
+    return d->m_lastToCuttingContour;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VLayoutPiecePath::SetLastToCuttingContour(bool value)
+{
+    d->m_lastToCuttingContour = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiecePath::IsNotMirrored() const -> bool
 {
     return d->m_notMirrored;

@@ -62,6 +62,15 @@ public:
     auto IsCutPath() const -> bool;
     void SetCutPath(bool cut);
 
+    /// @brief IsFirstToCuttingContour / IsLastToCuttingContour tell that the first (resp. last) point of
+    /// the path is continued to the cutting contour, so the path carries one extra point at that end.
+    /// The Clo3D/Style3D DXF export drops that continuation: a dart is then written with its own points
+    /// only, so that its two branches end on the outline where Style3D can recognise them.
+    auto IsFirstToCuttingContour() const -> bool;
+    void SetFirstToCuttingContour(bool value);
+    auto IsLastToCuttingContour() const -> bool;
+    void SetLastToCuttingContour(bool value);
+
     auto IsNotMirrored() const -> bool;
     void SetNotMirrored(bool value);
 

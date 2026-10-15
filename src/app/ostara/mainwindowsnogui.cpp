@@ -1130,11 +1130,13 @@ void MainWindowsNoGUI::ExportApparelLayout(const QVector<VLayoutPiece> &details,
         case LayoutExportFormats::DXF_ASTM:
             exporter.SetDxfVersion(DRW::AC1009);
             exporter.SetDxfApparelCompatibility(m_dialogSaveLayout->DxfCompatibility());
+            exporter.SetShowMainPath(m_dialogSaveLayout->IsShowMainPath());
             exporter.ExportToASTMDXF(details);
             break;
         case LayoutExportFormats::DXF_AAMA:
             exporter.SetDxfVersion(DRW::AC1009);
             exporter.SetDxfApparelCompatibility(m_dialogSaveLayout->DxfCompatibility());
+            exporter.SetShowMainPath(m_dialogSaveLayout->IsShowMainPath());
             exporter.ExportToAAMADXF(details);
             break;
         case LayoutExportFormats::RLD:
@@ -1315,7 +1317,7 @@ void MainWindowsNoGUI::PrintTiled()
 
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
-                                               bool showProgress) -> QVector<VLayoutPiece>
+                                               bool showProgress, bool showMainPath) -> QVector<VLayoutPiece>
 {
     if (details.isEmpty())
     {
@@ -1347,7 +1349,22 @@ auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &d
     {
         auto *tool = qobject_cast<VAbstractTool *>(VAbstractPattern::getTool(data.id));
         SCASSERT(tool != nullptr)
-        layoutDetails.append(VLayoutPiece::Create(data.piece, data.id, tool->getData(), doc)); // may throw → caller catches
+
+        // "Show the main path" is an export option: the piece is laid out as if its main path were
+        // visible, which is what gives the sew line, its notches and the fold line. A copy is used, so
+        // the pattern and the canvas keep their own state.
+        VPiece piece = data.piece;
+        if (showMainPath)
+        {
+            piece.SetHideMainPath(false);
+
+            // The sew-line option is greyed out as soon as the main path is hidden, so a value left in the
+            // file cannot be trusted. With the main path shown, the sew line goes to its own layer (14)
+            // instead of the Draw line (8), which is where Style3D reads the couturage.
+            piece.SetSewLineOnDrawing(false);
+        }
+
+        layoutDetails.append(VLayoutPiece::Create(piece, data.id, tool->getData(), doc)); // may throw → caller catches
         if (progress != nullptr)
         {
             progress->setValue(++done);

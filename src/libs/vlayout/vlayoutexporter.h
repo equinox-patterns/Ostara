@@ -81,6 +81,9 @@ public:
     auto DxfApparelCompatibility() const -> DXFApparelCompatibility;
     void SetDxfApparelCompatibility(DXFApparelCompatibility mode);
 
+    auto IsShowMainPath() const -> bool;
+    void SetShowMainPath(bool value);
+
     auto IsShowGrainline() const -> bool;
     void SetShowGrainline(bool show);
 
@@ -147,6 +150,7 @@ private:
     int m_penWidth{1};
     bool m_togetherWithNotches{false};
     DXFApparelCompatibility m_dxfCompatibility{DXFApparelCompatibility::STANDARD};
+    bool m_showMainPath{false};
 
     void ExportToPDF(QGraphicsScene *scene, const QList<QGraphicsItem *> &details, const QString &filename) const;
 };

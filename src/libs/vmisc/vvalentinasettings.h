@@ -180,6 +180,9 @@ public:
     auto GetDxfCompatibility() const -> qint8;
     void SetDxfCompatibility(qint8 type);
 
+    auto IsShowMainPath() const -> bool;
+    void SetShowMainPath(bool value);
+
     auto GetHistorySearchHistory() const -> QStringList;
     void SetHistorySearchHistory(const QStringList &history);
 

@@ -285,6 +285,18 @@ void DialogSaveLayout::SetDxfCompatibility(DXFApparelCompatibility type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogSaveLayout::IsShowMainPath() const -> bool
+{
+    return ui->checkBoxShowMainPath->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogSaveLayout::SetShowMainPath(bool value)
+{
+    ui->checkBoxShowMainPath->setChecked(value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogSaveLayout::SetShowGrainline(bool show)
 {
     switch (Format())
@@ -380,7 +392,7 @@ auto DialogSaveLayout::MakeHelpDxfApparelCompatibilityList() -> QString
     out += QStringLiteral("\t* Richpeace CAD V8 = %1,\n").arg(static_cast<int>(DXFApparelCompatibility::RPCADV08));
     out += QStringLiteral("\t* Richpeace CAD V9 = %1,\n").arg(static_cast<int>(DXFApparelCompatibility::RPCADV09));
     out += QStringLiteral("\t* Richpeace CAD V10 = %1.\n").arg(static_cast<int>(DXFApparelCompatibility::RPCADV10));
-    out += QStringLiteral("\t* Clo3D = %1.\n").arg(static_cast<int>(DXFApparelCompatibility::CLO3D));
+    out += QStringLiteral("\t* Clo3D/Style3D = %1.\n").arg(static_cast<int>(DXFApparelCompatibility::CLO3D));
 
     return out;
 }
@@ -551,6 +563,7 @@ void DialogSaveLayout::ShowExample()
     ui->checkBoxTogetherWithNotches->setVisible(false);
     ui->labelDxfCompatibility->setVisible(false);
     ui->comboBoxDxfCompatibility->setVisible(false);
+    ui->checkBoxShowMainPath->setVisible(false);
 
     VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
 
@@ -562,6 +575,7 @@ void DialogSaveLayout::ShowExample()
             ui->checkBoxTogetherWithNotches->setVisible(m_mode != Draw::Layout);
             ui->labelDxfCompatibility->setVisible(true);
             ui->comboBoxDxfCompatibility->setVisible(true);
+            ui->checkBoxShowMainPath->setVisible(true);
             break;
         case LayoutExportFormats::PDFTiled:
             ui->groupBoxPaperFormat->setEnabled(true);
@@ -867,6 +881,7 @@ void DialogSaveLayout::ReadSettings()
     }
 
     SetDxfCompatibility(static_cast<DXFApparelCompatibility>(settings->GetDxfCompatibility()));
+    SetShowMainPath(settings->IsShowMainPath());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -917,6 +932,7 @@ void DialogSaveLayout::WriteSettings() const
     }
 
     settings->SetDxfCompatibility(static_cast<qint8>(DxfCompatibility()));
+    settings->SetShowMainPath(IsShowMainPath());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -930,7 +946,8 @@ void DialogSaveLayout::InitDxfCompatibility()
                                           QVariant(static_cast<int>(DXFApparelCompatibility::RPCADV09)));
     ui->comboBoxDxfCompatibility->addItem("Richpeace CAD V10"_L1,
                                           QVariant(static_cast<int>(DXFApparelCompatibility::RPCADV10)));
-    ui->comboBoxDxfCompatibility->addItem("Clo3D"_L1, QVariant(static_cast<int>(DXFApparelCompatibility::CLO3D)));
+    ui->comboBoxDxfCompatibility->addItem("Clo3D/Style3D"_L1,
+                                          QVariant(static_cast<int>(DXFApparelCompatibility::CLO3D)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

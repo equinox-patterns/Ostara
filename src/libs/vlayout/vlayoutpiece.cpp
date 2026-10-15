@@ -103,6 +103,8 @@ auto ConvertInternalPaths(const VPiece &piece, const VContainer *pattern) -> QVe
         {
             VLayoutPiecePath convertedPath(path.PathPoints(pattern, cuttingPath));
             convertedPath.SetCutPath(path.IsCutPath());
+            convertedPath.SetFirstToCuttingContour(path.IsFirstToCuttingContour());
+            convertedPath.SetLastToCuttingContour(path.IsLastToCuttingContour());
             convertedPath.SetPenStyle(path.GetPenType());
             convertedPath.SetNotMirrored(path.IsNotMirrored());
             paths.append(convertedPath);

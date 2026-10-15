@@ -168,6 +168,16 @@
           <item>
            <widget class="QComboBox" name="comboBoxDxfCompatibility"/>
           </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxShowMainPath">
+            <property name="toolTip">
+             <string>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</string>
+            </property>
+            <property name="text">
+             <string>Show the main path (DXF export only)</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>

@@ -7327,6 +7327,16 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>DialogSaveLayout</name>
     <message>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="174"/>
+        <source>Show the main path (DXF export only)</source>
+        <translation>Afficher le contour principal (export DXF uniquement)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="177"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation>Exporte les pièces comme si leur contour principal était visible : chaque pièce a alors sa ligne de coupe et sa ligne de couture. Rien n&apos;est modifié dans le patron.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="172"/>
         <source>Tried to use out of range file format type number.</source>
         <translation>Vous avez tenté d&apos;utiliser un type de format de fichier en dehors de la plage de valeur.</translation>
@@ -7381,6 +7391,16 @@ Cette action ne peut pas être annulée.</translation>
 </context>
 <context>
     <name>DialogSaveManualLayout</name>
+    <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="181"/>
+        <source>Show the main path (DXF export only)</source>
+        <translation>Afficher le contour principal (export DXF uniquement)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="184"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation>Exporte les pièces comme si leur contour principal était visible : chaque pièce a alors sa ligne de coupe et sa ligne de couture. Rien n&apos;est modifié dans le patron.</translation>
+    </message>
     <message>
         <location filename="../../src/app/puzzle/dialogs/dialogsavemanuallayout.ui" line="26"/>
         <source>Path:</source>

@@ -314,6 +314,7 @@ struct VPExportData
     qreal xScale{1.};
     qreal yScale{1.};
     DXFApparelCompatibility dxfCompatibility{DXFApparelCompatibility::STANDARD};
+    bool showMainPath{false};
     bool isBinaryDXF{false};
     bool textAsPaths{false};
     bool exportUnified{true};
@@ -2446,11 +2447,13 @@ void VPMainWindow::ExportApparelLayout(const VPExportData &data, const QVector<V
         case LayoutExportFormats::DXF_ASTM:
             exporter.SetDxfVersion(DRW::AC1009);
             exporter.SetDxfApparelCompatibility(data.dxfCompatibility);
+            exporter.SetShowMainPath(data.showMainPath);
             exporter.ExportToASTMDXF(details);
             break;
         case LayoutExportFormats::DXF_AAMA:
             exporter.SetDxfVersion(DRW::AC1009);
             exporter.SetDxfApparelCompatibility(data.dxfCompatibility);
+            exporter.SetShowMainPath(data.showMainPath);
             exporter.ExportToAAMADXF(details);
             break;
         case LayoutExportFormats::RLD:
@@ -4442,6 +4445,7 @@ void VPMainWindow::on_ExportLayout()
                 .xScale = m_layout->LayoutSettings().HorizontalScale(),
                 .yScale = m_layout->LayoutSettings().VerticalScale(),
                 .dxfCompatibility = dialog.DxfCompatibility(),
+                .showMainPath = dialog.IsShowMainPath(),
                 .isBinaryDXF = dialog.IsBinaryDXFFormat(),
                 .textAsPaths = dialog.IsTextAsPaths(),
                 .exportUnified = dialog.IsExportUnified(),
@@ -4492,6 +4496,7 @@ void VPMainWindow::on_ExportSheet()
                 .xScale = m_layout->LayoutSettings().HorizontalScale(),
                 .yScale = m_layout->LayoutSettings().VerticalScale(),
                 .dxfCompatibility = dialog.DxfCompatibility(),
+                .showMainPath = dialog.IsShowMainPath(),
                 .isBinaryDXF = dialog.IsBinaryDXFFormat(),
                 .textAsPaths = dialog.IsTextAsPaths(),
                 .exportUnified = dialog.IsExportUnified(),

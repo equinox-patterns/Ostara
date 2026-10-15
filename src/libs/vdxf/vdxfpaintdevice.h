@@ -78,6 +78,9 @@ public:
     auto DxfApparelCompatibility() const -> DXFApparelCompatibility;
     void SetDxfApparelCompatibility(DXFApparelCompatibility mode);
 
+    auto IsShowMainPath() const -> bool;
+    void SetShowMainPath(bool value);
+
     auto ExportToAAMA(const QVector<VLayoutPiece> &details) const -> bool;
     auto ExportToASTM(const QVector<VLayoutPiece> &details) const -> bool;
 

@@ -73,6 +73,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutFollowGrainline, ("layout/
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutPieceGap, ("layout/pieceGap"_L1))           // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutExportFormat, ("layout/exportFormat"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDxfCompatibility, ("layout/dxfCompatibility"_L1)) // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingShowMainPath, ("layout/dxfShowMainPath"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutLineWidth, ("layout/lineWidth"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutShowGrainline, ("layout/showGrainline"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsRawLayoutData, ("paths/rawLatoutData"_L1))   // NOLINT
@@ -385,6 +386,18 @@ auto VPSettings::GetDxfCompatibility() const -> qint8
 void VPSettings::SetDxfCompatibility(qint8 type)
 {
     setValue(*settingDxfCompatibility, type);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VPSettings::IsShowMainPath() const -> bool
+{
+    return value(*settingShowMainPath, false).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPSettings::SetShowMainPath(bool value)
+{
+    setValue(*settingShowMainPath, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

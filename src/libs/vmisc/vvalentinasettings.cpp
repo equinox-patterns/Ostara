@@ -131,6 +131,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingEfficiencyCoefficient, ("layout/
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutExportFormat, ("layout/exportFormat"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDetailExportFormat, ("detail/exportFormat"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDxfCompatibility, ("layout/dxfCompatibility"_L1)) // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingShowMainPath, ("layout/dxfShowMainPath"_L1)) // NOLINT
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingTiledPDFPaperHeight, ("tiledPDF/paperHeight"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingTiledPDFPaperWidth, ("tiledPDF/paperWidth"_L1))   // NOLINT
@@ -812,6 +813,18 @@ auto VValentinaSettings::GetDxfCompatibility() const -> qint8
 void VValentinaSettings::SetDxfCompatibility(qint8 type)
 {
     setValue(*settingDxfCompatibility, type);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::IsShowMainPath() const -> bool
+{
+    return value(*settingShowMainPath, false).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VValentinaSettings::SetShowMainPath(bool value)
+{
+    setValue(*settingShowMainPath, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

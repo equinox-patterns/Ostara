@@ -1149,6 +1149,11 @@ void VPattern::ParsePathElement(VMainGraphicsScene *scene, QDomElement &domEleme
         initData.path.SetName(GetParametrString(domElement, AttrName, tr("Unnamed path")));
         initData.path.SetPenType(LineStyleToPenStyle(GetParametrString(domElement, AttrTypeLine, TypeLineLine)));
 
+        // "sew" was written by an intermediate version and is not part of the format. It is dropped from
+        // the document when it is met, so that a pattern still carrying it validates when it is saved —
+        // without keeping a dead attribute in the schema for it.
+        domElement.removeAttribute(QStringLiteral("sew"));
+
         if (initData.path.GetType() == PiecePathType::InternalPath)
         {
             initData.path.SetCutPath(GetParametrBool(domElement, AttrCut, falseStr));

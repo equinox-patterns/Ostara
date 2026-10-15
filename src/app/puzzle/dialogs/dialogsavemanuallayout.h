@@ -61,6 +61,11 @@ public:
     auto DxfCompatibility() const -> DXFApparelCompatibility;
     void SetDxfCompatibility(DXFApparelCompatibility type);
 
+    /// @brief IsShowMainPath tells whether the pieces must be exported with their main path visible,
+    /// whatever the pattern says. DXF only, and it changes nothing in the pattern.
+    auto IsShowMainPath() const -> bool;
+    void SetShowMainPath(bool value);
+
     void SetShowGrainline(bool show);
     auto IsShowGrainline() const -> bool;
 

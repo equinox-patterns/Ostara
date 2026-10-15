@@ -61,11 +61,18 @@ public:
     bool m_cut{false};         // NOLINT(misc-non-private-member-variables-in-classes)
     bool m_notMirrored{false}; // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief m_firstToCuttingContour / m_lastToCuttingContour tell that the first (resp. last) point of
+     * the path is continued to the cutting contour: the path then carries one extra point at that end,
+     * where it crosses the seam allowance. Kept so that the Clo3D/Style3D DXF export can write the path
+     * alone, without that continuation. */
+    bool m_firstToCuttingContour{false}; // NOLINT(misc-non-private-member-variables-in-classes)
+    bool m_lastToCuttingContour{false};  // NOLINT(misc-non-private-member-variables-in-classes)
+
 private:
     Q_DISABLE_ASSIGN_MOVE(VLayoutPiecePathData) // NOLINT
 
     static constexpr quint32 streamHeader = 0xA53F0225; // CRC-32Q string "VLayoutPiecePathData"
-    static constexpr quint16 classVersion = 3;
+    static constexpr quint16 classVersion = 4;
 };
 
 QT_WARNING_POP
@@ -89,6 +96,10 @@ inline auto operator<<(QDataStream &dataStream, const VLayoutPiecePathData &path
 
     // Added in classVersion = 3
     dataStream << path.m_notMirrored;
+
+    // Added in classVersion = 4
+    dataStream << path.m_firstToCuttingContour;
+    dataStream << path.m_lastToCuttingContour;
 
     return dataStream;
 }
@@ -138,6 +149,12 @@ inline auto operator>>(QDataStream &dataStream, VLayoutPiecePathData &path) -> Q
     if (actualClassVersion >= 3)
     {
         dataStream >> path.m_notMirrored;
+    }
+
+    if (actualClassVersion >= 4)
+    {
+        dataStream >> path.m_firstToCuttingContour;
+        dataStream >> path.m_lastToCuttingContour;
     }
 
     return dataStream;

@@ -668,6 +668,18 @@ void VDxfEngine::SetDxfApparelCompatibility(DXFApparelCompatibility mode)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::IsShowMainPath() const -> bool
+{
+    return m_showMainPath;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDxfEngine::SetShowMainPath(bool value)
+{
+    m_showMainPath = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VDxfEngine::ErrorString() const -> QString
 {
     return QString::fromStdString(m_input->ErrorString());
@@ -752,6 +764,15 @@ auto VDxfEngine::ExportToAAMA(const QVector<VLayoutPiece> &details) -> bool
 
         detail.Scale(m_xscale, m_yscale);
 
+        if (m_showMainPath)
+        {
+            // Export option: write the main path (the sew line) even for a piece that hides it, and send
+            // that sew line to its own layer (14) rather than to the Draw line (8). 'detail' is a copy,
+            // so neither the pattern nor the canvas is touched.
+            detail.SetHideMainPath(false);
+            detail.SetSewLineOnDrawing(false);
+        }
+
         ExportAAMAOutline(detailBlock, detail);
         ExportAAMADraw(detailBlock, detail);
         ExportAAMAIntcut(detailBlock, detail);
@@ -789,8 +810,7 @@ void VDxfEngine::ExportAAMAOutline(const QSharedPointer<dx_ifaceBlock> &detailBl
         detailBlock->ent.push_back(e);
     }
 
-    ExportTurnPoints(detailBlock, points);
-    ExportCurvePoints(detailBlock, points);
+    ExportTurnAndCurvePoints(detailBlock, points);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -820,7 +840,10 @@ void VDxfEngine::ExportAAMADraw(const QSharedPointer<dx_ifaceBlock> &detailBlock
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportAAMADrawSewLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    if (!detail.IsSeamAllowance() || detail.IsHideMainPath())
+    // The sew line is pattern data, not drawing data: hiding the main path is a display option and must
+    // not remove the sew line from the DXF. Style3D rebuilds the couturage from it — without it the piece
+    // has nothing to stitch.
+    if (!detail.IsSeamAllowance())
     {
         return;
     }
@@ -837,8 +860,10 @@ void VDxfEngine::ExportAAMADrawSewLine(const QSharedPointer<dx_ifaceBlock> &deta
         detailBlock->ent.push_back(e);
     }
 
-    ExportTurnPoints(detailBlock, points);
-    ExportCurvePoints(detailBlock, points);
+    // No turn or curve point here: layers 2 and 3 describe the outline of the piece, which is the
+    // boundary written on layer 1. Writing the sew line points there as well puts points 10 mm away from
+    // the outline into the very same layers, and a reader that rebuilds the edge mixes them: the piece
+    // then comes back with a couple of points and a deformed seam (a collar, typically).
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -853,14 +878,13 @@ void VDxfEngine::ExportAAMADrawInternalPaths(const QSharedPointer<dx_ifaceBlock>
             detailBlock->ent.push_back(e);
         }
 
-        ExportTurnPoints(detailBlock, points);
-        ExportCurvePoints(detailBlock, points);
+        ExportTurnAndCurvePoints(detailBlock, points);
     };
 
-    const QVector<VLayoutPiecePath> drawIPaths = detail.MappedInternalPathsForCut(false);
+    const QVector<VLayoutPiecePath> drawIPaths = InternalPaths(detail, false);
     for (const auto &iPath : drawIPaths)
     {
-        QVector<VLayoutPoint> points = iPath.Points();
+        QVector<VLayoutPoint> points = InternalPathPoints(iPath);
         DrawPolygon(points, iPath.PenStyle(), false);
 
         if (!iPath.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
@@ -885,8 +909,7 @@ void VDxfEngine::ExportAAMADrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
                 detailBlock->ent.push_back(e);
             }
 
-            ExportTurnPoints(detailBlock, points);
-            ExportCurvePoints(detailBlock, points);
+            ExportTurnAndCurvePoints(detailBlock, points);
         }
     };
 
@@ -925,14 +948,13 @@ void VDxfEngine::ExportAAMAIntcut(const QSharedPointer<dx_ifaceBlock> &detailBlo
             detailBlock->ent.push_back(e);
         }
 
-        ExportTurnPoints(detailBlock, points);
-        ExportCurvePoints(detailBlock, points);
+        ExportTurnAndCurvePoints(detailBlock, points);
     };
 
-    QVector<VLayoutPiecePath> const drawIntCut = detail.MappedInternalPathsForCut(true);
+    QVector<VLayoutPiecePath> const drawIntCut = InternalPaths(detail, true);
     for (const auto &intCut : drawIntCut)
     {
-        QVector<VLayoutPoint> points = intCut.Points();
+        QVector<VLayoutPoint> points = InternalPathPoints(intCut);
         DrawPolygon(points, false);
 
         if (!intCut.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
@@ -1162,6 +1184,15 @@ auto VDxfEngine::ExportToASTM(const QVector<VLayoutPiece> &details) -> bool
 
         detail.Scale(m_xscale, m_yscale);
 
+        if (m_showMainPath)
+        {
+            // Export option: write the main path (the sew line) even for a piece that hides it, and send
+            // that sew line to its own layer (14) rather than to the Draw line (8). 'detail' is a copy,
+            // so neither the pattern nor the canvas is touched.
+            detail.SetHideMainPath(false);
+            detail.SetSewLineOnDrawing(false);
+        }
+
         ExportASTMPieceBoundary(detailBlock, detail);
         ExportASTMSewLine(detailBlock, detail);
         ExportASTMDrawInternalPaths(detailBlock, detail);
@@ -1204,8 +1235,7 @@ void VDxfEngine::ExportASTMPieceBoundary(const QSharedPointer<dx_ifaceBlock> &de
         detailBlock->ent.push_back(e);
     }
 
-    ExportTurnPoints(detailBlock, pieceBoundary);
-    ExportCurvePoints(detailBlock, pieceBoundary);
+    ExportTurnAndCurvePoints(detailBlock, pieceBoundary);
 
     // Piece boundary quality validation curves
     if (DRW_Entity *q = AAMAPolygon(pieceBoundary, *layer84, true))
@@ -1217,7 +1247,10 @@ void VDxfEngine::ExportASTMPieceBoundary(const QSharedPointer<dx_ifaceBlock> &de
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportASTMSewLine(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    if (!detail.IsSeamAllowance() || detail.IsHideMainPath())
+    // The sew line is pattern data, not drawing data: hiding the main path is a display option and must
+    // not remove the sew line from the DXF. Style3D rebuilds the couturage from it — without it the piece
+    // has nothing to stitch.
+    if (!detail.IsSeamAllowance())
     {
         return;
     }
@@ -1230,8 +1263,8 @@ void VDxfEngine::ExportASTMSewLine(const QSharedPointer<dx_ifaceBlock> &detailBl
         detailBlock->ent.push_back(e);
     }
 
-    ExportTurnPoints(detailBlock, sewLine);
-    ExportCurvePoints(detailBlock, sewLine);
+    // No turn or curve point here: layers 2 and 3 describe the outline of the piece. See
+    // ExportAAMADrawSewLine().
 
     // Sew lines quality validation curves
     if (DRW_Entity *e = AAMAPolygon(sewLine, *layer87, true))
@@ -1261,8 +1294,7 @@ void VDxfEngine::ExportASTMDrawInternalPaths(const QSharedPointer<dx_ifaceBlock>
             detailBlock->ent.push_back(AAMAText(pos, QStringLiteral("NM"), *layer8));
         }
 
-        ExportTurnPoints(detailBlock, points);
-        ExportCurvePoints(detailBlock, points);
+        ExportTurnAndCurvePoints(detailBlock, points);
 
         // Internal lines quality validation curves
         if (DRW_Entity *e = AAMAPolygon(points, *layer85, forceClosed))
@@ -1271,10 +1303,10 @@ void VDxfEngine::ExportASTMDrawInternalPaths(const QSharedPointer<dx_ifaceBlock>
         }
     };
 
-    const QVector<VLayoutPiecePath> drawIPaths = detail.MappedInternalPathsForCut(false);
+    const QVector<VLayoutPiecePath> drawIPaths = InternalPaths(detail, false);
     for (const auto &iPath : drawIPaths)
     {
-        QVector<VLayoutPoint> points = iPath.Points();
+        QVector<VLayoutPoint> points = InternalPathPoints(iPath);
         DrawPolygon(points, iPath.PenStyle(), iPath.IsNotMirrored(), false);
 
         if (!iPath.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
@@ -1307,8 +1339,7 @@ void VDxfEngine::ExportASTMDrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
                 detailBlock->ent.push_back(AAMAText(pos, QStringLiteral("NM"), *layer8));
             }
 
-            ExportTurnPoints(detailBlock, points);
-            ExportCurvePoints(detailBlock, points);
+            ExportTurnAndCurvePoints(detailBlock, points);
 
             // Internal lines quality validation curves
             if (DRW_Entity *e = AAMAPolygon(points, *layer85, false))
@@ -1361,8 +1392,7 @@ void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &d
             detailBlock->ent.push_back(AAMAText(pos, QStringLiteral("NM"), *layer11));
         }
 
-        ExportTurnPoints(detailBlock, points);
-        ExportCurvePoints(detailBlock, points);
+        ExportTurnAndCurvePoints(detailBlock, points);
 
         // Internal cutouts quality validation curves
         if (DRW_Entity *e = AAMAPolygon(points, *layer86, forceClosed))
@@ -1371,10 +1401,10 @@ void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &d
         }
     };
 
-    QVector<VLayoutPiecePath> const drawIntCut = detail.MappedInternalPathsForCut(true);
+    QVector<VLayoutPiecePath> const drawIntCut = InternalPaths(detail, true);
     for (const auto &intCut : drawIntCut)
     {
-        QVector<VLayoutPoint> points = intCut.Points();
+        QVector<VLayoutPoint> points = InternalPathPoints(intCut);
         DrawPolygon(points, intCut.IsNotMirrored(), false);
 
         if (!intCut.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
@@ -1662,12 +1692,16 @@ void VDxfEngine::ExportTurnPoints(const QSharedPointer<dx_ifaceBlock> &detailBlo
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VDxfEngine::ExportCurvePoints(const QSharedPointer<dx_ifaceBlock> &detailBlock,
-                                   const QVector<VLayoutPoint> &points) const
+void VDxfEngine::ExportTurnAndCurvePoints(const QSharedPointer<dx_ifaceBlock> &detailBlock,
+                                          const QVector<VLayoutPoint> &points) const
 {
     for (const auto &p : std::as_const(points))
     {
-        if (p.CurvePoint() && not p.TurnPoint())
+        if (p.TurnPoint())
+        {
+            detailBlock->ent.push_back(AAMAPoint(p, *layer2));
+        }
+        else if (p.CurvePoint())
         {
             detailBlock->ent.push_back(AAMAPoint(p, *layer3));
         }
@@ -1893,4 +1927,110 @@ auto VDxfEngine::PieceOutline(const VLayoutPiece &detail) const -> QVector<VLayo
         return detail.GetMappedFullSeamAllowancePoints(m_togetherWithNotches);
     }
     return detail.GetMappedFullContourPoints(m_togetherWithNotches);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::IsClo3DCompatibility() const -> bool
+{
+    return m_compatibilityMode == DXFApparelCompatibility::CLO3D;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::InternalPathPoints(const VLayoutPiecePath &path) const -> QVector<VLayoutPoint>
+{
+    QVector<VLayoutPoint> points = path.Points();
+
+    if (not IsClo3DCompatibility())
+    {
+        return points;
+    }
+
+    // An internal path that reaches the cutting contour carries one extra point per end, where it crosses
+    // the seam allowance. Style3D reads a dart on its own and needs both branches to end on the outline:
+    // with that continuation they end outside of it, and the dart cannot be recognised any more.
+    if (path.IsFirstToCuttingContour() && points.size() > 2)
+    {
+        points.removeFirst();
+    }
+
+    if (path.IsLastToCuttingContour() && points.size() > 2)
+    {
+        points.removeLast();
+    }
+
+    return points;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::DeepestPointIndex(const QVector<VLayoutPoint> &points) -> int
+{
+    // A dart is a V: its apex is the point of the path the furthest from the line joining both ends.
+    if (points.size() < 3)
+    {
+        return -1;
+    }
+
+    const QLineF ends(points.constFirst(), points.constLast());
+    if (qFuzzyIsNull(ends.length()))
+    {
+        return -1;
+    }
+
+    int deepest = -1;
+    qreal maxDistance = 0;
+    for (int i = 1; i < points.size() - 1; ++i)
+    {
+        const QLineF side(points.constFirst(), points.at(i));
+        const qreal distance = qAbs(side.dx() * ends.dy() - side.dy() * ends.dx()) / ends.length();
+        if (distance > maxDistance)
+        {
+            maxDistance = distance;
+            deepest = i;
+        }
+    }
+    return deepest;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::InternalPaths(const VLayoutPiece &detail, bool cut) const -> QVector<VLayoutPiecePath>
+{
+    const QVector<VLayoutPiecePath> paths = detail.MappedInternalPathsForCut(cut);
+
+    if (not IsClo3DCompatibility())
+    {
+        return paths;
+    }
+
+    // The continuation to the cutting contour does not belong to the path itself: Style3D traces a dart
+    // from its own points, which must end on the outline. A dart is recognised here by that continuation.
+    auto MakePath = [](const VLayoutPiecePath &path, const QVector<VLayoutPoint> &points)
+    {
+        VLayoutPiecePath made = path;
+        made.SetPoints(points);
+        made.SetFirstToCuttingContour(false);
+        made.SetLastToCuttingContour(false);
+        return made;
+    };
+
+    QVector<VLayoutPiecePath> result;
+    result.reserve(paths.size());
+    for (const auto &path : paths)
+    {
+        const QVector<VLayoutPoint> points = InternalPathPoints(path);
+        const bool dart = path.IsFirstToCuttingContour() || path.IsLastToCuttingContour();
+
+        // Style3D traces a dart from exactly two baselines sharing their apex vertex ("Trace as Dart").
+        // A single polyline carries both branches and is refused — the dart stays closed and unstitched.
+        const int apex = dart ? DeepestPointIndex(points) : -1;
+        if (apex > 0 && apex < points.size() - 1)
+        {
+            result.append(MakePath(path, points.mid(0, apex + 1)));
+            result.append(MakePath(path, points.mid(apex)));
+        }
+        else
+        {
+            result.append(MakePath(path, points));
+        }
+    }
+    return result;
 }

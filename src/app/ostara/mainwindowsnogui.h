@@ -126,8 +126,12 @@ protected:
     QWinTaskbarProgress *m_taskbarProgress{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 #endif
 
+    /// @brief PrepareDetailsForLayout lays the given details out. @a showMainPath lays them out as if
+    /// their main path were visible, whatever the pattern says — an export option. It decides the sew
+    /// line, its notches and the fold line; the pattern and the canvas are left untouched.
     static auto PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
-                                        bool showProgress = true) -> QVector<VLayoutPiece>;
+                                        bool showProgress = true, bool showMainPath = false)
+        -> QVector<VLayoutPiece>;
 
     void ExportData(const QVector<VLayoutPiece> &listDetails);
 

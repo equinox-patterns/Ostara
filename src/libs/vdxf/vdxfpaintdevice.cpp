@@ -233,6 +233,23 @@ void VDxfPaintDevice::SetDxfApparelCompatibility(DXFApparelCompatibility mode)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VDxfPaintDevice::IsShowMainPath() const -> bool
+{
+    return m_engine->IsShowMainPath();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDxfPaintDevice::SetShowMainPath(bool value)
+{
+    if (m_engine->isActive())
+    {
+        qWarning("VDxfPaintDevice::SetShowMainPath(), cannot set the option while Dxf is being generated");
+        return;
+    }
+    m_engine->SetShowMainPath(value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VDxfPaintDevice::ExportToAAMA(const QVector<VLayoutPiece> &details) const -> bool
 {
     m_engine->setActive(true);

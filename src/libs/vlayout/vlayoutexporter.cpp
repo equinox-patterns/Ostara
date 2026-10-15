@@ -145,6 +145,18 @@ void VLayoutExporter::SetDxfApparelCompatibility(DXFApparelCompatibility mode)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VLayoutExporter::IsShowMainPath() const -> bool
+{
+    return m_showMainPath;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VLayoutExporter::SetShowMainPath(bool value)
+{
+    m_showMainPath = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VLayoutExporter::IsShowGrainline() const -> bool
 {
     return m_showGrainline;
@@ -376,6 +388,7 @@ void VLayoutExporter::ExportToAAMADXF(const QVector<VLayoutPiece> &details) cons
     generator.SetYScale(m_yScale);
     generator.SetBoundaryTogetherWithNotches(m_togetherWithNotches);
     generator.SetDxfApparelCompatibility(m_dxfCompatibility);
+    generator.SetShowMainPath(m_showMainPath);
     if (not generator.ExportToAAMA(details))
     {
         qCritical() << tr("Can't create an AAMA dxf file.") << generator.ErrorString();
@@ -398,6 +411,7 @@ void VLayoutExporter::ExportToASTMDXF(const QVector<VLayoutPiece> &details) cons
     generator.SetYScale(m_yScale);
     generator.SetBoundaryTogetherWithNotches(m_togetherWithNotches);
     generator.SetDxfApparelCompatibility(m_dxfCompatibility);
+    generator.SetShowMainPath(m_showMainPath);
     if (not generator.ExportToASTM(details))
     {
         qCritical() << tr("Can't create an ASTM dxf file.") << generator.ErrorString();
@@ -636,9 +650,9 @@ auto VLayoutExporter::ExportFormatDescription(LayoutExportFormats format) -> QSt
         case LayoutExportFormats::DXF_AC1027_Flat:
             return QStringLiteral("AutoCAD DXF 2013 %1 (*.dxf)").arg(dxfFlatFilesStr);
         case LayoutExportFormats::DXF_AAMA:
-            return QStringLiteral("AutoCAD DXF AAMA %1 (*.dxf)").arg(filesStr);
+            return QStringLiteral("DXF AAMA %1 (*.dxf)").arg(filesStr);
         case LayoutExportFormats::DXF_ASTM:
-            return QStringLiteral("AutoCAD DXF ASTM %1 (*.dxf)").arg(filesStr);
+            return QStringLiteral("DXF ASTM %1 (*.dxf)").arg(filesStr);
         case LayoutExportFormats::PDFTiled:
             return QStringLiteral("PDF %1 %2 (*.pdf)").arg(tr("tiled"), filesStr);
         case LayoutExportFormats::NC:

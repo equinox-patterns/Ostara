@@ -52,7 +52,7 @@ enum class DXFApparelCompatibility : qint8
     RPCADV08 = 1, // Richpeace CAD V8
     RPCADV09 = 2, // Richpeace CAD V9
     RPCADV10 = 3, // Richpeace CAD V10
-    CLO3D = 4,    // Clo3D
+    CLO3D = 4,    // Clo3D / Style3D
     COUNT = 5     // Use only for validation
 };
 

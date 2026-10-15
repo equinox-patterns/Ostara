@@ -49,6 +49,7 @@ class VLayoutPiece;
 class DRW_Entity;
 class dx_ifaceBlock;
 class VLayoutPoint;
+class VLayoutPiecePath;
 class DRW_Point;
 class DRW_ASTMNotch;
 struct VLayoutPassmark;
@@ -114,6 +115,12 @@ public:
     auto DxfApparelCompatibility() const -> DXFApparelCompatibility;
     void SetDxfApparelCompatibility(DXFApparelCompatibility mode);
 
+    /// @brief IsShowMainPath tells whether the pieces must be written as if their main path were visible,
+    /// whatever the pattern says. The pieces are copied for the export, so neither the pattern nor the
+    /// canvas is touched.
+    auto IsShowMainPath() const -> bool;
+    void SetShowMainPath(bool value);
+
     auto ErrorString() const -> QString;
 
 private:
@@ -133,6 +140,7 @@ private:
     qreal m_yscale{1};
     bool m_togetherWithNotches{false};
     DXFApparelCompatibility m_compatibilityMode{DXFApparelCompatibility::STANDARD};
+    bool m_showMainPath{false};
 
     Q_REQUIRED_RESULT auto FromPixel(double pix, const VarInsunits &unit) const -> double;
     Q_REQUIRED_RESULT auto ToPixel(double val, const VarInsunits &unit) const -> double;
@@ -168,8 +176,16 @@ private:
     Q_REQUIRED_RESULT auto ExportASTMNotchDataDependecy(const VLayoutPassmark &passmark, const UTF8STRING &notchLayer,
                                                         const VLayoutPiece &detail) -> DRW_ATTDEF *;
 
+    /// @brief ExportTurnPoints writes the turn points (layer 2) of a shape made only of such points,
+    /// like a fold line.
     void ExportTurnPoints(const QSharedPointer<dx_ifaceBlock> &detailBlock, const QVector<VLayoutPoint> &points) const;
-    void ExportCurvePoints(const QSharedPointer<dx_ifaceBlock> &detailBlock, const QVector<VLayoutPoint> &points) const;
+
+    /// @brief ExportTurnAndCurvePoints writes the turn points (layer 2) and the curve points (layer 3) of
+    /// a contour, in the order the contour runs. AAMA describes an edge by those points; interleaved, the
+    /// reader knows which vertex of the edge each of them belongs to. Grouped by layer instead, the edge
+    /// is re-fitted as a single curve and is deformed — the curves of a collar, typically.
+    void ExportTurnAndCurvePoints(const QSharedPointer<dx_ifaceBlock> &detailBlock,
+                                  const QVector<VLayoutPoint> &points) const;
 
     Q_REQUIRED_RESULT auto AAMAPolygon(const QVector<VLayoutPoint> &polygon, const UTF8STRING &layer, bool forceClosed)
         -> DRW_Entity *;
@@ -189,6 +205,25 @@ private:
 
     void ASTMDrawFoldLineTwoArrows(const QVector<QVector<QPointF>> &points,
                                    const QSharedPointer<dx_ifaceBlock> &detailBlock);
+
+    Q_REQUIRED_RESULT auto IsClo3DCompatibility() const -> bool;
+
+    /// @brief InternalPathPoints returns the points of an internal path as the DXF must carry them.
+    /// In the Clo3D/Style3D compatibility mode the continuation of the path to the cutting contour is
+    /// dropped: a dart is then written with its own points only, so that its two branches end on the
+    /// outline, which is what Style3D needs to recognise it. Elsewhere the continuation is kept, as
+    /// other CAD systems expect a dart drawn through the seam allowance.
+    Q_REQUIRED_RESULT auto InternalPathPoints(const VLayoutPiecePath &path) const -> QVector<VLayoutPoint>;
+
+    /// @brief InternalPaths lists the internal paths of a piece as the DXF must carry them. In the
+    /// Clo3D/Style3D compatibility mode a dart (an internal path whose ends are continued to the cutting
+    /// contour) is split into its two branches: Style3D traces a dart from exactly two baselines sharing
+    /// their apex vertex, and refuses a single polyline carrying both of them.
+    Q_REQUIRED_RESULT auto InternalPaths(const VLayoutPiece &detail, bool cut) const -> QVector<VLayoutPiecePath>;
+
+    /// @brief DeepestPointIndex returns the index of the point of a path the furthest from the line
+    /// joining its two ends — the apex of a dart. Returns -1 when there is none.
+    Q_REQUIRED_RESULT static auto DeepestPointIndex(const QVector<VLayoutPoint> &points) -> int;
 
     auto PieceOutline(const VLayoutPiece &detail) const -> QVector<VLayoutPoint>;
 };

@@ -263,6 +263,13 @@ void MainWindow::ExportDetailsAs(bool checked)
         // what the timer would have done anyway, and it restores the modified flag.
         RefreshThumbnailSnapshots();
 
+        // "Show the main path" is read here, once the dialog has been accepted: the pieces are laid out
+        // again, this time as if their main path were visible. The pattern is not touched.
+        if (m_dialogSaveLayout->IsShowMainPath())
+        {
+            listDetails = PrepareDetailsForLayout(detailsInLayout, doc, false, true);
+        }
+
         ExportData(listDetails);
 
         // Say it worked, and where it landed — the same word Graded mode and Export mode already
