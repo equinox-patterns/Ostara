@@ -37,6 +37,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 
+#include <utility>
+
 //---------------------------------------------------------------------------------------------------------------------
 OExportFileDialog::OExportFileDialog(const QString &outputName, const QString &directory,
                                      const QString &suffix, QWidget *parent)
@@ -49,7 +51,7 @@ OExportFileDialog::OExportFileDialog(const QString &outputName, const QString &d
     m_grid = new QGridLayout(this);
 
     m_nameLabel = new QLabel(this);
-    m_nameEdit = new QLineEdit(outputName, this);
+    m_nameEdits.append(new QLineEdit(outputName, this));
 
     m_pathLabel = new QLabel(this);
     m_pathEdit = new QLineEdit(directory, this);
@@ -57,7 +59,7 @@ OExportFileDialog::OExportFileDialog(const QString &outputName, const QString &d
     connect(m_browseButton, &QPushButton::clicked, this, &OExportFileDialog::OnBrowse);
 
     m_grid->addWidget(m_nameLabel, 0, 0);
-    m_grid->addWidget(m_nameEdit, 0, 1, 1, 2);
+    m_grid->addWidget(FirstNameEdit(), 0, 1, 1, 2);
     m_grid->addWidget(m_pathLabel, 1, 0);
     m_grid->addWidget(m_pathEdit, 1, 1);
     m_grid->addWidget(m_browseButton, 1, 2);
@@ -77,25 +79,42 @@ OExportFileDialog::OExportFileDialog(const QString &outputName, const QString &d
     m_grid->addWidget(m_buttonBox, m_optionRow, 0, 1, 3);
 
     Retranslate();
-    m_nameEdit->setFocus();
-    m_nameEdit->selectAll();
+    FirstNameEdit()->setFocus();
+    FirstNameEdit()->selectAll();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportFileDialog::FirstNameEdit() const -> QLineEdit *
+{
+    return m_nameEdits.first();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportFileDialog::FileName() const -> QString
 {
-    QString name = m_nameEdit->text().trimmed();
-    if (name.isEmpty())
+    return FileNames().value(0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportFileDialog::FileNames() const -> QStringList
+{
+    QStringList names;
+    names.reserve(m_nameEdits.size());
+
+    // **Chaque champ passe par la même règle**, extension comprise : deux noms dont un seul porterait
+    // l'extension seraient deux fichiers dont un seul s'ouvrirait.
+    for (const QLineEdit *edit : m_nameEdits)
     {
-        return name;
+        QString name = edit->text().trimmed();
+        if (!name.isEmpty() && !m_suffix.isEmpty() && !name.endsWith(m_suffix, Qt::CaseInsensitive))
+        {
+            name += m_suffix;
+        }
+
+        names.append(name);
     }
 
-    if (!m_suffix.isEmpty() && !name.endsWith(m_suffix, Qt::CaseInsensitive))
-    {
-        name += m_suffix;
-    }
-
-    return name;
+    return names;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -107,7 +126,94 @@ auto OExportFileDialog::Directory() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportFileDialog::FullPath() const -> QString
 {
-    return QDir(Directory()).filePath(FileName());
+    return FullPaths().value(0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportFileDialog::FullPaths() const -> QStringList
+{
+    QStringList paths;
+    const QDir folder(Directory());
+
+    // Le dossier est UN pour tous : deux fichiers d'un même export se livrent ensemble, et deux champs
+    // de dossier seraient deux occasions de les séparer sans le vouloir.
+    const QStringList names = FileNames();
+    paths.reserve(names.size());
+    for (const QString &name : names)
+    {
+        paths.append(folder.filePath(name));
+    }
+
+    return paths;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportFileDialog::NameLabel() const -> QLabel *
+{
+    return m_nameLabel;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportFileDialog::ShiftRowsDown(int first)
+{
+    struct Spot
+    {
+        QWidget *widget{nullptr};
+        int row{0};
+        int col{0};
+        int rowSpan{1};
+        int colSpan{1};
+    };
+
+    // **Un QGridLayout ne se décale pas tout seul.** Il n'a pas d'`insertRow` — contrairement à un
+    // QFormLayout — donc la place se fait à la main : on relève où chaque widget se trouve, puis on le
+    // repose une ligne plus bas. Rien n'est détruit : les widgets restent ceux de la fenêtre, et
+    // `removeWidget` ne fait que les lâcher le temps du déplacement (il n'y a pas d'item à posséder,
+    // donc pas de fuite à craindre).
+    QVector<Spot> below;
+    const int count = m_grid->count();
+    for (int i = 0; i < count; ++i)
+    {
+        int row = 0;
+        int col = 0;
+        int rowSpan = 1;
+        int colSpan = 1;
+        m_grid->getItemPosition(i, &row, &col, &rowSpan, &colSpan);
+
+        if (row >= first && m_grid->itemAt(i) != nullptr && m_grid->itemAt(i)->widget() != nullptr)
+        {
+            below.append({m_grid->itemAt(i)->widget(), row, col, rowSpan, colSpan});
+        }
+    }
+
+    for (const Spot &spot : std::as_const(below))
+    {
+        m_grid->removeWidget(spot.widget);
+        m_grid->addWidget(spot.widget, spot.row + 1, spot.col, spot.rowSpan, spot.colSpan);
+    }
+
+    // Les options et les boutons qui les suivent ont descendu avec le reste : le compte de lignes du
+    // squelette doit le savoir, sans quoi la prochaine option s'écraserait sur la ligne des boutons.
+    ++m_optionRow;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportFileDialog::AddNameRow(QLabel *label, const QString &name) -> QLineEdit *
+{
+    // **Sous celles qui existent déjà, et pas toujours en deuxième ligne.** Le premier nom occupe la
+    // ligne 0 ; le second prend la 1 ; un troisième trouverait la 2 — l'ordre des champs et l'ordre des
+    // lignes ne peuvent donc pas diverger, quel que soit le nombre de noms demandés.
+    const int row = static_cast<int>(m_nameEdits.size());
+
+    ShiftRowsDown(row);
+
+    auto *edit = new QLineEdit(name, this);
+    label->setParent(this);
+    m_grid->addWidget(label, row, 0);
+    m_grid->addWidget(edit, row, 1, 1, 2);
+
+    m_nameEdits.append(edit);
+    return edit;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -137,14 +243,23 @@ void OExportFileDialog::SetSuffix(const QString &suffix)
     // ⚠️ On retire l'ANCIENNE extension : sa longueur est prise avant que `m_suffix` ne change, sans
     // quoi `.dxf` et `.plt` ne se retireraient l'un l'autre que par hasard — ils n'ont pas la même.
     const QString previous = m_suffix;
-    const QString typed = m_nameEdit->text().trimmed();
-    const bool carried = !previous.isEmpty() && typed.endsWith(previous, Qt::CaseInsensitive);
-
     m_suffix = suffix;
 
-    if (carried)
+    // ⚠️ **Et on le fait sur CHAQUE champ de nom** : un dialogue qui écrit deux fichiers sous un format
+    // qui vient de changer laisserait sinon l'un des deux annoncer l'ancien — un nom qui ment sur son
+    // contenu, et précisément sur le fichier qu'on ne regarde pas.
+    if (previous.isEmpty())
     {
-        m_nameEdit->setText(typed.chopped(previous.size()));
+        return;
+    }
+
+    for (QLineEdit *edit : std::as_const(m_nameEdits))
+    {
+        const QString typed = edit->text().trimmed();
+        if (typed.endsWith(previous, Qt::CaseInsensitive))
+        {
+            edit->setText(typed.chopped(previous.size()));
+        }
     }
 }
 
@@ -176,11 +291,18 @@ void OExportFileDialog::OnBrowse()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportFileDialog::OnAccept()
 {
-    if (FileName().isEmpty())
+    // **Chaque nom, puis chaque fichier.** Les contrôles se font en deux temps : d'abord tous les noms
+    // — un dialogue qui en demande deux et n'en reçoit qu'un ne décrit rien —, ensuite la question
+    // d'écrasement, posée UNE FOIS PAR FICHIER, comme le lot la pose. Un « non » garde le dialogue
+    // ouvert : c'est la même réponse que pour un seul fichier, et rien n'est écrit à moitié.
+    for (QLineEdit *edit : std::as_const(m_nameEdits))
     {
-        QMessageBox::warning(this, tr("Export"), tr("The file needs a name."));
-        m_nameEdit->setFocus();
-        return;
+        if (edit->text().trimmed().isEmpty())
+        {
+            QMessageBox::warning(this, tr("Export"), tr("The file needs a name."));
+            edit->setFocus();
+            return;
+        }
     }
 
     const QFileInfo folder(Directory());
@@ -191,10 +313,13 @@ void OExportFileDialog::OnAccept()
         return;
     }
 
-    const QString path = FullPath();
-    if (!ConfirmOverwrite(this, path))
+    const QStringList paths = FullPaths();
+    for (const QString &path : paths)
     {
-        return;
+        if (!ConfirmOverwrite(this, path))
+        {
+            return;
+        }
     }
 
     accept();

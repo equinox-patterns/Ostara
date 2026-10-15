@@ -129,6 +129,24 @@ struct OExportRunFlags
     int matCount{0};
 };
 
+/// @brief Où ce plan se pose dans la scène — et s'il est celui qui la vide.
+///
+/// Un run n'a qu'un plan : il part de l'origine, et la scène est à lui. **Une PAIRE n'en a pas qu'un** —
+/// le tissu et la doublure sont deux nappes, et elles se lisent côte à côte — donc le second se pose à
+/// droite du premier au lieu de par-dessus. C'est un décalage d'ORIGINE et non une transformation
+/// d'items : la formule de placement et tout ce qui se mesure en coordonnées de scène (la
+/// correction, les lecteurs de contenu) doivent lire la même chose.
+///
+/// `clearScene` reste au premier : la scène ne se vide qu'une fois, le second plan s'ajoute au premier.
+struct OExportPlanSeat
+{
+    /// Le point de la scène où tombe l'origine du plan — son coin haut-gauche de bac.
+    QPointF origin{};
+
+    /// Vrai quand ce plan peut vider la scène : le premier plan d'un run, toujours.
+    bool clearScene{true};
+};
+
 /// @brief What the canvas drew, in the shape a writer needs.
 ///
 /// Collected by Build itself rather than rebuilt beside it: the decor has one definition
@@ -215,6 +233,9 @@ public:
     ///                The frame and its scissors are drawn only there, and the cut lines below
     ///                stand down in their favour: a second line under the user's own would fight
     ///                the opacity she set (§11.5).
+    /// @param seat    where the plan lands in the scene, and whether it may clear it. Left at its
+    ///                default by every writer — a file holds ONE plan, and it starts at the origin —
+    ///                and moved only by the screen, which shows a pair side by side.
     static void Build(QGraphicsScene *scene,
                       const QVector<OExportSizeLayer> &layers,
                       const OExportNestingResult &result,
@@ -226,7 +247,8 @@ public:
                       const OExportTemplate *marks = nullptr,
                       bool framed = false,
                       const OExportCoverPage::Drawing *cover = nullptr,
-                      const OExportRunFlags &run = {});
+                      const OExportRunFlags &run = {},
+                      const OExportPlanSeat &seat = {});
 };
 
 #endif // OEXPORTCANVAS_H

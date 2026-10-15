@@ -311,7 +311,7 @@ private:
 /// what feeds VisibleItemsBoundingRect, and a rect wider than the paper would leave the plan
 /// pinned to one edge of the viewport when the result is framed. MakeDecorHost tells the same
 /// story from the other end.
-void MakePaper(QGraphicsScene *scene, const QRectF &rect)
+void MakePaper(QGraphicsScene *scene, const QRectF &rect, const QPointF &origin = {})
 {
     auto *paper = new QGraphicsRectItem(rect);
     paper->setPen(Qt::NoPen);
@@ -320,11 +320,13 @@ void MakePaper(QGraphicsScene *scene, const QRectF &rect)
     paper->setFlag(QGraphicsItem::ItemIsMovable, false);
     paper->setAcceptedMouseButtons(Qt::NoButton);
     paper->setZValue(kPaperZ);
+    // La feuille se pose où le plan se pose : un second plan de la paire a son propre papier.
+    paper->setPos(origin);
     scene->addItem(paper);
 }
 
 void MakeArtboardPaper(QGraphicsScene *scene, const OExportArtboards::Grid &artboards,
-                       const OExportSheets::Set &sheets)
+                       const OExportSheets::Set &sheets, const QPointF &origin = {})
 {
     for (int row = 0; row < artboards.rows; ++row)
     {
@@ -340,7 +342,8 @@ void MakeArtboardPaper(QGraphicsScene *scene, const OExportArtboards::Grid &artb
             // paper without ever entering OExportSheets.
             MakePaper(scene, QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
                                     artboards.planRect.top() + row * artboards.cellHeightPx,
-                                    artboards.cellWidthPx, artboards.cellHeightPx));
+                                    artboards.cellWidthPx, artboards.cellHeightPx),
+                      origin);
         }
     }
 }
@@ -1510,7 +1513,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                           const OExportTemplate *marks,
                           bool framed,
                           const OExportCoverPage::Drawing *cover,
-                          const OExportRunFlags &run)
+                          const OExportRunFlags &run,
+                          const OExportPlanSeat &seat)
 {
     if (scene == nullptr || !result.ok)
     {
@@ -1521,7 +1525,23 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // endroits, et quatre lectures d'un drapeau sont quatre occasions d'en lire un autre.
     const bool cuttingPlan = run.cuttingPlan;
 
-    scene->clear();
+    // ── Où ce plan se pose ────────────────────────────────────────────────────────────────────────
+    //
+    // Tout ce qui suit est écrit dans le repère du PLAN — le bac part de (0,0) — et c'est cette
+    // translation qui l'amène dans la scène. Un run ordinaire a l'origine pour repère : rien ne bouge.
+    // Une PAIRE en dessine deux, et c'est le second qui se décale.
+    //
+    // ⚠️ Elle est POST-multipliée à la matrice de placement et non posée en transformation d'item :
+    // un item transformé traînerait sa bounding rect et sa sélection, et la correction — qui lit des
+    // transformations de scène — verrait autre chose que ce que le plan mesure.
+    const QTransform originMatrix = QTransform::fromTranslate(seat.origin.x(), seat.origin.y());
+
+    // Le premier plan d'un run — et le seul, dans tous les cas sauf la paire — vide la scène. Le
+    // second s'ajoute au premier : deux appels, une seule scène.
+    if (seat.clearScene)
+    {
+        scene->clear();
+    }
 
     // What was drawn, kept as it is drawn: every item stays a pointer into the scene, and
     // the caller must read it before the scene dies.
@@ -1590,7 +1610,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
 
     if (artboards.valid)
     {
-        MakeArtboardPaper(scene, artboards, sheets);
+        MakeArtboardPaper(scene, artboards, sheets, seat.origin);
 
         // The cover page's own sheet, for the three formats that give it one. **Added here and not
         // through OExportSheets**: it is not a cell of the grid, so the plan's ranks stay 1..n, its
@@ -1600,7 +1620,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         {
             MakePaper(scene, OExportCoverPage::PaperPx(coverSeat, coverMarginPx, artboards.planRect,
                                                        artboards.cellWidthPx,
-                                                       artboards.cellHeightPx));
+                                                       artboards.cellHeightPx),
+                      seat.origin);
         }
     }
     else
@@ -1609,6 +1630,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         bin->setPen(QPen(Qt::black, 1));
         bin->setBrush(QBrush(Qt::white));
         bin->setZValue(kBinZ);
+        bin->setPos(seat.origin);
         scene->addItem(bin);
 
         // ── La grille des tapis d'un plotter ──────────────────────────────────────────────────────
@@ -1646,6 +1668,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 item->setPen(matPen);
                 item->setBrush(Qt::NoBrush);
                 item->setZValue(kGridZ);
+                item->setPos(seat.origin);
                 scene->addItem(item);
             }
         }
@@ -1696,6 +1719,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 rect->setPen(zonePen);
                 rect->setBrush(Qt::NoBrush);
                 rect->setZValue(kBinZ);
+                rect->setPos(seat.origin);
                 scene->addItem(rect);
             }
 
@@ -1703,6 +1727,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
             auto *fold = new QGraphicsLineItem(foldX, zone.rect.top(), foldX, zone.rect.bottom());
             fold->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
             fold->setZValue(kBinZ);
+            fold->setPos(seat.origin);
             scene->addItem(fold);
         }
     }
@@ -1720,7 +1745,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         grid.pxPerMm = ToPixel(1.0, Unit::Mm);
         grid.sheets = sheets;
 
-        scene->addItem(new AssemblyMarksItem(*marks, artboards.planRect.topLeft(), grid, framed));
+        scene->addItem(new AssemblyMarksItem(*marks, artboards.planRect.topLeft() + seat.origin, grid,
+                                             framed));
     }
 
     // The page itself, over the marks and under the pieces — see kCoverZ for why that band and not
@@ -1730,7 +1756,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     {
         scene->addItem(new CoverPageItem(
             OExportCoverPage::PagePx(coverSeat, coverMarginPx, artboards.planRect,
-                                     artboards.cellWidthPx, artboards.cellHeightPx),
+                                     artboards.cellWidthPx, artboards.cellHeightPx).translated(seat.origin),
             cover->bands));
     }
 
@@ -1760,7 +1786,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // The note on the alignment shift — it belongs to the origin, not after the
                 // rotation — travelled with the code, to PieceMatrix.
                 const QTransform placementMatrix =
-                    OExportFootprint::PieceMatrix(placement, geometry.alignDelta);
+                    OExportFootprint::PieceMatrix(placement, geometry.alignDelta) * originMatrix;
 
                 // The placement is baked into the piece's own matrix rather than into a
                 // transform on the item: an item transform would drag the bounding rect,
@@ -1906,9 +1932,11 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     const bool frameDrawn = marks != nullptr && framed;
     if (artboards.valid && !frameDrawn)
     {
-        scene->addItem(new ArtboardGridItem(artboards.planRect, artboards.cellWidthPx,
-                                            artboards.cellHeightPx, artboards.columns,
-                                            artboards.rows, sheets));
+        auto *grid = new ArtboardGridItem(artboards.planRect, artboards.cellWidthPx,
+                                          artboards.cellHeightPx, artboards.columns,
+                                          artboards.rows, sheets);
+        grid->setPos(seat.origin);
+        scene->addItem(grid);
     }
 
     if (content == nullptr)

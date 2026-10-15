@@ -2,13 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="fr_FR">
 <context>
-    <name>AddAttachment</name>
-    <message>
-        <source>add attachment</source>
-        <translation type="vanished">Ajouter un attachement</translation>
-    </message>
-</context>
-<context>
     <name>AddBackgroundImage</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/image/addbackgroundimage.cpp" line="35"/>
@@ -22,13 +15,6 @@
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="48"/>
         <source>add group</source>
         <translation>Ajouter groupe</translation>
-    </message>
-</context>
-<context>
-    <name>AddItemToAttachment</name>
-    <message>
-        <source>Add item to attachment</source>
-        <translation type="vanished">Ajouter un élément à l&apos;attachement</translation>
     </message>
 </context>
 <context>
@@ -72,17 +58,6 @@
     </message>
 </context>
 <context>
-    <name>BreadcrumbBar</name>
-    <message>
-        <source>Canvas</source>
-        <translation type="vanished">Zone de dessin</translation>
-    </message>
-    <message>
-        <source>Group %1</source>
-        <translation type="vanished">Groupe %1</translation>
-    </message>
-</context>
-<context>
     <name>ChangeActiveGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="750"/>
@@ -92,10 +67,6 @@
 </context>
 <context>
     <name>ChangeGroupOptions</name>
-    <message>
-        <source>rename group</source>
-        <translation type="vanished">Renommer le groupe</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="162"/>
         <source>edit layer</source>
@@ -151,25 +122,11 @@
     </message>
 </context>
 <context>
-    <name>ConfigDialog</name>
-    <message>
-        <source>Apply</source>
-        <translation type="vanished">Appliquer</translation>
-    </message>
-</context>
-<context>
     <name>DRW_TextCodec</name>
     <message>
         <location filename="../../src/libs/vdxf/libdxfrw/intern/drw_textcodec.cpp" line="117"/>
         <source>No available codec for code page &apos;%1&apos;.</source>
         <translation>Aucun codec disponible pour la page de code &apos;%1&apos;.</translation>
-    </message>
-</context>
-<context>
-    <name>DelAttachment</name>
-    <message>
-        <source>delete attachment</source>
-        <translation type="vanished">Supprimer un attachement</translation>
     </message>
 </context>
 <context>
@@ -359,10 +316,6 @@
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogArc</name>
@@ -370,10 +323,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="14"/>
         <source>Arc</source>
         <translation>Arc</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="73"/>
@@ -470,17 +419,9 @@
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogArcWithLength</name>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="77"/>
         <source>Edit radius</source>
@@ -576,73 +517,6 @@
         <source>Arc with length</source>
         <translation>Arc de longueur donnée</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-</context>
-<context>
-    <name>DialogArmholeCurve</name>
-    <message>
-        <source>Armhole Curve</source>
-        <translation type="vanished">Courbe d&apos;emmanchure</translation>
-    </message>
-    <message>
-        <source>Tool</source>
-        <translation type="vanished">Outil</translation>
-    </message>
-    <message>
-        <source>Armhole point:</source>
-        <translation type="vanished">Point d&apos;emmanchure :</translation>
-    </message>
-    <message>
-        <source>Chest/back width point:</source>
-        <translation type="vanished">Point de largeur poitrine/dos :</translation>
-    </message>
-    <message>
-        <source>Perpendicular point:</source>
-        <translation type="vanished">Point perpendiculaire :</translation>
-    </message>
-    <message>
-        <source>Shoulder point:</source>
-        <translation type="vanished">Point épaule :</translation>
-    </message>
-    <message>
-        <source>Handle spread (t):</source>
-        <translation type="vanished">Écartement des poignées (t) :</translation>
-    </message>
-    <message>
-        <source>Handle spread around the chest/back width point. Small values = segment 2 stays closer to the chord (more straight).</source>
-        <translation type="vanished">Écartement des poignées autour du point de largeur poitrine/dos. De petites valeurs = le segment 2 reste plus proche de la corde (plus droit).</translation>
-    </message>
-    <message>
-        <source>Pen Style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
-    </message>
-    <message>
-        <source>Curve:</source>
-        <translation type="vanished">Courbe :</translation>
-    </message>
-    <message>
-        <source>You can add a note here…</source>
-        <translation type="vanished">Vous pouvez ajouter une note ici…</translation>
-    </message>
-    <message>
-        <source>Select the chest/back width point</source>
-        <translation type="vanished">Sélectionnez le point de largeur poitrine/dos</translation>
-    </message>
-    <message>
-        <source>Select the perpendicular point</source>
-        <translation type="vanished">Sélectionnez le point perpendiculaire</translation>
-    </message>
-    <message>
-        <source>Select the shoulder point</source>
-        <translation type="vanished">Sélectionnez le point d&apos;épaule</translation>
-    </message>
 </context>
 <context>
     <name>DialogAskCollectStatistic</name>
@@ -685,21 +559,6 @@
         <location filename="../../src/libs/vmisc/dialogs/dialogaskcollectstatistic.ui" line="84"/>
         <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
         <translation>Les rapports de plantage nous aident à améliorer la stabilité de Valentina. Toutes les informations contenues dans ces rapports sont traitées comme confidentielles, et ne sont utilisées que pour améliorer les versions à venir du logiciel. Merci d&apos;activer l&apos;envoi automatique de ces rapports et de remplir votre adresse mail (facultatif). Si vous renseignez votre adresse mail, nous vous contacterons éventuellement pour vous fournir des informations supplémentaires au sujet du plantage.</translation>
-    </message>
-</context>
-<context>
-    <name>DialogAttach</name>
-    <message>
-        <source>Group</source>
-        <translation type="vanished">Groupe</translation>
-    </message>
-    <message>
-        <source>Group name:</source>
-        <translation type="vanished">Nom du groupe :</translation>
-    </message>
-    <message>
-        <source>Group name (optional)</source>
-        <translation type="vanished">Nom du groupe (optionnel)</translation>
     </message>
 </context>
 <context>
@@ -774,53 +633,6 @@
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-</context>
-<context>
-    <name>DialogBulkRename</name>
-    <message>
-        <source>Rename…</source>
-        <translation type="vanished">Renommer …</translation>
-    </message>
-    <message>
-        <source>Base name</source>
-        <translation type="vanished">Nom d&apos;origine</translation>
-    </message>
-    <message>
-        <source>New name</source>
-        <translation type="vanished">Nouveau nom</translation>
-    </message>
-    <message>
-        <source>Text:</source>
-        <translation type="vanished">Texte :</translation>
-    </message>
-    <message>
-        <source>Use %n, %0n, %00n, %000n for counting</source>
-        <translation type="vanished">Utilisez les expressions %n, %0n, %00n, %000n, pour décompte automatisé des objets</translation>
-    </message>
-    <message>
-        <source>Position:</source>
-        <translation type="vanished">Position :</translation>
-    </message>
-    <message>
-        <source>Append</source>
-        <translation type="vanished">Suffixe</translation>
-    </message>
-    <message>
-        <source>Prepend</source>
-        <translation type="vanished">Préfixe</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation type="vanished">Substituer</translation>
-    </message>
-    <message>
-        <source>Enable renaming for this item</source>
-        <translation type="vanished">Renommer cet objet</translation>
-    </message>
 </context>
 <context>
     <name>DialogCloseDart</name>
@@ -836,21 +648,9 @@
         <translation>Outil</translation>
     </message>
     <message>
-        <source>New:</source>
-        <translation type="vanished">Nouveau :</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="113"/>
         <source>Name:</source>
         <translation>Nom :</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="68"/>
@@ -876,18 +676,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="87"/>
         <source>Layer</source>
         <translation>Calque</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <translation type="vanished">Étiquettes :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparer chaque étiquette par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des étiquettes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="139"/>
@@ -985,10 +773,6 @@
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogCubicBezierPath</name>
@@ -1056,10 +840,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -1160,10 +940,6 @@
         <translation>Outil</translation>
     </message>
     <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="153"/>
         <source>Alias1:</source>
         <translation>Alias1 :</translation>
@@ -1180,10 +956,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="14"/>
         <source>Segment an arc</source>
         <translation>Segmenter un arc</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.cpp" line="87"/>
@@ -1252,10 +1024,6 @@
         <source>Point name:</source>
         <translation>Nom du point :</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogCutSpline</name>
@@ -1263,10 +1031,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="14"/>
         <source>Segmenting a simple curve</source>
         <translation>Segmenter une courbe simple</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.cpp" line="90"/>
@@ -1335,10 +1099,6 @@
         <source>Choose unique name for right sub curve</source>
         <translation>Attribuez un nom unique à la section de courbe de droite</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogCutSplinePath</name>
@@ -1346,10 +1106,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="14"/>
         <source>Segment a curved path</source>
         <translation>Segmenter une courbe complexe</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.cpp" line="95"/>
@@ -1418,10 +1174,6 @@
         <source>Choose unique name for right sub curve</source>
         <translation>Attribuez un nom unique à la section de courbe de droite</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogDateTimeFormats</name>
@@ -1447,13 +1199,6 @@
     </message>
 </context>
 <context>
-    <name>DialogDetail</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">Annuler</translation>
-    </message>
-</context>
-<context>
     <name>DialogDuplicateDetail</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogduplicatedetail.ui" line="14"/>
@@ -1472,10 +1217,6 @@
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="17"/>
         <source>Edit formula</source>
         <translation>Modifier la formule</translation>
-    </message>
-    <message>
-        <source>Insert variable into formula</source>
-        <translation type="vanished">Insérer la variable sélectionnée dans la formule</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="118"/>
@@ -1533,10 +1274,6 @@
         <translation>Angle du segment</translation>
     </message>
     <message>
-        <source>Radius of arcs</source>
-        <translation type="vanished">Rayons des arcs</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="228"/>
         <source>Angles of curves</source>
         <translation>Angles des courbes</translation>
@@ -1550,10 +1287,6 @@
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="365"/>
         <source>Curve angle</source>
         <translation>Angle de la courbe</translation>
-    </message>
-    <message>
-        <source>Formula:</source>
-        <translation type="vanished">Formule :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="51"/>
@@ -1776,10 +1509,6 @@
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogEllipticalArcWithLength</name>
@@ -1867,10 +1596,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="242"/>
         <source>End point name:</source>
         <translation>Nom du point d&apos;arrivée :</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="77"/>
@@ -1969,10 +1694,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="37"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -2154,59 +1875,10 @@
         <translation>Erreur analyseur : %1</translation>
     </message>
     <message>
-        <source>Empty</source>
-        <comment>list</comment>
-        <translation type="vanished">Vide</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Search history &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Recherches précédentes &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Alt+Down</source>
-        <translation type="vanished">Alt+Down</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="43"/>
         <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="744"/>
         <source>0 results</source>
         <translation>0 résultat trouvé</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Match Case &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Contient au moins &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Match words &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Contient exactement &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Match with regular expressions &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avec expression régulière &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use unicode properties &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;span style=&quot; color:#888a85;&quot;&gt;The meaning of the \w, \d, etc., character classes, as well as the meaning of their counterparts (\W, \D, etc.), is changed from matching ASCII characters only to matching any character with the corresponding Unicode property. For instance, \d is changed to match any character with the Unicode Nd (decimal digit) property; \w to match any character with either the Unicode L (letter) or N (digit) property, plus underscore, and so on. This option corresponds to the /u modifier in Perl regular expressions.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;utilisent les propriétés unicode &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;span style=&quot; color:#888a85;&quot;&gt;La signification de \w, \d, etc., appelés classes de caractères, aussi bien que la signification de leurs équivalents (\W, \D, etc.), est modifiée pour correspondre aux caractères ASCII de n&apos;importe quel caractère ayant la propriété Unicode correspondante. Par exemple, \d est modifié pour correspondre à n&apos;importe quel caractère ayant la propriété Unicode Nd (chiffre decimal ou decimal digit); \w pour correspondre à n&apos;importe quel caractère ayant soit la propriété Unicode L (lettre) ou N (chiffre), plus underscore, etc. Cette option correspond au modificateur /u dans les expressions régulières Perl.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Alt+U</source>
-        <translation type="vanished">Alt+U</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Find Previous &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Résultat précédent &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Shift+F3</source>
-        <translation type="vanished">Shift+F3</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Find Next %1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Résultat suivant %1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>F3</source>
-        <translation type="vanished">F3</translation>
     </message>
 </context>
 <context>
@@ -2253,33 +1925,9 @@
         <translation>Nom :</translation>
     </message>
     <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>New:</source>
-        <translation type="vanished">Ajouter :</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="65"/>
@@ -2311,10 +1959,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="150"/>
         <source>You can add a note here…</source>
         <translation>Vous pouvez ajouter une note ici…</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="318"/>
@@ -2366,33 +2010,9 @@
         <translation>Nom :</translation>
     </message>
     <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>New:</source>
-        <translation type="vanished">Ajouter :</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="72"/>
@@ -2424,10 +2044,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="157"/>
         <source>You can add a note here…</source>
         <translation>Vous pouvez ajouter une note ici…</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="353"/>
@@ -2581,10 +2197,6 @@
         <translation>Nom du point d&apos;arrivée :</translation>
     </message>
     <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="274"/>
         <source>Offset %1</source>
         <translation>Distance %1</translation>
@@ -2636,10 +2248,6 @@
 <context>
     <name>DialogGroup</name>
     <message>
-        <source>Group name:</source>
-        <translation type="vanished">Nom du groupe :</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="14"/>
         <source>Layer</source>
         <translation>Calque</translation>
@@ -2658,18 +2266,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="43"/>
         <source>Group:</source>
         <translation>Groupe :</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="53"/>
@@ -2753,10 +2349,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="31"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -2920,10 +2512,6 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <translation>Formule :</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Afficher dans la boîte de dialogue de composition de formule &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="412"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="852"/>
         <source>Description:</source>
@@ -2965,11 +2553,6 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="592"/>
         <source>Parser error: %1</source>
         <translation>Erreur d&apos;analyse : %1</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <comment>list</comment>
-        <translation type="vanished">Vide</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1220"/>
@@ -3109,64 +2692,12 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <translation>Nom unique de variable</translation>
     </message>
     <message>
-        <source>Increment</source>
-        <translation type="vanished">Incrément</translation>
-    </message>
-    <message>
-        <source>Separator</source>
-        <translation type="vanished">Séparateur</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Search history &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Recherches précédentes &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Alt+Down</source>
-        <translation type="vanished">Alt+Down</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="74"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="527"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1073"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1104"/>
         <source>0 results</source>
         <translation>0 résultat trouvé</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Match Case &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Contient au moins &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Match words &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Contient exactement &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Match with regular expressions &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avec expression régulière &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use unicode properties &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;span style=&quot; color:#888a85;&quot;&gt;The meaning of the \w, \d, etc., character classes, as well as the meaning of their counterparts (\W, \D, etc.), is changed from matching ASCII characters only to matching any character with the corresponding Unicode property. For instance, \d is changed to match any character with the Unicode Nd (decimal digit) property; \w to match any character with either the Unicode L (letter) or N (digit) property, plus underscore, and so on. This option corresponds to the /u modifier in Perl regular expressions.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;utilisent les propriétés unicode &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;span style=&quot; color:#888a85;&quot;&gt;La signification de \w, \d, etc., appelés classes de caractères, aussi bien que la signification de leurs équivalents (\W, \D, etc.), est modifiée pour correspondre aux caractères ASCII de n&apos;importe quel caractère ayant la propriété Unicode correspondante. Par exemple, \d est modifié pour correspondre à n&apos;importe quel caractère ayant la propriété Unicode Nd (chiffre decimal ou decimal digit); \w pour correspondre à n&apos;importe quel caractère ayant soit la propriété Unicode L (lettre) ou N (chiffre), plus underscore, etc. Cette option correspond au modificateur /u dans les expressions régulières Perl.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Alt+U</source>
-        <translation type="vanished">Alt+U</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Find Previous &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Résultat précédent &lt;span style=&quot; color:#888a85;&quot;&gt;%1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Shift+F3</source>
-        <translation type="vanished">Shift+F3</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Find Next %1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Résultat suivant %1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>F3</source>
-        <translation type="vanished">F3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="261"/>
@@ -3320,14 +2851,6 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <source>Insert nodes</source>
         <translation>Insérer un noeud</translation>
     </message>
-    <message>
-        <source>Delete</source>
-        <translation type="vanished">Supprimer</translation>
-    </message>
-    <message>
-        <source>Number:</source>
-        <translation type="vanished">Nombre :</translation>
-    </message>
 </context>
 <context>
     <name>DialogKnownMaterials</name>
@@ -3350,13 +2873,6 @@ Les valeurs et les intervalles ne seront pas importés.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogknownmaterials.cpp" line="115"/>
         <source>User material</source>
         <translation>Tissu utilisé</translation>
-    </message>
-</context>
-<context>
-    <name>DialogKnownMeasurementsCSVColumns</name>
-    <message>
-        <source>Full name:</source>
-        <translation type="vanished">Nom complet :</translation>
     </message>
 </context>
 <context>
@@ -3645,10 +3161,6 @@ Apply settings anyway?</source>
 Appliquer quand même les réglages ?</translation>
     </message>
     <message>
-        <source>Follow grainline</source>
-        <translation type="vanished">Respecter le droit-fil</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialoglayoutsettings.ui" line="399"/>
         <source>Time:</source>
         <translation>Temps de recherche :</translation>
@@ -3757,10 +3269,6 @@ Appliquer quand même les réglages ?</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogLineIntersect</name>
@@ -3855,10 +3363,6 @@ Appliquer quand même les réglages ?</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="31"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -3987,23 +3491,6 @@ Appliquer quand même les réglages ?</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-</context>
-<context>
-    <name>DialogMDataBase</name>
-    <message>
-        <source>Vertical</source>
-        <comment>Measurement section</comment>
-        <translation type="vanished">Verticales</translation>
-    </message>
-    <message>
-        <source>Horizontal</source>
-        <comment>Measurement section</comment>
-        <translation type="vanished">Horizontales</translation>
     </message>
 </context>
 <context>
@@ -4326,13 +3813,6 @@ Cette action ne peut pas être annulée.</translation>
     </message>
 </context>
 <context>
-    <name>DialogMeasurementsCSVColumns</name>
-    <message>
-        <source>Full name:</source>
-        <translation type="vanished">Nom complet :</translation>
-    </message>
-</context>
-<context>
     <name>DialogMove</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="82"/>
@@ -4414,41 +3894,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Nom :</translation>
     </message>
     <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="31"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>New:</source>
-        <translation type="vanished">Ajouter :</translation>
-    </message>
-    <message>
-        <source>Bulk rename</source>
-        <translation type="vanished">Renommer en bloc</translation>
-    </message>
-    <message>
-        <source>Remove object</source>
-        <translation type="vanished">Supprimer l&apos;objet</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="598"/>
@@ -4480,10 +3928,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="683"/>
         <source>You can add a note here…</source>
         <translation>Vous pouvez ajouter une note ici…</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="545"/>
@@ -4564,18 +4008,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="130"/>
         <source>Group:</source>
         <translation>Groupe :</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="154"/>
@@ -4760,14 +4192,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Construction</translation>
     </message>
     <message>
-        <source>Anything worth remembering about this piece…</source>
-        <translation type="vanished">Ce que vous voulez retenir de cette pièce de patron…</translation>
-    </message>
-    <message>
-        <source>Notes:</source>
-        <translation type="vanished">Notes :</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="175"/>
         <source>First layer name:</source>
         <translation>Nom du premier calque :</translation>
@@ -4934,10 +4358,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogOpenMeasurements</name>
@@ -4991,18 +4411,6 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>DialogOperationTool</name>
     <message>
-        <source>Rotation</source>
-        <translation type="vanished">Rotation</translation>
-    </message>
-    <message>
-        <source>Line_%1_%2</source>
-        <translation type="vanished">Line_%1_%2</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="vanished">Ligne</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="249"/>
         <source>Take both points of this line first</source>
         <translation>Sélectionnez d&apos;abord les deux points de cette ligne</translation>
@@ -5011,18 +4419,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="371"/>
         <source>Invalid layer name</source>
         <translation>Nom de calque invalide</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Par défaut</translation>
-    </message>
-    <message>
-        <source>Invalid label</source>
-        <translation type="vanished">Étiquette non valide</translation>
-    </message>
-    <message>
-        <source>Invalid name</source>
-        <translation type="vanished">Nom non valide</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="492"/>
@@ -5097,10 +4493,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="162"/>
         <source>Name:</source>
         <translation>Nom :</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.cpp" line="70"/>
@@ -5252,17 +4644,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogpatternproperties.ui" line="61"/>
         <source>Path to the pattern file.</source>
         <translation>Chemin du fichier du patron.</translation>
-    </message>
-</context>
-<context>
-    <name>DialogPatternXmlEdit</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">Annuler</translation>
-    </message>
-    <message>
-        <source>Value:</source>
-        <translation type="vanished">Valeur :</translation>
     </message>
 </context>
 <context>
@@ -5478,10 +4859,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Modifier la visibilité du cran de montage</translation>
     </message>
     <message>
-        <source>Internal path</source>
-        <translation type="vanished">Chemin interne</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1870"/>
         <source>Custom seam allowance</source>
         <translation>Marge de couture personnalisée</translation>
@@ -5562,14 +4939,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="1130"/>
         <source>V mark</source>
         <translation>Marquage en V</translation>
-    </message>
-    <message>
-        <source>Please, select a detail to insert into!</source>
-        <translation type="vanished">Merci de sélectionner au moins une pièce !</translation>
-    </message>
-    <message>
-        <source>List of details is empty!</source>
-        <translation type="vanished">La liste des pièces est vide !</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="1227"/>
@@ -5835,10 +5204,6 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>DialogPiecePathOptions</name>
     <message>
-        <source>Internal path</source>
-        <translation type="vanished">Chemin interne</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="189"/>
         <source>Internal outline</source>
         <translation>Tracé interne</translation>
@@ -5916,50 +5281,6 @@ Cette action ne peut pas être annulée.</translation>
 </context>
 <context>
     <name>DialogPlaceLabel</name>
-    <message>
-        <source>Width:</source>
-        <translation type="vanished">Largeur :</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Assistant de composition de formule</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valeur</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Formule</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Afficher dans la boîte de dialogue de composition de formule &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <translation type="vanished">Hauteur :</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="vanished">Angle :</translation>
-    </message>
-    <message>
-        <source>0</source>
-        <translation type="vanished">0</translation>
-    </message>
-    <message>
-        <source>Point:</source>
-        <translation type="vanished">Point :</translation>
-    </message>
-    <message>
-        <source>Piece:</source>
-        <translation type="vanished">Pièce :</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="vanished">Type :</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="421"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="435"/>
@@ -6082,29 +5403,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Bouton</translation>
     </message>
     <message>
-        <source>Place label</source>
-        <translation type="vanished">Réglages du repère</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="591"/>
         <source>Not mirrored</source>
         <translation>Ne pas reproduire en miroir</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Visibilité</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="vanished">Visible</translation>
-    </message>
-    <message>
-        <source>Create a formula that regulates visibility. Values different from &quot;0&quot; make a path visible.</source>
-        <translation type="vanished">Créer une formule pour gérer la visibilité. Toute autre valeur que &quot;0&quot; rend le tracé visible.</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="vanished">1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="241"/>
@@ -6171,10 +5472,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Marquer le cran de cette extrémité sur le bord de la pièce</translation>
     </message>
     <message>
-        <source>Draw the fold line, from one cap to the other</source>
-        <translation type="vanished">Tracer la ligne de pli, d&apos;un chapeau à l&apos;autre</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="185"/>
         <source>Layer</source>
         <translation>Calque</translation>
@@ -6190,10 +5487,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Nom :</translation>
     </message>
     <message>
-        <source>Tags:</source>
-        <translation type="vanished">Étiquettes :</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="182"/>
         <source>Enable to create a layer from original objects</source>
         <translation>Créer un calque à partir des objets d&apos;origine</translation>
@@ -6202,14 +5495,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="221"/>
         <source>The original objects move into this layer and leave their other layers.</source>
         <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparer chaque étiquette par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des étiquettes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="265"/>
@@ -6299,10 +5584,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogPointFromCircleAndTangent</name>
@@ -6370,10 +5651,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -6453,10 +5730,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogPointOfIntersection</name>
@@ -6499,10 +5772,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -6608,10 +5877,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Arc 2</source>
         <translation>Arc 2</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogPointOfIntersectionCircles</name>
@@ -6690,10 +5955,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -6781,10 +6042,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="259"/>
         <source>Point name:</source>
         <translation>Nom du point :</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="107"/>
@@ -7030,18 +6287,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Angle :</translation>
     </message>
     <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Assistant de composition de formule</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valeur</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Afficher dans la boîte de dialogue de composition de formule &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="71"/>
         <source>Pivot point:</source>
         <translation>Point pivot :</translation>
@@ -7057,10 +6302,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Sélectionner le point pivot</translation>
     </message>
     <message>
-        <source>Calculation</source>
-        <translation type="vanished">Formule</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="479"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
         <translation>Ce point ne peut pas être le point pivot. Sélectionnez-en un autre</translation>
@@ -7071,33 +6312,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Nom :</translation>
     </message>
     <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>New:</source>
-        <translation type="vanished">Ajouter :</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="87"/>
@@ -7129,10 +6346,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="175"/>
         <source>You can add a note here…</source>
         <translation>Vous pouvez ajouter une note ici…</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="577"/>
@@ -7167,10 +6380,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>La longueur ne peut pas dépasser le diamètre du cercle (%1%2).</translation>
     </message>
     <message>
-        <source>Invalid name</source>
-        <translation type="vanished">Nom non valide</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="618"/>
         <source>Invalid layer name</source>
         <translation>Nom de calque invalide</translation>
@@ -7182,6 +6391,16 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="14"/>
         <source>Save Layout</source>
         <translation>Enregistrer le plan de coupe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="162"/>
+        <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
+        <translation>Exporte les pièces comme si leur contour principal était visible : chaque pièce a alors sa ligne de coupe et sa ligne de couture. Rien n&apos;est modifié dans le patron.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="165"/>
+        <source>Show the main path, even when the pieces hide it</source>
+        <translation>Afficher le contour principal, même quand les pièces le cachent</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="581"/>
@@ -7557,17 +6776,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Enregistrez votre tableau dans la bibliothèque Ostara pour le retrouver facilement dans la liste Mes tableaux.</translation>
     </message>
     <message>
-        <source>Save your table to the Ostara library to easily find it in the My Tables list. You can also save it to another location on your computer.</source>
-        <translation type="vanished">Enregistrez votre tableau dans la bibliothèque Ostara pour le retrouver facilement dans la liste Mes tableaux. Vous pouvez aussi l&apos;enregistrer à un autre emplacement sur votre ordinateur.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="85"/>
         <source>Name:</source>
         <translation>Nom :</translation>
-    </message>
-    <message>
-        <source>Save to your Ostara library</source>
-        <translation type="vanished">Enregistrer dans votre bibliothèque Ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="111"/>
@@ -7575,21 +6786,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>→ Retrouvez ce tableau dans la liste Mes tableaux, sans chercher sur votre disque. Dossier géré depuis les Préférences.</translation>
     </message>
     <message>
-        <source>Also save to another location</source>
-        <translation type="vanished">Enregistrer aussi à un autre emplacement</translation>
-    </message>
-    <message>
-        <source>Browse…</source>
-        <translation type="vanished">Parcourir…</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="122"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
-    </message>
-    <message>
-        <source>Choose a location</source>
-        <translation type="vanished">Choisir un emplacement</translation>
     </message>
 </context>
 <context>
@@ -7603,10 +6802,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="72"/>
         <source>Value</source>
         <translation>Valeur</translation>
-    </message>
-    <message>
-        <source>Detail</source>
-        <translation type="vanished">Pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
@@ -7942,10 +7137,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>&lt;Empty&gt;</translation>
     </message>
     <message>
-        <source>Select main path objects clockwise, &lt;b&gt;%1&lt;/b&gt; - reverse direction curve, &lt;b&gt;%2&lt;/b&gt; - finish creation</source>
-        <translation type="vanished">Sélectionner les objets du chemin principal dans le sens horaire, &lt;b&gt;%1&lt;/b&gt; - inverser le sens de la courbe, &lt;b&gt;%2&lt;/b&gt; - finir la création</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="514"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1691"/>
@@ -8082,25 +7273,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Double flèche (texte au-dessus)</translation>
     </message>
     <message>
-        <source>Two arrows (text under)</source>
-        <translation type="vanished">Double flèche (texte au-dessous)</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_foldline.cpp" line="245"/>
         <source>Two arrows</source>
         <translation>Double flèche</translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation type="vanished">Saisir ici le texte</translation>
-    </message>
-    <message>
-        <source>Three dots</source>
-        <translation type="vanished">Trois points</translation>
-    </message>
-    <message>
-        <source>Three X</source>
-        <translation type="vanished">Trois X</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_contextmenus.cpp" line="450"/>
@@ -8150,13 +7325,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Multisize</source>
         <comment>measurements type</comment>
         <translation>Multi-tailles</translation>
-    </message>
-</context>
-<context>
-    <name>DialogSetupMultisize</name>
-    <message>
-        <source>Base:</source>
-        <translation type="vanished">Base :</translation>
     </message>
 </context>
 <context>
@@ -8231,61 +7399,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-</context>
-<context>
-    <name>DialogSinglePoint</name>
-    <message>
-        <source>Single point</source>
-        <translation type="vanished">Point unique</translation>
-    </message>
-    <message>
-        <source>Coordinates on the sheet</source>
-        <translation type="vanished">Coordonnées dans l&apos;espace de travail</translation>
-    </message>
-    <message>
-        <source>Coordinates</source>
-        <translation type="vanished">Coordonnées</translation>
-    </message>
-    <message>
-        <source>Y coordinate</source>
-        <translation type="vanished">Coordonnées Y</translation>
-    </message>
-    <message>
-        <source>X coordinate</source>
-        <translation type="vanished">Coordonnées X</translation>
-    </message>
-    <message>
-        <source>You can add a note here…</source>
-        <translation type="vanished">Vous pouvez ajouter une note ici…</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="vanished">Point</translation>
-    </message>
-    <message>
-        <source>Point name:</source>
-        <translation type="vanished">Nom du point :</translation>
-    </message>
-    <message>
-        <source>Unique label</source>
-        <translation type="vanished">Nom unique</translation>
-    </message>
-    <message>
-        <source>Choose unique label.</source>
-        <translation type="vanished">Saisissez un nom pas encore utilisé.</translation>
-    </message>
-    <message>
-        <source>Tool</source>
-        <translation type="vanished">Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogSpline</name>
@@ -8298,10 +7411,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.ui" line="14"/>
         <source>Simple curve</source>
         <translation>Courbe cubique simple</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.ui" line="181"/>
@@ -8376,10 +7485,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogSplinePath</name>
@@ -8397,10 +7502,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="298"/>
         <source>Select point of curve path</source>
         <translation>Sélectionner un point de la courbe</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Couleur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="352"/>
@@ -8534,10 +7635,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogSpread</name>
@@ -8594,10 +7691,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Représentation des rotations</translation>
     </message>
     <message>
-        <source>Show copies</source>
-        <translation type="vanished">Afficher les copies</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="107"/>
         <source>Enable to create a layer from original objects</source>
         <translation>Activer pour créer un calque à partir des objets d&apos;origine</translation>
@@ -8608,18 +7701,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Calque</translation>
     </message>
     <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des tags</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="146"/>
         <source>The original objects move into this layer and leave their other layers.</source>
         <translation>Les objets d&apos;origine entrent dans ce calque et quittent leurs autres calques.</translation>
@@ -8628,10 +7709,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="159"/>
         <source>Draw the mark of every rotation: the pivot, the two positions of the start point, and the two lines between them.</source>
         <translation>Dessine la marque de chaque rotation : le pivot, les deux positions du point de départ et les deux lignes qui les relient.</translation>
-    </message>
-    <message>
-        <source>Display of the rotations</source>
-        <translation type="vanished">Représentation des rotations</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="179"/>
@@ -8746,21 +7823,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Outil</translation>
     </message>
     <message>
-        <source>New:</source>
-        <translation type="vanished">Nouveau :</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="94"/>
         <source>Name:</source>
         <translation>Nom :</translation>
-    </message>
-    <message>
-        <source>Pen style:</source>
-        <translation type="vanished">Style de tracé :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="36"/>
@@ -8796,22 +7861,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="68"/>
         <source>Layer</source>
         <translation>Calque</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <translation type="vanished">Étiquettes :</translation>
-    </message>
-    <message>
-        <source>Close dart</source>
-        <translation type="vanished">Pince fermée</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparer chaque étiquette par une virgule.</translation>
-    </message>
-    <message>
-        <source>Add tags</source>
-        <translation type="vanished">Ajouter des étiquettes</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="120"/>
@@ -8896,10 +7945,6 @@ Cette action ne peut pas être annulée.</translation>
         <source>Tool</source>
         <translation>Outil</translation>
     </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
 </context>
 <context>
     <name>DialogTrueDarts</name>
@@ -8964,10 +8009,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="28"/>
         <source>Tool</source>
         <translation>Outil</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
     </message>
 </context>
 <context>
@@ -9276,14 +8317,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Opérations</translation>
     </message>
     <message>
-        <source>Layer</source>
-        <translation type="vanished">Calque</translation>
-    </message>
-    <message>
-        <source>Group</source>
-        <translation type="vanished">Groupe</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="541"/>
         <source>Flipping objects by axis</source>
         <translation>Miroir des objets par rapport à un axe</translation>
@@ -9334,10 +8367,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="551"/>
         <source>Internal mark</source>
         <translation>Repère interne</translation>
-    </message>
-    <message>
-        <source>Place label tool</source>
-        <translation type="vanished">Outil Placer un repère</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="554"/>
@@ -9746,10 +8775,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Fenêtre</translation>
     </message>
     <message>
-        <source>Tool options</source>
-        <translation type="vanished">Options</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="477"/>
         <source>Dependency tree</source>
         <translation>Arborescence des dépendances</translation>
@@ -9982,10 +9007,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Sélectionner le premier point de la courbe</translation>
     </message>
     <message>
-        <source>⚠ Perpendicular to the shoulder line required - Select the armhole point</source>
-        <translation type="vanished">⚠ Perpendiculaire à la ligne d&apos;épaule requise - Sélectionnez le point d&apos;emmanchure</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="403"/>
         <source>Select simple curve</source>
         <translation>Sélectionner la courbe simple</translation>
@@ -10183,18 +9204,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>&amp;Rétablir</translation>
     </message>
     <message>
-        <source>Layers</source>
-        <translation type="vanished">Calques</translation>
-    </message>
-    <message>
-        <source>Contains all layers</source>
-        <translation type="vanished">Contient tous les calques</translation>
-    </message>
-    <message>
-        <source>Object</source>
-        <translation type="vanished">Objet</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="177"/>
         <source>Pattern piece:</source>
         <translation>Pièce de patron :</translation>
@@ -10317,10 +9326,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow.ui" line="990"/>
         <source>Show/hide control points and curve direction</source>
         <translation>Montrer/cacher les points de contrôle et le sens de la courbe</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="vanished">Outils</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1627"/>
@@ -10624,14 +9629,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Point à mi-distance entre deux points</translation>
     </message>
     <message>
-        <source>Group</source>
-        <translation type="vanished">Groupe</translation>
-    </message>
-    <message>
-        <source>Show which details will go in layout</source>
-        <translation type="vanished">Pièces de patrons qui seront intégrées au plan de coupe</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="914"/>
         <source>Select first circle center</source>
         <translation>Sélectionner le point central du premier cercle</translation>
@@ -10877,10 +9874,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Segmenter une courbe</translation>
     </message>
     <message>
-        <source>Armhole curve passing through 3 points</source>
-        <translation type="vanished">Courbe d&apos;emmanchure passant par 3 points</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2506"/>
         <source>Place label tool</source>
         <translation>Outil Placer un repère</translation>
@@ -10889,10 +9882,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2452"/>
         <source>Duplicate detail tool</source>
         <translation>Outil Duplication de pièce</translation>
-    </message>
-    <message>
-        <source>Select placelabel center point</source>
-        <translation type="vanished">Sélectionner le centre du repère</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1152"/>
@@ -10933,10 +9922,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="531"/>
         <source>Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed automatically; hold &lt;b&gt;%1&lt;/b&gt; to reverse a curve, &lt;b&gt;%2&lt;/b&gt; to finish.</source>
         <translation>Sélectionnez les objets du chemin dans l&apos;ordre - le sens est libre, pas de sens horaire imposé. Une courbe pleine est inversée automatiquement ; maintenez &lt;b&gt;%1&lt;/b&gt; pour inverser une courbe, &lt;b&gt;%2&lt;/b&gt; pour terminer.</translation>
-    </message>
-    <message>
-        <source>Select one or more objects, hold &lt;b&gt;%1&lt;/b&gt; - for multiple selection, &lt;b&gt;%2&lt;/b&gt; - finish creation</source>
-        <translation type="vanished">Sélectionner un ou plusieurs objets en maintenant la touche &lt;b&gt;%1&lt;/b&gt; enfoncée pour une sélection multiple, puis la touche &lt;b&gt;%2&lt;/b&gt; pour terminer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2185"/>
@@ -11102,10 +10087,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Autoriser l&apos;affichage des noms de points des segments. Décochez pour les masquer dans tous les cas.</translation>
     </message>
     <message>
-        <source>Final Measurements (Tape)</source>
-        <translation type="vanished">Mesures finales (Tape)</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="148"/>
         <source>Information block</source>
         <translation>Bloc d&apos;information</translation>
@@ -11210,10 +10191,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1233"/>
         <source>Thumbnail</source>
         <translation>Miniature</translation>
-    </message>
-    <message>
-        <source>Export Final Measurements to CSV (Tape)</source>
-        <translation type="vanished">Exporter les mesures finales en CSV (Tape)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1255"/>
@@ -11840,6 +10817,26 @@ Voulez-vous le remplacer ?</translation>
         <translation>Laize %1 · métrage %2</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="323"/>
+        <source>Fabric</source>
+        <translation>Tissu</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="330"/>
+        <source>Lining</source>
+        <translation>Doublure</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="943"/>
+        <source>lining</source>
+        <translation>doublure</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="944"/>
+        <source>fabric</source>
+        <translation>tissu</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="362"/>
         <source>Nesting. Please, wait.</source>
         <translation>Imbrication en cours, merci de patienter.</translation>
@@ -11855,9 +10852,9 @@ Voulez-vous le remplacer ?</translation>
         <translation>Ce panel de tailles ne contient aucune pièce à imbriquer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="709"/>
-        <source>A cutting plan only takes the pieces whose fabric cut quantity is filled in (Details mode, Dock Options, Piece, Information).</source>
-        <translation>Un plan de coupe ne prend que les pièces dont la quantité de tissu est renseignée (mode Details, Dock Options, Pièce, Information).</translation>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="940"/>
+        <source>A cutting plan only takes the pieces whose %1 cut quantity is filled in (Details mode, Dock Options, Piece, Information).</source>
+        <translation>Un plan de coupe ne prend que les pièces dont la quantité de coupe %1 est renseignée (mode Details, Dock Options, Pièce, Information).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1074"/>
@@ -11902,10 +10899,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2278"/>
         <source>Dart cap</source>
         <translation>Chapeau de pince</translation>
-    </message>
-    <message>
-        <source>Select the dart point</source>
-        <translation type="vanished">Sélectionner la pointe de la pince</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="192"/>
@@ -11964,10 +10957,6 @@ Cette action ne peut pas être annulée.</translation>
             <numerusform>%n fichier laissé intact :</numerusform>
             <numerusform>%n fichiers laissés intacts :</numerusform>
         </translation>
-    </message>
-    <message>
-        <source>Select the apex of the dart, then the two points of its opening, and the point that carries the edge when no curve does - then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="vanished">Sélectionnez la pointe de la pince, puis les deux points de son ouverture, et le point qui porte le bord quand aucune courbe ne le fait - puis &lt;b&gt;%1&lt;/b&gt; pour confirmer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="351"/>
@@ -12339,10 +11328,6 @@ Voulez-vous enregistrer les modifications avant de fermer ?</translation>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <source>Save As…</source>
-        <translation type="vanished">Enregistrer sous…</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="155"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="391"/>
         <source>Home</source>
@@ -12660,38 +11645,6 @@ Voulez-vous le remplacer ?</translation>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="570"/>
         <source>Annotation style removed</source>
         <translation>Style d&apos;annotation supprimé</translation>
-    </message>
-    <message>
-        <source>Thin</source>
-        <translation type="vanished">Fine</translation>
-    </message>
-    <message>
-        <source>Extra Light</source>
-        <translation type="vanished">Extra-léger</translation>
-    </message>
-    <message>
-        <source>Light</source>
-        <translation type="vanished">Léger</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="vanished">Normal</translation>
-    </message>
-    <message>
-        <source>Medium</source>
-        <translation type="vanished">Moyen</translation>
-    </message>
-    <message>
-        <source>Demi Bold</source>
-        <translation type="vanished">Demi-gras</translation>
-    </message>
-    <message>
-        <source>Bold</source>
-        <translation type="vanished">Gras</translation>
-    </message>
-    <message>
-        <source>Extra Bold</source>
-        <translation type="vanished">Extra-gras</translation>
     </message>
 </context>
 <context>
@@ -13384,14 +12337,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Afficher la ligne de symétrie</translation>
     </message>
     <message>
-        <source>No text</source>
-        <translation type="vanished">Sans texte</translation>
-    </message>
-    <message>
-        <source>With text</source>
-        <translation type="vanished">Avec texte</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="797"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="1067"/>
         <source>Cut on fold</source>
@@ -13659,14 +12604,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Nom</translation>
     </message>
     <message>
-        <source>/ auto total</source>
-        <translation type="vanished">/ total automatique</translation>
-    </message>
-    <message>
-        <source>Number</source>
-        <translation type="vanished">Numéro</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="228"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="476"/>
         <source>Graded alignment</source>
@@ -13762,26 +12699,10 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Afficher le point d&apos;alignement</translation>
     </message>
     <message>
-        <source>Forbid piece be mirrored in a layout.</source>
-        <translation type="vanished">Interdire le retournement de la pièce dans le plan de coupe.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="320"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="511"/>
         <source>Force piece to be always flipped in a layout.</source>
         <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
-    </message>
-    <message>
-        <source>When the number of copies is greater than 1 and either &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically. The &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy.</source>
-        <translation type="vanished">Si le nombre de copies est supérieur à 1 et que l&apos;option &quot;Forcer le placement en miroir&quot; ou &quot;Interdire le placement en miroir&quot; est sélectionnée, chaque copie paire de la pièce sera retournée verticalement. L&apos;option &quot;Forcer le placement en miroir&quot; ou &quot;Interdire le placement en miroir&quot; sera également inversée à chaque copie, en appliquant l&apos;opposé de l&apos;option initialement sélectionnée pour chaque copie suivante.</translation>
-    </message>
-    <message>
-        <source>Force piece to always follow grainline direction regardless of layout settings.</source>
-        <translation type="vanished">Forcer le placement de la pièce dans le droit-fil, quel que soit le réglage du plan de coupe.</translation>
-    </message>
-    <message>
-        <source>- Remove passmarks</source>
-        <translation type="vanished">- Retirer des crans</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="343"/>
@@ -13806,10 +12727,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="522"/>
         <source>Seam Allowance</source>
         <translation>Marge de couture</translation>
-    </message>
-    <message>
-        <source>Internal path</source>
-        <translation type="vanished">Chemin interne</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="447"/>
@@ -13863,10 +12780,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Cliquez sur les points pour ajouter des crans d&apos;assemblage - Entrée pour confirmer, Échap pour annuler</translation>
     </message>
     <message>
-        <source>Click passmark points to remove - Enter to confirm, Esc to cancel</source>
-        <translation type="vanished">Cliquez sur les points des crans à retirer - Entrée pour confirmer, Échap pour annuler</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1283"/>
         <source>Click the point to align on, on the piece outline (Esc to cancel)</source>
         <translation>Cliquez sur le point d&apos;alignement, sur le contour de la pièce (Échap pour annuler)</translation>
@@ -13875,10 +12788,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1298"/>
         <source>This point is not on the piece outline - click a point of the piece</source>
         <translation>Ce point n&apos;est pas sur le contour de la pièce - cliquez sur un point de la pièce</translation>
-    </message>
-    <message>
-        <source>%1 point(s) selected - Enter to confirm, Esc to cancel</source>
-        <translation type="vanished">%1 point(s) sélectionné(s) - Entrée pour confirmer, Échap pour annuler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1145"/>
@@ -13942,10 +12851,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>En forme de coche</translation>
     </message>
     <message>
-        <source>Forbid flipping</source>
-        <translation type="vanished">Interdire le placement en miroir</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="319"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="507"/>
         <source>Force flipping</source>
@@ -13956,10 +12861,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="515"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
-    </message>
-    <message>
-        <source>Follow grainline</source>
-        <translation type="vanished">Respecter le droit-fil</translation>
     </message>
 </context>
 <context>
@@ -14072,13 +12973,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/tools/nodeDetails/onodeplacelabel.cpp" line="159"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
-    </message>
-</context>
-<context>
-    <name>ODetailsPropertyBrowser</name>
-    <message>
-        <source>Select a piece</source>
-        <translation type="vanished">Sélectionner une pièce</translation>
     </message>
 </context>
 <context>
@@ -14271,10 +13165,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Prêt</translation>
     </message>
     <message>
-        <source>Invalid name</source>
-        <translation type="vanished">Nom non valide</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="544"/>
         <source>Invalid layer name</source>
         <translation>Nom de calque invalide</translation>
@@ -14418,25 +13308,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Couleur du tracé :</translation>
     </message>
     <message>
-        <source>Inner edge:</source>
-        <translation type="vanished">Bord interne :</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="vanished">Couleur :</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="57"/>
         <source>Curve:</source>
         <translation>Courbe :</translation>
-    </message>
-    <message>
-        <source>Outer edge:</source>
-        <translation type="vanished">Bord externe :</translation>
-    </message>
-    <message>
-        <source>Joining lines:</source>
-        <translation type="vanished">Lignes de raccord :</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="236"/>
@@ -15027,10 +13901,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Cliquez un point de la pièce : c&apos;est le point d&apos;ancrage de la portion</translation>
     </message>
     <message>
-        <source>Create the part that will receive the portion first: a transfer goes to a part built after this one.</source>
-        <translation type="vanished">Créez d&apos;abord la pièce qui doit recevoir la portion : un transfert va vers une pièce construite après celle-ci.</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="356"/>
         <source>This pattern has no part that could receive the portion.</source>
         <translation>Ce patron n&apos;a aucune pièce pouvant recevoir la portion.</translation>
@@ -15288,11 +14158,34 @@ Cette action ne peut pas être annulée.</translation>
     </message>
 </context>
 <context>
+    <name>OExportCuttingFile</name>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="230"/>
+        <source>Fabric</source>
+        <translation>Tissu</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="229"/>
+        <source>Lining</source>
+        <translation>Doublure</translation>
+    </message>
+</context>
+<context>
     <name>OExportCuttingFileDialog</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="66"/>
         <source>Export the cutting plan</source>
         <translation>Exporter le plan de coupe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="109"/>
+        <source>Fabric:</source>
+        <translation>Tissu :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="110"/>
+        <source>Lining:</source>
+        <translation>Doublure :</translation>
     </message>
 </context>
 <context>
@@ -15301,6 +14194,16 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="648"/>
         <source>Fabric width:</source>
         <translation>Laize :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="870"/>
+        <source>Lining</source>
+        <translation>Doublure</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="871"/>
+        <source>Lining width:</source>
+        <translation>Laize doublure :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="667"/>
@@ -15676,8 +14579,14 @@ Décochez un membre pour l&apos;écarter de ce run. Tout coché est ce qu&apos;u
         <translation>Export</translation>
     </message>
     <message>
-        <source>Coming soon</source>
-        <translation type="vanished">Bientôt disponible</translation>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="537"/>
+        <source>Cut-%1</source>
+        <translation>Coupe-%1</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="570"/>
+        <source>Plot-%1x%2</source>
+        <translation>Traceur-%1x%2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1177"/>
@@ -15776,34 +14685,6 @@ Donnez à chacune un droit-fil ou une ligne de pli dans le mode Details, puis re
         <source>Plotter favorites</source>
         <translation>Favoris de traceur</translation>
     </message>
-    <message>
-        <source>Projector</source>
-        <translation type="vanished">Projecteur</translation>
-    </message>
-    <message>
-        <source>Document width</source>
-        <translation type="vanished">Largeur du document</translation>
-    </message>
-    <message>
-        <source>Document width:</source>
-        <translation type="vanished">Largeur du document :</translation>
-    </message>
-    <message>
-        <source>Size range</source>
-        <translation type="vanished">Panel de tailles</translation>
-    </message>
-    <message>
-        <source>Single size</source>
-        <translation type="vanished">Taille unique</translation>
-    </message>
-    <message>
-        <source>Nest:</source>
-        <translation type="vanished">Imbriquer :</translation>
-    </message>
-    <message>
-        <source>Size range:</source>
-        <translation type="vanished">Panel de tailles :</translation>
-    </message>
 </context>
 <context>
     <name>OExportPaginationSettings</name>
@@ -15901,10 +14782,6 @@ Une pièce plus grande que lui est découpée en morceaux aux bords du tapis, à
         <source>A3/Tabloid framed</source>
         <translation>A3/Tabloïd avec cadre</translation>
     </message>
-    <message>
-        <source>Tiled Framed</source>
-        <translation type="vanished">Tuilé avec cadre</translation>
-    </message>
 </context>
 <context>
     <name>OExportPrintWidget</name>
@@ -15912,10 +14789,6 @@ Une pièce plus grande que lui est découpée en morceaux aux bords du tapis, à
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="743"/>
         <source>Unit:</source>
         <translation>Unité :</translation>
-    </message>
-    <message>
-        <source>Nest:</source>
-        <translation type="vanished">À nidifier :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="381"/>
@@ -16653,32 +15526,12 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Enregistrer sous…</translation>
     </message>
     <message>
-        <source>Add Logo</source>
-        <translation type="vanished">Ajouter un logo</translation>
-    </message>
-    <message>
-        <source>Remove Logo</source>
-        <translation type="vanished">Supprimer le logo</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="202"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="221"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="512"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="812"/>
         <source>Name</source>
         <translation>Nom</translation>
-    </message>
-    <message>
-        <source>Notes</source>
-        <translation type="vanished">Notes</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">Chemin</translation>
-    </message>
-    <message>
-        <source>Logo name</source>
-        <translation type="vanished">Nom du logo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="147"/>
@@ -16718,14 +15571,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="827"/>
         <source>Name:</source>
         <translation>Nom :</translation>
-    </message>
-    <message>
-        <source>Notes:</source>
-        <translation type="vanished">Notes :</translation>
-    </message>
-    <message>
-        <source>No logos yet. Add one.</source>
-        <translation type="vanished">Aucun logo pour l&apos;instant. Ajoutez-en un.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="193"/>
@@ -16909,30 +15754,6 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Bloc d&apos;information non enregistré</translation>
     </message>
     <message>
-        <source>Remove language</source>
-        <translation type="vanished">Retirer la langue</translation>
-    </message>
-    <message>
-        <source>Add language</source>
-        <translation type="vanished">Ajouter une langue</translation>
-    </message>
-    <message>
-        <source>SVG files (*.svg)</source>
-        <translation type="vanished">Fichiers SVG (*.svg)</translation>
-    </message>
-    <message>
-        <source>Logo added</source>
-        <translation type="vanished">Logo ajouté</translation>
-    </message>
-    <message>
-        <source>Remove the logo &quot;%1&quot; from the library?</source>
-        <translation type="vanished">Supprimer le logo « %1 » de la bibliothèque ?</translation>
-    </message>
-    <message>
-        <source>Logo removed</source>
-        <translation type="vanished">Logo supprimé</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="590"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="641"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="893"/>
@@ -16981,10 +15802,6 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1287"/>
         <source>Information block</source>
         <translation>Bloc d&apos;information</translation>
-    </message>
-    <message>
-        <source>No templates yet. Create one.</source>
-        <translation type="vanished">Aucun modèle pour l&apos;instant. Créez-en un.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1245"/>
@@ -17466,29 +16283,9 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Activer le bloc d&apos;information</translation>
     </message>
     <message>
-        <source>Activate seam allowances for all pieces</source>
-        <translation type="vanished">Activer les marges de couture pour toutes les pièces</translation>
-    </message>
-    <message>
-        <source>Hide main path for all pieces</source>
-        <translation type="vanished">Cacher le contour principal pour toutes les pièces</translation>
-    </message>
-    <message>
-        <source>Show the second passmark on seam line for all pieces</source>
-        <translation type="vanished">Afficher le second cran d&apos;assemblage sur la ligne de couture pour toutes les pièces</translation>
-    </message>
-    <message>
-        <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
-        <translation type="vanished">Exporter la ligne de couture avec les tracés pour toutes les pièces (DXF-AAMA)</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
         <source>Information block</source>
         <translation>Bloc d&apos;information</translation>
-    </message>
-    <message>
-        <source>Activate information block for all pieces</source>
-        <translation type="vanished">Activer le bloc d&apos;information pour toutes les pièces</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="255"/>
@@ -17919,14 +16716,6 @@ Load a measurement table that defines them, then insert the piece.</source>
         <translation>La pièce n&apos;a pas pu être copiée dans la bibliothèque.</translation>
     </message>
     <message>
-        <source>It needs nothing: everything it reads, it declares.</source>
-        <translation type="vanished">Elle n&apos;a besoin de rien : tout ce qu&apos;elle lit, elle le déclare.</translation>
-    </message>
-    <message>
-        <source>Needs:</source>
-        <translation type="vanished">A besoin de :</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="230"/>
         <source>This piece could not be read: %1</source>
         <translation>Cette pièce n&apos;a pas pu être lue : %1</translation>
@@ -18194,21 +16983,9 @@ Name the piece entering:</source>
         <translation>Si le nombre de copies est supérieur à 1 et que l&apos;option « Forcer le placement en miroir » est sélectionnée, chaque copie paire de la pièce sera retournée verticalement.</translation>
     </message>
     <message>
-        <source>Forbid piece be mirrored in a layout.</source>
-        <translation type="vanished">Interdire le retournement de la pièce dans le plan de coupe.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="127"/>
         <source>Force piece to be always flipped in a layout.</source>
         <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
-    </message>
-    <message>
-        <source>When the number of copies is greater than 1 and either &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically. The &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy.</source>
-        <translation type="vanished">Si le nombre de copies est supérieur à 1 et que l&apos;option &quot;Forcer le placement en miroir&quot; ou &quot;Interdire le placement en miroir&quot; est sélectionnée, chaque copie paire de la pièce sera retournée verticalement. L&apos;option &quot;Forcer le placement en miroir&quot; ou &quot;Interdire le placement en miroir&quot; sera également inversée à chaque copie, en appliquant l&apos;opposé de l&apos;option initialement sélectionnée pour chaque copie suivante.</translation>
-    </message>
-    <message>
-        <source>Force piece to always follow grainline direction regardless of layout settings.</source>
-        <translation type="vanished">Forcer le placement de la pièce dans le droit-fil, quel que soit le réglage du plan de coupe.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="148"/>
@@ -18221,10 +16998,6 @@ Name the piece entering:</source>
         <translation>Au pli</translation>
     </message>
     <message>
-        <source>Forbid flipping</source>
-        <translation type="vanished">Interdire le placement en miroir</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="126"/>
         <source>Force flipping</source>
         <translation>Forcer le placement en miroir</translation>
@@ -18233,10 +17006,6 @@ Name the piece entering:</source>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
-    </message>
-    <message>
-        <source>Follow grainline</source>
-        <translation type="vanished">Respecter le droit-fil</translation>
     </message>
 </context>
 <context>
@@ -18984,10 +17753,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Un espace vide, pour aérer la page : donnez-lui la hauteur qu&apos;il doit prendre, et rien n&apos;y est dessiné.</translation>
     </message>
     <message>
-        <source>Axis</source>
-        <translation type="vanished">Axe</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="192"/>
         <source>Measurement</source>
@@ -19018,10 +17783,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="102"/>
         <source>Cut</source>
         <translation>Coupe</translation>
-    </message>
-    <message>
-        <source>Write this information in each language of the block</source>
-        <translation type="vanished">Écrire cette information dans chaque langue du bloc</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="132"/>
@@ -19112,10 +17873,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Tailles (Stature, Taille commerciale, Groupe...)</translation>
     </message>
     <message>
-        <source>Requires a multi-size table (.omt). Shows a size-axis value under its user-given name. With a single-size table, this information is simply ignored.</source>
-        <translation type="vanished">Nécessite un tableau multi-tailles (.omt). Affiche une valeur d&apos;axe de taille sous son nom défini par l&apos;utilisateur. Avec un tableau taille unique, cette information est simplement ignorée.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="193"/>
         <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
         <translation>Lu depuis le tableau de tailles du patron. Affiche le nom complet de la mesure, sa valeur calculée à la taille de référence et son unité.</translation>
@@ -19190,18 +17947,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Sélectionnez une section pour modifier ses paramètres.</translation>
     </message>
     <message>
-        <source>Default</source>
-        <translation type="vanished">Par défaut</translation>
-    </message>
-    <message>
-        <source>Extra vertical space between this line and the next one. 0 = default spacing, negative = tighter, positive = more space.</source>
-        <translation type="vanished">Espace vertical supplémentaire entre cette ligne et la suivante. 0 = interligne par défaut, négatif = plus serré, positif = plus d&apos;espace.</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="vanished">Aucun</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="309"/>
         <source>Extra vertical space below this line. 0 = default spacing, negative = tighter, positive = more space. It counts on the last line of the information as well, which is what moves what stands beneath it.</source>
         <translation>Espace vertical supplémentaire sous cette ligne. 0 = espacement par défaut, négatif = plus serré, positif = plus d&apos;espace. Il compte aussi sur la dernière ligne de l&apos;information, et c&apos;est lui qui déplace ce qui se trouve en dessous.</translation>
@@ -19256,30 +18001,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <source>Choose…</source>
         <translation>Choisir…</translation>
     </message>
-    <message>
-        <source>When checked, you will write this information once for each language of the block, in the pattern (or piece) options. It is not translated automatically.</source>
-        <translation type="vanished">Si cette case est cochée, vous écrirez cette information une fois pour chaque langue du bloc, dans les options du patron (ou de la pièce). Elle n&apos;est pas traduite automatiquement.</translation>
-    </message>
-    <message>
-        <source>Fabric</source>
-        <translation type="vanished">Tissu</translation>
-    </message>
-    <message>
-        <source>Interfacing</source>
-        <translation type="vanished">Entoilage</translation>
-    </message>
-    <message>
-        <source>Lining</source>
-        <translation type="vanished">Doublure</translation>
-    </message>
-    <message>
-        <source>Cut</source>
-        <translation type="vanished">Coupe</translation>
-    </message>
-    <message>
-        <source>On fold</source>
-        <translation type="vanished">Au pli</translation>
-    </message>
 </context>
 <context>
     <name>OThumbnailConfigWidget</name>
@@ -19332,14 +18053,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="223"/>
         <source>Seam allowances to show for %1</source>
         <translation>Marges de couture à afficher pour %1</translation>
-    </message>
-    <message>
-        <source>Piece miniature</source>
-        <translation type="vanished">Miniature de la pièce</translation>
-    </message>
-    <message>
-        <source>The miniature draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis - so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
-        <translation type="vanished">La miniature dessine la pièce avec ses marges de couture, ses crans et ses chemins internes, à la taille de référence de chaque axe - elle continue donc de montrer la même taille quand la taille active change. Déplacez-la et redimensionnez-la directement sur le plan de travail.</translation>
     </message>
 </context>
 <context>
@@ -19422,10 +18135,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
 <context>
     <name>OToolCloseDart</name>
     <message>
-        <source>Closing divisor:</source>
-        <translation type="vanished">Diviseur de fermeture :</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="366"/>
         <source>Pivot point</source>
         <translation>Point pivot</translation>
@@ -19466,18 +18175,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
 </context>
 <context>
     <name>OToolDartCap</name>
-    <message>
-        <source>Error calculating point &apos;%1&apos;. The line of the pattern through %2 does not meet the axis of the dart %3-%4-%5</source>
-        <translation type="vanished">Erreur de calcul du point &apos;%1&apos;. La ligne du patron passant par %2 ne rencontre pas l&apos;axe de la pince %3-%4-%5</translation>
-    </message>
-    <message>
-        <source>Cap of the dart %1-%2-%3</source>
-        <translation type="vanished">Chapeau de la pince %1-%2-%3</translation>
-    </message>
-    <message>
-        <source>Error calculating point &apos;%1&apos;. No edge of the piece was read at the opening of the dart %2-%3-%4</source>
-        <translation type="vanished">Erreur de calcul du point « %1 ». Aucun bord de la pièce n’a été lu à l’ouverture de la pince %2-%3-%4</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1028"/>
         <source>dart cap</source>
@@ -19543,17 +18240,9 @@ L&apos;enregistrer avant de le quitter ?</translation>
 <context>
     <name>OToolPleat</name>
     <message>
-        <source>the prise</source>
-        <translation type="vanished">la prise</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="637"/>
         <source>pleat</source>
         <translation>pli</translation>
-    </message>
-    <message>
-        <source>Pleat</source>
-        <translation type="vanished">Pli</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="1263"/>
@@ -19569,22 +18258,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="652"/>
         <source>hide the fold lines</source>
         <translation>masquer les lignes de pli</translation>
-    </message>
-    <message>
-        <source>show the fold line</source>
-        <translation type="vanished">afficher la ligne de pli</translation>
-    </message>
-    <message>
-        <source>hide the fold line</source>
-        <translation type="vanished">masquer la ligne de pli</translation>
-    </message>
-    <message>
-        <source>show the fold</source>
-        <translation type="vanished">afficher le pli</translation>
-    </message>
-    <message>
-        <source>hide the fold</source>
-        <translation type="vanished">masquer le pli</translation>
     </message>
 </context>
 <context>
@@ -19629,18 +18302,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="693"/>
         <source>Rotations</source>
         <translation>Rotations</translation>
-    </message>
-    <message>
-        <source>Show copies</source>
-        <translation type="vanished">Afficher les copies</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="vanished">Oui</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="vanished">Non</translation>
     </message>
 </context>
 <context>
@@ -19928,20 +18589,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/libs/vtools/undocommands/image/opaquebackgroundimage.cpp" line="37"/>
         <source>change a background image opacity</source>
         <translation>Modifier l&apos;opacité de l&apos;image</translation>
-    </message>
-</context>
-<context>
-    <name>PathPage</name>
-    <message>
-        <source>Patterns</source>
-        <translation type="vanished">Patrons</translation>
-    </message>
-</context>
-<context>
-    <name>Placeholder</name>
-    <message>
-        <source>Cut</source>
-        <translation type="vanished">Couper</translation>
     </message>
 </context>
 <context>
@@ -20415,17 +19062,9 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <translation>Réglages des pièces</translation>
     </message>
     <message>
-        <source>Forbid flipping</source>
-        <translation type="vanished">Interdire le placement en miroir</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="219"/>
         <source>Show second passmark on seam line</source>
         <translation>Afficher le second cran d&apos;assemblage sur la ligne de couture</translation>
-    </message>
-    <message>
-        <source>By default forbid flipping for all new created workpieces</source>
-        <translation type="vanished">Interdire par défaut le retournement des pièces de patron nouvellement créées</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="226"/>
@@ -21344,26 +19983,6 @@ This option will take an affect after restart.</source>
         <translation>Erreur d&apos;analyse : %1</translation>
     </message>
     <message>
-        <source>Point</source>
-        <translation type="vanished">Point</translation>
-    </message>
-    <message>
-        <source>Spline</source>
-        <translation type="vanished">Courbe</translation>
-    </message>
-    <message>
-        <source>Spline path</source>
-        <translation type="vanished">Courbe complexe à points de contrôle</translation>
-    </message>
-    <message>
-        <source>Arc</source>
-        <translation type="vanished">Arc</translation>
-    </message>
-    <message>
-        <source>Elliptical arc</source>
-        <translation type="vanished">Arc elliptique</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vlayout/vbank.cpp" line="418"/>
         <source>Piece &apos;%1&apos; has invalid layout allowance. Please, check seam allowance to check how seam allowance behave.</source>
         <translation>La pièce &apos;%1&apos; a une valeur de marge invalide dans le plan de coupe. Merci de vérifier la marge de couture pour vérifier son comportement.</translation>
@@ -22025,25 +20644,11 @@ This option will take an affect after restart.</source>
     </message>
 </context>
 <context>
-    <name>RemoveItemFromAttachment</name>
-    <message>
-        <source>Remove item from attachment</source>
-        <translation type="vanished">Retirer un élément de l&apos;attachement</translation>
-    </message>
-</context>
-<context>
     <name>RemoveItemFromGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="349"/>
         <source>Remove item from group</source>
         <translation>Retirer l&apos;objet du groupe</translation>
-    </message>
-</context>
-<context>
-    <name>RenameAttachment</name>
-    <message>
-        <source>rename attachment</source>
-        <translation type="vanished">Renommer un attachement</translation>
     </message>
 </context>
 <context>
@@ -22399,36 +21004,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
         <source>Delete measurement</source>
         <translation>Supprimer la mesure</translation>
-    </message>
-</context>
-<context>
-    <name>TKMMainWindow</name>
-    <message>
-        <source>Delete measurement</source>
-        <translation type="vanished">Supprimer la mesure</translation>
-    </message>
-    <message>
-        <source>Full name:</source>
-        <translation type="vanished">Nom complet :</translation>
-    </message>
-</context>
-<context>
-    <name>TMainWindow</name>
-    <message>
-        <source>Base value:</source>
-        <translation type="vanished">Valeur de base :</translation>
-    </message>
-    <message>
-        <source>Full name:</source>
-        <translation type="vanished">Nom complet :</translation>
-    </message>
-    <message>
-        <source>Notes:</source>
-        <translation type="vanished">Notes :</translation>
-    </message>
-    <message>
-        <source>Delete measurement</source>
-        <translation type="vanished">Supprimer la mesure</translation>
     </message>
 </context>
 <context>
@@ -22850,14 +21425,6 @@ Voulez-vous continuer ?</translation>
         <translation>Tous les objets du contour doivent se suivre dans le sens horaire.</translation>
     </message>
     <message>
-        <source>Forbid piece be mirrored in a layout.</source>
-        <translation type="vanished">Interdire le retournement de la pièce dans le plan de coupe.</translation>
-    </message>
-    <message>
-        <source>Forbid flipping</source>
-        <translation type="vanished">Interdire le placement en miroir</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabpaths.ui" line="381"/>
         <source>Ready!</source>
         <translation>Prêt !</translation>
@@ -22913,21 +21480,9 @@ Voulez-vous continuer ?</translation>
         <translation>Afficher la ligne de symétrie</translation>
     </message>
     <message>
-        <source>When the number of copies is greater than 1 and either &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically. The &apos;Force Flipping&apos; or &apos;Forbid Flipping&apos; setting will also toggle for each copy, applying the opposite of the initially selected option for each subsequent copy.</source>
-        <translation type="vanished">Si le nombre de copies est supérieur à 1 et que les options &quot;Forcer le placement en miroir&quot; ou &quot;Interdire le placement en miroir&quot;, sont sélectionnées, chaque copie paire de la pièce sera retournée verticalement. L&apos;option &quot;Forcer le placement en miroir&quot; ou &quot;Interdire le placement en miroir&quot;, sera aussi inversée dans ces copies paires par rapport à l&apos;option initialement cochée.</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabpaths.ui" line="466"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
-    </message>
-    <message>
-        <source>Force piece to always follow grainline direction regardless of layout settings.</source>
-        <translation type="vanished">Forcer le placement de la pièce dans le droit-fil, quel que soit le réglage du plan de coupe.</translation>
-    </message>
-    <message>
-        <source>Follow grainline</source>
-        <translation type="vanished">Respecter le droit-fil</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabpaths.ui" line="487"/>
@@ -23145,14 +21700,6 @@ Voulez-vous continuer ?</translation>
         <translation>Sur le dessin</translation>
     </message>
     <message>
-        <source>Short name:</source>
-        <translation type="vanished">Nom abrégé :</translation>
-    </message>
-    <message>
-        <source>Name used to generate a variable</source>
-        <translation type="vanished">Nom utilisé pour générer une variable</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabpaths.ui" line="89"/>
         <source>Export to DXF-AAMA sew line on Draw layer</source>
         <translation>Lors d&apos;un export au format DXF-AAMA, inclure les données dans le calque Dessin</translation>
@@ -23164,13 +21711,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/tabs/tabplacelabels.ui" line="14"/>
         <source>Dialog</source>
         <translation>Boîte de dialogue</translation>
-    </message>
-</context>
-<context>
-    <name>TapeConfigDialog</name>
-    <message>
-        <source>Apply</source>
-        <translation type="vanished">Appliquer</translation>
     </message>
 </context>
 <context>
@@ -23195,13 +21735,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="97"/>
         <source>piece flipping</source>
         <translation>Reproduction en miroir de la pièce</translation>
-    </message>
-</context>
-<context>
-    <name>TogglePieceForceForbidFlipping</name>
-    <message>
-        <source>piece flipping</source>
-        <translation type="vanished">Reproduction en miroir de la pièce</translation>
     </message>
 </context>
 <context>
@@ -23629,10 +22162,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3083"/>
         <source>Group</source>
         <translation>Groupe</translation>
-    </message>
-    <message>
-        <source>New group</source>
-        <translation type="vanished">Nouveau groupe</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="804"/>
@@ -24135,16 +22664,6 @@ Voulez-vous continuer ?</translation>
         <translation>Outil &apos;Volant escargot&apos;</translation>
     </message>
     <message>
-        <source>Tool &apos;Layer&apos;</source>
-        <comment>shortcut for action</comment>
-        <translation type="vanished">Outil « Calque »</translation>
-    </message>
-    <message>
-        <source>Tool &apos;Attach&apos;</source>
-        <comment>shortcut for action</comment>
-        <translation type="vanished">Outil « Attacher »</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="482"/>
         <source>Tool &apos;Close dart&apos;</source>
         <comment>shortcut for action</comment>
@@ -24247,11 +22766,6 @@ Voulez-vous continuer ?</translation>
         <translation>Outil &apos;Arc elliptique&apos;</translation>
     </message>
     <message>
-        <source>Tool &apos;Pin&apos;</source>
-        <comment>shortcut for action</comment>
-        <translation type="vanished">Outil &apos;Epingle&apos;</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="506"/>
         <source>Tool &apos;Insert node&apos;</source>
         <comment>shortcut for action</comment>
@@ -24292,14 +22806,6 @@ Voulez-vous continuer ?</translation>
         <source>Tool &apos;Graduated curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>Outil &apos;Gradation de courbe&apos;</translation>
-    </message>
-    <message>
-        <source>Tool &apos;Close dart&apos;</source>
-        <translation type="vanished">Outil &apos;Fermer une pince&apos;</translation>
-    </message>
-    <message>
-        <source>Tool &apos;Dart cap&apos;</source>
-        <translation type="vanished">Outil &apos;Chapeau de pince&apos;</translation>
     </message>
 </context>
 <context>
@@ -24987,10 +23493,6 @@ Voulez-vous continuer ?</translation>
         <translation>La hauteur de page</translation>
     </message>
     <message>
-        <source>Order detail to follow grainline direction (export mode).</source>
-        <translation type="vanished">Tenir compte de la direction du droit-fil dans le placement des pièces (mode export).</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="635"/>
         <source>&lt;Time&gt; in minutes given for the algorithm to find best layout. Time must be in range from 1 minute to 60 minutes. Default value 1 minute.</source>
         <translation>&lt;Time&gt; en minutes données à l&apos;algorithme pour trouver le meilleur plan de coupe. La durée doit être comprise entre 1 et 60 minutes. Valeur par défaut 1 minute.</translation>
@@ -25540,14 +24042,6 @@ Voulez-vous continuer ?</translation>
         <source>Line_%1_%2</source>
         <translation>Ligne_%1_%2</translation>
     </message>
-    <message>
-        <source>Close dart</source>
-        <translation type="vanished">Fermer une pince</translation>
-    </message>
-    <message>
-        <source>Dart cap</source>
-        <translation type="vanished">Chapeau de pince</translation>
-    </message>
 </context>
 <context>
     <name>VDomDocument</name>
@@ -25656,18 +24150,6 @@ Voulez-vous continuer ?</translation>
         <translation>En cours</translation>
     </message>
     <message>
-        <source>Cannot Delete Object</source>
-        <translation type="vanished">Impossible de supprimer cet objet</translation>
-    </message>
-    <message>
-        <source>This object cannot be deleted because it is being used by other items.</source>
-        <translation type="vanished">Cet objet ne peut pas être supprimé car il est utilisé par d&apos;autres.</translation>
-    </message>
-    <message>
-        <source>Please resolve the dependencies before attempting to delete this object.</source>
-        <translation type="vanished">Merci de modifier les dépendances avant de tenter de supprimer cet objet.</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="535"/>
         <source>add objects to a layer</source>
         <translation>ajouter des objets à un calque</translation>
@@ -25678,17 +24160,9 @@ Voulez-vous continuer ?</translation>
         <translation>retirer des objets d’un calque</translation>
     </message>
     <message>
-        <source>Detach all</source>
-        <translation type="vanished">Tout détacher</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="656"/>
         <source>This id (%1) is not unique.</source>
         <translation>Cet identifiant (%1) n&apos;est pas unique.</translation>
-    </message>
-    <message>
-        <source>Add to group</source>
-        <translation type="vanished">Ajouter au groupe</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="370"/>
@@ -25704,10 +24178,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="454"/>
         <source>Show Point name</source>
         <translation>Afficher le nom du point</translation>
-    </message>
-    <message>
-        <source>Remove from group</source>
-        <translation type="vanished">Retirer du groupe</translation>
     </message>
 </context>
 <context>
@@ -26102,10 +24572,6 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VNodePoint</name>
     <message>
-        <source>Options</source>
-        <translation type="vanished">Réglages pièce</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="491"/>
         <source>In layout</source>
         <translation>Dans le plan de coupe</translation>
@@ -26114,10 +24580,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="510"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
-    </message>
-    <message>
-        <source>Forbid flipping</source>
-        <translation type="vanished">Interdire le placement en miroir</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="471"/>
@@ -26283,10 +24745,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="572"/>
         <source>Box mark</source>
         <translation>Rectangle</translation>
-    </message>
-    <message>
-        <source>Turn point</source>
-        <translation type="vanished">Point de changement de direction</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="578"/>
@@ -27683,10 +26141,6 @@ Voulez-vous continuer ?</translation>
         <translation>Impossible de calculer un cran d&apos;assemblage pour le point &apos;%1&apos; dans la pièce &apos;%2&apos;. Impossible de trouver une intersection.</translation>
     </message>
     <message>
-        <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos; with built-in seam allowance. User must manually provide length.</source>
-        <translation type="vanished">Impossible de calculer un cran d&apos;assemblage pour le point &apos;%1&apos; dans la pièce &apos;%2&apos; avec la marge de couture intégrée. Merci de saisir une longueur manuelle.</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1246"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;. Seam allowance is empty.</source>
         <translation>Impossible de calculer un cran d&apos;assemblage pour le point &apos;%1&apos; dans la pièce &apos;%2&apos;. La marge de couture n&apos;est pas renseignée.</translation>
@@ -27934,10 +26388,6 @@ Voulez-vous continuer ?</translation>
         <translation>Un transfert sans ses deux points de fusion a été ignoré.</translation>
     </message>
     <message>
-        <source>Error creating or updating the operation of transfer</source>
-        <translation type="vanished">Erreur de création ou de mise à jour de l&apos;opération de transfert</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="557"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="563"/>
         <source>Error creating or updating the slash and spread operation</source>
@@ -28125,10 +26575,6 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1165"/>
         <source>Error creating or updating a piece path</source>
         <translation>Erreur lors de la création ou de la modification du contour de la pièce</translation>
-    </message>
-    <message>
-        <source>Error creating or updating pin point</source>
-        <translation type="vanished">Erreur de création ou de mise à jour de point d&apos;épingle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1143"/>
@@ -28487,13 +26933,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="407"/>
         <source>Search</source>
         <translation>Rechercher</translation>
-    </message>
-</context>
-<context>
-    <name>VTextManager</name>
-    <message>
-        <source>Cut</source>
-        <translation type="vanished">Couper</translation>
     </message>
 </context>
 <context>
@@ -29051,10 +27490,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Inverser le sens</translation>
     </message>
     <message>
-        <source>Value of the finished pleat:</source>
-        <translation type="vanished">Valeur du pli fini :</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="400"/>
         <source>Tool pleat</source>
         <translation>Outil pli</translation>
@@ -29332,10 +27767,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Afficher le nom du point</translation>
     </message>
     <message>
-        <source>Position:</source>
-        <translation type="vanished">Position :</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="434"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="437"/>
@@ -29581,34 +28012,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Points</translation>
     </message>
     <message>
-        <source>Inner edge pen:</source>
-        <translation type="vanished">Stylo du bord interne :</translation>
-    </message>
-    <message>
-        <source>Inner edge color:</source>
-        <translation type="vanished">Couleur du bord interne :</translation>
-    </message>
-    <message>
-        <source>Outer edge pen:</source>
-        <translation type="vanished">Stylo du bord externe :</translation>
-    </message>
-    <message>
-        <source>Outer edge color:</source>
-        <translation type="vanished">Couleur du bord externe :</translation>
-    </message>
-    <message>
-        <source>Joining lines pen:</source>
-        <translation type="vanished">Stylo des lignes de raccord :</translation>
-    </message>
-    <message>
-        <source>Joining lines color:</source>
-        <translation type="vanished">Couleur des lignes de raccord :</translation>
-    </message>
-    <message>
-        <source>From:</source>
-        <translation type="vanished">De :</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="552"/>
         <source>First line (first point):</source>
         <translation>Première ligne (premier point) :</translation>
@@ -29733,10 +28136,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="378"/>
         <source>Tool flipping by line</source>
         <translation>Outil de reproduction en miroir par rapport à une ligne</translation>
-    </message>
-    <message>
-        <source>Group</source>
-        <translation type="vanished">Groupe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="252"/>
@@ -30026,10 +28425,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Largeur :</translation>
     </message>
     <message>
-        <source>Full name:</source>
-        <translation type="vanished">Nom complet :</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="709"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="805"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="858"/>
@@ -30204,14 +28599,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="369"/>
         <source>Tool close dart</source>
         <translation>Outil &apos;Fermer une pince&apos;</translation>
-    </message>
-    <message>
-        <source>Tool dart cap</source>
-        <translation type="vanished">Outil &apos;Chapeau de pince&apos;</translation>
-    </message>
-    <message>
-        <source>Draw</source>
-        <translation type="vanished">Tracer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="183"/>
@@ -30429,10 +28816,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Déplacer le groupe de pièces</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="vanished">Options</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2635"/>
         <source>In layout</source>
         <translation>Dans le plan de coupe</translation>
@@ -30463,10 +28846,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Suppression multiple</translation>
     </message>
     <message>
-        <source>Forbid flipping</source>
-        <translation type="vanished">Interdire le placement en miroir</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2637"/>
         <source>Force flipping</source>
         <translation>Forcer le placement en miroir</translation>
@@ -30485,30 +28864,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3675"/>
         <source>Tool was used after deleting.</source>
         <translation>L&apos;outil a été utilisé après suppression.</translation>
-    </message>
-    <message>
-        <source>Cannot calculate fold line height for piece &apos;%1&apos;. Reason: %2.</source>
-        <translation type="vanished">Impossible de calculer la hauteur de la ligne de pli pour la pièce « %1 ». Raison : %2.</translation>
-    </message>
-    <message>
-        <source>Cannot calculate fold line width for piece &apos;%1&apos;. Reason: %2.</source>
-        <translation type="vanished">Impossible de calculer la largeur de la ligne de pli pour la pièce « %1 ». Raison : %2.</translation>
-    </message>
-    <message>
-        <source>Cannot calculate fold line center position for piece &apos;%1&apos;. Reason: %2.</source>
-        <translation type="vanished">Impossible de calculer la position du centre de la ligne de pli pour la pièce « %1 ». Raison : %2.</translation>
-    </message>
-    <message>
-        <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
-        <translation type="vanished">Pièce « %1 ». Le droit-fil n’est pas valide.</translation>
-    </message>
-    <message>
-        <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
-        <translation type="vanished">Pièce « %1 ». La marge de couture n’est pas valide.</translation>
-    </message>
-    <message>
-        <source>Piece &apos;%1&apos;. Fold line is not valid.</source>
-        <translation type="vanished">Pièce « %1 ». La ligne de pli n’est pas valide.</translation>
     </message>
 </context>
 <context>
@@ -30580,11 +28935,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <source>asinh</source>
         <comment>hyperbolic arcus sine function</comment>
         <translation>asinh</translation>
-    </message>
-    <message>
-        <source>atanh</source>
-        <comment>hyperbolic arcur tangens function</comment>
-        <translation type="vanished">atanh</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="216"/>
@@ -31557,21 +29907,9 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Annuler</translation>
     </message>
     <message>
-        <source>Invert selection</source>
-        <translation type="vanished">Inverser la sélection</translation>
-    </message>
-    <message>
-        <source>invert selection</source>
-        <translation type="vanished">inverser la sélection</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="26"/>
         <source>Hide not in layout</source>
         <translation>Masquer les pièces non placées</translation>
-    </message>
-    <message>
-        <source>Piece options</source>
-        <translation type="vanished">Options de la pièce</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="607"/>
@@ -31751,10 +30089,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <translation>Supprimer le groupe - possible une fois qu’il ne contient plus de calque</translation>
     </message>
     <message>
-        <source>No object of this layer can be drawn - there is nothing to transfer.</source>
-        <translation type="vanished">Aucun objet de ce calque ne peut être dessiné - il n’y a rien à transférer.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1325"/>
         <source>Select the objects to transfer, then press Enter to choose the layer they move to - Escape cancels. Magenta is this layer&apos;s content, and every object of it can move.</source>
         <translation>Sélectionnez les objets à transférer, puis appuyez sur Entrée pour choisir le calque où ils vont - Échap annule. Le magenta est le contenu de ce calque, et chacun de ses objets peut partir.</translation>
@@ -31763,10 +30097,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1335"/>
         <source>No object of this layer is shared with another layer - an object must always belong to at least one layer, so there is nothing to remove here.</source>
         <translation>Aucun objet de ce calque n’est partagé avec un autre calque - un objet doit toujours appartenir à au moins un calque, il n’y a donc rien à retirer ici.</translation>
-    </message>
-    <message>
-        <source>Select the objects to remove, then press Enter to confirm - Escape cancels. Magenta is this layer&apos;s content; an object must always stay in one layer, so only what another layer holds can go.</source>
-        <translation type="vanished">Sélectionnez les objets à retirer, puis appuyez sur Entrée pour confirmer - Échap annule. Le magenta est le contenu de ce calque ; un objet doit toujours rester dans un calque, donc seuls ceux qu’un autre calque contient peuvent partir.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1346"/>
@@ -31838,26 +30168,6 @@ Erreur de compatibilité du format .rld : actualFileVersion = %1 alors que fileV
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1706"/>
         <source>Show All</source>
         <translation>Tout montrer</translation>
-    </message>
-    <message>
-        <source>Tags:</source>
-        <translation type="vanished">Tags :</translation>
-    </message>
-    <message>
-        <source>Separate each tag with comma.</source>
-        <translation type="vanished">Séparez chaque tag par une virgule.</translation>
-    </message>
-    <message>
-        <source>Filter by tags</source>
-        <translation type="vanished">Filtrer par tags</translation>
-    </message>
-    <message>
-        <source>Preferences</source>
-        <translation type="vanished">Préférences</translation>
-    </message>
-    <message>
-        <source>Categories: %1.</source>
-        <translation type="vanished">Catégories : %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.ui" line="26"/>

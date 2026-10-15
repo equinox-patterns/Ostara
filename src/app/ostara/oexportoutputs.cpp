@@ -92,6 +92,27 @@ namespace
 /// submission that deadlocks the pool.
 constexpr int kExportNestingThreads = 1;
 
+/// L'écart entre le plan de tissu et celui de la doublure, en PIXELS — la scène est en pixels à
+/// `PrintDPI`, comme tout le reste.
+///
+/// **Constante, et pas une fraction de la laize** : elle sépare deux nappes, elle n'appartient à
+/// aucune des deux, et un écart proportionnel donnerait deux écarts différents pour deux plans de même
+/// largeur — donc deux dessins qui ne se comparent plus. Un pouce : de quoi voir d'un coup d'œil qu'il
+/// y a deux plans, sans qu'on lise quelque chose entre eux.
+constexpr qreal kLiningGapPx = 96.0;
+
+/// @brief Où le plan de DOUBLURE se pose dans la scène : à droite du plan de tissu, séparé par la
+///        bande vide ci-dessus.
+///
+/// Le tissu occupe `(0, 0, binWidthPx, usedHeightPx)` — l'origine de la scène est la sienne depuis
+/// toujours — et la doublure vient après lui. Lus sur le rectangle RÉELLEMENT dessiné et non sur le
+/// bac : sur un run tuilé le plan est le papier, et deux plans qui se chevaucheraient ne se liraient
+/// pas plus mal qu'ils ne se lisent bien.
+auto LiningOrigin(const QRectF &fabricRect) -> QPointF
+{
+    return {fabricRect.right() + kLiningGapPx, fabricRect.top()};
+}
+
 /// @brief A duration said out loud: "2 minutes and 35 seconds".
 ///
 /// Voiced rather than summed — "155 seconds" is the same figure and not the same sentence — and
@@ -242,40 +263,76 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
         return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
     }
 
-    const qreal widthMm = output.documentWidthMm;
-    const qreal lengthMm = FromPixel(drawing.drawnRect.height(), Unit::Mm);
-
     // « Fabric width » et « length » plutôt que « laize » et « métrage » : la chaîne source d'Ostara
     // est en anglais, et la traduction française lui donnera ses mots du métier. La même chaîne sert
     // aux deux systèmes — seul le nombre change de langue.
-    QString label;
-
-    // **La note de pli ouvre la ligne.** Elle est écrite dans la même unité que la laize qui suit —
-    // 70 puis 140 — pour que le rapport « moitié » se vérifie sans conversion mentale.
-    if (output.foldedFabric)
-    {
-        label += MainWindow::tr("Canvas: half fabric width %1")
-                     .arg(OLengthUnits::Format(widthMm / 2.0, Unit::Cm))
-                 + QStringLiteral(" · ");
-    }
-
-    label += MainWindow::tr("Fabric width %1 · length %2")
-                 .arg(OLengthUnits::Format(widthMm, Unit::Cm),
-                      OLengthUnits::Format(lengthMm, Unit::Cm));
-
-    // Les pouces en fraction et le métrage en yards : deux arrondis différents et tous deux voulus —
-    // le pouce au seizième le plus proche, le yard au huitième SUPÉRIEUR, parce qu'un métrage
-    // s'achète. Voir OLengthUnits.
     //
     // ⚠️ **`QStringLiteral`, jamais `QLatin1String`, pour ce séparateur.** Le point médian est
     // `U+00B7`, deux octets en UTF-8 (`C2 B7`), et `QLatin1String` lit chaque octet comme un
     // caractère Latin-1 : le `C2` devenait un `Â` à l'écran, entre le pli et la longueur. Tout
     // littéral non ASCII de ce fichier passe par `QStringLiteral`.
-    label += QStringLiteral(" · ")
-             + MainWindow::tr("Fabric width %1 · length %2")
-                   .arg(OLengthUnits::Format(widthMm, Unit::Inch), OLengthUnits::Yards(lengthMm));
+    //
+    // Les pouces en fraction et le métrage en yards : deux arrondis différents et tous deux voulus —
+    // le pouce au seizième le plus proche, le yard au huitième SUPÉRIEUR, parce qu'un métrage
+    // s'achète. Voir OLengthUnits. **Et un arrondi PAR MATIÈRE** : la doublure a son propre métrage,
+    // et une paire n'additionne pas ses yards — on n'achète pas deux étoffes sur un seul chiffre.
+    // La note de pli, elle, ouvre la moitié qu'elle concerne, dans la même unité que la laize qui
+    // suit — 70 puis 140 — pour que le rapport « moitié » se vérifie sans conversion mentale.
+    const auto figuresOf = [](qreal widthMm, qreal lengthMm, bool folded) -> QString
+    {
+        QString text;
 
-    return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
+        if (folded)
+        {
+            text += MainWindow::tr("Canvas: half fabric width %1")
+                        .arg(OLengthUnits::Format(widthMm / 2.0, Unit::Cm))
+                    + QStringLiteral(" · ");
+        }
+
+        text += MainWindow::tr("Fabric width %1 · length %2")
+                    .arg(OLengthUnits::Format(widthMm, Unit::Cm),
+                         OLengthUnits::Format(lengthMm, Unit::Cm));
+
+        text += QStringLiteral(" · ")
+                + MainWindow::tr("Fabric width %1 · length %2")
+                      .arg(OLengthUnits::Format(widthMm, Unit::Inch), OLengthUnits::Yards(lengthMm));
+        return text;
+    };
+
+    // **Un seul plan : la ligne d'hier, mot pour mot.** Ni le nom de la matière, ni le gras, ni un
+    // séparateur de plus — un plan de tissu seul se lit exactement comme il se lisait avant la paire.
+    if (not output.liningPlan)
+    {
+        return figuresOf(output.documentWidthMm, FromPixel(drawing.drawnRect.height(), Unit::Mm),
+                         output.foldedFabric)
+               + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
+    }
+
+    // ── La paire : le tissu, puis la doublure, et le temps une fois pour les deux ────────────────
+    //
+    // **Le nom de la matière ouvre chaque moitié, et il est en gras.** Une ligne qui donnerait deux
+    // laizes et deux métrages sans dire laquelle est laquelle serait un rébus ; c'est le nom qui fait
+    // la phrase, et c'est lui qu'on cherche des yeux quand on lit la seconde moitié.
+    //
+    // Les deux moitiés sont séparées par un « / » et non par le point médian des chiffres : le nom de
+    // la matière est un titre, pas un chiffre de plus, et le point médian le rangerait avec eux.
+    //
+    // Le temps ferme la ligne, **une seule fois** : c'est celui du run, et c'est bien lui qu'on a
+    // attendu — les deux plans se sont générés l'un après l'autre.
+    const QString fabric =
+        QStringLiteral("<b>%1</b> : ").arg(MainWindow::tr("Fabric"))
+        + figuresOf(output.documentWidthMm, FromPixel(drawing.drawnRect.height(), Unit::Mm),
+                    output.foldedFabric);
+
+    // Le métrage de la doublure est celui de SON plan, lu dans son propre résultat : c'est le bac de
+    // la doublure, et il n'a rien à voir avec celui du tissu.
+    const QString lining =
+        QStringLiteral("<b>%1</b> : ").arg(MainWindow::tr("Lining"))
+        + figuresOf(output.documentLiningWidthMm,
+                    FromPixel(output.liningResult.usedHeightPx, Unit::Mm), output.foldedFabric);
+
+    return fabric + QStringLiteral(" / ") + lining
+           + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
 }
 } // namespace
 
@@ -283,6 +340,13 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
 /**
  * @brief RunExportNesting resolve the range, nest it on the imposed width, and hand the
  *        result back. It draws nothing: the caller files the generation and shows it.
+ *
+ * **Un run peut décrire DEUX plans.** Un vêtement doublé se taille deux fois — le tissu et la
+ * doublure — et les deux nappes se lisent côte à côte : le run fait donc deux passes, l'une sur la
+ * matière du tissu, l'autre sur celle de la doublure, et rend un seul résultat qui les porte toutes
+ * les deux. Ce qui les sépare n'est pas un réglage : c'est le **jeu de pièces**, chacune lue dans sa
+ * propre quantité de coupe (voir OExportCuttingGuard::Material). Tout le reste — sens, pli, espaces,
+ * membres de groupe — leur est commun, à la laize près, que chacune a la sienne.
  *
  * @return the generation, or nothing when the run failed — the reason has already been
  *         shown to the user.
@@ -306,15 +370,17 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     auto abandoned = std::make_shared<std::atomic<bool>>(false);
 
     OExportNestingParams params;
-    // **Le tissu plié divise la laize par deux, et c'est ici que ça se dit** — le seul endroit où
+    // ⚠️ **La largeur du bac n'est PAS posée ici.** Chaque plan a la sienne — le tissu sa laize, la
+    // doublure la sienne — donc elle s'écrit dans la passe qui la concerne, et nulle part ailleurs.
+    // Tout le reste de ces paramètres est commun aux deux plans, et c'est la règle du run : la
+    // doublure reprend les réglages du tissu à l'identique.
+    //
+    // **Le tissu plié divise la laize par deux, et c'est là-bas que ça se dit** — le seul endroit où
     // une longueur de la requête devient une longueur du run. Le tissu plié en deux dans le sens de
     // la laize donne un bac de 70 pour une laize de 140, et tout le reste suit sans rien savoir :
     // le bac, le canvas, la page du PDF et l'image lisent tous `binWidthPx`.
     // La laize ENTRÉE, elle, ne bouge pas : c'est le tissu acheté, et le nom de la sortie le dit
     // encore (`Cut-140`).
-    const qreal fabricWidthMm = request.foldedFabric ? request.documentWidthMm / 2.0
-                                                     : request.documentWidthMm;
-    params.binWidthPx = ToPixel(fabricWidthMm, Unit::Mm);
     params.marginPx = ToPixel(request.marginMm, Unit::Mm);
     params.gapPx = ToPixel(request.gapMm, Unit::Mm);
     // The grid follows the same rule as every other length: converted once, here.
@@ -369,42 +435,6 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     waitDialog->show();
     QCoreApplication::processEvents();
 
-    // Resolving the geometry re-parses the document once per size of the range, so it
-    // stays on the GUI thread: VLayoutPiece::Create reads the application settings, and
-    // the container it reads is the one the scenes are built from.
-    OExportGeometry geometry(pattern, doc, m_m);
-    geometry.SetCuttingPlan(request.cuttingPlan);
-    // Et si le tissu est plié : c'est de là que la pièce au pli garde son pli au lieu d'être
-    // dépliée, et qu'une pièce coupée deux fois n'est posée qu'une.
-    geometry.SetFoldedFabric(request.foldedFabric);
-
-    // Un plotter domestique découpe sur des **tapis** : ses pièces ne sont plus des pièces mais des
-    // **morceaux**, découpés aux bords du tapis pendant que la géométrie est collectée. C'est de là
-    // que vient « un objet par morceau » — la géométrie le porte, et l'écriture n'a rien à découper.
-    //
-    // La conversion mm → px est la même qu'ailleurs, et au même endroit que les autres : une seule
-    // fois, à l'entrée du run.
-    if (request.plotterPlan)
-    {
-        geometry.SetCuttingMat(ToPixel(request.matWidthMm, Unit::Mm),
-                               ToPixel(request.matHeightMm, Unit::Mm));
-
-        // Les membres de groupe que l'utilisatrice a décochés. Ce n'est PAS un filtre de pièces : un
-        // plotter décompose les groupes, donc les cases ne gardent pas un membre, elles en écartent
-        // un. Vide — le cas de toutes les cases cochées — n'écarte rien et laisse le run tel qu'il a
-        // toujours été.
-        geometry.SetPieceExclusion(request.excludedPieces);
-    }
-
-    // A cutting plan decomposes the groups: it keeps the member the user chose for each and drops
-    // the others, so a group is not unioned into a single footprint. Empty means every piece —
-    // which is what a print run asks for, and what a pattern with no group asks for anyway.
-    if (not request.groupMemberChoices.isEmpty())
-    {
-        const QVector<quint32> kept = OExportCuttingGuard::PiecesToCut(request.groupMemberChoices, pattern);
-        geometry.SetPieceFilter(QSet<quint32>(kept.cbegin(), kept.cend()));
-    }
-
     // ── Ce que la marche des tailles abîme, et qu'il faut remettre ─────────────────────────────
     //
     // Marcher les tailles re-parse le document, et un parseur qui réécrit une formule fait
@@ -435,14 +465,15 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // range the same way, without writing anything. Writing it here added a `dimensionX`
     // attribute to documents that do not carry one, and the schema refuses any value
     // below 1 (dimesionValue): such a document could no longer be saved at all.
-    bool sizeMoved = false;
-    const auto applySize = [this, &sizeMoved](qreal a, qreal b, qreal c)
+    // ⚠️ **Sans état : le vrai déplacement est celui de la passe**, qui remet la taille trouvée à la
+    // fin de SA traversée — voir `applyPassSize`, dans `runOnePlan`. Une seconde passe doit en effet
+    // repartir du document tel qu'il a été trouvé, pas de là où la première l'a laissé.
+    const auto applySize = [this](qreal a, qreal b, qreal c)
     {
         m_currentDimensionA = a;
         m_currentDimensionB = b;
         m_currentDimensionC = c;
         GradationChanged();
-        sizeMoved = true;
     };
 
     // The range is the authority on where the decor of the reference layer goes: it holds
@@ -486,8 +517,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // `ResolvePieceDecor`, qui ne l'enregistre alors pas du tout.
     // Le décor des GROUPES de la couche de référence, résolu au même moment et pour la même raison —
     // voir OExportGroupDecor. Rangé à part parce que le résultat du nesting n'existe pas encore : il
-    // naîtra de l'appel au moteur, plus bas.
-    QHash<quint32, OExportGroupDecor> groupDecor;
+    // naîtra de l'appel au moteur, plus bas. **Une collection PAR PASSE** : chacun des deux plans a
+    // ses groupes, et le décor de l'un ne dit rien de l'autre — voir le paramètre de `freezeDecor`.
 
     // **L'unité du droit-fil est celle du PATRON, jamais celle du run.** La longueur d'une ligne de
     // droit-fil est un réglage du DOCUMENT — « 10 cm » — et c'est dans l'unité du patron qu'elle est
@@ -499,7 +530,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     const Unit *patternUnit = pattern != nullptr ? pattern->GetPatternUnit() : nullptr;
     const Unit grainlineUnit = patternUnit != nullptr ? *patternUnit : Unit::Mm;
 
-    const auto freezeDecor = [&](OExportSizeLayer &layer) {
+    const auto freezeDecor = [&](OExportSizeLayer &layer, QHash<quint32, OExportGroupDecor> &decor) {
         QHash<quint32, QVector<OExportPieceGeometry>> members;
 
         for (OExportPieceGeometry &piece : layer.pieces)
@@ -522,13 +553,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         // donne son cadre, et c'est d'elle que vient le repli d'un enfant jamais placé.
         for (auto it = members.cbegin(); it != members.cend(); ++it)
         {
-            groupDecor.insert(it.key(),
-                              ResolveGroupDecor(it.value(), it.key(), range, grainlineUnit, pattern,
-                                                doc, request.cuttingPlan));
+            decor.insert(it.key(),
+                         ResolveGroupDecor(it.value(), it.key(), range, grainlineUnit, pattern,
+                                           doc, request.cuttingPlan));
         }
     };
-
-    QVector<OExportSizeLayer> layers;
 
     // A table without axes — an .otu, or a .vit — describes a single size. There is no
     // size to put the document on, and no reason to try: the Layout mode, which has
@@ -576,108 +605,308 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         RefreshThumbnailSnapshots(/*freeze*/ true);
     }
 
-    if (request.singleSize)
+    // ── Une passe = un plan ───────────────────────────────────────────────────────────────────────
+    //
+    // **Le même code sert le tissu et la doublure**, et ce qui les sépare tient en deux choses : la
+    // matière — donc le jeu de pièces, chacune lue dans sa propre quantité de coupe — et la laize. Tout
+    // le reste est commun, et c'est voulu : la doublure reprend les réglages du tissu à l'identique.
+    //
+    // La géométrie est refaite à chaque passe : elle porte la matière et la largeur, et rien de tout
+    // cela ne se réutilise d'un plan à l'autre.
+    struct PlanPass
     {
-        if (!hasAxes)
-        {
-            // Already on its only size: the geometry is read as it stands.
-            layers = geometry.CollectCurrentSize(tr("Single size"));
+        QVector<OExportSizeLayer> layers{};
+        OExportNestingResult result{};
+        QHash<quint32, OExportGroupDecor> groupDecor{};
+    };
 
-            // ⚠️ Un plan de coupe peut maintenant ne garder AUCUNE pièce — toutes celles qu'on lui a
-            // données avaient un cut vide — et une marche vide n'a pas de couche de référence à
-            // geler. Le cas est signalé plus bas, une fois le document rendu : `layers.last()` sur
-            // une liste vide n'est pas une erreur qu'on veut découvrir en release.
-            if (not layers.isEmpty())
+    /// Le sort d'une passe : son plan, ou la raison pour laquelle il n'y en a pas. **Aucun message
+    /// n'est dit ici** — ils le sont par l'appelant, une fois le document rendu et ses signaux
+    /// rétablis, parce qu'une boîte ouverte d'ici s'ouvrirait sur un document muet et resté sur la
+    /// taille du run. Voir `reportStop`.
+    struct PassResult
+    {
+        enum class Stop
+        {
+            None,      ///< le plan est là
+            Empty,     ///< la matière n'a donné aucune pièce à poser
+            Abandoned, ///< l'utilisatrice a fermé la fenêtre d'attente
+            Failed,    ///< le moteur a refusé, et a dit pourquoi
+        };
+
+        std::optional<PlanPass> plan{};
+        Stop stop{Stop::None};
+        OExportCuttingGuard::Material material{OExportCuttingGuard::Material::Fabric};
+        QString error{};      ///< ce que le moteur a refusé, mot pour mot
+        QString diagnostic{}; ///< ce que la géométrie a vu, quand elle n'a rien gardé
+    };
+
+    // The annealing is pure computation over its inputs — it runs off the GUI thread. **Un seul pool
+    // pour les deux passes** : elles se suivent, jamais ensemble, et le thread unique est ce qui rend
+    // le run reproductible.
+    QThreadPool pool;
+    pool.setMaxThreadCount(kExportNestingThreads);
+
+    const auto runOnePlan = [&](OExportCuttingGuard::Material material, qreal widthMm) -> PassResult
+    {
+        PassResult pass;
+        pass.material = material;
+
+        // **La laize de CE plan, et le plié** — le seul endroit du run où une longueur de la requête
+        // devient une longueur du moteur. Le plié divise la laize par deux, et la doublure le suit :
+        // c'est un réglage du run, commun aux deux plans, donc ses deux bacs sont pliés.
+        OExportNestingParams planParams = params;
+        planParams.binWidthPx = ToPixel(request.foldedFabric ? widthMm / 2.0 : widthMm, Unit::Mm);
+
+        // Resolving the geometry re-parses the document once per size of the range, so it
+        // stays on the GUI thread: VLayoutPiece::Create reads the application settings, and
+        // the container it reads is the one the scenes are built from.
+        OExportGeometry geometry(pattern, doc, m_m);
+        geometry.SetCuttingPlan(request.cuttingPlan);
+        // **La matière, et c'est tout ce que le jeu de pièces a de plus** : chaque plan lit la sienne.
+        geometry.SetCuttingMaterial(material);
+        // Et si le tissu est plié : c'est de là que la pièce au pli garde son pli au lieu d'être
+        // dépliée, et qu'une pièce coupée deux fois n'est posée qu'une.
+        geometry.SetFoldedFabric(request.foldedFabric);
+
+        // Un plotter domestique découpe sur des **tapis** : ses pièces ne sont plus des pièces mais des
+        // **morceaux**, découpés aux bords du tapis pendant que la géométrie est collectée. C'est de là
+        // que vient « un objet par morceau » — la géométrie le porte, et l'écriture n'a rien à découper.
+        //
+        // La conversion mm → px est la même qu'ailleurs, et au même endroit que les autres : une seule
+        // fois, à l'entrée du run.
+        if (request.plotterPlan)
+        {
+            geometry.SetCuttingMat(ToPixel(request.matWidthMm, Unit::Mm),
+                                   ToPixel(request.matHeightMm, Unit::Mm));
+
+            // Les membres de groupe que l'utilisatrice a décochés. Ce n'est PAS un filtre de pièces : un
+            // plotter décompose les groupes, donc les cases ne gardent pas un membre, elles en écartent
+            // un. Vide — le cas de toutes les cases cochées — n'écarte rien et laisse le run tel qu'il a
+            // toujours été.
+            geometry.SetPieceExclusion(request.excludedPieces);
+        }
+
+        // A cutting plan decomposes the groups: it keeps the member the user chose for each and drops
+        // the others, so a group is not unioned into a single footprint. Empty means every piece —
+        // which is what a print run asks for, and what a pattern with no group asks for anyway.
+        //
+        // **Le filtre est celui de la MATIÈRE** : une pièce taillée en doublure seulement n'est pas du
+        // plan de tissu, et le membre retenu pour un groupe peut différer d'une matière à l'autre — donc
+        // les deux passes ne gardent pas forcément le même.
+        if (not request.groupMemberChoices.isEmpty())
+        {
+            const QVector<quint32> kept =
+                OExportCuttingGuard::PiecesToCut(request.groupMemberChoices, pattern, material);
+            geometry.SetPieceFilter(QSet<quint32>(kept.cbegin(), kept.cend()));
+        }
+
+        // Le décor des groupes de CETTE passe, et les couches de CETTE passe : deux plans, deux jeux.
+        QHash<quint32, OExportGroupDecor> planGroupDecor;
+        QVector<OExportSizeLayer> planLayers;
+
+        // **Le vrai déplacement est celui de la passe.** Elle remet le document sur la taille qu'elle a
+        // trouvée en sortant, sans quoi la passe suivante partirait de la taille du run précédent.
+        bool passMoved = false;
+        const auto applyPassSize = [&](qreal a, qreal b, qreal c)
+        {
+            applySize(a, b, c);
+            passMoved = true;
+        };
+
+        if (request.singleSize)
+        {
+            if (!hasAxes)
             {
-                freezeDecor(layers.last());
+                // Already on its only size: the geometry is read as it stands.
+                planLayers = geometry.CollectCurrentSize(tr("Single size"));
+
+                // ⚠️ Un plan de coupe peut ne garder AUCUNE pièce — toutes celles qu'on lui a données
+                // avaient un cut vide pour cette matière — et une marche vide n'a pas de couche de
+                // référence à geler. Le cas est signalé par l'appelant : `planLayers.last()` sur une liste
+                // vide n'est pas une erreur qu'on veut découvrir en release.
+                if (not planLayers.isEmpty())
+                {
+                    freezeDecor(planLayers.last(), planGroupDecor);
+                }
+            }
+            else
+            {
+                // The document is put on the requested size for the run, and given back afterwards like
+                // the range path — see the restore below.
+                //
+                // An axis the measurement table does not carry has no size to offer, and the
+                // dialog says so with -1 — a value shaped like a size without being one, handed
+                // to the pieces as if it were. The document's own value stands instead, and the
+                // axis's first size when the document has none either: 1 is the only base the
+                // schema accepts as a floor. The range path below guards its bases the same way.
+                const auto baseOr = [](qreal fromDialog, qreal fromDocument)
+                { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
+
+                const qreal baseOfA = baseOr(request.baseA, savedA);
+                const qreal baseOfB = baseOr(request.baseB, savedB);
+                const qreal baseOfC = baseOr(request.baseC, savedC);
+
+                applyPassSize(baseOfA, baseOfB, baseOfC);
+                planLayers = geometry.CollectCurrentSize(
+                    QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
+
+                // Rien à geler quand la marche n'a gardé aucune pièce — même raison que ci-dessus.
+                if (not planLayers.isEmpty())
+                {
+                    freezeDecor(planLayers.last(), planGroupDecor);
+                }
             }
         }
         else
         {
-            // The document is put on the requested size for the run, and given back afterwards like
-            // the range path — see the restore below.
-            //
-            // An axis the measurement table does not carry has no size to offer, and the
-            // dialog says so with -1 — a value shaped like a size without being one, handed
-            // to the pieces as if it were. The document's own value stands instead, and the
-            // axis's first size when the document has none either: 1 is the only base the
-            // schema accepts as a floor. The range path below guards its bases the same way.
-            const auto baseOr = [](qreal fromDialog, qreal fromDocument)
-            { return fromDialog > 0.0 ? fromDialog : (fromDocument > 0.0 ? fromDocument : 1.0); };
+            const QVector<OExportGeometry::OExportSizeRef> sizes = geometry.RangeSizes(request.rangeName);
 
-            const qreal baseOfA = baseOr(request.baseA, savedA);
-            const qreal baseOfB = baseOr(request.baseB, savedB);
-            const qreal baseOfC = baseOr(request.baseC, savedC);
+            // The range pins the axes it does not grade, and the pieces must be resolved with
+            // those values. The document's own ones send an axis it does not carry back to the
+            // measurement file's base, and every piece built from a formula — which is all of
+            // them — then comes out at a geometry the range does not name. The graded capture
+            // feeds its pieces this exact way. An axis the range pins nothing at keeps the
+            // document's value.
+            const OExportGeometry::OExportFixedBases fixed = geometry.RangeFixedBases(request.rangeName);
+            const qreal fixedA = fixed.a > 0.0 ? fixed.a : savedA;
+            const qreal fixedB = fixed.b > 0.0 ? fixed.b : savedB;
+            const qreal fixedC = fixed.c > 0.0 ? fixed.c : savedC;
 
-            applySize(baseOfA, baseOfB, baseOfC);
-            layers = geometry.CollectCurrentSize(
-                QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
-
-            // Rien à geler quand la marche n'a gardé aucune pièce — même raison que ci-dessus.
-            if (not layers.isEmpty())
+            for (const OExportGeometry::OExportSizeRef &size : sizes)
             {
-                freezeDecor(layers.last());
+                switch (size.axisIndex)
+                {
+                    case 0:
+                        applyPassSize(size.base, fixedB, fixedC);
+                        break;
+                    case 1:
+                        applyPassSize(fixedA, size.base, fixedC);
+                        break;
+                    default:
+                        applyPassSize(fixedA, fixedB, size.base);
+                        break;
+                }
+
+                planLayers += geometry.CollectCurrentSize(size.label);
+
+                // The first size of the range is the reference layer — the only one that carries decor.
+                // The document is on it right now; it will not be again after the walk.
+                if (planLayers.size() == 1)
+                {
+                    freezeDecor(planLayers.last(), planGroupDecor);
+                }
             }
+
+            // The document was not put back here: the restore is the PASS's own, just below — it
+            // borrows the document, so it gives it back, and the next pass then finds it where this
+            // one found it.
         }
-    }
-    else
-    {
-        const QVector<OExportGeometry::OExportSizeRef> sizes = geometry.RangeSizes(request.rangeName);
 
-        // The range pins the axes it does not grade, and the pieces must be resolved with
-        // those values. The document's own ones send an axis it does not carry back to the
-        // measurement file's base, and every piece built from a formula — which is all of
-        // them — then comes out at a geometry the range does not name. The graded capture
-        // feeds its pieces this exact way. An axis the range pins nothing at keeps the
-        // document's value.
-        const OExportGeometry::OExportFixedBases fixed = geometry.RangeFixedBases(request.rangeName);
-        const qreal fixedA = fixed.a > 0.0 ? fixed.a : savedA;
-        const qreal fixedB = fixed.b > 0.0 ? fixed.b : savedB;
-        const qreal fixedC = fixed.c > 0.0 ? fixed.c : savedC;
-
-        for (const OExportGeometry::OExportSizeRef &size : sizes)
+        // ── Rendre le document tel qu'on l'a trouvé ───────────────────────────────────────────────
+        //
+        // The document was only borrowed to walk: put it back where it was found, **whatever path ran**.
+        // The single-size path used to keep it — "the user asked for this size" — and that is what left
+        // Details rendering the export's size, since the Details scene is built from the live combination
+        // and its size drop-downs read it too. It no longer has to stay: the reference layer's decor is
+        // frozen into the output, so nothing that gets displayed needs the document on the run's size.
+        //
+        // ⚠️ **Dans la passe, et sous le bloqueur.** La seconde passe doit repartir du document tel
+        // qu'il a été trouvé, donc la remise en place ne peut pas attendre la fin du run ; et faite ici
+        // elle n'émet rien, ce qui est exactement ce qu'on veut d'un document qu'on n'a fait que
+        // traverser. Les trois drapeaux (fenêtre, mise en page, sorties), eux, sont restaurés une fois
+        // pour les deux passes — voir l'appelant.
+        if (passMoved)
         {
-            switch (size.axisIndex)
-            {
-                case 0:
-                    applySize(size.base, fixedB, fixedC);
-                    break;
-                case 1:
-                    applySize(fixedA, size.base, fixedC);
-                    break;
-                default:
-                    applySize(fixedA, fixedB, size.base);
-                    break;
-            }
-
-            layers += geometry.CollectCurrentSize(size.label);
-
-            // The first size of the range is the reference layer — the only one that carries decor.
-            // The document is on it right now; it will not be again after the walk.
-            if (layers.size() == 1)
-            {
-                freezeDecor(layers.last());
-            }
+            applySize(savedA, savedB, savedC);
         }
 
-        // The document was not put back here: the restore is shared with the single-size path, below,
-        // because both borrow the document and both must give it back.
-    }
+        // Each size sits where the model puts it, and a piece pinned at its fold does not
+        // drift like a piece growing from its centre. Unioning them into one footprint only
+        // means something once they line up — which is what Graded does before it draws,
+        // and what the nesting needs for the same reason.
+        OExportAlignment::Apply(planLayers, pattern);
 
-    doc->blockSignals(wasSignalsBlocked);
+        int pieceCount = 0;
+        for (const OExportSizeLayer &layer : planLayers)
+        {
+            pieceCount += layer.pieces.size();
+        }
 
-    // ── Rendre le document tel qu'on l'a trouvé ────────────────────────────────────────────────
+        if (pieceCount == 0)
+        {
+            // **Le message est dit par l'appelant**, une fois le document rendu et ses signaux
+            // rétablis : une boîte ouverte d'ici s'ouvrirait sur un document muet, resté sur la taille
+            // du run, et rien ne le rattraperait plus.
+            pass.stop = PassResult::Stop::Empty;
+            pass.diagnostic = geometry.LastDiagnostic();
+            waitDialog.reset();
+            return pass;
+        }
+
+        // Un run plotter ne parle PAS au moteur de nesting, et ce n'est pas un raccourci : un vrai
+        // nesting déplacerait et tournerait les morceaux, et le puzzle ne se recollerait plus. Sa mise
+        // en page est arithmétique — les morceaux empilés par blocs — et c'est tout ce qu'un plotter
+        // domestique demande, puisque c'est son propre logiciel qui re-neste ensuite sur ses tapis.
+        //
+        // Le même endroit, le même thread, le même dialogue d'attente, le même report d'erreur : seule
+        // la fonction qui calcule change.
+        QFuture<OExportNestingResult> future =
+            request.plotterPlan
+                ? QtConcurrent::run(&pool, &OExportPlotterLayout::Run, planLayers,
+                                    OExportPlotter::Mat{ToPixel(request.matWidthMm, Unit::Mm),
+                                                        ToPixel(request.matHeightMm, Unit::Mm)})
+                : QtConcurrent::run(&pool, &OExportNesting::Run, planLayers, planParams);
+
+        QFutureWatcher<OExportNestingResult> watcher;
+        QEventLoop loop;
+        connect(&watcher, &QFutureWatcher<OExportNestingResult>::finished, &loop, &QEventLoop::quit);
+        watcher.setFuture(future);
+        loop.exec();
+
+        const OExportNestingResult result = future.result();
+        waitDialog.reset();
+
+        if (result.abandoned)
+        {
+            // **Nothing is said about it.** The user closed the dialog to stop the run; a message
+            // telling them it did not finish would be the application arguing with a decision that was
+            // theirs to make. Nothing is filed, nothing is changed, and the mode stays where it is.
+            pass.stop = PassResult::Stop::Abandoned;
+            return pass;
+        }
+
+        if (!result.ok)
+        {
+            pass.stop = PassResult::Stop::Failed;
+            pass.error = result.error;
+            return pass;
+        }
+
+        pass.plan = PlanPass{std::move(planLayers), result, std::move(planGroupDecor)};
+        return pass;
+    };
+
+    // ── Les plans du run, l'un après l'autre ──────────────────────────────────────────────────────
     //
-    // The document was only borrowed to walk: put it back where it was found, **whatever path ran**.
-    // The single-size path used to keep it — "the user asked for this size" — and that is what left
-    // Details rendering the export's size, since the Details scene is built from the live combination
-    // and its size drop-downs read it too. It no longer has to stay: the reference layer's decor is
-    // frozen into the output, so nothing that gets displayed needs the document on the run's size.
-    if (sizeMoved)
+    // **Le tissu d'abord, et il garde sa place.** `layers` et `result` restent le plan de tissu, ce que
+    // tout l'existant lit — l'écriture DXF / PLT / HPGL, le PDF, l'image — et la doublure se range à
+    // côté d'eux. L'ordre n'est pas décoratif : c'est lui qui dit lequel des deux est le plan
+    // principal, et donc ce qu'un export qui n'a pas encore appris la paire écrit.
+    PassResult fabric = runOnePlan(OExportCuttingGuard::Material::Fabric, request.documentWidthMm);
+
+    // La doublure ne se demande que si le tissu a abouti : une paire dont la première nappe a échoué
+    // n'est pas une paire, et lancer la seconde pour la jeter serait du temps perdu à l'utilisatrice.
+    PassResult lining;
+    if (fabric.stop == PassResult::Stop::None and request.liningPlan)
     {
-        applySize(savedA, savedB, savedC);
+        lining = runOnePlan(OExportCuttingGuard::Material::Lining, request.documentLiningWidthMm);
     }
 
+    // Le document est rendu avant tout message : les signaux comme on les a trouvés, puis les trois
+    // drapeaux que la traversée a pu salir. Le faire ICI, une fois, couvre les deux passes et tous les
+    // chemins de sortie — y compris ceux qui échouent.
+    doc->blockSignals(wasSignalsBlocked);
     doc->SetModified(wasModified);
     setWindowModified(wasWindowModified);
     if (m_layoutSettings != nullptr)
@@ -685,77 +914,51 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         m_layoutSettings->SetLayoutStale(wasLayoutStale);
     }
 
-    // Each size sits where the model puts it, and a piece pinned at its fold does not
-    // drift like a piece growing from its centre. Unioning them into one footprint only
-    // means something once they line up — which is what Graded does before it draws,
-    // and what the nesting needs for the same reason.
-    OExportAlignment::Apply(layers, pattern);
-
-    int pieceCount = 0;
-    for (const OExportSizeLayer &layer : layers)
+    // Un run interrompu ne dit rien ; un run que le moteur a refusé dit ce que le moteur a dit ; une
+    // passe vide dit pourquoi elle l'est. Les trois sortent d'ici — et dans les trois cas rien n'est
+    // classé, rien n'est changé, et le mode reste où il est.
+    const auto reportStop = [&](const PassResult &stopped)
     {
-        pieceCount += layer.pieces.size();
-    }
+        if (stopped.stop == PassResult::Stop::Abandoned)
+        {
+            return;
+        }
 
-    if (pieceCount == 0)
-    {
-        waitDialog.reset();
+        if (stopped.stop == PassResult::Stop::Failed)
+        {
+            QMessageBox::warning(this, tr("Export mode"), stopped.error, QMessageBox::Ok, QMessageBox::Ok);
+            return;
+        }
 
         QString message = tr("This size range carries no piece to nest.");
         if (request.cuttingPlan)
         {
-            // Un plan de coupe est un plan de tissu : une pièce dont la section Cut est vide n'y
-            // entre pas. C'est la seule raison possible que la géométrie ne montre pas, donc elle
-            // est dite — sans affirmer que c'est celle-là.
+            // Un plan de coupe ne prend que les pièces dont la section Cut de SA matière est
+            // renseignée : c'est la seule raison possible que la géométrie ne montre pas, donc elle est
+            // dite — sans affirmer que c'est celle-là. Le mot suit la matière, parce que la doublure a
+            // son propre jeu de pièces et peut donc être vide toute seule.
             message += QStringLiteral("\n\n")
-                       + tr("A cutting plan only takes the pieces whose fabric cut quantity is "
-                            "filled in (Details mode, Dock Options, Piece, Information).");
+                       + tr("A cutting plan only takes the pieces whose %1 cut quantity is filled in "
+                            "(Details mode, Dock Options, Piece, Information).")
+                             .arg(stopped.material == OExportCuttingGuard::Material::Lining
+                                      ? tr("lining")
+                                      : tr("fabric"));
         }
 
         QMessageBox::warning(this, tr("Export mode"),
-                             message + QStringLiteral("\n\n") + geometry.LastDiagnostic(),
-                             QMessageBox::Ok, QMessageBox::Ok);
+                             message + QStringLiteral("\n\n") + stopped.diagnostic, QMessageBox::Ok,
+                             QMessageBox::Ok);
+    };
+
+    if (fabric.stop != PassResult::Stop::None)
+    {
+        reportStop(fabric);
         return std::nullopt;
     }
 
-    // The annealing is pure computation over its inputs — it runs off the GUI thread.
-    QThreadPool pool;
-    pool.setMaxThreadCount(kExportNestingThreads);
-
-    // Un run plotter ne parle PAS au moteur de nesting, et ce n'est pas un raccourci : un vrai
-    // nesting déplacerait et tournerait les morceaux, et le puzzle ne se recollerait plus. Sa mise
-    // en page est arithmétique — les morceaux empilés par blocs — et c'est tout ce qu'un plotter
-    // domestique demande, puisque c'est son propre logiciel qui re-neste ensuite sur ses tapis.
-    //
-    // Le même endroit, le même thread, le même dialogue d'attente, le même report d'erreur : seule
-    // la fonction qui calcule change.
-    QFuture<OExportNestingResult> future =
-        request.plotterPlan
-            ? QtConcurrent::run(&pool, &OExportPlotterLayout::Run, layers,
-                                OExportPlotter::Mat{ToPixel(request.matWidthMm, Unit::Mm),
-                                                    ToPixel(request.matHeightMm, Unit::Mm)})
-            : QtConcurrent::run(&pool, &OExportNesting::Run, layers, params);
-
-    QFutureWatcher<OExportNestingResult> watcher;
-    QEventLoop loop;
-    connect(&watcher, &QFutureWatcher<OExportNestingResult>::finished, &loop, &QEventLoop::quit);
-    watcher.setFuture(future);
-    loop.exec();
-
-    const OExportNestingResult result = future.result();
-    waitDialog.reset();
-
-    if (result.abandoned)
+    if (lining.stop != PassResult::Stop::None)
     {
-        // **Nothing is said about it.** The user closed the dialog to stop the run; a message
-        // telling them it did not finish would be the application arguing with a decision that was
-        // theirs to make. Nothing is filed, nothing is changed, and the mode stays where it is.
-        return std::nullopt;
-    }
-
-    if (!result.ok)
-    {
-        QMessageBox::warning(this, tr("Export mode"), result.error, QMessageBox::Ok, QMessageBox::Ok);
+        reportStop(lining);
         return std::nullopt;
     }
 
@@ -798,13 +1001,33 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.matWidthMm = request.matWidthMm;
     output.matHeightMm = request.matHeightMm;
     output.matUnit = request.matUnit;
-    output.layers = std::move(layers);
-    output.result = result;
+
+    // **Le plan de tissu, là où il a toujours été** — `layers` et `result` — et la doublure à côté.
+    // Cet ordre est le contrat : tout ce qui n'a pas appris la paire continue de lire le tissu, à
+    // commencer par l'écriture DXF / PLT / HPGL, le PDF et l'image.
+    output.layers = std::move(fabric.plan->layers);
+    output.result = std::move(fabric.plan->result);
 
     // Le décor des groupes de la couche de référence, résolu pendant la marche des tailles. Il rejoint
     // le résultat ici, et pas ailleurs : c'est la seule chose que le canvas reçoit qui appartienne à
     // UNE génération — une pièce a sa place dans les couches, un groupe n'en a pas.
-    output.result.groupDecor = groupDecor;
+    output.result.groupDecor = std::move(fabric.plan->groupDecor);
+
+    // ── La doublure, quand le run l'a demandée ────────────────────────────────────────────────────
+    //
+    // Les deux drapeaux sont posés ENSEMBLE : `liningPlan` dit à la lecture qu'il y a une seconde
+    // nappe, et `documentLiningWidthMm` dit sur quelle laize elle s'est coupée. Sans le drapeau, la
+    // largeur n'est pas un plan ; sans la largeur, le nom d'un plan sans bac.
+    output.liningPlan = lining.plan.has_value();
+    output.documentLiningWidthMm = output.liningPlan ? request.documentLiningWidthMm : 0.0;
+
+    if (lining.plan.has_value())
+    {
+        output.liningLayers = std::move(lining.plan->layers);
+        output.liningResult = std::move(lining.plan->result);
+        output.liningResult.groupDecor = std::move(lining.plan->groupDecor);
+    }
+
     output.generationMs = generationTimer.elapsed();
     return output;
 }
@@ -1271,25 +1494,51 @@ void MainWindow::ExportOutputToCuttingFile(quint32 id)
     // sous-type, et les options — **sauf l'échelle**. Un plan de coupe sort à 100 %, toujours : il
     // part chez une machine, et une échelle réduite produirait un plan qui a l'air juste et qui
     // coupe faux (`CuttingPlan.md` §24.2).
-    OExportCuttingFileDialog dialog(existing->name, ExportFolder(*existing), this);
+    OExportCuttingFileDialog dialog(*existing, ExportFolder(*existing), this);
     if (dialog.exec() != QDialog::Accepted)
     {
         // Elle a fermé le dialogue : rien à dire, et rien à faire.
         return;
     }
 
-    if (!OExportCuttingFile::Write(dialog.FullPath(), *existing, dialog.Options()))
+    // ── Un fichier par plan ───────────────────────────────────────────────────────────────────────
+    //
+    // **Ce que le dialogue a nommé, et dans son ordre.** Un plan de tissu seul donne un fichier, comme
+    // avant la doublure ; une paire en donne deux, chacun avec sa matière et son nom. On écrit ce que
+    // les lignes disent, sans recompter les nappes ici : le dialogue est le seul à savoir laquelle est
+    // laquelle.
+    QStringList written;
+    QStringList failed;
+    for (const OExportCuttingFile::Target &target : dialog.Targets())
     {
+        if (OExportCuttingFile::Write(target.path, *existing, dialog.Options(), target.material))
+        {
+            written.append(target.path);
+        }
+        else
+        {
+            failed.append(target.path);
+        }
+    }
+
+    // Le dossier vient d'être choisi : c'est celui que le prochain export proposera — et il l'est même
+    // quand l'un des fichiers a échoué, parce que le dossier, lui, existe.
+    RememberExportFolder(dialog.Directory());
+
+    if (not failed.isEmpty())
+    {
+        // **Ce qui n'a PAS été écrit est nommé.** Sur une paire, dire seulement que « la sortie » a
+        // échoué laisserait croire que rien n'est sorti — ou que tout l'est, si le premier fichier est
+        // passé. Les deux cas se ressemblent à l'écran, et un seul est vrai.
         QMessageBox::warning(this, tr("Export mode"),
-                             tr("\"%1\" could not be exported.").arg(existing->name));
+                             tr("\"%1\" could not be exported.").arg(existing->name)
+                                 + QStringLiteral("\n\n") + failed.join(QLatin1Char('\n')));
         return;
     }
 
-    // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
-    RememberExportFolder(dialog.Directory());
-
-    QMessageBox::information(this, tr("Export mode"),
-                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+    QMessageBox::information(
+        this, tr("Export mode"),
+        tr("\"%1\" was exported to\n%2").arg(existing->name, written.join(QLatin1Char('\n'))));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1508,11 +1757,38 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
     bool framed = false;
     const bool hasMarks = ExportMarksOf(output, marks, framed);
 
+    const OExportRunFlags flags{output.cuttingPlan, output.foldedFabric, output.plotterPlan,
+                                output.matWidthMm, output.matHeightMm, output.result.matCount};
+
+    // Le plan de TISSU ouvre la scène — c'est lui qui la vide, et il part de son origine.
     OExportCanvas::Build(scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, nullptr,
                          drawing.artboards, hasMarks ? &marks : nullptr, framed, &drawing.cover,
-                         {output.cuttingPlan, output.foldedFabric, output.plotterPlan,
-                          output.matWidthMm, output.matHeightMm, output.result.matCount});
+                         flags);
+
+    // ── Et la doublure vient à sa DROITE, dans la même scène ─────────────────────────────────────
+    //
+    // **C'est ici, et nulle part ailleurs, que la paire se pose.** La scène ne se vide qu'une fois —
+    // `clearScene` reste au premier plan — et le second s'ajoute au premier à l'endroit qui lui est
+    // réservé. Une seule scène pour les deux : c'est ce qui fait qu'on les lit ensemble, qu'un seul
+    // zoom les cadre tous les deux, et que la barre de statut parle d'un run et non de deux.
+    //
+    // **Elle ne porte ni artboards, ni marques, ni page de garde** : un plan de coupe n'en a aucun, et
+    // ses propres drapeaux de run le redisent — à commencer par son compte de tapis, qui est zéro.
+    if (output.liningPlan)
+    {
+        OExportPlanSeat seat;
+        seat.origin = LiningOrigin(drawing.drawnRect);
+        seat.clearScene = false;
+
+        OExportCanvas::Build(
+            scene, output.liningLayers, output.liningResult,
+            output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, {}, nullptr, false,
+            nullptr,
+            {output.cuttingPlan, output.foldedFabric, output.plotterPlan, output.matWidthMm,
+             output.matHeightMm, output.liningResult.matCount},
+            seat);
+    }
 }
 
 /**
@@ -1541,6 +1817,13 @@ void MainWindow::ShowExportOutput(const OExportOutput &output, bool zoomFit)
 
     if (m_exportCorrection != nullptr)
     {
+        // **Une PAIRE ne se corrige pas à la main** — le repère d'un item est l'index de son placement
+        // dans le résultat, et les deux nappes en ont chacune un : le même index y désigne une pièce
+        // dans les deux. Dit ici, une fois, avant que la scène soit refaite : voir
+        // OExportCorrection::SetEnabled, qui jette au passage une sélection et un historique devenus
+        // faux.
+        m_exportCorrection->SetEnabled(not output.liningPlan);
+
         // The rectangle a hand may not leave is the one the canvas is about to draw: the
         // sheets when the run is tiled — the dead band of the last row included, since it is
         // paper the nesting already paid for — and the bin otherwise. Read from the same grid

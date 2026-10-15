@@ -38,6 +38,7 @@
 
 #include "../vlayout/vlayoutpiece.h"
 #include "core/oexportcuttingdirection.h"
+#include "core/oexportcuttingguard.h"
 #include "widgets/InfoBlock/oinfoblockexport.h"
 
 class OSizerange;
@@ -284,6 +285,16 @@ public:
     /// and it is the only thing this flag changes today. A print run is left exactly as it was.
     void SetCuttingPlan(bool cutting);
 
+    /// @brief La matière du plan de coupe que cette traversée prépare : tissu, ou doublure.
+    ///
+    /// **Ce n'est pas un réglage de mise en page, c'est la source des quantités.** Un run peut décrire
+    /// deux plans — le tissu et la doublure — et une pièce porte une quantité de coupe par matière :
+    /// c'est donc ici, et ici seulement, que se décide *quelles pièces* entrent dans le plan et
+    /// *combien de fois* chacune est posée. Tout le reste de la traversée est indifférent à la matière.
+    ///
+    /// Sans plan de coupe, ce champ ne change rien — voir @ref SetCuttingPlan.
+    void SetCuttingMaterial(OExportCuttingGuard::Material material);
+
     /// @brief Keep only these pieces; empty keeps every piece the layout holds.
     ///
     /// **This is how a cutting plan decomposes a group.** A group serves printing, where two
@@ -344,6 +355,8 @@ private:
     QSet<quint32> m_pieceExclusion{};
     /// @brief Whether this traversal prepares a cutting plan — see SetCuttingPlan.
     bool m_cuttingPlan{false};
+    /// @brief La matière du plan de coupe que cette traversée prépare — voir SetCuttingMaterial.
+    OExportCuttingGuard::Material m_cuttingMaterial{OExportCuttingGuard::Material::Fabric};
     /// @brief Whether that cutting plan is laid on folded fabric — see SetFoldedFabric.
     bool m_foldedFabric{false};
     /// @brief La zone utile du tapis de découpe, en pixels — voir SetCuttingMat. Nulle : pas de tapis.

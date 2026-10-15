@@ -33,6 +33,8 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
 {
     OExportRunRequest request;
     request.documentWidthMm = output.documentWidthMm;
+    request.documentLiningWidthMm = output.documentLiningWidthMm;
+    request.liningPlan = output.liningPlan;
     request.unit = output.unit;
     request.rangeName = output.rangeName;
     request.singleSize = output.singleSize;

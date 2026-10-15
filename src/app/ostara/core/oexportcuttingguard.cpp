@@ -34,15 +34,50 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
 
+namespace
+{
+/// La quantité de coupe d'UNE pièce pour la matière demandée : son propre onglet Cut.
+///
+/// Les deux lectures sont nommées, jamais indexées : `VPiece` porte un getter par matière, et c'est
+/// ce qui garde l'énumération et les champs en accord — une matière ajoutée ici sans son getter ne
+/// compilerait pas.
+auto PieceQuantity(const VPiece &piece, OExportCuttingGuard::Material material) -> int
+{
+    switch (material)
+    {
+        case OExportCuttingGuard::Material::Lining:
+            return piece.GetCutLiningQty();
+        case OExportCuttingGuard::Material::Fabric:
+            break;
+    }
+    return piece.GetCutFabricQty();
+}
+
+/// La même chose pour le GROUPE, qui est le repli d'un membre laissé vide. Lu sur le groupe et non
+/// sur `IPieceInfo` : `OPieceGroup` publie ses champs, et c'est la lecture que la quantité a toujours
+/// faite.
+auto GroupQuantity(const OPieceGroup &group, OExportCuttingGuard::Material material) -> int
+{
+    switch (material)
+    {
+        case OExportCuttingGuard::Material::Lining:
+            return group.m_cutLiningQty;
+        case OExportCuttingGuard::Material::Fabric:
+            break;
+    }
+    return group.m_cutFabricQty;
+}
+} // namespace
+
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportCuttingGuard::CutQuantity(quint32 pieceId, const VContainer *data) -> int
+auto OExportCuttingGuard::CutQuantity(quint32 pieceId, const VContainer *data, Material material) -> int
 {
     if (data == nullptr || data->DataPieces() == nullptr || not data->DataPieces()->contains(pieceId))
     {
         return 0;
     }
 
-    if (const int ownQuantity = data->GetPiece(pieceId).GetCutFabricQty(); ownQuantity > 0)
+    if (const int ownQuantity = PieceQuantity(data->GetPiece(pieceId), material); ownQuantity > 0)
     {
         return ownQuantity;
     }
@@ -57,12 +92,12 @@ auto OExportCuttingGuard::CutQuantity(quint32 pieceId, const VContainer *data) -
         return 0;
     }
 
-    return groups->value(groupId).m_cutFabricQty;
+    return GroupQuantity(groups->value(groupId), material);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportCuttingGuard::PiecesToCut(const QMap<quint32, quint32> &memberChoices, const VContainer *data)
-    -> QVector<quint32>
+auto OExportCuttingGuard::PiecesToCut(const QMap<quint32, quint32> &memberChoices, const VContainer *data,
+                                      Material material) -> QVector<quint32>
 {
     QVector<quint32> pieces;
     if (data == nullptr || data->DataPieces() == nullptr)
@@ -81,13 +116,16 @@ auto OExportCuttingGuard::PiecesToCut(const QMap<quint32, quint32> &memberChoice
             continue;
         }
 
-        // ── Et le cut : une pièce sans quantité de tissu ne se coupe pas ───────────────────────
+        // ── Et le cut : une pièce sans quantité POUR CETTE MATIÈRE ne se coupe pas ───────────────
         //
-        // Un plan de coupe est un plan de TISSU : une pièce dont la section Cut est restée vide est
+        // Chaque matière a son plan : une pièce dont l'onglet Cut de cette matière est resté vide est
         // simplement ignorée. Elle est « in layout », elle reste dans le patron, mais elle ne prend
-        // aucune part au plan — et elle n'a donc pas de droit-fil à justifier non plus : c'est ici
+        // aucune part à CE plan — et elle n'a donc pas de droit-fil à justifier non plus : c'est ici
         // qu'on la sort de la liste, pour que le garde-fou de direction ne la nomme jamais.
-        if (CutQuantity(pieceId, data) <= 0)
+        //
+        // ⚠️ Et aucune matière ne se replie sur une autre : une pièce taillée en doublure seulement
+        // n'entre pas dans le plan de tissu, et c'est exactement ce qu'on veut d'elle.
+        if (CutQuantity(pieceId, data, material) <= 0)
         {
             continue;
         }
@@ -158,12 +196,25 @@ auto OExportCuttingGuard::HasKnownDirection(quint32 pieceId, const VContainer *d
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportCuttingGuard::FaultyPieces(const QMap<quint32, quint32> &memberChoices, const VContainer *data)
-    -> QVector<FaultyPiece>
+auto OExportCuttingGuard::FaultyPieces(const QMap<quint32, quint32> &memberChoices, const VContainer *data,
+                                       const QVector<Material> &materials) -> QVector<FaultyPiece>
 {
-    QVector<FaultyPiece> faulty;
+    // Les plans du run, réunis : une pièce taillée dans les deux matières est UNE pièce, avec UN
+    // droit-fil. La nommer deux fois demanderait deux fois de réparer la même chose.
+    QVector<quint32> toCut;
+    for (const Material material : materials)
+    {
+        for (const quint32 pieceId : PiecesToCut(memberChoices, data, material))
+        {
+            if (not toCut.contains(pieceId))
+            {
+                toCut.append(pieceId);
+            }
+        }
+    }
 
-    for (quint32 pieceId : PiecesToCut(memberChoices, data))
+    QVector<FaultyPiece> faulty;
+    for (const quint32 pieceId : std::as_const(toCut))
     {
         if (not HasKnownDirection(pieceId, data))
         {

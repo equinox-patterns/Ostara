@@ -29,6 +29,7 @@
 #include "oexportgroupchoicewidget.h"
 
 #include "../core/opiecegrouplayoutflags.h"
+#include "../core/oexportcuttingguard.h"
 #include "../core/oexportunitformat.h"
 #include "../ogradedgeometry.h"
 #include "../vformat/vdimensions.h"
@@ -49,6 +50,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSignalBlocker>
 #include <QVBoxLayout>
 
 #include <algorithm>
@@ -87,6 +89,7 @@ void OExportCuttingWidget::BuildUi()
     layout->setContentsMargins(0, 0, 0, 0);
 
     auto *form = new QFormLayout();
+    m_form = form;
     layout->addLayout(form);
 
     // ── Combien de tailles ───────────────────────────────────────────────
@@ -148,6 +151,49 @@ void OExportCuttingWidget::BuildUi()
     m_fabricWidthLabel = new QLabel(this);
     form->addRow(m_fabricWidthLabel, widthRow);
 
+    // ── La doublure : un SECOND plan, sur la même lancée ──────────────────
+    //
+    // Un vêtement doublé se taille deux fois, dans deux étoffes : le tissu et la doublure. Le patron
+    // le dit déjà — chaque pièce porte une quantité de coupe par matière — et c'est ce que cette case
+    // demande : le même run, deux plans, chacun sur son jeu de pièces et sa laize. Tout le reste est
+    // commun, et c'est pourquoi la case est ici, sous la laize, et non dans un onglet à part.
+    //
+    // Elle n'est proposée que si le patron porte de quoi la remplir, et elle est cochée d'emblée :
+    // voir UpdateLiningState, qui est la seule à décider de son état.
+    m_liningCheck = new QCheckBox(this);
+    connect(m_liningCheck, &QCheckBox::toggled, this,
+            [this](bool)
+            {
+                UpdateLiningWidthRow();
+                emit Changed();
+            });
+    form->addRow(m_liningCheck);
+
+    // La laize de la doublure : **sa** largeur, dans **son** unité. Elle suit celle du tissu tant que
+    // l'utilisatrice n'y a pas touché — c'est « identique par défaut » — et prend son indépendance
+    // dès la première saisie.
+    auto *liningRow = new QHBoxLayout();
+    m_liningWidthEdit = new QLineEdit(this);
+    connect(m_liningWidthEdit, &QLineEdit::editingFinished, this,
+            &OExportCuttingWidget::CommitLiningWidth);
+    liningRow->addWidget(m_liningWidthEdit);
+
+    // Rempli et posé AVANT d'être connecté, comme celui du tissu et pour la même raison.
+    m_liningWidthUnitCombo = MakeComboBox(this);
+    for (const Unit &unit : OExportUnitFormat::FabricWidthUnits())
+    {
+        m_liningWidthUnitCombo->addItem(UnitsToStr(unit, true), static_cast<int>(unit));
+    }
+    m_liningWidthUnitCombo->setCurrentIndex(
+        m_liningWidthUnitCombo->findData(static_cast<int>(m_liningWidthUnit)));
+    connect(m_liningWidthUnitCombo, &QComboBox::currentIndexChanged, this,
+            [this](int) { UpdateLiningWidthUnit(); });
+    liningRow->addWidget(m_liningWidthUnitCombo);
+    liningRow->addStretch();
+
+    m_liningWidthLabel = new QLabel(this);
+    form->addRow(m_liningWidthLabel, liningRow);
+
     // ── Le tissu plié ────────────────────────────────────────────────────
     // La couture grand public plie le tissu en deux dans le sens de la laize : on trace les moitiés
     // sur le tissu plié, et le pli donne la seconde. Posée ici, juste sous la laize, parce que
@@ -204,8 +250,20 @@ void OExportCuttingWidget::BuildUi()
     // tous les favoris de coupe. Deux lectures concurrentes de la même liste finiraient par
     // diverger, et c'est la recette de peuplement qui est délicate, pas la boîte.
     m_groupChoice = new OExportGroupChoiceWidget(m_data, this);
-    connect(m_groupChoice, &OExportGroupChoiceWidget::Changed, this, &OExportCuttingWidget::Changed);
+    // Le choix des groupes décide de la disponibilité de la doublure : c'est le même jeu de pièces,
+    // lu sur l'autre matière. Un membre de groupe qui n'est plus celui qu'on taille peut emporter la
+    // seule pièce de doublure du patron — la case s'éteint alors, et le plan avec elle.
+    connect(m_groupChoice, &OExportGroupChoiceWidget::Changed, this,
+            [this]()
+            {
+                UpdateLiningState();
+                emit Changed();
+            });
     layout->addWidget(m_groupChoice);
+
+    // **En dernier, quand tout ce qu'elle lit existe** : la disponibilité se lit sur les pièces et
+    // sur le choix des groupes, donc une case réglée plus tôt aurait jugé un formulaire inachevé.
+    UpdateLiningState();
 
     layout->addStretch();
 }
@@ -425,6 +483,13 @@ void OExportCuttingWidget::CommitFabricWidth()
 
     m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
 
+    // La doublure non saisie suit le tissu : sa ligne se réaffiche donc avec la laize qui vient
+    // d'être lue. Après une saisie à elle, cette ligne ne fait rien — voir `LiningWidthMm`.
+    if (not m_liningWidthEdited)
+    {
+        ShowLiningWidth();
+    }
+
     emit Changed();
 }
 
@@ -447,7 +512,119 @@ void OExportCuttingWidget::UpdateFabricWidthUnit()
     m_fabricWidthUnit = static_cast<Unit>(m_fabricWidthUnitCombo->currentData().toInt());
     m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
 
+    // La doublure non saisie suit aussi l'UNITÉ du tissu : les deux laizes sont la même étoffe à lire
+    // tant qu'elles n'ont pas été séparées, et voir « 55 1/8" » au-dessus de « 140 » en dessous
+    // donnerait deux largeurs différentes pour un seul tissu.
+    if (not m_liningWidthEdited)
+    {
+        m_liningWidthUnit = m_fabricWidthUnit;
+        ShowLiningWidth();
+    }
+
     emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::CommitLiningWidth()
+{
+    bool ok = false;
+    const qreal widthMm = OExportUnitFormat::Parse(m_liningWidthEdit->text(), m_liningWidthUnit, &ok);
+    if (ok && widthMm > 0.0)
+    {
+        m_liningWidthMm = widthMm;
+        // **C'est ici que la doublure prend son indépendance.** Tant qu'aucune valeur n'a été écrite,
+        // elle est celle du tissu ; à partir d'ici elle est à elle, et changer la laize du tissu ne
+        // la touche plus. Même règle de validité que pour le tissu : zéro n'est pas une laize étroite,
+        // c'est un champ qu'on n'a pas rempli, et l'ancienne valeur tient.
+        m_liningWidthEdited = true;
+    }
+
+    ShowLiningWidth();
+    emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::UpdateLiningWidthUnit()
+{
+    // L'ordre est celui du tissu, et pour la même raison : lire avec l'ANCIENNE unité, réafficher
+    // avec la nouvelle. « 140 » cm ne doit pas devenir 140 pouces sans qu'un chiffre bouge.
+    bool ok = false;
+    const qreal widthMm = OExportUnitFormat::Parse(m_liningWidthEdit->text(), m_liningWidthUnit, &ok);
+    if (ok && widthMm > 0.0)
+    {
+        m_liningWidthMm = widthMm;
+    }
+
+    m_liningWidthUnit = static_cast<Unit>(m_liningWidthUnitCombo->currentData().toInt());
+
+    // ⚠️ **Et surtout PAS `m_liningWidthEdited`** : choisir une unité n'est pas donner une largeur.
+    // La doublure continue donc de suivre le tissu si elle le suivait — elle s'en détachera quand une
+    // valeur sera écrite, pas quand elle sera relue dans une autre langue.
+    ShowLiningWidth();
+    emit Changed();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingWidget::HasLiningPlan() const -> bool
+{
+    return m_liningCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingWidget::LiningWidthMm() const -> qreal
+{
+    return m_liningWidthEdited ? m_liningWidthMm : m_fabricWidthMm;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::ShowLiningWidth()
+{
+    // ⚠️ **Le combo est reposé SANS émettre.** C'est la fonction qui RÉAFFICHE, pas celle qui relit :
+    // un `currentIndexChanged` émis d'ici ferait entrer la valeur affichée dans `UpdateLiningWidthUnit`,
+    // qui la relirait avec l'unité qu'on vient de poser — « 140 » lu comme des pouces, et une laize
+    // multipliée par 2,54 sans qu'un chiffre bouge à l'écran. C'est le piège que le combo du tissu
+    // referme par l'ordre de ses appels ; ici il est refermé pour de bon.
+    const QSignalBlocker blocker(m_liningWidthUnitCombo);
+    m_liningWidthUnitCombo->setCurrentIndex(
+        m_liningWidthUnitCombo->findData(static_cast<int>(m_liningWidthUnit)));
+    m_liningWidthEdit->setText(OExportUnitFormat::Format(LiningWidthMm(), m_liningWidthUnit));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::UpdateLiningState()
+{
+    const bool available =
+        not OExportCuttingGuard::PiecesToCut(MemberChoices(), m_data, OExportCuttingGuard::Material::Lining)
+            .isEmpty();
+
+    // **Cochée à l'instant où elle devient disponible**, jamais à chaque passage : le tour d'après
+    // remettrait la coche qu'une utilisatrice vient de retirer.
+    if (not available)
+    {
+        m_liningCheck->setChecked(false);
+    }
+    else if (not m_liningWasAvailable)
+    {
+        m_liningCheck->setChecked(true);
+    }
+
+    m_liningWasAvailable = available;
+    m_liningCheck->setEnabled(available);
+
+    UpdateLiningWidthRow();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportCuttingWidget::UpdateLiningWidthRow()
+{
+    m_form->setRowVisible(m_liningWidthLabel, m_liningCheck->isChecked());
+
+    // La ligne peut s'ouvrir sur une laize jamais saisie : elle doit alors montrer celle du tissu,
+    // qui a pu changer pendant qu'elle était cachée.
+    if (not m_liningWidthEdited)
+    {
+        ShowLiningWidth();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -639,6 +816,25 @@ auto OExportCuttingWidget::IsValid() const -> bool
         return false;
     }
 
+    // ── Et la doublure a SA laize : la même règle, sur son propre chiffre ─────────────────────────
+    //
+    // Le run décrit alors DEUX plans, et l'espace depuis les bords est le même pour les deux : une
+    // doublure plus étroite que le tissu peut donc être la seule à ne plus décrire de plan. Le test
+    // porte sur la laize de la doublure telle qu'elle sera lue — celle du tissu tant qu'elle n'a pas
+    // été saisie — et non sur un second chiffre à tenir en accord.
+    if (HasLiningPlan())
+    {
+        if (LiningWidthMm() <= 0.0)
+        {
+            return false;
+        }
+
+        if (2.0 * EdgeMarginMm() >= LiningWidthMm())
+        {
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -663,6 +859,22 @@ void OExportCuttingWidget::Retranslate()
     // sur un changement de langue ne peut donc pas altérer la laize, même si le champ portait une
     // saisie en cours.
     m_fabricWidthEdit->setText(OExportUnitFormat::Format(m_fabricWidthMm, m_fabricWidthUnit));
+
+    // La doublure : son libellé, son unité, sa valeur. Refaite ici et pas seulement dans ses commits,
+    // parce qu'un changement de langue doit la relire comme le reste du formulaire — et parce que sa
+    // valeur peut être celle du tissu, qui vient d'être réaffichée juste au-dessus.
+    m_liningCheck->setText(tr("Lining"));
+    m_liningWidthLabel->setText(tr("Lining width:"));
+    for (int i = 0; i < m_liningWidthUnitCombo->count(); ++i)
+    {
+        m_liningWidthUnitCombo->setItemText(
+            i, UnitsToStr(static_cast<Unit>(m_liningWidthUnitCombo->itemData(i).toInt()), true));
+    }
+    ShowLiningWidth();
+
+    // L'infobulle de la case dépend de sa disponibilité : c'est `UpdateLiningState` qui la pose, et
+    // la rappeler ici est la seule façon qu'un changement de langue la reprenne.
+    UpdateLiningState();
 
     m_sizeModeBox->setTitle(tr("Sizes to cut"));
     m_singleRadio->setText(tr("Single size"));

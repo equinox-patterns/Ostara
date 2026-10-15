@@ -27,10 +27,13 @@
 #ifndef OEXPORTCUTTINGFILE_H
 #define OEXPORTCUTTINGFILE_H
 
+#include <QCoreApplication>
 #include <QString>
+#include <QVector>
 
 #include "../vdxf/dxfdef.h"
 #include "../vlayout/vlayoutdef.h"
+#include "core/oexportcuttingguard.h"
 
 struct OExportOutput;
 
@@ -84,9 +87,58 @@ struct Options
     DXFApparelCompatibility compatibility{DXFApparelCompatibility::STANDARD};
 };
 
-/// @brief Writes the placed plan to @p path. False when nothing could be written — the reason has
-/// been logged, and the caller says so to the user.
-auto Write(const QString &path, const OExportOutput &output, const Options &options) -> bool;
+/**
+ * @brief Un fichier à écrire : quelle nappe, et où.
+ *
+ * **La paire se dit par une LISTE**, et l'ordre est celui des plans : le tissu d'abord. Le dialogue qui
+ * offre deux noms, le lot qui écrit deux fichiers et l'écrivain qui les écrit tous lisent cette même
+ * liste plutôt que de recompter les nappes chacun de son côté — deux comptages seraient deux réponses
+ * à une seule question, et le jour où l'une oublierait la doublure est le jour où un fichier manque
+ * sans que personne ne l'ait dit.
+ */
+struct Target
+{
+    OExportCuttingGuard::Material material{OExportCuttingGuard::Material::Fabric};
+    QString path{};
+};
+
+/**
+ * @brief Les plans qu'une génération porte, dans l'ordre : le tissu, et la doublure quand elle est là.
+ *
+ * **La seule réponse à « combien de fichiers ? ».** Un run de coupe porte un plan, ou deux — jamais
+ * zéro, jamais trois : la doublure n'existe que si le run l'a demandée. Un run qui n'est pas un plan de
+ * coupe n'en porte aucun, et c'est ce que la liste vide dit.
+ */
+auto PlansOf(const OExportOutput &output) -> QVector<OExportCuttingGuard::Material>;
+
+/**
+ * @brief Le nom de fichier d'une nappe, **sans extension** : l'appelant ajoute celle du format.
+ *
+ * **Un seul plan garde le nom de la sortie**, tel quel : c'est ce qu'un plan de coupe s'appelait avant
+ * la doublure, et rien ne justifie de le renommer aujourd'hui. **Deux plans disent chacun leur matière**,
+ * sans quoi les deux fichiers porteraient le même nom et le second écraserait le premier.
+ *
+ * ⚠️ **« Fabric » et « Lining » sont TRADUITS** — « Tissu » et « Doublure » — comme les jetons du nom
+ * lui-même (« Cut », « Plot ») : le nom d'une sortie se lit dans la langue de celui qui la regarde, et
+ * c'est la même règle partout. Un nom créé dans une langue ne se retraduit pas après coup : il est
+ * écrit une fois, à la génération.
+ *
+ * Le contexte est nommé à la main — `QCoreApplication::translate("OExportCuttingFile", …)` — parce
+ * qu'un espace de noms n'a pas de `tr()` : `Q_DECLARE_TR_FUNCTIONS` ne vit que dans une classe. C'est
+ * l'idiome déjà employé par OPieceImport.
+ */
+auto PlanName(const OExportOutput &output, OExportCuttingGuard::Material material) -> QString;
+
+/**
+ * @brief Writes the placed plan to @p path. False when nothing could be written — the reason has
+ * been logged, and the caller says so to the user.
+ *
+ * @param material which plan of the generation to write. A generation that carries only the fabric
+ *                 refuses to be read as a lining one: there is nothing to write, and a file with no
+ *                 piece in it is worse than no file at all.
+ */
+auto Write(const QString &path, const OExportOutput &output, const Options &options,
+           OExportCuttingGuard::Material material = OExportCuttingGuard::Material::Fabric) -> bool;
 } // namespace OExportCuttingFile
 
 #endif // OEXPORTCUTTINGFILE_H

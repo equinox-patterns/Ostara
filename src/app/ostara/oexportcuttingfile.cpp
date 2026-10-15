@@ -47,9 +47,9 @@ namespace
 /// The plan's rectangle, in pixels: what the engines take for the size of their file. The plan
 /// starts at the bin's origin and runs to the height the nesting used — the very rectangle the
 /// canvas draws.
-auto PlanRect(const OExportOutput &output) -> QRectF
+auto PlanRect(const OExportNestingResult &result) -> QRectF
 {
-    return {0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx};
+    return {0.0, 0.0, result.binWidthPx, result.usedHeightPx};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -60,19 +60,23 @@ auto PlanRect(const OExportOutput &output) -> QRectF
 /// transform on the item drags the bounding rect along with it, and that overwriting throws away
 /// the mirror a symmetric copy is made of.
 ///
-/// ⚠️ And it is the same loop as `OExportCanvas::Build`, on the same two lists (`result.keys` and
-/// `result.placements` are index-aligned): the file is what the screen shows, or it is wrong.
-auto PlacedPieces(const OExportOutput &output) -> QVector<VLayoutPiece>
+/// ⚠️ Et c'est la même boucle que `OExportCanvas::Build`, sur les mêmes deux listes (`result.keys` et
+/// `result.placements` sont index-alignées) : le fichier est ce que l'écran montre, ou il est faux.
+///
+/// Les deux listes arrivent en paramètres — et non la génération — parce qu'une génération en porte
+/// DEUX jeux : celui du tissu et celui de la doublure. L'appelant a déjà choisi sa nappe, et cette
+/// fonction n'a pas à savoir qu'il y en a une autre.
+auto PlacedPieces(const QVector<OExportSizeLayer> &layers, const OExportNestingResult &result)
+    -> QVector<VLayoutPiece>
 {
     QVector<VLayoutPiece> placed;
-    const OExportNestingResult &result = output.result;
 
     for (int i = 0; i < result.placements.size() && i < result.keys.size(); ++i)
     {
         const OExportPlacement &placement = result.placements.at(i);
         const QString &key = result.keys.at(i);
 
-        for (const OExportSizeLayer &layer : output.layers)
+        for (const OExportSizeLayer &layer : layers)
         {
             for (const OExportPieceGeometry &geometry : layer.pieces)
             {
@@ -185,15 +189,74 @@ auto WriteFlatDxf(VLayoutExporter &exporter, const QVector<VLayoutPiece> &pieces
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output, const Options &options) -> bool
+auto OExportCuttingFile::PlansOf(const OExportOutput &output) -> QVector<OExportCuttingGuard::Material>
 {
-    if (path.isEmpty() || not output.result.ok || output.layers.isEmpty())
+    QVector<OExportCuttingGuard::Material> plans;
+
+    // Ce qui n'est pas un plan de coupe ne porte aucune nappe — un run d'impression n'a pas de « plan
+    // de tissu », et lui en prêter un ferait écrire un fichier de découpe pour un PDF.
+    if (not output.cuttingPlan)
+    {
+        return plans;
+    }
+
+    plans.append(OExportCuttingGuard::Material::Fabric);
+    if (output.liningPlan)
+    {
+        plans.append(OExportCuttingGuard::Material::Lining);
+    }
+
+    return plans;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingFile::PlanName(const OExportOutput &output, OExportCuttingGuard::Material material) -> QString
+{
+    if (output.name.isEmpty())
+    {
+        return {};
+    }
+
+    // **Un seul plan : le nom de la sortie, tel quel.** C'est ce qu'un plan de coupe s'appelait avant
+    // la doublure, et rien ne justifie de le renommer aujourd'hui.
+    if (not output.liningPlan)
+    {
+        return output.name;
+    }
+
+    // ⚠️ **Traduit**, et le contexte est nommé à la main : un espace de noms n'a pas de `tr()` — voir
+    // l'en-tête. C'est le mot que l'utilisatrice lit sur son disque.
+    //
+    // ⚠️ **Deux appels, jamais un littéral passé par une variable** : c'est le texte EN CLAIR dans
+    // l'appel que l'extracteur relève. Un `const char *` choisi avant, ou un littéral dans un
+    // opérateur ternaire à l'intérieur de l'appel, et les deux mots ne seraient plus extractibles —
+    // ils resteraient anglais en silence, ce qui est exactement ce qu'on répare ici.
+    const QString cloth = material == OExportCuttingGuard::Material::Lining
+                              ? QCoreApplication::translate("OExportCuttingFile", "Lining")
+                              : QCoreApplication::translate("OExportCuttingFile", "Fabric");
+
+    return QStringLiteral("%1-%2").arg(output.name, cloth);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output, const Options &options,
+                               OExportCuttingGuard::Material material) -> bool
+{
+    // **La nappe demandée, et rien d'autre.** Le plan de tissu est là où il a toujours été ; celui de
+    // doublure vit à côté de lui, et une génération qui n'en porte pas n'a rien à écrire pour cette
+    // matière-là : un fichier sans pièce serait pire que pas de fichier du tout.
+    const bool lining = material == OExportCuttingGuard::Material::Lining;
+    const QVector<OExportSizeLayer> &layers = lining ? output.liningLayers : output.layers;
+    const OExportNestingResult &result = lining ? output.liningResult : output.result;
+
+    const bool carried = lining ? output.liningPlan : output.cuttingPlan;
+    if (path.isEmpty() || not carried || not result.ok || layers.isEmpty())
     {
         qWarning() << "OExportCuttingFile: the generation cannot be reproduced";
         return false;
     }
 
-    const QVector<VLayoutPiece> pieces = PlacedPieces(output);
+    const QVector<VLayoutPiece> pieces = PlacedPieces(layers, result);
     if (pieces.isEmpty())
     {
         qWarning() << "OExportCuttingFile: the plan holds no piece to write";
@@ -202,7 +265,7 @@ auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output,
 
     VLayoutExporter exporter;
     exporter.SetFileName(path);
-    exporter.SetImageRect(PlanRect(output));
+    exporter.SetImageRect(PlanRect(result));
 
     // ── 100 %, et rien d'autre ───────────────────────────────────────────────────────────────────
     //

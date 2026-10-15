@@ -85,6 +85,20 @@ public:
     /// from, so a piece can never be put where the plan is not.
     void SetPlan(const QRectF &plan);
 
+    /// @brief Allume ou éteint la correction à la main pour ce qui est affiché.
+    ///
+    /// **Une génération qui porte une PAIRE — tissu et doublure — n'est pas corrigeable.** La
+    /// sélection est un index dans `result.placements`, et les deux nappes en ont chacune un : le même
+    /// index désigne une pièce dans les deux plans, donc un clic en sélectionnerait deux et un geste
+    /// les déplacerait ensemble, dans un seul résultat. Plutôt que d'inventer une identité
+    /// `(plan, index)` pour un geste que personne n'a demandé, la paire se lit et ne se corrige pas.
+    ///
+    /// Éteindre jette la sélection **et l'historique** : les commandes qu'il porte visent les
+    /// placements d'un plan qu'on ne montre plus comme corrigeable.
+    void SetEnabled(bool enabled);
+
+    auto IsEnabled() const -> bool;
+
     /// @brief The view's scale, passed on to the holder so its handles keep their size.
     void SetViewScale(qreal scale);
 
@@ -168,6 +182,10 @@ private:
 
     QRectF m_plan{};
     qreal m_viewScale{1.0};
+
+    /// Faux quand ce qui est affiché n'est pas corrigeable — voir SetEnabled. Vrai par défaut : avant
+    /// la paire, tout plan l'était.
+    bool m_enabled{true};
 
     /// Where the selection is, and the only identity it keeps. 0 means nothing is selected.
     quint32 m_outputId{0};

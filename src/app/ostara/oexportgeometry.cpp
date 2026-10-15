@@ -467,6 +467,12 @@ void OExportGeometry::SetCuttingPlan(bool cutting)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportGeometry::SetCuttingMaterial(OExportCuttingGuard::Material material)
+{
+    m_cuttingMaterial = material;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportGeometry::SetFoldedFabric(bool folded)
 {
     m_foldedFabric = folded;
@@ -605,11 +611,14 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             continue;
         }
 
-        // ── Et le cut : un plan de coupe ne coupe que ce qui a une quantité de tissu ──────────────
+        // ── Et le cut : un plan de coupe ne coupe que ce qui a une quantité POUR SA MATIÈRE ──────
         //
-        // Un plan de coupe est un plan de TISSU : une pièce dont la section Cut est restée vide ne
-        // se coupe pas. Elle est « in layout », elle reste dans le patron, mais elle ne prend
-        // aucune part au plan — pas une place, pas un aperçu, pas une ligne du fichier.
+        // Un plan de coupe est un plan d'UNE matière — tissu, ou doublure — et une pièce porte une
+        // quantité par matière : une pièce dont l'onglet Cut de cette matière est resté vide ne se
+        // coupe pas dans ce plan-là. Elle est « in layout », elle reste dans le patron, mais elle ne
+        // prend aucune part au plan — pas une place, pas un aperçu, pas une ligne du fichier. Rien ne
+        // se replie d'une matière sur l'autre : une pièce taillée en doublure seulement n'entre pas
+        // dans le plan de tissu.
         //
         // Écartée ICI, avant d'être résolue : une pièce qu'on ne coupe pas ne coûte rien à
         // construire, et surtout elle ne peut plus faire échouer le run (un pli qui n'est pas un
@@ -622,7 +631,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         int cutQuantity = 1;
         if (m_cuttingPlan)
         {
-            cutQuantity = OExportCuttingGuard::CutQuantity(id, m_container);
+            cutQuantity = OExportCuttingGuard::CutQuantity(id, m_container, m_cuttingMaterial);
             if (cutQuantity <= 0)
             {
                 continue;

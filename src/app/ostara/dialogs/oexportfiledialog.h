@@ -30,6 +30,8 @@
 
 #include <QDialog>
 #include <QString>
+#include <QStringList>
+#include <QVector>
 
 class QDialogButtonBox;
 class QEvent;
@@ -78,6 +80,15 @@ public:
     /// @brief Folder and file name together.
     auto FullPath() const -> QString;
 
+    /// @brief TOUS les chemins, dans l'ordre des lignes de nom — un, ou deux.
+    ///
+    /// Un dialogue qui écrit deux fichiers en demande deux, et l'appelant les écrit dans cet ordre-là :
+    /// c'est la liste, et non un comptage refait de son côté, qui dit combien de fichiers il y a.
+    auto FullPaths() const -> QStringList;
+
+    /// @brief TOUS les noms de fichier, dans l'ordre des lignes — un, ou deux. Extension comprise.
+    auto FileNames() const -> QStringList;
+
     /// @brief La question d'écrasement, posée une fois par fichier.
     ///
     /// **Une seule définition**, parce que l'export en lot écrit plusieurs fichiers sans passer par
@@ -116,6 +127,26 @@ protected:
     /// l'utilisatrice a tapé est conservé ; seule l'ancienne extension est retirée.
     void SetSuffix(const QString &suffix);
 
+    /// @brief Le libellé de la PREMIÈRE ligne de nom.
+    ///
+    /// Le squelette y met « File name: » au moment de traduire. **Un dialogue qui écrit deux fichiers
+    /// ne demande plus « un nom »** : il demande celui de chaque plan, et la première ligne prend alors
+    /// le nom de sa matière. Le dérivé le repose donc après chaque traduction, comme son titre.
+    auto NameLabel() const -> QLabel *;
+
+    /// @brief Insère une ligne de NOM **sous celles qui existent**, et rend son champ.
+    ///
+    /// C'est le squelette qui la pose, et non le dérivé dans sa propre grille : l'extension du format
+    /// est reportée sur chaque champ (voir SetSuffix), le contrôle de nom vide les visite tous, et la
+    /// question d'écrasement est posée pour chacun. Une seconde mécanique écrite ailleurs serait une
+    /// seconde façon de nommer et d'écraser un fichier — exactement ce que ce dialogue existe pour
+    /// empêcher.
+    ///
+    /// @param label le libellé de la ligne. **Il appartient à l'appelant**, qui le traduit : c'est son
+    ///              mot, pas celui du squelette.
+    /// @param name  le nom offert, extension comprise ou non — FileName l'ajoute s'il manque.
+    auto AddNameRow(QLabel *label, const QString &name) -> QLineEdit *;
+
 private slots:
     void OnBrowse();
     void OnAccept();
@@ -131,10 +162,25 @@ private:
 
     QLabel *m_nameLabel{nullptr};
     QLabel *m_pathLabel{nullptr};
-    QLineEdit *m_nameEdit{nullptr};
+
+    /// Les champs de nom, dans l'ordre où ils s'affichent : celui de la sortie, et — pour un dialogue
+    /// qui écrit deux fichiers — celui de la seconde. **Le premier est le seul que `FileName()` lit** :
+    /// les autres n'existent que par `FullPaths()`.
+    QVector<QLineEdit *> m_nameEdits{};
+
     QLineEdit *m_pathEdit{nullptr};
     QPushButton *m_browseButton{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
+
+    /// Le champ de la première ligne. Jamais nul : le squelette le pose dans son constructeur.
+    auto FirstNameEdit() const -> QLineEdit *;
+
+    /// @brief Fait descendre d'une ligne tout ce qui occupe la grille à partir de @p first.
+    ///
+    /// **Un QGridLayout n'a pas d'`insertRow`** — un QFormLayout en a un, pas lui — donc la place pour
+    /// une ligne de nom de plus se fait à la main : on relève l'emplacement de chaque widget, on le
+    /// repose un cran plus bas, et `m_optionRow` suit. Les widgets, eux, ne bougent pas d'un parent.
+    void ShiftRowsDown(int first);
 };
 
 #endif  // OEXPORTFILEDIALOG_H

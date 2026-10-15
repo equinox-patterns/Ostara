@@ -28,6 +28,8 @@
 #ifndef OEXPORTBATCHPAGE_H
 #define OEXPORTBATCHPAGE_H
 
+#include "../core/oexportcuttingguard.h"
+
 #include <QString>
 #include <QVector>
 #include <QWidget>
@@ -60,11 +62,17 @@ class OExportBatchPage : public QWidget
     Q_OBJECT
 
 public:
-    /// Une génération à écrire, et le nom du fichier qu'elle produira.
+    /// **Une ligne par FICHIER, et non par génération.** Un plan de coupe qui porte la paire — tissu et
+    /// doublure — écrit deux fichiers : il se présente donc en deux lignes, chacune avec son nom, comme
+    /// le dialogue d'export demande deux noms. Les autres catégories n'en écrivent qu'un, et laissent
+    /// la matière à son défaut.
     struct Row
     {
         quint32 id{0};
         QString name{}; ///< le nom de FICHIER, extension comprise — ce que l'utilisatrice lit et édite
+
+        /// Quelle nappe de la génération cette ligne écrit — voir `OExportCuttingFile::PlansOf`.
+        OExportCuttingGuard::Material material{OExportCuttingGuard::Material::Fabric};
     };
 
     /// @param rows            les générations de cette catégorie, dans l'ordre où elles seront écrites.

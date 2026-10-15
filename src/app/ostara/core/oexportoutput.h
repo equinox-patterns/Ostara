@@ -75,6 +75,29 @@ struct OExportOutput
     QVector<OExportSizeLayer> layers{}; ///< the pattern resolved for every size
     OExportNestingResult result{};      ///< the placements, and the bin they were placed in
 
+    /// @brief La laize de la DOUBLURE, en millimètres — la seconde matière du run.
+    ///
+    /// Elle est à `documentWidthMm` ce que la doublure est au tissu : une autre étoffe, une autre
+    /// laize, et rien de commun sinon les réglages. **Zéro quand le run n'a pas demandé de paire.**
+    qreal documentLiningWidthMm{0.0};
+
+    /// @brief Whether this generation was asked for as a PAIR: the fabric plan, and a lining plan.
+    ///
+    /// Un plan de coupe peut décrire **deux** plans — le tissu et la doublure — et c'est ce drapeau
+    /// qui les fait exister. Ce qui les sépare n'est pas un réglage : c'est le **jeu de pièces**,
+    /// chacune lue dans sa propre matière (voir OExportCuttingGuard::Material). Tout le reste est
+    /// commun : à la laize près, la doublure reprend les réglages du tissu à l'identique.
+    bool liningPlan{false};
+
+    /// Le plan de DOUBLURE : mêmes deux listes, même contrat que `layers` et `result` ci-dessus —
+    /// qui restent le plan de TISSU, et que tout l'existant continue de lire.
+    ///
+    /// ⚠️ **Le plan de tissu reste là où il a toujours été**, dans `layers` et `result` : l'écriture
+    /// DXF / PLT / HPGL, le PDF et l'image lisent ces deux membres-là et n'ont pas eu à apprendre la
+    /// paire. La doublure vit à côté, et seuls le canvas et la barre de statut la connaissent.
+    QVector<OExportSizeLayer> liningLayers{};
+    OExportNestingResult liningResult{};
+
     /// How long the run took, in milliseconds — the figure the status bar reports. Measured from
     /// the first line of the run to its last, so that it covers everything the user waited
     /// through: the geometry resolved size after size, the nesting itself, and the event loop
@@ -261,6 +284,13 @@ struct OExportOutput
 struct OExportRunRequest
 {
     qreal documentWidthMm{0.0};
+
+    /// @see OExportOutput::documentLiningWidthMm — la même longueur, de l'autre côté.
+    qreal documentLiningWidthMm{0.0};
+
+    /// @see OExportOutput::liningPlan — le même drapeau, de l'autre côté.
+    bool liningPlan{false};
+
     Unit unit{Unit::Cm};
     QString rangeName{};
     bool singleSize{false};

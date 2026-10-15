@@ -37,6 +37,8 @@ namespace
 // functions below, and a field added to OExportRunRequest and forgotten here would be a field
 // a favorite silently drops.
 constexpr auto kDocumentWidth = "documentWidthMm";
+constexpr auto kDocumentLiningWidth = "documentLiningWidthMm";
+constexpr auto kLiningPlan = "liningPlan";
 constexpr auto kUnit = "unit";
 constexpr auto kRangeName = "rangeName";
 constexpr auto kSingleSize = "singleSize";
@@ -74,6 +76,8 @@ auto RecipeOf(const OExportRunRequest &request) -> QVariantMap
 
     QVariantMap record;
     record.insert(QLatin1String(kDocumentWidth), request.documentWidthMm);
+    record.insert(QLatin1String(kDocumentLiningWidth), request.documentLiningWidthMm);
+    record.insert(QLatin1String(kLiningPlan), request.liningPlan);
     record.insert(QLatin1String(kUnit), static_cast<int>(request.unit));
     record.insert(QLatin1String(kRangeName), request.rangeName);
     record.insert(QLatin1String(kSingleSize), request.singleSize);
@@ -109,6 +113,9 @@ auto RequestOf(const QVariantMap &record) -> OExportRunRequest
 
     request.documentWidthMm =
         record.value(QLatin1String(kDocumentWidth), request.documentWidthMm).toDouble();
+    request.documentLiningWidthMm =
+        record.value(QLatin1String(kDocumentLiningWidth), request.documentLiningWidthMm).toDouble();
+    request.liningPlan = record.value(QLatin1String(kLiningPlan), request.liningPlan).toBool();
     request.unit = static_cast<Unit>(record.value(QLatin1String(kUnit), static_cast<int>(request.unit)).toInt());
     request.rangeName = record.value(QLatin1String(kRangeName), request.rangeName).toString();
     request.singleSize = record.value(QLatin1String(kSingleSize), request.singleSize).toBool();

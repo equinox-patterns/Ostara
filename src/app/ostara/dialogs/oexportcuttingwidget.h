@@ -60,6 +60,9 @@ class VMeasurements;
  *      Right below it, <b>whether that fabric is folded in two</b> — home sewing folds it along the
  *      selvedge and traces the halves on the folded cloth. The nesting then runs on half the width,
  *      which is the one thing about the folded answer the user has to be told rather than find.
+ *      Et, sous la même laize, <b>la doublure</b> : un vêtement doublé se taille deux fois, et le
+ *      patron le dit déjà — chaque pièce porte une quantité de coupe par matière. La case demande le
+ *      second plan, et la ligne qu'elle ouvre sa largeur à lui ; tout le reste est commun aux deux.
  *   3. <b>which member of each group</b> — a group serves printing, where two pieces fill one shape
  *      on a sheet. On fabric a piece is cut once, so a group is decomposed and the user says which
  *      of its members she cuts. The box only appears when the pattern has a group to ask about.
@@ -77,6 +80,20 @@ public:
 
     /// @brief The laize, in millimetres — the width the nesting runs on.
     auto FabricWidthMm() const -> qreal;
+
+    /// @brief Vrai quand le run demande AUSSI un plan de DOUBLURE — la case cochée.
+    ///
+    /// La case ne peut être cochée que si le patron porte au moins une pièce à tailler dans la
+    /// doublure (voir @ref UpdateLiningState) : cochée veut donc dire « disponible », et il n'y a pas
+    /// deux lectures à faire.
+    auto HasLiningPlan() const -> bool;
+
+    /// @brief La laize de la doublure, en millimètres.
+    ///
+    /// **Tant qu'elle n'a pas été saisie, c'est celle du tissu** : c'est ce que veut dire « identique
+    /// par défaut ». Dès que l'utilisatrice écrit dans le champ, la doublure a la sienne et ne suit
+    /// plus le tissu.
+    auto LiningWidthMm() const -> qreal;
 
     /// @brief L'unité dans laquelle la laize est SAISIE à l'écran — `cm` ou `inch`, jamais le mm.
     ///
@@ -164,8 +181,34 @@ private:
     void CommitEdgeMargin();
     void Retranslate();
 
+    /// Règle l'état de la case « Doublure » : disponible — et cochée — dès que le patron porte une
+    /// pièce à tailler dans la doublure, indisponible et décochée sinon.
+    ///
+    /// ⚠️ **La disponibilité se lit avec la règle du run**, `PiecesToCut` sur la matière doublure, et
+    /// non avec un balayage à part : le membre de groupe retenu, la pièce hors layout et la quantité
+    /// vide sont donc jugés exactement comme ils le seront au nesting. Une case allumée sur une pièce
+    /// que le run écarterait promettrait un plan vide.
+    ///
+    /// Rappelée à chaque changement du choix des groupes : une case peut s'éteindre quand la pièce
+    /// doublure du groupe n'est plus celle qu'on taille.
+    void UpdateLiningState();
+
+    /// Montre la ligne de laize de doublure quand — et seulement quand — la case est cochée.
+    void UpdateLiningWidthRow();
+
+    /// Réaffiche le champ de laize doublure depuis ses millimètres, dans son unité.
+    void ShowLiningWidth();
+
+    void CommitLiningWidth();
+    void UpdateLiningWidthUnit();
+
     const VContainer *m_data{nullptr};
     QSharedPointer<VMeasurements> m_measurements{};
+
+    /// Le formulaire des réglages du plan. Gardé pour pouvoir MASQUER la ligne de la doublure :
+    /// `QFormLayout::setRowVisible` a besoin de lui, et un `hide()` sur les deux widgets laisserait
+    /// l'espace de la ligne.
+    QFormLayout *m_form{nullptr};
 
     QLabel *m_fabricWidthLabel{nullptr};
     QLineEdit *m_fabricWidthEdit{nullptr};
@@ -176,6 +219,26 @@ private:
     Unit m_fabricWidthUnit{Unit::Cm};
     QCheckBox *m_foldedCheck{nullptr};
     QCheckBox *m_oneWayCheck{nullptr};
+
+    /// La case « Doublure », et le champ de sa laize. Ils vont ensemble : la case dit qu'il y a un
+    /// second plan, le champ dit sur quelle largeur il se coupe.
+    QCheckBox *m_liningCheck{nullptr};
+    QLabel *m_liningWidthLabel{nullptr};
+    QLineEdit *m_liningWidthEdit{nullptr};
+    QComboBox *m_liningWidthUnitCombo{nullptr};
+    Unit m_liningWidthUnit{Unit::Cm};
+
+    /// La laize PROPRE de la doublure, en millimètres — lue seulement quand `m_liningWidthEdited`.
+    /// Gardée en millimètres plutôt que relue du champ, comme celle du tissu et pour la même raison.
+    qreal m_liningWidthMm{1400.0};
+
+    /// Vrai dès que l'utilisatrice a écrit dans le champ de la doublure (ou commité sa valeur) :
+    /// jusque-là la doublure suit la laize du tissu, et c'est ce que « identique par défaut » veut dire.
+    bool m_liningWidthEdited{false};
+
+    /// L'état de disponibilité au tour précédent, pour ne cocher la case qu'au moment où elle le
+    /// devient — sans quoi un décochage volontaire serait défait au changement suivant.
+    bool m_liningWasAvailable{false};
 
     QLabel *m_gapLabel{nullptr};
     QLineEdit *m_gapEdit{nullptr};

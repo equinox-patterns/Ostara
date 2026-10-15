@@ -85,6 +85,29 @@ void OExportCorrection::SetPlan(const QRectF &plan)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportCorrection::SetEnabled(bool enabled)
+{
+    // **Une paire tissu + doublure n'a pas de correction.** Le repère d'un item est l'index de son
+    // placement dans le résultat du plan affiché, et les deux nappes ont chacune le leur : le même
+    // index désigne une pièce dans LES DEUX, donc un clic en sélectionnerait deux et un geste les
+    // déplacerait ensemble. La paire se lit, elle ne se corrige pas — et c'est dit ici, une fois,
+    // plutôt que deviné par chaque lecteur du rôle.
+    m_enabled = enabled;
+
+    if (not enabled)
+    {
+        ClearSelection();
+        m_undoStack.clear();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportCorrection::IsEnabled() const -> bool
+{
+    return m_enabled;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportCorrection::SetViewScale(qreal scale)
 {
     m_viewScale = scale;
@@ -104,6 +127,13 @@ void OExportCorrection::OnSceneMouseMove(const QPointF &scenePos)
 void OExportCorrection::OnItemPressed(QGraphicsItem *item)
 {
     Q_UNUSED(item)
+
+    // Correction éteinte : le plan est en lecture seule, et une pression ne fait rien du tout —
+    // pas même tomber une sélection, qui ne peut pas exister. Voir SetEnabled.
+    if (not m_enabled)
+    {
+        return;
+    }
 
     // A press that lands while a gesture is running belongs to that gesture, not to a new
     // selection: Qt routes it to the item holding the grab, and reaching here would mean the
@@ -167,6 +197,13 @@ auto OExportCorrection::FollowSet(int index) const -> QList<FollowItem>
 //---------------------------------------------------------------------------------------------------------------------
 void OExportCorrection::Select(int index)
 {
+    // Rien à sélectionner quand la correction est éteinte — voir SetEnabled : un index ne désigne
+    // pas une pièce, mais une pièce par plan.
+    if (not m_enabled)
+    {
+        return;
+    }
+
     const OExportOutput *output = m_store->Find(m_store->ActiveId());
     if (output == nullptr || index < 0 || index >= output->result.placements.size())
     {

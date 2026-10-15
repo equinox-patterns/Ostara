@@ -181,7 +181,12 @@ auto OExportBatchPage::Chosen() const -> QVector<Row>
             continue;
         }
 
-        chosen.append({m_rows.at(row).id, NameOf(row)});
+        // **La ligne est COPIÉE, et seul son nom est relu du champ.** La reconstruire champ par champ
+        // ferait tomber en silence tout ce qu'elle porte et qu'on ne pense pas à recopier — la matière
+        // d'un plan de coupe, par exemple, dont l'oubli écrirait deux fois le tissu d'une paire.
+        Row line = m_rows.at(row);
+        line.name = NameOf(row);
+        chosen.append(line);
     }
 
     return chosen;

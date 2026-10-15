@@ -380,6 +380,13 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
 
         request.documentWidthMm = m_cuttingWidget->FabricWidthMm();
 
+        // **La doublure, quand elle est demandée : une laize à elle, et rien d'autre à part.** Le run
+        // décrit alors deux plans, lus sur deux matières du même patron ; la doublure reprend tous les
+        // réglages du tissu — sens, pli, espaces, membres de groupe — et c'est pourquoi il n'y a rien
+        // de plus à recopier ici.
+        request.liningPlan = m_cuttingWidget->HasLiningPlan();
+        request.documentLiningWidthMm = request.liningPlan ? m_cuttingWidget->LiningWidthMm() : 0.0;
+
         // L'unité du run est celle de la LAIZE : le monde dans lequel l'utilisatrice achète son
         // tissu, et celui dans lequel elle vient de taper son chiffre. Elle ne pèse sur aucun
         // résultat — la laize est stockée en millimètres juste au-dessus, et le droit-fil gelé se
@@ -524,19 +531,17 @@ auto OExportModeDialog::CuttingToken() const -> QString
         return {};
     }
 
-    QString token = QStringLiteral("Cut-%1").arg(
-        OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm));
-
-    // « Plié » est un jeton de plus, pour la même raison que la laize : le même patron à 140 déplié
-    // et à 140 plié sont deux plans différents, et le nom est le seul endroit où la différence se
-    // voit. ⚠️ La laize, elle, reste celle du tissu acheté : le nesting tourne sur la moitié, mais
-    // personne n'achète 70.
-    if (m_cuttingWidget->IsFoldedFabric())
-    {
-        token += QStringLiteral("-Folded");
-    }
-
-    return token;
+    // ⚠️ **Le jeton est TRADUIT.** Le nom d'une sortie se lit dans la langue de l'interface — « Coupe »
+    // et non « Cut » — et il est le même mot au dock, dans le lot et sur le disque. Le format de la
+    // chaîne, lui, ne bouge pas : c'est le mot qui change, pas la place du chiffre.
+    //
+    // ⚠️ **Et pas de jeton de PLI.** Il y en a eu un — « le même patron à 140 déplié et à 140 plié sont
+    // deux plans différents » — et il est retiré sur décision : le nom s'allonge trop une fois la
+    // matière ajoutée (`Coupe-140-Plié-Tissu`), et un nom de fichier trop long est un nom qu'on ne lit
+    // plus. **Conséquence assumée** : deux plans de même laize, l'un plié et l'autre non, portent le
+    // même nom — `OExportNameBuilder::Unique` les sépare alors par « (1) », « (2) ». Le réglage « Tissu
+    // plié » de l'onglet, lui, n'a pas bougé : c'est le nom qui ne le dit plus.
+    return tr("Cut-%1").arg(OExportUnitFormat::Format(m_cuttingWidget->FabricWidthMm(), Unit::Cm));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -552,9 +557,10 @@ auto OExportModeDialog::PlotterToken() const -> QString
     // découpages différents — un autre nombre de morceaux, à d'autres endroits — et le nom est le
     // seul endroit où la différence se voit. La zone utile est nommée en centimètres, l'unité dans
     // laquelle on la lit.
-    return QStringLiteral("Plot-%1x%2")
-        .arg(OExportUnitFormat::Format(m_plotterWidget->MatWidthMm(), Unit::Cm),
-             OExportUnitFormat::Format(m_plotterWidget->MatHeightMm(), Unit::Cm));
+    //
+    // ⚠️ **Traduit, comme le jeton du plan de coupe** : « Tracer » en français.
+    return tr("Plot-%1x%2").arg(OExportUnitFormat::Format(m_plotterWidget->MatWidthMm(), Unit::Cm),
+                                OExportUnitFormat::Format(m_plotterWidget->MatHeightMm(), Unit::Cm));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -811,8 +817,19 @@ void OExportModeDialog::OnGenerateCutting()
     //
     // ⚠️ Les pièces sans cut ne sont pas dans cette liste : elles ont déjà quitté le plan (voir
     // `PiecesToCut`), donc on ne leur reproche pas un droit-fil dont elles n'ont pas besoin.
+    //
+    // Les plans du run sont réunis, et pas seulement celui du tissu : une pièce taillée en doublure
+    // sans droit-fil ferait échouer le plan de doublure, et l'annoncer AVANT le run est tout l'objet
+    // de ce contrôle. Une pièce taillée dans les deux matières n'est nommée qu'une fois — c'est une
+    // pièce, avec un seul droit-fil.
+    QVector<OExportCuttingGuard::Material> materials{OExportCuttingGuard::Material::Fabric};
+    if (m_cuttingWidget->HasLiningPlan())
+    {
+        materials.append(OExportCuttingGuard::Material::Lining);
+    }
+
     const QVector<OExportCuttingGuard::FaultyPiece> faulty =
-        OExportCuttingGuard::FaultyPieces(m_cuttingWidget->MemberChoices(), m_data);
+        OExportCuttingGuard::FaultyPieces(m_cuttingWidget->MemberChoices(), m_data, materials);
 
     if (not faulty.isEmpty())
     {

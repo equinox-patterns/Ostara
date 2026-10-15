@@ -27,10 +27,13 @@
 #ifndef OEXPORTCUTTINGFILEDIALOG_H
 #define OEXPORTCUTTINGFILEDIALOG_H
 
+#include "../core/oexportcuttingguard.h"
 #include "../oexportcuttingfile.h"
 #include "oexportfiledialog.h"
 
 class OExportCuttingFileOptions;
+class QLabel;
+class QLineEdit;
 
 /**
  * @brief Where a cutting plan is written, and in what: DXF, PLT or HPGL.
@@ -44,28 +47,49 @@ class OExportCuttingFileOptions;
  * cuts, and a reduced scale would produce a plan that looks right and cuts wrong (`CuttingPlan.md`
  * §24.2).
  *
+ * **Une génération qui porte la PAIRE — tissu et doublure — demande DEUX noms.** Un plan de coupe est
+ * un fichier par nappe : les deux se livrent ensemble, dans le même dossier, et chacun dit sa matière
+ * (`-Fabric`, `-Lining`) — sans quoi le second écraserait le premier. La ligne unique d'hier reste la
+ * ligne unique dès qu'il n'y a qu'un plan.
+ *
  * ⚠️ The suffix follows the format. The base class takes its own in the constructor and appends it to
  * the name; with three formats to choose from, that one has to change, which is what `SetSuffix` is
- * for.
+ * for — and it changes it on **chaque** ligne de nom, la seconde comprise.
  */
 class OExportCuttingFileDialog : public OExportFileDialog
 {
     Q_OBJECT // NOLINT
 
 public:
-    /// @param outputName the generation's name, offered as the file name.
-    /// @param directory  where it opens; the folder last used, or Documents.
-    explicit OExportCuttingFileDialog(const QString &outputName, const QString &directory,
+    /// @param output the generation: its name is offered as the file name, and a second line is
+    ///               opened when it carries a lining plan as well as the fabric one.
+    /// @param directory where it opens; the folder last used, or Documents.
+    explicit OExportCuttingFileDialog(const OExportOutput &output, const QString &directory,
                                       QWidget *parent = nullptr);
 
     /// @brief Everything the writer needs: the format, its sub-type, and the options.
     auto Options() const -> OExportCuttingFile::Options;
+
+    /// @brief Les fichiers à écrire : un par plan, chacun avec sa matière et son chemin.
+    ///
+    /// **L'appelant n'a pas à recompter les nappes.** C'est ce dialogue qui sait quelle ligne est
+    /// laquelle — il les a construites — et il le dit ici une fois, dans l'ordre de ses lignes.
+    auto Targets() const -> QVector<OExportCuttingFile::Target>;
 
 protected:
     void Retranslate() override;
 
 private:
     OExportCuttingFileOptions *m_options{nullptr};
+
+    /// La seconde ligne de nom, quand la génération porte deux plans. Nulle autrement : un plan seul
+    /// garde la ligne — et le libellé — du squelette.
+    QLabel *m_liningLabel{nullptr};
+    QLineEdit *m_liningEdit{nullptr};
+
+    /// Les plans de la génération, lus UNE fois à la construction : c'est cette liste qui dit combien
+    /// de lignes de nom ont été ouvertes, et à quelle matière chacune appartient.
+    QVector<OExportCuttingGuard::Material> m_plans{};
 };
 
 #endif // OEXPORTCUTTINGFILEDIALOG_H

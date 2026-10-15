@@ -91,7 +91,15 @@ void MainWindow::ExportSeveralOutputs()
         }
         else if (output->cuttingPlan)
         {
-            cuttingRows.append({output->id, output->name});
+            // **Une ligne par FICHIER, et non par génération.** Une génération qui porte la paire —
+            // tissu et doublure — écrit deux fichiers, chacun avec son nom : elle se présente donc en
+            // deux lignes, exactement comme le dialogue d'export demande deux noms pour la même
+            // raison. Une génération qui n'a qu'un plan garde une ligne, et son nom d'hier.
+            for (const OExportCuttingGuard::Material material : OExportCuttingFile::PlansOf(*output))
+            {
+                cuttingRows.append(
+                    {output->id, OExportCuttingFile::PlanName(*output, material), material});
+            }
         }
         else
         {
@@ -150,9 +158,11 @@ void MainWindow::ExportSeveralOutputs()
         {
             // Le plan de coupe s'écrit avec le réglage **commun** de la page — un lot est un format —
             // et l'écrivain du mode Export : DXF, PLT ou HPGL, à 100 %, avec les options du mode
-            // Details moins l'échelle (`CuttingPlan.md` §24). Une génération dont le nesting a échoué
-            // n'a pas de plan à écrire, et le lot le dit sur sa ligne.
-            ok = output->result.ok && OExportCuttingFile::Write(path, *output, cuttingOptions);
+            // Details moins l'échelle (`CuttingPlan.md` §24). **Et c'est la nappe de la LIGNE qui est
+            // écrite** : sur une paire, une ligne est le tissu et l'autre la doublure. Une génération
+            // dont le nesting a échoué n'a pas de plan à écrire, et l'écrivain le dit lui-même : une
+            // nappe qu'elle ne porte pas n'écrit rien plutôt que d'écrire un fichier vide.
+            ok = OExportCuttingFile::Write(path, *output, cuttingOptions, row.material);
         }
         else if (category == OExportBatchDialog::OutputCategory::Plotter)
         {
