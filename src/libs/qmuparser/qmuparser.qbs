@@ -52,5 +52,5 @@ VDynamicLib {
         qbs.installDir: buildconfig.installAppPath
     }
 
-    multibundle.targetApps: ["Valentina", "Tape", "Puzzle"]
+    multibundle.targetApps: ["Valentina"]
 }

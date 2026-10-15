@@ -49,12 +49,108 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vobj/vobjpaintdevice.h"
 #include "vgraphicsfillitem.h"
-#include "vprintlayout.h"
-#include "vrawlayout.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
+
+
 #endif
+
+//---------------------------------------------------------------------------------------------------------------------
+// Printer helpers. They used to live in the layout's print container, whose only remaining callers were
+// the PDF export below: they touch nothing but QPrinter, so they live here now, beside the code that uses them.
+namespace
+{
+    auto PrinterScaleDiff(QPrinter *printer) -> QPair<qreal, qreal>
+    {
+        SCASSERT(printer != nullptr)
+
+        // Here we try understand difference between printer's dpi and our.
+        // Get printer rect according to our dpi.
+        const QRectF printerPageRect(0, 0, ToPixel(printer->pageRect(QPrinter::Millimeter).width(), Unit::Mm),
+                                     ToPixel(printer->pageRect(QPrinter::Millimeter).height(), Unit::Mm));
+        const QRect pageRect = printer->pageLayout().paintRectPixels(printer->resolution());
+        const double xscale = pageRect.width() / printerPageRect.width();
+        const double yscale = pageRect.height() / printerPageRect.height();
+
+        return qMakePair(xscale, yscale);
+    }
+
+    auto ResolvePageSize(const QSizeF &size, QPageSize::Unit units) -> QPageSize
+    {
+        // Qt already does this internally, but on macOS the tolerance is too tight.
+        // We do it explicitly with a 1 mm fuzz.
+        constexpr qreal kToleranceMm = 1.0;
+
+        if (const QPageSize candidate(size, units, QString(), QPageSize::FuzzyOrientationMatch); candidate.isValid())
+        {
+            // Double-check: make sure the resolved size is actually close enough.
+            const QSizeF resolvedMm = candidate.size(units);
+            const qreal dw = qAbs(resolvedMm.width() - size.width());
+            const qreal dh = qAbs(resolvedMm.height() - size.height());
+            if (dw <= kToleranceMm && dh <= kToleranceMm)
+            {
+                return candidate; // named page size matched
+            }
+        }
+        // Fall back to an exact custom size
+        return QPageSize(size, QPageSize::Millimeter);
+    }
+
+    auto SetPrinterMarginsWithFallback(QPrinter *printer,
+                                                     const QMarginsF &requestedMargins,
+                                                     QPageLayout::Unit unit) -> bool
+    {
+        SCASSERT(printer != nullptr)
+
+        // First attempt: set exactly what was requested
+        if (printer->setPageMargins(requestedMargins, unit))
+        {
+            return true;
+        }
+
+        // macOS drivers enforce hardware minimums ? clamp to whatever the driver allows
+        const QPageLayout layout = printer->pageLayout();
+        const QMarginsF minMargins = layout.minimumMargins(); // always in points internally
+
+        // Convert requested margins to the same unit as minimumMargins (which are in points)
+        // then clamp each edge
+        const QMarginsF clamped(qMax(requestedMargins.left(), minMargins.left()),
+                                qMax(requestedMargins.top(), minMargins.top()),
+                                qMax(requestedMargins.right(), minMargins.right()),
+                                qMax(requestedMargins.bottom(), minMargins.bottom()));
+
+        return printer->setPageMargins(clamped, unit);
+    }
+
+    auto SceneTargetRect(QPrinter *printer, const QRectF &source) -> QRectF
+    {
+        SCASSERT(printer != nullptr)
+
+        qreal x;
+        qreal y;
+        if (printer->fullPage())
+        {
+            QPageLayout layout = printer->pageLayout();
+            layout.setUnits(QPageLayout::Millimeter);
+            QMarginsF const printerMargins = layout.margins();
+            x = qFloor(ToPixel(printerMargins.left(), Unit::Mm));
+            y = qFloor(ToPixel(printerMargins.top(), Unit::Mm));
+        }
+        else
+        {
+            x = 0;
+            y = 0;
+        }
+
+        auto const [scaleDiffFirst, scaleDiffSecond] = PrinterScaleDiff(printer);
+        const double xscale = scaleDiffFirst;
+        const double yscale = scaleDiffSecond;
+
+        return {x * xscale, y * yscale, source.width() * xscale, source.height() * yscale};
+    }
+} // namespace
+
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -419,31 +515,6 @@ void VLayoutExporter::ExportToASTMDXF(const QVector<VLayoutPiece> &details) cons
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VLayoutExporter::ExportToRLD(const QVector<VLayoutPiece> &details) const
-{
-    qDebug("VLayoutExporter::ExportToRLD: Exporting to RLD");
-
-    QVector<VLayoutPiece> scaledPieces;
-    scaledPieces.reserve(details.size());
-
-    for (auto detail : details)
-    {
-        detail.Scale(m_xScale, m_yScale);
-        scaledPieces.append(detail);
-    }
-
-    VRawLayoutData layoutData;
-    layoutData.pieces = scaledPieces;
-
-    VRawLayout generator;
-    if (not generator.WriteFile(m_fileName, layoutData))
-    {
-        const QString errorMsg = tr("Export raw layout data failed. %1.").arg(generator.ErrorString());
-        VAbstractApplication::VApp()->IsPedantic() ? throw VException(errorMsg) : qCritical() << errorMsg;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VLayoutExporter::ExportToHPGL(const QVector<VLayoutPiece> &details) const
 {
     qDebug("VLayoutExporter::ExportToHPGL: Exporting to HPGL");
@@ -572,7 +643,7 @@ void VLayoutExporter::ExportToPDF(QGraphicsScene *scene,
     qreal const height = FromPixel(m_imageRect.height() * m_yScale + m_margins.top() + m_margins.bottom(), Unit::Mm);
 
     QSizeF const pageSize = imageOrientation == QPageLayout::Portrait ? QSizeF(width, height) : QSizeF(height, width);
-    if (not printer.setPageSize(VPrintLayout::ResolvePageSize(pageSize, QPageSize::Millimeter)))
+    if (not printer.setPageSize(ResolvePageSize(pageSize, QPageSize::Millimeter)))
     {
         qWarning() << tr("Cannot set printer page size");
     }
@@ -586,7 +657,7 @@ void VLayoutExporter::ExportToPDF(QGraphicsScene *scene,
         const qreal right = FromPixel(m_margins.right(), Unit::Mm);
         const qreal bottom = FromPixel(m_margins.bottom(), Unit::Mm);
 
-        if (not VPrintLayout::SetPrinterMarginsWithFallback(&printer,
+        if (not SetPrinterMarginsWithFallback(&printer,
                                                             QMarginsF(left, top, right, bottom),
                                                             QPageLayout::Millimeter))
         {
@@ -605,7 +676,7 @@ void VLayoutExporter::ExportToPDF(QGraphicsScene *scene,
     painter.setPen(m_pen);
     painter.setBrush(QBrush(Qt::NoBrush));
     painter.scale(m_xScale, m_yScale);
-    scene->render(&painter, VPrintLayout::SceneTargetRect(&printer, m_imageRect), m_imageRect, Qt::IgnoreAspectRatio);
+    scene->render(&painter, SceneTargetRect(&printer, m_imageRect), m_imageRect, Qt::IgnoreAspectRatio);
     painter.end();
 
     RestoreGrainlineAfterExport(details);
@@ -657,8 +728,6 @@ auto VLayoutExporter::ExportFormatDescription(LayoutExportFormats format) -> QSt
             return QStringLiteral("PDF %1 %2 (*.pdf)").arg(tr("tiled"), filesStr);
         case LayoutExportFormats::NC:
             return QStringLiteral("%1 %2 (*.nc)").arg(tr("Numerical control"), filesStr);
-        case LayoutExportFormats::RLD:
-            return QStringLiteral("%1 %2 (*.rld)").arg(tr("Raw Layout Data"), filesStr);
         case LayoutExportFormats::TIF:
             return QStringLiteral("TIFF %1 (*.tif)").arg(filesStr);
         case LayoutExportFormats::HPGL:
@@ -706,8 +775,6 @@ auto VLayoutExporter::ExportFormatSuffix(LayoutExportFormats format) -> QString
             return QStringLiteral(".dxf");
         case LayoutExportFormats::NC:
             return QStringLiteral(".nc");
-        case LayoutExportFormats::RLD:
-            return QStringLiteral(".rld");
         case LayoutExportFormats::TIF:
             return QStringLiteral(".tif");
         case LayoutExportFormats::HPGL:
@@ -792,9 +859,6 @@ auto VLayoutExporter::LayoutExportFileFormat(LayoutExportFormats format) -> Layo
         case LayoutExportFormats::NC:
             return LayoutExportFileFormat::NC;
 
-        case LayoutExportFormats::RLD:
-            return LayoutExportFileFormat::RLD;
-
         case LayoutExportFormats::TIF:
             return LayoutExportFileFormat::TIF;
 
@@ -816,7 +880,7 @@ auto VLayoutExporter::LayoutExportFileFormat(LayoutExportFormats format) -> Layo
 //---------------------------------------------------------------------------------------------------------------------
 auto VLayoutExporter::MapLayoutExportFormats(enum LayoutExportFileFormat format) -> QVector<LayoutExportFormats>
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(LayoutExportFileFormat::COUNT) == 10, "Update to cover all cases.");
+    Q_STATIC_ASSERT_X(static_cast<int>(LayoutExportFileFormat::COUNT) == 9, "Update to cover all cases.");
 
     static bool const pdfConversionSupported = VLayoutExporter::SupportPDFConversion();
 
@@ -853,8 +917,6 @@ auto VLayoutExporter::MapLayoutExportFormats(enum LayoutExportFileFormat format)
                     LayoutExportFormats::DXF_AC1027_Flat};
         case LayoutExportFileFormat::NC:
             return {LayoutExportFormats::NC};
-        case LayoutExportFileFormat::RLD:
-            return {LayoutExportFormats::RLD};
         case LayoutExportFileFormat::TIF:
             return {LayoutExportFormats::TIF};
         case LayoutExportFileFormat::HPGL:
@@ -898,7 +960,6 @@ auto VLayoutExporter::AllLayoutExportFormats() -> QVector<LayoutExportFormats>
     list.append(LayoutExportFormats::DXF_ASTM);
     list.append(LayoutExportFormats::PDFTiled);
     //    list.append(LayoutExportFormats::NC);
-    list.append(LayoutExportFormats::RLD);
     list.append(LayoutExportFormats::TIF);
     list.append(LayoutExportFormats::HPGL);
     list.append(LayoutExportFormats::HPGL2);

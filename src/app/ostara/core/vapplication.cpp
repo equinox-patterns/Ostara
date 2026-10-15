@@ -89,43 +89,6 @@ Q_LOGGING_CATEGORY(vApp, "v.application") // NOLINT
 
 QT_WARNING_POP
 
-namespace
-{
-auto AppFilePath(const QString &appName) -> QString
-{
-#ifdef Q_OS_WIN
-    const auto executableSuffix = QStringLiteral(".exe");
-#else
-    const QString executableSuffix;
-#endif
-
-#if defined(APPIMAGE) && defined(Q_OS_LINUX)
-    return AppImageRoot() + BINDIR + '/'_L1 + appName;
-#else
-    if (QFileInfo const canonicalFile(
-            QStringLiteral("%1/%2").arg(QCoreApplication::applicationDirPath(), appName + executableSuffix));
-        canonicalFile.exists())
-    {
-        return canonicalFile.absoluteFilePath();
-    }
-#endif // defined(APPIMAGE) && defined(Q_OS_LINUX)
-
-#if defined(Q_OS_MACOS) && defined(MULTI_BUNDLE)
-    QFileInfo multiBundleFile(
-        QStringLiteral("%1/../../../%2.app/Contents/MacOS/%2").arg(QCoreApplication::applicationDirPath(), appName));
-    if (multiBundleFile.exists())
-    {
-        return multiBundleFile.absoluteFilePath();
-    }
-#endif
-
-#if !defined(Q_OS_MACOS)
-    return appName + executableSuffix;
-#else
-    return appName + QStringLiteral(".app");
-#endif
-}
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -632,18 +595,6 @@ auto VApplication::notify(QObject *receiver, QEvent *event) -> bool
     return false;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VApplication::PuzzleFilePath() -> QString
-{
-#ifdef Q_OS_MACOS
-    const auto appName = QStringLiteral("Puzzle");
-#else
-    const auto appName = QStringLiteral("puzzle");
-#endif
-    return AppFilePath(appName);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VApplication::LogPath() -> QString

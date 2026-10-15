@@ -80,13 +80,11 @@ auto TopBar::MakeModeButton(QAction *action) -> QToolButton *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout,
-                            QAction *exportMode)
+void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *exportMode)
 {
     m_btnDraw    = MakeModeButton(draw);
     m_btnDetails = MakeModeButton(details);
     m_btnGraded  = MakeModeButton(graded);
-    m_btnLayout  = MakeModeButton(layout);
     m_btnExport  = MakeModeButton(exportMode);
 
     auto MakeSeparator = [&]() {
@@ -108,17 +106,14 @@ void TopBar::SetModeActions(QAction *draw, QAction *details, QAction *graded, QA
 
     m_sepDrawDetails   = MakeSeparator();
     m_sepDetailsGraded = MakeSeparator();
-    m_sepGradedLayout  = MakeSeparator();
-    m_sepLayoutExport  = MakeSeparator();
+    m_sepGradedExport  = MakeSeparator();
 
     m_leftLayout->addWidget(m_btnDraw);
     m_leftLayout->addWidget(m_sepDrawDetails);
     m_leftLayout->addWidget(m_btnDetails);
     m_leftLayout->addWidget(m_sepDetailsGraded);
     m_leftLayout->addWidget(m_btnGraded);
-    m_leftLayout->addWidget(m_sepGradedLayout);
-    m_leftLayout->addWidget(m_btnLayout);
-    m_leftLayout->addWidget(m_sepLayoutExport);
+    m_leftLayout->addWidget(m_sepGradedExport);
     m_leftLayout->addWidget(m_btnExport);
 
     UpdateModeButtonIcons();
@@ -400,8 +395,7 @@ void TopBar::ReloadIcons()
 
     ReloadSep(m_sepDrawDetails);
     ReloadSep(m_sepDetailsGraded);
-    ReloadSep(m_sepGradedLayout);
-    ReloadSep(m_sepLayoutExport);
+    ReloadSep(m_sepGradedExport);
     ReloadSep(m_sepPatternMeasure);
 
     // The save button wears the only icon the mode set does not: it is not a mode, it is the piece.
@@ -437,6 +431,5 @@ void TopBar::UpdateModeButtonIcons()
     SetIcon(m_btnDraw,    QStringLiteral("polygon"));
     SetIcon(m_btnDetails, QStringLiteral("sliders"));
     SetIcon(m_btnGraded,  QStringLiteral("stack"));
-    SetIcon(m_btnLayout,  QStringLiteral("printer"));
     SetIcon(m_btnExport,  QStringLiteral("printer"));
 }

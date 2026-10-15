@@ -453,7 +453,6 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     const qreal savedC = m_currentDimensionC;
     const bool wasModified = doc->IsModified();
     const bool wasWindowModified = isWindowModified();
-    const bool wasLayoutStale = m_layoutSettings != nullptr && m_layoutSettings->IsLayoutStale();
 
     // The only way the export puts the document on a size: the one Details uses for its
     // own drop-downs. Reading the measurements here instead — which is what this code
@@ -909,11 +908,6 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     doc->blockSignals(wasSignalsBlocked);
     doc->SetModified(wasModified);
     setWindowModified(wasWindowModified);
-    if (m_layoutSettings != nullptr)
-    {
-        m_layoutSettings->SetLayoutStale(wasLayoutStale);
-    }
-
     // Un run interrompu ne dit rien ; un run que le moteur a refusé dit ce que le moteur a dit ; une
     // passe vide dit pourquoi elle l'est. Les trois sortent d'ici — et dans les trois cas rien n'est
     // classé, rien n'est changé, et le mode reste où il est.

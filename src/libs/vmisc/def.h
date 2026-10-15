@@ -129,7 +129,6 @@ enum class Draw : qint8
 {
     Calculation,
     Modeling,
-    Layout,
     Graded,
     Export
 };

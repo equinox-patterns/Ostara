@@ -27,10 +27,8 @@
  *************************************************************************/
 
 #include "vcmdexport.h"
-#include "../dialogs/dialoglayoutsettings.h"
 #include "../dialogs/dialogsavelayout.h"
 #include "../ifc/xml/vdomdocument.h"
-#include "../vlayout/vlayoutgenerator.h"
 #include "../vmisc/commandoptions.h"
 #include "../vmisc/dialogs/dialogexporttocsv.h"
 #include "../vmisc/vsysexits.h"
@@ -52,16 +50,7 @@ VCommandLinePtr VCommandLine::instance = nullptr; // NOLINT(cppcoreguidelines-av
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
-auto Lo2Px(const QString &src, const DialogLayoutSettings &converter, bool *ok) -> qreal
-{
-    return converter.LayoutToPixels(src.toDouble(ok));
-}
-
 //---------------------------------------------------------------------------------------------------------------------
-auto Pg2Px(const QString &src, const DialogLayoutSettings &converter, bool *ok) -> qreal
-{
-    return converter.PageToPixels(src.toDouble(ok));
-}
 } // anonymous namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -84,102 +73,6 @@ auto VCommandLine::FormatSize(const QString &key) const -> VAbstractLayoutDialog
         ppsize = OptionValue(key).toInt();
     }
     return static_cast<VAbstractLayoutDialog::PaperSizeTemplate>(ppsize);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommandLine::DefaultGenerator() const -> VLayoutGeneratorPtr
-{
-    // this functions covers all options found into layout setup dialog, nothing to add here, unless dialog extended
-
-    auto res = std::make_shared<VLayoutGenerator>();
-    DialogLayoutSettings diag(res.get(), nullptr, true);
-
-    TestPageformat();
-    TestGapWidth();
-    TestMargins();
-
-    // if present units MUST be set before any other to keep conversions correct
-    if (!diag.SelectTemplate(OptPaperSize()))
-    {
-        qCritical() << translate("VCommandLine", "Unknown page templated selected.") << "\n";
-        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-    }
-
-    if (IsOptionSet(LONG_OPTION_PAGEH))
-    { // at this point we already sure 3 are set or none
-
-        if (!diag.SelectPaperUnit(OptionValue(LONG_OPTION_PAGEUNITS)))
-        {
-            qCritical() << translate("VCommandLine", "Unsupported paper units.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-
-        bool ok = false;
-        qreal const height = Pg2Px(OptionValue(LONG_OPTION_PAGEH), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid page height value.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        diag.SetPaperHeight(height);
-
-        ok = false;
-        qreal const width = Pg2Px(OptionValue(LONG_OPTION_PAGEW), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid page width value.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        diag.SetPaperWidth(width);
-    }
-    else
-    { // Not explicit page size
-        if (IsOptionSet(LONG_OPTION_LANDSCAPE_ORIENTATION))
-        {
-            diag.EnableLandscapeOrientation();
-        }
-    }
-
-    if (IsOptionSet(LONG_OPTION_SHIFTUNITS) && !diag.SelectLayoutUnit(OptionValue(LONG_OPTION_SHIFTUNITS)))
-    {
-        qCritical() << translate("VCommandLine", "Unsupported layout units.") << "\n";
-        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-    }
-
-    if (IsOptionSet(LONG_OPTION_GAPWIDTH))
-    {
-        bool ok = false;
-        qreal const width = Lo2Px(OptionValue(LONG_OPTION_GAPWIDTH), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid gap width.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        diag.SetLayoutWidth(width);
-    }
-
-    diag.SetAutoCropLength(IsOptionSet(LONG_OPTION_CROP_LENGTH));
-    diag.SetAutoCropWidth(IsOptionSet(LONG_OPTION_CROP_WIDTH));
-    diag.SetUnitePages(IsOptionSet(LONG_OPTION_UNITE));
-    diag.SetSaveLength(IsOptionSet(LONG_OPTION_SAVELENGTH));
-    diag.SetPreferOneSheetSolution(IsOptionSet(LONG_OPTION_PREFER_ONE_SHEET_SOLUTION));
-    diag.SetBoundaryTogetherWithNotches(IsOptionSet(LONG_OPTION_BOUNDARY_TOGETHER_WITH_NOTCHES));
-    diag.SetGroup(OptGroup());
-
-    if (IsOptionSet(LONG_OPTION_IGNORE_MARGINS))
-    {
-        diag.SetIgnoreAllFields(true);
-    }
-
-    diag.SetFields(ParseMargins(diag));
-    diag.SetManualPriority(IsOptionSet(LONG_OPTION_MANUAL_PRIORITY));
-    diag.SetNestQuantity(IsOptionSet(LONG_OPTION_NEST_QUANTITY));
-    diag.SetNestingTime(OptNestingTime());
-    diag.SetEfficiencyCoefficient(OptEfficiencyCoefficient());
-
-    diag.DialogAccepted(); // filling VLayoutGenerator
-
-    return res;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -251,23 +144,6 @@ auto VCommandLine::IsExportFMEnabled() const -> bool
         const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
     }
     return r;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommandLine::OptPaperSize() const -> VAbstractLayoutDialog::PaperSizeTemplate
-{
-    return FormatSize(LONG_OPTION_PAGETEMPLATE);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommandLine::OptGroup() const -> Cases
-{
-    int r = OptionValue(LONG_OPTION_GROUPPING).toInt();
-    if (r < 0 || r >= static_cast<int>(Cases::UnknownCase))
-    {
-        r = 0;
-    }
-    return static_cast<Cases>(r);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -631,21 +507,6 @@ void VCommandLine::InitCommandLineOptions()
         {{SINGLE_OPTION_MEASUREFILE, LONG_OPTION_MEASUREFILE},
          translate("VCommandLine", "Path to custom measure file (export mode)."),
          translate("VCommandLine", "The measure file")},
-        {{SINGLE_OPTION_NESTING_TIME, LONG_OPTION_NESTING_TIME},
-         translate("VCommandLine",
-                   "<Time> in minutes given for the algorithm to find best layout. Time must be in "
-                   "range from 1 minute to 60 minutes. Default value 1 minute."),
-         translate("VCommandLine", "Time")},
-        {LONG_OPTION_EFFICIENCY_COEFFICIENT,
-         translate("VCommandLine",
-                   "Set layout efficiency <coefficient>. Layout efficiency coefficient is the ratio of "
-                   "the area occupied by the pieces to the bounding rect of all pieces. If nesting "
-                   "reaches required level "
-                   "the "
-                   "process stops. If value is 0 no check will be made. Coefficient must be in range "
-                   "from 0 to 100. Default "
-                   "value 0."),
-         translate("VCommandLine", "Coefficient")},
         {{SINGLE_OPTION_EXP2FORMAT, LONG_OPTION_EXP2FORMAT},
          translate("VCommandLine", "Number corresponding to output format (default = 0, export mode):")
              + DialogSaveLayout::MakeHelpFormatList(),
@@ -696,32 +557,6 @@ void VCommandLine::InitCommandLineOptions()
              .arg(minCurveApproximationScale)
              .arg(maxCurveApproximationScale),
          translate("VCommandLine", "Curve approximation")},
-        //==============================================================================================================
-        {{SINGLE_OPTION_PAGETEMPLATE, LONG_OPTION_PAGETEMPLATE},
-         translate("VCommandLine", "Number corresponding to layout page template (default = 0, export mode):")
-             + DialogLayoutSettings::MakeHelpTemplateList(),
-         translate("VCommandLine", "Template number"),
-         QChar('0')},
-        {LONG_OPTION_LANDSCAPE_ORIENTATION,
-         translate("VCommandLine",
-                   "Switch page template orientation to landscape (export mode). This option has "
-                   "effect only for one of predefined page templates.")},
-        {{SINGLE_OPTION_PAGEW, LONG_OPTION_PAGEW},
-         translate("VCommandLine", "Page width in current units like 12.0 (cannot be used with \"%1\", export mode).")
-             .arg(LONG_OPTION_PAGETEMPLATE),
-         translate("VCommandLine", "The page width")},
-        {{SINGLE_OPTION_PAGEH, LONG_OPTION_PAGEH},
-         translate("VCommandLine", "Page height in current units like 12.0 (cannot be used with \"%1\", export mode).")
-             .arg(LONG_OPTION_PAGETEMPLATE),
-         translate("VCommandLine", "The page height")},
-        {{SINGLE_OPTION_PAGEUNITS, LONG_OPTION_PAGEUNITS},
-         translate("VCommandLine", "Page measure units (export mode). Valid values: %1.")
-             .arg(VDomDocument::UnitsHelpString()),
-         translate("VCommandLine", "The measure unit")},
-        {{SINGLE_OPTION_IGNORE_MARGINS, LONG_OPTION_IGNORE_MARGINS},
-         translate("VCommandLine",
-                   "Ignore printer margins (export mode). Use if need full paper space. In case of "
-                   "later printing you must account for the margins themselves.")},
         {{SINGLE_OPTION_LEFT_MARGIN, LONG_OPTION_LEFT_MARGIN},
          translate("VCommandLine",
                    "Page left margin in current units like 3.0 (export mode). If not set will be used "
@@ -748,40 +583,9 @@ void VCommandLine::InitCommandLineOptions()
         {LONG_OPTION_EXPYSCALE,
          translate("VCommandLine", "Set vertical scale factor from 0.01 to 3.0 (default = 1.0, export mode)."),
          translate("VCommandLine", "Vertical scale")},
-        //==============================================================================================================
-        {LONG_OPTION_MANUAL_PRIORITY,
-         translate("VCommandLine", "Follow manual priority over priority by square (export mode).")},
-        {LONG_OPTION_NEST_QUANTITY, translate("VCommandLine", "Nest quantity copies of each piece (export mode).")},
-        {{SINGLE_OPTION_CROP_LENGTH, LONG_OPTION_CROP_LENGTH},
-         translate("VCommandLine", "Auto crop unused length (export mode).")},
-        {LONG_OPTION_CROP_WIDTH, translate("VCommandLine", "Auto crop unused width (export mode).")},
-        {{SINGLE_OPTION_UNITE, LONG_OPTION_UNITE},
-         translate("VCommandLine",
-                   "Unite pages if possible (export mode). Maximum value limited by QImage that "
-                   "supports only a maximum of 32768x32768 px images.")},
-        {LONG_OPTION_PREFER_ONE_SHEET_SOLUTION,
-         translate("VCommandLine", "Prefer one sheet layout solution (export mode).")},
-        {LONG_OPTION_BOUNDARY_TOGETHER_WITH_NOTCHES,
-         translate("VCommandLine", "Export boundary together with notches (export mode).")},
-        //==============================================================================================================
-        {{SINGLE_OPTION_SAVELENGTH, LONG_OPTION_SAVELENGTH},
-         translate("VCommandLine",
-                   "Save length of the sheet if set (export mode). The option tells the program to use "
-                   "as much as possible width of sheet. Quality of a layout can be worse when this "
-                   "option was used.")},
         {{SINGLE_OPTION_SHIFTUNITS, LONG_OPTION_SHIFTUNITS},
          translate("VCommandLine", "Layout units (as paper's one except px, export mode). Default units cm."),
          translate("VCommandLine", "The unit")},
-        {{SINGLE_OPTION_GAPWIDTH, LONG_OPTION_GAPWIDTH},
-         translate("VCommandLine",
-                   "The layout gap width x2, measured in layout units (export mode). Set distance "
-                   "between details and a detail and a sheet."),
-         translate("VCommandLine", "The gap width")},
-        {{SINGLE_OPTION_GROUPPING, LONG_OPTION_GROUPPING},
-         translate("VCommandLine", "Sets layout groupping cases (export mode): %1.")
-             .arg(DialogLayoutSettings::MakeGroupsHelp()),
-         translate("VCommandLine", "Grouping type"),
-         QChar('2')},
         {{SINGLE_OPTION_TEST, LONG_OPTION_TEST},
          translate("VCommandLine",
                    "Run the program in a test mode. The program in this mode loads a single pattern "
@@ -831,30 +635,9 @@ void VCommandLine::InitCommandLineOptions()
         {LONG_OPTION_TILED_PDF_PAGE_TEMPLATE,
          translate("VCommandLine",
                    "Number corresponding to tiled pdf page template (default = 0, export mode with "
-                   "tiled pdf format):")
-             + DialogLayoutSettings::MakeHelpTiledPdfTemplateList(),
+                   "tiled pdf format):"),
          translate("VCommandLine", "Template number"),
          QChar('0')},
-        {LONG_OPTION_TILED_PDF_LEFT_MARGIN,
-         translate("VCommandLine",
-                   "Tiled page left margin in current units like 3.0 (export mode). If not set will be "
-                   "used default value 1 cm."),
-         translate("VCommandLine", "The left margin")},
-        {LONG_OPTION_TILED_PDF_RIGHT_MARGIN,
-         translate("VCommandLine",
-                   "Tiled page right margin in current units like 3.0 (export mode). If not set will "
-                   "be used default value 1 cm."),
-         translate("VCommandLine", "The right margin")},
-        {LONG_OPTION_TILED_PDF_TOP_MARGIN,
-         translate("VCommandLine",
-                   "Tiled page top margin in current units like 3.0 (export mode). If not set will be "
-                   "used value default value 1 cm."),
-         translate("VCommandLine", "The top margin")},
-        {LONG_OPTION_TILED_PDF_BOTTOM_MARGIN,
-         translate("VCommandLine",
-                   "Tiled page bottom margin in current units like 3.0 (export mode). If not set will "
-                   "be used value default value 1 cm."),
-         translate("VCommandLine", "The bottom margin")},
         {LONG_OPTION_TILED_PDF_LANDSCAPE,
          translate("VCommandLine",
                    "Set tiled page orienatation to landscape (export mode). Default value if not set "
@@ -878,175 +661,6 @@ auto VCommandLine::OptionValue(const QString &option) const -> QString
 auto VCommandLine::OptionValues(const QString &option) const -> QStringList
 {
     return parser.values(option);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommandLine::OptNestingTime() const -> int
-{
-    int time = VValentinaSettings::GetDefNestingTime();
-    if (IsOptionSet(LONG_OPTION_NESTING_TIME))
-    {
-        bool ok = false;
-        time = OptionValue(LONG_OPTION_NESTING_TIME).toInt(&ok);
-
-        if (not ok || time < 1 || time > 60)
-        {
-            qCritical() << translate("VCommandLine", "Time must be in range from 1 minute to 60 minutes.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-    }
-
-    return time;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommandLine::OptEfficiencyCoefficient() const -> qreal
-{
-    qreal coefficient = VValentinaSettings::GetDefEfficiencyCoefficient();
-    if (IsOptionSet(LONG_OPTION_EFFICIENCY_COEFFICIENT))
-    {
-        bool ok = false;
-        coefficient = OptionValue(LONG_OPTION_EFFICIENCY_COEFFICIENT).toDouble(&ok);
-
-        if (not ok || coefficient < 0 || coefficient > 100)
-        {
-            qCritical() << translate("VCommandLine", "Coefficient must be in range from 0 to 100.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-    }
-
-    return coefficient;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommandLine::TestPageformat() const
-{
-    bool const x = IsOptionSet(LONG_OPTION_PAGETEMPLATE);
-
-    bool const a = IsOptionSet(LONG_OPTION_PAGEH);
-    bool const b = IsOptionSet(LONG_OPTION_PAGEW);
-    bool const c = IsOptionSet(LONG_OPTION_PAGEUNITS);
-
-    if ((a || b) && x)
-    {
-        qCritical() << translate("VCommandLine", "Cannot use pageformat and page explicit size together.") << "\n";
-        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-    }
-
-    if ((a || b || c) && !(a && b && c))
-    {
-        qCritical() << translate("VCommandLine", "Page height, width, units must be used all 3 at once.") << "\n";
-        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommandLine::TestGapWidth() const
-{
-    bool const a = IsOptionSet(LONG_OPTION_GAPWIDTH);
-    bool const b = IsOptionSet(LONG_OPTION_SHIFTUNITS);
-
-    if ((a || b) && !(a && b))
-    {
-        qCritical() << translate("VCommandLine", "Gap width must be used together with shift units.") << "\n";
-        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommandLine::TestMargins() const
-{
-    auto CheckKey = [this](const QString &key, const QString &message)
-    {
-        bool const a = IsOptionSet(key);
-        bool const b = IsOptionSet(LONG_OPTION_PAGEUNITS);
-
-        if (a && !(a && b))
-        {
-            qCritical() << message << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-    };
-
-    if (not IsOptionSet(LONG_OPTION_IGNORE_MARGINS))
-    {
-        CheckKey(LONG_OPTION_LEFT_MARGIN,
-                 translate("VCommandLine", "Left margin must be used together with page units."));
-        CheckKey(LONG_OPTION_RIGHT_MARGIN,
-                 translate("VCommandLine", "Right margin must be used together with page units."));
-        CheckKey(LONG_OPTION_TOP_MARGIN,
-                 translate("VCommandLine", "Top margin must be used together with page units."));
-        CheckKey(LONG_OPTION_BOTTOM_MARGIN,
-                 translate("VCommandLine", "Bottom margin must be used together with page units."));
-    }
-
-    if (static_cast<LayoutExportFormats>(OptExportType()) == LayoutExportFormats::PDFTiled)
-    {
-        CheckKey(LONG_OPTION_TILED_PDF_LEFT_MARGIN,
-                 translate("VCommandLine", "Tiled left margin must be used together with page units."));
-        CheckKey(LONG_OPTION_TILED_PDF_RIGHT_MARGIN,
-                 translate("VCommandLine", "Tiled right margin must be used together with page units."));
-        CheckKey(LONG_OPTION_TILED_PDF_TOP_MARGIN,
-                 translate("VCommandLine", "Tiled top margin must be used together with page units."));
-        CheckKey(LONG_OPTION_TILED_PDF_BOTTOM_MARGIN,
-                 translate("VCommandLine", "Tiled bottom margin must be used together with page units."));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommandLine::ParseMargins(const DialogLayoutSettings &diag) const -> QMarginsF
-{
-    QMarginsF margins = diag.GetFields();
-
-    if (IsOptionSet(LONG_OPTION_LEFT_MARGIN))
-    {
-        bool ok = false;
-        qreal const margin = Pg2Px(OptionValue(LONG_OPTION_LEFT_MARGIN), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid layout page left margin.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        margins.setLeft(margin);
-    }
-
-    if (IsOptionSet(LONG_OPTION_RIGHT_MARGIN))
-    {
-        bool ok = false;
-        qreal const margin = Pg2Px(OptionValue(LONG_OPTION_RIGHT_MARGIN), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid layout page right margin.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        margins.setRight(margin);
-    }
-
-    if (IsOptionSet(LONG_OPTION_TOP_MARGIN))
-    {
-        bool ok = false;
-        qreal const margin = Pg2Px(OptionValue(LONG_OPTION_TOP_MARGIN), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid layout page top margin.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        margins.setTop(margin);
-    }
-
-    if (IsOptionSet(LONG_OPTION_BOTTOM_MARGIN))
-    {
-        bool ok = false;
-        qreal const margin = Pg2Px(OptionValue(LONG_OPTION_BOTTOM_MARGIN), diag, &ok);
-        if (not ok)
-        {
-            qCritical() << translate("VCommandLine", "Invalid layout page bottom margin.") << "\n";
-            const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
-        }
-        margins.setBottom(margin);
-    }
-
-    return margins;
 }
 
 #undef translate

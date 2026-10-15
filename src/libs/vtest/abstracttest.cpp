@@ -341,12 +341,6 @@ void AbstractTest::CompareLinesDistance(const QVector<QLineF> &result, const QVe
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto AbstractTest::PuzzlePath() -> QString
-{
-    return QStringLiteral(PUZZLE_PATH);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto AbstractTest::ValentinaPath() -> QString
 {
     return QStringLiteral(VALENTINA_PATH);
@@ -393,7 +387,7 @@ auto AbstractTest::Run(int exit, const QString &program, const QStringList &argu
     process->setWorkingDirectory(info.absoluteDir().absolutePath());
 
 #if defined(Q_OS_MACOS)
-    // Bundled helper apps (Tape/Puzzle/Valentina) are self-contained and resolve Qt through their own @rpath. The qbs
+    // The bundled application is self-contained and resolves Qt through its own @rpath. The qbs
     // autotest run environment exports DYLD_* vars so the un-bundled test binary can find Qt/project libs; if inherited
     // by the bundled subprocess they make dyld load a second copy of QtCore into the same process (duplicate-class
     // warnings + cross-thread crashes). Strip them for the child so it relies solely on its baked rpaths.

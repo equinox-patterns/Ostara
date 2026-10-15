@@ -18,8 +18,6 @@ VToolApp {
     Depends { name: "VThemeLib" }
     Depends { name: "VCrashHandlerLib"; condition: buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled }
     Depends { name: "VGAnalyticsLib" }
-    Depends { name: "Tape"; condition: qbs.targetOS.contains("macos") && buildconfig.enableMultiBundle }
-    Depends { name: "Puzzle"; condition: qbs.targetOS.contains("macos") && buildconfig.enableMultiBundle }
 
     Depends {
         name: "Qt.xmlpatterns"
@@ -147,8 +145,6 @@ VToolApp {
             "dialogpatternproperties.h",
             "dialognewpattern.h",
             "dialogaboutapp.h",
-            "dialoglayoutsettings.h",
-            "dialoglayoutprogress.h",
             "dialogsavelayout.h",
             "vwidgetbackgroundimages.h",
             "vwidgetdependencies.cpp",
@@ -168,8 +164,6 @@ VToolApp {
             "dialogpatternproperties.cpp",
             "dialognewpattern.cpp",
             "dialogaboutapp.cpp",
-            "dialoglayoutsettings.cpp",
-            "dialoglayoutprogress.cpp",
             "dialogsavelayout.cpp",
             "vwidgetbackgroundimages.cpp",
             "vwidgetgroups.cpp",
@@ -186,8 +180,6 @@ VToolApp {
             "dialogpatternproperties.ui",
             "dialognewpattern.ui",
             "dialogaboutapp.ui",
-            "dialoglayoutsettings.ui",
-            "dialoglayoutprogress.ui",
             "dialogsavelayout.ui",
             "vwidgetbackgroundimages.ui",
             "vwidgetgroups.ui",
@@ -301,9 +293,6 @@ VToolApp {
         condition: qbs.targetOS.contains("macos")
         macdeployqt.targetApps: {
             var apps = [];
-            if (!buildconfig.enableMultiBundle)
-                apps.push("Tape", "Puzzle");
-
             if (buildconfig.useConanPackages && buildconfig.conanCrashReportingEnabled)
                 apps.push("crashpad_handler");
 
@@ -414,7 +403,6 @@ VToolApp {
         prefix: project.sourceDirectory + "/dist/macos/valentina-project.xcassets/"
         files: [
             "pattern.iconset",
-            "layout.iconset",
             "i-measurements.iconset",
             "s-measurements.iconset",
             "k-measurements.iconset"

@@ -22,8 +22,6 @@ VLib {
         "vtoolstyle.cpp",
         "vpatternpiecestyle.h",
         "vpatternpiecestyle.cpp",
-        "vmanuallayoutstyle.h",
-        "vmanuallayoutstyle.cpp",
     ]
 
     // Private: need vcommonsettings.h, vabstractapplication.h, def.h, compatibility.h from vmisc

@@ -2,18 +2,8 @@
 
 set(VLAYOUT_SOURCES
     vlayoutexporter.cpp
-    vlayoutgenerator.cpp
-    vlayoutpaper.cpp
-    vbank.cpp
-    vcontour.cpp
-    vbestsquare.cpp
     vlayoutpoint.cpp
-    vposition.cpp
-    vrawlayout.cpp
-    vprintlayout.cpp
-    vtextmanager.cpp
     otextwrap.cpp
-    vposter.cpp
     vgraphicsfillitem.cpp
     vabstractpiece.cpp
     vlayoutpiece.cpp
@@ -24,22 +14,10 @@ set(VLAYOUT_SOURCES
     vfoldline.h
     vfoldline.cpp
     vlayoutexporter.h
-    vlayoutgenerator.h
     vlayoutdef.h
-    vlayoutpaper.h
-    vlayoutpaper_p.h
-    vbank.h
-    vcontour.h
-    vcontour_p.h
-    vbestsquare.h
     vlayoutpoint.h
-    vposition.h
-    vrawlayout.h
-    vprintlayout.h
     vsapoint.h
-    vtextmanager.h
     otextwrap.h
-    vposter.h
     vgraphicsfillitem.h
     vabstractpiece.h
     vabstractpiece_p.h
@@ -47,18 +25,14 @@ set(VLAYOUT_SOURCES
     vlayoutpiece_p.h
     vlayoutpiecepath.h
     vlayoutpiecepath_p.h
-    vbestsquare_p.h
     vrawsapoint.h
 )
 
 set(VLAYOUT_DIALOGS
-    dialogs/dialoglayoutscale.h
     dialogs/vabstractlayoutdialog.h
     dialogs/watermarkwindow.h
-    dialogs/dialoglayoutscale.cpp
     dialogs/vabstractlayoutdialog.cpp
     dialogs/watermarkwindow.cpp
-    dialogs/dialoglayoutscale.ui
     dialogs/watermarkwindow.ui
 )
 

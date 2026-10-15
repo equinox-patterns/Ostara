@@ -182,8 +182,6 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
     void customEvent(QEvent *event) override;
-    void CleanLayout() override;
-    void PrepareSceneList(PreviewQuatilty quality) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dragLeaveEvent(QDragLeaveEvent *event) override;
@@ -206,10 +204,8 @@ private slots:
     void NextPatternPiece();
     void ToolBarStyles();
     void ToolboxIconSize();
-    void ShowPaper(int index);
     void Preferences();
     void ExportDrawAs(bool checked);
-    void ExportLayoutAs(bool checked);
     void ExportDetailsAs(bool checked);
 
     void ArrowTool(bool checked);
@@ -275,7 +271,6 @@ private slots:
 
     void ActionDraw(bool checked);
     void ActionDetails(bool checked);
-    void ActionLayout(bool checked);
     void ActionGraded(bool checked);
     void ActionExport(bool checked);
 
@@ -450,10 +445,6 @@ private slots:
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)
     bool on_actionSave_triggered();   // NOLINT(modernize-use-trailing-return-type)
     void on_actionOpen_triggered();
-
-    void on_actionOpenPuzzle_triggered();
-    void on_actionCreateManualLayout_triggered();
-    void on_actionUpdateManualLayout_triggered();
 
     void ActionAddBackgroundImage();
 
@@ -788,7 +779,6 @@ private:
 
     void SetEnableWidgets(bool enable);
     void SetEnableTool(bool enable);
-    void SetLayoutModeActions();
 
     /// Keep the top bar's save-piece button in step with what there is to save.
     ///
@@ -898,7 +888,7 @@ private:
     void InitWelcomePage();
     void ShowWelcomeScreen();
     void ShowEditor();
-    auto switchScene(Draw mode, const QVector<DetailForLayout> &details = {}) -> bool;
+    void switchScene(Draw mode);
 
     /// Graded mode: create/reuse the active size range for the loaded measurements
     /// table. Returns true when a range is available and the graded canvas may show.

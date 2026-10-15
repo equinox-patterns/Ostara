@@ -669,7 +669,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         }
 
         // isNull() does NOT mean "the piece is broken": it answers "this piece has no
-        // nesting envelope yet" (m_layoutWidth is only set by VBank::PrepareDetails,
+        // nesting envelope yet" (m_layoutWidth is set by the nesting that used to fill it,
         // which VLayoutPiece::Create never calls). What matters here is that the piece
         // has a contour at all, and that its seam allowance was actually built when it
         // is supposed to have one.
@@ -831,7 +831,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             }
 
             // Une copie sur deux en miroir, quand la copie symétrique est demandée — le motif de
-            // HandleSymmetricalCopy (libs/vlayout/vbank.cpp), qui retourne les index impairs.
+            // HandleSymmetricalCopy (dans l'ancien moteur de nesting), qui retourne les index impairs.
             if (copy % 2 == 1 && piece.IsSymmetricalCopy())
             {
                 const QPointF centre = one.piece.DetailBoundingRect().center();

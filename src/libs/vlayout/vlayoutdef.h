@@ -42,7 +42,6 @@ enum class LayoutExportFileFormat : qint8
     OBJ, /* Wavefront OBJ*/
     DXF,
     NC,
-    RLD,
     TIF,
     HPGL,
     PLT,
@@ -70,7 +69,6 @@ enum class LayoutExportFormats : qint8
     DXF_ASTM = 25,        /* R11 & R12. */
     PDFTiled = 33,
     NC = 34,  /*G-code. Reserved for future*/
-    RLD = 35, /*Raw Layout Data*/
     TIF = 36,
     HPGL = 37,
     HPGL2 = 38,

@@ -62,7 +62,6 @@ constexpr int kMinPaletteWidth = kButtonSize + kMargins;
 // Mode bitmask for group visibility filtering
 constexpr int kModeDraw   = 1 << 0; // Draw::Calculation
 constexpr int kModeDetail = 1 << 1; // Draw::Modeling
-constexpr int kModeLayout = 1 << 2; // Draw::Layout
 constexpr int kModeGraded = 1 << 3; // Draw::Graded
 constexpr int kModeExport = 1 << 4; // Draw::Export
 
@@ -72,7 +71,6 @@ int ModeToMask(Draw mode)
     {
         case Draw::Calculation: return kModeDraw;
         case Draw::Modeling:    return kModeDetail;
-        case Draw::Layout:      return kModeLayout;
         case Draw::Graded:      return kModeGraded;
         case Draw::Export:      return kModeExport;
     }
@@ -487,7 +485,7 @@ void DrawToolBar::InitializeGroups()
     m_groups = {
         {tr("Selection"), {
             {QStringLiteral("arrow_cursor"),            tr("Select"), nullptr, makeBtn("arrow_cursor")},
-        }, kModeDraw | kModeDetail | kModeLayout | kModeExport},
+        }, kModeDraw | kModeDetail | kModeExport},
         {tr("Export templates"), {
             {QStringLiteral("export_templates"),        tr("Export templates"), nullptr, nullptr},
         }, kModeExport},

@@ -35,7 +35,6 @@
 #include "../vformat/vmeasurements.h"
 #include "../vlayout/vgraphicsfillitem.h"
 #include "../vlayout/vlayoutexporter.h"
-#include "../vlayout/vlayoutgenerator.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/dialogs/dialogexporttocsv.h"
 #include "../vmisc/qxtcsvmodel.h"
@@ -50,8 +49,6 @@
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "core/vapplication.h"
-#include "dialogs/dialoglayoutprogress.h"
-#include "dialogs/dialoglayoutsettings.h"
 #include "dialogs/dialogsavelayout.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 #include "widgets/InfoBlock/oinfoblockexport.h"
@@ -131,19 +128,6 @@ void RemoveLayoutPath(const QString &path, bool usedNotExistedDir)
 
 //---------------------------------------------------------------------------------------------------------------------
 #if !defined(V_NO_ASSERT)
-Q_DECL_UNUSED void InsertGlobalContours(const QList<QGraphicsScene *> &scenes, const QList<QGraphicsItem *> &gcontours);
-void InsertGlobalContours(const QList<QGraphicsScene *> &scenes, const QList<QGraphicsItem *> &gcontours)
-{
-    if (scenes.size() != gcontours.size())
-    {
-        return;
-    }
-
-    for (int i = 0; i < scenes.size(); ++i)
-    {
-        scenes.at(i)->addItem(gcontours.at(i));
-    }
-}
 #endif
 } // namespace
 
@@ -159,7 +143,6 @@ MainWindowsNoGUI::MainWindowsNoGUI(QWidget *parent)
     m_taskbarButton(new QWinTaskbarButton(this))
 #endif
 {
-    InitTempLayoutScene();
 
 #if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_taskbarButton->setWindow(this->windowHandle());
@@ -167,7 +150,6 @@ MainWindowsNoGUI::MainWindowsNoGUI(QWidget *parent)
     m_taskbarProgress->setMinimum(0);
 #endif
 
-    m_layoutSettings->SetParentWidget(this);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -175,324 +157,7 @@ MainWindowsNoGUI::~MainWindowsNoGUI()
 {
     delete m_unreadPatternMessage.data();
     delete m_mouseCoordinate.data();
-    delete tempSceneLayout;
     delete pattern;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::ToolLayoutSettings(bool checked)
-{
-    auto *tButton = qobject_cast<QAction *>(this->sender());
-    SCASSERT(tButton != nullptr)
-
-    if (checked)
-    {
-        VLayoutGenerator lGenerator;
-
-        DialogLayoutSettings layout(&lGenerator, this);
-        if (layout.exec() == QDialog::Rejected)
-        {
-            tButton->setChecked(false);
-            return;
-        }
-        m_layoutSettings->SetLayoutPrinterName(layout.SelectedPrinter());
-        GenerateLayout(lGenerator);
-        tButton->setChecked(false);
-    }
-    else
-    {
-        tButton->setChecked(true);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto MainWindowsNoGUI::GenerateLayout(VLayoutGenerator &lGenerator) -> bool
-{
-    lGenerator.SetDetails(listDetails);
-
-    QElapsedTimer timer;
-    timer.start();
-
-#if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QTimer *progressTimer = nullptr;
-#endif
-
-    QSharedPointer<DialogLayoutProgress> progress;
-    if (VApplication::IsGUIMode())
-    {
-#if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        m_taskbarProgress->setVisible(true);
-        m_taskbarProgress->setValue(0);
-        m_taskbarProgress->setMaximum(lGenerator.GetNestingTime() * 60);
-        progressTimer = new QTimer(this);
-        connect(progressTimer, &QTimer::timeout, this,
-                [this, timer]() { m_taskbarProgress->setValue(static_cast<int>(timer.elapsed() / 1000)); });
-        progressTimer->start(1000);
-#endif
-
-        progress = QSharedPointer<DialogLayoutProgress>(
-            new DialogLayoutProgress(timer, lGenerator.GetNestingTimeMSecs(), this));
-
-        connect(progress.data(), &DialogLayoutProgress::Abort, &lGenerator, &VLayoutGenerator::Abort);
-        connect(progress.data(), &DialogLayoutProgress::Timeout, &lGenerator, &VLayoutGenerator::Timeout);
-
-        progress->Start();
-    }
-    else
-    {
-        // Because the progress bar dialog will not terminate nesting we must create separate timer for this
-        auto *progressTimer = new QTimer(this);
-        connect(progressTimer, &QTimer::timeout, this,
-                [timer, &lGenerator, progressTimer]()
-                {
-                    const auto timeout = static_cast<int>(lGenerator.GetNestingTimeMSecs() - timer.elapsed());
-
-                    if (timeout <= 1000)
-                    {
-                        lGenerator.Timeout();
-                        progressTimer->stop();
-                        progressTimer->deleteLater();
-                    }
-                });
-        progressTimer->start(1s);
-    }
-
-    LayoutErrors nestingState = LayoutErrors::NoError;
-
-    auto IsTimeout = [&progress, &lGenerator, timer, &nestingState]()
-    {
-        if (timer.hasExpired(lGenerator.GetNestingTimeMSecs()))
-        {
-            if (nestingState != LayoutErrors::EmptyPaperError)
-            {
-                nestingState = LayoutErrors::Timeout;
-            }
-
-            if (VApplication::IsGUIMode())
-            {
-                progress->Finished();
-            }
-            return true;
-        }
-        return false;
-    };
-
-    bool rotationUsed = false;
-    int rotatate = 1;
-    lGenerator.SetShift(-1); // Trigger first shift calulation
-    lGenerator.SetRotate(false);
-    vsizetype papersCount = INT_MAX;
-    qreal efficiency = 0;
-    bool hasResult = false;
-
-    QCoreApplication::processEvents();
-
-#ifdef LAYOUT_DEBUG
-    const QString path = QDir::homePath() + QStringLiteral("/LayoutDebug");
-    QDir debugDir(path);
-    debugDir.removeRecursively();
-    debugDir.mkpath(path);
-#endif
-
-    forever
-    {
-        if (IsTimeout())
-        {
-            break;
-        }
-
-        {
-            QEventLoop wait;
-            QFutureWatcher<void> fw;
-            connect(qApp, &QCoreApplication::aboutToQuit, &fw,
-                    [&fw]()
-                    {
-                        fw.cancel();
-                        fw.waitForFinished();
-                    });
-            QObject::connect(&fw, &QFutureWatcher<void>::finished, &wait, &QEventLoop::quit);
-            fw.setFuture(
-                QtConcurrent::run([&lGenerator, timer, nestingState]()
-                                  { lGenerator.Generate(timer, lGenerator.GetNestingTimeMSecs(), nestingState); }));
-            wait.exec();
-        }
-
-        if (IsTimeout())
-        {
-            break;
-        }
-
-        nestingState = lGenerator.State();
-
-        switch (nestingState)
-        {
-            case LayoutErrors::NoError:
-                if (lGenerator.PapersCount() <= papersCount)
-                {
-                    const qreal layoutEfficiency = lGenerator.LayoutEfficiency();
-                    if (efficiency < layoutEfficiency || lGenerator.PapersCount() < papersCount)
-                    {
-                        efficiency = layoutEfficiency;
-                        if (VApplication::IsGUIMode())
-                        {
-                            progress->Efficiency(efficiency);
-                        }
-
-                        CleanLayout();
-                        m_layoutSettings->SetLayoutPapers(lGenerator.GetPapersItems());      // Blank sheets
-                        m_layoutSettings->SetLayoutDetails(lGenerator.GetAllDetailsItems()); // All details items
-                        detailsOnLayout = lGenerator.GetAllDetails();                        // All details items
-                        m_layoutSettings->SetLayoutShadows(CreateShadows(m_layoutSettings->LayoutPapers()));
-                        m_layoutSettings->SetLayoutPortrait(lGenerator.IsPortrait());
-                        m_layoutSettings->SetLayoutScenes(CreateScenes(m_layoutSettings->LayoutPapers(),
-                                                                       m_layoutSettings->LayoutShadows(),
-                                                                       m_layoutSettings->LayoutDetails()));
-#if !defined(V_NO_ASSERT)
-                        // Uncomment to debug, shows global contour
-//                        gcontours = lGenerator.GetGlobalContours(); // uncomment for debugging
-//                        InsertGlobalContours(scenes, gcontours); // uncomment for debugging
-#endif
-                        if (VApplication::IsGUIMode())
-                        {
-                            PrepareSceneList(PreviewQuatilty::Fast);
-                        }
-                        m_layoutSettings->SetIgnorePrinterMargins(not lGenerator.IsUsePrinterFields());
-                        m_layoutSettings->SetLayoutMargins(lGenerator.GetPrinterFields());
-                        m_layoutSettings->SetLayoutPaperSize(
-                            QSizeF(lGenerator.GetPaperWidth(), lGenerator.GetPaperHeight()));
-                        m_layoutSettings->SetAutoCropLength(lGenerator.GetAutoCropLength());
-                        m_layoutSettings->SetAutoCropWidth(lGenerator.GetAutoCropWidth());
-                        m_layoutSettings->SetUnitePages(lGenerator.IsUnitePages());
-                        m_layoutSettings->SetLayoutStale(false);
-                        m_layoutSettings->SetBoundaryTogetherWithNotches(lGenerator.IsBoundaryTogetherWithNotches());
-                        papersCount = lGenerator.PapersCount();
-                        hasResult = true;
-                        qDebug() << "Layout efficiency: " << efficiency;
-                    }
-                    else
-                    {
-                        if (lGenerator.IsRotationNeeded())
-                        {
-                            lGenerator.SetRotate(true);
-                            lGenerator.SetRotationNumber(++rotatate);
-                            rotationUsed = true;
-                        }
-                    }
-                }
-                else
-                {
-                    if (lGenerator.IsRotationNeeded())
-                    {
-                        lGenerator.SetRotate(true);
-                        lGenerator.SetRotationNumber(++rotatate);
-                        rotationUsed = true;
-                    }
-                }
-                lGenerator.SetShift(lGenerator.GetShift() / 2.0);
-                break;
-            case LayoutErrors::EmptyPaperError:
-                if (lGenerator.IsRotationNeeded())
-                {
-                    if (not rotationUsed)
-                    {
-                        lGenerator.SetRotate(true);
-                        lGenerator.SetRotationNumber(++rotatate);
-                        rotationUsed = true;
-                    }
-                    else
-                    {
-                        lGenerator.SetShift(lGenerator.GetShift() / 2.0);
-                        rotationUsed = false;
-                    }
-                }
-                else
-                {
-                    lGenerator.SetShift(lGenerator.GetShift() / 2.0);
-                }
-                break;
-            case LayoutErrors::Timeout:
-            case LayoutErrors::PrepareLayoutError:
-            case LayoutErrors::ProcessStoped:
-            case LayoutErrors::TerminatedByException:
-            default:
-                break;
-        }
-
-        if (nestingState == LayoutErrors::PrepareLayoutError || nestingState == LayoutErrors::ProcessStoped ||
-            nestingState == LayoutErrors::TerminatedByException)
-        {
-            break;
-        }
-
-        if (nestingState == LayoutErrors::NoError && not qFuzzyIsNull(lGenerator.GetEfficiencyCoefficient()) &&
-            efficiency >= lGenerator.GetEfficiencyCoefficient() &&
-            (not lGenerator.IsPreferOneSheetSolution() || lGenerator.PapersCount() == 1))
-        {
-            break;
-        }
-
-        if (IsTimeout())
-        {
-            break;
-        }
-    }
-
-    if (VApplication::IsGUIMode())
-    {
-        PrepareSceneList(PreviewQuatilty::Slow);
-        progress->Finished();
-    }
-
-#if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    if (VApplication::IsGUIMode())
-    {
-        progressTimer->stop();
-        m_taskbarProgress->setVisible(false);
-    }
-#endif
-
-    if (VApplication::IsGUIMode())
-    {
-        QApplication::alert(this);
-    }
-
-    if (hasResult && nestingState != LayoutErrors::ProcessStoped)
-    {
-        return true;
-    }
-
-    ShowLayoutError(nestingState);
-    if (not VApplication::IsGUIMode())
-    {
-        QCoreApplication::exit(V_EX_DATAERR);
-    }
-    return false;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::ShowLayoutError(const LayoutErrors &state)
-{
-    switch (state)
-    {
-        case LayoutErrors::NoError:
-            return;
-        case LayoutErrors::PrepareLayoutError:
-            qCritical() << tr("Couldn't prepare data for creation layout");
-            break;
-        case LayoutErrors::EmptyPaperError:
-            qCritical() << tr("One or more pattern pieces are bigger than the paper format you selected. Please, "
-                              "select a bigger paper format.");
-            break;
-        case LayoutErrors::Timeout:
-            qCritical() << tr("Timeout.");
-            break;
-        case LayoutErrors::TerminatedByException:
-            qCritical() << tr("Process has been stoped because of exception.");
-            break;
-        case LayoutErrors::ProcessStoped:
-        default:
-            break;
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -526,41 +191,15 @@ void MainWindowsNoGUI::ExportData(const QVector<VLayoutPiece> &listDetails)
 {
     if (const LayoutExportFormats format = m_dialogSaveLayout->Format();
         format == LayoutExportFormats::DXF_AAMA || format == LayoutExportFormats::DXF_ASTM ||
-        format == LayoutExportFormats::RLD || format == LayoutExportFormats::HPGL ||
+        format == LayoutExportFormats::HPGL ||
         format == LayoutExportFormats::HPGL2 || format == LayoutExportFormats::HPGL_PLT ||
         format == LayoutExportFormats::HPGL2_PLT)
     {
-        if (m_dialogSaveLayout->Mode() == Draw::Layout)
-        {
-            for (int i = 0; i < detailsOnLayout.size(); ++i)
-            {
-                const QString index = detailsOnLayout.size() > 1 ? QString::number(i + 1) : QString();
-                const QString name = m_dialogSaveLayout->Path() + '/'_L1 + m_dialogSaveLayout->FileName() + index
-                                     + VLayoutExporter::ExportFormatSuffix(m_dialogSaveLayout->Format());
-
-                auto *paper = qgraphicsitem_cast<QGraphicsRectItem *>(m_layoutSettings->LayoutPapers().at(i));
-                SCASSERT(paper != nullptr)
-
-                ExportApparelLayout(detailsOnLayout.at(i), name, paper->rect().size().toSize());
-            }
-        }
-        else
-        {
-            ExportDetailsAsApparelLayout(listDetails);
-        }
+        ExportDetailsAsApparelLayout(listDetails);
     }
     else
     {
-        if (m_dialogSaveLayout->Mode() == Draw::Layout)
-        {
-            ExportFlatLayout(m_layoutSettings->LayoutScenes(), m_layoutSettings->LayoutPapers(),
-                             m_layoutSettings->LayoutShadows(), m_layoutSettings->LayoutDetails(),
-                             m_layoutSettings->IgnorePrinterMargins(), m_layoutSettings->LayoutMargins());
-        }
-        else
-        {
-            ExportDetailsAsFlatLayout(listDetails);
-        }
+        ExportDetailsAsFlatLayout(listDetails);
     }
 }
 
@@ -580,16 +219,7 @@ void MainWindowsNoGUI::ExportFlatLayout(const QList<QGraphicsScene *> &scenes, c
 
     VAbstractValApplication::VApp()->ValentinaSettings()->SetPathLayoutExport(path);
 
-    if (const LayoutExportFormats format = m_dialogSaveLayout->Format();
-        format == LayoutExportFormats::PDFTiled && m_dialogSaveLayout->Mode() == Draw::Layout)
-    {
-        const QString name = path + '/'_L1 + m_dialogSaveLayout->FileName();
-        PdfTiledFile(name);
-    }
-    else
-    {
-        ExportScene(scenes, papers, shadows, details, ignorePrinterFields, margins);
-    }
+    ExportScene(scenes, papers, shadows, details, ignorePrinterFields, margins);
 
     RemoveLayoutPath(path, usedNotExistedDir);
 }
@@ -1139,9 +769,6 @@ void MainWindowsNoGUI::ExportApparelLayout(const QVector<VLayoutPiece> &details,
             exporter.SetShowMainPath(m_dialogSaveLayout->IsShowMainPath());
             exporter.ExportToAAMADXF(details);
             break;
-        case LayoutExportFormats::RLD:
-            exporter.ExportToRLD(details);
-            break;
         case LayoutExportFormats::HPGL:
         case LayoutExportFormats::HPGL_PLT:
             exporter.SetSingleLineFont(settings->GetSingleLineFonts());
@@ -1248,74 +875,6 @@ void MainWindowsNoGUI::ExportDetailsAsApparelLayout(QVector<VLayoutPiece> listDe
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::PrintPreviewOrigin()
-{
-    m_layoutSettings->SetFileName(FileName());
-    m_layoutSettings->PrintPreviewOrigin();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::PrintPreviewTiled()
-{
-    m_layoutSettings->SetFileName(FileName());
-
-    if (not m_dialogSaveLayout.isNull())
-    {
-        m_layoutSettings->SetTiledMargins(m_dialogSaveLayout->GetTiledMargins());
-        m_layoutSettings->SetTiledPDFOrientation(m_dialogSaveLayout->GetTiledPageOrientation());
-
-        VAbstractLayoutDialog::PaperSizeTemplate const tiledFormat = m_dialogSaveLayout->GetTiledPageFormat();
-        m_layoutSettings->SetTiledPDFPaperSize(VAbstractLayoutDialog::GetTemplateSize(tiledFormat, Unit::Mm));
-    }
-    else
-    {
-        VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        m_layoutSettings->SetTiledMargins(settings->GetTiledPDFMargins(Unit::Mm));
-        m_layoutSettings->SetTiledPDFOrientation(settings->GetTiledPDFOrientation());
-        m_layoutSettings->SetTiledPDFPaperSize(
-            QSizeF(settings->GetTiledPDFPaperWidth(Unit::Mm), settings->GetTiledPDFPaperHeight(Unit::Mm)));
-    }
-
-    m_layoutSettings->SetWatermarkPath(
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->GetWatermarkPath()));
-    m_layoutSettings->PrintPreviewTiled();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::PrintOrigin()
-{
-    m_layoutSettings->SetFileName(FileName());
-    m_layoutSettings->PrintOrigin();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::PrintTiled()
-{
-    m_layoutSettings->SetFileName(FileName());
-
-    if (not m_dialogSaveLayout.isNull())
-    {
-        m_layoutSettings->SetTiledMargins(m_dialogSaveLayout->GetTiledMargins());
-        m_layoutSettings->SetTiledPDFOrientation(m_dialogSaveLayout->GetTiledPageOrientation());
-
-        VAbstractLayoutDialog::PaperSizeTemplate const tiledFormat = m_dialogSaveLayout->GetTiledPageFormat();
-        m_layoutSettings->SetTiledPDFPaperSize(VAbstractLayoutDialog::GetTemplateSize(tiledFormat, Unit::Mm));
-    }
-    else
-    {
-        VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        m_layoutSettings->SetTiledMargins(settings->GetTiledPDFMargins(Unit::Mm));
-        m_layoutSettings->SetTiledPDFOrientation(settings->GetTiledPDFOrientation());
-        m_layoutSettings->SetTiledPDFPaperSize(
-            QSizeF(settings->GetTiledPDFPaperWidth(Unit::Mm), settings->GetTiledPDFPaperHeight(Unit::Mm)));
-    }
-
-    m_layoutSettings->SetWatermarkPath(
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->GetWatermarkPath()));
-    m_layoutSettings->PrintTiled();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
                                                bool showProgress, bool showMainPath) -> QVector<VLayoutPiece>
 {
@@ -1381,64 +940,9 @@ auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &d
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::InitTempLayoutScene()
-{
-    tempSceneLayout = new VMainGraphicsScene();
-    tempSceneLayout->setBackgroundBrush(QBrush(QColor(Qt::gray), Qt::SolidPattern));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto MainWindowsNoGUI::RecentFileList() const -> QStringList
 {
     return VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto MainWindowsNoGUI::ScenePreview(int i, QSize iconSize, PreviewQuatilty quality) const -> QIcon
-{
-    QImage image;
-
-    if (auto *paper = qgraphicsitem_cast<QGraphicsRectItem *>(m_layoutSettings->LayoutPapers().at(i)); paper)
-    {
-        if (quality == PreviewQuatilty::Fast)
-        {
-            image = QImage(iconSize, QImage::Format_RGB32);
-            image.fill(Qt::white);
-        }
-        else
-        {
-            const QRectF r = paper->rect();
-            // Create the image with the exact size of the shrunk scene
-            image =
-                QImage(QSize(static_cast<qint32>(r.width()), static_cast<qint32>(r.height())), QImage::Format_RGB32);
-
-            if (not image.isNull())
-            {
-                image.fill(Qt::white);
-                QPainter painter(&image);
-                painter.setFont(QFont(QStringLiteral("Arial"), 8, QFont::Normal));
-                painter.setRenderHint(QPainter::Antialiasing, true);
-                painter.setPen(QPen(Qt::black, VAbstractApplication::VApp()->Settings()->WidthMainLine(), Qt::SolidLine,
-                                    Qt::RoundCap, Qt::RoundJoin));
-                painter.setBrush(QBrush(Qt::NoBrush));
-                m_layoutSettings->LayoutScenes().at(i)->render(&painter, r, r, Qt::IgnoreAspectRatio);
-                painter.end();
-            }
-            else
-            {
-                qDebug() << "Cannot create image. Size " << r.size() << "too big";
-
-                image = QImage(iconSize, QImage::Format_RGB32);
-                image.fill(Qt::white);
-            }
-        }
-    }
-    else
-    {
-        image = QImage(iconSize, QImage::Format_RGB32);
-        image.fill(Qt::white);
-    }
-    return {QBitmap::fromImage(image)};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1490,36 +994,6 @@ auto MainWindowsNoGUI::CreateScenes(const QList<QGraphicsItem *> &papers, const 
     }
 
     return scenes;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindowsNoGUI::PdfTiledFile(const QString &name)
-{
-    if (not m_dialogSaveLayout.isNull())
-    {
-        m_layoutSettings->SetTiledMargins(m_dialogSaveLayout->GetTiledMargins());
-        m_layoutSettings->SetTiledPDFOrientation(m_dialogSaveLayout->GetTiledPageOrientation());
-
-        VAbstractLayoutDialog::PaperSizeTemplate const tiledFormat = m_dialogSaveLayout->GetTiledPageFormat();
-        m_layoutSettings->SetTiledPDFPaperSize(VAbstractLayoutDialog::GetTemplateSize(tiledFormat, Unit::Mm));
-
-        m_layoutSettings->SetXScale(m_dialogSaveLayout->GetXScale());
-        m_layoutSettings->SetYScale(m_dialogSaveLayout->GetYScale());
-    }
-    else
-    {
-        VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        m_layoutSettings->SetTiledMargins(QMarginsF(settings->GetTiledPDFMargins(Unit::Mm)));
-        m_layoutSettings->SetTiledPDFOrientation(settings->GetTiledPDFOrientation());
-        m_layoutSettings->SetTiledPDFPaperSize(
-            QSizeF(settings->GetTiledPDFPaperWidth(Unit::Mm), settings->GetTiledPDFPaperHeight(Unit::Mm)));
-        m_layoutSettings->SetXScale(1);
-        m_layoutSettings->SetYScale(1);
-    }
-
-    m_layoutSettings->SetWatermarkPath(
-        AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->GetWatermarkPath()));
-    m_layoutSettings->PdfTiledFile(name);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

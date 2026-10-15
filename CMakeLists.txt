@@ -7,7 +7,6 @@ project(Ostara VERSION 1.1.0 LANGUAGES CXX)
 option(BUILD_TESTING "Build unit tests" OFF)
 option(ENABLE_CRASHPAD "Enable crash reporting via Crashpad" OFF)
 option(ENABLE_CCACHE "Enable ccache wrapper" OFF)
-option(ENABLE_MULTI_BUNDLE "macOS multi-bundle (Tape + Puzzle inside Ostara)" ON)
 option(ENABLE_APPIMAGE "Build in AppImage mode" OFF)
 option(OSTARA_STATIC_BUILD "Build libs as static (matches QBS buildconfig.staticBuild)" ON)
 
@@ -65,11 +64,6 @@ add_compile_definitions(
 
 # Release : désactiver les assertions
 add_compile_definitions($<$<NOT:$<CONFIG:Debug>>:V_NO_ASSERT>)
-
-# macOS multi-bundle (Tape + Puzzle embarqués dans Ostara.app)
-if(APPLE AND ENABLE_MULTI_BUNDLE)
-    add_compile_definitions(MULTI_BUNDLE)
-endif()
 
 # Crashpad
 if(ENABLE_CRASHPAD)

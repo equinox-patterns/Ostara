@@ -96,7 +96,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsIndividualMeasurements, ("p
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMultisizeMeasurements, ("paths/standard_measurements"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPattern, ("paths/pattern"_L1))                         // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsManualLayouts, ("paths/manualLayouts"_L1))             // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLayoutExport, ("paths/layoutExport"_L1))               // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCustomImage, ("paths/customImage"_L1))                 // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsSVGFonts, ("paths/svgFonts"_L1))                       // NOLINT
@@ -139,9 +138,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationConfirmItemDeletion
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationConfirmFormatRewriting,
                           ("configuration/confirm_format_rewriting"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAskContinueIfLayoutStale,
-                          ("configuration/askContinueIfLayoutStale"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAskRegenerateOutputs,
                           ("configuration/askRegenerateOutputs"_L1))
@@ -210,7 +206,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingIncrementsDialogSize, ("toolIncr
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFormulaWizardDialogSize, ("formulaWizardDialogSize"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFinalMeasurementsDialogSize, ("finalMeasurementsDialogSize"_L1))
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLayoutSettingsDialogSize, ("layoutSettingsDialogSize"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDialogSplinePathSize, ("splinePathDialogSize"_L1))           // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingAutomaticallyCheckUpdates, ("automaticallyCheckUpdates"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLatestSkippedVersion, ("lastestSkippedVersion"_L1))          // NOLINT
@@ -403,21 +398,6 @@ void VCommonSettings::SetPathPattern(const QString &value) const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetPathManualLayouts() const -> QString
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingPathsManualLayouts, QDir::homePath()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathManualLayouts(const QString &value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsManualLayouts, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetPathLayoutExport() const -> QString
 {
     QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
@@ -431,6 +411,10 @@ void VCommonSettings::SetPathLayoutExport(const QString &value) const
     settings.setValue(*settingPathsLayoutExport, value);
     settings.sync();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetPathCustomImage() const -> QString
@@ -1114,16 +1098,8 @@ void VCommonSettings::SetConfirmFormatRewriting(const bool &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetAskContinueIfLayoutStale() const -> bool
-{
-    return value(*settingConfigurationAskContinueIfLayoutStale, 1).toBool();
-}
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetAskContinueIfLayoutStale(const bool &value)
-{
-    setValue(*settingConfigurationAskContinueIfLayoutStale, value);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetAskRegenerateOutputs() const -> bool
@@ -1406,16 +1382,8 @@ void VCommonSettings::SetFinalMeasurementsDialogSize(const QSize &sz)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLayoutSettingsDialogSize() const -> QSize
-{
-    return value(*settingLayoutSettingsDialogSize, QSize(0, 0)).toSize();
-}
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLayoutSettingsDialogSize(const QSize &sz)
-{
-    setValue(*settingLayoutSettingsDialogSize, sz);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetDialogSplinePathSize() const -> QSize

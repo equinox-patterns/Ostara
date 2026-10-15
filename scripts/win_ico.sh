@@ -2,7 +2,7 @@
 # Requires icoutils package
 # Run inside the scripts directory
 
-declare -a apps=("valentina" "tape" "puzzle")
+declare -a apps=("valentina" "tape")
 
 for app in "${apps[@]}"; do
     iconset="../src/app/${app}/share/resources/${app}.iconset"
@@ -15,7 +15,7 @@ for app in "${apps[@]}"; do
     -r ${iconset}/icon_512x512.png
 done
 
-declare -a mimetypes=("i-measurements" "k-measurements" "layout" "pattern" "s-measurements")
+declare -a mimetypes=("i-measurements" "k-measurements" "pattern" "s-measurements")
 
 for mimetype in "${mimetypes[@]}"; do
     iconset="../dist/win/valentina-project.assets/${mimetype}.iconset"

@@ -142,11 +142,9 @@ void MainWindow::RestoreCurrentScene()
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief switchScene activates the given mode's graphics scene and its
- *        mode-specific view state. Returns false if the mode entry was
- *        aborted (only Layout can abort).
+ * @brief switchScene activates the given mode's graphics scene and its mode-specific view state.
  */
-auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details) -> bool
+void MainWindow::switchScene(Draw mode)
 {
     const auto resource = QStringLiteral("icon");
 
@@ -201,42 +199,6 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
             m_drawToolBar->SetMode(Draw::Graded);
             m_drawToolBar->hide();
             break;
-        case Draw::Layout:
-            if (m_drawMode)
-            {
-                m_currentDrawIndex = m_comboBoxDraws->currentIndex(); // save current pattern piece
-                m_drawMode = false;
-            }
-            m_comboBoxDraws->setCurrentIndex(m_comboBoxDraws->count() - 1); // Need to get data about all details
-            m_comboBoxDraws->setCurrentIndex(-1); // Hide pattern pieces
-            m_leftGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-previous.png")));
-            m_rightGoToStage->setPixmap(VTheme::GetPixmapResource(resource, QStringLiteral("24x24/go-previous-skip.png")));
-            SaveCurrentScene();
-            try
-            {
-                listDetails = PrepareDetailsForLayout(details, doc);
-            }
-            catch (VException &e)
-            {
-                listDetails.clear();
-                QMessageBox::warning(this, tr("Layout mode"),
-                                     tr("You can't use Layout mode yet.") + QStringLiteral(" \n") + e.ErrorMessage(),
-                                     QMessageBox::Ok, QMessageBox::Ok);
-                VAbstractValApplication::VApp()->GetDrawMode() == Draw::Calculation ? ActionDraw(true)
-                                                                                    : ActionDetails(true);
-                return false;
-            }
-            currentScene = tempSceneLayout;
-            emit ui->view->itemClicked(nullptr);
-            ui->view->setScene(currentScene);
-            VAbstractValApplication::VApp()->SetDrawMode(Draw::Layout);
-            SetEnableTool(true);
-            m_drawToolBar->SetMode(Draw::Layout);
-            if (not m_mouseCoordinate.isNull())
-            {
-                m_mouseCoordinate->setText(QString());
-            }
-            break;
         case Draw::Export:
             // Shell only for now: an empty scene, no dock, the selection tool.
             // Nothing is drawn yet, so the pattern-piece combo is left alone —
@@ -267,8 +229,6 @@ auto MainWindow::switchScene(Draw mode, const QVector<DetailForLayout> &details)
 
     // The active layer belongs to the Draw mode: entering or leaving it shows or hides the rule and the name.
     UpdateActiveLayerIndicator();
-
-    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -421,30 +381,6 @@ void MainWindow::ZoomFitBestCurrent()
     }
 }
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::CleanLayout()
-{
-    m_layoutSettings->CleanLayout();
-    gcontours.clear();
-    ui->listWidget->clear();
-    SetLayoutModeActions();
-}
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::PrepareSceneList(PreviewQuatilty quality)
-{
-    ui->listWidget->clear();
-    for (int i = 1; i <= m_layoutSettings->LayoutScenes().size(); ++i)
-    {
-        auto *item = new QListWidgetItem(ScenePreview(i - 1, ui->listWidget->iconSize(), quality), QString::number(i));
-        ui->listWidget->addItem(item);
-    }
-
-    if (not m_layoutSettings->LayoutScenes().isEmpty())
-    {
-        ui->listWidget->setCurrentRow(0);
-        SetLayoutModeActions();
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief MinimumScrollBar set scroll bar to minimum.
  */
@@ -454,20 +390,6 @@ void MainWindow::MinimumScrollBar()
     horScrollBar->setValue(horScrollBar->minimum());
     QScrollBar *verScrollBar = ui->view->verticalScrollBar();
     verScrollBar->setValue(verScrollBar->minimum());
-}
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ShowPaper(int index)
-{
-    if (index < 0 || index >= m_layoutSettings->LayoutScenes().size())
-    {
-        ui->view->setScene(tempSceneLayout);
-    }
-    else
-    {
-        ui->view->setScene(m_layoutSettings->LayoutScenes().at(index));
-    }
-
-    ui->view->fitInView(ui->view->scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 //---------------------------------------------------------------------------------------------------------------------
 /**

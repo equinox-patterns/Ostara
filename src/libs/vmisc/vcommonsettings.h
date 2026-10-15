@@ -84,11 +84,9 @@ public:
     auto GetPathPattern() const -> QString;
     void SetPathPattern(const QString &value) const;
 
-    auto GetPathManualLayouts() const -> QString;
-    void SetPathManualLayouts(const QString &value) const;
-
     auto GetPathLayoutExport() const -> QString;
     void SetPathLayoutExport(const QString &value) const;
+
 
     auto GetPathCustomImage() const -> QString;
     void SetPathCustomImage(const QString &value) const;
@@ -217,8 +215,6 @@ public:
     auto GetConfirmFormatRewriting() const -> bool;
     void SetConfirmFormatRewriting(const bool &value);
 
-    auto GetAskContinueIfLayoutStale() const -> bool;
-    void SetAskContinueIfLayoutStale(const bool &value);
 
     /// @brief Warn, on entering the Export mode, that the listed generations were made
     ///        before the last pattern modification. Cleared for good by the message's own
@@ -282,8 +278,6 @@ public:
     auto GetFinalMeasurementsDialogSize() const -> QSize;
     void SetFinalMeasurementsDialogSize(const QSize &sz);
 
-    auto GetLayoutSettingsDialogSize() const -> QSize;
-    void SetLayoutSettingsDialogSize(const QSize &sz);
 
     auto GetDialogSplinePathSize() const -> QSize;
     void SetDialogSplinePathSize(const QSize &sz);

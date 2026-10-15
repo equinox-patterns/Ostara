@@ -403,7 +403,6 @@ void MainWindow::PatternChangesWereSaved(bool saved)
         const bool state = doc->IsModified() || !saved;
         setWindowModified(state);
         not m_patternReadOnly ? ui->actionSave->setEnabled(state) : ui->actionSave->setEnabled(false);
-        m_layoutSettings->SetLayoutStale(true);
 
         // The generations of the Export mode are frozen, so any modification may have
         // moved what one of them is made of. The signal is deliberately coarse — it

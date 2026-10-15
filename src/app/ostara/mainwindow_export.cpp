@@ -32,7 +32,6 @@
 #include "mainwindow_helpers.h"
 #include "vtheme.h"
 #include "../vlayout/vlayoutexporter.h"
-#include "../vlayout/dialogs/dialoglayoutscale.h"
 #include "../vformat/vpatternrecipe.h"
 #include "../ifc/exception/vexceptioninvalidhistory.h"
 #include "../ifc/ifcdef.h"
@@ -177,43 +176,6 @@ void MainWindow::ExportDrawAs(bool checked)
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ExportLayoutAs(bool checked)
-{
-    Q_UNUSED(checked)
-
-    auto Uncheck = qScopeGuard([this] { ui->actionLayoutExportAs->setChecked(false); });
-
-    if (m_layoutSettings->IsLayoutStale() && VPrintLayout::ContinueIfLayoutStale(this) == QMessageBox::No)
-    {
-        return;
-    }
-
-    try
-    {
-        m_dialogSaveLayout = QSharedPointer<DialogSaveLayout>(new DialogSaveLayout(
-            static_cast<int>(m_layoutSettings->LayoutScenes().size()), Draw::Layout, FileName(), this));
-        m_dialogSaveLayout->SetBoundaryTogetherWithNotches(m_layoutSettings->IsBoundaryTogetherWithNotches());
-
-        if (m_dialogSaveLayout->exec() == QDialog::Rejected)
-        {
-            m_dialogSaveLayout.clear();
-            return;
-        }
-
-        ExportData(QVector<VLayoutPiece>());
-        m_dialogSaveLayout.clear();
-    }
-    catch (const VException &e)
-    {
-        m_dialogSaveLayout.clear();
-        qCritical("%s\n\n%s\n\n%s", qUtf8Printable(tr("Export error.")), qUtf8Printable(e.ErrorMessage()),
-                  qUtf8Printable(e.DetailedInformation()));
-        return;
-    }
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ExportDetailsAs(bool checked)
 {
     Q_UNUSED(checked)
@@ -246,7 +208,7 @@ void MainWindow::ExportDetailsAs(bool checked)
     try
     {
         m_dialogSaveLayout =
-            QSharedPointer<DialogSaveLayout>(new DialogSaveLayout(1, Draw::Modeling, FileName(), this));
+            QSharedPointer<DialogSaveLayout>(new DialogSaveLayout(1, FileName(), this));
 
         VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
         m_dialogSaveLayout->SetBoundaryTogetherWithNotches(settings->IsBoundaryTogetherWithNotches());
@@ -336,154 +298,6 @@ void MainWindow::ActionExportRecipe_triggered()
 
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::on_actionOpenPuzzle_triggered()
-{
-    QStringList arguments;
-    if (isNoScaling)
-    {
-        arguments.append(QStringLiteral("--") + LONG_OPTION_NO_HDPI_SCALING);
-    }
-
-    const QString path = VApplication::PuzzleFilePath();
-    qDebug("Opening Puzzle: path = %s.", qUtf8Printable(path));
-    VApplication::StartDetachedProcess(path, arguments);
-}
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::on_actionCreateManualLayout_triggered()
-{
-    QTemporaryFile rldFile(QDir::tempPath() + "/puzzle.rld.XXXXXX"_L1);
-    if (rldFile.open())
-    {
-        QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces(), pattern);
-
-        if (detailsInLayout.isEmpty())
-        {
-            QMessageBox::information(this, tr("Layout mode"),
-                                     tr("You don't have enough details to export. Please, "
-                                        "include at least one detail in layout."),
-                                     QMessageBox::Ok, QMessageBox::Ok);
-            return;
-        }
-
-        QVector<VLayoutPiece> listDetails;
-        try
-        {
-            listDetails = PrepareDetailsForLayout(detailsInLayout, doc);
-        }
-        catch (VException &e)
-        {
-            QMessageBox::warning(this, tr("Export details"), tr("Can't export details.") + " \n"_L1 + e.ErrorMessage(),
-                                 QMessageBox::Ok, QMessageBox::Ok);
-            return;
-        }
-
-        DialogLayoutScale layoutScale(false, this);
-        layoutScale.SetXScale(1);
-        layoutScale.SetYScale(1);
-
-        if (int const res = layoutScale.exec(); res == QDialog::Rejected)
-        {
-            return;
-        }
-
-        VLayoutExporter exporter;
-        exporter.SetFileName(rldFile.fileName());
-        exporter.SetXScale(layoutScale.GetXScale());
-        exporter.SetYScale(layoutScale.GetYScale());
-        exporter.ExportToRLD(listDetails);
-
-        QStringList arguments{"-r", rldFile.fileName()};
-        if (isNoScaling)
-        {
-            arguments.append(QStringLiteral("--") + LONG_OPTION_NO_HDPI_SCALING);
-        }
-
-        rldFile.setAutoRemove(false);
-
-        const QString path = VApplication::PuzzleFilePath();
-        qDebug("Opening Puzzle: path = %s.", qUtf8Printable(path));
-        VApplication::StartDetachedProcess(path, arguments);
-    }
-    else
-    {
-        qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Unable to prepare raw layout data.")));
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::on_actionUpdateManualLayout_triggered()
-{
-    const QString filter(tr("Manual layout files") + " (*.vlt)"_L1);
-
-    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    // Use standard path to manual layouts
-    const QString path = settings->GetPathManualLayouts();
-
-    const QString filePath = QFileDialog::getOpenFileName(this, tr("Select manual layout"), path, filter, nullptr);
-
-    if (filePath.isEmpty())
-    {
-        return;
-    }
-
-    settings->SetPathManualLayouts(QFileInfo(filePath).absolutePath());
-
-    QTemporaryFile rldFile(QDir::tempPath() + "/puzzle.rld.XXXXXX"_L1);
-    rldFile.setAutoRemove(false);
-    if (rldFile.open())
-    {
-        QVector<DetailForLayout> const detailsInLayout = SortDetailsForLayout(pattern->DataPieces(), pattern);
-
-        if (detailsInLayout.isEmpty())
-        {
-            QMessageBox::information(this, tr("Layout mode"),
-                                     tr("You don't have enough details to export. Please, "
-                                        "include at least one detail in layout."),
-                                     QMessageBox::Ok, QMessageBox::Ok);
-            return;
-        }
-
-        QVector<VLayoutPiece> listDetails;
-        try
-        {
-            listDetails = PrepareDetailsForLayout(detailsInLayout, doc);
-        }
-        catch (VException &e)
-        {
-            QMessageBox::warning(this, tr("Export details"), tr("Can't export details.") + " \n"_L1 + e.ErrorMessage(),
-                                 QMessageBox::Ok, QMessageBox::Ok);
-            return;
-        }
-
-        DialogLayoutScale layoutScale(false, this);
-        layoutScale.SetXScale(1);
-        layoutScale.SetYScale(1);
-        layoutScale.exec();
-
-        VLayoutExporter exporter;
-        exporter.SetFileName(rldFile.fileName());
-        exporter.SetXScale(layoutScale.GetXScale());
-        exporter.SetYScale(layoutScale.GetYScale());
-        exporter.ExportToRLD(listDetails);
-
-        QStringList arguments{filePath, "-r", rldFile.fileName()};
-        if (isNoScaling)
-        {
-            arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
-        }
-
-        rldFile.setAutoRemove(false);
-
-        const QString puzzlePath = VApplication::PuzzleFilePath();
-        qDebug("Opening Puzzle: path = %s.", qUtf8Printable(puzzlePath));
-        VApplication::StartDetachedProcess(puzzlePath, arguments);
-    }
-    else
-    {
-        qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Unable to prepare raw layout data.")));
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
 {
     QVector<DetailForLayout> details;
@@ -508,90 +322,54 @@ auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
             return false;
         }
     }
-    listDetails = PrepareDetailsForLayout(details, doc);
+    QVector<VLayoutPiece> const listDetails = PrepareDetailsForLayout(details, doc);
 
-    if (const bool exportOnlyDetails = expParams->IsExportOnlyDetails(); exportOnlyDetails)
+        if (not expParams->IsExportOnlyDetails())
     {
-        try
-        {
-            m_dialogSaveLayout = QSharedPointer<DialogSaveLayout>(
-                new DialogSaveLayout(1, Draw::Modeling, expParams->OptBaseName(), this));
-            m_dialogSaveLayout->SetDestinationPath(expParams->OptDestinationPath());
-            m_dialogSaveLayout->SelectFormat(static_cast<LayoutExportFormats>(expParams->OptExportType()));
-            m_dialogSaveLayout->SetBinaryDXFFormat(expParams->IsBinaryDXF());
-            m_dialogSaveLayout->SetDxfCompatibility(
-                static_cast<DXFApparelCompatibility>(expParams->DXFApparelCompatibilityType()));
-            m_dialogSaveLayout->SetShowGrainline(!expParams->IsNoGrainline());
-            m_dialogSaveLayout->SetTextAsPaths(expParams->IsTextAsPaths());
-            m_dialogSaveLayout->SetXScale(expParams->ExportXScale());
-            m_dialogSaveLayout->SetYScale(expParams->ExportYScale());
-
-            if (static_cast<LayoutExportFormats>(expParams->OptExportType()) == LayoutExportFormats::PDFTiled)
-            {
-                m_dialogSaveLayout->SetTiledExportMode(true);
-                m_dialogSaveLayout->SetTiledMargins(expParams->TiledPageMargins());
-                m_dialogSaveLayout->SetTiledPageFormat(expParams->OptTiledPaperSize());
-                m_dialogSaveLayout->SetTiledPageOrientation(expParams->OptTiledPageOrientation());
-            }
-
-            ExportData(listDetails);
-            m_dialogSaveLayout.clear();
-        }
-        catch (const VException &e)
-        {
-            m_dialogSaveLayout.clear();
-            qCCritical(vMainWindow, "%s\n\n%s", qUtf8Printable(tr("Export error.")), qUtf8Printable(e.ErrorMessage()));
-            QCoreApplication::exit(V_EX_DATAERR);
-            return false;
-        }
+        // The console layout export used to place the pieces with the legacy nesting engine and write a
+        // plan de coupe. That engine left with the Layout mode, and a cutting plan is nested and exported
+        // by the Export mode now. Say so rather than exit without a word.
+        qCCritical(vMainWindow, "%s",
+                   qUtf8Printable(tr("The console layout export is gone with the Layout mode. Use --details, "
+                                     "or the Export mode, to export a cutting plan.")));
+        QCoreApplication::exit(V_EX_DATAERR);
+        return false;
     }
-    else
+
+    try
     {
-        auto settings = expParams->DefaultGenerator();
-        settings->SetTextAsPaths(expParams->IsTextAsPaths());
+        m_dialogSaveLayout = QSharedPointer<DialogSaveLayout>(
+            new DialogSaveLayout(1, expParams->OptBaseName(), this));
+        m_dialogSaveLayout->SetDestinationPath(expParams->OptDestinationPath());
+        m_dialogSaveLayout->SelectFormat(static_cast<LayoutExportFormats>(expParams->OptExportType()));
+        m_dialogSaveLayout->SetBinaryDXFFormat(expParams->IsBinaryDXF());
+        m_dialogSaveLayout->SetDxfCompatibility(
+            static_cast<DXFApparelCompatibility>(expParams->DXFApparelCompatibilityType()));
+        m_dialogSaveLayout->SetShowGrainline(!expParams->IsNoGrainline());
+        m_dialogSaveLayout->SetTextAsPaths(expParams->IsTextAsPaths());
+        m_dialogSaveLayout->SetXScale(expParams->ExportXScale());
+        m_dialogSaveLayout->SetYScale(expParams->ExportYScale());
 
-        if (GenerateLayout(*settings.get()))
+        if (static_cast<LayoutExportFormats>(expParams->OptExportType()) == LayoutExportFormats::PDFTiled)
         {
-            try
-            {
-                m_dialogSaveLayout = QSharedPointer<DialogSaveLayout>(
-                    new DialogSaveLayout(static_cast<int>(m_layoutSettings->LayoutScenes().size()), Draw::Layout,
-                                         expParams->OptBaseName(), this));
-                m_dialogSaveLayout->SetDestinationPath(expParams->OptDestinationPath());
-                m_dialogSaveLayout->SelectFormat(static_cast<LayoutExportFormats>(expParams->OptExportType()));
-                m_dialogSaveLayout->SetBinaryDXFFormat(expParams->IsBinaryDXF());
-                m_dialogSaveLayout->SetDxfCompatibility(
-                    static_cast<DXFApparelCompatibility>(expParams->DXFApparelCompatibilityType()));
-                m_dialogSaveLayout->SetShowGrainline(!expParams->IsNoGrainline());
-                m_dialogSaveLayout->SetXScale(expParams->ExportXScale());
-                m_dialogSaveLayout->SetYScale(expParams->ExportYScale());
-
-                if (static_cast<LayoutExportFormats>(expParams->OptExportType()) == LayoutExportFormats::PDFTiled)
-                {
-                    m_dialogSaveLayout->SetTiledExportMode(true);
-                    m_dialogSaveLayout->SetTiledMargins(expParams->TiledPageMargins());
-                    m_dialogSaveLayout->SetTiledPageFormat(expParams->OptTiledPaperSize());
-                    m_dialogSaveLayout->SetTiledPageOrientation(expParams->OptTiledPageOrientation());
-                }
-
-                ExportData(listDetails);
-                m_dialogSaveLayout.clear();
-            }
-            catch (const VException &e)
-            {
-                m_dialogSaveLayout.clear();
-                qCCritical(vMainWindow, "%s\n\n%s", qUtf8Printable(tr("Export error.")),
-                           qUtf8Printable(e.ErrorMessage()));
-                QCoreApplication::exit(V_EX_DATAERR);
-                return false;
-            }
+            m_dialogSaveLayout->SetTiledExportMode(true);
+            m_dialogSaveLayout->SetTiledMargins(expParams->TiledPageMargins());
+            m_dialogSaveLayout->SetTiledPageFormat(expParams->OptTiledPaperSize());
+            m_dialogSaveLayout->SetTiledPageOrientation(expParams->OptTiledPageOrientation());
         }
-        else
-        {
-            QCoreApplication::exit(V_EX_DATAERR);
-            return false;
-        }
+
+        ExportData(listDetails);
+        m_dialogSaveLayout.clear();
     }
+    catch (const VException &e)
+    {
+        m_dialogSaveLayout.clear();
+        qCCritical(vMainWindow, "%s\n\n%s", qUtf8Printable(tr("Export error.")), qUtf8Printable(e.ErrorMessage()));
+        QCoreApplication::exit(V_EX_DATAERR);
+        return false;
+    }
+
+
 
     return true;
 }

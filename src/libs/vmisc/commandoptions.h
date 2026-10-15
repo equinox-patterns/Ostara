@@ -40,8 +40,6 @@ extern const QString SINGLE_OPTION_DESTINATION;
 extern const QString LONG_OPTION_MEASUREFILE;
 extern const QString SINGLE_OPTION_MEASUREFILE;
 
-extern const QString LONG_OPTION_PAGETEMPLATE;
-extern const QString SINGLE_OPTION_PAGETEMPLATE;
 
 extern const QString LONG_OPTION_EXP2FORMAT;
 extern const QString SINGLE_OPTION_EXP2FORMAT;
@@ -55,34 +53,17 @@ extern const QString LONG_OPTION_EXPORTSUCHDETAILS;
 extern const QString LONG_OPTION_EXPXSCALE;
 extern const QString LONG_OPTION_EXPYSCALE;
 
-extern const QString LONG_OPTION_CROP_LENGTH;
-extern const QString SINGLE_OPTION_CROP_LENGTH;
 
-extern const QString LONG_OPTION_CROP_WIDTH;
 
-extern const QString LONG_OPTION_UNITE;
-extern const QString SINGLE_OPTION_UNITE;
 
-extern const QString LONG_OPTION_PAGEW;
-extern const QString SINGLE_OPTION_PAGEW;
 
-extern const QString LONG_OPTION_PAGEH;
-extern const QString SINGLE_OPTION_PAGEH;
 
-extern const QString LONG_OPTION_PAGEUNITS;
-extern const QString SINGLE_OPTION_PAGEUNITS;
 
-extern const QString LONG_OPTION_SAVELENGTH;
-extern const QString SINGLE_OPTION_SAVELENGTH;
 
 extern const QString LONG_OPTION_SHIFTUNITS;
 extern const QString SINGLE_OPTION_SHIFTUNITS;
 
-extern const QString LONG_OPTION_GAPWIDTH;
-extern const QString SINGLE_OPTION_GAPWIDTH;
 
-extern const QString LONG_OPTION_GROUPPING;
-extern const QString SINGLE_OPTION_GROUPPING;
 
 extern const QString LONG_OPTION_TEST;
 extern const QString SINGLE_OPTION_TEST;
@@ -96,8 +77,6 @@ extern const QString LONG_OPTION_DIMENSION_C;
 extern const QString LONG_OPTION_USER_MATERIAL;
 extern const QString LONG_OPTION_CURVE_APPROXIMATION_SCALE;
 
-extern const QString LONG_OPTION_IGNORE_MARGINS;
-extern const QString SINGLE_OPTION_IGNORE_MARGINS;
 
 extern const QString LONG_OPTION_LEFT_MARGIN;
 extern const QString SINGLE_OPTION_LEFT_MARGIN;
@@ -111,10 +90,7 @@ extern const QString SINGLE_OPTION_TOP_MARGIN;
 extern const QString LONG_OPTION_BOTTOM_MARGIN;
 extern const QString SINGLE_OPTION_BOTTOM_MARGIN;
 
-extern const QString LONG_OPTION_NESTING_TIME;
-extern const QString SINGLE_OPTION_NESTING_TIME;
 
-extern const QString LONG_OPTION_EFFICIENCY_COEFFICIENT;
 
 extern const QString LONG_OPTION_CSVWITHHEADER;
 extern const QString LONG_OPTION_CSVCODEC;
@@ -122,16 +98,7 @@ extern const QString LONG_OPTION_CSVSEPARATOR;
 extern const QString LONG_OPTION_CSVEXPORTFM;
 
 extern const QString LONG_OPTION_TILED_PDF_PAGE_TEMPLATE;
-extern const QString LONG_OPTION_TILED_PDF_LEFT_MARGIN;
-extern const QString LONG_OPTION_TILED_PDF_RIGHT_MARGIN;
-extern const QString LONG_OPTION_TILED_PDF_TOP_MARGIN;
-extern const QString LONG_OPTION_TILED_PDF_BOTTOM_MARGIN;
 extern const QString LONG_OPTION_TILED_PDF_LANDSCAPE;
-extern const QString LONG_OPTION_MANUAL_PRIORITY;
-extern const QString LONG_OPTION_LANDSCAPE_ORIENTATION;
-extern const QString LONG_OPTION_NEST_QUANTITY;
-extern const QString LONG_OPTION_PREFER_ONE_SHEET_SOLUTION;
-extern const QString LONG_OPTION_BOUNDARY_TOGETHER_WITH_NOTCHES;
 
 auto AllKeys() -> QStringList;
 

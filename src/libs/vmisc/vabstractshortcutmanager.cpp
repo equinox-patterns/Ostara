@@ -108,7 +108,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 102, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 99, "Convert all actions.");
 
     switch (type)
     {
@@ -146,8 +146,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "drawmode"_L1;
         case VShortcutAction::DetailsMode:
             return "detailsmode"_L1;
-        case VShortcutAction::LayoutMode:
-            return "layoutmode"_L1;
         case VShortcutAction::GradedMode:
             return "gradedmode"_L1;
         case VShortcutAction::NewPatternPiece:
@@ -240,8 +238,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolcurveintersectaxis"_L1;
         case VShortcutAction::ToolArcIntersectAxis:
             return "toolarcintersectaxis"_L1;
-        case VShortcutAction::LayoutSettings:
-            return "layoutsettings"_L1;
         case VShortcutAction::ToolPointOfIntersectionArcs:
             return "toolpointofintersectionarcs"_L1;
         case VShortcutAction::ToolPointOfIntersectionCircles:
@@ -276,8 +272,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolmidpoint"_L1;
         case VShortcutAction::ExportDrawAs:
             return "exportdrawas"_L1;
-        case VShortcutAction::ExportLayoutAs:
-            return "exportlayoutas"_L1;
         case VShortcutAction::ExportDetailsAs:
             return "exportdetailsas"_L1;
         case VShortcutAction::ToolEllipticalArc:
@@ -328,7 +322,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 102, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 99, "Translate all actions.");
 
     switch (type)
     {
@@ -366,8 +360,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Draw mode", "shortcut for action");
         case VShortcutAction::DetailsMode:
             return tr("Details mode", "shortcut for action");
-        case VShortcutAction::LayoutMode:
-            return tr("Layout mode", "shortcut for action");
         case VShortcutAction::GradedMode:
             return tr("Graded mode", "shortcut for action");
         case VShortcutAction::NewPatternPiece:
@@ -460,8 +452,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Point of intersection curve and axis'", "shortcut for action");
         case VShortcutAction::ToolArcIntersectAxis:
             return tr("Tool 'Point of intersection arc and axis'", "shortcut for action");
-        case VShortcutAction::LayoutSettings:
-            return tr("Layout settings", "shortcut for action");
         case VShortcutAction::ToolPointOfIntersectionArcs:
             return tr("Tool 'Point of intersection arcs'", "shortcut for action");
         case VShortcutAction::ToolPointOfIntersectionCircles:
@@ -496,8 +486,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Midpoint between two points'", "shortcut for action");
         case VShortcutAction::ExportDrawAs:
             return tr("Export draw as", "shortcut for action");
-        case VShortcutAction::ExportLayoutAs:
-            return tr("Export layout as", "shortcut for action");
         case VShortcutAction::ExportDetailsAs:
             return tr("Export details as", "shortcut for action");
         case VShortcutAction::ToolEllipticalArc:

@@ -57,78 +57,40 @@ public:
     void SetLabelLanguage(const QString &value);
 
     // Layout settings
-    auto GetLayoutPaperHeight() const -> qreal;
-    void SetLayoutPaperHeight(qreal value);
 
-    auto GetLayoutPaperWidth() const -> qreal;
-    void SetLayoutPaperWidth(qreal value);
 
-    auto GetLayoutWidth() const -> qreal;
     static auto GetDefLayoutWidth() -> qreal;
-    void SetLayoutWidth(qreal value);
 
-    auto GetNestingTime() const -> int;
     static auto GetDefNestingTime() -> int { return 1; }
-    void SetNestingTime(int value);
 
-    auto GetEfficiencyCoefficient() const -> qreal;
     static auto GetDefEfficiencyCoefficient() -> qreal { return 0.0; }
-    void SetEfficiencyCoefficient(qreal value);
 
-    auto GetFields(const QMarginsF &def = QMarginsF()) const -> QMarginsF;
-    void SetFields(const QMarginsF &value);
 
-    auto GetLayoutGroup() const -> Cases;
     static auto GetDefLayoutGroup() -> Cases;
-    void SetLayoutGroup(const Cases &value);
 
-    auto GetLayoutManualPriority() const -> bool;
     static auto GetDefLayoutManualPriority() -> bool;
-    void SetLayoutManualPriority(bool value);
 
-    auto GetLayoutNestQuantity() const -> bool;
     static auto GetDefLayoutNestQuantity() -> bool;
-    void SetLayoutNestQuantity(bool value);
 
-    auto GetLayoutAutoCropLength() const -> bool;
     static auto GetDefLayoutAutoCropLength() -> bool;
-    void SetLayoutAutoCropLength(bool value);
 
-    auto GetLayoutAutoCropWidth() const -> bool;
     static auto GetDefLayoutAutoCropWidth() -> bool;
-    void SetLayoutAutoCropWidth(bool value);
 
-    auto GetLayoutSaveLength() const -> bool;
     static auto GetDefLayoutSaveLength() -> bool;
-    void SetLayoutSaveLength(bool value);
 
-    auto GetLayoutPreferOneSheetSolution() const -> bool;
     static auto GetDefLayoutPreferOneSheetSolution() -> bool;
-    void SetLayoutPreferOneSheetSolution(bool value);
 
-    auto GetLayoutBoundaryTogetherWithNotches() const -> bool;
     static auto GetDefLayoutBoundaryTogetherWithNotches() -> bool;
-    void SetLayoutBoundaryTogetherWithNotches(bool value);
 
-    auto GetLayoutUnitePages() const -> bool;
     static auto GetDefLayoutUnitePages() -> bool;
-    void SetLayoutUnitePages(bool value);
 
-    auto GetIgnoreAllFields() const -> bool;
     static auto GetDefIgnoreAllFields() -> bool;
-    void SetIgnoreAllFields(bool value);
 
-    auto GetStripOptimization() const -> bool;
     static auto GetDefStripOptimization() -> bool;
-    void SetStripOptimization(bool value);
 
-    auto GetMultiplier() const -> quint8;
     static auto GetDefMultiplier() -> quint8;
-    void SetMultiplier(quint8 value);
 
-    auto GetTextAsPaths() const -> bool;
     static auto GetDefTextAsPaths() -> bool;
-    void SetTextAsPaths(bool value);
 
     auto GetKnownMaterials() const -> QStringList;
     void SetKnownMaterials(const QStringList &list);
@@ -171,8 +133,6 @@ public:
     auto GetAutoRefreshPatternMessage() const -> bool;
     void SetAutoRefreshPatternMessage(bool value);
 
-    auto GetLayoutExportFormat() const -> qint8;
-    void SetLayoutExportFormat(qint8 format);
 
     auto GetDetailExportFormat() const -> qint8;
     void SetDetailExportFormat(qint8 format);
@@ -180,8 +140,11 @@ public:
     auto GetDxfCompatibility() const -> qint8;
     void SetDxfCompatibility(qint8 type);
 
+    /// @brief IsShowMainPath tells whether the pieces are exported with their main path visible.
     auto IsShowMainPath() const -> bool;
     void SetShowMainPath(bool value);
+
+
 
     auto GetHistorySearchHistory() const -> QStringList;
     void SetHistorySearchHistory(const QStringList &history);
@@ -246,8 +209,6 @@ public:
     auto GetBackgroundImageDefOpacity() const -> int;
     void SetBackgroundImageDefOpacity(int value);
 
-    auto GetShowGrainline() const -> bool;
-    void SetShowGrainline(bool value);
 
     auto GetPointerMode() const -> VToolPointerMode;
     void SetPointerMode(VToolPointerMode mode);

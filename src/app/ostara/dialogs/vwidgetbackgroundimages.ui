@@ -191,8 +191,7 @@
                     <string notr="true"/>
                    </property>
                    <property name="icon">
-                    <iconset theme="object-rotate-right">
-                     <normaloff>../../puzzle</normaloff>../../puzzle</iconset>
+                    <iconset theme="object-rotate-right"/>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -240,8 +239,7 @@
                     <string notr="true"/>
                    </property>
                    <property name="icon">
-                    <iconset theme="object-rotate-left">
-                     <normaloff>../../puzzle</normaloff>../../puzzle</iconset>
+                    <iconset theme="object-rotate-left"/>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>

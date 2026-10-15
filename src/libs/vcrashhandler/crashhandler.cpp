@@ -100,13 +100,9 @@ auto AppCrashVersion() -> QString
 {
     auto const version = QStringLiteral("%1_%2_%3").arg(MAJOR_VERSION).arg(MINOR_VERSION).arg(DEBUG_VERSION);
     auto const qtVersion = QStringLiteral("Qt_%1_%2").arg(QT_VERSION_MAJOR).arg(QT_VERSION_MINOR);
-    QString multibundle; // NOLINT(misc-const-correctness)
 
 #if defined(Q_OS_MACOS)
     auto const platform = QStringLiteral("macos");
-#if defined(MULTI_BUNDLE)
-    multibundle = QStringLiteral("-multibundle");
-#endif
 #elif defined(Q_OS_WIN)
     auto const platform = QStringLiteral("windows");
 #elif defined(Q_OS_LINUX)
@@ -121,7 +117,7 @@ auto AppCrashVersion() -> QString
         revision.prepend('g');
     }
 
-    return QStringLiteral("%1-%2-%3-%4%5").arg(version, revision, qtVersion, platform, multibundle);
+    return QStringLiteral("%1-%2-%3-%4").arg(version, revision, qtVersion, platform);
 }
 #endif // CRASH_REPORTING
 

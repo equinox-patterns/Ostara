@@ -100,7 +100,6 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "fileassoc1"; Description: "{cm:CreateFileAssocVal}"; GroupDescription: "{cm:FileAssoc}"
 Name: "fileassoc2"; Description: "{cm:CreateFileAssocVit}"; GroupDescription: "{cm:FileAssoc}"
 Name: "fileassoc3"; Description: "{cm:CreateFileAssocVst}"; GroupDescription: "{cm:FileAssoc}"
-Name: "fileassoc4"; Description: "{cm:CreateFileAssocVlt}"; GroupDescription: "{cm:FileAssoc}"
 Name: "fileassoc5"; Description: "{cm:CreateFileAssocVkm}"; GroupDescription: "{cm:FileAssoc}"
 Name: "deletesettings"; Description: "{cm:RemoveAnyExistingSettings}"; GroupDescription: "{cm:ManageSettings}"; Flags: unchecked
 
@@ -172,7 +171,6 @@ Name: "lang_files\ukrainian"; Description: "Ukrainian"; Types: full full_ukraini
 ; Signing
 Source: "{#buildDirectory}\valentina.exe"; DestDir: "{app}"; Flags: ignoreversion sign
 Source: "{#buildDirectory}\tape.exe"; DestDir: "{app}"; Flags: ignoreversion sign
-Source: "{#buildDirectory}\puzzle.exe"; DestDir: "{app}"; Flags: ignoreversion sign
 Source: "{#buildDirectory}\VPropertyExplorerLib.dll"; DestDir: "{app}"; Flags: ignoreversion sign
 Source: "{#buildDirectory}\QMUParserLib.dll"; DestDir: "{app}"; Flags: ignoreversion sign
 
@@ -253,16 +251,13 @@ Type: filesandordirs; Name: "{app}\translations"
 Type: files; Name: "{autodocs}\Valentina\common.ini"; Tasks: deletesettings
 Type: files; Name: "{autodocs}\Valentina\Valentina.ini"; Tasks: deletesettings
 Type: files; Name: "{autodocs}\Valentina\Tape.ini"; Tasks: deletesettings
-Type: files; Name: "{autodocs}\Valentina\Puzzle.ini"; Tasks: deletesettings
 
 [Icons]
 Name: "{group}\{#MyAppName}{#MyAppStatus}"; Filename: "{app}\valentina.exe"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}{#MyAppStatus}}"; Filename: "{uninstallexe}"
 Name: "{group}\Tape"; Filename: "{app}\tape.exe"
-Name: "{group}\Puzzle"; Filename: "{app}\puzzle.exe"
 Name: "{autodesktop}\{#MyAppName}{#MyAppStatus}"; Filename: "{app}\valentina.exe"; Tasks: desktopicon
 Name: "{autodesktop}\Tape"; Filename: "{app}\tape.exe"; Tasks: desktopicon
-Name: "{autodesktop}\Puzzle"; Filename: "{app}\puzzle.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\valentina.exe"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
@@ -271,25 +266,21 @@ Filename: "{app}\valentina.exe"; Description: "{cm:LaunchProgram,{#StringChange(
 Root: HKA; Subkey: "Software\Classes\.val\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}{#MyAppStatus}.val"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassoc1
 Root: HKA; Subkey: "Software\Classes\.vit\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}{#MyAppStatus}.vit"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassoc2
 Root: HKA; Subkey: "Software\Classes\.vst\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}{#MyAppStatus}.vst"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassoc3
-Root: HKA; Subkey: "Software\Classes\.vlt\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}{#MyAppStatus}.vlt"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassoc4
 Root: HKA; Subkey: "Software\Classes\.vkm\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppName}{#MyAppStatus}.vkm"; ValueData: ""; Flags: uninsdeletevalue; Tasks: fileassoc5
 
 Root: HKA; Subkey: "Software\Classes\.val"; ValueType: string; ValueName: ""; ValueData: "Valentina pattern file"; Flags: uninsdeletekey; Tasks: fileassoc1
 Root: HKA; Subkey: "Software\Classes\.vit"; ValueType: string; ValueName: ""; ValueData: "Valentina individual measurement file"; Flags: uninsdeletekey; Tasks: fileassoc2
 Root: HKA; Subkey: "Software\Classes\.vst"; ValueType: string; ValueName: ""; ValueData: "Valentina multisize measurement file"; Flags: uninsdeletekey; Tasks: fileassoc3
-Root: HKA; Subkey: "Software\Classes\.vlt"; ValueType: string; ValueName: ""; ValueData: "Valentina layout file"; Flags: uninsdeletekey; Tasks: fileassoc4
 Root: HKA; Subkey: "Software\Classes\.vkm"; ValueType: string; ValueName: ""; ValueData: "Valentina known measurement file"; Flags: uninsdeletekey; Tasks: fileassoc5
 
 Root: HKA; Subkey: "Software\Classes\.val\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\pattern.ico,0"; Tasks: fileassoc1
 Root: HKA; Subkey: "Software\Classes\.vit\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\i-measurements.ico,0"; Tasks: fileassoc2
 Root: HKA; Subkey: "Software\Classes\.vst\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\s-measurements.ico,0"; Tasks: fileassoc3
-Root: HKA; Subkey: "Software\Classes\.vlt\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\layout.ico,0"; Tasks: fileassoc4
 Root: HKA; Subkey: "Software\Classes\.vkm\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\k-measurements.ico,0"; Tasks: fileassoc5
 
 Root: HKA; Subkey: "Software\Classes\.val\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\valentina.exe"" ""%1"""; Tasks: fileassoc1
 Root: HKA; Subkey: "Software\Classes\.vit\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tape.exe"" ""%1"""; Tasks: fileassoc2
 Root: HKA; Subkey: "Software\Classes\.vst\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tape.exe"" ""%1"""; Tasks: fileassoc3
-Root: HKA; Subkey: "Software\Classes\.vlt\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\puzzle.exe"" ""%1"""; Tasks: fileassoc4
 Root: HKA; Subkey: "Software\Classes\.vkm\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tape.exe"" ""%1"""; Tasks: fileassoc5
 
 Root: HKA; Subkey: "Software\Classes\.val\shell\{cm:EditWith} {#MyAppName}{#MyAppStatus}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: uninsdeletekey; Tasks: fileassoc1
@@ -304,10 +295,6 @@ Root: HKA; Subkey: "Software\Classes\.vst\shell\{cm:EditWith} Tape{#MyAppStatus}
 Root: HKA; Subkey: "Software\Classes\.vst\shell\{cm:EditWith} Tape{#MyAppStatus}"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\tape.exe,0"; Flags: uninsdeletekey; Tasks: fileassoc3
 Root: HKA; Subkey: "Software\Classes\.vst\shell\{cm:EditWith} Tape{#MyAppStatus}\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tape.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: fileassoc3
 
-Root: HKA; Subkey: "Software\Classes\.vlt\shell\{cm:EditWith} Puzzle{#MyAppStatus}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: uninsdeletekey; Tasks: fileassoc4
-Root: HKA; Subkey: "Software\Classes\.vlt\shell\{cm:EditWith} Puzzle{#MyAppStatus}"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\puzzle.exe,0"; Flags: uninsdeletekey; Tasks: fileassoc4
-Root: HKA; Subkey: "Software\Classes\.vlt\shell\{cm:EditWith} Puzzle{#MyAppStatus}\command"; ValueType: string; ValueName: ""; ValueData: """{app}\puzzle.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: fileassoc4
-
 Root: HKA; Subkey: "Software\Classes\.vkm\shell\{cm:EditWith} Tape{#MyAppStatus}"; ValueType: none; ValueName: ""; ValueData: ""; Flags: uninsdeletekey; Tasks: fileassoc5
 Root: HKA; Subkey: "Software\Classes\.vkm\shell\{cm:EditWith} Tape{#MyAppStatus}"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\tape.exe,0"; Flags: uninsdeletekey; Tasks: fileassoc5
 Root: HKA; Subkey: "Software\Classes\.vkm\shell\{cm:EditWith} Tape{#MyAppStatus}\command"; ValueType: string; ValueName: ""; ValueData: """{app}\tape.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: fileassoc5
@@ -315,7 +302,6 @@ Root: HKA; Subkey: "Software\Classes\.vkm\shell\{cm:EditWith} Tape{#MyAppStatus}
 Root: HKA; Subkey: "Software\Classes\Applications\valentina.exe\SupportedTypes"; ValueType: string; ValueName: ".val"; ValueData: ""; Tasks: fileassoc1
 Root: HKA; Subkey: "Software\Classes\Applications\tape.exe\SupportedTypes"; ValueType: string; ValueName: ".vit"; ValueData: ""; Tasks: fileassoc2
 Root: HKA; Subkey: "Software\Classes\Applications\tape.exe\SupportedTypes"; ValueType: string; ValueName: ".vst"; ValueData: ""; Tasks: fileassoc3
-Root: HKA; Subkey: "Software\Classes\Applications\puzzle.exe\SupportedTypes"; ValueType: string; ValueName: ".vlt"; ValueData: ""; Tasks: fileassoc4
 Root: HKA; Subkey: "Software\Classes\Applications\tape.exe\SupportedTypes"; ValueType: string; ValueName: ".vkm"; ValueData: ""; Tasks: fileassoc5
 
 [CustomMessages]
@@ -358,11 +344,6 @@ CreateFileAssocVst = *.vst (Multisize measurement file)
 english.CreateFileAssocVst = *.vst (Multisize measurement file)
 ukrainian.CreateFileAssocVst = *.vst (Мультирозмірний файл мірок)
 french.CreateFileAssocVst = *.vst (Fichier de mesures multi-tailles)
-
-CreateFileAssocVlt = *.vlt (Layout file)
-english.CreateFileAssocVlt = *.vlt (Layout file)
-ukrainian.CreateFileAssocVlt = *.vlt (Файл роскладки)
-french.CreateFileAssocVlt = *.vlt (Fichier de plan de coupe manuel)
 
 CreateFileAssocVkm = *.vkm (Known measurements file)
 english.CreateFileAssocVkm = *.vkm (Known measurements file)
@@ -447,8 +428,6 @@ const
   ProgramExeName1 = 'valentina.exe';
   ProgramName2 = 'Tape';
   ProgramExeName2 = 'tape.exe';
-  ProgramName3 = 'Puzzle';
-  ProgramExeName3 = 'puzzle.exe';
 
 /////////////////////////////////////////////////////////////////////
 // Convert version strings into float and compare
@@ -624,10 +603,6 @@ var
     If Result Then
     begin
       Result := PromptUntilProgramClosedOrInstallationCanceled( ProgramExeName2, ProgramName2 + ProgramRunningOnInstallMessage)
-      If Result Then
-      begin
-        Result := PromptUntilProgramClosedOrInstallationCanceled( ProgramExeName3, ProgramName3 + ProgramRunningOnInstallMessage)
-      end;
     end;
 
     if Not Result then
@@ -664,10 +639,6 @@ var
     If Result Then
     begin
       Result := PromptUntilProgramClosedOrInstallationCanceled( ProgramExeName2, ProgramName2 + ProgramRunningOnUninstallMessage);
-      If Result Then
-      begin
-        Result := PromptUntilProgramClosedOrInstallationCanceled( ProgramExeName3, ProgramName3 + ProgramRunningOnUninstallMessage);
-      end;
     end;
 
     if not Result then
@@ -682,16 +653,14 @@ var
   CommonIniPath: string;
   ValentinaIniPath: string;
   TapeIniPath: string;
-  PuzzleIniPath: string;
 begin
   if CurUninstallStep = usPostUninstall then
   begin
     CommonIniPath := ExpandConstant('{autodocs}\Valentina\common.ini');
     ValentinaIniPath := ExpandConstant('{autodocs}\Valentina\Valentina.ini');
     TapeIniPath := ExpandConstant('{autodocs}\Valentina\Tape.ini');
-    PuzzleIniPath := ExpandConstant('{autodocs}\Valentina\Puzzle.ini');
 
-    if FileExists(CommonIniPath) or FileExists(ValentinaIniPath) or FileExists(TapeIniPath) or FileExists(PuzzleIniPath) then
+    if FileExists(CommonIniPath) or FileExists(ValentinaIniPath) or FileExists(TapeIniPath) then
     begin
       if MsgBox(ExpandConstant('{cm:QuestionRemoveAnyExistingSettings}'), mbConfirmation, MB_YESNO or MB_DEFBUTTON2) = IDYES then
       begin
@@ -706,10 +675,6 @@ begin
         if FileExists(TapeIniPath) then
           if not DeleteFile(TapeIniPath) then
             MsgBox('Failed to delete Tape.ini', mbError, MB_OK);
-
-        if FileExists(PuzzleIniPath) then
-          if not DeleteFile(PuzzleIniPath) then
-            MsgBox('Failed to delete Puzzle.ini', mbError, MB_OK);
       end;
     end;
   end;

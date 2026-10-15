@@ -65,7 +65,6 @@ void MainWindow::InitActionShortcuts()
     m_shortcutActions.insert(VShortcutAction::DrawMode, ui->actionDraw);
     m_shortcutActions.insert(VShortcutAction::DetailsMode, ui->actionDetails);
     m_shortcutActions.insert(VShortcutAction::GradedMode, ui->actionGraded);
-    m_shortcutActions.insert(VShortcutAction::LayoutMode, ui->actionLayout);
     m_shortcutActions.insert(VShortcutAction::NewPatternPiece, ui->actionNewDraw);
     m_shortcutActions.insert(VShortcutAction::NextPatternPiece, ui->actionNextPatternPiece);
     m_shortcutActions.insert(VShortcutAction::PreviusPatternPiece, ui->actionPreviousPatternPiece);
@@ -106,14 +105,11 @@ void MainWindow::SetEnableWidgets(bool enable)
 {
     const bool drawStage = (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Calculation);
     const bool detailsStage = (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Modeling);
-    const bool layoutStage = (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Layout);
     const bool designStage = (drawStage || detailsStage);
-    const bool piecesStage = (detailsStage || layoutStage);
 
     const bool enableOnDrawStage = (enable && drawStage);
     const bool enableOnDesignStage = (enable && designStage);
     const bool enableOnDetailsStage = (enable && detailsStage);
-    const bool enableOnPiecesStage = (enable && piecesStage);
 
     m_comboBoxDraws->setEnabled(enableOnDrawStage);
     ui->actionOptionDraw->setEnabled(enableOnDrawStage);
@@ -129,7 +125,6 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionDraw->setEnabled(enable);
     ui->actionDetails->setEnabled(enable);
     ui->actionGraded->setEnabled(enable);
-    ui->actionLayout->setEnabled(enable);
     ui->actionExport->setEnabled(enable);
     ui->actionTable->setEnabled(enableOnDesignStage);
     ui->actionExportFinalMeasurementsToCSV->setEnabled(enable);
@@ -149,8 +144,6 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionDecreaseLabelFont->setEnabled(enable);
     ui->actionOriginalLabelFont->setEnabled(enable);
     ui->actionShowAllLabels->setEnabled(enable);
-    ui->actionCreateManualLayout->setEnabled(enableOnPiecesStage);
-    ui->actionUpdateManualLayout->setEnabled(enableOnPiecesStage);
 
     ui->actionLoadWatermark->setEnabled(enable);
     ui->actionRemoveWatermark->setEnabled(enable && not doc->GetWatermarkPath().isEmpty());
@@ -188,7 +181,6 @@ void MainWindow::SetEnableTool(bool enable)
 {
     bool drawTools = false;
     bool modelingTools = false;
-    bool layoutTools = false;
     bool exportTools = false;
 
     QT_WARNING_PUSH
@@ -202,9 +194,6 @@ void MainWindow::SetEnableTool(bool enable)
             break;
         case Draw::Modeling:
             modelingTools = enable;
-            break;
-        case Draw::Layout:
-            layoutTools = enable;
             break;
         case Draw::Graded:
             // Non-creative mode: no tool is enabled in Graded.
@@ -290,22 +279,6 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionDetailExportAs->setEnabled(modelingTools);
     ui->actionDuplicateDetailTool->setEnabled(modelingTools);
 
-    // Layout tools
-    ui->actionLayoutSettings->setEnabled(layoutTools);
-    ui->actionLayoutExportAs->setEnabled(layoutTools && not m_layoutSettings->LayoutScenes().isEmpty());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SetLayoutModeActions()
-{
-    const bool enabled = not m_layoutSettings->LayoutScenes().isEmpty();
-
-    ui->actionLayoutExportAs->setEnabled(enabled);
-    ui->actionExportAs->setEnabled(enabled);
-    ui->actionPrintPreview->setEnabled(enabled);
-    ui->actionPrintPreviewTiled->setEnabled(enabled);
-    ui->actionPrint->setEnabled(enabled);
-    ui->actionPrintTiled->setEnabled(enabled);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -399,7 +372,6 @@ void MainWindow::CreateActions()
     });
 
     connect(ui->actionGraded, &QAction::triggered, this, &MainWindow::ActionGraded);
-    connect(ui->actionLayout, &QAction::triggered, this, &MainWindow::ActionLayout);
     connect(ui->actionExport, &QAction::triggered, this, &MainWindow::ActionExport);
     connect(ui->actionExportRecipe, &QAction::triggered, this, &MainWindow::ActionExportRecipe_triggered);
     connect(ui->actionNewDraw, &QAction::triggered, this, &MainWindow::ActionNewDraw_triggered);
@@ -515,11 +487,6 @@ void MainWindow::CreateActions()
     connect(ui->actionCreateMeasurements, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
     connect(ui->actionManageMeasurements, &QAction::triggered, this, &MainWindow::ActionManageMeasurements);
     connect(ui->actionPieceLibrary, &QAction::triggered, this, &MainWindow::ActionPieceLibrary);
-    connect(ui->actionExportAs, &QAction::triggered, this, &MainWindow::ExportLayoutAs);
-    connect(ui->actionPrintPreview, &QAction::triggered, this, &MainWindow::PrintPreviewOrigin);
-    connect(ui->actionPrintPreviewTiled, &QAction::triggered, this, &MainWindow::PrintPreviewTiled);
-    connect(ui->actionPrint, &QAction::triggered, this, &MainWindow::PrintOrigin);
-    connect(ui->actionPrintTiled, &QAction::triggered, this, &MainWindow::PrintTiled);
 
     // Actions for recent files loaded by a main window application.
     for (int i = 0; i < MaxRecentFiles; ++i)
@@ -650,7 +617,6 @@ void MainWindow::InitToolButtons()
                    &MainWindow::ToolCurveIntersectAxis);
     InitToolButton(VShortcutAction::ToolArcIntersectAxis, ui->actionArcIntersectAxisTool,
                    &MainWindow::ToolArcIntersectAxis);
-    InitToolButton(VShortcutAction::LayoutSettings, ui->actionLayoutSettings, &MainWindow::ToolLayoutSettings);
     InitToolButton(VShortcutAction::ToolPointOfIntersectionArcs, ui->actionPointOfIntersectionArcsTool,
                    &MainWindow::ToolPointOfIntersectionArcs);
     InitToolButton(VShortcutAction::ToolPointOfIntersectionCircles, ui->actionPointOfIntersectionCirclesTool,
@@ -673,7 +639,6 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolMove, ui->actionMoveTool, &MainWindow::ToolMove);
     InitToolButton(VShortcutAction::ToolMidpoint, ui->actionMidpointTool, &MainWindow::ToolMidpoint);
     InitToolButton(VShortcutAction::ExportDrawAs, ui->actionExportDraw, &MainWindow::ExportDrawAs);
-    InitToolButton(VShortcutAction::ExportLayoutAs, ui->actionLayoutExportAs, &MainWindow::ExportLayoutAs);
     InitToolButton(VShortcutAction::ExportDetailsAs, ui->actionDetailExportAs, &MainWindow::ExportDetailsAs);
     InitToolButton(VShortcutAction::ToolEllipticalArc, ui->actionEllipticalArcTool, &MainWindow::ToolEllipticalArc);
     InitToolButton(VShortcutAction::ToolInsertNode, ui->actionInsertNodeTool, &MainWindow::ToolInsertNode);

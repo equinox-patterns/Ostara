@@ -44,8 +44,7 @@ class DialogSaveLayout : public VAbstractLayoutDialog
     Q_OBJECT // NOLINT
 
 public:
-    explicit DialogSaveLayout(int count, Draw mode = Draw::Layout, const QString &fileName = QString(),
-                              QWidget *parent = nullptr);
+    explicit DialogSaveLayout(int count, const QString &fileName = QString(), QWidget *parent = nullptr);
     ~DialogSaveLayout() override;
 
     auto Path() const -> QString;
@@ -73,7 +72,6 @@ public:
 
     void SetDestinationPath(const QString &cmdDestinationPath);
 
-    auto Mode() const -> Draw;
 
     auto IsTextAsPaths() const -> bool;
     void SetTextAsPaths(bool textAsPaths);
@@ -114,7 +112,6 @@ private:
     Q_DISABLE_COPY_MOVE(DialogSaveLayout) // NOLINT
     Ui::DialogSaveLAyout *ui;
     int m_count;
-    Draw m_mode;
     bool m_tiledExportMode{false};
     bool m_scaleConnected{true};
 

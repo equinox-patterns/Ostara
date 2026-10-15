@@ -31,7 +31,6 @@
 #include <QtGlobal>
 
 #include "themeDef.h"
-#include "vmanuallayoutstyle.h"
 #include "vpatternpiecestyle.h"
 #include "vtoolstyle.h"
 
@@ -52,8 +51,6 @@ public:
     static auto PatternPieceStyle() -> VPatternPieceStyle const &;
     static void SetPatternPieceStyle(const VPatternPieceStyle &style);
 
-    static auto ManualLayoutStyle() -> VManualLayoutStyle const &;
-    static void SetManualLayoutStyle(const VManualLayoutStyle &style);
 
     static auto Color(VColorRole role) -> QColor;
 
@@ -66,7 +63,6 @@ private:
 
     VToolStyle m_toolStyle{};
     VPatternPieceStyle m_patternPieceStyle{};
-    VManualLayoutStyle m_manualLayoutStyle{};
 
     VSceneStylesheet() = default;
 };

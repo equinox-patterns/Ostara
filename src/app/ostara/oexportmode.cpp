@@ -89,7 +89,6 @@ void MainWindow::ActionExport(bool checked)
     ui->actionDraw->setChecked(false);
     ui->actionDetails->setChecked(false);
     ui->actionGraded->setChecked(false);
-    ui->actionLayout->setChecked(false);
     ui->actionExport->setChecked(true);
 
     // Switch to Export first (empty canvas, export chrome), so the entry dialog opens
@@ -107,10 +106,7 @@ void MainWindow::ActionExport(bool checked)
     }
     m_topBar->SetExportChrome(true);
 
-    if (not switchScene(Draw::Export))
-    {
-        return;
-    }
+    switchScene(Draw::Export);
 
     SetEnableWidgets(true);
     m_dockManager->applyModeDocks(Draw::Export);
@@ -148,9 +144,6 @@ void MainWindow::ActionExport(bool checked)
                 break;
             case Draw::Graded:
                 ActionGraded(true);
-                break;
-            case Draw::Layout:
-                ActionLayout(true);
                 break;
             default:
                 ActionDetails(true);

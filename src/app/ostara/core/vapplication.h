@@ -55,8 +55,6 @@ public:
 
     static void StartDetachedProcess(const QString &program, const QStringList &arguments);
 
-    static auto PuzzleFilePath() -> QString;
-
     auto getAutoSaveTimer() const -> QTimer *;
     void setAutoSaveTimer(QTimer *value);
 

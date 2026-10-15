@@ -39,7 +39,7 @@
 VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
   : VAbstractShortcutManager{parent}
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 102, "Check if all actions were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 99, "Check if all actions were used.");
 
     AddShortcut({VShortcutAction::ZoomIn, KeyBindingsToStringList(QKeySequence::ZoomIn), {}});
     AddShortcut({VShortcutAction::ZoomOut, KeyBindingsToStringList(QKeySequence::ZoomOut), {}});
@@ -75,8 +75,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
         {VShortcutAction::DrawMode, {QKeySequence(Qt::ControlModifier | Qt::Key_D).toString()}, {}});
     AddShortcut(
         {VShortcutAction::DetailsMode, {QKeySequence(Qt::ControlModifier | Qt::Key_E).toString()}, {}});
-    AddShortcut(
-        {VShortcutAction::LayoutMode, {QKeySequence(Qt::ControlModifier | Qt::Key_L).toString()}, {}});
     AddShortcut(
         {VShortcutAction::GradedMode, {QKeySequence(Qt::ControlModifier | Qt::Key_G).toString()}, {}});
     AddShortcut(
@@ -143,7 +141,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolLineIntersectAxis, {}, {}});
     AddShortcut({VShortcutAction::ToolCurveIntersectAxis, {}, {}});
     AddShortcut({VShortcutAction::ToolArcIntersectAxis, {}, {}});
-    AddShortcut({VShortcutAction::LayoutSettings, {}, {}});
     AddShortcut({VShortcutAction::ToolPointOfIntersectionArcs, {}, {}});
     AddShortcut({VShortcutAction::ToolPointOfIntersectionCircles, {}, {}});
     AddShortcut({VShortcutAction::ToolPointOfIntersectionCurves, {}, {}});
@@ -161,7 +158,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolMove, {}, {}});
     AddShortcut({VShortcutAction::ToolMidpoint, {}, {}});
     AddShortcut({VShortcutAction::ExportDrawAs, {}, {}});
-    AddShortcut({VShortcutAction::ExportLayoutAs, {}, {}});
     AddShortcut({VShortcutAction::ExportDetailsAs, {}, {}});
     AddShortcut({VShortcutAction::ToolEllipticalArc, {}, {}});
     AddShortcut({VShortcutAction::ToolInsertNode, {}, {}});

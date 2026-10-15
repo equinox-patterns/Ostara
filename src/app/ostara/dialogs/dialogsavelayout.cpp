@@ -63,11 +63,10 @@ QT_WARNING_POP
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-DialogSaveLayout::DialogSaveLayout(int count, Draw mode, const QString &fileName, QWidget *parent)
+DialogSaveLayout::DialogSaveLayout(int count, const QString &fileName, QWidget *parent)
   : VAbstractLayoutDialog(parent),
     ui(new Ui::DialogSaveLAyout),
-    m_count(count),
-    m_mode(mode)
+    m_count(count)
 {
     ui->setupUi(this);
 
@@ -430,12 +429,6 @@ void DialogSaveLayout::SetDestinationPath(const QString &cmdDestinationPath)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto DialogSaveLayout::Mode() const -> Draw
-{
-    return m_mode;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 DialogSaveLayout::~DialogSaveLayout()
 {
     delete ui;
@@ -574,7 +567,7 @@ void DialogSaveLayout::ShowExample()
         case LayoutExportFormats::DXF_AAMA:
         case LayoutExportFormats::DXF_ASTM:
             ui->checkBoxBinaryDXF->setVisible(true);
-            ui->checkBoxTogetherWithNotches->setVisible(m_mode != Draw::Layout);
+            ui->checkBoxTogetherWithNotches->setVisible(true);
             ui->labelDxfCompatibility->setVisible(true);
             ui->comboBoxDxfCompatibility->setVisible(true);
             ui->checkBoxShowMainPath->setVisible(true);
@@ -590,7 +583,7 @@ void DialogSaveLayout::ShowExample()
                 ui->checkBoxTextAsPaths->setChecked(true);
             }
             ui->checkBoxShowGrainline->setVisible(true);
-            ui->checkBoxTogetherWithNotches->setVisible(m_mode != Draw::Layout);
+            ui->checkBoxTogetherWithNotches->setVisible(true);
             break;
         case LayoutExportFormats::HPGL:
         case LayoutExportFormats::HPGL2:
@@ -612,7 +605,7 @@ void DialogSaveLayout::ShowExample()
                 ui->checkBoxTextAsPaths->setChecked(true);
             }
             ui->checkBoxShowGrainline->setVisible(true);
-            ui->checkBoxTogetherWithNotches->setVisible(m_mode != Draw::Layout);
+            ui->checkBoxTogetherWithNotches->setVisible(true);
             break;
         case LayoutExportFormats::DXF_AC1006_Flat:
         case LayoutExportFormats::DXF_AC1009_Flat:
@@ -631,7 +624,7 @@ void DialogSaveLayout::ShowExample()
                 ui->checkBoxTextAsPaths->setChecked(true);
             }
             ui->checkBoxShowGrainline->setVisible(true);
-            ui->checkBoxTogetherWithNotches->setVisible(m_mode != Draw::Layout);
+            ui->checkBoxTogetherWithNotches->setVisible(true);
             break;
         default:
             ui->labelOptionsNotAvailable->setVisible(true);
@@ -845,31 +838,16 @@ void DialogSaveLayout::ReadSettings()
 {
     VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
 
-    if (m_mode != Draw::Layout)
-    {
         try
-        {
-            SelectFormat(static_cast<LayoutExportFormats>(settings->GetDetailExportFormat()));
-        }
-        catch (VException &e)
-        {
-            qDebug() << qUtf8Printable(e.ErrorMessage());
-            SelectFirstAvailableFormat();
-        }
-    }
-    else
     {
-        try
-        {
-            SelectFormat(static_cast<LayoutExportFormats>(settings->GetLayoutExportFormat()));
-        }
-        catch (VException &e)
-        {
-            qDebug() << qUtf8Printable(e.ErrorMessage());
-            SelectFirstAvailableFormat();
-        }
-        SetShowGrainline(settings->GetShowGrainline());
+        SelectFormat(static_cast<LayoutExportFormats>(settings->GetDetailExportFormat()));
     }
+    catch (VException &e)
+    {
+        qDebug() << qUtf8Printable(e.ErrorMessage());
+        SelectFirstAvailableFormat();
+    }
+
 
     SetDxfCompatibility(static_cast<DXFApparelCompatibility>(settings->GetDxfCompatibility()));
     SetShowMainPath(settings->IsShowMainPath());
@@ -877,7 +855,7 @@ void DialogSaveLayout::ReadSettings()
 
 //---------------------------------------------------------------------------------------------------------------------
 /// @brief SelectFirstAvailableFormat selects the first file format the dialog offers, with its first type. It is the
-/// fallback when the format remembered in the settings is not offered any more (PDF, RLD...): without it the dialog
+/// fallback when the format remembered in the settings is not offered any more (PDF...): without it the dialog
 /// would open on an empty type list — which looks broken, and leaves the OK button disabled for no visible reason.
 void DialogSaveLayout::SelectFirstAvailableFormat()
 {
@@ -911,15 +889,8 @@ void DialogSaveLayout::WriteSettings() const
 
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
 
-    if (m_mode != Draw::Layout)
-    {
         settings->SetDetailExportFormat(static_cast<qint8>(Format()));
-    }
-    else
-    {
-        settings->SetLayoutExportFormat(static_cast<qint8>(Format()));
-        settings->SetShowGrainline(IsShowGrainline());
-    }
+
 
     settings->SetDxfCompatibility(static_cast<qint8>(DxfCompatibility()));
     settings->SetShowMainPath(IsShowMainPath());
@@ -946,11 +917,11 @@ void DialogSaveLayout::InitFileFormats()
     auto AddItem = [this](const QString &label, LayoutExportFileFormat format)
     { ui->comboBoxFormat->addItem(label, QVariant(static_cast<int>(format))); };
 
-    Q_STATIC_ASSERT_X(static_cast<int>(LayoutExportFileFormat::COUNT) == 10, "Update to cover all cases.");
+    Q_STATIC_ASSERT_X(static_cast<int>(LayoutExportFileFormat::COUNT) == 9, "Update to cover all cases.");
 
-    // PDF and RLD are disconnected from the dialog: no one exports them from here any more. Their pipeline is
-    // left untouched, and the console export — which uses this dialog as a plain data holder and never shows
-    // it — keeps both, so nothing that worked from the command line stops working.
+    // PDF is disconnected from the dialog: no one exports it from here any more. Its pipeline is left
+    // untouched, and the console export — which uses this dialog as a plain data holder and never shows
+    // it — keeps it, so nothing that worked from the command line stops working.
     const bool guiMode = VApplication::IsGUIMode();
 
     if (not guiMode)
@@ -963,10 +934,6 @@ void DialogSaveLayout::InitFileFormats()
     // AddItem("OBJ"_L1, LayoutExportFileFormat::OBJ); // Temporarily unavailable
     AddItem("DXF"_L1, LayoutExportFileFormat::DXF);
     // AddItem("NC"_L1, LayoutExportFileFormat::NC);// No support for now
-    if (m_mode != Draw::Layout && not guiMode)
-    {
-        AddItem("RLD"_L1, LayoutExportFileFormat::RLD);
-    }
     AddItem("PLT"_L1, LayoutExportFileFormat::PLT);
     AddItem("HPGL"_L1, LayoutExportFileFormat::HPGL);
     AddItem("TIF"_L1, LayoutExportFileFormat::TIF);
@@ -999,12 +966,6 @@ void DialogSaveLayout::InitFileFormatTypes(LayoutExportFileFormat format)
     RemoveFormatFromList(LayoutExportFormats::OBJ);
 #endif
 
-    if (m_mode != Draw::Layout)
-    {
         RemoveFormatFromList(LayoutExportFormats::PDFTiled);
-    }
-    else
-    {
-        RemoveFormatFromList(LayoutExportFormats::RLD);
-    }
+
 }

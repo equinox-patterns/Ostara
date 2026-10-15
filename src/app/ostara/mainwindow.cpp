@@ -387,8 +387,6 @@ MainWindow::MainWindow(QWidget *parent)
     setCurrentFile(QString());
     WindowsLocale();
 
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &MainWindow::ShowPaper);
-    ui->dockWidgetLayoutPages->setVisible(false);
 
 #if defined(Q_OS_MAC)
     setUnifiedTitleAndToolBarOnMac(true);
@@ -772,7 +770,6 @@ void MainWindow::ActionDraw(bool checked)
         ui->actionDraw->setChecked(true);
         ui->actionDetails->setChecked(false);
         ui->actionGraded->setChecked(false);
-        ui->actionLayout->setChecked(false);
         ui->actionExport->setChecked(false);
 
         if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
@@ -780,10 +777,7 @@ void MainWindow::ActionDraw(bool checked)
             m_topBar->SetGradedChrome(false);
         }
 
-        if (!switchScene(Draw::Calculation))
-        {
-            return;
-        }
+        switchScene(Draw::Calculation);
 
         SetEnableWidgets(true);
         m_dockManager->applyModeDocks(Draw::Calculation);
@@ -812,7 +806,6 @@ void MainWindow::ActionDetails(bool checked)
         ui->actionDraw->setChecked(false);
         ui->actionDetails->setChecked(true);
         ui->actionGraded->setChecked(false);
-        ui->actionLayout->setChecked(false);
         ui->actionExport->setChecked(false);
 
         if (not VAbstractValApplication::VApp()->getOpeningPattern() && pattern->DataPieces()->isEmpty())
@@ -835,10 +828,7 @@ void MainWindow::ActionDetails(bool checked)
             m_topBar->SetGradedChrome(false);
         }
 
-        if (!switchScene(Draw::Modeling))
-        {
-            return;
-        }
+        switchScene(Draw::Modeling);
 
         SetEnableWidgets(true);
         m_dockManager->applyModeDocks(Draw::Modeling);
@@ -855,99 +845,6 @@ void MainWindow::ActionDetails(bool checked)
         ui->actionDetails->setChecked(true);
     }
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief ActionLayout begin creation layout.
- * @param checked true - button checked.
- */
-void MainWindow::ActionLayout(bool checked)
-{
-    if (not checked)
-    {
-        ui->actionLayout->setChecked(true);
-        return;
-    }
-
-    ArrowTool(true);
-
-    ui->actionDraw->setChecked(false);
-    ui->actionDetails->setChecked(false);
-    ui->actionGraded->setChecked(false);
-    ui->actionLayout->setChecked(true);
-    ui->actionExport->setChecked(false);
-
-    QVector<DetailForLayout> details;
-    if (not VAbstractValApplication::VApp()->getOpeningPattern())
-    {
-        const QHash<quint32, VPiece> *allDetails = pattern->DataPieces();
-        if (allDetails->isEmpty())
-        {
-            QMessageBox::information(this, tr("Layout mode"),
-                                     tr("You can't use Layout mode yet. "
-                                        "Please, create at least one workpiece."),
-                                     QMessageBox::Ok, QMessageBox::Ok);
-            ActionDraw(true);
-            return;
-        }
-
-        WarningNotUniquePieceName(allDetails);
-        details = SortDetailsForLayout(allDetails, pattern);
-
-        if (details.isEmpty())
-        {
-            QMessageBox::information(this, tr("Layout mode"),
-                                     tr("You can't use Layout mode yet. Please, "
-                                        "include at least one detail in layout."),
-                                     QMessageBox::Ok, QMessageBox::Ok);
-            VAbstractValApplication::VApp()->GetDrawMode() == Draw::Calculation ? ActionDraw(true)
-                                                                                : ActionDetails(true);
-            return;
-        }
-    }
-
-    qCDebug(vMainWindow, "Show layout scene");
-    m_dockManager->saveDockStateForMode(VAbstractValApplication::VApp()->GetDrawMode());
-
-    if (VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
-    {
-        m_topBar->SetGradedChrome(false);
-        m_drawToolBar->show();
-    }
-
-    if (not switchScene(Draw::Layout, details))
-    {
-        return;
-    }
-
-    SetEnableWidgets(true);
-    m_dockManager->applyModeDocks(Draw::Layout);
-
-    ShowPaper(ui->listWidget->currentRow());
-
-    if (m_layoutSettings->LayoutScenes().isEmpty() || m_layoutSettings->IsLayoutStale())
-    {
-        ui->actionLayoutSettings->activate(QAction::Trigger);
-    }
-
-    m_statusLabel->setText(QString());
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //---------------------------------------------------------------------------------------------------------------------
 bool MainWindow::hasOpenPattern() const

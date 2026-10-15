@@ -27,7 +27,6 @@
  *************************************************************************/
 #include "tst_xsdschema.h"
 
-#include "../ifc/xml/vlayoutconverter.h"
 #include "../ifc/xml/vparsererrorhandler.h"
 #include "../ifc/xml/vpatternconverter.h"
 #include "../ifc/xml/vvitconverter.h"
@@ -144,21 +143,7 @@ void TST_XSDShema::TestPatternSchema()
     ValidateSchema(schema);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void TST_XSDShema::TestLayoutSchema_data()
-{
-    QTest::addColumn<QString>("schema");
-
-    const QMap<unsigned int, QString> schemas = HashToMap(VLayoutConverter::XSDSchemas());
-
-    auto i = schemas.constBegin();
-    while (i != schemas.constEnd())
-    {
-        QFileInfo const f(i.value());
-        QTest::newRow(qUtf8Printable(f.fileName())) << i.value();
-        ++i;
-    }
-}
+//---------------------------------------------------------------------------------------------------------------------}
 
 //---------------------------------------------------------------------------------------------------------------------
 void TST_XSDShema::TestLayoutSchema()

@@ -77,7 +77,6 @@ void MainWindow::ActionGraded(bool checked)
     ui->actionDraw->setChecked(false);
     ui->actionDetails->setChecked(false);
     ui->actionGraded->setChecked(true);
-    ui->actionLayout->setChecked(false);
 
     // Guard: Graded needs at least one piece (created in Details) and a loaded
     // measurements table. The multi-size requirement is checked by the entry
@@ -100,10 +99,7 @@ void MainWindow::ActionGraded(bool checked)
     qCDebug(vMainWindow, "Show graded scene");
     m_dockManager->saveDockStateForMode(prevMode);
 
-    if (not switchScene(Draw::Graded))
-    {
-        return;
-    }
+    switchScene(Draw::Graded);
 
     SetEnableWidgets(true);
     m_dockManager->applyModeDocks(Draw::Graded);

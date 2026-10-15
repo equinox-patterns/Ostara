@@ -29,7 +29,6 @@
 
 #include "../ifc/ifcdef.h"
 #include "def.h"
-#include "vmanuallayoutstyle.h"
 #include "vtheme.h"
 
 #include <QColor>
@@ -48,7 +47,6 @@ void VSceneStylesheet::ResetStyles()
 {
     SetToolStyle(VToolStyle());
     SetPatternPieceStyle(VPatternPieceStyle());
-    SetManualLayoutStyle(VManualLayoutStyle());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -76,17 +74,7 @@ void VSceneStylesheet::SetPatternPieceStyle(const VPatternPieceStyle &style)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VSceneStylesheet::ManualLayoutStyle() -> const VManualLayoutStyle &
-{
-    return Instance().m_manualLayoutStyle;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
-void VSceneStylesheet::SetManualLayoutStyle(const VManualLayoutStyle &style)
-{
-    Instance().m_manualLayoutStyle = style;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto VSceneStylesheet::Color(VColorRole role) -> QColor
 {

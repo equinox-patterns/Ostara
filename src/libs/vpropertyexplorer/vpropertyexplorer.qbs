@@ -99,5 +99,5 @@ VDynamicLib {
     }
 
     cpp.defines: "VPROPERTYEXPLORER_LIBRARY"
-    multibundle.targetApps: ["Valentina", "Tape", "Puzzle"]
+    multibundle.targetApps: ["Valentina"]
 }

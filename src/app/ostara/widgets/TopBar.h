@@ -44,8 +44,7 @@ class TopBar : public QWidget
 public:
     explicit TopBar(QWidget *parent = nullptr);
 
-    void SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *layout,
-                        QAction *exportMode);
+    void SetModeActions(QAction *draw, QAction *details, QAction *graded, QAction *exportMode);
     void SetPatternPieceWidgets(QLabel *pieceLabel, QComboBox *combo, QAction *newPieceAction,
                                 QAction *savePieceAction);
     void SetMeasurementWidgets(QAction *loadAction, QLabel *fileNameLabel,
@@ -94,12 +93,10 @@ private:
     QToolButton *m_btnDraw    = nullptr;
     QToolButton *m_btnDetails = nullptr;
     QToolButton *m_btnGraded  = nullptr;
-    QToolButton *m_btnLayout  = nullptr;
     QToolButton *m_btnExport  = nullptr;
     QLabel *m_sepDrawDetails    = nullptr;
     QLabel *m_sepDetailsGraded  = nullptr; // between Details and Graded
-    QLabel *m_sepGradedLayout   = nullptr; // between Graded and Layout
-    QLabel *m_sepLayoutExport   = nullptr; // between Layout and Export
+    QLabel *m_sepGradedExport   = nullptr; // between Graded and Export
 
     // --- Center: pattern piece --------------------------------------------
     QComboBox   *m_comboDraws         = nullptr;

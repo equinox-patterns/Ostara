@@ -95,7 +95,6 @@ void MainWindow::ReadSettings()
         // would stay empty until the user leaves a mode once.)
         m_dockManager->setDrawModeDockState(settings->GetModeToolbarsState(Draw::Calculation));
         m_dockManager->setDetailsModeDockState(settings->GetModeToolbarsState(Draw::Modeling));
-        m_dockManager->setLayoutModeDockState(settings->GetModeToolbarsState(Draw::Layout));
         m_dockManager->setGradedModeDockState(settings->GetModeToolbarsState(Draw::Graded));
         m_dockManager->setExportModeDockState(settings->GetModeToolbarsState(Draw::Export));
 
@@ -155,7 +154,6 @@ void MainWindow::WriteSettings()
     // the states we persist here.
     const QByteArray drawState = m_dockManager->drawModeDockState();
     const QByteArray detailsState = m_dockManager->detailsModeDockState();
-    const QByteArray layoutState = m_dockManager->layoutModeDockState();
     const QByteArray gradedState = m_dockManager->gradedModeDockState();
     const QByteArray exportState = m_dockManager->exportModeDockState();
 
@@ -171,7 +169,6 @@ void MainWindow::WriteSettings()
     // startup (when mode states are empty) restores the saved geometry.
     settings->SetModeToolbarsState(Draw::Calculation, drawState);
     settings->SetModeToolbarsState(Draw::Modeling, detailsState);
-    settings->SetModeToolbarsState(Draw::Layout, layoutState);
     settings->SetModeToolbarsState(Draw::Graded, gradedState);
     settings->SetModeToolbarsState(Draw::Export, exportState);
 
@@ -184,7 +181,6 @@ void MainWindow::WriteSettings()
     // into the next pattern opened in this session.
     m_dockManager->setDrawModeDockState(drawState);
     m_dockManager->setDetailsModeDockState(detailsState);
-    m_dockManager->setLayoutModeDockState(layoutState);
     m_dockManager->setGradedModeDockState(gradedState);
     m_dockManager->setExportModeDockState(exportState);
 
@@ -566,7 +562,6 @@ void MainWindow::Clear()
     ui->actionDraw->setEnabled(false);
     ui->actionDetails->setEnabled(false);
     ui->actionGraded->setEnabled(false);
-    ui->actionLayout->setEnabled(false);
     ui->actionExport->setEnabled(false);
     ui->actionNewDraw->setEnabled(false);
     ui->actionOptionDraw->setEnabled(false);
@@ -599,8 +594,6 @@ void MainWindow::Clear()
 #ifndef QT_NO_CURSOR
     QGuiApplication::restoreOverrideCursor();
 #endif
-    CleanLayout();
-    listDetails.clear(); // don't move to CleanLayout()
     VAbstractApplication::VApp()->getUndoStack()->clear();
     m_dockManager->toolOptions()->ClearPropertyBrowser();
     m_dockManager->toolOptions()->itemClicked(nullptr);
@@ -851,41 +844,6 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             }
             return false;
         }
-    }
-
-    if (fileName.endsWith(".vkm"_L1))
-    {
-        // Here comes undocumented Valentina's feature.
-        // Because app bundle in Mac OS X doesn't allow setup assosiation for Puzzle we must do this through Valentina
-        QStringList arguments{fileName};
-        if (isNoScaling)
-        {
-            arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
-            arguments.append("--known"_L1);
-        }
-
-        const QString puzzlePath = VApplication::PuzzleFilePath();
-        qDebug("Opening Puzzle: path = %s.", qUtf8Printable(puzzlePath));
-        VApplication::StartDetachedProcess(puzzlePath, arguments);
-        QCoreApplication::exit(V_EX_OK);
-        return false; // stop continue processing
-    }
-
-    if (fileName.endsWith(".vlt"_L1))
-    {
-        // Here comes undocumented Valentina's feature.
-        // Because app bundle in Mac OS X doesn't allow setup assosiation for Puzzle we must do this through Valentina
-        QStringList arguments{fileName};
-        if (isNoScaling)
-        {
-            arguments.append("--"_L1 + LONG_OPTION_NO_HDPI_SCALING);
-        }
-
-        const QString path = VApplication::PuzzleFilePath();
-        qDebug("Opening Puzzle: path = %s.", qUtf8Printable(path));
-        VApplication::StartDetachedProcess(path, arguments);
-        QCoreApplication::exit(V_EX_OK);
-        return false; // stop continue processing
     }
 
     qCDebug(vMainWindow, "Loking file");

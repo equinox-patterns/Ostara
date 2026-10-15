@@ -68,7 +68,7 @@ private:
     {
         QString name;
         QVector<ToolItem> tools;
-        int modeMask = 0; // bitmask of modes (kModeDraw | kModeDetail | kModeLayout)
+        int modeMask = 0; // bitmask of modes (kModeDraw | kModeDetail | kModeGraded | kModeExport)
     };
 
     void BuildLayout();

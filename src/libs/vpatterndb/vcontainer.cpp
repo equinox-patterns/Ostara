@@ -318,7 +318,6 @@ auto VContainer::ObjectsFor(Draw mode) -> QHash<quint32, QSharedPointer<VGObject
             return &d->calculationObjects;
         case Draw::Modeling:
             return d->modelingObjects.data();
-        case Draw::Layout:
         default:
             return nullptr;
     }
@@ -341,12 +340,6 @@ auto VContainer::AddGObject(VGObject *obj) -> quint32
 auto VContainer::AddGObject(const QSharedPointer<VGObject> &obj) -> quint32
 {
     SCASSERT(not obj.isNull())
-
-    if (obj->getMode() == Draw::Layout)
-    {
-        qWarning("Can't add an object with mode 'Layout'");
-        return NULL_ID;
-    }
 
     RegisterUniqueName(obj);
 

@@ -35,7 +35,6 @@ set(IFC_XML
     xml/vabstractconverter.h
     xml/vbackgroundpatternimage.h
     xml/vdomdocument.h
-    xml/vlayoutconverter.h
     xml/vparsererrorhandler.cpp
     xml/vparsererrorhandler.h
     xml/vpatternblockmapper.cpp
@@ -56,7 +55,6 @@ set(IFC_XML
     xml/vabstractconverter.cpp
     xml/vbackgroundpatternimage.cpp
     xml/vdomdocument.cpp
-    xml/vlayoutconverter.cpp
     xml/vpatternconverter.cpp
     xml/vpatternimage.cpp
     xml/vtoolrecord.cpp

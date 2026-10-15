@@ -35,11 +35,11 @@
 #include <memory>
 #include <vector>
 
-#include "../dialogs/dialoglayoutsettings.h"
+#include "dialogs/vabstractlayoutdialog.h"
+
 
 class VCommandLine;
 using VCommandLinePtr = std::shared_ptr<VCommandLine>;
-using VLayoutGeneratorPtr = std::shared_ptr<VLayoutGenerator>;
 enum class PageOrientation : bool;
 
 //@brief: class used to install export command line options and parse their values
@@ -111,8 +111,6 @@ public:
     auto OptUserMaterials() const -> QMap<int, QString>;
 
     // generator creation is moved here ... because most options are for it only, so no need to create extra getters...
-    //@brief creates VLayoutGenerator
-    auto DefaultGenerator() const -> VLayoutGeneratorPtr;
 
     //@brief gets filenames which should be loaded
     auto OptInputFileNames() const -> QStringList;
@@ -135,9 +133,7 @@ protected:
     VCommandLine();
 
     //@brief returns VAbstractLayoutDialog::PaperSizeTemplate
-    auto OptPaperSize() const -> VAbstractLayoutDialog::PaperSizeTemplate;
 
-    auto OptGroup() const -> Cases;
 
     //@brief: called in destructor of application, so instance destroyed and new maybe created (never happen scenario
     // though)
@@ -160,14 +156,8 @@ private:
     auto OptionValue(const QString &option) const -> QString;
     auto OptionValues(const QString &option) const -> QStringList;
 
-    auto OptNestingTime() const -> int;
-    auto OptEfficiencyCoefficient() const -> qreal;
 
-    void TestPageformat() const;
-    void TestGapWidth() const;
-    void TestMargins() const;
 
-    auto ParseMargins(const DialogLayoutSettings &diag) const -> QMarginsF;
 };
 
 #endif // VCMDEXPORT_H

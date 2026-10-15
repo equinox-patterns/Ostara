@@ -15,8 +15,6 @@ set(VTHEME_SOURCES
     vtoolstyle.cpp
     vpatternpiecestyle.h
     vpatternpiecestyle.cpp
-    vmanuallayoutstyle.h
-    vmanuallayoutstyle.cpp
 )
 
 add_library(VThemeLib STATIC ${VTHEME_SOURCES})

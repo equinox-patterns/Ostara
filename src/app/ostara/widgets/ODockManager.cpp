@@ -134,7 +134,6 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
 
     // ── Custom title bars ──
     installTitleBar(m_ui->dockWidgetOptions);
-    installTitleBar(m_ui->dockWidgetLayoutPages);
     installTitleBar(m_ui->dockWidgetGroups);
     installTitleBar(m_ui->dockWidgetSizeRanges);
     installTitleBar(m_ui->dockWidgetSizeStyles);
@@ -287,7 +286,7 @@ void ODockManager::syncVisibilityFromDocks()
 //---------------------------------------------------------------------------------------------------------------------
 QList<QDockWidget *> ODockManager::allDocks() const
 {
-    return {m_ui->dockWidgetOptions,       m_ui->dockWidgetLayoutPages,       m_ui->dockWidgetGroups,
+    return {m_ui->dockWidgetOptions,       m_ui->dockWidgetGroups,
             m_ui->dockWidgetMessages,      m_ui->dockWidgetBackgroundImages,  m_ui->dockWidgetDependencies,
             m_ui->dockWidgetSizeRanges,    m_ui->dockWidgetSizeStyles,        m_ui->dockWidgetOutputs,
             m_ui->dockWidgetCoverPage};
@@ -336,9 +335,6 @@ void ODockManager::saveDockStateForMode(Draw mode)
         case Draw::Modeling:
             m_detailsModeDockState = m_host->saveState(kToolbarStateVersion);
             break;
-        case Draw::Layout:
-            m_layoutModeDockState = m_host->saveState(kToolbarStateVersion);
-            break;
         case Draw::Graded:
             m_gradedModeDockState = m_host->saveState(kToolbarStateVersion);
             break;
@@ -372,13 +368,6 @@ void ODockManager::restoreDockStateForMode(Draw mode)
                 qWarning() << "ODockManager: failed to restore Details dock state";
             }
             break;
-        case Draw::Layout:
-            if (!m_layoutModeDockState.isEmpty() &&
-                !m_host->restoreState(m_layoutModeDockState, kToolbarStateVersion))
-            {
-                qWarning() << "ODockManager: failed to restore Layout dock state";
-            }
-            break;
         case Draw::Graded:
             if (!m_gradedModeDockState.isEmpty() &&
                 !m_host->restoreState(m_gradedModeDockState, kToolbarStateVersion))
@@ -408,7 +397,6 @@ void ODockManager::applyModeDocks(Draw mode)
     switch (mode)
     {
         case Draw::Calculation:
-            m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
             m_ui->dockWidgetOutputs->setVisible(false);
@@ -433,7 +421,6 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionDependencies->setEnabled(true);
             break;
         case Draw::Modeling:
-            m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetSizeRanges->setVisible(false);
             m_ui->dockWidgetSizeStyles->setVisible(false);
             m_ui->dockWidgetOutputs->setVisible(false);
@@ -456,30 +443,8 @@ void ODockManager::applyModeDocks(Draw mode)
             m_actionBackgroundImages->setDisabled(true);
             m_actionDependencies->setDisabled(true);
             break;
-        case Draw::Layout:
-            m_ui->dockWidgetLayoutPages->setVisible(true);
-            m_ui->dockWidgetOptions->setVisible(false);
-            m_ui->dockWidgetGroups->setVisible(false);
-            m_ui->dockWidgetMessages->setVisible(false);
-            m_ui->dockWidgetBackgroundImages->setVisible(false);
-            m_ui->dockWidgetDependencies->setVisible(false);
-            m_ui->dockWidgetSizeRanges->setVisible(false);
-            m_ui->dockWidgetSizeStyles->setVisible(false);
-            m_ui->dockWidgetOutputs->setVisible(false);
-            m_ui->dockWidgetCoverPage->setVisible(false);
-            m_actionOutputs->setDisabled(true);
-            m_actionCoverPage->setDisabled(true);
-            m_actionOptions->setDisabled(true);
-            m_actionGroups->setDisabled(true);
-            m_actionSizeRanges->setDisabled(true);
-            m_actionSizeStyles->setDisabled(true);
-            m_actionMessages->setDisabled(true);
-            m_actionBackgroundImages->setDisabled(true);
-            m_actionDependencies->setDisabled(true);
-            break;
         case Draw::Graded:
             // Only the Size Ranges and Size Styles docks are shown in Graded mode.
-            m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetOptions->setVisible(false);
             m_ui->dockWidgetGroups->setVisible(false);
             m_ui->dockWidgetMessages->setVisible(false);
@@ -501,7 +466,6 @@ void ODockManager::applyModeDocks(Draw mode)
             break;
         case Draw::Export:
             // Only the Outputs and Cover page docks are shown in Export mode.
-            m_ui->dockWidgetLayoutPages->setVisible(false);
             m_ui->dockWidgetOptions->setVisible(false);
             m_ui->dockWidgetGroups->setVisible(false);
             m_ui->dockWidgetMessages->setVisible(false);
@@ -545,28 +509,22 @@ void ODockManager::enforceModeDockExclusions(Draw mode)
     switch (mode)
     {
         case Draw::Calculation:
-            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
+            excluded = {m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
                         m_ui->dockWidgetOutputs, m_ui->dockWidgetCoverPage};
             break;
         case Draw::Modeling:
-            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
+            excluded = {m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
                         m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
-                        m_ui->dockWidgetOutputs, m_ui->dockWidgetCoverPage};
-            break;
-        case Draw::Layout:
-            excluded = {m_ui->dockWidgetOptions, m_ui->dockWidgetGroups, m_ui->dockWidgetMessages,
-                        m_ui->dockWidgetBackgroundImages, m_ui->dockWidgetDependencies,
-                        m_ui->dockWidgetSizeRanges, m_ui->dockWidgetSizeStyles,
                         m_ui->dockWidgetOutputs, m_ui->dockWidgetCoverPage};
             break;
         case Draw::Graded:
-            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
+            excluded = {m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
                         m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
                         m_ui->dockWidgetDependencies, m_ui->dockWidgetOutputs,
                         m_ui->dockWidgetCoverPage};
             break;
         case Draw::Export:
-            excluded = {m_ui->dockWidgetLayoutPages, m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
+            excluded = {m_ui->dockWidgetOptions, m_ui->dockWidgetGroups,
                         m_ui->dockWidgetMessages, m_ui->dockWidgetBackgroundImages,
                         m_ui->dockWidgetDependencies, m_ui->dockWidgetSizeRanges,
                         m_ui->dockWidgetSizeStyles};
@@ -610,8 +568,6 @@ void ODockManager::retranslate()
             m_ui->dockWidgetGroups->setWindowTitle(tr("Pieces"));
             m_ui->dockWidgetGroups->setToolTip(tr("Show which details will go in layout"));
             m_ui->dockWidgetOptions->setWindowTitle(tr("Options"));
-            break;
-        case Draw::Layout:
             break;
         case Draw::Export:
             m_ui->dockWidgetOutputs->setWindowTitle(tr("Outputs"));
@@ -692,11 +648,6 @@ QByteArray ODockManager::detailsModeDockState() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QByteArray ODockManager::layoutModeDockState() const
-{
-    return m_layoutModeDockState;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 QByteArray ODockManager::gradedModeDockState() const
 {
@@ -722,11 +673,6 @@ void ODockManager::setDetailsModeDockState(const QByteArray &state)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODockManager::setLayoutModeDockState(const QByteArray &state)
-{
-    m_layoutModeDockState = state;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 void ODockManager::setGradedModeDockState(const QByteArray &state)
 {

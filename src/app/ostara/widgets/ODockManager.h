@@ -136,13 +136,11 @@ public:
     QByteArray editorDockState() const;
     QByteArray drawModeDockState() const;
     QByteArray detailsModeDockState() const;
-    QByteArray layoutModeDockState() const;
     QByteArray gradedModeDockState() const;
     QByteArray exportModeDockState() const;
 
     void setDrawModeDockState(const QByteArray &state);
     void setDetailsModeDockState(const QByteArray &state);
-    void setLayoutModeDockState(const QByteArray &state);
     void setGradedModeDockState(const QByteArray &state);
     void setExportModeDockState(const QByteArray &state);
 
@@ -198,7 +196,6 @@ private:
     QByteArray m_editorDockState{};
     QByteArray m_drawModeDockState{};
     QByteArray m_detailsModeDockState{};
-    QByteArray m_layoutModeDockState{};
     QByteArray m_gradedModeDockState{};
     QByteArray m_exportModeDockState{};
 

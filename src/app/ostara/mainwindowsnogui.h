@@ -36,9 +36,7 @@
 #include <QPointer>
 #include <QPrinter>
 
-#include "../vlayout/vlayoutgenerator.h"
 #include "../vlayout/vlayoutpiece.h"
-#include "../vlayout/vprintlayout.h"
 #include "../vwidgets/vabstractmainwindow.h"
 #include "dialogs/dialogsavelayout.h"
 #include "xml/vpattern.h"
@@ -79,22 +77,13 @@ public:
     explicit MainWindowsNoGUI(QWidget *parent = nullptr);
     ~MainWindowsNoGUI() override;
 
-public slots:
-    void ToolLayoutSettings(bool checked);
-    void PrintPreviewOrigin();
-    void PrintPreviewTiled();
-    void PrintOrigin();
-    void PrintTiled();
 protected slots:
     void ExportFMeasurementsToCSV();
 
 protected:
-    QVector<VLayoutPiece> listDetails{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief currentScene pointer to current scene. */
     QGraphicsScene *currentScene{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    QGraphicsScene *tempSceneLayout{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QFileSystemWatcher *m_watcher; // NOLINT(misc-non-private-member-variables-in-classes)
 
@@ -104,16 +93,11 @@ protected:
     /** @brief doc dom document container */
     VPattern *doc{nullptr}; // NOLINT(misc-non-private-member-variables-in-classes)
 
-    QList<QGraphicsItem *> gcontours{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
-    QVector<QVector<VLayoutPiece>> detailsOnLayout{}; // NOLINT(misc-non-private-member-variables-in-classes)
-
     QAction *undoAction{nullptr};                       // NOLINT(misc-non-private-member-variables-in-classes)
     QAction *redoAction{nullptr};                       // NOLINT(misc-non-private-member-variables-in-classes)
 
     bool isNoScaling{false};                                // NOLINT(misc-non-private-member-variables-in-classes)
     bool isNeedAutosave{false};                             // NOLINT(misc-non-private-member-variables-in-classes)
-    VPrintLayout *m_layoutSettings{new VPrintLayout(this)}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief mouseCoordinate pointer to label who show mouse coordinate. */
     QPointer<QLabel> m_mouseCoordinate{nullptr};      // NOLINT(misc-non-private-member-variables-in-classes)
@@ -135,12 +119,7 @@ protected:
 
     void ExportData(const QVector<VLayoutPiece> &listDetails);
 
-    void InitTempLayoutScene();
-    virtual void CleanLayout() = 0;
-    virtual void PrepareSceneList(PreviewQuatilty quality) = 0;
     auto RecentFileList() const -> QStringList override;
-    auto ScenePreview(int i, QSize iconSize, PreviewQuatilty quality) const -> QIcon;
-    auto GenerateLayout(VLayoutGenerator &lGenerator) -> bool;
     auto FileName() const -> QString;
 
     auto ExportFMeasurementsToCSVData(const QString &fileName, bool withHeader, int mib, const QChar &separator) const
@@ -171,7 +150,6 @@ private:
 
     void ExportDetailsAsFlatLayout(const QVector<VLayoutPiece> &listDetails);
 
-    void ShowLayoutError(const LayoutErrors &state);
 
     auto LoadMeasurements(const QString &patternPath, const QString &currentPath, const QString &oldPath)
         -> QSharedPointer<VMeasurements>;
