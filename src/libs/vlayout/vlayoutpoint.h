@@ -113,8 +113,6 @@ inline auto CastTo(const QVector<Derived> &points, QVector<Base> &casted) -> voi
   VLayoutPoint stream functions
  *****************************************************************************/
 #ifndef QT_NO_DATASTREAM
-auto operator<<(QDataStream &, const VLayoutPoint &) -> QDataStream &;
-auto operator>>(QDataStream &, VLayoutPoint &) -> QDataStream &;
 #endif
 
 //---------------------------------------------------------------------------------------------------------------------

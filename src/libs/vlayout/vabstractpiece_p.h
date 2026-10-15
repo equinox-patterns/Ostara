@@ -35,7 +35,6 @@
 #include <QUuid>
 
 #include "../vmisc/defglobal.h"
-#include "vexception.h"
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Weffc++")
@@ -50,8 +49,6 @@ public:
     VAbstractPieceData(const VAbstractPieceData &piece) = default;
     ~VAbstractPieceData() = default;
 
-    friend auto operator<<(QDataStream &dataStream, const VAbstractPieceData &piece) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VAbstractPieceData &piece) -> QDataStream &;
 
     QString m_name{tr("Detail")}; // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_forceFlipping{false};                             // NOLINT (misc-non-private-member-variables-in-classes)
@@ -79,159 +76,9 @@ public:
 
 private:
     Q_DISABLE_ASSIGN_MOVE(VAbstractPieceData) // NOLINT
-
-    static constexpr quint32 streamHeader = 0x05CDD73A; // CRC-32Q string "VAbstractPieceData"
-    static constexpr quint16 classVersion = 13;
 };
 
 QT_WARNING_POP
 
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-inline auto operator<<(QDataStream &dataStream, const VAbstractPieceData &piece) -> QDataStream &
-{
-    dataStream << VAbstractPieceData::streamHeader << VAbstractPieceData::classVersion;
-
-    // Added in classVersion = 1
-    dataStream << piece.m_name;
-    dataStream << piece.m_forceFlipping;
-    dataStream << piece.m_seamAllowance;
-    dataStream << piece.m_hideMainPath;
-    dataStream << piece.m_width;
-    dataStream << piece.m_mx;
-    dataStream << piece.m_my;
-
-    // Added in classVersion = 2
-    dataStream << piece.m_priority;
-
-    // Added in classVersion = 3
-    dataStream << piece.m_uuid;
-
-    // Added in classVersion = 4
-    dataStream << piece.m_onDrawing;
-
-    // Added in classVersion = 6
-    dataStream << piece.m_showFullPiece;
-    dataStream << piece.m_foldLineSvgFontSize;
-    dataStream << piece.m_foldLineType;
-    dataStream << piece.m_foldLineLabelFontItalic;
-    dataStream << piece.m_foldLineLabelFontBold;
-    dataStream << piece.m_foldLineLabel;
-    dataStream << piece.m_foldLineLabelAlignment;
-
-    // Added in classVersion = 7
-    dataStream << piece.m_showMirrorLine;
-
-    // Added in classVersion = 8
-    dataStream << piece.m_symmetricalCopy;
-
-    // Added in classVersion = 12
-    dataStream << piece.m_secondPassmarkOnSeamLine;
-
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto operator>>(QDataStream &dataStream, VAbstractPieceData &piece) -> QDataStream &
-{
-    quint32 actualStreamHeader = 0;
-    dataStream >> actualStreamHeader;
-
-    if (actualStreamHeader != VAbstractPieceData::streamHeader)
-    {
-        QString const message =
-            QCoreApplication::tr("VAbstractPieceData prefix mismatch error: actualStreamHeader = 0x%1 "
-                                 "and streamHeader = 0x%2")
-                .arg(actualStreamHeader, 8, 0x10, QLatin1Char('0'))
-                .arg(VAbstractPieceData::streamHeader, 8, 0x10, QLatin1Char('0'));
-        throw VException(message);
-    }
-
-    quint16 actualClassVersion = 0;
-    dataStream >> actualClassVersion;
-
-    if (actualClassVersion > VAbstractPieceData::classVersion)
-    {
-        QString const message =
-            QCoreApplication::tr("VAbstractPieceData compatibility error: actualClassVersion = %1 and "
-                                 "classVersion = %2")
-                .arg(actualClassVersion)
-                .arg(VAbstractPieceData::classVersion);
-        throw VException(message);
-    }
-
-    dataStream >> piece.m_name;
-    if (actualClassVersion < 13)
-    { // forbidFlipping was dropped in classVersion 13; skip the field of legacy blobs
-        bool forbidFlippingDummy = false;
-        dataStream >> forbidFlippingDummy;
-    }
-    dataStream >> piece.m_forceFlipping;
-    dataStream >> piece.m_seamAllowance;
-    if (actualClassVersion < 11)
-    { // seamAllowanceBuiltIn was dropped in classVersion 11; skip the field of legacy blobs
-        bool seamAllowanceBuiltInDummy = false;
-        dataStream >> seamAllowanceBuiltInDummy;
-    }
-    dataStream >> piece.m_hideMainPath;
-    dataStream >> piece.m_width;
-    dataStream >> piece.m_mx;
-    dataStream >> piece.m_my;
-
-    if (actualClassVersion >= 2)
-    {
-        dataStream >> piece.m_priority;
-    }
-
-    if (actualClassVersion >= 3)
-    {
-        dataStream >> piece.m_uuid;
-    }
-
-    if (actualClassVersion >= 4)
-    {
-        dataStream >> piece.m_onDrawing;
-    }
-
-    if (actualClassVersion >= 5 && actualClassVersion < 13)
-    { // followGrainline was dropped in classVersion 13; skip the field of legacy blobs
-        bool followGrainlineDummy = false;
-        dataStream >> followGrainlineDummy;
-    }
-
-    if (actualClassVersion >= 6)
-    {
-        dataStream >> piece.m_showFullPiece;
-        dataStream >> piece.m_foldLineSvgFontSize;
-        dataStream >> piece.m_foldLineType;
-        dataStream >> piece.m_foldLineLabelFontItalic;
-        dataStream >> piece.m_foldLineLabelFontBold;
-        dataStream >> piece.m_foldLineLabel;
-        dataStream >> piece.m_foldLineLabelAlignment;
-    }
-
-    if (actualClassVersion >= 7)
-    {
-        dataStream >> piece.m_showMirrorLine;
-    }
-
-    if (actualClassVersion >= 8)
-    {
-        dataStream >> piece.m_symmetricalCopy;
-    }
-
-    if (actualClassVersion >= 12)
-    {
-        dataStream >> piece.m_secondPassmarkOnSeamLine;
-    }
-
-    if (actualClassVersion == 9)
-    { // trueZeroWidth was dropped in classVersion 10; skip the trailing bool of legacy v9 blobs
-        bool trueZeroWidthDummy = false;
-        dataStream >> trueZeroWidthDummy;
-    }
-
-    return dataStream;
-}
 
 #endif // VABSTRACTPIECE_P_H

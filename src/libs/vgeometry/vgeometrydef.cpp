@@ -28,7 +28,6 @@
 
 #include "vgeometrydef.h"
 
-#include "vexception.h"
 
 #include <QCoreApplication>
 #include <QJsonArray>
@@ -42,9 +41,6 @@
 #endif
 
 using namespace Qt::Literals::StringLiterals;
-
-const quint32 VLayoutPassmark::streamHeader = 0x943E2759; // CRC-32Q string "VLayoutPassmark"
-const quint16 VLayoutPassmark::classVersion = 4;
 
 namespace
 {
@@ -86,75 +82,6 @@ auto GetEpsilon(const QPointF &t, QPointF p1, QPointF p2, qreal accuracy) -> dou
     return qAbs(PerpDotProduct(p1, p2, line.p2()));
 }
 } // namespace
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VLayoutPassmark &data) -> QDataStream &
-{
-    dataStream << VLayoutPassmark::streamHeader << VLayoutPassmark::classVersion;
-
-    dataStream << data.lines << data.type << data.baseLine << data.isBuiltIn;
-
-    // Added in classVersion = 2
-    dataStream << data.isClockwiseOpening;
-
-    // Added in classVersion = 3
-    dataStream << data.label;
-
-    // Added in classVersion = 4
-    dataStream << data.notMirrored;
-
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VLayoutPassmark &data) -> QDataStream &
-{
-    quint32 actualStreamHeader = 0;
-    dataStream >> actualStreamHeader;
-
-    if (actualStreamHeader != VLayoutPassmark::streamHeader)
-    {
-        QString const message =
-            QCoreApplication::tr("VLayoutPassmark prefix mismatch error: actualStreamHeader = 0x%1 and "
-                                 "streamHeader = 0x%2")
-                .arg(actualStreamHeader, 8, 0x10, '0'_L1)
-                .arg(VLayoutPassmark::streamHeader, 8, 0x10, '0'_L1);
-        throw VException(message);
-    }
-
-    quint16 actualClassVersion = 0;
-    dataStream >> actualClassVersion;
-
-    if (actualClassVersion > VLayoutPassmark::classVersion)
-    {
-        QString const message = QCoreApplication::tr("VLayoutPassmark compatibility error: actualClassVersion = %1 and "
-                                                     "classVersion = %2")
-                                    .arg(actualClassVersion)
-                                    .arg(VLayoutPassmark::classVersion);
-        throw VException(message);
-    }
-
-    dataStream >> data.lines >> data.type >> data.baseLine >> data.isBuiltIn;
-
-    if (actualClassVersion >= 2)
-    {
-        dataStream >> data.isClockwiseOpening;
-    }
-
-    if (actualClassVersion >= 3)
-    {
-        dataStream >> data.label;
-    }
-
-    if (actualClassVersion >= 4)
-    {
-        dataStream >> data.notMirrored;
-    }
-
-    return dataStream;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto SingleParallelPoint(const QPointF &p1, const QPointF &p2, qreal angle, qreal width) -> QPointF
 {

@@ -307,51 +307,6 @@ void InitFoldLine(VLayoutPiece &det, const VPiece &piece, const VContainer *patt
     det.SetFoldLineCenterPosition(fLine.CenterPosition());
 }
 } // namespace
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VLayoutPoint &p) -> QDataStream &
-{
-    dataStream << p.ToQPointF();
-    dataStream << p.TurnPoint();
-    dataStream << p.CurvePoint();
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VLayoutPoint &p) -> QDataStream &
-{
-    QPointF tmp;
-    bool turnPointFlag = false;
-    bool curvePointFlag = false;
-    dataStream >> tmp;
-    dataStream >> turnPointFlag;
-    dataStream >> curvePointFlag;
-
-    p = VLayoutPoint(tmp);
-    p.SetTurnPoint(turnPointFlag);
-    p.SetCurvePoint(curvePointFlag);
-
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VLayoutPiece &piece) -> QDataStream &
-{
-    const VAbstractPiece &abstractPiece = piece;
-    dataStream << abstractPiece;
-    dataStream << *piece.d;
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VLayoutPiece &piece) -> QDataStream &
-{
-    dataStream >> static_cast<VAbstractPiece &>(piece);
-    dataStream >> *piece.d;
-    return dataStream;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Wnoexcept")

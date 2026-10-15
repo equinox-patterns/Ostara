@@ -409,18 +409,3 @@ auto VPieceGrainline::IsShapeValid() const -> bool
     GrainlineShape const shape = Shape();
     return std::all_of(shape.cbegin(), shape.cend(), [](const auto &subShape) { return not subShape.isEmpty(); });
 }
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VPieceGrainline &grainline) -> QDataStream &
-{
-    dataStream << *grainline.d;
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VPieceGrainline &grainline) -> QDataStream &
-{
-    dataStream >> *grainline.d;
-    return dataStream;
-}

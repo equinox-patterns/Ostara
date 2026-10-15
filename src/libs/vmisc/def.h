@@ -936,18 +936,12 @@ constexpr static auto VFuzzyComparePossibleNulls(double p1, double p2) -> bool
  */
 struct CustomSARecord
 {
-    friend auto operator<<(QDataStream &out, const CustomSARecord &record) -> QDataStream &;
-    friend auto operator>>(QDataStream &in, CustomSARecord &record) -> QDataStream &;
 
     quint32 startPoint{0};
     quint32 path{0};
     quint32 endPoint{0};
     bool reverse{false};
     PiecePathIncludeType includeType{PiecePathIncludeType::AsCustomSA};
-
-private:
-    static const quint32 streamHeader;
-    static const quint16 classVersion;
 };
 
 Q_DECLARE_METATYPE(CustomSARecord)

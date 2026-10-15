@@ -36,7 +36,6 @@
 
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vlayoutplacelabel.h"
-#include "vexception.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vwidgets/vpiecegrainline.h"
 #include "vlayoutpiecepath.h"
@@ -53,8 +52,6 @@ public:
     VLayoutPieceData(const VLayoutPieceData &detail) = default;
     ~VLayoutPieceData() = default;
 
-    friend auto operator<<(QDataStream &dataStream, const VLayoutPieceData &piece) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VLayoutPieceData &piece) -> QDataStream &;
 
     /** @brief contour list of contour points. */
     QVector<VLayoutPoint> m_contour{}; // NOLINT(misc-non-private-member-variables-in-classes)
@@ -120,169 +117,7 @@ public:
 
 private:
     Q_DISABLE_ASSIGN_MOVE(VLayoutPieceData) // NOLINT
-
-    static constexpr quint32 streamHeader{0x80D7D009}; // CRC-32Q string "VLayoutPieceData"
-    static constexpr quint16 classVersion{7};
 };
 
 QT_WARNING_POP
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-inline auto operator<<(QDataStream &dataStream, const VLayoutPieceData &piece) -> QDataStream &
-{
-    dataStream << VLayoutPieceData::streamHeader << VLayoutPieceData::classVersion;
-
-    dataStream << piece.m_contour;
-    dataStream << piece.m_seamAllowance;
-    dataStream << piece.m_layoutAllowance;
-    dataStream << piece.m_passmarks;
-    dataStream << piece.m_internalPaths;
-    dataStream << piece.m_matrix;
-    dataStream << piece.m_layoutWidth;
-    dataStream << piece.m_verticallyFlipped;
-    dataStream << piece.m_placeLabels;
-    dataStream << piece.m_square;
-    dataStream << piece.m_quantity;
-    dataStream << piece.m_id;
-    dataStream << piece.m_gradationId;
-    dataStream << piece.m_xScale;
-    dataStream << piece.m_yScale;
-    dataStream << piece.m_grainline;
-    dataStream << piece.m_horizontallyFlipped;
-    dataStream << piece.m_seamMirrorLine;
-    dataStream << piece.m_seamAllowanceMirrorLine;
-    dataStream << piece.m_foldLineHeight;
-    dataStream << piece.m_foldLineWidth;
-    dataStream << piece.m_foldLineCenter;
-    dataStream << piece.m_foldLineOutlineFont;
-    dataStream << piece.m_foldLineSvgFontFamily;
-
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto operator>>(QDataStream &dataStream, VLayoutPieceData &piece) -> QDataStream &
-{
-    quint32 actualStreamHeader = 0;
-    dataStream >> actualStreamHeader;
-
-    if (actualStreamHeader != VLayoutPieceData::streamHeader)
-    {
-        QString const message = QCoreApplication::tr("VLayoutPieceData prefix mismatch error: actualStreamHeader = 0x%1 and "
-                                               "streamHeader = 0x%2")
-                              .arg(actualStreamHeader, 8, 0x10, QLatin1Char('0'))
-                              .arg(VLayoutPieceData::streamHeader, 8, 0x10, QLatin1Char('0'));
-        throw VException(message);
-    }
-
-    quint16 actualClassVersion = 0;
-    dataStream >> actualClassVersion;
-
-    if (actualClassVersion > VLayoutPieceData::classVersion)
-    {
-        QString const message = QCoreApplication::tr("VLayoutPieceData compatibility error: actualClassVersion = %1 and "
-                                               "classVersion = %2")
-                              .arg(actualClassVersion)
-                              .arg(VLayoutPieceData::classVersion);
-        throw VException(message);
-    }
-
-    if (actualClassVersion < 4)
-    {
-        auto ReadPoints = [&dataStream]()
-        {
-            QVector<QPointF> points;
-            dataStream >> points;
-            QVector<VLayoutPoint> casted;
-            CastTo(points, casted);
-            return casted;
-        };
-
-        piece.m_contour = ReadPoints();
-        piece.m_seamAllowance = ReadPoints();
-    }
-    else
-    {
-        dataStream >> piece.m_contour;
-        dataStream >> piece.m_seamAllowance;
-    }
-
-    dataStream >> piece.m_layoutAllowance;
-    dataStream >> piece.m_passmarks;
-    dataStream >> piece.m_internalPaths;
-    dataStream >> piece.m_matrix;
-    dataStream >> piece.m_layoutWidth;
-    dataStream >> piece.m_verticallyFlipped;
-
-    QVector<QPointF> shape;
-    GrainlineArrowDirection arrowType = GrainlineArrowDirection::oneWayUp;
-    bool grainlineEnabled = false;
-
-    if (actualClassVersion < 5)
-    {
-        dataStream >> shape;
-
-        dataStream >> arrowType;
-
-        qreal grainlineAngle;
-        dataStream >> grainlineAngle;
-
-        dataStream >> grainlineEnabled;
-    }
-
-    dataStream >> piece.m_placeLabels;
-    dataStream >> piece.m_square;
-
-    if (actualClassVersion >= 2)
-    {
-        dataStream >> piece.m_quantity;
-        dataStream >> piece.m_id;
-    }
-
-    if (actualClassVersion >= 3)
-    {
-        dataStream >> piece.m_gradationId;
-        dataStream >> piece.m_xScale;
-        dataStream >> piece.m_yScale;
-    }
-
-    if (actualClassVersion >= 5)
-    {
-        dataStream >> piece.m_grainline;
-    }
-    else
-    {
-        if (shape.size() >= 2)
-        {
-            piece.m_grainline = VPieceGrainline(QLineF(shape.constFirst(), shape.constLast()), arrowType);
-            piece.m_grainline.SetEnabled(false);
-        }
-        else
-        {
-            piece.m_grainline = VPieceGrainline();
-            piece.m_grainline.SetArrowType(arrowType);
-            piece.m_grainline.SetEnabled(grainlineEnabled);
-        }
-    }
-
-    if (actualClassVersion >= 6)
-    {
-        dataStream >> piece.m_horizontallyFlipped;
-    }
-
-    if (actualClassVersion >= 7)
-    {
-        dataStream >> piece.m_seamMirrorLine;
-        dataStream >> piece.m_seamAllowanceMirrorLine;
-        dataStream >> piece.m_foldLineHeight;
-        dataStream >> piece.m_foldLineWidth;
-        dataStream >> piece.m_foldLineCenter;
-        dataStream >> piece.m_foldLineOutlineFont;
-        dataStream >> piece.m_foldLineSvgFontFamily;
-    }
-
-    return dataStream;
-}
-
 #endif // VLAYOUTDETAIL_P_H

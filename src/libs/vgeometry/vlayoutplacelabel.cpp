@@ -27,7 +27,6 @@
  *************************************************************************/
 #include "vlayoutplacelabel.h"
 
-#include "vexception.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -43,71 +42,4 @@ VLayoutPlaceLabel::VLayoutPlaceLabel(const VPlaceLabelItem &item)
     m_box(item.Box()),
     m_notMirrored(item.IsNotMirrored())
 {
-}
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VLayoutPlaceLabel &data) -> QDataStream &
-{
-    dataStream << VLayoutPlaceLabel::streamHeader << VLayoutPlaceLabel::classVersion;
-
-    // Added in classVersion = 1
-    dataStream << data.m_center;
-    dataStream << data.m_type;
-    dataStream << data.m_rotationMatrix;
-    dataStream << data.m_box;
-
-    // Added in classVersion = 3
-    dataStream << data.m_notMirrored;
-
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VLayoutPlaceLabel &data) -> QDataStream &
-{
-    quint32 actualStreamHeader = 0;
-    dataStream >> actualStreamHeader;
-
-    if (actualStreamHeader != VLayoutPlaceLabel::streamHeader)
-    {
-        QString const message =
-            QCoreApplication::tr("VLayoutPlaceLabel prefix mismatch error: actualStreamHeader = 0x%1 and "
-                                 "streamHeader = 0x%2")
-                .arg(actualStreamHeader, 8, 0x10, '0'_L1)
-                .arg(VLayoutPlaceLabel::streamHeader, 8, 0x10, '0'_L1);
-        throw VException(message);
-    }
-
-    quint16 actualClassVersion = 0;
-    dataStream >> actualClassVersion;
-
-    if (actualClassVersion > VLayoutPlaceLabel::classVersion)
-    {
-        QString const message =
-            QCoreApplication::tr("VLayoutPlaceLabel compatibility error: actualClassVersion = %1 and "
-                                 "classVersion = %2")
-                .arg(actualClassVersion)
-                .arg(VLayoutPlaceLabel::classVersion);
-        throw VException(message);
-    }
-
-    dataStream >> data.m_center;
-    dataStream >> data.m_type;
-
-    if (actualClassVersion == 1)
-    {
-        QVector<QPolygonF> shape;
-        dataStream >> shape; // no longer in use
-    }
-
-    dataStream >> data.m_rotationMatrix;
-    dataStream >> data.m_box;
-
-    if (actualClassVersion >= 3)
-    {
-        dataStream >> data.m_notMirrored;
-    }
-
-    return dataStream;
 }

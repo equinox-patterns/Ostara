@@ -31,22 +31,6 @@
 #include "vlayoutpiecepath_p.h"
 
 #include <QPainterPath>
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VLayoutPiecePath &path) -> QDataStream &
-{
-    dataStream << *path.d;
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VLayoutPiecePath &path) -> QDataStream &
-{
-    dataStream >> *path.d;
-    return dataStream;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 VLayoutPiecePath::VLayoutPiecePath()
   : d(new VLayoutPiecePathData)

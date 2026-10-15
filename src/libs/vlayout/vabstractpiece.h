@@ -178,8 +178,6 @@ public:
     static auto GrainlineMainLine(const VGrainlineData &geom, const VContainer *pattern, const QRectF &boundingRect)
         -> QLineF;
 
-    friend auto operator<<(QDataStream &dataStream, const VAbstractPiece &piece) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VAbstractPiece &piece) -> QDataStream &;
 
     static auto PlaceLabelShape(const VLayoutPlaceLabel &label) -> PlaceLabelImg;
     static auto LabelShapePath(const VLayoutPlaceLabel &label) -> QPainterPath;

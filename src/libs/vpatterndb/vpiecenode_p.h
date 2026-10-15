@@ -30,11 +30,9 @@
 #define VPIECENODE_P_H
 
 #include <QCoreApplication>
-#include <QDataStream>
 #include <QSharedData>
 
 #include "../ifc/ifcdef.h"
-#include "vexception.h"
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_GCC("-Weffc++")
@@ -48,8 +46,6 @@ public:
     VPieceNodeData(const VPieceNodeData &node) = default;
     ~VPieceNodeData() = default;
 
-    friend auto operator<<(QDataStream &out, const VPieceNodeData &p) -> QDataStream &;
-    friend auto operator>>(QDataStream &in, VPieceNodeData &p) -> QDataStream &;
 
     /** @brief id object id. */
     quint32 m_id{NULL_ID}; // NOLINT(misc-non-private-member-variables-in-classes)
@@ -103,8 +99,6 @@ public:
 private:
     Q_DISABLE_ASSIGN_MOVE(VPieceNodeData) // NOLINT
 
-    static constexpr quint32 streamHeader = 0x2198CBC8; // CRC-32Q string "VPieceNodeData"
-    static constexpr quint16 classVersion = 4;
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -118,72 +112,6 @@ inline VPieceNodeData::VPieceNodeData(quint32 id, Tool typeTool, bool reverse)
         m_reverse = false;
     }
 }
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-inline auto operator<<(QDataStream &out, const VPieceNodeData &p) -> QDataStream &
-{
-    out << VPieceNodeData::streamHeader << VPieceNodeData::classVersion;
-
-    out << p.m_id << p.m_typeTool << p.m_reverse << p.m_excluded << p.m_isPassmark << p.m_formulaWidthBefore
-        << p.m_formulaWidthAfter << p.m_formulaPassmarkLength << p.m_angleType << p.m_passmarkLineType
-        << p.m_passmarkAngleType << p.m_isShowSecondPassmark << p.m_checkUniqueness << p.m_manualPassmarkLength
-        << p.m_turnPoint << p.m_formulaPassmarkWidth << p.m_formulaPassmarkAngle << p.m_manualPassmarkWidth
-        << p.m_manualPassmarkAngle << p.m_isPassmarkClockwiseOpening << p.m_formulaPassmarkVisibility;
-
-    return out;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto operator>>(QDataStream &in, VPieceNodeData &p) -> QDataStream &
-{
-    quint32 actualStreamHeader = 0;
-    in >> actualStreamHeader;
-
-    if (actualStreamHeader != VPieceNodeData::streamHeader)
-    {
-        QString const message = QCoreApplication::tr("VPieceNodeData prefix mismatch error: actualStreamHeader = 0x%1 "
-                                                     "and streamHeader = 0x%2")
-                                    .arg(actualStreamHeader, 8, 0x10, QChar('0'))
-                                    .arg(VPieceNodeData::streamHeader, 8, 0x10, QChar('0'));
-        throw VException(message);
-    }
-
-    quint16 actualClassVersion = 0;
-    in >> actualClassVersion;
-
-    if (actualClassVersion > VPieceNodeData::classVersion)
-    {
-        QString const message = QCoreApplication::tr("VPieceNodeData compatibility error: actualClassVersion = %1 and "
-                                                     "classVersion = %2")
-                                    .arg(actualClassVersion)
-                                    .arg(VPieceNodeData::classVersion);
-        throw VException(message);
-    }
-
-    in >> p.m_id >> p.m_typeTool >> p.m_reverse >> p.m_excluded >> p.m_isPassmark >> p.m_formulaWidthBefore >>
-        p.m_formulaWidthAfter >> p.m_formulaPassmarkLength >> p.m_angleType >> p.m_passmarkLineType >>
-        p.m_passmarkAngleType >> p.m_isShowSecondPassmark >> p.m_checkUniqueness >> p.m_manualPassmarkLength;
-
-    if (actualClassVersion >= 2)
-    {
-        in >> p.m_turnPoint;
-    }
-
-    if (actualClassVersion >= 3)
-    {
-        in >> p.m_formulaPassmarkWidth >> p.m_formulaPassmarkAngle >> p.m_manualPassmarkWidth >>
-            p.m_manualPassmarkAngle >> p.m_isPassmarkClockwiseOpening;
-    }
-
-    if (actualClassVersion >= 4)
-    {
-        in >> p.m_formulaPassmarkVisibility;
-    }
-
-    return in;
-}
-
 QT_WARNING_POP
 
 #endif // VPIECENODE_P_H

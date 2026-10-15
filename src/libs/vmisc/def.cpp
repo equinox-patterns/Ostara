@@ -57,7 +57,6 @@
 #include <QUrl>
 #include <QtDebug>
 
-#include "vexception.h"
 #include "compatibility.h"
 #include "literals.h"
 #include "vabstractapplication.h"
@@ -683,68 +682,6 @@ void InitPieceLabelLanguages(QComboBox *combobox)
     {
         combobox->setCurrentIndex(index);
     }
-}
-
-const quint32 CustomSARecord::streamHeader = 0xEBFF7586; // CRC-32Q string "CustomSARecord"
-const quint16 CustomSARecord::classVersion = 1;
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &out, const CustomSARecord &record) -> QDataStream &
-{
-    out << CustomSARecord::streamHeader << CustomSARecord::classVersion;
-
-    // Added in classVersion = 1
-    out << record.startPoint;
-    out << record.path;
-    out << record.endPoint;
-    out << record.reverse;
-    out << record.includeType;
-
-    // Added in classVersion = 2
-
-    return out;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &in, CustomSARecord &record) -> QDataStream &
-{
-    quint32 actualStreamHeader = 0;
-    in >> actualStreamHeader;
-
-    if (actualStreamHeader != CustomSARecord::streamHeader)
-    {
-        QString const message = QCoreApplication::tr("CustomSARecord prefix mismatch error: actualStreamHeader = 0x%1 "
-                                                     "and streamHeader = 0x%2")
-                                    .arg(actualStreamHeader, 8, 0x10, '0'_L1)
-                                    .arg(CustomSARecord::streamHeader, 8, 0x10, '0'_L1);
-        throw VException(message);
-    }
-
-    quint16 actualClassVersion = 0;
-    in >> actualClassVersion;
-
-    if (actualClassVersion > CustomSARecord::classVersion)
-    {
-        QString const message = QCoreApplication::tr("CustomSARecord compatibility error: actualClassVersion = %1 and "
-                                                     "classVersion = %2")
-                                    .arg(actualClassVersion)
-                                    .arg(CustomSARecord::classVersion);
-        throw VException(message);
-    }
-
-    in >> record.startPoint;
-    in >> record.path;
-    in >> record.endPoint;
-    in >> record.reverse;
-    in >> record.includeType;
-
-    //    if (actualClassVersion >= 2)
-    //    {
-
-    //    }
-
-    return in;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

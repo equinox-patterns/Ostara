@@ -243,8 +243,6 @@ public:
 
     auto BiggestEdge() const -> qreal;
 
-    friend auto operator<<(QDataStream &dataStream, const VLayoutPiece &piece) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VLayoutPiece &piece) -> QDataStream &;
 
     auto MapPlaceLabelShape(PlaceLabelImg shape) const -> PlaceLabelImg;
 

@@ -39,8 +39,6 @@ public:
     VLayoutPlaceLabel() = default;
     explicit VLayoutPlaceLabel(const VPlaceLabelItem &item);
 
-    friend auto operator<<(QDataStream &dataStream, const VLayoutPlaceLabel &data) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VLayoutPlaceLabel &data) -> QDataStream &;
 
     auto Center() const -> QPointF;
     void SetCenter(QPointF newCenter);
@@ -58,8 +56,6 @@ public:
     void SetNotMirrored(bool newNotMirrored);
 
 private:
-    static constexpr quint32 streamHeader = 0xB282E284; // CRC-32Q string "VLayoutPlaceLabel"
-    static constexpr quint16 classVersion = 3;
 
     QPointF m_center{};
     PlaceLabelType m_type{PlaceLabelType::Button};

@@ -1312,22 +1312,6 @@ auto HandleParallel(QVector<VRawSAPoint> &points,
     return points;
 }
 } // namespace
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &dataStream, const VAbstractPiece &piece) -> QDataStream &
-{
-    dataStream << *piece.d;
-    return dataStream;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &dataStream, VAbstractPiece &piece) -> QDataStream &
-{
-    dataStream >> *piece.d;
-    return dataStream;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 VAbstractPiece::VAbstractPiece()
   : d(new VAbstractPieceData)

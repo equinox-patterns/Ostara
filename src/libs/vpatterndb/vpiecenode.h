@@ -52,8 +52,6 @@ public:
     VPieceNode(VPieceNode &&node) noexcept;
     auto operator=(VPieceNode &&node) noexcept -> VPieceNode &;
 
-    friend auto operator<<(QDataStream &out, const VPieceNode &p) -> QDataStream &;
-    friend auto operator>>(QDataStream &in, VPieceNode &p) -> QDataStream &;
 
     auto GetId() const -> quint32;
     void SetId(quint32 id);

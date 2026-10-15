@@ -74,8 +74,6 @@ public:
     auto IsNotMirrored() const -> bool;
     void SetNotMirrored(bool value);
 
-    friend auto operator<<(QDataStream &dataStream, const VLayoutPiecePath &path) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VLayoutPiecePath &path) -> QDataStream &;
 
 private:
     QSharedDataPointer<VLayoutPiecePathData> d;

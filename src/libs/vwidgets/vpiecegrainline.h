@@ -88,8 +88,6 @@ public:
 
     auto IsShapeValid() const -> bool;
 
-    friend auto operator<<(QDataStream &dataStream, const VPieceGrainline &grainline) -> QDataStream &;
-    friend auto operator>>(QDataStream &dataStream, VPieceGrainline &grainline) -> QDataStream &;
 
 private:
     QSharedDataPointer<VPieceGrainlinePrivate> d;

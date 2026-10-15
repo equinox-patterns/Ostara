@@ -32,7 +32,6 @@
 #include "vformula.h"
 #include "vpiecenode_p.h"
 
-#include <QDataStream>
 #include <QtNumeric>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -76,22 +75,6 @@ auto VPieceNode::operator=(VPieceNode &&node) noexcept -> VPieceNode &
 
 //---------------------------------------------------------------------------------------------------------------------
 VPieceNode::~VPieceNode() = default;
-
-// Friend functions
-//---------------------------------------------------------------------------------------------------------------------
-auto operator<<(QDataStream &out, const VPieceNode &p) -> QDataStream &
-{
-    out << *p.d;
-    return out;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto operator>>(QDataStream &in, VPieceNode &p) -> QDataStream &
-{
-    in >> *p.d;
-    return in;
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto VPieceNode::GetId() const -> quint32
 {
