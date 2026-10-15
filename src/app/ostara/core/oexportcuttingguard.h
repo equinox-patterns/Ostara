@@ -46,6 +46,10 @@ class VContainer;
  * for all of them, and the group's fold line lives on the single member designated to draw it —
  * so the group is read before a piece is called faulty.
  *
+ * And a cutting plan is made of fabric: a piece whose **cut** is empty — the fabric quantity of the
+ * Cut section of its cartouche — is not cut at all, and simply takes no part in the plan: it is not
+ * a piece in fault, it is a piece that is not there. See @ref CutQuantity.
+ *
  * This file holds no widget and no scene on purpose: it is a business rule, and a rule that can
  * be wrong has to be readable on its own.
  */
@@ -69,8 +73,22 @@ struct FaultyPiece
  *
  * A piece the user left out of the layout is not cut. A group of fewer than two surviving members
  * is not a group at all, and its members are read as ordinary pieces.
+ *
+ * A piece with no cut is not cut either — see @ref CutQuantity. It is left out HERE, which is what
+ * keeps it out of the direction guard as well: a piece the plan will not lay out has no direction
+ * to be blamed for.
  */
 auto PiecesToCut(const QMap<quint32, quint32> &memberChoices, const VContainer *data) -> QVector<quint32>;
+
+/**
+ * @brief How many times a cutting plan cuts this piece: its own **fabric** cut quantity, or the
+ * group's when the piece leaves its own empty.
+ *
+ * **0 means there is no cut.** A piece nobody ever filled in reads 0, and 0 is not "cut once" — it
+ * is "not cut at all", the value an untouched piece has carried since the cartouche section exists.
+ * Interfacing and lining are not read: a cutting plan is a plan of fabric.
+ */
+auto CutQuantity(quint32 pieceId, const VContainer *data) -> int;
 
 /// @brief True when the piece has a known direction: its own enabled grainline, its own fold line, or its group's grainline.
 auto HasKnownDirection(quint32 pieceId, const VContainer *data) -> bool;

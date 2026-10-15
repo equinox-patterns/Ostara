@@ -808,6 +808,9 @@ void OExportModeDialog::OnGenerateCutting()
     // direction: a plan launched on a piece that has none comes out looking right and being wrong,
     // which is the one failure this mode cannot afford. So it is refused, and the pieces to fix
     // are named — the number she gave them, because a piece name is not unique.
+    //
+    // ⚠️ Les pièces sans cut ne sont pas dans cette liste : elles ont déjà quitté le plan (voir
+    // `PiecesToCut`), donc on ne leur reproche pas un droit-fil dont elles n'ont pas besoin.
     const QVector<OExportCuttingGuard::FaultyPiece> faulty =
         OExportCuttingGuard::FaultyPieces(m_cuttingWidget->MemberChoices(), m_data);
 

@@ -580,7 +580,15 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         {
             // Already on its only size: the geometry is read as it stands.
             layers = geometry.CollectCurrentSize(tr("Single size"));
-            freezeDecor(layers.last());
+
+            // ⚠️ Un plan de coupe peut maintenant ne garder AUCUNE pièce — toutes celles qu'on lui a
+            // données avaient un cut vide — et une marche vide n'a pas de couche de référence à
+            // geler. Le cas est signalé plus bas, une fois le document rendu : `layers.last()` sur
+            // une liste vide n'est pas une erreur qu'on veut découvrir en release.
+            if (not layers.isEmpty())
+            {
+                freezeDecor(layers.last());
+            }
         }
         else
         {
@@ -602,7 +610,12 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             applySize(baseOfA, baseOfB, baseOfC);
             layers = geometry.CollectCurrentSize(
                 QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
-            freezeDecor(layers.last());
+
+            // Rien à geler quand la marche n'a gardé aucune pièce — même raison que ci-dessus.
+            if (not layers.isEmpty())
+            {
+                freezeDecor(layers.last());
+            }
         }
     }
     else
@@ -685,9 +698,20 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     if (pieceCount == 0)
     {
         waitDialog.reset();
+
+        QString message = tr("This size range carries no piece to nest.");
+        if (request.cuttingPlan)
+        {
+            // Un plan de coupe est un plan de tissu : une pièce dont la section Cut est vide n'y
+            // entre pas. C'est la seule raison possible que la géométrie ne montre pas, donc elle
+            // est dite — sans affirmer que c'est celle-là.
+            message += QStringLiteral("\n\n")
+                       + tr("A cutting plan only takes the pieces whose fabric cut quantity is "
+                            "filled in (Details mode, Dock Options, Piece, Information).");
+        }
+
         QMessageBox::warning(this, tr("Export mode"),
-                             tr("This size range carries no piece to nest.") + QStringLiteral("\n\n")
-                                 + geometry.LastDiagnostic(),
+                             message + QStringLiteral("\n\n") + geometry.LastDiagnostic(),
                              QMessageBox::Ok, QMessageBox::Ok);
         return std::nullopt;
     }

@@ -11855,6 +11855,11 @@ Voulez-vous le remplacer ?</translation>
         <translation>Ce panel de tailles ne contient aucune pièce à imbriquer.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="709"/>
+        <source>A cutting plan only takes the pieces whose fabric cut quantity is filled in (Details mode, Dock Options, Piece, Information).</source>
+        <translation>Un plan de coupe ne prend que les pièces dont la quantité de tissu est renseignée (mode Details, Dock Options, Pièce, Information).</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1074"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
@@ -15637,7 +15642,7 @@ They are not kept: closing the pattern takes them with the session.</source>
 Ils ne sont pas conservés : fermer le patron les emporte avec la session.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="825"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="828"/>
         <source>The nesting cannot invent a direction, and these pieces have none:
 
 %1

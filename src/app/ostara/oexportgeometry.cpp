@@ -29,6 +29,7 @@
 
 #include "mainwindow_helpers.h"
 #include "mainwindowsnogui.h"
+#include "core/oexportcuttingguard.h"
 #include "oexportfragment.h"
 #include "oexportplotter.h"
 #include "oexportpuzzlereference.h"
@@ -604,6 +605,30 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             continue;
         }
 
+        // ── Et le cut : un plan de coupe ne coupe que ce qui a une quantité de tissu ──────────────
+        //
+        // Un plan de coupe est un plan de TISSU : une pièce dont la section Cut est restée vide ne
+        // se coupe pas. Elle est « in layout », elle reste dans le patron, mais elle ne prend
+        // aucune part au plan — pas une place, pas un aperçu, pas une ligne du fichier.
+        //
+        // Écartée ICI, avant d'être résolue : une pièce qu'on ne coupe pas ne coûte rien à
+        // construire, et surtout elle ne peut plus faire échouer le run (un pli qui n'est pas un
+        // bord, par exemple — le moteur refuse alors le plan entier).
+        //
+        // La quantité est lue une fois pour toutes : `CutQuantity` fait exactement la lecture que le
+        // bloc « quantité » appliquait plus bas — la pièce, sinon son groupe — avec une différence,
+        // et c'est la règle : 0, la valeur d'une pièce jamais renseignée, veut dire « pas de coupe »
+        // au lieu de « une fois ».
+        int cutQuantity = 1;
+        if (m_cuttingPlan)
+        {
+            cutQuantity = OExportCuttingGuard::CutQuantity(id, m_container);
+            if (cutQuantity <= 0)
+            {
+                continue;
+            }
+        }
+
         // A piece is resolved against the container of the drawing tool that carries
         // it — that is what the graded capture does (MainWindowsNoGUI::PrepareDetailsForLayout
         // passes tool->getData()), and it is NOT necessarily the pattern container the
@@ -752,32 +777,15 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 
         // ── La quantité ─────────────────────────────────────────────────────────────────────────
         //
-        // Le membre d'abord, sinon le groupe, sinon 1 — décidé. Rien dans ce chemin ne
-        // lisait la quantité jusqu'ici : c'est la section Cut du cartouche, et une pièce se coupe
-        // rarement une seule fois.
+        // Elle a été lue à l'entrée de la boucle, avec le cut : le membre d'abord, sinon le groupe.
+        // Il n'y a plus de repli « sinon 1 » ici — une pièce sans quantité a déjà quitté le plan —
+        // et ce qui reste vaut donc au moins 1.
         //
         // Un run d'impression garde une entrée par pièce : une feuille porte une silhouette, et
         // c'est le moteur qui décide où. Seul un plan de coupe répète.
-        int quantity = 1;
+        int quantity = cutQuantity;
         if (m_cuttingPlan)
         {
-            quantity = piece.GetCutFabricQty();
-
-            const auto *groups = m_container->DataPieceGroups();
-            if (quantity <= 0 && groups != nullptr && geometry.groupId != NULL_ID)
-            {
-                const auto groupIt = groups->constFind(geometry.groupId);
-                if (groupIt != groups->constEnd())
-                {
-                    quantity = groupIt.value().m_cutFabricQty;
-                }
-            }
-
-            if (quantity <= 0)
-            {
-                quantity = 1;
-            }
-
             // ── Et sur du tissu plié, la moitié ──────────────────────────────────────────────
             //
             // ⚠️ **Une pièce hors pli se coupe dans les DEUX épaisseurs** : une seule pose donne

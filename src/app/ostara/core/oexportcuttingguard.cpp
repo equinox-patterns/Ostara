@@ -35,6 +35,32 @@
 #include "../vpatterndb/vpiece.h"
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportCuttingGuard::CutQuantity(quint32 pieceId, const VContainer *data) -> int
+{
+    if (data == nullptr || data->DataPieces() == nullptr || not data->DataPieces()->contains(pieceId))
+    {
+        return 0;
+    }
+
+    if (const int ownQuantity = data->GetPiece(pieceId).GetCutFabricQty(); ownQuantity > 0)
+    {
+        return ownQuantity;
+    }
+
+    // The group is the fallback, exactly as it is for the quantity the plan applies: a member left
+    // empty is cut as its group says. The reading does not require the group to have two members —
+    // it is the quantity's reading, not the direction's.
+    const auto *groups = data->DataPieceGroups();
+    const quint32 groupId = data->GetPieceGroupId(pieceId);
+    if (groups == nullptr || groupId == NULL_ID || not groups->contains(groupId))
+    {
+        return 0;
+    }
+
+    return groups->value(groupId).m_cutFabricQty;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingGuard::PiecesToCut(const QMap<quint32, quint32> &memberChoices, const VContainer *data)
     -> QVector<quint32>
 {
@@ -51,6 +77,17 @@ auto OExportCuttingGuard::PiecesToCut(const QMap<quint32, quint32> &memberChoice
         // The same filter Details and Layout apply: a piece the user left out of the layout is
         // not cut.
         if (not data->IsPieceInLayout(pieceId))
+        {
+            continue;
+        }
+
+        // ── Et le cut : une pièce sans quantité de tissu ne se coupe pas ───────────────────────
+        //
+        // Un plan de coupe est un plan de TISSU : une pièce dont la section Cut est restée vide est
+        // simplement ignorée. Elle est « in layout », elle reste dans le patron, mais elle ne prend
+        // aucune part au plan — et elle n'a donc pas de droit-fil à justifier non plus : c'est ici
+        // qu'on la sort de la liste, pour que le garde-fou de direction ne la nomme jamais.
+        if (CutQuantity(pieceId, data) <= 0)
         {
             continue;
         }
