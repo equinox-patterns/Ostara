@@ -231,8 +231,25 @@ auto main(int argc, char *argv[]) -> int
     }
     else
     {
-        mw->ProcessCMD(); // console/export path
+        // Console/export path. Deferred to the event loop like the GUI one: ProcessCMD asks for the exit
+        // with QCoreApplication::exit(), which only takes effect once a loop is running. Called inline, the
+        // export ran, then the request was lost and the program never returned.
+        QTimer::singleShot(0, mw, &MainWindow::ProcessCMD);
     }
 
-    return VApplication::exec();
+    const int returnCode = VApplication::exec();
+
+    if (not VApplication::IsGUIMode())
+    {
+        // Console mode: no user ever closes the window, so without this it would still be alive when
+        // QApplication destroys the undo stack it owns. Its QUndoGroup reacts to that, reaches objects
+        // already gone, and the program dies on a segmentation fault right after writing its files.
+        // Closing it runs the document bookkeeping (restore list, autosave) and releases the pattern
+        // lock; deleting it here silences the group before the application is torn down, exactly as a
+        // user's close does in GUI mode.
+        mw->close();
+        delete mw;
+    }
+
+    return returnCode;
 }

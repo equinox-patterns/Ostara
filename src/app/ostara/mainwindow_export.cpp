@@ -300,6 +300,18 @@ void MainWindow::ActionExportRecipe_triggered()
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
 {
+    if (not expParams->IsExportOnlyDetails())
+    {
+        // The console layout export used to place the pieces with the legacy nesting engine and write a
+        // plan de coupe. That engine left with the Layout mode, and a cutting plan is nested and exported
+        // by the Export mode now. Say so rather than exit without a word.
+        qCCritical(vMainWindow, "%s",
+                   qUtf8Printable(tr("The console layout export is gone with the Layout mode. Use "
+                                     "--exportOnlyDetails, or the Export mode, to export a cutting plan.")));
+        QCoreApplication::exit(V_EX_DATAERR);
+        return false;
+    }
+
     QVector<DetailForLayout> details;
     if (not VAbstractValApplication::VApp()->getOpeningPattern())
     {
@@ -323,18 +335,6 @@ auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
         }
     }
     QVector<VLayoutPiece> const listDetails = PrepareDetailsForLayout(details, doc);
-
-        if (not expParams->IsExportOnlyDetails())
-    {
-        // The console layout export used to place the pieces with the legacy nesting engine and write a
-        // plan de coupe. That engine left with the Layout mode, and a cutting plan is nested and exported
-        // by the Export mode now. Say so rather than exit without a word.
-        qCCritical(vMainWindow, "%s",
-                   qUtf8Printable(tr("The console layout export is gone with the Layout mode. Use --details, "
-                                     "or the Export mode, to export a cutting plan.")));
-        QCoreApplication::exit(V_EX_DATAERR);
-        return false;
-    }
 
     try
     {

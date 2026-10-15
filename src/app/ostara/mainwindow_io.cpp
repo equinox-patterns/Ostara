@@ -709,6 +709,14 @@ void MainWindow::on_actionNew_triggered()
  */
 auto MainWindow::MaybeSave() -> bool
 {
+    // Console mode has nobody to answer the question — its window is closed by the program itself once
+    // the export is over, with no event loop left to run a modal in. Nothing is written behind the user's
+    // back either: such a run only reads the pattern and writes the files it was asked for.
+    if (not VApplication::IsGUIMode())
+    {
+        return true;
+    }
+
     if (this->isWindowModified() && m_guiEnabled)
     {
         QScopedPointer<QMessageBox> const messageBox(

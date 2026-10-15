@@ -6238,11 +6238,11 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Valore</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1688"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="112"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="204"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="228"/>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Drittofilo</translation>
     </message>
@@ -6571,9 +6571,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>&lt;Empty&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="514"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1691"/>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <source>Fold line</source>
         <translation>Linea di piega</translation>
     </message>
@@ -7886,8 +7886,8 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>FoldLine</name>
     <message>
-        <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
         <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
+        <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
         <source>Cut On Fold</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8162,7 +8162,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="441"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="726"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="734"/>
         <source>Save</source>
         <translation>Salva</translation>
     </message>
@@ -8499,7 +8499,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Salva come</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1293"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1301"/>
         <source>Could not save file</source>
         <translation>Impossibile salvare il file</translation>
     </message>
@@ -8569,20 +8569,20 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Inserisci nuova etichetta per la parte del modello.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="838"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1125"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="846"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1133"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="95"/>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="554"/>
         <source>File error.</source>
         <translation>Errore nel file.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1250"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1258"/>
         <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
         <translation>Valentina non si è spenta correttamente. Vuoi riaprirei file (%1) che avevi aperto?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1252"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1260"/>
         <source>Reopen files.</source>
         <translation>Riapri i file.</translation>
     </message>
@@ -8729,7 +8729,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Modalità layout</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="715"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="723"/>
         <source>Unsaved changes</source>
         <translation>Modifiche non salvate</translation>
     </message>
@@ -8761,7 +8761,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="309"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="321"/>
         <source>You can&apos;t export empty scene.</source>
         <translation>Non puoi esportare il pannello vuoto.</translation>
     </message>
@@ -8771,7 +8771,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Impossibile bloccare. Questo file è già aperto in un&apos;altra finestra.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1335"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1343"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Impossibile bloccare. Questo file è già aperto in un altra finestra. Previsti conflitti quando 2 copie del programma sono in esecuzione.</translation>
     </message>
@@ -8791,7 +8791,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Impossibile aggiornare le misure.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1009"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1017"/>
         <source>The measurements file &apos;%1&apos; could not be found.</source>
         <translation>Il file delle misure &apos;%1&apos; non si trova.</translation>
     </message>
@@ -8812,6 +8812,11 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="255"/>
         <source>The files were successfully exported to:
 %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="309"/>
+        <source>The console layout export is gone with the Layout mode. Use --exportOnlyDetails, or the Export mode, to export a cutting plan.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -8855,7 +8860,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="731"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="739"/>
         <source>Don&apos;t Save</source>
         <translation>Non salvare</translation>
     </message>
@@ -8953,12 +8958,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Impossibile salvare il file</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1364"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1372"/>
         <source>untitled.ostara</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1406"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1414"/>
         <source>read only</source>
         <translation>Sola lettura</translation>
     </message>
@@ -9044,19 +9049,14 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Segnala errore…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="725"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="733"/>
         <source>Save…</source>
         <translation>Salva…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="319"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="331"/>
         <source>You can&apos;t export empty scene. Please, include at least one detail in layout.</source>
         <translation>Non puoi esportare un file vuoto. Inserisci almeno un dettaglio nel layout.</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="333"/>
-        <source>The console layout export is gone with the Layout mode. Use --details, or the Export mode, to export a cutting plan.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="388"/>
@@ -9109,7 +9109,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Strumento duplica dettaglio</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1101"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1109"/>
         <source>The measurements file &apos;%1&apos; could not be found or provides not enough information.</source>
         <translation>Il file di misure &apos;%1&apos; non è stato trovato o non fornisce abbastanza informazioni.</translation>
     </message>
@@ -9677,42 +9677,42 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="716"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="724"/>
         <source>The pattern has been modified. Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="916"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="924"/>
         <source>Labels not supported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="917"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="925"/>
         <source>This pattern contains Valentina labels. Ostara does not use them - they have been replaced by the Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="926"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="934"/>
         <source>Grainlines anchored to pins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="927"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="935"/>
         <source>This pattern contains grainlines anchored to pins. Ostara no longer uses them - these grainlines have been disabled. Please place them again in the Details mode. Conversion is not automatic. The original .val file remains intact.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1012"/>
         <source>The pattern reads measurements and no table was chosen.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1030"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1038"/>
         <source>Legacy measurement file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1031"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1039"/>
         <source>The pattern is linked to a legacy Tape file:
 
 %1
@@ -9721,12 +9721,12 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1034"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1042"/>
         <source>Convert this file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1035"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1043"/>
         <source>Replace with existing .%1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18807,14 +18807,14 @@ Questa opzione sarà effettiva dopo il riavvio del programma.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="391"/>
         <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="391"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="408"/>
         <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="408"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18871,14 +18871,14 @@ Questa opzione sarà effettiva dopo il riavvio del programma.</translation>
         <translation>Vuoi veramente cancellare?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="385"/>
         <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="385"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="403"/>
         <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="403"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation type="unfinished"></translation>
     </message>
