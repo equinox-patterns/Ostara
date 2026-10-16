@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "vcmdexport.h"
+#include "oexportunitformat.h"
 #include "../dialogs/dialogsavelayout.h"
 #include "../ifc/xml/vdomdocument.h"
 #include "../vmisc/commandoptions.h"
@@ -86,7 +87,8 @@ auto VCommandLine::Get(const QCoreApplication &app) -> VCommandLinePtr
 
     // fixme: in case of additional options/modes which will need to disable GUI - add it here too
     instance->isGuiEnabled =
-        not(instance->IsExportEnabled() || instance->IsTestModeEnabled() || instance->IsExportFMEnabled());
+        not(instance->IsExportEnabled() || instance->IsTestModeEnabled() || instance->IsExportFMEnabled()
+            || instance->IsMetrageEnabled());
 
     return instance;
 }
@@ -150,7 +152,11 @@ auto VCommandLine::IsExportFMEnabled() const -> bool
 auto VCommandLine::OptMeasurePath() const -> QString
 {
     QString measure;
-    if (IsOptionSet(LONG_OPTION_MEASUREFILE) && (IsExportEnabled() || IsTestModeEnabled()))
+    // ⚠️ Le mode métrage doit être dans cette liste : `--mfile` est ignoré partout ailleurs, et un
+    // lot qui chargerait le tableau du patron au lieu de celui demandé mesurerait autre chose que ce
+    // qu'on lui a dit.
+    if (IsOptionSet(LONG_OPTION_MEASUREFILE)
+        && (IsExportEnabled() || IsTestModeEnabled() || IsMetrageEnabled()))
     // todo: don't want yet to allow user set measure file for general loading,
     // because need to fix multiply opened windows as well
     {
@@ -176,7 +182,9 @@ auto VCommandLine::OptBaseName() const -> QString
 auto VCommandLine::OptDestinationPath() const -> QString
 {
     QString path;
-    if (IsExportEnabled())
+    // ⚠️ `--destination` n'était lu que par le mode export ; un lot de métrage s'écrivait alors
+    // dans le vide, et QFile("") refusait d'ouvrir le moindre CSV.
+    if (IsExportEnabled() || IsMetrageEnabled())
     {
         path = OptionValue(LONG_OPTION_DESTINATION);
     }
@@ -642,6 +650,43 @@ void VCommandLine::InitCommandLineOptions()
          translate("VCommandLine",
                    "Set tiled page orienatation to landscape (export mode). Default value if not set "
                    "portrait.")},
+        //==============================================================================================================
+        // Le métrage par lot — voir Modifications/Ostara/ExportMode/MetrageCLI.md
+        {LONG_OPTION_METRAGE,
+         translate("VCommandLine",
+                   "Compute the fabric length of a cutting plan for every complete size of the "
+                   "measurements table, for each fabric width of --fabricWidth, and write the table "
+                   "as a CSV in --destination. Nothing is ever written to the pattern.")},
+        {LONG_OPTION_METRAGE_MODEL,
+         translate("VCommandLine", "Name of the model this run measures. Written in the CSV."),
+         translate("VCommandLine", "Name")},
+        {LONG_OPTION_METRAGE_GROUP,
+         translate("VCommandLine",
+                   "The member a piece group contributes, as \"Group name=Member name\". Repeat once "
+                   "per group: a cutting plan takes exactly one member per group."),
+         translate("VCommandLine", "Group=member")},
+        {LONG_OPTION_METRAGE_FABRIC_WIDTH,
+         translate("VCommandLine",
+                   "Fabric width in centimetres. Comma separated to ask for several in one run."),
+         translate("VCommandLine", "Width in cm")},
+        {LONG_OPTION_METRAGE_LINING_WIDTH,
+         translate("VCommandLine", "Lining width in centimetres. Defaults to the fabric width."),
+         translate("VCommandLine", "Width in cm")},
+        {LONG_OPTION_METRAGE_LINING,
+         translate("VCommandLine",
+                   "Ask for the lining plan too: one run, two passes, two lengths in the table.")},
+        {LONG_OPTION_METRAGE_ONE_WAY,
+         translate("VCommandLine", "Lay every piece the same way round.")},
+        {LONG_OPTION_METRAGE_FOLDED,
+         translate("VCommandLine", "The plan is laid on folded fabric.")},
+        {LONG_OPTION_METRAGE_PIECE_GAP,
+         translate("VCommandLine", "Space between two pieces, in centimetres (default 0)."),
+         translate("VCommandLine", "Space in cm"),
+         QStringLiteral("0")},
+        {LONG_OPTION_METRAGE_EDGE_MARGIN,
+         translate("VCommandLine", "Space kept from the edges, in centimetres (default 0)."),
+         translate("VCommandLine", "Space in cm"),
+         QStringLiteral("0")},
     });
 }
 
@@ -661,6 +706,124 @@ auto VCommandLine::OptionValue(const QString &option) const -> QString
 auto VCommandLine::OptionValues(const QString &option) const -> QStringList
 {
     return parser.values(option);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Le métrage par lot — voir Modifications/Ostara/ExportMode/MetrageCLI.md
+//
+// ⚠️ Ces accesseurs sont le SEUL endroit où les centimètres de l'utilisatrice deviennent les
+// millimètres de la requête. Ils passent par OExportUnitFormat::Parse, la même fonction que
+// l'onglet Plan de coupe : un chiffre tapé ici et le même chiffre tapé là-bas donnent le même mm.
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::IsMetrageEnabled() const -> bool
+{
+    const bool r = IsOptionSet(LONG_OPTION_METRAGE);
+    if (r && parser.positionalArguments().size() != 1)
+    {
+        qCritical() << translate("VCommandLine", "The metrage options can be used with single input file only.")
+                    << "/n";
+        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
+    }
+    return r;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::OptMetrageModel() const -> QString
+{
+    return IsOptionSet(LONG_OPTION_METRAGE_MODEL) ? OptionValue(LONG_OPTION_METRAGE_MODEL).trimmed() : QString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::OptMetrageGroups() const -> QStringList
+{
+    QStringList groups;
+    for (const QString &raw : OptionValues(LONG_OPTION_METRAGE_GROUP))
+    {
+        const QString pair = raw.trimmed();
+        if (not pair.isEmpty())
+        {
+            groups.append(pair);
+        }
+    }
+    return groups;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::OptMetrageFabricWidths() const -> QVector<qreal>
+{
+    QVector<qreal> widths;
+    for (const QString &raw : OptionValues(LONG_OPTION_METRAGE_FABRIC_WIDTH))
+    {
+        for (const QString &part : raw.split(QLatin1Char(',')))
+        {
+            const QString text = part.trimmed();
+            if (text.isEmpty())
+            {
+                continue;
+            }
+
+            bool ok = false;
+            const qreal mm = OExportUnitFormat::Parse(text, Unit::Cm, &ok);
+            if (ok && mm > 0.0)
+            {
+                widths.append(mm);
+            }
+            else
+            {
+                qCritical() << translate("VCommandLine", "Not a fabric width:") << text << "/n";
+                const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
+            }
+        }
+    }
+    return widths;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::OptMetrageLiningWidth() const -> qreal
+{
+    if (not IsOptionSet(LONG_OPTION_METRAGE_LINING_WIDTH))
+    {
+        return 0.0;
+    }
+
+    bool ok = false;
+    const qreal mm = OExportUnitFormat::Parse(OptionValue(LONG_OPTION_METRAGE_LINING_WIDTH).trimmed(), Unit::Cm, &ok);
+    if (not ok || mm <= 0.0)
+    {
+        qCritical() << translate("VCommandLine", "Not a lining width.") << "/n";
+        const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
+    }
+    return mm;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::IsMetrageLining() const -> bool
+{
+    return IsOptionSet(LONG_OPTION_METRAGE_LINING);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::IsMetrageOneWay() const -> bool
+{
+    return IsOptionSet(LONG_OPTION_METRAGE_ONE_WAY);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::IsMetrageFolded() const -> bool
+{
+    return IsOptionSet(LONG_OPTION_METRAGE_FOLDED);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::MetragePieceGap() const -> qreal
+{
+    return OExportUnitFormat::Parse(OptionValue(LONG_OPTION_METRAGE_PIECE_GAP), Unit::Cm);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommandLine::MetrageEdgeMargin() const -> qreal
+{
+    return OExportUnitFormat::Parse(OptionValue(LONG_OPTION_METRAGE_EDGE_MARGIN), Unit::Cm);
 }
 
 #undef translate

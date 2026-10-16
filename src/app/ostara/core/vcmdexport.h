@@ -32,6 +32,7 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QTextStream>
+#include <QVector>
 #include <memory>
 #include <vector>
 
@@ -128,6 +129,38 @@ public:
     auto TiledPageMargins() const -> QMarginsF;
     auto OptTiledPaperSize() const -> VAbstractLayoutDialog::PaperSizeTemplate;
     auto OptTiledPageOrientation() const -> PageOrientation;
+
+    // ── Le métrage par lot ────────────────────────────────────────────────────────────────────
+    // Voir Modifications/Ostara/ExportMode/MetrageCLI.md.
+    //
+    // ⚠️ Les longueurs sortent d'ici **en millimètres**, parce que c'est ce que la requête porte.
+    // L'utilisatrice, elle, écrit des centimètres — c'est le widget de l'onglet qui parle cm, et
+    // ces accesseurs font la même conversion, par la MÊME fonction. Un seul point de conversion.
+
+    //@brief tests if the user asked for a métrage batch, and that exactly one pattern was given
+    auto IsMetrageEnabled() const -> bool;
+
+    //@brief the name of the model this run measures, written in the CSV
+    auto OptMetrageModel() const -> QString;
+
+    //@brief the "group=member" pairs, one per group
+    auto OptMetrageGroups() const -> QStringList;
+
+    //@brief every fabric width asked for, comma separated lists included, in millimetres
+    auto OptMetrageFabricWidths() const -> QVector<qreal>;
+
+    //@brief the lining width in millimetres, or 0 when it was not given
+    auto OptMetrageLiningWidth() const -> qreal;
+
+    auto IsMetrageLining() const -> bool;
+    auto IsMetrageOneWay() const -> bool;
+    auto IsMetrageFolded() const -> bool;
+
+    //@brief the space between two pieces, in millimetres (the user writes centimetres)
+    auto MetragePieceGap() const -> qreal;
+
+    //@brief the space kept from the edges, in millimetres (the user writes centimetres)
+    auto MetrageEdgeMargin() const -> qreal;
 
 protected:
     VCommandLine();

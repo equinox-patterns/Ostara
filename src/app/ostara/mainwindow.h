@@ -33,6 +33,7 @@
 #include "../vmisc/vabstractshortcutmanager.h"
 #include "../vmisc/vlockguard.h"
 #include "../vpatterndb/osizerange.h"
+#include "core/oexportmetragebatch.h"
 #include "core/oexportoutput.h"
 #include "oexportartboards.h"
 #include "oexportcorrection.h"
@@ -276,11 +277,15 @@ private slots:
 
     /** @brief Resolve a size range and nest it on the imposed width. Draws NOTHING: the
      *         result goes back to the caller, which files it and shows it. Empty when
-     *         the run failed — the reason has already been shown to the user.
+     *         the run failed.
      *         The context is passed in rather than re-read, so the generation records
-     *         the table it was really made under, not the one in force seconds later. */
-    auto RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context)
-        -> std::optional<OExportOutput>;
+     *         the table it was really made under, not the one in force seconds later.
+     *
+     *  @param error when given, the reason the run stopped is written there instead of — and in
+     *               console mode without — a message box. A batch has nobody to show a box to, and
+     *               it is the reason that goes in its table. */
+    auto RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context,
+                          QString *error = nullptr) -> std::optional<OExportOutput>;
 
     /** @brief Nest @p request, file the result under @p name, and show it. This is the one
      *         way a generation enters the dock — the entry dialog's own Generate button and
@@ -1097,6 +1102,33 @@ private:
     auto DoExport(const VCommandLinePtr &expParams) -> bool;
     auto DoFMExport(const VCommandLinePtr &expParams) -> bool;
 
+    // ── Le métrage par lot, en ligne de commande ──────────────────────────────────────────────
+    // Voir Modifications/Ostara/ExportMode/MetrageCLI.md. Rien ici ne dessine, ne classe une
+    // génération, ni n'écrit dans le patron.
+
+    /** @brief Run a cutting plan over every complete size, for each fabric width asked for, and
+     *         write the table where --destination points.
+     *
+     *  The composition (the pieces the model contains, the member each group contributes) is read
+     *  here and validated against the pattern: a name that matches nothing stops the run instead of
+     *  silently producing a shorter piece list.
+     *
+     *  @return false when the batch could not start at all. A run that failed is a row, not a
+     *          failure — see OExportMetrageBatch::Run(). */
+    auto DoMetrageBatch(const VCommandLinePtr &expParams) -> bool;
+
+    /** @brief One request → the lengths it measured, in millimetres. Empty when the run failed,
+     *         with the reason in @p error. */
+    auto MetrageFiguresOf(const OExportRunRequest &request, QString &error) -> std::optional<OExportMetrageFigures>;
+
+    /** @brief Every complete size the measurements table declares.
+     *
+     *  ⚠️ The axes are walked IN ORDER, each one asked what it allows for the values already
+     *  chosen upstream — never a flat cross product of independently valid values. On a table that
+     *  declares no restriction the two are the same set; on one that does, only this one is right.
+     *  Empty when the table declares no axis, with the reason in @p error. */
+    auto MetrageCombinations(QString &error) -> QVector<OExportMetrageCombination>;
+
     auto SetDimensionA(int value) -> bool;
     auto SetDimensionB(int value) -> bool;
     auto SetDimensionC(int value) -> bool;
@@ -1133,7 +1165,17 @@ private:
     void StoreMultisizeMDimension(const QList<MeasurementDimension_p> &dimensions, int index, qreal currentBase);
     void StoreIndividualMDimension(const QMap<QString, QSharedPointer<VMeasurement>> &measurements, IMD type);
 
-    auto DimensionRestrictedValues(int index, const MeasurementDimension_p &dimension) -> QVector<qreal>;
+    /**
+     * @brief The bases of one axis that its restriction allows, the axes above it being fixed.
+     *
+     * ⚠️ The upstream values are PARAMETERS, not the current ones. The combo boxes pass what the
+     * document is on — which is what they have always meant — while a batch walks the axes and
+     * must ask each axis what IT allows for a combination it has already chosen. Reading the
+     * current values here would enumerate the same set for every combination, which is how a
+     * cross product ends up offering pairs the table forbids.
+     */
+    auto DimensionRestrictedValues(int index, const MeasurementDimension_p &dimension, qreal baseA, qreal baseB)
+        -> QVector<qreal>;
     void SetDimensionBases();
 
     void StoreDimensions();

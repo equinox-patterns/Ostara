@@ -494,7 +494,11 @@ void MainWindow::ProcessCMD()
 
         if (cmd->IsSetDimensionC())
         {
-            cSetted = SetDimensionB(cmd->OptDimensionC());
+            // ⚠️ C, pas B. La valeur de C était passée à SetDimensionB, et MainWindow::SetDimensionC
+            // n'était appelé nulle part : --dimensionC n'avait jamais pu fonctionner. Sur une table à
+            // trois axes, la valeur de C écrasait celle de B **en silence** dès qu'elle figurait aussi
+            // dans la liste de B ; sinon elle était refusée, et le lot s'arrêtait.
+            cSetted = SetDimensionC(cmd->OptDimensionC());
         }
 
         if (not(aSetted && bSetted && cSetted))
@@ -512,6 +516,14 @@ void MainWindow::ProcessCMD()
 
             if (cmd->IsExportFMEnabled() && not DoFMExport(cmd))
             {
+                return;
+            }
+
+            // Le métrage par lot : un plan de coupe sur chaque taille complète, pour chaque laize.
+            // ⚠️ Aucun fichier d'export n'est écrit, et le patron n'est jamais modifié.
+            if (cmd->IsMetrageEnabled() && not DoMetrageBatch(cmd))
+            {
+                QCoreApplication::exit(V_EX_DATAERR);
                 return;
             }
         }

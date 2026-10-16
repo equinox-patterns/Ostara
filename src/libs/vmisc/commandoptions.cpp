@@ -100,6 +100,17 @@ const QString LONG_OPTION_CSVEXPORTFM = QStringLiteral("csvExportFM");
 const QString LONG_OPTION_TILED_PDF_PAGE_TEMPLATE = QStringLiteral("tiledPageformat");
 const QString LONG_OPTION_TILED_PDF_LANDSCAPE = QStringLiteral("tiledLandscape");
 
+const QString LONG_OPTION_METRAGE = QStringLiteral("metrage");
+const QString LONG_OPTION_METRAGE_MODEL = QStringLiteral("modelName");
+const QString LONG_OPTION_METRAGE_GROUP = QStringLiteral("group");
+const QString LONG_OPTION_METRAGE_FABRIC_WIDTH = QStringLiteral("fabricWidth");
+const QString LONG_OPTION_METRAGE_LINING_WIDTH = QStringLiteral("liningWidth");
+const QString LONG_OPTION_METRAGE_LINING = QStringLiteral("lining");
+const QString LONG_OPTION_METRAGE_ONE_WAY = QStringLiteral("oneWay");
+const QString LONG_OPTION_METRAGE_FOLDED = QStringLiteral("folded");
+const QString LONG_OPTION_METRAGE_PIECE_GAP = QStringLiteral("pieceGap");
+const QString LONG_OPTION_METRAGE_EDGE_MARGIN = QStringLiteral("edgeMargin");
+
 
 
 
@@ -150,5 +161,15 @@ auto AllKeys() -> QStringList
                        LONG_OPTION_CSVSEPARATOR,
                        LONG_OPTION_CSVEXPORTFM,
                        LONG_OPTION_TILED_PDF_PAGE_TEMPLATE,
-                       LONG_OPTION_TILED_PDF_LANDSCAPE};
+                       LONG_OPTION_TILED_PDF_LANDSCAPE,
+                       LONG_OPTION_METRAGE,
+                       LONG_OPTION_METRAGE_MODEL,
+                       LONG_OPTION_METRAGE_GROUP,
+                       LONG_OPTION_METRAGE_FABRIC_WIDTH,
+                       LONG_OPTION_METRAGE_LINING_WIDTH,
+                       LONG_OPTION_METRAGE_LINING,
+                       LONG_OPTION_METRAGE_ONE_WAY,
+                       LONG_OPTION_METRAGE_FOLDED,
+                       LONG_OPTION_METRAGE_PIECE_GAP,
+                       LONG_OPTION_METRAGE_EDGE_MARGIN};
 }

@@ -28,6 +28,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "core/ogradedsizeranges.h"
+#include "core/vapplication.h"
 #include "core/oexportcuttingguard.h"
 #include "core/oexportfavorites.h"
 #include "core/oexportoutput.h"
@@ -348,10 +349,13 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
  * propre quantité de coupe (voir OExportCuttingGuard::Material). Tout le reste — sens, pli, espaces,
  * membres de groupe — leur est commun, à la laize près, que chacune a la sienne.
  *
- * @return the generation, or nothing when the run failed — the reason has already been
- *         shown to the user.
+ * @return the generation, or nothing when the run failed.
+ * @param  error when given, the reason the run stopped is written there — and, in console mode,
+ *         the message box that would have carried it is not opened: a batch has nobody to show a
+ *         box to, and it is the reason that goes in its table.
  */
-auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context)
+auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGradedSizeRanges::Context &context,
+                                  QString *error)
     -> std::optional<OExportOutput>
 {
     // Started before the run does anything, so that the figure reported covers the whole wait and
@@ -427,13 +431,20 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // so one is handed to it below: the cross sets a flag, the engine reads it between its
     // iterations, and the run stops where it stands. There is no Cancel button because there is
     // nothing left to cancel — what a cross means is exactly this, and it now means it.
-    std::unique_ptr<OWaitDialog> waitDialog(new OWaitDialog(tr("Nesting. Please, wait."), this));
+    // ⚠️ En mode console il n'y a personne pour cliquer la croix, et une fenêtre qui s'ouvrirait 252
+    // fois n'annoncerait rien à personne. Le drapeau reste faux : l'abandon n'existe alors que par
+    // le processus — et le CSV écrit au fur et à mesure fait qu'on n'y perd rien.
+    std::unique_ptr<OWaitDialog> waitDialog;
+    if (VApplication::IsGUIMode())
+    {
+        waitDialog = std::unique_ptr<OWaitDialog>(new OWaitDialog(tr("Nesting. Please, wait."), this));
 
-    // The cross on the dialog is the request; what the engine reads is the flag it was handed.
-    connect(waitDialog.get(), &QDialog::rejected, this, [abandoned]() { abandoned->store(true); });
+        // The cross on the dialog is the request; what the engine reads is the flag it was handed.
+        connect(waitDialog.get(), &QDialog::rejected, this, [abandoned]() { abandoned->store(true); });
 
-    waitDialog->show();
-    QCoreApplication::processEvents();
+        waitDialog->show();
+        QCoreApplication::processEvents();
+    }
 
     // ── Ce que la marche des tailles abîme, et qu'il faut remettre ─────────────────────────────
     //
@@ -920,7 +931,17 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
         if (stopped.stop == PassResult::Stop::Failed)
         {
-            QMessageBox::warning(this, tr("Export mode"), stopped.error, QMessageBox::Ok, QMessageBox::Ok);
+            // ⚠️ Le motif sort par le paramètre AVANT la boîte : en console il n'y a pas de boîte, et
+            // c'est ce texte qui va dans la colonne `statut` du tableau.
+            if (error != nullptr)
+            {
+                *error = stopped.error;
+            }
+
+            if (VApplication::IsGUIMode())
+            {
+                QMessageBox::warning(this, tr("Export mode"), stopped.error, QMessageBox::Ok, QMessageBox::Ok);
+            }
             return;
         }
 
@@ -939,9 +960,16 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                                       : tr("fabric"));
         }
 
-        QMessageBox::warning(this, tr("Export mode"),
-                             message + QStringLiteral("\n\n") + stopped.diagnostic, QMessageBox::Ok,
-                             QMessageBox::Ok);
+        if (error != nullptr)
+        {
+            *error = message + QStringLiteral("\n\n") + stopped.diagnostic;
+        }
+
+        if (VApplication::IsGUIMode())
+        {
+            QMessageBox::warning(this, tr("Export mode"), message + QStringLiteral("\n\n") + stopped.diagnostic,
+                                 QMessageBox::Ok, QMessageBox::Ok);
+        }
     };
 
     if (fabric.stop != PassResult::Stop::None)

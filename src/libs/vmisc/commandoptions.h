@@ -100,6 +100,20 @@ extern const QString LONG_OPTION_CSVEXPORTFM;
 extern const QString LONG_OPTION_TILED_PDF_PAGE_TEMPLATE;
 extern const QString LONG_OPTION_TILED_PDF_LANDSCAPE;
 
+// The métrage batch: a cutting plan per complete size, per fabric width, written as a table.
+// Long forms only — no short option is left free, and a batch command line is read, not typed
+// character by character.
+extern const QString LONG_OPTION_METRAGE;
+extern const QString LONG_OPTION_METRAGE_MODEL;
+extern const QString LONG_OPTION_METRAGE_GROUP;
+extern const QString LONG_OPTION_METRAGE_FABRIC_WIDTH;
+extern const QString LONG_OPTION_METRAGE_LINING_WIDTH;
+extern const QString LONG_OPTION_METRAGE_LINING;
+extern const QString LONG_OPTION_METRAGE_ONE_WAY;
+extern const QString LONG_OPTION_METRAGE_FOLDED;
+extern const QString LONG_OPTION_METRAGE_PIECE_GAP;
+extern const QString LONG_OPTION_METRAGE_EDGE_MARGIN;
+
 auto AllKeys() -> QStringList;
 
 #endif // COMMANDOPTIONS_H

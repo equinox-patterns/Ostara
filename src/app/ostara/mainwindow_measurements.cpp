@@ -645,7 +645,8 @@ void MainWindow::StoreIndividualMDimension(const QMap<QString, QSharedPointer<VM
 
 
 //---------------------------------------------------------------------------------------------------------------------
-auto MainWindow::DimensionRestrictedValues(int index, const MeasurementDimension_p &dimension) -> QVector<qreal>
+auto MainWindow::DimensionRestrictedValues(int index, const MeasurementDimension_p &dimension, qreal baseA,
+                                           qreal baseB) -> QVector<qreal>
 {
     VDimensionRestriction restriction;
     if (index == 0)
@@ -654,11 +655,11 @@ auto MainWindow::DimensionRestrictedValues(int index, const MeasurementDimension
     }
     else if (index == 1)
     {
-        restriction = m_m->Restriction(m_currentDimensionA);
+        restriction = m_m->Restriction(baseA);
     }
     else
     {
-        restriction = m_m->Restriction(m_currentDimensionA, m_currentDimensionB);
+        restriction = m_m->Restriction(baseA, baseB);
     }
 
     const QVector<qreal> bases = dimension->ValidBases();
@@ -691,7 +692,11 @@ void MainWindow::InitDimensionGradation(int index, const MeasurementDimension_p 
     QSignalBlocker blocker(control);
     control->clear();
 
-    const QVector<qreal> bases = DimensionRestrictedValues(index, dimension);
+    // ⚠️ Les combos lisent les valeurs COURANTES : ce que le document est, ici et maintenant, est
+    // exactement ce que l'axe du dessus a pris. Un lot, lui, marche les axes et passe les siennes —
+    // d'où le paramètre (voir MainWindow::MetrageCombinations).
+    const QVector<qreal> bases =
+        DimensionRestrictedValues(index, dimension, m_currentDimensionA, m_currentDimensionB);
     const DimesionLabels labels = dimension->Labels();
 
     if (dimension->Type() == MeasurementDimension::X)
