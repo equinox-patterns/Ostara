@@ -248,6 +248,16 @@ private:
     /// une découpe (« Cut on fabric ») dont les deux extrémités tombent sur le contour de coupe.
     Q_REQUIRED_RESULT auto IsMergedInContour(const VLayoutPiece &detail, const VLayoutPiecePath &path) const -> bool;
 
+    /// @brief IsClosedPath dit si les points d'une découpe forment une BOUCLE — c'est-à-dire un TROU.
+    ///
+    /// Le modèle n'a pas de drapeau « fermé » (`VLayoutPiecePath` ne porte que ses points, ses accroches
+    /// au contour et son miroir) : c'est la géométrie qui le dit, et c'est ainsi que le patron l'a
+    /// dessiné — le dernier point revient sur le premier.
+    ///
+    /// ⚠️ Un trou s'écrit **fermé** (drapeau 70 = 1) et sur le **calque 11**, sans quoi Style3D le lit
+    /// comme une ligne interne. Mesuré sur son propre fichier de référence — voir ExportAAMAIntcut.
+    Q_REQUIRED_RESULT static auto IsClosedPath(const QVector<VLayoutPoint> &points) -> bool;
+
     /// @brief SplicePathInContour fait entrer @p points dans @p contour : le contour quitte son tracé
     /// au premier point du chemin, le suit jusqu'à son dernier point, et reprend. L'arc court entre les
     /// deux points d'accroche — l'ouverture de la pince — est remplacé par le chemin lui-même.

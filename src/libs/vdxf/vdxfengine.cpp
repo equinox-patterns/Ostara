@@ -969,9 +969,10 @@ void VDxfEngine::ExportAAMAIntcut(const QSharedPointer<dx_ifaceBlock> &detailBlo
     // la découpe qui reste une entité à part s'écrit avec les points du contour, comme avant.
     const UTF8STRING &cutLayer = IsClo3DCompatibility() ? *layer1 : *layer11;
 
-    auto DrawPolygon = [this, detailBlock, &cutLayer](const QVector<VLayoutPoint> &points, bool forceClosed)
+    auto DrawPolygon = [this, detailBlock](const QVector<VLayoutPoint> &points, const UTF8STRING &layer,
+                                           bool forceClosed)
     {
-        if (DRW_Entity *e = AAMAPolygon(points, cutLayer, forceClosed))
+        if (DRW_Entity *e = AAMAPolygon(points, layer, forceClosed))
         {
             detailBlock->ent.push_back(e);
         }
@@ -989,15 +990,32 @@ void VDxfEngine::ExportAAMAIntcut(const QSharedPointer<dx_ifaceBlock> &detailBlo
             continue;
         }
 
+        // ── ⚠️ Un TROU s'écrit FERMÉ, sur le 11, même en mode Clo3D ──────────────────────────────
+        //
+        // **Mesuré sur le fichier de référence que Sophie a fait à la main dans Style3D** : un carré
+        // évide y est une polyligne **fermée** (drapeau 70 = 1), quatre sommets, sur le **11**. Mes
+        // fichiers d'essai portaient la même forme **ouverte** (drapeau 0) : Style3D les a montrées en
+        // violet, c'est-à-dire en lignes internes — et c'est la seule différence entre les deux.
+        // Une polyligne fermée sur le 1 ne conviendrait pas : elle y serait une pièce de plus.
+        //
+        // Le dernier point est celui qui referme la boucle : il ne s'écrit pas, c'est le drapeau qui
+        // le dit — c'est ainsi que le fichier de référence porte les quatre sommets de son carré.
         QVector<VLayoutPoint> points = InternalPathPoints(intCut);
-        DrawPolygon(points, false);
+        const bool hole = IsClosedPath(points);
+        if (hole)
+        {
+            points.removeLast();
+        }
+
+        const UTF8STRING &layer = hole ? *layer11 : cutLayer;
+        DrawPolygon(points, layer, hole);
 
         if (!intCut.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
         {
             const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
             std::transform(points.begin(), points.end(), points.begin(),
                            [&matrix](const VLayoutPoint &point) { return VAbstractPiece::MapPoint(point, matrix); });
-            DrawPolygon(points, false);
+            DrawPolygon(points, layer, hole);
         }
     }
 }
@@ -1426,16 +1444,16 @@ void VDxfEngine::ExportASTMDrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
 void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
     // Même règle qu'en AAMA — voir ExportAAMAIntcut : en mode Clo3D/Style3D la découpe appartient au
-    // contour et s'écrit donc sur le 1. Les deux voisines du calque 11, elles, ne bougent pas : le
-    // repère « NM » PARLE des découpes internes sans en être une, et la courbe du 86 est une copie de
-    // validation ASTM, pas la ligne de coupe.
+    // contour et s'écrit donc sur le 1 — **sauf un trou**, qui reste sur le 11 et s'écrit fermé. Les
+    // deux voisines du calque 11, elles, ne bougent pas : le repère « NM » PARLE des découpes internes
+    // sans en être une, et la courbe du 86 est une copie de validation ASTM, pas la ligne de coupe.
     const UTF8STRING &cutLayer = IsClo3DCompatibility() ? *layer1 : *layer11;
 
-    auto DrawPolygon = [this, detailBlock, &cutLayer](const QVector<VLayoutPoint> &points, bool notMirrored,
-                                                      bool forceClosed)
+    auto DrawPolygon = [this, detailBlock](const QVector<VLayoutPoint> &points, const UTF8STRING &layer,
+                                           bool notMirrored, bool forceClosed)
     {
         // Internal cutout
-        if (DRW_Entity *e = AAMAPolygon(points, cutLayer, forceClosed))
+        if (DRW_Entity *e = AAMAPolygon(points, layer, forceClosed))
         {
             detailBlock->ent.push_back(e);
         }
@@ -1466,15 +1484,23 @@ void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &d
             continue;
         }
 
+        // Un TROU s'écrit fermé, sur le 11 — voir ExportAAMAIntcut, qui porte la mesure et la raison.
         QVector<VLayoutPoint> points = InternalPathPoints(intCut);
-        DrawPolygon(points, intCut.IsNotMirrored(), false);
+        const bool hole = IsClosedPath(points);
+        if (hole)
+        {
+            points.removeLast();
+        }
+
+        const UTF8STRING &layer = hole ? *layer11 : cutLayer;
+        DrawPolygon(points, layer, intCut.IsNotMirrored(), hole);
 
         if (!intCut.IsNotMirrored() && detail.IsShowFullPiece() && !detail.GetMappedSeamMirrorLine().isNull())
         {
             const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
             std::transform(points.begin(), points.end(), points.begin(),
                            [&matrix](const VLayoutPoint &point) { return VAbstractPiece::MapPoint(point, matrix); });
-            DrawPolygon(points, intCut.IsNotMirrored(), false);
+            DrawPolygon(points, layer, intCut.IsNotMirrored(), hole);
         }
     }
 }
@@ -2018,8 +2044,19 @@ auto VDxfEngine::IsMergedInContour(const VLayoutPiece &detail, const VLayoutPiec
     // Deux conditions, et pas une de plus : la pièce est **sans valeur de couture** — c'est ce qui met
     // les deux extrémités du chemin SUR le contour, puisque le contour EST le main path — et le chemin
     // demande à y aller **des deux côtés** (les deux cases de sa dialogue).
+    //
+    // ⚠️ **Un chemin de moins de trois points ne peut rien être de tout cela** : ni une pince (il n'a
+    // pas de pointe) ni un trou (il ne fait pas de boucle). L'écarter de la fusion est ce qui garantit
+    // qu'il sera écrit, plutôt que d'être à la fois fusionné dans le contour et absent de son propre
+    // calque.
     return IsClo3DCompatibility() && not detail.IsSeamAllowance() && path.IsCutPath()
-           && path.IsFirstToCuttingContour() && path.IsLastToCuttingContour();
+           && path.Points().size() > 2 && path.IsFirstToCuttingContour() && path.IsLastToCuttingContour();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::IsClosedPath(const QVector<VLayoutPoint> &points) -> bool
+{
+    return points.size() > 3 && VFuzzyComparePoints(points.constFirst(), points.constLast());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2053,19 +2090,37 @@ auto VDxfEngine::SplicePathInContour(QVector<VLayoutPoint> &contour, const QVect
             }
         }
 
-        return -1;
+        // ⚠️ **Et à défaut, le segment le plus proche — jamais « aucune accroche ».** Les deux
+        // extrémités d'une découpe sont posées sur le contour par `VPiecePath::PathPoints` : la bonne
+        // réponse est donc ici, à quelques microns près. Rendre -1 ferait disparaître le chemin, qui
+        // serait écarté de son propre calque parce que la fusion est décidée sur les drapeaux, pas sur
+        // cette recherche — une pièce amputée d'une découpe pour un arrondi. On le dit, et on accroche.
+        int nearest = 0;
+        qreal best = std::numeric_limits<qreal>::max();
+        for (int i = 0; i < contour.size(); ++i)
+        {
+            const int next = (i + 1) % contour.size();
+            const QLineF segment(contour.at(i), contour.at(next));
+            const qreal distance = (segment.length() < 1e-9)
+                                       ? QLineF(segment.p1(), QPointF(point)).length()
+                                       : qAbs((segment.p2().x() - segment.p1().x()) * (segment.p1().y() - point.y())
+                                              - (segment.p1().x() - point.x()) * (segment.p2().y() - segment.p1().y()))
+                                             / segment.length();
+            if (distance < best)
+            {
+                best = distance;
+                nearest = i;
+            }
+        }
+
+        qWarning() << "VDxfEngine: a cut path end does not lie on the outline (" << best
+                   << "mm off) - snapped to the nearest segment.";
+        contour.insert(nearest + 1, point);
+        return nearest + 1;
     };
 
     const int first = AnchorIndex(points.constFirst());
     const int last = AnchorIndex(points.constLast());
-    if (first < 0 || last < 0)
-    {
-        // Une accroche qui ne tombe nulle part n'arrive pas — les deux extrémités d'une découpe sont
-        // posées sur le contour par `VPiecePath::PathPoints`. Si elle arrivait quand même, le dire est
-        // la seule chose honnête : la pièce sortirait avec un contour qui ignore cette découpe.
-        qWarning() << "VDxfEngine: a cut path does not meet the outline, it is left out of it.";
-        return false;
-    }
 
     if (first == last)
     {
