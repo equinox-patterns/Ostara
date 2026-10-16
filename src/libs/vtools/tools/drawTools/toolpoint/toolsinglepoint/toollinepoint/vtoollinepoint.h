@@ -141,13 +141,12 @@ protected:
      *  VScaledLine::SetAuthoredColorProvider. Called for every line whose pen the tool owns. */
     void AttachAuthoredColor(VScaledLine *line);
 
-    /** @brief Writes the emphasis of a hover or of a click on every line the tool draws, at once. The colour of
-     *  each line is rewritten from the tool first: the item that answers for a colour is the tool, never a
-     *  neighbouring line. */
+    /** @brief Writes the emphasis of a click on every line the tool draws, at once — and takes it back when the
+     *  click leaves. A hover is not a state of these lines: the tool overrides no hover event, so passing over the
+     *  point leaves its tracés untouched. The colour of each line is rewritten from the tool first: the item that
+     *  answers for a colour is the tool, never a neighbouring line. */
     void UpdateLinesHighlight();
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
-    void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     auto MakeToolTip() const -> QString override;
 
     void ProcessLinePointToolOptions(const QDomElement &oldDomElement,

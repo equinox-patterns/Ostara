@@ -303,14 +303,26 @@ auto VScaledLine::boundingRect() const -> QRectF
 //---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
-    SetHighlighted(true);
+    // A child line belongs to the object drawn through it — a point tool's line, a rectangle's side, a cap's tracé —
+    // and its look is that object's business: passing over it changes nothing. The click is what answers for it (it
+    // selects the parent), and the parent is what brings its tracés out. A top-level line, the Line tool's own
+    // object, keeps its hover feedback: there is no parent to speak for it.
+    if (parentItem() == nullptr)
+    {
+        SetHighlighted(true);
+    }
     QGraphicsLineItem::hoverEnterEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VScaledLine::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-    SetHighlighted(false);
+    // Symmetrical to hoverEnterEvent: a child line was never highlighted on the way in, so nothing may be dropped on
+    // the way out — the drop would take back the bold that the click had asked for.
+    if (parentItem() == nullptr)
+    {
+        SetHighlighted(false);
+    }
     QGraphicsLineItem::hoverLeaveEvent(event);
 }
 
