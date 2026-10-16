@@ -47,12 +47,13 @@ template <class T> class QSharedPointer;
 
 struct VToolSplinePathInitData : VToolAbstractCurveInitData
 {
-    QVector<quint32> points{}; // NOLINT(misc-non-private-member-variables-in-classes)
-    QVector<QString> a1{};     // NOLINT(misc-non-private-member-variables-in-classes)
-    QVector<QString> a2{};     // NOLINT(misc-non-private-member-variables-in-classes)
-    QVector<QString> l1{};     // NOLINT(misc-non-private-member-variables-in-classes)
-    QVector<QString> l2{};     // NOLINT(misc-non-private-member-variables-in-classes)
-    quint32 duplicate{0};      // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<quint32> points{};  // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<QString> a1{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<QString> a2{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<QString> l1{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<QString> l2{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<OCurveAxis> axes{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    quint32 duplicate{0};       // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 /**
@@ -81,6 +82,19 @@ public:
 
     auto getSplinePath() const -> VSplinePath;
     void setSplinePath(const VSplinePath &splPath);
+
+    /**
+     * @brief Shows this curve without writing it nor touching the undo stack: the living preview of the axis
+     * mode, where the user must be able to walk away leaving nothing behind. The single command is pushed at
+     * validation, by setSplinePath().
+     */
+    void PreviewPath(const VSplinePath &splPath);
+
+    auto AxisSlotCount() const -> int override;
+    auto AxisSlot(int slot) const -> OCurveAxis override;
+    void PreviewAxis(int slot, const OCurveAxis &axis) override;
+    void CommitAxis() override;
+    void RevertAxis() override;
 
     void ShowVisualization(bool show) override;
 
@@ -135,6 +149,10 @@ private:
     QSharedPointer<VSplinePath> oldMoveSplinePath{};
     QVector<quint32> m_hiddenLabels{};
     QSharedPointer<VSplinePath> newMoveSplinePath{};
+
+    /** @brief The path as it was when the axis preview started, and null when none is running. The preview
+     *  writes nothing, so this is the only trace of the state to put back on a refusal. */
+    QSharedPointer<VSplinePath> axisPreviewStart{};
     /**
      * @brief controlPoints list pointers of control points.
      */

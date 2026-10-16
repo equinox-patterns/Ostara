@@ -397,6 +397,16 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
     // which would select the clicked node and drop the Details dock tab the user is working in.
     m_pickingClick = IsNodePickingActive();
 
+    // Curve axis picking — the two points a handle takes its angle from, on the Draw canvas. Every point of
+    // the pattern is a candidate, the points of the curve itself first, and a click that carries no point is
+    // handed to the gesture anyway: it has a sentence to say about it, and the session must not lose the curve
+    // it is working on to a stray selection.
+    if (m_dockManager->toolOptions() != nullptr && m_dockManager->toolOptions()->IsPickingAxisPoints())
+    {
+        m_dockManager->toolOptions()->OnAxisPointClicked(VAbstractTool::ObjectIdOfItem(item));
+        return;
+    }
+
     // Layers dock — adding objects to a layer: every click toggles the object under the cursor. Deliberately
     // before the options-dock routing below, and without the Qt selection: a plain click there replaces the
     // selection, which is why the old tool needed a modifier. Here the dock owns the list, so a plain click
@@ -739,6 +749,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingAlignPoint())
             {
                 m_dockManager->detailsOptions()->CancelAlignPointSelection();
+                break;
+            }
+            if (m_dockManager->toolOptions() != nullptr && m_dockManager->toolOptions()->IsPickingAxisPoints())
+            {
+                m_dockManager->toolOptions()->CancelAxisPicking();
                 break;
             }
             ArrowTool(true);

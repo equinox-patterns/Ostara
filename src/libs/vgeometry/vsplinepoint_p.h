@@ -36,6 +36,7 @@
 
 #include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/def.h"
+#include "ocurveaxis.h"
 #include "vpointf.h"
 
 QT_WARNING_PUSH
@@ -122,6 +123,11 @@ public:
     qreal length2{ToPixel(0.01, Unit::Mm)}; // NOLINT(misc-non-private-member-variables-in-classes)
     QString length2F{'0'};                  // NOLINT(misc-non-private-member-variables-in-classes)
 
+    /** @brief axis the axis the two handle angles are taken from, when they are delegated to one.
+     *  The first handle stands at its angle, the second at +180. An unknown axis means the angles are
+     *  managed by hand. */
+    OCurveAxis axis{}; // NOLINT(misc-non-private-member-variables-in-classes)
+
     bool strict{true};
 
 private:
@@ -191,6 +197,7 @@ inline VSplinePointData::VSplinePointData(const VSplinePointData &point)
     length1F(point.length1F),
     length2(point.length2),
     length2F(point.length2F),
+    axis(point.axis),
     strict(point.strict)
 {
     if (qFuzzyIsNull(this->length1))

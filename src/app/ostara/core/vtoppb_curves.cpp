@@ -30,6 +30,10 @@
 #include "vtooloptionspropertybrowser.h"
 #include <QPushButton>
 #include "vtoppb_templates.h"
+#include "../dialogs/ochooseaxisdirectiondialog.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../vtools/tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
 #include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
@@ -373,6 +377,77 @@ auto MakeLineColor(const QString &label) -> PropertyDesc
             }};
 }
 
+// The direction a handle takes from its axis, said in one line. The two points are deliberately NOT named:
+// they are visible on the canvas, the row has no use for their labels, and a long axis made two short labels
+// read like a formula nobody asked for.
+auto AxisSummaryText(const OCurveAxis &axis) -> QString
+{
+    if (not axis.IsValid())
+    {
+        return T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "by hand"));
+    }
+
+    return CurveAxisSenseText(axis.Sense());
+}
+
+// What the row's button offers to do, which is not the same thing once an axis is in place.
+auto AxisButtonText(const OCurveAxis &axis) -> QString
+{
+    return axis.IsValid() ? T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Change the axis"))
+                          : T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Set the angle by an axis"));
+}
+
+// The title of a group ends with its colon, the way a form labels its rows; a sentence quoting it must not.
+auto WithoutTrailingColon(QString text) -> QString
+{
+    while (text.endsWith(QLatin1Char(':')))
+    {
+        text.chop(1);
+    }
+    return text;
+}
+
+/** @brief The two rows an axis adds to a group: what the handle follows, and the way to set it.
+ *
+ *  One recipe for the two shapes the feature takes — one slot per end of a simple curve, one per anchor point
+ *  of a path — so the button, its sentence and the way back can never drift apart between them. */
+void AddAxisRows(VPE::VProperty *group, VToolOptionsPropertyBrowser *browser, const OCurveAxis &axis, int slot,
+                 const QString &slotTitle, const QString &label)
+{
+    auto *stateProp = new VPE::VLabelProperty(label);
+    stateProp->setValue(AxisSummaryText(axis));
+    group->addChild(stateProp);
+
+    const QString slotName = WithoutTrailingColon(slotTitle);
+    auto *button = new QPushButton(AxisButtonText(axis));
+    QObject::connect(button, &QPushButton::clicked, browser,
+                     [browser, slot, slotName]()
+                     {
+                         if (auto *tool = dynamic_cast<VToolAbstractCurve *>(browser->currentItem()))
+                         {
+                             browser->StartAxisPicking(tool, slot, slotName);
+                         }
+                     });
+    group->addChild(new VPE::VWidgetProperty(AxisButtonText(axis), button));
+}
+
+/** @brief Puts the axis rows back in step with the tool, after an edit or a session. */
+void RefreshAxisRows(VPE::VProperty *group, int firstAxisChild, const OCurveAxis &axis)
+{
+    if (auto *stateProp = group->getChild(firstAxisChild))
+    {
+        stateProp->setValue(AxisSummaryText(axis));
+    }
+
+    if (auto *buttonProp = dynamic_cast<VPE::VWidgetProperty *>(group->getChild(firstAxisChild + 1)))
+    {
+        if (auto *button = qobject_cast<QPushButton *>(buttonProp->getWidget()))
+        {
+            button->setText(AxisButtonText(axis));
+        }
+    }
+}
+
 // A titled frame — the way a dialog groups its options, and not a foldable header — holding two formula fields:
 // Length then Angle. Used for the two spline handles: "First handle" is the control point attached to the start
 // point (P1), "Second handle" the one attached to the end point (P4). Length comes before Angle on purpose,
@@ -382,10 +457,13 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                            QString (VSpline::*lengthFormulaGetter)() const,
                            void (VSpline::*lengthSetter)(qreal, const QString &),
                            QString (VSpline::*angleFormulaGetter)() const,
-                           void (VSpline::*angleSetter)(qreal, const QString &)) -> PropertyDesc
+                           void (VSpline::*angleSetter)(qreal, const QString &),
+                           OCurveAxis (VSpline::*axisGetter)() const,
+                           void (VSpline::*axisSetter)(const OCurveAxis &),
+                           int axisSlot) -> PropertyDesc
 {
     return {attrId, title,
-            [title, lengthFormulaGetter, angleFormulaGetter](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+            [title, lengthFormulaGetter, angleFormulaGetter, axisGetter, axisSlot](VToolOptionsPropertyBrowser *browser, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 const VSpline spl = t->getSpline();
 
@@ -409,9 +487,12 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
 
                 group->addChild(lengthProp);
                 group->addChild(angleProp);
+
+                AddAxisRows(group, browser, (spl.*axisGetter)(), axisSlot, title,
+                            T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis:")));
                 return group;
             },
-            [lengthSetter, angleSetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+            [lengthSetter, angleSetter, axisSetter, angleFormulaGetter, axisGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                 {
                     const auto children = prop->getChildren();
@@ -429,13 +510,18 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                         const auto angF = children[1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
                         if (!angF.error())
                         {
+                            // Writing an angle by hand gives up the axis, entirely: the angle is either taken
+                            // from the axis or written here, never composed of the two.
+                            (spl.*axisSetter)(AxisAfterHandWrittenAngle((spl.*axisGetter)(),
+                                                                       (spl.*angleFormulaGetter)(),
+                                                                       angF.GetFormula(FormulaType::FromUser)));
                             (spl.*angleSetter)(angF.getDoubleValue(), angF.GetFormula(FormulaType::FromUser));
                         }
                         t->setSpline(spl);
                     }
                 }
             },
-            [lengthFormulaGetter, angleFormulaGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+            [lengthFormulaGetter, angleFormulaGetter, axisGetter](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                 {
                     const auto children = prop->getChildren();
@@ -454,6 +540,8 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                         angF.setPostfix(degreeSymbol);
                         angF.Eval();
                         QVariant va; va.setValue(angF); children[1]->setValue(va);
+
+                        RefreshAxisRows(prop, 2, (spl.*axisGetter)());
                     }
                 }
             }};
@@ -477,7 +565,7 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                               const QVector<SplinePathHandle> &handles) -> PropertyDesc
 {
     return {attrId, title,
-            [title, pointIndex, handles](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+            [title, pointIndex, handles](VToolOptionsPropertyBrowser *browser, void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 const VSplinePoint point = t->getSplinePath().at(pointIndex);
 
@@ -504,6 +592,11 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                     group->addChild(lengthProp);
                     group->addChild(angleProp);
                 }
+
+                // One axis for the whole anchor point, and not one per handle: the two handles of a point lie on
+                // the same line, on either side of it, so they are one question (see AngleParAxe.md).
+                AddAxisRows(group, browser, point.Axis(), static_cast<int>(pointIndex), title,
+                            T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis:")));
                 return group;
             },
             [pointIndex, handles](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
@@ -517,10 +610,13 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                         // VSplinePoint copies alias the same shared data, so snapshot the handle
                         // angles as plain values before mutating the path.
                         QVector<qreal> originalAngles;
+                        QVector<QString> originalFormulas;
                         originalAngles.reserve(handles.size());
+                        originalFormulas.reserve(handles.size());
                         for (int h = 0; h < handles.size(); ++h)
                         {
                             originalAngles.append((path[pointIndex].*handles[h].angleGetter)());
+                            originalFormulas.append((path[pointIndex].*handles[h].angleFormulaGetter)());
                         }
 
                         // Length is independent for each handle — always write it (in pixels).
@@ -539,17 +635,30 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                         // Angles of a strict (smooth) point are linked: SetAngle1 derives Angle2 and
                         // SetAngle2 derives Angle1. Writing both would let the stale sibling overwrite
                         // the edited angle, so write only the angle that actually changed.
+                        OCurveAxis axis = path[pointIndex].Axis();
                         for (int h = 0; h < handles.size(); ++h)
                         {
                             const auto angF =
                                 children[h * 2 + 1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
-                            if (angF.error() || VFuzzyComparePossibleNulls(angF.getDoubleValue(), originalAngles.at(h)))
+                            if (angF.error())
+                            {
+                                continue;
+                            }
+
+                            // Writing an angle by hand gives up the axis of the point, entirely: its two handles
+                            // are either taken from the axis or written here, never composed of the two.
+                            axis = AxisAfterHandWrittenAngle(axis, originalFormulas.at(h),
+                                                             angF.GetFormula(FormulaType::FromUser));
+
+                            if (VFuzzyComparePossibleNulls(angF.getDoubleValue(), originalAngles.at(h)))
                             {
                                 continue; // unchanged — leave the derived sibling untouched
                             }
                             (path[pointIndex].*handles[h].angleSetter)(angF.getDoubleValue(),
                                                                        angF.GetFormula(FormulaType::FromUser));
                         }
+
+                        path[pointIndex].SetAxis(axis);
 
                         t->setSplinePath(path);
 
@@ -588,6 +697,8 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                             angF.Eval();
                             QVariant va; va.setValue(angF); children[h * 2 + 1]->setValue(va);
                         }
+
+                        RefreshAxisRows(prop, static_cast<int>(handles.size()) * 2, point.Axis());
                     }
                 }
             }};
@@ -977,10 +1088,12 @@ auto SplineProperties() -> std::vector<PropertyDesc>
         MakeStringPropWithValidator<VToolSpline>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
         MakeSplineHandleGroup<VToolSpline>(QStringLiteral("firstHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First handle:")),
                                            &VSpline::GetC1LengthFormula, &VSpline::SetC1Length,
-                                           &VSpline::GetStartAngleFormula, &VSpline::SetStartAngle),
+                                           &VSpline::GetStartAngleFormula, &VSpline::SetStartAngle,
+                                           &VSpline::GetAxis1, &VSpline::SetAxis1, 0),
         MakeSplineHandleGroup<VToolSpline>(QStringLiteral("secondHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Second handle:")),
                                            &VSpline::GetC2LengthFormula, &VSpline::SetC2Length,
-                                           &VSpline::GetEndAngleFormula, &VSpline::SetEndAngle),
+                                           &VSpline::GetEndAngleFormula, &VSpline::SetEndAngle,
+                                           &VSpline::GetAxis2, &VSpline::SetAxis2, 1),
         MakeCurvePenStyle<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
         MakeLineColor<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
         MakeNotes<VToolSpline>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),

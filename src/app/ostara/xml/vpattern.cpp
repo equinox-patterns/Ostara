@@ -343,14 +343,21 @@ void VPattern::Parse(const Document &parse)
 auto VPattern::MaxMentionedId() const -> quint32
 {
     // The names of the attributes that carry an id without carrying the word in them: the items of a layer
-    // (`object` is the object a tool created, `tool` the tool itself) and the figure of a pleat or of a dart
-    // cap (`point`, `side1`, `side2`, `curve1`, `curve2`, `notch`). Every other attribute the code writes an
+    // (`object` is the object a tool created, `tool` the tool itself), the figure of a pleat or of a dart
+    // cap (`point`, `side1`, `side2`, `curve1`, `curve2`, `notch`), and the two points of the axis a tool or
+    // a curve handle takes its direction from (`axisP1`, `axis1P1`…). Every other attribute the code writes an
     // id into has it in its name — `id`, `idObject`, `idResult`, `idTool`, `segment1Id`, `segment2Id` — and
     // that half of the question is asked as a rule rather than as a list, so that the next one is covered
     // without a line to add here. Reading one attribute too many costs nothing: the counter only ever rises,
     // and the worst a false positive can do is leave gaps in the ids.
     static const QStringList namedAttributes{AttrObject,
                                              AttrTool,
+                                             AttrAxisP1,
+                                             AttrAxisP2,
+                                             AttrAxis1P1,
+                                             AttrAxis1P2,
+                                             AttrAxis2P1,
+                                             AttrAxis2P2,
                                              OPleatDisplay::AttrPoint,
                                              OPleatDisplay::AttrSide1,
                                              OPleatDisplay::AttrSide2,

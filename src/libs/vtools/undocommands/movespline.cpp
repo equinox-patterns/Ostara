@@ -32,6 +32,7 @@
 
 #include "../ifc/ifcdef.h"
 #include "../ifc/xml/vabstractpattern.h"
+#include "../tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/def.h"
 #include "../vgeometry/vpointf.h"
@@ -100,6 +101,11 @@ void MoveSpline::Do(const VSpline &spl)
         Doc()->SetAttribute(domElement, AttrAngle2, spl.GetEndAngleFormula());
         Doc()->SetAttribute(domElement, AttrLength1, spl.GetC1LengthFormula());
         Doc()->SetAttribute(domElement, AttrLength2, spl.GetC2LengthFormula());
+
+        // The axes live on the element as much as in the model: a move that forgot them would silently free
+        // the handles they drive.
+        VToolAbstractCurve::SaveAxis(Doc(), domElement, spl.GetAxis1(), AttrAxis1P1, AttrAxis1P2, AttrAxis1Sense);
+        VToolAbstractCurve::SaveAxis(Doc(), domElement, spl.GetAxis2(), AttrAxis2P1, AttrAxis2P2, AttrAxis2Sense);
 
         emit NeedLiteParsing(Document::LiteParse);
     }

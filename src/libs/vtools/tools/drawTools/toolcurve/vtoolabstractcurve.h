@@ -42,7 +42,10 @@
 #include <QtGlobal>
 
 #include "../vdrawtool.h"
+#include "../vgeometry/ocurveaxis.h"
 #include "../vgeometry/vgeometrydef.h"
+#include "../vgeometry/vspline.h"
+#include "../vgeometry/vsplinepoint.h"
 #include "../vmisc/def.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
@@ -112,6 +115,67 @@ public:
     /** @brief SetReplacedBySegments hides the curve when a cut tool shows its two sub-curves instead. */
     void SetReplacedBySegments(bool replaced);
     auto IsReplacedBySegments() const -> bool;
+
+    /**
+     * @brief The handles of this curve whose angle can be delegated to an axis.
+     *
+     * A simple curve offers two slots, one per end; a path offers one per anchor point, its two handles then
+     * following the same line. The default says no slot, which is the truth for every curve that does not
+     * offer the feature — an arc, a cubic bezier — and keeps the interface honest where it is not implemented.
+     *
+     * The four calls below are the whole contract the Options dock and the picking session need; they never
+     * learn whether they hold a curve or a path.
+     */
+    virtual auto AxisSlotCount() const -> int;
+
+    /** @brief The axis of one slot, unknown when the handle keeps the angle written by hand. */
+    virtual auto AxisSlot(int slot) const -> OCurveAxis;
+
+    /**
+     * @brief Shows this curve as if this slot took its angle from this axis: the living preview.
+     *
+     * Nothing is written and nothing reaches the undo stack — the file keeps the curve it had — so the user
+     * can walk away, and RevertAxis() puts back what the session started from.
+     */
+    virtual void PreviewAxis(int slot, const OCurveAxis &axis);
+
+    /** @brief Writes what the preview shows, as a single undo command. */
+    virtual void CommitAxis();
+
+    /** @brief Puts back the state the preview started from. */
+    virtual void RevertAxis();
+
+    /**
+     * @brief Writes on the curve the angles its two axes dictate. A handle without a usable axis is left alone.
+     *
+     * The axis is only a way to fill the angle: what is stored stays a plain number, so everything that reads
+     * an angle — the file, the dialogs, the geometry — keeps working unchanged. The handle is locked by
+     * VSpline::IsStartAngleFree()/IsEndAngleFree(), never by the shape of the formula.
+     *
+     * Public because the Options dock applies an axis to a curve it holds no tool for.
+     */
+    static void ApplyAxes(VSpline &spline, const VContainer *data);
+
+    /**
+     * @brief Writes on the anchor point the two angles its axis dictates, the second at +180 degrees.
+     *
+     * A path point carries one axis for its two handles: they lie on the same line, on either side of the
+     * point, which is exactly what the strict coupling would derive.
+     */
+    static void ApplyAxes(VSplinePoint &point, const VContainer *data);
+
+    /**
+     * @brief Writes an axis into an element, or removes its three attributes when there is none.
+     *
+     * Absence is how the file says "this angle is managed by hand": never write an axis with an unknown point,
+     * the schema knows nothing of that and the reader would take it for a dependency.
+     */
+    static void SaveAxis(VAbstractPattern *doc,
+                         QDomElement &element,
+                         const OCurveAxis &axis,
+                         const QString &attrP1,
+                         const QString &attrP2,
+                         const QString &attrSense);
 
 public slots:
     void FullUpdateFromFile() override;

@@ -78,10 +78,13 @@ public:
      */
     void SetTemporarySelected(bool selected);
 
-    /** @brief Set the layer-picking state (an object clicked while adding it to a layer, or removing it).
+    /** @brief Set the "chosen by a picking workflow" state — an object clicked while adding it to a layer, or
+     *  one of the two points of a curve-handle axis.
      *
      *  Rendered orange and bold, like the active point. A state of its own: SetActivePoint is driven by the
-     *  property browser, which would clear the mark every time the current item changes.
+     *  property browser, which would clear the mark every time the current item changes — and a click on the
+     *  canvas goes through it too (the Dependencies dock shows the object, the Options dock follows), so a mark
+     *  laid with SetActivePoint lasts only until the next click.
      */
     void SetLayerSelected(bool selected);
 

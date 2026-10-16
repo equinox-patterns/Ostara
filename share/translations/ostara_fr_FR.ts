@@ -122,6 +122,29 @@
     </message>
 </context>
 <context>
+    <name>CurveAxisSense</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="42"/>
+        <source>Angle of the line</source>
+        <translation>Angle de la ligne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="46"/>
+        <source>Perpendicular to the line</source>
+        <translation>Perpendiculaire à la ligne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="44"/>
+        <source>Reverse angle of the line</source>
+        <translation>Angle inverse de la ligne</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="48"/>
+        <source>Reverse perpendicular to the line</source>
+        <translation>Perpendiculaire inverse à la ligne</translation>
+    </message>
+</context>
+<context>
     <name>DRW_TextCodec</name>
     <message>
         <location filename="../../src/libs/vdxf/libdxfrw/intern/drw_textcodec.cpp" line="117"/>
@@ -10987,6 +11010,19 @@ Voulez-vous le remplacer ?</translation>
     </message>
 </context>
 <context>
+    <name>OChooseAxisDirectionDialog</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="59"/>
+        <source>Direction of the axis</source>
+        <translation>Direction de l&apos;axe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="96"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+</context>
+<context>
     <name>OChooseLayerDialog</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooselayerdialog.cpp" line="49"/>
@@ -11289,6 +11325,44 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="68"/>
         <source>Maximum:</source>
         <translation>Maximum :</translation>
+    </message>
+</context>
+<context>
+    <name>OCurveAxisSession</name>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="191"/>
+        <source>%1 — the angle follows the axis.</source>
+        <translation>%1 — l&apos;angle suit l&apos;axe.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="152"/>
+        <source>Apply</source>
+        <translation>Appliquer</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="92"/>
+        <source>Click a point of the pattern (Esc to cancel)</source>
+        <translation>Cliquez sur un point du patron (Échap pour annuler)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="99"/>
+        <source>Click another point than the first one (Esc to cancel)</source>
+        <translation>Cliquez sur un autre point que le premier (Échap pour annuler)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="73"/>
+        <source>Click the first point of the axis (Esc to cancel)</source>
+        <translation>Cliquez sur le premier point de l&apos;axe (Échap pour annuler)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="108"/>
+        <source>Click the second point of the axis (Esc to cancel)</source>
+        <translation>Cliquez sur le second point de l&apos;axe (Échap pour annuler)</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="188"/>
+        <source>The angle follows the axis.</source>
+        <translation>L&apos;angle suit l&apos;axe.</translation>
     </message>
 </context>
 <context>
@@ -25529,6 +25603,26 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="722"/>
         <source>Notch</source>
         <translation>Cran</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="495"/>
+        <source>Axis:</source>
+        <translation>Axe :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="398"/>
+        <source>Change the axis</source>
+        <translation>Changer l&apos;axe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="399"/>
+        <source>Set the angle by an axis</source>
+        <translation>Définir l&apos;angle par un axe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="386"/>
+        <source>by hand</source>
+        <translation>à la main</translation>
     </message>
 </context>
 <context>

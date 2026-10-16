@@ -136,6 +136,13 @@ const QString TagPathPoint = QStringLiteral("pathPoint");
 const QString AttrPSpline = QStringLiteral("pSpline");
 const QString AttrAxisP1 = QStringLiteral("axisP1");
 const QString AttrAxisP2 = QStringLiteral("axisP2");
+const QString AttrAxisSense = QStringLiteral("axisSense");
+const QString AttrAxis1P1 = QStringLiteral("axis1P1");
+const QString AttrAxis1P2 = QStringLiteral("axis1P2");
+const QString AttrAxis1Sense = QStringLiteral("axis1Sense");
+const QString AttrAxis2P1 = QStringLiteral("axis2P1");
+const QString AttrAxis2P2 = QStringLiteral("axis2P2");
+const QString AttrAxis2Sense = QStringLiteral("axis2Sense");
 const QString AttrCurve = QStringLiteral("curve");
 const QString AttrCurve1 = QStringLiteral("curve1");
 const QString AttrCurve2 = QStringLiteral("curve2");
@@ -218,6 +225,11 @@ const QString TypeLineDashLine = QStringLiteral("dashLine");
 const QString TypeLineDotLine = QStringLiteral("dotLine");
 const QString TypeLineDashDotLine = QStringLiteral("dashDotLine");
 const QString TypeLineDashDotDotLine = QStringLiteral("dashDotDotLine");
+
+const QString CurveAxisSenseLine = QStringLiteral("line");
+const QString CurveAxisSenseLineReverse = QStringLiteral("lineReverse");
+const QString CurveAxisSensePerpendicular = QStringLiteral("perpendicular");
+const QString CurveAxisSensePerpendicularReverse = QStringLiteral("perpendicularReverse");
 
 //---------------------------------------------------------------------------------------------------------------------
 /**

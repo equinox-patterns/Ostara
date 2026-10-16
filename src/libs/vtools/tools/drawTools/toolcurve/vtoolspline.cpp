@@ -93,14 +93,14 @@ VToolSpline::VToolSpline(const VToolSplineInitData &initData, QGraphicsItem *par
         controlPoints.append(cPoint);
     };
 
-    const bool freeAngle1 = qmu::QmuTokenParser::IsSingle(spl->GetStartAngleFormula());
+    const bool freeAngle1 = spl->IsStartAngleFree();
     const bool freeLength1 = qmu::QmuTokenParser::IsSingle(spl->GetC1LengthFormula());
 
     auto *controlPoint1 = new VControlPointSpline(1, SplinePointPosition::FirstPoint,
                                                   static_cast<QPointF>(spl->GetP2()), freeAngle1, freeLength1, this);
     InitControlPoint(controlPoint1);
 
-    const bool freeAngle2 = qmu::QmuTokenParser::IsSingle(spl->GetEndAngleFormula());
+    const bool freeAngle2 = spl->IsEndAngleFree();
     const bool freeLength2 = qmu::QmuTokenParser::IsSingle(spl->GetC2LengthFormula());
 
     auto *controlPoint2 = new VControlPointSpline(1, SplinePointPosition::LastPoint, static_cast<QPointF>(spl->GetP3()),
@@ -183,6 +183,11 @@ auto VToolSpline::Create(VToolSplineInitData &initData, const QSharedPointer<VSp
     const bool curveUnique = initData.data->IsUnique(curve->name());
     const QString curveName = curve->name();
 
+    // An axis only fills the angle: the stored formula stays a plain number, which is what keeps the file
+    // readable and every other reader of an angle working. Done before the object is published, so the very
+    // first geometry already follows the axis.
+    VToolAbstractCurve::ApplyAxes(*curve, initData.data);
+
     if (initData.typeCreation == Source::FromGui)
     {
         initData.id = initData.data->AddGObject(curve);
@@ -218,6 +223,18 @@ auto VToolSpline::Create(VToolSplineInitData &initData, const QSharedPointer<VSp
     patternGraph->AddEdge(initData.point1, initData.id);
     patternGraph->AddEdge(initData.point4, initData.id);
 
+    // The axis points are dependencies of the curve, exactly as its two ends are: declared here, on the path
+    // both the reader and the interface take, so the curve follows a point of another block and cannot
+    // outlive one of its axis points.
+    for (const OCurveAxis &axis : {curve->GetAxis1(), curve->GetAxis2()})
+    {
+        if (axis.IsValid())
+        {
+            patternGraph->AddEdge(axis.P1(), initData.id);
+            patternGraph->AddEdge(axis.P2(), initData.id);
+        }
+    }
+
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
         initData.doc->UpdateToolData(initData.id, initData.data);
@@ -251,6 +268,11 @@ auto VToolSpline::Create(VToolSplineInitData &initData) -> VToolSpline *
 
     auto spline = QSharedPointer<VSpline>::create(*p1, *p4, calcAngle1, initData.a1, calcAngle2, initData.a2,
                                                   calcLength1, initData.l1, calcLength2, initData.l2);
+    // The axis arrives with the element, and the angles above are only what the file happened to hold: the
+    // model is rewritten from the axis in Create(initData, spline), the same way on both branches.
+    spline->SetAxis1(initData.axis1);
+    spline->SetAxis2(initData.axis2);
+
     if (initData.duplicate > 0)
     {
         spline->SetDuplicate(initData.duplicate);
@@ -278,6 +300,89 @@ void VToolSpline::setSpline(const VSpline &spl)
     QSharedPointer<VSpline> const spline = qSharedPointerDynamicCast<VSpline>(obj);
     *spline.data() = spl;
     SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSpline::PreviewSpline(const VSpline &spl)
+{
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    QSharedPointer<VSpline> const spline = qSharedPointerDynamicCast<VSpline>(obj);
+    *spline.data() = spl;
+
+    // No SaveOption: the file keeps its own copy of the curve until the preview is validated, which is what
+    // lets the user walk away from the axis window leaving nothing behind. RefreshGeometry() recomputes the
+    // painter path and the handles from the container, and the scene rect follows the new shape — exactly what
+    // every other change of geometry does.
+    RefreshGeometry();
+
+    if (QGraphicsScene *sc = scene())
+    {
+        VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), this);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSpline::AxisSlotCount() const -> int
+{
+    return 2; // one per end: 0 is the first handle (angle1), 1 the second (angle2)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSpline::AxisSlot(int slot) const -> OCurveAxis
+{
+    const auto spline = VAbstractTool::data.GeometricObject<VSpline>(m_id);
+    return slot == 0 ? spline->GetAxis1() : spline->GetAxis2();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSpline::PreviewAxis(int slot, const OCurveAxis &axis)
+{
+    const auto spline = VAbstractTool::data.GeometricObject<VSpline>(m_id);
+
+    if (axisPreviewStart.isNull())
+    {
+        axisPreviewStart = QSharedPointer<VSpline>::create(*spline);
+    }
+
+    VSpline previewed = *spline;
+    if (slot == 0)
+    {
+        previewed.SetAxis1(axis);
+    }
+    else
+    {
+        previewed.SetAxis2(axis);
+    }
+
+    VToolAbstractCurve::ApplyAxes(previewed, getData());
+    PreviewSpline(previewed);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSpline::CommitAxis()
+{
+    if (axisPreviewStart.isNull())
+    {
+        return;
+    }
+    axisPreviewStart.clear();
+
+    // The file never heard of the preview, so the command it pushes holds the whole story: its old element is
+    // the curve as it was before, its new one what is now shown.
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSpline::RevertAxis()
+{
+    if (axisPreviewStart.isNull())
+    {
+        return;
+    }
+    const QSharedPointer<VSpline> start = axisPreviewStart;
+    axisPreviewStart.clear();
+    PreviewSpline(*start);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -596,8 +701,7 @@ auto VToolSpline::IsMovable() const -> bool
 {
     const auto spline = VAbstractTool::data.GeometricObject<VSpline>(m_id);
 
-    return qmu::QmuTokenParser::IsSingle(spline->GetStartAngleFormula()) &&
-           qmu::QmuTokenParser::IsSingle(spline->GetEndAngleFormula()) &&
+    return spline->IsStartAngleFree() && spline->IsEndAngleFree() &&
            qmu::QmuTokenParser::IsSingle(spline->GetC1LengthFormula()) &&
            qmu::QmuTokenParser::IsSingle(spline->GetC2LengthFormula());
 }
@@ -618,7 +722,7 @@ void VToolSpline::RefreshCtrlPoints()
         const QSignalBlocker blocker1(controlPoints[1]);
 
         {
-            const bool freeAngle1 = qmu::QmuTokenParser::IsSingle(spl->GetStartAngleFormula());
+            const bool freeAngle1 = spl->IsStartAngleFree();
             const bool freeLength1 = qmu::QmuTokenParser::IsSingle(spl->GetC1LengthFormula());
 
             const auto splinePoint = static_cast<QPointF>(
@@ -632,7 +736,7 @@ void VToolSpline::RefreshCtrlPoints()
         }
 
         {
-            const bool freeAngle2 = qmu::QmuTokenParser::IsSingle(spl->GetEndAngleFormula());
+            const bool freeAngle2 = spl->IsEndAngleFree();
             const bool freeLength2 = qmu::QmuTokenParser::IsSingle(spl->GetC2LengthFormula());
 
             const auto splinePoint = static_cast<QPointF>(
@@ -718,6 +822,9 @@ void VToolSpline::SetSplineAttributes(QDomElement &domElement, const VSpline &sp
                                          [](quint32 duplicate) noexcept { return duplicate == 0; });
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrAlias, spl.GetAliasSuffix(),
                                          [](const QString &suffix) noexcept { return suffix.isEmpty(); });
+
+    VToolAbstractCurve::SaveAxis(doc, domElement, spl.GetAxis1(), AttrAxis1P1, AttrAxis1P2, AttrAxis1Sense);
+    VToolAbstractCurve::SaveAxis(doc, domElement, spl.GetAxis2(), AttrAxis2P1, AttrAxis2P2, AttrAxis2Sense);
 
     if (domElement.hasAttribute(AttrKCurve))
     {

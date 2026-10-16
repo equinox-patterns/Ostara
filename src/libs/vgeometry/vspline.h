@@ -38,6 +38,7 @@
 #include <QVector>
 #include <QtGlobal>
 
+#include "ocurveaxis.h"
 #include "vabstractcubicbezier.h"
 #include "vpointf.h"
 
@@ -97,6 +98,17 @@ public:
 
     void SetStartAngle(qreal angle, const QString &formula);
     void SetEndAngle(qreal angle, const QString &formula);
+
+    /** @brief The axes the two handle angles are taken from. An unknown axis means the angle is by hand. */
+    auto GetAxis1() const -> OCurveAxis;
+    auto GetAxis2() const -> OCurveAxis;
+    void SetAxis1(const OCurveAxis &axis);
+    void SetAxis2(const OCurveAxis &axis);
+
+    /** @brief Whether the handle can still be turned by the mouse: its angle is a plain number and no axis
+     *  drives it. An axis-driven handle only changes length. */
+    auto IsStartAngleFree() const -> bool;
+    auto IsEndAngleFree() const -> bool;
 
     auto GetC1Length() const -> qreal override;
     auto GetC2Length() const -> qreal override;

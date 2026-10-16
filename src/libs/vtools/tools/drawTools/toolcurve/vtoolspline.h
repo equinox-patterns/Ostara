@@ -52,6 +52,8 @@ struct VToolSplineInitData : VToolAbstractCurveInitData
     QString a2{};            // NOLINT(misc-non-private-member-variables-in-classes)
     QString l1{};            // NOLINT(misc-non-private-member-variables-in-classes)
     QString l2{};            // NOLINT(misc-non-private-member-variables-in-classes)
+    OCurveAxis axis1{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    OCurveAxis axis2{};      // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 duplicate{0};    // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
@@ -79,6 +81,19 @@ public:
 
     auto getSpline() const -> VSpline;
     void setSpline(const VSpline &spl);
+
+    /**
+     * @brief Shows this curve without writing it nor touching the undo stack: the living preview of the axis
+     * mode, where the user must be able to walk away leaving nothing behind. The single command is pushed at
+     * validation, by setSpline().
+     */
+    void PreviewSpline(const VSpline &spl);
+
+    auto AxisSlotCount() const -> int override;
+    auto AxisSlot(int slot) const -> OCurveAxis override;
+    void PreviewAxis(int slot, const OCurveAxis &axis) override;
+    void CommitAxis() override;
+    void RevertAxis() override;
 
     void ShowVisualization(bool show) override;
 
@@ -115,6 +130,10 @@ private:
     bool moved{false};
     QSharedPointer<VSpline> oldMoveSpline{};
     QSharedPointer<VSpline> newMoveSpline{};
+
+    /** @brief The curve as it was when the axis preview started, and null when none is running. The preview
+     *  writes nothing, so this is the only trace of the state to put back on a refusal. */
+    QSharedPointer<VSpline> axisPreviewStart{};
     /**
      * @brief controlPoints list pointers of control points.
      */

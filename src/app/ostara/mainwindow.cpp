@@ -85,7 +85,10 @@
 #include "../vtools/undocommands/undogroup.h"
 #include "../vtools/undocommands/unlinkpiecegroup.h"
 #include "../vwidgets/vgrainlineitem.h"
+#include "../vwidgets/vabstractsimple.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vscenepoint.h"
+#include "../vwidgets/scalesceneitems.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/nodeDetails/vnodepoint.h"
 #include "../vtools/tools/nodeDetails/onodeplacelabel.h"
@@ -903,6 +906,14 @@ bool MainWindow::IsNodePickingActive() const
         return true;
     }
 
+    // The axis of a curve handle is picked on the Draw canvas, not on the Details one, but it is the same
+    // gesture for the user: two clicks, and the scene must not read them as a selection.
+    const auto *toolOptions = m_dockManager->toolOptions();
+    if (toolOptions != nullptr && toolOptions->IsPickingAxisPoints())
+    {
+        return true;
+    }
+
     const auto *details = m_dockManager->detailsWidget();
     return details != nullptr && (details->IsSelectingLinkPieces() || details->IsSelectingLinkNode());
 }
@@ -1113,6 +1124,88 @@ void MainWindow::InitDocksContain()
 
     connect(m_dockManager->detailsOptions(), &ODetailsPropertyBrowser::ShowStatusTip, this,
             [this](const QString &text) { m_statusLabel->setText(text); });
+
+    // The Options dock's own gesture, the axis of a curve handle: same two signals, same status label, but the
+    // points it highlights live on the Draw canvas and are found by identifier.
+    connect(m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::ShowStatusTip, this,
+            [this](const QString &text) { m_statusLabel->setText(text); });
+
+    connect(m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::HighlightPoint, this,
+            [](quint32 pointId, bool highlight)
+    {
+        QGraphicsScene *scene = VAbstractValApplication::VApp()->getCurrentScene();
+        if (scene == nullptr)
+        {
+            return;
+        }
+
+        const QList<QGraphicsItem *> items = scene->items();
+        for (QGraphicsItem *item : items)
+        {
+            // The identifier is read exactly the way the click that routed here reads it (ObjectIdOfItem walks
+            // up from the item to the first object that names itself). A Draw-mode point is a TOOL —
+            // VToolSinglePoint derives from VAbstractPoint and VScenePoint — and not a VAbstractSimple: testing
+            // for the latter matched nothing, so no point was ever marked and neither of the two ever turned.
+            if (VAbstractTool::ObjectIdOfItem(item) != pointId)
+            {
+                continue;
+            }
+
+            if (auto *point = dynamic_cast<VScenePoint *>(item))
+            {
+                // Both marks, and both the same orange. SetActivePoint is the state the pleat's picking wears —
+                // what the Options dock drives, and what the rest of the application knows. SetLayerSelected is
+                // the scene's own "chosen by a picking workflow" state; nothing but the Layers dock writes it, so
+                // the mark holds for as long as the window is open, and either state paints the same orange.
+                point->SetActivePoint(highlight);
+                point->SetLayerSelected(highlight);
+
+                // The label takes the orange as well: a point that belongs to the curve being edited carries its
+                // own transient label colours (magenta among them), and orange has to win there too. On release
+                // the three roles are given back the very values VScenePoint's constructor gives them, so nothing
+                // has to be remembered.
+                point->SetLabelTextColorRole(highlight ? VColorRole::ActivePointColor
+                                                       : VColorRole::DraftLabelColor);
+                point->SetLabelTextHoverColorRole(highlight ? VColorRole::ActivePointColor
+                                                            : VColorRole::DraftLabelHoverColor);
+                point->SetLabelLineColorRole(highlight ? VColorRole::ActivePointColor
+                                                       : VColorRole::DraftLabelLineColor);
+
+                // And the disc the user sees on a point of the active curve is NOT the point: the curve's
+                // visualization lays its own VScaledEllipse on every point of the curve, in the magenta of a
+                // support colour (VisToolSplinePath::ApplyActivePoint, VisToolSpline for a simple curve), and it
+                // is painted over the real point — so the orange laid on the point stayed hidden underneath.
+                //
+                // Those overlays step aside for as long as the axis is being taken, and come back at the end.
+                // They are found by their type alone, NOT by their position: matching positions was a guess, and
+                // the guess was wrong. Which overlay was hidden is remembered ON the item itself, so nothing has
+                // to be kept between two calls and no pointer is ever held on to.
+                constexpr int kHiddenByAxisPicking = 0;
+                for (QGraphicsItem *overlay : scene->items())
+                {
+                    auto *disc = dynamic_cast<VScaledEllipse *>(overlay);
+                    if (disc == nullptr)
+                    {
+                        continue;
+                    }
+
+                    if (highlight)
+                    {
+                        if (disc->isVisible())
+                        {
+                            disc->setData(kHiddenByAxisPicking, true);
+                            disc->setVisible(false);
+                        }
+                    }
+                    else if (disc->data(kHiddenByAxisPicking).toBool())
+                    {
+                        disc->setData(kHiddenByAxisPicking, QVariant());
+                        disc->setVisible(true);
+                    }
+                }
+            }
+        }
+    });
 
     connect(m_dockManager->detailsOptions(), &ODetailsPropertyBrowser::HighlightNode, this,
             [this](quint32 nodeId, bool highlight)

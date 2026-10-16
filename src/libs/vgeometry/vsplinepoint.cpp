@@ -359,8 +359,32 @@ void VSplinePoint::SetLength2(const qreal &value, const QString &length2F)
 //---------------------------------------------------------------------------------------------------------------------
 auto VSplinePoint::IsMovable() const -> bool
 {
-    return qmu::QmuTokenParser::IsSingle(d->angle1F) && qmu::QmuTokenParser::IsSingle(d->angle2F) &&
-           qmu::QmuTokenParser::IsSingle(d->length1F) && qmu::QmuTokenParser::IsSingle(d->length2F);
+    return IsAngle1Free() && IsAngle2Free() && qmu::QmuTokenParser::IsSingle(d->length1F) &&
+           qmu::QmuTokenParser::IsSingle(d->length2F);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSplinePoint::Axis() const -> OCurveAxis
+{
+    return d->axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSplinePoint::SetAxis(const OCurveAxis &axis)
+{
+    d->axis = axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSplinePoint::IsAngle1Free() const -> bool
+{
+    return not d->axis.IsValid() && qmu::QmuTokenParser::IsSingle(d->angle1F);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSplinePoint::IsAngle2Free() const -> bool
+{
+    return not d->axis.IsValid() && qmu::QmuTokenParser::IsSingle(d->angle2F);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

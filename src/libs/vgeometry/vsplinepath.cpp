@@ -729,6 +729,10 @@ auto VSplinePath::GetSpline(vsizetype index) const -> VSpline
     VSpline spl(p1.P(), p2.P(), p1.Angle2(), p1.Angle2Formula(), p2.Angle1(), p2.Angle1Formula(), p1.Length2(),
                 p1.Length2Formula(), p2.Length1(), p2.Length1Formula(), 1);
     spl.SetApproximationScale(GetApproximationScale());
+    // The axis belongs to the anchor point, and it is the one that drives the handle on this side of it:
+    // carrying it over lets the segment behave like a simple curve, handles locked included.
+    spl.SetAxis1(p1.Axis());
+    spl.SetAxis2(p2.Axis());
     return spl;
 }
 

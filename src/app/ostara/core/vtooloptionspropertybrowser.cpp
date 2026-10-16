@@ -111,6 +111,8 @@ using namespace VtoppbConstants;
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtooltriangle.h"
 #include "../vtools/tools/drawTools/vtoolline.h"
 
+#include "ocurveaxissession.h"
+
 #include <QComboBox>
 #include <QDebug>
 #include <QDockWidget>
@@ -216,6 +218,39 @@ VToolOptionsPropertyBrowser::VToolOptionsPropertyBrowser(QWidget *parent)
 
     connect(m_PropertyModel, &VPE::VPropertyModel::onDataChangedByEditor, this,
             &VToolOptionsPropertyBrowser::userChangedData);
+
+    // The "angle by an axis" gesture. Created with the dock and idle most of the time; it is what the window
+    // routes canvas clicks to, so the dock is the only place that has to know it exists.
+    m_axisSession = new OCurveAxisSession(this);
+    connect(m_axisSession, &OCurveAxisSession::ShowStatusTip, this, &VToolOptionsPropertyBrowser::ShowStatusTip);
+    connect(m_axisSession, &OCurveAxisSession::HighlightPoint, this,
+            &VToolOptionsPropertyBrowser::HighlightPoint);
+    // The rows show the axis, its direction included: after a session they show another state.
+    connect(m_axisSession, &OCurveAxisSession::Finished, this, &VToolOptionsPropertyBrowser::RefreshOptions);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::StartAxisPicking(VToolAbstractCurve *tool, int slot, const QString &slotName)
+{
+    m_axisSession->Start(tool, slot, slotName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolOptionsPropertyBrowser::IsPickingAxisPoints() const -> bool
+{
+    return m_axisSession != nullptr && m_axisSession->IsRunning();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::OnAxisPointClicked(quint32 pointId)
+{
+    m_axisSession->OnPointClicked(pointId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolOptionsPropertyBrowser::CancelAxisPicking()
+{
+    m_axisSession->Cancel();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

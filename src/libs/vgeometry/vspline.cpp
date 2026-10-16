@@ -35,6 +35,7 @@
 #include <QtConcurrent>
 
 #include "../ifc/ifcdef.h"
+#include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/def.h"
 #include "../vmisc/defglobal.h"
 #include "../vmisc/vmath.h"
@@ -777,6 +778,42 @@ void VSpline::SetEndAngle(qreal angle, const QString &formula)
 {
     d->angle2 = angle;
     d->angle2F = formula;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSpline::GetAxis1() const -> OCurveAxis
+{
+    return d->axis1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSpline::GetAxis2() const -> OCurveAxis
+{
+    return d->axis2;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSpline::SetAxis1(const OCurveAxis &axis)
+{
+    d->axis1 = axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSpline::SetAxis2(const OCurveAxis &axis)
+{
+    d->axis2 = axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSpline::IsStartAngleFree() const -> bool
+{
+    return not d->axis1.IsValid() && qmu::QmuTokenParser::IsSingle(d->angle1F);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VSpline::IsEndAngleFree() const -> bool
+{
+    return not d->axis2.IsValid() && qmu::QmuTokenParser::IsSingle(d->angle2F);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -35,6 +35,7 @@
 #include <QTypeInfo>
 #include <QtGlobal>
 
+#include "ocurveaxis.h"
 #include "vpointf.h"
 
 class VFSplinePointData;
@@ -125,6 +126,15 @@ public:
 
     auto IsStrict() const -> bool;
     void SetStrict(bool value);
+
+    /** @brief The axis the two handle angles are taken from. An unknown axis means they are managed by hand. */
+    auto Axis() const -> OCurveAxis;
+    void SetAxis(const OCurveAxis &axis);
+
+    /** @brief Whether the handle can still be turned by the mouse: its angle is a plain number and no axis
+     *  drives it. An axis-driven handle only changes length. */
+    auto IsAngle1Free() const -> bool;
+    auto IsAngle2Free() const -> bool;
 
     auto ToJson() const -> QJsonObject;
 

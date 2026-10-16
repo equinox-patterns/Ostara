@@ -44,6 +44,8 @@ class QScrollArea;
 class QStackedWidget;
 class VFormula;
 class OPatternPropertiesWidget;
+class OCurveAxisSession;
+class VToolAbstractCurve;
 
 struct PropertyDesc;
 
@@ -75,6 +77,23 @@ public:
 
     void RetranslateUI();
 
+    /**
+     * @brief Starts the "angle by an axis" gesture on one handle of a curve.
+     *
+     * The gesture belongs to the dock because the dock is what offers it, and to a session object because it
+     * outlives a rebuild of the rows: see OCurveAxisSession.
+     */
+    void StartAxisPicking(VToolAbstractCurve *tool, int slot, const QString &slotName);
+
+    /** @brief True while that gesture waits for its two points: the window routes canvas clicks to it. */
+    auto IsPickingAxisPoints() const -> bool;
+
+    /** @brief One point clicked on the canvas, forwarded to the gesture. */
+    void OnAxisPointClicked(quint32 pointId);
+
+    /** @brief Gives up on the gesture, leaving the curve as it was. */
+    void CancelAxisPicking();
+
 public slots:
     void itemClicked(QGraphicsItem *item);
     void UpdateOptions();
@@ -87,6 +106,12 @@ signals:
      * combo), so the request is handed over and the window answers by actually renaming — or by refusing an
      * empty or already used name. */
     void PatternPieceRenameRequested(const QString &name);
+
+    /** @brief ShowStatusTip a sentence for the status bar, while a gesture is running. */
+    void ShowStatusTip(const QString &text);
+
+    /** @brief HighlightPoint the point a gesture has just taken, or gives one back. */
+    void HighlightPoint(quint32 pointId, bool highlight);
 
 private slots:
     void userChangedData(VPE::VProperty *property);
@@ -106,6 +131,9 @@ private:
     quint32 m_clickedObjectId{NULL_ID};
     QMap<VPE::VProperty *, QString> m_propertyToId{};
     QMap<QString, VPE::VProperty *> m_idToProperty{};
+
+    /** @brief The running "angle by an axis" gesture, created with the dock and idle most of the time. */
+    OCurveAxisSession *m_axisSession{nullptr};
 
     /** @brief Add a whole set of rows to the dock in one insertion: the form view rebuilds every editor on
      *  each insertion, so one by one they would cost n(n+1)/2 editor creations instead of n. */

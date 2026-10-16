@@ -834,8 +834,23 @@ void DialogSplinePath::SavePath()
 
     const quint32 d = path.GetDuplicate(); // Save previous value
     const qreal approximationScale = path.GetApproximationScale(); // Preserve across rebuild
+
+    // The state the dialog held before the table was read back: an angle the user wrote here differs from it,
+    // and that is what gives the axis of an anchor point up — an angle is either taken from the axis or written
+    // by hand, never composed of the two (see AngleParAxe.md).
+    const VSplinePath before = path;
+
     path.Clear();
     path = ExtractPath();
+
+    for (vsizetype i = 0; i < path.CountPoints() && i < before.CountPoints(); ++i)
+    {
+        OCurveAxis axis = path.at(i).Axis();
+        axis = AxisAfterHandWrittenAngle(axis, before.at(i).Angle1Formula(), path.at(i).Angle1Formula());
+        axis = AxisAfterHandWrittenAngle(axis, before.at(i).Angle2Formula(), path.at(i).Angle2Formula());
+        path[i].SetAxis(axis);
+    }
+
     path.SetApproximationScale(approximationScale);
     path.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     path.SetColor(GetColorComboCurrentName(m_colorCombo));

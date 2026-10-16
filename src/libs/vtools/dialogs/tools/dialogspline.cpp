@@ -306,7 +306,15 @@ void DialogSpline::SaveSpline()
     const quint32 d = spl.GetDuplicate(); // Save previous value
     const qreal approximationScale = spl.GetApproximationScale(); // Preserve across rebuild
 
+    // The axes survive the rebuild — they are what the handles take their angles from, and this dialog must not
+    // be the place where a delegation is lost — unless the user wrote an angle here, which gives it up: an
+    // angle is either taken from the axis or written by hand, never composed of the two (see AngleParAxe.md).
+    const OCurveAxis axis1 = AxisAfterHandWrittenAngle(spl.GetAxis1(), spl.GetStartAngleFormula(), angle1F);
+    const OCurveAxis axis2 = AxisAfterHandWrittenAngle(spl.GetAxis2(), spl.GetEndAngleFormula(), angle2F);
+
     spl = VSpline(*GetP1(), *GetP4(), angle1, angle1F, angle2, angle2F, length1, length1F, length2, length2F);
+    spl.SetAxis1(axis1);
+    spl.SetAxis2(axis2);
     spl.SetApproximationScale(approximationScale);
     spl.SetPenStyle(GetComboBoxCurrentData(ui->comboBoxPenStyle, TypeLineLine));
     spl.SetColor(GetColorComboCurrentName(m_colorCombo));

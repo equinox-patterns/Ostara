@@ -164,6 +164,14 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData, const QSharedPoi
     const bool curveUnique = initData.data->IsUnique(curve->name());
     const QString curveName = curve->name();
 
+    // An axis only fills the angles of its anchor point: what is stored stays a plain number, which is what
+    // keeps the file readable and every other reader of an angle working. Done before the object is published,
+    // so the very first geometry already follows the axis.
+    for (vsizetype i = 0; i < curve->CountPoints(); ++i)
+    {
+        VToolAbstractCurve::ApplyAxes((*curve)[i], initData.data);
+    }
+
     if (initData.typeCreation == Source::FromGui)
     {
         initData.id = initData.data->AddGObject(curve);
@@ -206,6 +214,18 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData, const QSharedPoi
         patternGraph->AddEdge(pId, initData.id);
     }
 
+    // The axis points are dependencies of the curve, exactly as the anchor points are: declared here, on the
+    // path both the reader and the interface take, so the curve follows a point of another block and cannot
+    // outlive one of its axis points.
+    for (vsizetype i = 0; i < curve->CountPoints(); ++i)
+    {
+        if (const OCurveAxis axis = curve->at(i).Axis(); axis.IsValid())
+        {
+            patternGraph->AddEdge(axis.P1(), initData.id);
+            patternGraph->AddEdge(axis.P2(), initData.id);
+        }
+    }
+
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
         initData.doc->UpdateToolData(initData.id, initData.data);
@@ -245,8 +265,10 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData) -> VToolSplinePa
 
         const auto p = *initData.data->GeometricObject<VPointF>(initData.points.at(i));
 
-        path->append(VSplinePoint(p, calcAngle1, initData.a1.at(i), calcAngle2, initData.a2.at(i), calcLength1,
-                                  initData.l1.at(i), calcLength2, initData.l2.at(i)));
+        VSplinePoint point(p, calcAngle1, initData.a1.at(i), calcAngle2, initData.a2.at(i), calcLength1,
+                           initData.l1.at(i), calcLength2, initData.l2.at(i));
+        point.SetAxis(initData.axes.value(i));
+        path->append(point);
     }
 
     path->SetColor(initData.color);
@@ -456,12 +478,11 @@ void VToolSplinePath::InitControlPoints(const VSplinePath *splPath)
         if (i > 1)
         {
             const VSpline prevSpl = splPath->GetSpline(i - 1);
-            freeAngle1 = qmu::QmuTokenParser::IsSingle(spl.GetStartAngleFormula()) &&
-                         qmu::QmuTokenParser::IsSingle(prevSpl.GetEndAngleFormula());
+            freeAngle1 = spl.IsStartAngleFree() && prevSpl.IsEndAngleFree();
         }
         else
         {
-            freeAngle1 = qmu::QmuTokenParser::IsSingle(spl.GetStartAngleFormula());
+            freeAngle1 = spl.IsStartAngleFree();
         }
 
         const bool freeLength1 = qmu::QmuTokenParser::IsSingle(spl.GetC1LengthFormula());
@@ -475,12 +496,11 @@ void VToolSplinePath::InitControlPoints(const VSplinePath *splPath)
         if (i < splPath->CountSubSpl())
         {
             const VSpline nextSpl = splPath->GetSpline(i + 1);
-            freeAngle2 = qmu::QmuTokenParser::IsSingle(nextSpl.GetStartAngleFormula()) &&
-                         qmu::QmuTokenParser::IsSingle(spl.GetEndAngleFormula());
+            freeAngle2 = nextSpl.IsStartAngleFree() && spl.IsEndAngleFree();
         }
         else
         {
-            freeAngle2 = qmu::QmuTokenParser::IsSingle(spl.GetEndAngleFormula());
+            freeAngle2 = spl.IsEndAngleFree();
         }
 
         const bool freeLength2 = qmu::QmuTokenParser::IsSingle(spl.GetC2LengthFormula());
@@ -543,6 +563,88 @@ void VToolSplinePath::setSplinePath(const VSplinePath &splPath)
     QSharedPointer<VSplinePath> const splinePath = qSharedPointerDynamicCast<VSplinePath>(obj);
     *splinePath.data() = splPath;
     SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::PreviewPath(const VSplinePath &splPath)
+{
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    QSharedPointer<VSplinePath> const splinePath = qSharedPointerDynamicCast<VSplinePath>(obj);
+    *splinePath.data() = splPath;
+
+    // No SaveOption: the file keeps its own copy of the curve until the preview is validated, which is what
+    // lets the user walk away from the axis window leaving nothing behind. RefreshGeometry() recomputes the
+    // painter path and the handles from the container, and the scene rect follows the new shape — exactly what
+    // every other change of geometry does.
+    RefreshGeometry();
+
+    if (QGraphicsScene *sc = scene())
+    {
+        VMainGraphicsView::NewSceneRect(sc, VAbstractValApplication::VApp()->getSceneView(), this);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSplinePath::AxisSlotCount() const -> int
+{
+    // One slot per anchor point: its two handles follow the same line, on either side of the point.
+    return static_cast<int>(getSplinePath().CountPoints());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSplinePath::AxisSlot(int slot) const -> OCurveAxis
+{
+    const VSplinePath path = getSplinePath();
+    const auto index = static_cast<vsizetype>(slot);
+    return index >= 0 && index < path.CountPoints() ? path.at(index).Axis() : OCurveAxis();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::PreviewAxis(int slot, const OCurveAxis &axis)
+{
+    const VSplinePath path = getSplinePath();
+    const auto index = static_cast<vsizetype>(slot);
+    if (index < 0 || index >= path.CountPoints())
+    {
+        return;
+    }
+
+    if (axisPreviewStart.isNull())
+    {
+        axisPreviewStart = QSharedPointer<VSplinePath>::create(path);
+    }
+
+    VSplinePath previewed = path;
+    previewed[index].SetAxis(axis);
+    VToolAbstractCurve::ApplyAxes(previewed[index], getData());
+    PreviewPath(previewed);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::CommitAxis()
+{
+    if (axisPreviewStart.isNull())
+    {
+        return;
+    }
+    axisPreviewStart.clear();
+
+    // The file never heard of the preview, so the command it pushes holds the whole story: its old element is
+    // the path as it was before, its new one what is now shown.
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::RevertAxis()
+{
+    if (axisPreviewStart.isNull())
+    {
+        return;
+    }
+    const QSharedPointer<VSplinePath> start = axisPreviewStart;
+    axisPreviewStart.clear();
+    PreviewPath(*start);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -623,6 +725,8 @@ void VToolSplinePath::AddPathPoint(VAbstractPattern *doc, QDomElement &domElemen
     doc->SetAttribute(pathPoint, AttrLength2, splPoint.Length2Formula());
     doc->SetAttribute(pathPoint, AttrAngle1, splPoint.Angle1Formula());
     doc->SetAttribute(pathPoint, AttrAngle2, splPoint.Angle2Formula());
+
+    VToolAbstractCurve::SaveAxis(doc, pathPoint, splPoint.Axis(), AttrAxisP1, AttrAxisP2, AttrAxisSense);
 
     if (domElement.hasAttribute(AttrKAsm1))
     {
@@ -918,12 +1022,11 @@ void VToolSplinePath::RefreshCtrlPoints()
             if (i > 1)
             {
                 const VSpline prevSpl = splPath->GetSpline(i - 1);
-                freeAngle1 = qmu::QmuTokenParser::IsSingle(spl.GetStartAngleFormula()) &&
-                             qmu::QmuTokenParser::IsSingle(prevSpl.GetEndAngleFormula());
+                freeAngle1 = spl.IsStartAngleFree() && prevSpl.IsEndAngleFree();
             }
             else
             {
-                freeAngle1 = qmu::QmuTokenParser::IsSingle(spl.GetStartAngleFormula());
+                freeAngle1 = spl.IsStartAngleFree();
             }
 
             const bool freeLength1 = qmu::QmuTokenParser::IsSingle(spl.GetC1LengthFormula());
@@ -940,12 +1043,11 @@ void VToolSplinePath::RefreshCtrlPoints()
             if (i < splPath->CountSubSpl())
             {
                 const VSpline nextSpl = splPath->GetSpline(i + 1);
-                freeAngle2 = qmu::QmuTokenParser::IsSingle(nextSpl.GetStartAngleFormula()) &&
-                             qmu::QmuTokenParser::IsSingle(spl.GetEndAngleFormula());
+                freeAngle2 = nextSpl.IsStartAngleFree() && spl.IsEndAngleFree();
             }
             else
             {
-                freeAngle2 = qmu::QmuTokenParser::IsSingle(spl.GetEndAngleFormula());
+                freeAngle2 = spl.IsEndAngleFree();
             }
 
             const bool freeLength2 = qmu::QmuTokenParser::IsSingle(spl.GetC2LengthFormula());

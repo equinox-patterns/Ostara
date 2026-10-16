@@ -635,6 +635,12 @@
                                     <xs:attribute name="length1" type="xs:string"/>
                                     <xs:attribute name="length2" type="xs:string"/>
                                     <xs:attribute name="kAsm1" type="xs:string"/>
+                                    <!-- The axis a path point derives its two handle angles from: two point ids
+                                         (remapped automatically on insert, hence xs:unsignedInt) and one sense.
+                                         Absent attributes mean the angles are not delegated. -->
+                                    <xs:attribute name="axisP1" type="xs:unsignedInt"/>
+                                    <xs:attribute name="axisP2" type="xs:unsignedInt"/>
+                                    <xs:attribute name="axisSense" type="curveAxisSenseType"/>
                                   </xs:complexType>
                                 </xs:element>
                               </xs:sequence>
@@ -678,6 +684,14 @@
                           <xs:attribute name="radius" type="xs:string"/>
                           <xs:attribute name="length" type="xs:string"/>
                           <xs:attribute name="angle" type="xs:string"/> 
+                          <!-- One axis slot per end of a simple curve: axis1* drives angle1 (end point1),
+                               axis2* drives angle2 (end point4). See pathPoint above. -->
+                          <xs:attribute name="axis1P1" type="xs:unsignedInt"/>
+                          <xs:attribute name="axis1P2" type="xs:unsignedInt"/>
+                          <xs:attribute name="axis1Sense" type="curveAxisSenseType"/>
+                          <xs:attribute name="axis2P1" type="xs:unsignedInt"/>
+                          <xs:attribute name="axis2P2" type="xs:unsignedInt"/>
+                          <xs:attribute name="axis2Sense" type="curveAxisSenseType"/>
                         </xs:complexType>
                       </xs:element>
                     </xs:choice>
@@ -1801,6 +1815,17 @@
     <xs:restriction base="xs:unsignedInt">
       <xs:enumeration value="1"/>
       <xs:enumeration value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <!-- Which of the four directions a curve handle takes from its axis (point A -> point B).
+       Flipping the sense and flipping the handle are the same 180 degrees, so four states cover
+       both handles of a path point: no need for a per-handle sense. -->
+  <xs:simpleType name="curveAxisSenseType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="line"/>
+      <xs:enumeration value="lineReverse"/>
+      <xs:enumeration value="perpendicular"/>
+      <xs:enumeration value="perpendicularReverse"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="labelPrefixType">

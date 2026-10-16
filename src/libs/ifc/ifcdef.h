@@ -151,6 +151,14 @@ extern const QString TagPathPoint;
 extern const QString AttrPSpline;
 extern const QString AttrAxisP1;
 extern const QString AttrAxisP2;
+// The axis of a curve handle, on <spline> (two slots, one per end) and on <pathPoint> (one per anchor point).
+extern const QString AttrAxisSense;
+extern const QString AttrAxis1P1;
+extern const QString AttrAxis1P2;
+extern const QString AttrAxis1Sense;
+extern const QString AttrAxis2P1;
+extern const QString AttrAxis2P2;
+extern const QString AttrAxis2Sense;
 extern const QString AttrCurve;
 extern const QString AttrCurve1;
 extern const QString AttrCurve2;
@@ -231,6 +239,12 @@ extern const QString TypeLineDashLine;
 extern const QString TypeLineDotLine;
 extern const QString TypeLineDashDotLine;
 extern const QString TypeLineDashDotDotLine;
+
+// The four directions a curve handle can take from its axis (see OCurveAxis).
+extern const QString CurveAxisSenseLine;
+extern const QString CurveAxisSenseLineReverse;
+extern const QString CurveAxisSensePerpendicular;
+extern const QString CurveAxisSensePerpendicularReverse;
 
 auto StylesList() -> QStringList;
 auto LineStyleToPenStyle(const QString &typeLine) -> Qt::PenStyle;

@@ -61,6 +61,25 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Reads the three attributes an axis is made of: two point ids and a sense.
+ *
+ *  Absence of the pair is meaningful — it is how the file says the angle is managed by hand — so a missing id
+ *  comes back as NULL_ID and the axis answers IsValid() with false. An unreadable sense falls back to "line",
+ *  the direction of the axis itself, which is the least surprising reading of a damaged file. */
+auto ReadCurveAxis(const QDomElement &element, const QString &attrP1, const QString &attrP2, const QString &attrSense)
+    -> OCurveAxis
+{
+    const quint32 p1 = VDomDocument::GetParametrUInt(element, attrP1, NULL_ID_STR);
+    const quint32 p2 = VDomDocument::GetParametrUInt(element, attrP2, NULL_ID_STR);
+    const QString sense = VDomDocument::GetParametrEmptyString(element, attrSense);
+
+    return {p1, p2, OCurveAxis::SenseFromName(sense)};
+}
+} // namespace
+
 
 //---------------------------------------------------------------------------------------------------------------------
 // TODO. Delete if minimal supported version is 0.2.7
@@ -136,6 +155,9 @@ void VPattern::ParseToolSpline(VMainGraphicsScene *scene, QDomElement &domElemen
 
         initData.a2 = GetParametrString(domElement, AttrAngle2, QChar('0'));
         const QString angle2 = initData.a2; // need for saving fixed formula;
+
+        initData.axis1 = ReadCurveAxis(domElement, AttrAxis1P1, AttrAxis1P2, AttrAxis1Sense);
+        initData.axis2 = ReadCurveAxis(domElement, AttrAxis2P1, AttrAxis2P2, AttrAxis2Sense);
 
         initData.l1 = GetParametrString(domElement, AttrLength1, QChar('0'));
         const QString length1 = initData.l1; // need for saving fixed formula;
@@ -394,6 +416,7 @@ void VPattern::ParseToolSplinePath(VMainGraphicsScene *scene, const QDomElement 
                 initData.a2.append(GetParametrString(element, AttrAngle2, QChar('0')));
                 initData.l1.append(GetParametrString(element, AttrLength1, QChar('0')));
                 initData.l2.append(GetParametrString(element, AttrLength2, QChar('0')));
+                initData.axes.append(ReadCurveAxis(element, AttrAxisP1, AttrAxisP2, AttrAxisSense));
                 const quint32 pSpline = GetParametrUInt(element, AttrPSpline, NULL_ID_STR);
                 initData.points.append(pSpline);
             }

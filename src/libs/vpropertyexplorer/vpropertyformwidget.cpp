@@ -308,6 +308,21 @@ void VPE::VPropertyFormWidget::buildGroupChildren(VProperty *group, QFormLayout 
     for (int j = 0; j < children.size(); ++j)
     {
         VProperty *const child = children[j];
+
+        // A widget row — a button a dock offers, such as the axis of a curve handle — belongs inside its group as
+        // much as at the top level. VWidgetProperty has no editor of its own (it hosts the caller's widget), so
+        // without this branch the group's form would fall back to a line edit beside the widget's name, and the
+        // button would never be seen: exactly what the top-level loop avoids a few lines below.
+        if (child->type() == "widget")
+        {
+            auto *widgetProperty = static_cast<VWidgetProperty *>(child);
+            subFormLayout->addRow(widgetProperty->getWidget());
+            ++i;
+            vproperty_d_ptr->Properties.insert(i, child);
+            vproperty_d_ptr->EditorWidgets.append(VPropertyFormWidgetPrivate::SEditorWidget(widgetProperty->getWidget()));
+            continue;
+        }
+
         if (child->propertyType() == Property::Complex)
         {
             // A Complex child (e.g. VFormulaProperty) renders as a bold row plus an indented sub-frame holding its
