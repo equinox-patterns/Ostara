@@ -1505,13 +1505,16 @@ void MainWindow::ExportOutputToCuttingFile(quint32 id)
     QStringList failed;
     for (const OExportCuttingFile::Target &target : dialog.Targets())
     {
-        if (OExportCuttingFile::Write(target.path, *existing, dialog.Options(), target.material))
+        QString why;
+        if (OExportCuttingFile::Write(target.path, *existing, dialog.Options(), target.material, &why))
         {
             written.append(target.path);
         }
         else
         {
-            failed.append(target.path);
+            // Le chemin, et POURQUOI quand l'écrivain le sait : un plan généré avant la géométrie sans
+            // marges se régénère, et une boîte qui ne dit que « ça n'a pas marché » laisse chercher.
+            failed.append(why.isEmpty() ? target.path : target.path + QStringLiteral("\n") + why);
         }
     }
 

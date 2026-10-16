@@ -66,8 +66,14 @@ auto PlanRect(const OExportNestingResult &result) -> QRectF
 /// Les deux listes arrivent en paramètres — et non la génération — parce qu'une génération en porte
 /// DEUX jeux : celui du tissu et celui de la doublure. L'appelant a déjà choisi sa nappe, et cette
 /// fonction n'a pas à savoir qu'il y en a une autre.
-auto PlacedPieces(const QVector<OExportSizeLayer> &layers, const OExportNestingResult &result)
-    -> QVector<VLayoutPiece>
+///
+/// ⚠️ @a withoutSeamAllowance prend la **variante sans marges** que le plan porte à côté de chaque
+/// pièce (voir @ref OExportPieceGeometry::withoutSeamAllowance). Ce n'est pas un autre dessin : c'est
+/// la même pièce, au même endroit, sans ses valeurs de couture — Clo3D et Style3D assemblent bord à
+/// bord, et c'est cette géométrie-là qu'ils lisent. Le placement, lui, ne change pas : il vient du
+/// nesting du plan, donc de la pièce AVEC ses marges, et les deux versions se superposent.
+auto PlacedPieces(const QVector<OExportSizeLayer> &layers, const OExportNestingResult &result,
+                  bool withoutSeamAllowance, int *missing) -> QVector<VLayoutPiece>
 {
     QVector<VLayoutPiece> placed;
 
@@ -85,9 +91,36 @@ auto PlacedPieces(const QVector<OExportSizeLayer> &layers, const OExportNestingR
                     continue;
                 }
 
-                VLayoutPiece piece = geometry.piece;
-                piece.SetMatrix(geometry.piece.GetMatrix() *
-                                OExportFootprint::PieceMatrix(placement, geometry.alignDelta));
+                const VLayoutPiece *source = &geometry.piece;
+                if (withoutSeamAllowance)
+                {
+                    if (geometry.withoutSeamAllowance.has_value())
+                    {
+                        source = &*geometry.withoutSeamAllowance;
+                    }
+                    else if (geometry.piece.IsSeamAllowance())
+                    {
+                        // ⚠️ **Ce cas-là est le seul qui manque vraiment** : la pièce a une marge dans
+                        // le patron et sa variante n'a pas été construite — un plan d'avant cette
+                        // version. On la compte, et l'appelant refuse d'écrire : la sortir avec ses
+                        // marges serait un fichier faux qui a l'air juste.
+                        //
+                        // ⛔ **Une pièce SANS marge n'est PAS ce cas**, et c'est l'erreur qui a fait
+                        // refuser l'export d'un plan tout neuf : la géométrie ne lui construit pas de
+                        // variante, parce qu'elle **est** déjà la pièce sans marge — la copie serait
+                        // identique au point près. Elle s'écrit donc telle quelle, sans rien substituer.
+                        qWarning() << "OExportCuttingFile: no seam-allowance-free geometry for"
+                                   << geometry.name;
+                        if (missing != nullptr)
+                        {
+                            ++(*missing);
+                        }
+                        continue;
+                    }
+                }
+
+                VLayoutPiece piece = *source;
+                piece.SetMatrix(source->GetMatrix() * OExportFootprint::PieceMatrix(placement, geometry.alignDelta));
 
                 // « Coupé au pli » is a caption, and a cutting plan carries none: the canvas drops
                 // it too, for the same reason and in the same words.
@@ -240,7 +273,7 @@ auto OExportCuttingFile::PlanName(const OExportOutput &output, OExportCuttingGua
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output, const Options &options,
-                               OExportCuttingGuard::Material material) -> bool
+                               OExportCuttingGuard::Material material, QString *reason) -> bool
 {
     // **La nappe demandée, et rien d'autre.** Le plan de tissu est là où il a toujours été ; celui de
     // doublure vit à côté de lui, et une génération qui n'en porte pas n'a rien à écrire pour cette
@@ -253,13 +286,51 @@ auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output,
     if (path.isEmpty() || not carried || not result.ok || layers.isEmpty())
     {
         qWarning() << "OExportCuttingFile: the generation cannot be reproduced";
+        if (reason != nullptr)
+        {
+            *reason = QCoreApplication::translate("OExportCuttingFile", "There is no plan to write.");
+        }
         return false;
     }
 
-    const QVector<VLayoutPiece> pieces = PlacedPieces(layers, result);
+    // ── Clo3D/Style3D : la même pièce, sans ses valeurs de couture ────────────────────────────────
+    //
+    // ⚠️ **C'est le choix de la GÉOMÉTRIE écrite, pas seulement des calques.** Clo3D et Style3D
+    // assemblent bord à bord, sans marges : le plan porte donc, à côté de chaque pièce, la version
+    // sans marges — construite à la génération, parce qu'un `VLayoutPiece` ne se dé-marge pas après
+    // coup — et c'est elle que le fichier écrit. Le placement, lui, ne bouge pas : il vient du nesting
+    // du plan, donc de la pièce avec ses marges, et les deux se superposent.
+    //
+    // La compatibilité n'est offerte que pour AAMA/ASTM, et `Options()` rend `STANDARD` pour tout le
+    // reste : il n'y a donc rien d'autre à tester ici.
+    const bool withoutSeamAllowance = options.compatibility == DXFApparelCompatibility::CLO3D;
+
+    int missing = 0;
+    const QVector<VLayoutPiece> pieces = PlacedPieces(layers, result, withoutSeamAllowance, &missing);
+
+    // ⚠️ **Un plan généré avant cette version n'a pas la géométrie sans marges**, et c'est la seule
+    // façon qu'une pièce la manque : elle est construite avec le plan, sur un plan de coupe. On refuse
+    // d'écrire — un fichier Clo3D aux pièces margées serait faux et aurait l'air juste — et on dit
+    // quoi faire, parce que c'est une action de l'utilisatrice, pas un défaut à subir.
+    if (missing > 0)
+    {
+        if (reason != nullptr)
+        {
+            *reason = QCoreApplication::translate(
+                "OExportCuttingFile",
+                "This plan was generated before the seam-allowance-free geometry existed: generate it "
+                "again, then export it as Clo3D/Style3D.");
+        }
+        return false;
+    }
+
     if (pieces.isEmpty())
     {
         qWarning() << "OExportCuttingFile: the plan holds no piece to write";
+        if (reason != nullptr)
+        {
+            *reason = QCoreApplication::translate("OExportCuttingFile", "The plan holds no piece to write.");
+        }
         return false;
     }
 

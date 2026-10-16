@@ -154,6 +154,7 @@ void MainWindow::ExportSeveralOutputs()
         }
 
         bool ok = false;
+        QString why; // ce qui a empêché l'écriture, dans les mots de l'utilisatrice
         if (category == OExportBatchDialog::OutputCategory::Cutting)
         {
             // Le plan de coupe s'écrit avec le réglage **commun** de la page — un lot est un format —
@@ -162,7 +163,7 @@ void MainWindow::ExportSeveralOutputs()
             // écrite** : sur une paire, une ligne est le tissu et l'autre la doublure. Une génération
             // dont le nesting a échoué n'a pas de plan à écrire, et l'écrivain le dit lui-même : une
             // nappe qu'elle ne porte pas n'écrit rien plutôt que d'écrire un fichier vide.
-            ok = OExportCuttingFile::Write(path, *output, cuttingOptions, row.material);
+            ok = OExportCuttingFile::Write(path, *output, cuttingOptions, row.material, &why);
         }
         else if (category == OExportBatchDialog::OutputCategory::Plotter)
         {
@@ -192,8 +193,9 @@ void MainWindow::ExportSeveralOutputs()
         else
         {
             // Une génération qui ne s'écrit pas n'arrête pas les autres : elles ont été demandées
-            // aussi, et la ligne fautive se dit à la fin avec les autres.
-            failed.append(row.name);
+            // aussi, et la ligne fautive se dit à la fin avec les autres — **et avec sa raison**,
+            // quand l'écrivain en a une : « ça n'a pas marché » n'apprend rien à personne.
+            failed.append(why.isEmpty() ? row.name : row.name + QStringLiteral("\n") + why);
         }
     }
 

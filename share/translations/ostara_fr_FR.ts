@@ -6248,11 +6248,11 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>Valeur</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1688"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="112"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="204"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance_grainline.cpp" line="228"/>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Droit-fil</translation>
     </message>
@@ -6581,9 +6581,9 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>&lt;Empty&gt;</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="514"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogseamallowance.cpp" line="1691"/>
-        <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <source>Fold line</source>
         <translation>Ligne de pli</translation>
     </message>
@@ -7896,8 +7896,8 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
 <context>
     <name>FoldLine</name>
     <message>
-        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
         <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
+        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="624"/>
         <source>Cut On Fold</source>
         <translation>Couper au pli</translation>
     </message>
@@ -8052,7 +8052,7 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
 <context>
     <name>InitPieceLabelLanguages</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="678"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="677"/>
         <source>Default</source>
         <translation>Par défaut</translation>
     </message>
@@ -8810,8 +8810,8 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="813"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="247"/>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="254"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="261"/>
         <source>Detail mode</source>
         <translation>Mode Pièces</translation>
     </message>
@@ -8854,7 +8854,7 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>Mensurations rechargées</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="321"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="328"/>
         <source>You can&apos;t export empty scene.</source>
         <translation>Impossible d&apos;exporter, l&apos;espace de travail est vide.</translation>
     </message>
@@ -8896,25 +8896,25 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>La méthode %1 n&apos;a aucun effet en mode d&apos;interface</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="264"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="367"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="271"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="383"/>
         <source>Export error.</source>
         <translation>Erreur d&apos;exportation.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="255"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="262"/>
         <source>The files were successfully exported to:
 %1</source>
         <translation>Les fichiers ont bien été exportés dans :
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="309"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="316"/>
         <source>The console layout export is gone with the Layout mode. Use --exportOnlyDetails, or the Export mode, to export a cutting plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&amp;apos;export de mise en page en ligne de commande s&amp;apos;en est allé avec le mode Layout. Utilisez --exportOnlyDetails, ou le mode Export, pour exporter un plan de coupe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="454"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="470"/>
         <source>Please, provide one input file.</source>
         <translation>Merci de choisir un fichier.</translation>
     </message>
@@ -9148,17 +9148,17 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>Enregistrer…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="331"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="338"/>
         <source>You can&apos;t export empty scene. Please, include at least one detail in layout.</source>
         <translation>Vous ne pouvez pas exporter, car aucune pièce n&apos;est intégrée pour transfert dans le plan de coupe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="388"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="404"/>
         <source>Export final measurements error.</source>
         <translation>Erreur d&apos;exportation des mesures finales.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="389"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="405"/>
         <source>Destination path is empty.</source>
         <translation>Le chemin de destination est vide.</translation>
     </message>
@@ -9249,22 +9249,22 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1171"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="277"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="284"/>
         <source>Export recipe</source>
         <translation>Exporter les étapes de traçage</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="275"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="282"/>
         <source>Recipe files</source>
         <translation>Fichiers des étapes de traçage</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="277"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="284"/>
         <source>recipe</source>
         <translation>historique</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="290"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="297"/>
         <source>Could not save recipe. %1</source>
         <translation>Impossible d&apos;exporter l&apos;historique. %1</translation>
     </message>
@@ -9771,7 +9771,7 @@ Ostara utilise le format .omt/.otu. Choisissez comment procéder :</translation>
         <translation>Impossible de définir la dimension C. Le fichier n&apos;a pas été ouvert.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="295"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="302"/>
         <source>Could not create recipe file. %1</source>
         <translation>Impossible de créer le fichier d&apos;historique. %1</translation>
     </message>
@@ -9996,7 +9996,7 @@ Voulez-vous le remplacer ?</translation>
         <translation>Le fichier SVG n&apos;a pas pu être écrit.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="248"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="255"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="625"/>
         <source>The file &quot;%1&quot; was successfully exported to:
 %2</source>
@@ -10033,12 +10033,12 @@ Voulez-vous le remplacer ?</translation>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1430"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1463"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1471"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1527"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1534"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1669"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1680"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="234"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="246"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1530"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1537"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1672"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1683"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="236"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="248"/>
         <source>Export mode</source>
         <translation>Mode Export</translation>
     </message>
@@ -10149,14 +10149,14 @@ Cette action ne peut pas être annulée.</translation>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1423"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1464"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1528"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1531"/>
         <source>&quot;%1&quot; could not be exported.</source>
         <translation>« %1 » n&apos;a pas pu être exporté.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1431"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1472"/>
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1535"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1538"/>
         <source>&quot;%1&quot; was exported to
 %2</source>
         <translation>« %1 » a été exporté dans
@@ -10216,8 +10216,8 @@ Cette action ne peut pas être annulée.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1661"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="212"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1664"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="214"/>
         <source>%n file(s) written to %1</source>
         <translation>
             <numerusform>%n fichier écrit dans %1</numerusform>
@@ -10225,8 +10225,8 @@ Cette action ne peut pas être annulée.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1677"/>
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="243"/>
+        <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1680"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="245"/>
         <source>%n file(s) could not be written:</source>
         <translation>
             <numerusform>%n fichier n&apos;a pas pu être écrit :</numerusform>
@@ -10234,7 +10234,7 @@ Cette action ne peut pas être annulée.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="226"/>
+        <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="228"/>
         <source>%n file(s) left untouched:</source>
         <translation>
             <numerusform>%n fichier laissé intact :</numerusform>
@@ -10250,7 +10250,7 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>MainWindowsNoGUI</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1149"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1159"/>
         <source>unnamed</source>
         <translation>Sans nom</translation>
     </message>
@@ -10262,72 +10262,72 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Impossible de créer l&apos;emplacement</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="899"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="902"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="900"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="903"/>
         <source>Preparing details for layout</source>
         <translation>Préparation des pièces pour l&apos;édition du plan de coupe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="700"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1014"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1024"/>
         <source>Pattern</source>
         <translation>Patron</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1166"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1176"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1167"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1177"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1194"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1206"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1224"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1204"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1216"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1234"/>
         <source>Export final measurements error.</source>
         <translation>Erreur d&apos;exportation des mesures finales.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1196"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1206"/>
         <source>Value in line %1 is infinite or NaN. Please, check your calculations.</source>
         <translation>Résultat invalide. La valeur %1 est infinie ou n&apos;est pas une valeur numérique. Veuillez vérifier vos calculs.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1207"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1217"/>
         <source>Parser error at line %1: %2.</source>
         <translation>Erreur d&apos;analyse à la ligne %1 : %2.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1225"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1235"/>
         <source>File error %1.</source>
         <translation>Erreur de fichier %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1168"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1178"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1279"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1289"/>
         <source>Measurement file has unknown format.</source>
         <translation>La table de mensurations est de format inconnu.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1302"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1365"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1312"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1375"/>
         <source>File error.</source>
         <translation>Erreur de fichier.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1366"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1376"/>
         <source>Measurement file doesn&apos;t include all required measurements.</source>
         <translation>Des mensurations requises manquent dans la table de mesures que vous voulez charger.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1372"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1382"/>
         <source>Measurement file doesn&apos;t include all required measurements.
 
 Missing: %1
@@ -10340,29 +10340,29 @@ Manquant : %1
 Voulez-vous charger un autre fichier de mesures ?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1375"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1385"/>
         <source>Missing Measurements</source>
         <translation>Mensurations manquantes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1398"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1408"/>
         <source>Select Measurement File</source>
         <translation>Sélectionner le fichier de mesures</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1390"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1394"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1400"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1404"/>
         <source>Multisize measurements</source>
         <translation>Mensurations multi-tailles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1390"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1394"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1400"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1404"/>
         <source>Individual measurements</source>
         <translation>Mensurations individuelles</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1367"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1377"/>
         <source>Please, additionally provide: %1</source>
         <translation>Merci de spécifier aussi : %1</translation>
     </message>
@@ -13370,12 +13370,27 @@ Cette action ne peut pas être annulée.</translation>
 <context>
     <name>OExportCuttingFile</name>
     <message>
-        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="236"/>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="261"/>
         <source>Fabric</source>
         <translation>Tissu</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="235"/>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="283"/>
+        <source>There is no plan to write.</source>
+        <translation>Il n&apos;y a aucun plan à écrire.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="311"/>
+        <source>This plan was generated before the seam-allowance-free geometry existed: generate it again, then export it as Clo3D/Style3D.</source>
+        <translation>Ce plan a été généré avant que la géométrie sans valeurs de couture n&apos;existe : régénérez-le, puis exportez-le en Clo3D/Style3D.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="324"/>
+        <source>The plan holds no piece to write.</source>
+        <translation>Ce plan ne porte aucune pièce à écrire.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="260"/>
         <source>Lining</source>
         <translation>Doublure</translation>
     </message>
@@ -13406,47 +13421,52 @@ Cette action ne peut pas être annulée.</translation>
         <translation>Exporte les pièces comme si leur contour principal était visible : chaque pièce a alors sa ligne de coupe et sa ligne de couture. Rien n&apos;est modifié dans le patron.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="225"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="62"/>
+        <source>Which CAD reads this file. Clo3D/Style3D assemble edge to edge, with no seam allowances: the pieces are written WITHOUT them, exactly as if every piece of the pattern had its seam allowance switched off. Nothing is changed in the pattern - the plan on screen keeps its own margins.</source>
+        <translation>Le CAD qui lit ce fichier. Clo3D et Style3D assemblent bord à bord, sans valeurs de couture : les pièces sont écrites SANS elles, exactement comme si chaque pièce du patron avait sa marge de couture désactivée. Rien n&apos;est modifié dans le patron — le plan à l&apos;écran garde ses marges.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="239"/>
         <source>By standard</source>
         <translation>Standard</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="239"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="253"/>
         <source>File format:</source>
         <translation>Format du fichier :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="240"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="254"/>
         <source>Type:</source>
         <translation>Type :</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="241"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="255"/>
         <source>Binary form</source>
         <translation>Format binaire</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="242"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="256"/>
         <source>Text as paths</source>
         <translation>Texte en chemins</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="243"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="257"/>
         <source>Show grainline</source>
         <translation>Exporter le droit-fil</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="244"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="258"/>
         <source>Boundary together with notches</source>
         <translation>Intégrer la marge de couture dans les crans d&apos;assemblage</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="259"/>
         <source>Show the main path, even when the pieces hide it</source>
         <translation>Afficher le contour principal, même quand les pièces le cachent</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="246"/>
+        <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="260"/>
         <source>Compatibility:</source>
         <translation>Compatibilité :</translation>
     </message>
@@ -18516,101 +18536,21 @@ This option will take an affect after restart.</source>
         <source>Based on Qt %1 (%2, %3 bit)</source>
         <translation>S&apos;appuie sur Qt %1 (%2, %3 bit)</translation>
     </message>
-    <message>
-        <location filename="../../src/libs/vgeometry/vgeometrydef.cpp" line="119"/>
-        <source>VLayoutPassmark prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe VLayoutPassmark : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vgeometry/vgeometrydef.cpp" line="131"/>
-        <source>VLayoutPassmark compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VLayoutPassmark : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vgeometry/vlayoutplacelabel.cpp" line="75"/>
-        <source>VLayoutPlaceLabel prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe VLayoutPlaceLabel : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vgeometry/vlayoutplacelabel.cpp" line="88"/>
-        <source>VLayoutPlaceLabel compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VLayoutPlaceLabel : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece_p.h" line="143"/>
-        <source>VAbstractPieceData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe VAbstractPieceData : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece_p.h" line="156"/>
-        <source>VAbstractPieceData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VAbstractPieceData : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiecepath_p.h" line="116"/>
-        <source>VLayoutPiecePathData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe VLayoutPiecePathData : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiecepath_p.h" line="129"/>
-        <source>VLayoutPiecePathData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VLayoutPiecePathData : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="717"/>
-        <source>CustomSARecord prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe CustomSARecord : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="729"/>
-        <source>CustomSARecord compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité CustomSARecord : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode_p.h" line="145"/>
-        <source>VPieceNodeData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe VPieceNodeData : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode_p.h" line="157"/>
-        <source>VPieceNodeData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VPieceNodeData : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece_p.h" line="172"/>
-        <source>VLayoutPieceData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance de préfixe VLayoutPiecePathData : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece_p.h" line="184"/>
-        <source>VLayoutPieceData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VLayoutPieceData : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vwidgets/vpiecegrainline_p.h" line="104"/>
-        <source>VPieceGrainlinePrivate prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation>Erreur de correspondance du préfixe VPieceGrainlinePrivate : actualStreamHeader = 0x%1 et streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <location filename="../../src/libs/vwidgets/vpiecegrainline_p.h" line="117"/>
-        <source>VPieceGrainlinePrivate compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation>Erreur de compatibilité VPieceGrainlinePrivate : actualClassVersion = %1 et classVersion = %2</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="630"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="629"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="639"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="638"/>
         <source>cm</source>
         <translation>cm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="632"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="631"/>
         <source>inch</source>
         <translation>Pouce</translation>
     </message>
@@ -18628,7 +18568,7 @@ This option will take an affect after restart.</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/def.cpp" line="634"/>
+        <location filename="../../src/libs/vmisc/def.cpp" line="633"/>
         <source>px</source>
         <translation>px</translation>
     </message>
@@ -18722,7 +18662,7 @@ This option will take an affect after restart.</source>
         <translation>Erreur d&apos;analyse : %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="451"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="447"/>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3164"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>Pièce &apos;%1&apos;. La marge de couture est invalide.</translation>
@@ -18733,34 +18673,34 @@ This option will take an affect after restart.</source>
         <translation>Cran d&apos;assemblage nul pour le point &apos;%1&apos; dans la pièce &apos;%2&apos;. La longueur est inférieure à la longueur minimale autorisée.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="156"/>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="188"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="139"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="171"/>
         <source>Cannot calculate seam allowance before for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Impossible de calculer la marge de couture avant le point &apos;%1&apos;. Motif : %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="241"/>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="274"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="224"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="257"/>
         <source>Cannot calculate seam allowance after for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Impossible de calculer la marge de couture après le point &apos;%1&apos;. Motif : %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="422"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="405"/>
         <source>Cannot calculate passmark width for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Impossible de calculer l&apos;épaisseur du cran d&apos;assemblage pour le point &apos;%1&apos;. Motif : %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="455"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="438"/>
         <source>Cannot calculate passmark angle for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Impossible de calculer l&apos;angle du cran d&apos;assemblage pour le point &apos;%1&apos;. Motif : %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="486"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="469"/>
         <source>Cannot calculate passmark visibility for point &apos;%1&apos;. Reason: %2. Visibility trigger will be ignored.</source>
         <translation>Impossible de calculer la valeur de visibilité du cran de montage au point &apos;%1&apos;. Motif : %2. Visibilité non activée.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="388"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="371"/>
         <source>Cannot calculate passmark length for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Impossible de calculer une longueur de cran d&apos;assemblage pour le point &apos;%1&apos;. Raison : %2.</translation>
     </message>
@@ -18884,14 +18824,14 @@ This option will take an affect after restart.</source>
         <translation>Valeur par défaut de longueur de cran d&apos;assemblage invalide. Pièce &apos;%1&apos;. La longueur est inférieure à la longueur minimale autorisée.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="391"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>Courbe &apos;%1&apos;. Valeur de segmentation de la courbe insuffisante. Paramétrez une valeur au moins égale au minimum requis.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="408"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>Courbe &apos;%1&apos;. Valeur de segmentation de la courbe trop élevée. Paramétrez une valeur au plus égale au maximum possible.</translation>
     </message>
@@ -18948,14 +18888,14 @@ This option will take an affect after restart.</source>
         <translation>Voulez vous vraiment supprimer?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="385"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>Courbe &apos;%1&apos;. La partie segmentée (%2) est de longueur insuffisante. Paramétrez une valeur au moins égale au minimum requis.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
         <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="403"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>Courbe &apos;%1&apos;. La partie segmentée (%2) est de longueur trop élevée. Paramétrez une valeur au plus égale au maximum possible.</translation>
     </message>
@@ -18996,26 +18936,26 @@ This option will take an affect after restart.</source>
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="811"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="825"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="809"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="823"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam path at %2.</source>
         <translation>Pièce &apos;%1&apos;. Impossible de générer le chemin complet de la ligne de couture en %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="813"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="827"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="811"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="825"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam path.</source>
         <translation>Pièce &apos;%1&apos;. Impossible de générer le chemin complet de la ligne de couture..</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="869"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="886"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="867"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="884"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam allowance path at %2.</source>
         <translation>Piece &apos;%1&apos;. Impossible de générer le chemin complet de la marge de couture en %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="871"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="888"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="869"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="886"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam allowance path.</source>
         <translation>Pièce &apos;%1&apos;. Impossible de générer le chemin complet de la marge de couture.</translation>
     </message>
@@ -20872,7 +20812,7 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VAbstractPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.cpp" line="1499"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.cpp" line="1483"/>
         <source>Piece &apos;%1&apos;. Not enough points to build seam allowance.</source>
         <translation>Pièce &apos;%1&apos;. Il n&apos;y pas assez de points pour construire la marge de couture.</translation>
     </message>
@@ -20880,7 +20820,7 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VAbstractPieceData</name>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece_p.h" line="56"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece_p.h" line="53"/>
         <source>Detail</source>
         <translation>Pièce de patron</translation>
     </message>
@@ -22874,7 +22814,7 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VLayoutPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="468"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="464"/>
         <source>Piece %1 doesn&apos;t have shape.</source>
         <translation>La pièce %1 n&apos;a pas de forme.</translation>
     </message>

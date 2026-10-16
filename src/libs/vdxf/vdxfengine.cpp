@@ -843,18 +843,34 @@ void VDxfEngine::ExportAAMADrawSewLine(const QSharedPointer<dx_ifaceBlock> &deta
     // The sew line is pattern data, not drawing data: hiding the main path is a display option and must
     // not remove the sew line from the DXF. Style3D rebuilds the couturage from it — without it the piece
     // has nothing to stitch.
-    if (!detail.IsSeamAllowance())
+    //
+    // ⚠️ **La règle du 15-10-2026 — « une pièce sans valeur de couture reste sans calque 14 » — tient,
+    // sauf en Clo3D/Style3D, qui est un mode de compatibilité.** Là, la pièce n'a plus de marge DU
+    // TOUT : son contour de coupe EST son couturage, et le calque 1 le porte déjà. Mais Style3D lit la
+    // couture sur le 14, et son propre DXF écrit les deux calques avec la même courbe — mesuré sur son
+    // fichier de référence : douze polylignes fermées de part et d'autre, les mêmes à 0,1 mm près. En
+    // mode Clo3D la couture s'écrit donc aussi, et sans marge elle se confond avec le contour.
+    if (!detail.IsSeamAllowance() && !IsClo3DCompatibility())
     {
         return;
     }
 
-    QVector<VLayoutPoint> const points = detail.GetMappedFullContourPoints(m_togetherWithNotches, true, false);
+    // ⚠️ **Le contour de la couture porte les mêmes découpes que celui du calque 1** — voir
+    // ContourWithCutPaths : une pince coupée appartient aux deux, sans quoi la pièce serait coupée
+    // d'un côté et cousue de l'autre.
+    QVector<VLayoutPoint> const points =
+        ContourWithCutPaths(detail, detail.GetMappedFullContourPoints(m_togetherWithNotches, true, false));
     if (points.isEmpty())
     {
         return;
     }
 
-    if (const UTF8STRING &layer = not detail.IsSewLineOnDrawing() ? *layer14 : *layer8;
+    // Sans valeur de couture en mode Clo3D, le contour EST le couturage : il va sur le 14 quel que soit
+    // le réglage d'affichage de la pièce — c'est le calque que Style3D lit, et un contour envoyé sur le
+    // 8 lui laisserait une pièce sans couture.
+    const bool onDrawing = detail.IsSewLineOnDrawing() && (detail.IsSeamAllowance() || !IsClo3DCompatibility());
+
+    if (const UTF8STRING &layer = not onDrawing ? *layer14 : *layer8;
         DRW_Entity *e = AAMAPolygon(points, layer, true))
     {
         detailBlock->ent.push_back(e);
@@ -941,9 +957,21 @@ void VDxfEngine::ExportAAMADrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportAAMAIntcut(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    auto DrawPolygon = [this, detailBlock](const QVector<VLayoutPoint> &points, bool forceClosed)
+    // ── Le calque d'une découpe qui n'entre PAS dans le contour ──────────────────────────────────
+    //
+    // En AAMA un « Cut on fabric » est un chemin INTERNE : il s'écrit sur le 11. En mode Clo3D/Style3D
+    // il s'écrit sur le 1 — mais **seulement s'il n'est pas entré dans le contour** : une découpe dont
+    // les deux extrémités tombent sur le contour est une **pince coupée**, et c'est la polyligne du
+    // contour qui la porte (voir ContourWithCutPaths). Elle est donc écartée ici, sans quoi le fichier
+    // la porterait deux fois.
+    //
+    // ⚠️ Ses points de retournement et de courbe suivent (voir `ExportTurnAndCurvePoints` plus bas) :
+    // la découpe qui reste une entité à part s'écrit avec les points du contour, comme avant.
+    const UTF8STRING &cutLayer = IsClo3DCompatibility() ? *layer1 : *layer11;
+
+    auto DrawPolygon = [this, detailBlock, &cutLayer](const QVector<VLayoutPoint> &points, bool forceClosed)
     {
-        if (DRW_Entity *e = AAMAPolygon(points, *layer11, forceClosed))
+        if (DRW_Entity *e = AAMAPolygon(points, cutLayer, forceClosed))
         {
             detailBlock->ent.push_back(e);
         }
@@ -951,9 +979,16 @@ void VDxfEngine::ExportAAMAIntcut(const QSharedPointer<dx_ifaceBlock> &detailBlo
         ExportTurnAndCurvePoints(detailBlock, points);
     };
 
-    QVector<VLayoutPiecePath> const drawIntCut = InternalPaths(detail, true);
+    // Les chemins BRUTS : `InternalPaths` efface les drapeaux d'accroche au contour en préparant une
+    // pince à tracer, et c'est justement sur eux que se décide la fusion.
+    QVector<VLayoutPiecePath> const drawIntCut = detail.MappedInternalPathsForCut(true);
     for (const auto &intCut : drawIntCut)
     {
+        if (IsMergedInContour(detail, intCut))
+        {
+            continue;
+        }
+
         QVector<VLayoutPoint> points = InternalPathPoints(intCut);
         DrawPolygon(points, false);
 
@@ -983,7 +1018,14 @@ void VDxfEngine::ExportAAMANotch(const QSharedPointer<dx_ifaceBlock> &detailBloc
         detailBlock->ent.push_back(notch.release());
     };
 
-    if (detail.IsSeamAllowance() && !m_togetherWithNotches)
+    // **Un cran s'écrit qu'il y ait une valeur de couture ou non** (décidé le 15-10-2026) : sans elle,
+    // le cran est porté par le main path (voir VLayoutPiece::ConvertPassmarks) et **se pose sur la
+    // ligne de coupe** — la marge avec, le main path sans — c'est ce que le mode Details montre, et le
+    // fichier est ce que l'écran montre.
+    //
+    // L'autre moitié de la condition, elle, ne bouge pas : `Boundary together with notches` demande que
+    // les crans soient DANS la polyligne du contour, donc pas d'entités de cran à côté.
+    if (!m_togetherWithNotches)
     {
         const QLineF mirrorLine = detail.GetMappedSeamMirrorLine();
         const QVector<VLayoutPassmark> passmarks = detail.GetMappedPassmarks();
@@ -1250,12 +1292,18 @@ void VDxfEngine::ExportASTMSewLine(const QSharedPointer<dx_ifaceBlock> &detailBl
     // The sew line is pattern data, not drawing data: hiding the main path is a display option and must
     // not remove the sew line from the DXF. Style3D rebuilds the couturage from it — without it the piece
     // has nothing to stitch.
-    if (!detail.IsSeamAllowance())
+    //
+    // Et la même exception qu'en AAMA — voir ExportAAMADrawSewLine : en mode Clo3D/Style3D une pièce
+    // sans valeur de couture garde quand même son calque 14, parce que c'est là que Style3D la lit.
+    if (!detail.IsSeamAllowance() && !IsClo3DCompatibility())
     {
         return;
     }
 
-    QVector<VLayoutPoint> const sewLine = detail.GetMappedFullContourPoints(m_togetherWithNotches, true, false);
+    // Idem AAMA — voir ContourWithCutPaths : la pince coupée est entrée dans le contour, la couture
+    // la porte donc aussi.
+    QVector<VLayoutPoint> const sewLine =
+        ContourWithCutPaths(detail, detail.GetMappedFullContourPoints(m_togetherWithNotches, true, false));
 
     // Sew lines
     if (DRW_Entity *e = AAMAPolygon(sewLine, *layer14, true))
@@ -1377,10 +1425,17 @@ void VDxfEngine::ExportASTMDrawPlaceLabels(const QSharedPointer<dx_ifaceBlock> &
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    auto DrawPolygon = [this, detailBlock](const QVector<VLayoutPoint> &points, bool notMirrored, bool forceClosed)
+    // Même règle qu'en AAMA — voir ExportAAMAIntcut : en mode Clo3D/Style3D la découpe appartient au
+    // contour et s'écrit donc sur le 1. Les deux voisines du calque 11, elles, ne bougent pas : le
+    // repère « NM » PARLE des découpes internes sans en être une, et la courbe du 86 est une copie de
+    // validation ASTM, pas la ligne de coupe.
+    const UTF8STRING &cutLayer = IsClo3DCompatibility() ? *layer1 : *layer11;
+
+    auto DrawPolygon = [this, detailBlock, &cutLayer](const QVector<VLayoutPoint> &points, bool notMirrored,
+                                                      bool forceClosed)
     {
         // Internal cutout
-        if (DRW_Entity *e = AAMAPolygon(points, *layer11, forceClosed))
+        if (DRW_Entity *e = AAMAPolygon(points, cutLayer, forceClosed))
         {
             detailBlock->ent.push_back(e);
         }
@@ -1401,9 +1456,16 @@ void VDxfEngine::ExportASTMInternalCutout(const QSharedPointer<dx_ifaceBlock> &d
         }
     };
 
-    QVector<VLayoutPiecePath> const drawIntCut = InternalPaths(detail, true);
+    // Les chemins BRUTS, et la même règle qu'en AAMA : une découpe entrée dans le contour n'est pas
+    // réécrite ici — voir ExportAAMAIntcut et ContourWithCutPaths.
+    QVector<VLayoutPiecePath> const drawIntCut = detail.MappedInternalPathsForCut(true);
     for (const auto &intCut : drawIntCut)
     {
+        if (IsMergedInContour(detail, intCut))
+        {
+            continue;
+        }
+
         QVector<VLayoutPoint> points = InternalPathPoints(intCut);
         DrawPolygon(points, intCut.IsNotMirrored(), false);
 
@@ -1469,7 +1531,9 @@ void VDxfEngine::ExportASTMDrill(const QSharedPointer<dx_ifaceBlock> &detailBloc
 //---------------------------------------------------------------------------------------------------------------------
 void VDxfEngine::ExportASTMNotches(const QSharedPointer<dx_ifaceBlock> &detailBlock, const VLayoutPiece &detail)
 {
-    if (!detail.IsSeamAllowance() || m_togetherWithNotches)
+    // Même règle que le chemin AAMA : le cran s'écrit avec ou sans valeur de couture (15-10-2026), et
+    // seul « Boundary together with notches » l'écarte — il l'a déjà mis dans la polyligne du contour.
+    if (m_togetherWithNotches)
     {
         return;
     }
@@ -1664,7 +1728,11 @@ auto VDxfEngine::ExportASTMNotchDataDependecy(const VLayoutPassmark &passmark, c
     }
 
     auto *attdef = new DRW_ATTDEF();
-    attdef->layer = !passmark.isBuiltIn ? *layer1 : *layer14;
+    // Le calque du contour dont le cran dépend : la valeur de couture s'écrit sur le 1, le main path sur
+    // le 14. ⚠️ **Sauf quand la pièce n'a pas de valeur de couture** (15-10-2026) : son main path EST le
+    // contour de coupe, écrit sur le **1** — le 14 ne porte alors rien, et un attribut qui y renverrait
+    // désignerait un calque vide. C'est la même bascule que pour `boundary`, deux lignes plus haut.
+    attdef->layer = (!passmark.isBuiltIn || not detail.IsSeamAllowance()) ? *layer1 : *layer14;
     attdef->basePoint = DRW_Coord(FromPixel(referencePoint.x(), m_varInsunits),
                                   FromPixel(GetSize().height() - referencePoint.y(), m_varInsunits), 0);
     attdef->adjustmentPoint =
@@ -1926,13 +1994,174 @@ auto VDxfEngine::PieceOutline(const VLayoutPiece &detail) const -> QVector<VLayo
     {
         return detail.GetMappedFullSeamAllowancePoints(m_togetherWithNotches);
     }
-    return detail.GetMappedFullContourPoints(m_togetherWithNotches);
+    return ContourWithCutPaths(detail, detail.GetMappedFullContourPoints(m_togetherWithNotches));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VDxfEngine::IsClo3DCompatibility() const -> bool
 {
     return m_compatibilityMode == DXFApparelCompatibility::CLO3D;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::IsMergedInContour(const VLayoutPiece &detail, const VLayoutPiecePath &path) const -> bool
+{
+    // ── La pince coupée ───────────────────────────────────────────────────────────────────────────
+    //
+    // ⚠️ **C'est la règle de Sophie, mesurée sur le DXF qu'elle a fait à la main** : en mode
+    // Clo3D/Style3D, un chemin « Cut on fabric » dont les deux extrémités tombent sur le contour de
+    // coupe n'est pas un trait posé dans la pièce — il **appartient au contour**. Style3D ne lit une
+    // découpe que là : partout ailleurs, sur quelque calque que ce soit, il en fait une ligne interne.
+    // Le 11 (la convention AAMA de la découpe interne) et le 14 ont été essayés sur son propre fichier,
+    // l'un après l'autre : les deux échouent, et il ne reste que le contour.
+    //
+    // Deux conditions, et pas une de plus : la pièce est **sans valeur de couture** — c'est ce qui met
+    // les deux extrémités du chemin SUR le contour, puisque le contour EST le main path — et le chemin
+    // demande à y aller **des deux côtés** (les deux cases de sa dialogue).
+    return IsClo3DCompatibility() && not detail.IsSeamAllowance() && path.IsCutPath()
+           && path.IsFirstToCuttingContour() && path.IsLastToCuttingContour();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::SplicePathInContour(QVector<VLayoutPoint> &contour, const QVector<VLayoutPoint> &points) -> bool
+{
+    if (contour.size() < 3 || points.size() < 3)
+    {
+        return false;
+    }
+
+    // Le sommet du contour qui porte @p point ; à défaut, le segment sur lequel il tombe — le point
+    // d'accroche d'une découpe est SUR le contour par construction, mais pas forcément sur un sommet :
+    // la polyligne a pu être dédupliquée ou lissée entre-temps.
+    const auto AnchorIndex = [&contour](const VLayoutPoint &point) -> int
+    {
+        for (int i = 0; i < contour.size(); ++i)
+        {
+            if (VFuzzyComparePoints(contour.at(i), point))
+            {
+                return i;
+            }
+        }
+
+        for (int i = 0; i < contour.size(); ++i)
+        {
+            const int next = (i + 1) % contour.size();
+            if (IsPointOnLineSegment(point, contour.at(i), contour.at(next)))
+            {
+                contour.insert(i + 1, point);
+                return i + 1;
+            }
+        }
+
+        return -1;
+    };
+
+    const int first = AnchorIndex(points.constFirst());
+    const int last = AnchorIndex(points.constLast());
+    if (first < 0 || last < 0)
+    {
+        // Une accroche qui ne tombe nulle part n'arrive pas — les deux extrémités d'une découpe sont
+        // posées sur le contour par `VPiecePath::PathPoints`. Si elle arrivait quand même, le dire est
+        // la seule chose honnête : la pièce sortirait avec un contour qui ignore cette découpe.
+        qWarning() << "VDxfEngine: a cut path does not meet the outline, it is left out of it.";
+        return false;
+    }
+
+    if (first == last)
+    {
+        return false;
+    }
+
+    // Les deux arcs entre les accroches ; **c'est le COURT qui est l'ouverture de la pince**, et c'est
+    // lui que le chemin remplace. L'autre est le reste de la pièce, et il ne bouge pas.
+    const int n = static_cast<int>(contour.size());
+    QVector<int> forward;
+    for (int i = first; i != last; i = (i + 1) % n)
+    {
+        forward.append(i);
+    }
+    forward.append(last);
+
+    const auto ArcLength = [&contour](const QVector<int> &arc) -> qreal
+    {
+        qreal length = 0.0;
+        for (int i = 0; i + 1 < arc.size(); ++i)
+        {
+            length += QLineF(contour.at(arc.at(i)), contour.at(arc.at(i + 1))).length();
+        }
+        return length;
+    };
+
+    QVector<int> backward;
+    for (int i = last; i != first; i = (i + 1) % n)
+    {
+        backward.append(i);
+    }
+    backward.append(first);
+
+    const QVector<int> &shortArc = ArcLength(forward) <= ArcLength(backward) ? forward : backward;
+
+    // Le chemin va de son premier point à son dernier : dans le sens de l'arc court, ou contre lui.
+    QVector<VLayoutPoint> splice = points;
+    if (shortArc.constFirst() != first)
+    {
+        std::reverse(splice.begin(), splice.end());
+    }
+
+    // On rebâtit le contour : les sommets de l'arc court disparaissent, remplacés par le chemin entier
+    // (ses deux accroches comprises, qui sont les deux premiers et dernier points de `splice`).
+    const QSet<int> dropped(shortArc.cbegin() + 1, shortArc.cend() - 1);
+    QVector<VLayoutPoint> merged;
+    merged.reserve(contour.size() + splice.size());
+    for (int i = 0; i < n; ++i)
+    {
+        if (i == shortArc.constFirst())
+        {
+            merged += splice;
+        }
+        else if (not dropped.contains(i))
+        {
+            merged.append(contour.at(i));
+        }
+    }
+
+    contour = merged;
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDxfEngine::ContourWithCutPaths(const VLayoutPiece &detail, QVector<VLayoutPoint> contour) const
+    -> QVector<VLayoutPoint>
+{
+    if (not IsClo3DCompatibility() || detail.IsSeamAllowance())
+    {
+        return contour;
+    }
+
+    const QVector<VLayoutPiecePath> cutPaths = detail.MappedInternalPathsForCut(true);
+    for (const VLayoutPiecePath &path : cutPaths)
+    {
+        if (not IsMergedInContour(detail, path))
+        {
+            continue;
+        }
+
+        SplicePathInContour(contour, path.Points());
+
+        // ⚠️ **Et son miroir avec elle.** Une pièce dépliée porte la pince deux fois — l'originale et
+        // son reflet — et c'est ainsi que `ExportAAMAIntcut` les écrivait : les deux moitiés du
+        // contour doivent donc recevoir la leur, sans quoi la pièce sortirait coupée d'un seul côté.
+        if (not path.IsNotMirrored() && detail.IsShowFullPiece() && not detail.GetMappedSeamMirrorLine().isNull())
+        {
+            const QTransform matrix = VGObject::FlippingMatrix(detail.GetMappedSeamMirrorLine());
+            QVector<VLayoutPoint> mirrored = path.Points();
+            std::transform(mirrored.begin(), mirrored.end(), mirrored.begin(),
+                           [&matrix](const VLayoutPoint &point) { return VAbstractPiece::MapPoint(point, matrix); });
+            SplicePathInContour(contour, mirrored);
+        }
+    }
+
+    return contour;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1948,6 +2177,17 @@ auto VDxfEngine::InternalPathPoints(const VLayoutPiecePath &path) const -> QVect
     // An internal path that reaches the cutting contour carries one extra point per end, where it crosses
     // the seam allowance. Style3D reads a dart on its own and needs both branches to end on the outline:
     // with that continuation they end outside of it, and the dart cannot be recognised any more.
+    //
+    // ⛔ **Sauf une DÉCOUPE — et c'est ce qui la rendait méconnaissable.** Un chemin « Cut on fabric »
+    // n'est pas une pince à coudre : c'est une ligne de coupe, et ses deux extrémités DOIVENT tomber sur
+    // le contour de coupe — c'est ce qui en fait une fente dans la pièce, et ce qui la rattache au
+    // contour. Les lui retirer laissait deux segments de deux points, posés à quelques millimètres à
+    // l'intérieur, que Style3D ne pouvait lire que comme des lignes internes errantes — ou pas du tout.
+    if (path.IsCutPath())
+    {
+        return points;
+    }
+
     if (path.IsFirstToCuttingContour() && points.size() > 2)
     {
         points.removeFirst();
@@ -2017,7 +2257,13 @@ auto VDxfEngine::InternalPaths(const VLayoutPiece &detail, bool cut) const -> QV
     for (const auto &path : paths)
     {
         const QVector<VLayoutPoint> points = InternalPathPoints(path);
-        const bool dart = path.IsFirstToCuttingContour() || path.IsLastToCuttingContour();
+
+        // ⚠️ **Une découpe n'est pas une pince à tracer** : elle garde son chemin entier, pointe
+        // comprise — voir `InternalPathPoints`, qui lui rend justement ses deux extrémités. La couper
+        // en deux baselines à sa pointe ferait d'une ligne de coupe deux morceaux qui ne se touchent
+        // plus, et c'est exactement ce que Style3D recevait.
+        const bool dart = !path.IsCutPath()
+                          && (path.IsFirstToCuttingContour() || path.IsLastToCuttingContour());
 
         // Style3D traces a dart from exactly two baselines sharing their apex vertex ("Trace as Dart").
         // A single polyline carries both branches and is refused — the dart stays closed and unstitched.

@@ -668,6 +668,40 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             continue;
         }
 
+        // ── La MÊME pièce, une seconde fois : SANS ses valeurs de couture ─────────────────────────
+        //
+        // `resolved` est la pièce du plan, avec ses marges : c'est elle que le canvas montre et que le
+        // nesting pose. **Sur un plan de coupe, on construit aussi sa variante sans marges**, parce
+        // qu'un fichier de découpe peut partir vers Clo3D/Style3D, qui assemblent bord à bord.
+        //
+        // ⚠️ Ce n'est pas un doublon de confort : un `VLayoutPiece` ne se dé-marge pas après coup — les
+        // crans (leur `isBuiltIn` et leurs baselines), les points de continuation des chemins internes
+        // et l'ajustement de la grainline sont calculés par `Create`, sur le `VPiece`, et n'existent
+        // nulle part ailleurs dans l'objet. La géométrie d'un plan est figée quand on l'exporte : la
+        // seule façon qu'un fichier de découpe soit sans marges est que le plan les porte déjà.
+        //
+        // La copie est locale au plan : ni le patron ni le canvas ne bougent, exactement comme si
+        // l'utilisatrice avait décoché « Activer la marge de couture » sur chaque pièce.
+        //
+        // ⚠️ **Elle est construite APRÈS, et son échec ne coûte pas la pièce.** Elle est optionnelle :
+        // un plan se dessine, se nouble et s'imprime sans elle, et la perdre pour un fichier qu'on
+        // n'écrira peut-être jamais serait pire que le défaut qu'elle répare.
+        std::optional<VLayoutPiece> withoutSeamAllowance;
+        if (m_cuttingPlan && resolved.IsSeamAllowance())
+        {
+            try
+            {
+                VPiece flat = piece;
+                flat.SetSeamAllowance(false);
+                withoutSeamAllowance = VLayoutPiece::Create(flat, id, target, m_doc);
+            }
+            catch (const VException &e)
+            {
+                qWarning() << "Export mode: piece" << piece.GetName()
+                           << "has no seam-allowance-free geometry -" << e.ErrorMessage();
+            }
+        }
+
         // isNull() does NOT mean "the piece is broken": it answers "this piece has no
         // nesting envelope yet" (m_layoutWidth is set by the nesting that used to fill it,
         // which VLayoutPiece::Create never calls). What matters here is that the piece
@@ -710,6 +744,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // to be unioned into a single footprint. Details and Graded key on the id too.
         geometry.key = geometry.groupId == 0 ? geometry.name : QStringLiteral("g%1").arg(geometry.groupId);
         geometry.piece = resolved;
+        geometry.withoutSeamAllowance = std::move(withoutSeamAllowance);
 
         if (m_cuttingPlan)
         {
@@ -735,6 +770,14 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // créée. C'est le défaut qui a rendu le garde-fou muet.
             geometry.onFold = not OExportCuttingDirection::FoldLine(resolved).isNull();
             geometry.piece.SetShowFullPiece(not (m_foldedFabric and geometry.onFold));
+
+            // ⚠️ **La variante sans marges suit, à la ligne près.** Une pièce au pli se déplie ou se
+            // plie selon la destination, et les deux versions doivent raconter la même chose : un
+            // fichier Clo3D qui déplierait ce que l'écran plie serait faux, et faux en silence.
+            if (geometry.withoutSeamAllowance.has_value())
+            {
+                geometry.withoutSeamAllowance->SetShowFullPiece(geometry.piece.IsShowFullPiece());
+            }
 
             // ⚠️ The GROUP first, and the piece only when the group has nothing: a member's own
             // grainline can be enabled while the direction belongs to the group — Create does not
@@ -775,7 +818,18 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             if (piece.IsForceFlipping())
             {
                 const QPointF centre = geometry.piece.DetailBoundingRect().center();
-                geometry.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+                const QLineF axis(centre.x(), centre.y(), centre.x(), centre.y() - 100.0);
+                geometry.piece.Mirror(axis);
+
+                // ⚠️ **Le MÊME axe pour les deux variantes.** Le centre est celui de la pièce AVEC ses
+                // marges : recalculé sur l'autre, il tomberait au centre de l'autre contour — les deux
+                // versions ne se mirroireraient plus autour de la même droite, et la pièce sans marges
+                // sortirait décalée de la valeur de couture.
+                if (geometry.withoutSeamAllowance.has_value())
+                {
+                    geometry.withoutSeamAllowance->Mirror(axis);
+                }
+
                 geometry.mirrorX = centre.x();
                 geometry.direction = OExportCuttingDirection::Mirrored(geometry.direction);
             }

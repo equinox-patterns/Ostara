@@ -876,7 +876,8 @@ void MainWindowsNoGUI::ExportDetailsAsApparelLayout(QVector<VLayoutPiece> listDe
 
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
-                                               bool showProgress, bool showMainPath) -> QVector<VLayoutPiece>
+                                               bool showProgress, bool showMainPath, bool noSeamAllowance)
+    -> QVector<VLayoutPiece>
 {
     if (details.isEmpty())
     {
@@ -921,6 +922,15 @@ auto MainWindowsNoGUI::PrepareDetailsForLayout(const QVector<DetailForLayout> &d
             // file cannot be trusted. With the main path shown, the sew line goes to its own layer (14)
             // instead of the Draw line (8), which is where Style3D reads the couturage.
             piece.SetSewLineOnDrawing(false);
+        }
+
+        // Et sans valeurs de couture quand le DXF part vers Clo3D/Style3D : ces CAD-là assemblent bord
+        // à bord, et le contour qu'ils lisent est le contour de coupe. Ce n'est pas un réglage de
+        // dessin — crans, chemins internes et grainline suivent — et c'est la même copie, au même
+        // endroit, que l'option du dessus : le patron et le canvas ne bougent pas.
+        if (noSeamAllowance)
+        {
+            piece.SetSeamAllowance(false);
         }
 
         layoutDetails.append(VLayoutPiece::Create(piece, data.id, tool->getData(), doc)); // may throw → caller catches

@@ -83,7 +83,9 @@ struct Options
     /// `Show the main path` — the sewing line. AAMA/ASTM only.
     bool showMainPath{false};
 
-    /// The DXF apparel compatibility mode. AAMA/ASTM only.
+    /// The DXF apparel compatibility mode. AAMA/ASTM only — et, pour Clo3D/Style3D, **le choix de la
+    /// géométrie écrite** : le plan porte à côté de chaque pièce sa version sans valeurs de couture,
+    /// et c'est elle que l'écrivain prend alors. Voir OExportCuttingFile::Write.
     DXFApparelCompatibility compatibility{DXFApparelCompatibility::STANDARD};
 };
 
@@ -136,9 +138,14 @@ auto PlanName(const OExportOutput &output, OExportCuttingGuard::Material materia
  * @param material which plan of the generation to write. A generation that carries only the fabric
  *                 refuses to be read as a lining one: there is nothing to write, and a file with no
  *                 piece in it is worse than no file at all.
+ * @param reason   ce qui a empêché l'écriture, dans les mots de l'utilisatrice — **nul quand elle a
+ *                 réussi**. Le journal du programme n'est pas un endroit où elle lise quoi que ce
+ *                 soit : la boîte qui dit « ça n'a pas marché » doit pouvoir dire pourquoi, sans quoi
+ *                 elle ne lui apprend rien et ne lui laisse rien à faire.
  */
 auto Write(const QString &path, const OExportOutput &output, const Options &options,
-           OExportCuttingGuard::Material material = OExportCuttingGuard::Material::Fabric) -> bool;
+           OExportCuttingGuard::Material material = OExportCuttingGuard::Material::Fabric,
+           QString *reason = nullptr) -> bool;
 } // namespace OExportCuttingFile
 
 #endif // OEXPORTCUTTINGFILE_H

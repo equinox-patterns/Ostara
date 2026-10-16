@@ -58,7 +58,13 @@ OExportCuttingFileOptions::OExportCuttingFileOptions(QWidget *parent)
     m_mainPathCheck->setToolTip(tr("Exports the pieces as if their main path were visible: each piece then has both "
                                    "its cutting line and its sew line. Nothing is changed in the pattern."));
     m_compatibilityLabel = new QLabel(this);
+    m_compatibilityLabel->setToolTip(
+        tr("Which CAD reads this file. Clo3D/Style3D assemble edge to edge, with no seam allowances: the "
+           "pieces are written WITHOUT them, exactly as if every piece of the pattern had its seam "
+           "allowance switched off. Nothing is changed in the pattern - the plan on screen keeps its "
+           "own margins."));
     m_compatibilityCombo = MakeComboBox(this);
+    m_compatibilityCombo->setToolTip(m_compatibilityLabel->toolTip());
 
     grid->addWidget(m_formatLabel, 0, 0);
     grid->addWidget(m_formatCombo, 0, 1);
@@ -93,21 +99,29 @@ auto OExportCuttingFileOptions::Options() const -> OExportCuttingFile::Options
     OExportCuttingFile::Options options;
     options.format = Format();
 
-    // ⚠️ **La visibilité est la règle**, jamais la valeur cachée : une case qu'un format ne montre
-    // pas ne doit pas voyager quand même, et un lecteur qui ne verrait que les valeurs ne pourrait
-    // pas le deviner.
-    options.binary = m_binaryCheck->isVisible() && m_binaryCheck->isChecked();
-    options.textAsPaths = m_textAsPathsCheck->isVisible() && m_textAsPathsCheck->isChecked();
+    // ⚠️ **Ce qu'un format n'offre pas ne voyage pas**, et le test est `isHidden()` — **jamais
+    // `isVisible()`**. C'est `ShowOptionsForFormat` qui cache ce qu'un format n'offre pas, et lui seul :
+    // `isHidden()` dit exactement cela, et il le dit encore quand la fenêtre est fermée.
+    //
+    // ⛔ **`isVisible()` répond à une autre question — « est-ce à l'écran, là, maintenant ? » — et sa
+    // réponse est NON dès que la dialogue est fermée.** Or ces options se lisent APRÈS `exec()`, une
+    // fois la dialogue refermée : tout ce qui passait par `isVisible()` retombait donc sur sa valeur
+    // par défaut, en silence. La compatibilité DXF revenait à « By standard » — Clo3D/Style3D ne
+    // s'écrivait jamais, quels que soient les clics —, « Binary form » et « Show the main path »
+    // n'arrivaient jamais au moteur, et le droit-fil s'écrivait toujours. Trois exports ont été perdus
+    // comme ça avant que le fichier ne le dise.
+    options.binary = !m_binaryCheck->isHidden() && m_binaryCheck->isChecked();
+    options.textAsPaths = !m_textAsPathsCheck->isHidden() && m_textAsPathsCheck->isChecked();
     options.togetherWithNotches = m_notchesCheck->isChecked();
-    options.showMainPath = m_mainPathCheck->isVisible() && m_mainPathCheck->isChecked();
+    options.showMainPath = !m_mainPathCheck->isHidden() && m_mainPathCheck->isChecked();
 
     // Le droit-fil est TOUJOURS écrit pour AAMA/ASTM — la case n'y est pas offerte, et c'est une
     // constante du format, pas un choix caché.
-    options.showGrainline = !m_grainlineCheck->isVisible() || m_grainlineCheck->isChecked();
+    options.showGrainline = m_grainlineCheck->isHidden() || m_grainlineCheck->isChecked();
 
-    options.compatibility = m_compatibilityCombo->isVisible()
-                                ? static_cast<DXFApparelCompatibility>(m_compatibilityCombo->currentData().toInt())
-                                : DXFApparelCompatibility::STANDARD;
+    options.compatibility = m_compatibilityCombo->isHidden()
+                                ? DXFApparelCompatibility::STANDARD
+                                : static_cast<DXFApparelCompatibility>(m_compatibilityCombo->currentData().toInt());
     return options;
 }
 

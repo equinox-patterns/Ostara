@@ -306,6 +306,37 @@ void InitFoldLine(VLayoutPiece &det, const VPiece &piece, const VContainer *patt
     det.SetFoldLineWidth(fLine.Width());
     det.SetFoldLineCenterPosition(fLine.CenterPosition());
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Dessine les crans d'une pièce sur @p path.
+///
+/// **Une seule boucle pour les deux contours.** Les lignes d'un cran sont en coordonnées de pièce : rien
+/// ici ne dépend du contour qui les porte, et un cran se pose aussi bien sur une valeur de couture que sur
+/// un main path. Ce qui dépend du contour, c'est la ligne de MIRROIR — d'où ce paramètre : la valeur de
+/// couture se mire sur la sienne, le main path sur la sienne, et deux boucles recopiées auraient fini par
+/// diverger sur ce point-là.
+void AddPassmarkLines(QPainterPath &path, const QVector<VLayoutPassmark> &passmarks, const QLineF &mirrorLine,
+                      bool showFullPiece)
+{
+    for (const auto &passmark : passmarks)
+    {
+        QPainterPath passmarkPath;
+        for (const auto &line : passmark.lines)
+        {
+            passmarkPath.moveTo(line.p1());
+            passmarkPath.lineTo(line.p2());
+        }
+        path.addPath(passmarkPath);
+
+        if (!mirrorLine.isNull() && showFullPiece
+            && !IsPointOnLineviaPDP(passmark.baseLine.p1(), mirrorLine.p1(), mirrorLine.p2())
+            && !passmark.notMirrored)
+        {
+            const QTransform matrix = VGObject::FlippingMatrix(mirrorLine);
+            path.addPath(matrix.map(passmarkPath));
+        }
+    }
+}
 } // namespace
 //---------------------------------------------------------------------------------------------------------------------
 QT_WARNING_PUSH
@@ -362,6 +393,16 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     QFuture<QVector<VLayoutPoint>> const futureSeamAllowance = QtConcurrent::run(
         [piece, pattern]() -> QVector<VLayoutPoint>
         {
+            // ⚠️ Une pièce sans valeur de couture n'a **rien** à calculer ici : `SetSeamAllowancePoints`
+            // ne garde pas ce contour (`seamAllowance == false` y est un no-op complet, voir plus bas),
+            // et cet offset est la part chère de `Create`. La variante sans marges qu'un plan de coupe
+            // construit pour Clo3D/Style3D paie donc le contour, les chemins internes et les crans —
+            // jamais une marge qu'elle ne portera pas. Voir OExportPieceGeometry::withoutSeamAllowance.
+            if (not piece.IsSeamAllowance())
+            {
+                return {};
+            }
+
             if (!piece.SeamMirrorLine(pattern).isNull())
             {
                 VPiece tmp = piece;
@@ -1178,10 +1219,11 @@ auto VLayoutPiece::GetPassmarks() const -> QVector<VLayoutPassmark>
 //---------------------------------------------------------------------------------------------------------------------
 void VLayoutPiece::SetPassmarks(const QVector<VLayoutPassmark> &passmarks)
 {
-    if (IsSeamAllowance())
-    {
-        d->m_passmarks = passmarks;
-    }
+    // ⚠️ **Sans condition sur la valeur de couture** (décidé le 15-10-2026). Ce `if (IsSeamAllowance())`
+    // jetait les crans d'une pièce sans marge, même quand la géométrie les avait produits : un cran vit
+    // sur le MAIN PATH, et une pièce sans valeur de couture en a un comme une autre. C'était le dernier
+    // verrou de la chaîne, et le seul qui ne se voyait nulle part — ni à l'écran, ni dans un fichier.
+    d->m_passmarks = passmarks;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1259,34 +1301,24 @@ auto VLayoutPiece::ContourPath(bool togetherWithNotches, bool showLayoutAllowanc
         if (!togetherWithNotches)
         {
             // Draw passmarks
-            for (const auto &passmark : d->m_passmarks)
-            {
-                QPainterPath passmaksPath;
-                for (const auto &line : passmark.lines)
-                {
-                    passmaksPath.moveTo(line.p1());
-                    passmaksPath.lineTo(line.p2());
-                }
-                path.addPath(passmaksPath);
-
-                if (!d->m_seamAllowanceMirrorLine.isNull() && IsShowFullPiece()
-                    && !IsPointOnLineviaPDP(passmark.baseLine.p1(),
-                                            d->m_seamAllowanceMirrorLine.p1(),
-                                            d->m_seamAllowanceMirrorLine.p2())
-                    && !passmark.notMirrored)
-                {
-                    QPainterPath mirroredPassmaksPath;
-                    for (const auto &line : passmark.lines)
-                    {
-                        mirroredPassmaksPath.moveTo(line.p1());
-                        mirroredPassmaksPath.lineTo(line.p2());
-                    }
-                    const QTransform matrix = VGObject::FlippingMatrix(d->m_seamAllowanceMirrorLine);
-                    path.addPath(matrix.map(mirroredPassmaksPath));
-                }
-            }
+            AddPassmarkLines(path, d->m_passmarks, d->m_seamAllowanceMirrorLine, IsShowFullPiece());
         }
 
+        path.setFillRule(Qt::WindingFill);
+    }
+    else if (!togetherWithNotches && !d->m_passmarks.isEmpty())
+    {
+        // ── Sans valeur de couture, les crans vivent sur le MAIN PATH ────────────────────────────────
+        //
+        // Décidé le 15-10-2026 : une pièce dont la valeur de couture est à 0 montre ses crans en mode
+        // Details, et elle doit les montrer partout — canvas Export, SVG, PDF, DXF, HPGL/PLT. Or cet
+        // item ne les dessinait pas du tout sans marge : la boucle vivait dans le bloc de la valeur de
+        // couture ci-dessus, et `m_passmarks` était vidé à la construction (voir SetPassmarks).
+        //
+        // Le miroir est celui du MAIN PATH — `m_seamMirrorLine`, celui du contour qu'on vient de poser
+        // plus haut — et non celui de la valeur de couture, qui parle d'un contour que cette pièce n'a
+        // pas. C'est aussi celui dont l'écrivain DXF se sert pour mirer un cran (`ExportAAMANotch`).
+        AddPassmarkLines(path, d->m_passmarks, d->m_seamMirrorLine, IsShowFullPiece());
         path.setFillRule(Qt::WindingFill);
     }
 
@@ -1828,6 +1860,23 @@ auto VLayoutPiece::ConvertPassmarks(const VPiece &piece, const VContainer *patte
         };
 
         VPiecePassmarkData const pData = passmark.Data();
+
+        // ── Une pièce SANS valeur de couture porte quand même ses crans ──────────────────────────────
+        //
+        // Décidé le 15-10-2026 : la pièce les montre en mode Details, elle doit donc les montrer partout.
+        // Le chemin « valeur de couture » (PrepareSAPassmark) n'a rien à mesurer sans elle — sa base line
+        // se calcule sur le contour de couture, qui est vide (`vpiece.cpp`, SeamAllowancePointsWithRotation)
+        // — donc on prend le chemin « builtin », qui EST le cran du main path : exactement celui que
+        // `VPassmark::FullPassmark` dessine déjà à l'écran, et le seul dont le moteur DXF sache qu'il
+        // dépend du contour (`VLayoutPassmark::isBuiltIn`).
+        //
+        // ⚠️ **Et on s'arrête là** : le cran du main path est déjà posé, le « second cran sur la ligne de
+        // couture » ci-dessous le reposerait au même endroit.
+        if (not piece.IsSeamAllowance())
+        {
+            AddBuiltInPassmark();
+            continue;
+        }
 
         switch (pData.passmarkAngleType)
         {

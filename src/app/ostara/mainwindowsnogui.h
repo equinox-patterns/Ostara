@@ -113,9 +113,15 @@ protected:
     /// @brief PrepareDetailsForLayout lays the given details out. @a showMainPath lays them out as if
     /// their main path were visible, whatever the pattern says — an export option. It decides the sew
     /// line, its notches and the fold line; the pattern and the canvas are left untouched.
+    ///
+    /// @a noSeamAllowance lays them out **without their seam allowances** — le mode Clo3D/Style3D, qui
+    /// assemble bord à bord. ⚠️ Ce n'est pas un réglage de dessin : le contour de coupe, les crans, les
+    /// chemins internes et la grainline en dépendent, et un `VLayoutPiece` ne se dé-marge pas après
+    /// coup. D'où la copie du `VPiece`, faite ici même — exactement ce que produit la case « Activer la
+    /// marge de couture » décochée. Le patron, lui, n'est pas touché.
     static auto PrepareDetailsForLayout(const QVector<DetailForLayout> &details, VAbstractPattern *doc,
-                                        bool showProgress = true, bool showMainPath = false)
-        -> QVector<VLayoutPiece>;
+                                        bool showProgress = true, bool showMainPath = false,
+                                        bool noSeamAllowance = false) -> QVector<VLayoutPiece>;
 
     void ExportData(const QVector<VLayoutPiece> &listDetails);
 

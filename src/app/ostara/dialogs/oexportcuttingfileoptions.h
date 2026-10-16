@@ -43,7 +43,12 @@ class QLabel;
  * **Une seule définition, deux endroits** : la dialogue d'un plan de coupe exporté seul, et la page
  * du lot. Le lot écrit **un format pour tout son lot** — comme la case « mise en page » du PDF vaut
  * pour tous les PDF du lot : une utilisatrice qui veut deux jeux d'options fait deux lots. Recopier
- * ces sept champs dans la page aurait été deux vérités à tenir, et la seconde aurait dérivé.
+ * ces champs dans la page aurait été deux vérités à tenir, et la seconde aurait dérivé.
+ *
+ * ⚠️ **La compatibilité DXF, elle, n'est pas qu'une affaire de calques.** Le mode Clo3D/Style3D écrit
+ * les pièces **sans leurs valeurs de couture** — Clo3D et Style3D assemblent bord à bord — et le plan
+ * porte pour cela, à côté de chaque pièce, la version sans marge que le moteur prendra. Le choix se
+ * fait donc bien ICI, à l'export, et le patron n'est jamais touché.
  *
  * Les options sont celles de l'export du mode Details, **format par format** : une option qui
  * n'existe pas pour un format n'est pas offerte pour lui. L'échelle n'y est pas — un plan de coupe

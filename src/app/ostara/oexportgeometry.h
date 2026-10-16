@@ -36,6 +36,8 @@
 #include <QVector>
 #include <QtNumeric>
 
+#include <optional>
+
 #include "../vlayout/vlayoutpiece.h"
 #include "core/oexportcuttingdirection.h"
 #include "core/oexportcuttingguard.h"
@@ -141,6 +143,25 @@ struct OExportPieceGeometry
     QString name;
     QString groupName{}; ///< empty when the piece does not belong to a group
     VLayoutPiece piece;  ///< geometry resolved for this size, in pixels
+
+    /// @brief La MÊME pièce, SANS ses valeurs de couture — le fichier de découpe de Clo3D/Style3D.
+    ///
+    /// ⚠️ **Ce n'est pas un doublon, et ce n'est pas non plus un réglage de dessin.** Clo3D et Style3D
+    /// assemblent bord à bord, sans marges : la pièce qu'ils lisent est le contour de coupe. Or un
+    /// `VLayoutPiece` ne peut pas être « dé-margé » après coup — crans (leur `isBuiltIn` et leurs
+    /// baselines), points de continuation des chemins internes et ajustement de la grainline sont
+    /// calculés une fois pour toutes par `VLayoutPiece::Create`, sur le `VPiece` qu'on lui donne, et
+    /// n'existent nulle part ailleurs. La construction de cette variante est donc le SEUL moment où
+    /// elle peut exister, et c'est le plan qui doit la porter : l'export, lui, ne peut plus rien
+    /// recalculer — la géométrie d'un plan est figée, et son nesting avec elle.
+    ///
+    /// **Vide hors plan de coupe** : c'est le seul fichier qui puisse être exporté vers un autre CAD
+    /// de découpe, et une impression n'a que faire de cette seconde géométrie.
+    ///
+    /// ⚠️ Elle porte exactement les mêmes retouches que @ref piece (`ShowFullPiece`, le miroir forcé),
+    /// appliquées au même endroit : deux variantes qui divergeraient d'un miroir produiraient un DXF
+    /// faux d'un seul côté, et personne ne le verrait.
+    std::optional<VLayoutPiece> withoutSeamAllowance{};
 
     quint32 id{0};      ///< piece id, the stable identity — names are not unique
     quint32 groupId{0}; ///< 0 when the piece is not part of a group

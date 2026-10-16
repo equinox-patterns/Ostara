@@ -227,9 +227,16 @@ void MainWindow::ExportDetailsAs(bool checked)
 
         // "Show the main path" is read here, once the dialog has been accepted: the pieces are laid out
         // again, this time as if their main path were visible. The pattern is not touched.
-        if (m_dialogSaveLayout->IsShowMainPath())
+        //
+        // ⚠️ **Et la compatibilité DXF, pour la même raison** : le mode Clo3D/Style3D taille sans
+        // valeurs de couture, et c'est la géométrie des pièces qui change — pas un calque. La
+        // préparation est donc refaite quand il est choisi, même si le contour principal, lui, ne
+        // l'est pas. Voir PrepareDetailsForLayout.
+        const bool showMainPath = m_dialogSaveLayout->IsShowMainPath();
+        const bool noSeamAllowance = m_dialogSaveLayout->DxfCompatibility() == DXFApparelCompatibility::CLO3D;
+        if (showMainPath || noSeamAllowance)
         {
-            listDetails = PrepareDetailsForLayout(detailsInLayout, doc, false, true);
+            listDetails = PrepareDetailsForLayout(detailsInLayout, doc, false, showMainPath, noSeamAllowance);
         }
 
         ExportData(listDetails);
@@ -334,7 +341,7 @@ auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
             return false;
         }
     }
-    QVector<VLayoutPiece> const listDetails = PrepareDetailsForLayout(details, doc);
+    QVector<VLayoutPiece> listDetails = PrepareDetailsForLayout(details, doc);
 
     try
     {
@@ -356,6 +363,15 @@ auto MainWindow::DoExport(const VCommandLinePtr &expParams) -> bool
             m_dialogSaveLayout->SetTiledMargins(expParams->TiledPageMargins());
             m_dialogSaveLayout->SetTiledPageFormat(expParams->OptTiledPaperSize());
             m_dialogSaveLayout->SetTiledPageOrientation(expParams->OptTiledPageOrientation());
+        }
+
+        // ⚠️ Même règle qu'en mode Details, et au même endroit du raisonnement : le mode Clo3D/Style3D
+        // ne s'écrit pas, il se TAILLE. Les pièces sont donc relaid-out **sans leurs valeurs de
+        // couture** dès que la compatibilité est choisie — la géométrie d'un `VLayoutPiece` ne se
+        // reprend pas après coup — et le patron, lui, n'est pas touché.
+        if (m_dialogSaveLayout->DxfCompatibility() == DXFApparelCompatibility::CLO3D)
+        {
+            listDetails = PrepareDetailsForLayout(details, doc, false, false, true);
         }
 
         ExportData(listDetails);

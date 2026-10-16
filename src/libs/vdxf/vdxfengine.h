@@ -226,6 +226,32 @@ private:
     Q_REQUIRED_RESULT static auto DeepestPointIndex(const QVector<VLayoutPoint> &points) -> int;
 
     auto PieceOutline(const VLayoutPiece &detail) const -> QVector<VLayoutPoint>;
+
+    /// @brief ContourWithCutPaths rend le contour de la pièce, **découpes fusionnées comprises**.
+    ///
+    /// En mode Clo3D/Style3D, un chemin « Cut on fabric » n'est pas un trait posé à l'intérieur de la
+    /// pièce : c'est une **pince coupée** — le contour descend jusqu'à sa pointe et remonte, et le V
+    /// est retiré de la pièce. Style3D ne sait lire une découpe que là : une entité à part, quel que
+    /// soit son calque, reste une ligne interne — mesuré sur ses propres fichiers, puis sur un DXF
+    /// fabriqué à la main par Sophie, qui est la référence. Les découpes ainsi fusionnées ne sont donc
+    /// PAS réécrites à côté : voir @ref IsMergedInContour, que les écrivains de découpes interrogent
+    /// pour les écarter.
+    ///
+    /// ⚠️ Le contour arrive **déjà** au bout de sa fabrique (déduplication, crans fusionnés s'il y a
+    /// lieu) : la fusion se fait sur la polyligne finale, et c'est la même que le calque 1 et la
+    /// couture écrivent tous les deux.
+    Q_REQUIRED_RESULT auto ContourWithCutPaths(const VLayoutPiece &detail, QVector<VLayoutPoint> contour) const
+        -> QVector<VLayoutPoint>;
+
+    /// @brief IsMergedInContour dit si @p path est entré dans le contour — donc s'il ne doit PAS être
+    /// écrit une seconde fois comme découpe interne. La condition est celle de la fusion, au mot près :
+    /// une découpe (« Cut on fabric ») dont les deux extrémités tombent sur le contour de coupe.
+    Q_REQUIRED_RESULT auto IsMergedInContour(const VLayoutPiece &detail, const VLayoutPiecePath &path) const -> bool;
+
+    /// @brief SplicePathInContour fait entrer @p points dans @p contour : le contour quitte son tracé
+    /// au premier point du chemin, le suit jusqu'à son dernier point, et reprend. L'arc court entre les
+    /// deux points d'accroche — l'ouverture de la pince — est remplacé par le chemin lui-même.
+    static auto SplicePathInContour(QVector<VLayoutPoint> &contour, const QVector<VLayoutPoint> &points) -> bool;
 };
 
 #endif // VDXFENGINE_H
