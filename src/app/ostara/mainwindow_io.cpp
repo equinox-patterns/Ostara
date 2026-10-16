@@ -332,11 +332,14 @@ auto MainWindow::on_actionSaveAs_triggered() -> bool
     QString newFileName;
     if (not patternPath.isEmpty())
     {
-        // Start from the original filename but replace .val extension with .ostara
+        // The proposed name carries exactly one .ostara: every extension we know is dropped first, then one is
+        // written back. Appending blindly proposed "name.ostara.ostara" for a pattern already saved as .ostara —
+        // and that doubled name is the one that got saved. A legacy .val source loses the extension it was read
+        // under, and a file that already carries the doubled name comes back to a single one.
         QString base = QFileInfo(patternPath).fileName();
-        if (base.endsWith(".val"_L1))
+        while (base.endsWith(".ostara"_L1) || base.endsWith(".val"_L1))
         {
-            base.chop(4); // remove ".val"
+            base.chop(base.endsWith(".ostara"_L1) ? 7 : 4); // remove ".ostara" or ".val"
         }
         newFileName = base + ".ostara"_L1;
     }
