@@ -10144,67 +10144,67 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="124"/>
         <source>No measurements table is loaded. The metrage mode needs one with size axes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun tableau de mensurations chargé : le mode métrage en demande un avec des axes de tailles.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="141"/>
         <source>The measurements table declares an axis of hip (%1) that a cutting plan cannot address. The three axes a run carries are height, size and waist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le tableau de mensurations déclare un axe de tour de hanches (%1) qu&apos;un plan de coupe ne sait pas traiter. Les trois axes qu&apos;un run porte sont stature, taille et tour de taille.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="152"/>
         <source>The measurements table declares no size axis: there is no complete size to walk.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le tableau de mensurations ne déclare aucun axe de tailles : il n&apos;y a aucune taille complète à parcourir.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="201"/>
         <source>The measurements table offers no combination: every axis came back empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le tableau de mensurations n&apos;offre aucune combinaison : chaque axe est revenu vide.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="243"/>
         <source>The metrage mode needs at least one --fabricWidth, in centimetres.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le mode métrage demande au moins une --fabricWidth, en centimètres.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="278"/>
         <source>The pattern carries no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le patron ne contient aucune pièce.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="292"/>
         <source>This pattern declares no piece group, so --group names nothing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce patron ne déclare aucun groupe de pièces : --group ne nomme donc rien.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="301"/>
         <source>A --group must read &quot;Group name=Member name&quot;; this one reads:</source>
-        <translation type="unfinished"></translation>
+        <translation>Une --group doit s&apos;écrire « Nom du groupe=Nom du membre » ; celle-ci s&apos;écrit :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="328"/>
         <source>No group of this pattern is called &quot;%1&quot;. The groups are: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun groupe de ce patron ne s&apos;appelle « %1 ». Les groupes sont : %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="336"/>
         <source>The group &quot;%1&quot; is out of the layout in this pattern: switch it on, or leave it out of the model.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le groupe « %1 » est hors du plan dans ce patron : activez-le, ou laissez-le hors du modèle.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="361"/>
         <source>&quot;%1&quot; is not a member of the group &quot;%2&quot;. Its members are: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>« %1 » n&apos;est pas un membre du groupe « %2 ». Ses membres sont : %3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="392"/>
         <source>A cutting plan needs a direction — an enabled grainline, or a fold line — for every piece it cuts. These have none: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Un plan de coupe demande une direction — un droit fil activé, ou une ligne de pli — pour chaque pièce qu&apos;il coupe. Celles-ci n&apos;en ont pas : %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="412"/>
         <source>Careful: &quot;%1&quot; has no %2 cut — neither its own nor its group&apos;s — so it is not cut at all: the run will measure the plan WITHOUT it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Attention : « %1 » n&apos;a pas de coupe %2 — ni la sienne, ni celle de son groupe — elle n&apos;est donc pas coupée du tout : le run mesurera le plan SANS elle.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="415"/>
@@ -10221,22 +10221,22 @@ Voulez-vous le remplacer ?</translation>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="426"/>
         <source>No size to cut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune taille à couper :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="437"/>
         <source>No --destination was given: the table goes to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune --destination fournie : le tableau va dans %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="473"/>
         <source>The metrage batch could not start: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Le lot métrage n&apos;a pas pu démarrer : %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="478"/>
         <source>Metrage: %1 run(s) done, %2 failed, %3 already there — %4 s. Table: %5</source>
-        <translation type="unfinished"></translation>
+        <translation>Métrage : %1 run(s) terminé(s), %2 en échec, %3 déjà là — %4 s. Tableau : %5</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="440"/>
@@ -22695,12 +22695,12 @@ Voulez-vous continuer ?</translation>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="656"/>
         <source>Compute the fabric length of a cutting plan for every complete size of the measurements table, for each fabric width of --fabricWidth, and write the table as a CSV in --destination. Nothing is ever written to the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcule le métrage de tissu d&apos;un plan de coupe pour chaque taille complète du tableau de mensurations, pour chaque laize de --fabricWidth, et écrit le tableau en CSV dans --destination. Rien n&apos;est jamais écrit dans le patron.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="661"/>
         <source>Name of the model this run measures. Written in the CSV.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom du modèle que ce run mesure. Écrit dans le CSV.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="662"/>
@@ -22710,74 +22710,74 @@ Voulez-vous continuer ?</translation>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="664"/>
         <source>The member a piece group contributes, as &quot;Group name=Member name&quot;. Repeat once per group: a cutting plan takes exactly one member per group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le membre qu&apos;un groupe de pièces apporte, sous la forme « Nom du groupe=Nom du membre ». À répéter une fois par groupe : un plan de coupe prend exactement un membre par groupe.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="667"/>
         <source>Group=member</source>
-        <translation type="unfinished"></translation>
+        <translation>Groupe=membre</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="669"/>
         <source>Fabric width in centimetres. Comma separated to ask for several in one run.</source>
-        <translation type="unfinished"></translation>
+        <translation>Laize de tissu en centimètres. Séparées par des virgules pour en demander plusieurs en un seul run.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="671"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="674"/>
         <source>Width in cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Laize en cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="673"/>
         <source>Lining width in centimetres. Defaults to the fabric width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Laize de doublure en centimètres. Par défaut, celle du tissu.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="676"/>
         <source>Ask for the lining plan too: one run, two passes, two lengths in the table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Demander aussi le plan de doublure : un run, deux passes, deux longueurs dans le tableau.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="679"/>
         <source>Lay every piece the same way round.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poser toutes les pièces dans le même sens.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="681"/>
         <source>The plan is laid on folded fabric.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le plan est posé sur du tissu plié.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="683"/>
         <source>Space between two pieces, in centimetres (default 0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Écart entre deux pièces, en centimètres (0 par défaut).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="684"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="688"/>
         <source>Space in cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Écart en cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="687"/>
         <source>Space kept from the edges, in centimetres (default 0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Écart gardé depuis les bords, en centimètres (0 par défaut).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="723"/>
         <source>The metrage options can be used with single input file only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les options de métrage ne s&apos;emploient qu&apos;avec un seul fichier d&apos;entrée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="773"/>
         <source>Not a fabric width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce n&apos;est pas une laize de tissu :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="793"/>
         <source>Not a lining width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce n&apos;est pas une laize de doublure.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="572"/>
