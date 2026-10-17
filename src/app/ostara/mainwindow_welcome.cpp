@@ -29,7 +29,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "WelcomeScreen.h"
-#include "StyleGuideWindow.h"
 #include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -131,7 +130,9 @@ void MainWindow::InitWelcomePage()
 {
     // Pattern signals
     connect(m_welcomeScreen, &WelcomeScreen::NewPatternClicked, this, &MainWindow::on_actionNew_triggered);
-    connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::on_actionOpen_triggered);
+    // L'écran d'accueil demande où ouvrir — la bibliothèque d'abord. File > Open, lui, garde le panneau du
+    // système : deux gestes, deux intentions (l'un cherche un patron rangé, l'autre un fichier).
+    connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::OpenPatternFromLibrary);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentPattern, this,
             [this](const QString &path) { LoadPattern(path); });
 
@@ -141,8 +142,7 @@ void MainWindow::InitWelcomePage()
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement, this, &MainWindow::WelcomeOpenRecentMeasurement);
 
     // Features button (dev-only)
-    connect(m_welcomeScreen, &WelcomeScreen::FeaturesClicked, this,
-            []() { (new StyleGuideWindow())->show(); });
+
 }
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ShowWelcomeScreen()

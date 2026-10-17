@@ -1,11 +1,10 @@
 /************************************************************************
  **
- **  @file   StyleGuideWindow.h
+ **  @file   mainwindow_patterns.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
- **  @date   01/08/2026
+ **  @date   16/10/2026
  **
- **  @brief  Modeless style-guide window showing every Ostara widget in
- **          every state. Used to validate the global QSS.
+ **  @brief  The library of patterns — the third one, beside the pieces and the measurement tables.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -25,21 +24,19 @@
  **
  *************************************************************************/
 
-#ifndef STYLEGUIDEWINDOW_H
-#define STYLEGUIDEWINDOW_H
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
 
-#include <QMainWindow>
+#include "core/opatternlibrary.h"
+#include "dialogs/opatternlibrarydialog.h"
 
-class StyleGuideWindow final : public QMainWindow
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ActionPatternLibrary()
 {
-    Q_OBJECT
-
-public:
-    explicit StyleGuideWindow(QWidget *parent = nullptr);
-    ~StyleGuideWindow() override = default;
-
-private:
-    void BuildUI();
-};
-
-#endif // STYLEGUIDEWINDOW_H
+    // The library is a window on the folders the patterns are sorted into. It reads what each pattern says about
+    // itself — its name, its client, its collection, what was written about it — and manages the files: transfer,
+    // export, delete. It **opens nothing**: a pattern being worked on is the editor's, not the library's, and the
+    // window touches neither the document nor the settings.
+    OPatternLibraryDialog dialog(OPatternLibrary::DefaultDirectory(), this);
+    dialog.exec();
+}

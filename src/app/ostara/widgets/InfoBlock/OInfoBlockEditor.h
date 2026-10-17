@@ -28,6 +28,7 @@
 #define OINFOBLOCKEDITOR_H
 
 #include "OPieceCartoucheStorage.h"
+#include "core/opatternlibrary.h"
 #include "core/osizetable.h"
 #include "OPieceCartoucheTemplate.h"
 
@@ -36,6 +37,7 @@
 
 #include <QWidget>
 
+class QCheckBox;
 class QComboBox;
 class QGroupBox;
 class QHBoxLayout;
@@ -47,6 +49,7 @@ class QPlainTextEdit;
 class QPushButton;
 class QSpinBox;
 class QStackedWidget;
+class QTableWidget;
 class QTreeWidget;
 class QTreeWidgetItem;
 class OInfoBlockPreview;
@@ -142,6 +145,7 @@ private:
     void OnClientMailEdited(const QString &text);
     void OnClientPhoneEdited(const QString &text);
     void OnClientInfoChanged();
+    void OnCreateClientFolder(bool checked);
     void PersistClients();
     void RefreshClientsList();
     void SetupCollectionsPage();
@@ -153,6 +157,13 @@ private:
     void OnCollectionYearEdited(int year);
     void OnCollectionPeriodEdited(const QString &text);
     void OnCollectionDescriptionChanged();
+    void OnCreateCollectionFolder(bool checked);
+    /// L'historique d'un client ou d'une collection : les patrons de la bibliothèque qui le nomment.
+    auto CreateHistoryTable() -> QTableWidget *;
+    void FillHistory(QTableWidget *table, QLabel *placeholder, const QString &name,
+                     OPatternLibrary::Owner owner);
+    void OnHistoryClicked(QTableWidget *table, int row, int column);
+
     void OnSortChanged();
     void PersistCollections();
     void RefreshCollectionsList();
@@ -218,7 +229,11 @@ private:
     QLineEdit *m_clientMailEdit{nullptr};
     QLineEdit *m_clientPhoneEdit{nullptr};
     QPlainTextEdit *m_clientInfoEdit{nullptr};
+
+    /// @brief The bridge to the library of patterns: a folder of the client's name, made on the spot.
+    QCheckBox *m_clientFolderCheck{nullptr};
     QGroupBox *m_historyGroup{nullptr};
+    QTableWidget *m_clientsHistory{nullptr};
     QLabel *m_historyPlaceholder{nullptr};
     QList<OPieceCartoucheStorage::ClientEntry> m_clientEntries;
     bool m_updatingClients{false};
@@ -238,7 +253,11 @@ private:
     QSpinBox *m_collectionYearSpin{nullptr};
     QLineEdit *m_collectionPeriodEdit{nullptr};
     QPlainTextEdit *m_collectionDescriptionEdit{nullptr};
+
+    /// @brief The same bridge, on the collections' side.
+    QCheckBox *m_collectionFolderCheck{nullptr};
     QGroupBox *m_collectionsHistoryGroup{nullptr};
+    QTableWidget *m_collectionsHistory{nullptr};
     QLabel *m_collectionsHistoryPlaceholder{nullptr};
     QList<OPieceCartoucheStorage::CollectionEntry> m_collectionEntries;
     bool m_updatingCollections{false};

@@ -451,6 +451,9 @@ private slots:
     bool on_actionSave_triggered();   // NOLINT(modernize-use-trailing-return-type)
     void on_actionOpen_triggered();
 
+    /// @brief L'ouverture depuis l'écran d'accueil : la bibliothèque d'abord, l'ordinateur ensuite.
+    void OpenPatternFromLibrary();
+
     void ActionAddBackgroundImage();
 
 
@@ -529,6 +532,7 @@ private slots:
     void ActionExportTemplates_triggered(int tab);
     void ActionManageMeasurements();
     void ActionPieceLibrary();
+    void ActionPatternLibrary();
     void ActionShowMainPath_triggered(bool checked);
     void ActionBoundaryTogetherWithNotches_triggered(bool checked);
 

@@ -37,6 +37,8 @@
 #include "othumbnailstylespage.h"
 
 #include "core/ologolibrary.h"
+#include "core/opatternlibrary.h"
+#include "widgets/olibraryicondelegate.h"
 
 #include "def.h"
 #include "FactoryWidgets.h"
@@ -44,6 +46,7 @@
 #include "vmisc/vcommonsettings.h"
 
 #include <QAction>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDate>
 #include <QDir>
@@ -66,7 +69,27 @@
 #include <QStackedWidget>
 #include <QStringList>
 #include <QTreeWidget>
+#include <QDesktopServices>
+#include <QHeaderView>
+#include <QTableWidget>
+#include <QUrl>
 #include <QVBoxLayout>
+
+namespace
+{
+// L'historique : les patrons de la bibliothèque qui nomment le client (ou la collection) choisi. Les mêmes
+// colonnes que la fenêtre de la bibliothèque, moins les actions : ici on ne range pas un patron, on va le
+// chercher sur le disque.
+const int kHistoryNameColumn = 0;
+const int kHistoryModifiedColumn = 1;
+const int kHistoryCollectionColumn = 2;
+const int kHistoryCustomerColumn = 3;
+const int kHistoryFolderColumn = 4;
+const int kHistoryColumnCount = 5;
+const int kHistoryRowHeight = 30;
+const int kHistoryIconColumnWidth = 44;
+const int kHistoryMinimumColumnWidth = 56;
+} // namespace
 
 OInfoBlockEditor::OInfoBlockEditor(QWidget *parent) : QWidget(parent)
 {
@@ -204,6 +227,23 @@ void OInfoBlockEditor::RetranslateUI()
     m_removeClientBtn->setText(tr("Remove Client"));
     m_historyGroup->setTitle(tr("History"));
     m_historyPlaceholder->setText(tr("No associated patterns yet."));
+    for (QTableWidget *history : {m_clientsHistory, m_collectionsHistory})
+    {
+        if (history == nullptr)
+        {
+            continue;
+        }
+        const QStringList headers{tr("Name"), tr("Modified"), tr("Collection"), tr("Client"), QString()};
+        for (int column = 0; column < headers.size() && column < history->columnCount(); ++column)
+        {
+            if (QTableWidgetItem *header = history->horizontalHeaderItem(column); header != nullptr)
+            {
+                header->setText(headers.at(column));
+            }
+        }
+    }
+    m_clientFolderCheck->setText(tr("Create the folder in the pattern library"));
+    m_clientFolderCheck->setToolTip(tr("Makes a folder of the client's name in the library of patterns."));
     if (m_clientEntries.isEmpty() && m_clientsTree->topLevelItemCount() > 0)
     {
         m_clientsTree->topLevelItem(0)->setText(0, tr("No clients yet. Add one."));
@@ -226,6 +266,8 @@ void OInfoBlockEditor::RetranslateUI()
     m_collectionsSortCombo->setItemText(1, tr("Oldest first"));
     m_collectionsHistoryGroup->setTitle(tr("History"));
     m_collectionsHistoryPlaceholder->setText(tr("No associated patterns yet."));
+    m_collectionFolderCheck->setText(tr("Create the folder in the pattern library"));
+    m_collectionFolderCheck->setToolTip(tr("Makes a folder of the collection's name in the library of patterns."));
     if (m_collectionEntries.isEmpty() && m_collectionsTree->topLevelItemCount() > 0)
     {
         m_collectionsTree->topLevelItem(0)->setText(0, tr("No collections yet. Add one."));
@@ -542,23 +584,40 @@ void OInfoBlockEditor::SetupClientsPage()
     connect(m_clientInfoEdit, &QPlainTextEdit::textChanged, this, &OInfoBlockEditor::OnClientInfoChanged);
     m_clientInfoLabel = new QLabel(tr("Information:"));
     form->addRow(m_clientInfoLabel, m_clientInfoEdit);
+
+    // The bridge to the library of patterns: a client is a folder, and the gesture that makes it belongs beside
+    // the client it is made for. Ticking the box does the thing at once — it asks, it does not record a setting.
+    // The words are given here and not only in RetranslateUI, which this editor is never called through before
+    // the window is opened: a row built without its text is a checkbox nobody can read.
+    m_clientFolderCheck = new QCheckBox(tr("Create the folder in the pattern library"));
+    m_clientFolderCheck->setToolTip(tr("Makes a folder of the client's name in the library of patterns."));
+    connect(m_clientFolderCheck, &QCheckBox::toggled, this, &OInfoBlockEditor::OnCreateClientFolder);
+    form->addRow(m_clientFolderCheck);
+
     leftLayout->addWidget(m_clientEditGroup);
 
     m_historyGroup = new QGroupBox(tr("History"));
     auto *historyLayout = new QVBoxLayout(m_historyGroup);
+
+    m_clientsHistory = CreateHistoryTable();
+    connect(m_clientsHistory, &QTableWidget::cellClicked, this,
+            [this](int row, int column) { OnHistoryClicked(m_clientsHistory, row, column); });
+    historyLayout->addWidget(m_clientsHistory, 1);
+
     m_historyPlaceholder = new QLabel(tr("No associated patterns yet."));
     m_historyPlaceholder->setAlignment(Qt::AlignCenter);
     m_historyPlaceholder->setWordWrap(true);
     historyLayout->addWidget(m_historyPlaceholder, 1);
-    // The pattern list appears here once the pattern library exists
-    // (spec clients.md §3, Historique — for now always empty).
+    // Un client sans patron montre le texte ; un client qui en a montre la liste (FillHistory).
 
     auto *splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(left);
     splitter->addWidget(m_historyGroup);
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 1);
-    splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
+    // Cinq colonnes à droite, quatre champs à gauche : l'historique a besoin de plus de place que la moitié,
+    // sinon sa colonne de nom est la première sacrifiée.
+    splitter->setSizes({360, 540});
     vbox->addWidget(splitter, 1);
 
     m_menu->AddPage(clientsPage);
@@ -593,6 +652,114 @@ void OInfoBlockEditor::RefreshClientsList()
     }
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief La table de l'historique : les quatre colonnes de la bibliothèque, et une seule action — le dossier.
+ *
+ * La colonne d'action est peinte par le délégué de la bibliothèque, pour que l'icône soit centrée et change de
+ * variante sur la ligne choisie, comme dans la fenêtre.
+ */
+auto OInfoBlockEditor::CreateHistoryTable() -> QTableWidget *
+{
+    auto *table = new QTableWidget();
+    table->setColumnCount(kHistoryColumnCount);
+    table->setHorizontalHeaderLabels({tr("Name"), tr("Modified"), tr("Collection"), tr("Client"), QString()});
+    table->setSelectionBehavior(QAbstractItemView::SelectRows);
+    table->setSelectionMode(QAbstractItemView::SingleSelection);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table->setAlternatingRowColors(true);
+    table->setShowGrid(false);
+    table->verticalHeader()->hide();
+    table->verticalHeader()->setDefaultSectionSize(kHistoryRowHeight);
+    table->horizontalHeader()->setSectionResizeMode(kHistoryNameColumn, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionResizeMode(kHistoryModifiedColumn, QHeaderView::ResizeToContents);
+    table->horizontalHeader()->setSectionResizeMode(kHistoryCollectionColumn, QHeaderView::ResizeToContents);
+    table->horizontalHeader()->setSectionResizeMode(kHistoryCustomerColumn, QHeaderView::ResizeToContents);
+    table->horizontalHeader()->setSectionResizeMode(kHistoryFolderColumn, QHeaderView::Fixed);
+    table->setColumnWidth(kHistoryFolderColumn, kHistoryIconColumnWidth);
+    // Un plancher : la colonne du nom est celle qui cède la dernière place, et sans plancher les trois colonnes
+    // dimensionnées sur leur contenu la réduisent à seize pixels — le nom du patron, illisible.
+    table->horizontalHeader()->setMinimumSectionSize(kHistoryMinimumColumnWidth);
+    table->setItemDelegateForColumn(kHistoryFolderColumn, new OLibraryIconDelegate(table));
+    table->setVisible(false); // il n'y a rien à montrer tant que personne n'est choisi
+    return table;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockEditor::FillHistory(QTableWidget *table, QLabel *placeholder, const QString &name,
+                                   const OPatternLibrary::Owner owner)
+{
+    if (table == nullptr)
+    {
+        return;
+    }
+
+    const QSignalBlocker blocker(table);
+    table->setRowCount(0);
+
+    // Le lien est un nom : la bibliothèque est relue à chaque choix, et un patron renommé ailleurs se voit ici
+    // dès qu'on rouvre la page. Chercher plutôt que d'indexer, c'est le choix de la fenêtre de la bibliothèque.
+    const QList<OPatternLibrary::Entry> patterns
+        = OPatternLibrary::PatternsOf(OPatternLibrary::DefaultDirectory(), name, owner);
+
+    table->setVisible(not patterns.isEmpty());
+    if (placeholder != nullptr)
+    {
+        placeholder->setVisible(patterns.isEmpty());
+    }
+
+    for (const OPatternLibrary::Entry &entry : patterns)
+    {
+        const int row = table->rowCount();
+        table->insertRow(row);
+
+        auto *nameItem = new QTableWidgetItem(OPatternLibrary::DisplayName(entry));
+        nameItem->setToolTip(entry.fileName);
+        nameItem->setData(Qt::UserRole, entry.path);
+        table->setItem(row, kHistoryNameColumn, nameItem);
+
+        // La date seule dans la cellule : l'heure complète tient dans l'infobulle, et la colonne du nom garde la
+        // place qu'il lui faut pour ne pas s'abréger.
+        auto *modifiedItem = new QTableWidgetItem(entry.modified.toString(QStringLiteral("dd/MM/yyyy")));
+        modifiedItem->setToolTip(entry.modified.toString(QStringLiteral("dd/MM/yyyy HH:mm")));
+        table->setItem(row, kHistoryModifiedColumn, modifiedItem);
+
+        table->setItem(row, kHistoryCollectionColumn,
+                       new QTableWidgetItem(entry.collection.isEmpty() ? QStringLiteral("-") : entry.collection));
+        table->setItem(row, kHistoryCustomerColumn,
+                       new QTableWidgetItem(entry.customer.isEmpty() ? QStringLiteral("-") : entry.customer));
+
+        auto *folderItem = new QTableWidgetItem(OLibraryIcon(QStringLiteral("folder-open")), QString());
+        folderItem->setToolTip(tr("Show the folder that holds this pattern"));
+        folderItem->setData(Qt::UserRole, entry.path);
+        table->setItem(row, kHistoryFolderColumn, folderItem);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockEditor::OnHistoryClicked(QTableWidget *table, int row, int column)
+{
+    if (table == nullptr || column != kHistoryFolderColumn)
+    {
+        return;
+    }
+
+    const QTableWidgetItem *item = table->item(row, kHistoryFolderColumn);
+    if (item == nullptr)
+    {
+        return;
+    }
+
+    const QFileInfo pattern(item->data(Qt::UserRole).toString());
+    if (not pattern.exists())
+    {
+        return;
+    }
+
+    // Le dossier où vit le patron — ce qu'on irait chercher à la main dans le Finder.
+    QDesktopServices::openUrl(QUrl::fromLocalFile(pattern.absolutePath()));
+}
+
 void OInfoBlockEditor::OnClientSelected(QTreeWidgetItem *current)
 {
     m_updatingClients = true;
@@ -619,6 +786,9 @@ void OInfoBlockEditor::OnClientSelected(QTreeWidgetItem *current)
         }
     }
     m_updatingClients = false;
+
+    FillHistory(m_clientsHistory, m_historyPlaceholder, m_clientNameEdit->text(),
+                OPatternLibrary::Owner::Customer);
 }
 
 void OInfoBlockEditor::OnClientNameEdited(const QString &text)
@@ -779,6 +949,57 @@ void OInfoBlockEditor::OnRemoveClient()
     emit StatusMessage(tr("Client removed"));
 }
 
+void OInfoBlockEditor::OnCreateClientFolder(bool checked)
+{
+    if (not checked)
+    {
+        return;  // Unticking says nothing: a folder that exists is not this window's to remove.
+    }
+
+    // The gesture is done at once, and the box goes back to its resting state: a tick left behind would claim a
+    // folder this page would then have to keep true — and would have to unclaim the day it is renamed.
+    m_clientFolderCheck->setChecked(false);
+
+    const QString name = m_clientNameEdit->text().trimmed();
+    if (name.isEmpty())
+    {
+        QMessageBox::information(this, tr("Pattern library"), tr("Name the client first: the folder takes its name."));
+        return;
+    }
+
+    const QString library = OPatternLibrary::DefaultDirectory();
+    if (QDir(library).exists(name))
+    {
+        // The folder is already there — the case a reader makes twice without meaning to. Linking is the answer
+        // that costs nothing; refusing is for the day the two are meant to be different things.
+        const QMessageBox::StandardButton answer
+            = QMessageBox::question(this, tr("Pattern library"),
+                                    tr("The folder \"%1\" already exists in the pattern library.\n\n"
+                                       "Link the client to it?")
+                                        .arg(name),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        if (answer == QMessageBox::Yes)
+        {
+            emit StatusMessage(tr("The client is linked to the folder \"%1\"").arg(name));
+        }
+        else
+        {
+            QMessageBox::information(this, tr("Pattern library"),
+                                     tr("Rename the client or the folder, so that the two can be told apart."));
+        }
+        return;
+    }
+
+    QString error;
+    if (not OPatternLibrary::CreateDirectory(library, name, &error))
+    {
+        QMessageBox::warning(this, tr("Pattern library"), error);
+        return;
+    }
+
+    emit StatusMessage(tr("The folder \"%1\" was created in the pattern library").arg(name));
+}
+
 void OInfoBlockEditor::SetupCollectionsPage()
 {
     auto *collectionsPage = new QWidget();
@@ -843,23 +1064,35 @@ void OInfoBlockEditor::SetupCollectionsPage()
             &OInfoBlockEditor::OnCollectionDescriptionChanged);
     m_collectionDescriptionLabel = new QLabel(tr("Description:"));
     form->addRow(m_collectionDescriptionLabel, m_collectionDescriptionEdit);
+
+    // The same bridge, on the collections' side: one folder per collection, so that the library of patterns can
+    // be read the way the collections are thought of. Named here for the same reason as its twin.
+    m_collectionFolderCheck = new QCheckBox(tr("Create the folder in the pattern library"));
+    m_collectionFolderCheck->setToolTip(tr("Makes a folder of the collection's name in the library of patterns."));
+    connect(m_collectionFolderCheck, &QCheckBox::toggled, this, &OInfoBlockEditor::OnCreateCollectionFolder);
+    form->addRow(m_collectionFolderCheck);
+
     leftLayout->addWidget(m_collectionEditGroup);
 
     m_collectionsHistoryGroup = new QGroupBox(tr("History"));
     auto *historyLayout = new QVBoxLayout(m_collectionsHistoryGroup);
+
+    m_collectionsHistory = CreateHistoryTable();
+    connect(m_collectionsHistory, &QTableWidget::cellClicked, this,
+            [this](int row, int column) { OnHistoryClicked(m_collectionsHistory, row, column); });
+    historyLayout->addWidget(m_collectionsHistory, 1);
+
     m_collectionsHistoryPlaceholder = new QLabel(tr("No associated patterns yet."));
     m_collectionsHistoryPlaceholder->setAlignment(Qt::AlignCenter);
     m_collectionsHistoryPlaceholder->setWordWrap(true);
     historyLayout->addWidget(m_collectionsHistoryPlaceholder, 1);
-    // The pattern list appears here once the pattern library exists
-    // (spec collections.md §3, Historique — for now always empty).
 
     auto *splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(left);
     splitter->addWidget(m_collectionsHistoryGroup);
     splitter->setStretchFactor(0, 1);
     splitter->setStretchFactor(1, 1);
-    splitter->setSizes({400, 400});  // 50/50 at open — ratio kept on window resize
+    splitter->setSizes({360, 540}); // voir la page Clients : cinq colonnes à droite
     vbox->addWidget(splitter, 1);
 
     m_menu->AddPage(collectionsPage);
@@ -924,6 +1157,9 @@ void OInfoBlockEditor::OnCollectionSelected(QTreeWidgetItem *current)
         }
     }
     m_updatingCollections = false;
+
+    FillHistory(m_collectionsHistory, m_collectionsHistoryPlaceholder, m_collectionNameEdit->text(),
+                OPatternLibrary::Owner::Collection);
 }
 
 void OInfoBlockEditor::OnCollectionNameEdited(const QString &text)
@@ -1095,6 +1331,54 @@ void OInfoBlockEditor::OnRemoveCollection()
     }
     ShowCollectionsPage();
     emit StatusMessage(tr("Collection removed"));
+}
+
+void OInfoBlockEditor::OnCreateCollectionFolder(bool checked)
+{
+    if (not checked)
+    {
+        return;  // Unticking says nothing: a folder that exists is not this window's to remove.
+    }
+
+    m_collectionFolderCheck->setChecked(false);
+
+    const QString name = m_collectionNameEdit->text().trimmed();
+    if (name.isEmpty())
+    {
+        QMessageBox::information(this, tr("Pattern library"),
+                                 tr("Name the collection first: the folder takes its name."));
+        return;
+    }
+
+    const QString library = OPatternLibrary::DefaultDirectory();
+    if (QDir(library).exists(name))
+    {
+        const QMessageBox::StandardButton answer
+            = QMessageBox::question(this, tr("Pattern library"),
+                                    tr("The folder \"%1\" already exists in the pattern library.\n\n"
+                                       "Link the collection to it?")
+                                        .arg(name),
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        if (answer == QMessageBox::Yes)
+        {
+            emit StatusMessage(tr("The collection is linked to the folder \"%1\"").arg(name));
+        }
+        else
+        {
+            QMessageBox::information(this, tr("Pattern library"),
+                                     tr("Rename the collection or the folder, so that the two can be told apart."));
+        }
+        return;
+    }
+
+    QString error;
+    if (not OPatternLibrary::CreateDirectory(library, name, &error))
+    {
+        QMessageBox::warning(this, tr("Pattern library"), error);
+        return;
+    }
+
+    emit StatusMessage(tr("The folder \"%1\" was created in the pattern library").arg(name));
 }
 
 void OInfoBlockEditor::NewTemplate()

@@ -191,22 +191,12 @@ void WelcomeScreen::CreateSections()
 
     mainLayout->addLayout(sectionsLayout, 1);
 
-    // Features button — opens style guide window (dev-only)
-    m_featuresBtn = new QPushButton(tr("🧪 Features"));
-    m_featuresBtn->setObjectName(QStringLiteral("welcomeNewBtn"));
-    connect(m_featuresBtn, &QPushButton::clicked,
-            this, &WelcomeScreen::FeaturesClicked);
-    mainLayout->addWidget(m_featuresBtn, 0, Qt::AlignCenter);
 }
 
 void WelcomeScreen::RetranslateUI()
 {
     m_subtitleLabel->setText(tr("Sewing pattern design application"));
 
-    if (m_featuresBtn)
-    {
-        m_featuresBtn->setText(tr("🧪 Features"));
-    }
     m_patternsSection.recentLabel->setText(QObject::tr("Recent:"));
     m_patternsSection.title->setText(tr("Patterns"));
     m_patternsSection.newBtn->setText(tr("+ New pattern"));

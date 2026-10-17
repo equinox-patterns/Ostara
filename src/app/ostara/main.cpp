@@ -37,6 +37,7 @@
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 #include "widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "core/oexporttemplatestorage.h"
+#include "core/opatternlibrary.h"
 #include "core/othumbnailtextbuilder.h"
 #include "core/ofoldlinelabelbuilder.h"
 
@@ -215,6 +216,11 @@ auto main(int argc, char *argv[]) -> int
 
         // The same, for the templates of the PDF editor: one library each, seeded the same way.
         OExportTemplateStorage::EnsureDefaultTemplate();
+
+        // The library of patterns is looked at before anything is ever saved into it: its folder is made at the
+        // first launch rather than at the first write — a window showing a folder that does not exist yet would
+        // be showing the absence, not the library.
+        OPatternLibrary::EnsureDirectory();
 
         mw->show();
 

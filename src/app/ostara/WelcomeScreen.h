@@ -65,7 +65,6 @@ signals:
     void OpenMeasurementClicked();
     void OpenRecentPattern(const QString &path);
     void OpenRecentMeasurement(const QString &path);
-    void FeaturesClicked();
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -83,7 +82,6 @@ private:
     // Sections
     Section m_patternsSection;
     Section m_measurementsSection;
-    QPushButton *m_featuresBtn{nullptr};
 };
 
 #endif // WELCOMESCREEN_H

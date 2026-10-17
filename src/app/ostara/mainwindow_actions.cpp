@@ -487,6 +487,7 @@ void MainWindow::CreateActions()
     connect(ui->actionCreateMeasurements, &QAction::triggered, this, &MainWindow::OnNewMeasurements);
     connect(ui->actionManageMeasurements, &QAction::triggered, this, &MainWindow::ActionManageMeasurements);
     connect(ui->actionPieceLibrary, &QAction::triggered, this, &MainWindow::ActionPieceLibrary);
+    connect(ui->actionPatternLibrary, &QAction::triggered, this, &MainWindow::ActionPatternLibrary);
 
     // Actions for recent files loaded by a main window application.
     for (int i = 0; i < MaxRecentFiles; ++i)

@@ -603,9 +603,31 @@ QTableWidget#internalPathTable {
 }
 
 /* =========================================================================
-   QTreeView — Branches (expand/collapse arrows)
-   Drawn natively by Fusion — no SVG images
+   QTreeView — Branches (replié / déplié) : nos carets
+   L'arbre de la bibliothèque de patrons — la fenêtre et le dialogue qui
+   enregistre dedans — porte le nom « libraryTree ». Les autres arbres gardent
+   les branches de Fusion.
    ========================================================================= */
+
+QTreeView#libraryTree::branch:has-children:closed {
+    image: url(:/icons/dark/caret-right_dark.svg);
+}
+
+QTreeView#libraryTree::branch:has-children:open {
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
+
+/* Une ligne choisie ou survolée est foncée — #8C4560 / #a85a7a en thème clair — et son texte passe en #e5e5e5.
+   Le caret suit : même en thème clair, il prend la variante claire du jeu sombre. */
+QTreeView#libraryTree::branch:has-children:closed:selected,
+QTreeView#libraryTree::branch:has-children:closed:hover {
+    image: url(:/icons/dark/caret-right_dark.svg);
+}
+
+QTreeView#libraryTree::branch:has-children:open:selected,
+QTreeView#libraryTree::branch:has-children:open:hover {
+    image: url(:/icons/dark/caret-down_dark.svg);
+}
 
 /* =========================================================================
    QHeaderView — En-têtes de tables / arbres

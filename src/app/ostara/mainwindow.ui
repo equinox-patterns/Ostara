@@ -117,6 +117,7 @@
     </property>
     <addaction name="actionManageMeasurements"/>
     <addaction name="actionPieceLibrary"/>
+    <addaction name="actionPatternLibrary"/>
    </widget>
    <widget class="QMenu" name="menuInfoBlock">
     <property name="title">
@@ -2393,10 +2394,21 @@
   </action>
   <action name="actionPieceLibrary">
    <property name="text">
-    <string>Piece Library</string>
+    <string>Pieces</string>
    </property>
    <property name="toolTip">
     <string>Browse the pieces saved in the library, and see what each of them needs</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionPatternLibrary">
+   <property name="text">
+    <string>Patterns</string>
+   </property>
+   <property name="toolTip">
+    <string>Browse the patterns saved in the library, and manage what each folder holds</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

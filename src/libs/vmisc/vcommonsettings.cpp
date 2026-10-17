@@ -104,6 +104,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCartoucheTemplates, ("paths/cartoucheTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPieces, ("paths/pieces"_L1))                            // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPatterns, ("paths/patterns"_L1))                        // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPdfTemplates, ("paths/pdfTemplates"_L1))               // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCoverPageTemplates, ("paths/coverPageTemplates"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLogos, ("paths/logos"_L1))                              // NOLINT
@@ -590,6 +591,21 @@ void VCommonSettings::SetPathPieces(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
     settings.setValue(*settingPathsPieces, value);
+    settings.sync();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetPathPatterns() const -> QString
+{
+    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    return settings.value(*settingPathsPatterns, QDir::homePath() + QStringLiteral("/Ostara/Patterns")).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::SetPathPatterns(const QString &value) const
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(*settingPathsPatterns, value);
     settings.sync();
 }
 

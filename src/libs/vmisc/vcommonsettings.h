@@ -112,6 +112,9 @@ public:
     auto GetPathPieces() const -> QString;
     void SetPathPieces(const QString &value) const;
 
+    auto GetPathPatterns() const -> QString;
+    void SetPathPatterns(const QString &value) const;
+
     auto GetPathPdfTemplates() const -> QString;
     void SetPathPdfTemplates(const QString &value) const;
 

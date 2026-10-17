@@ -36,11 +36,14 @@
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/def.h"
 #include "core/opiecelibrary.h"
+#include "core/opatternlibrary.h"
 #include "core/vapplication.h"
 #include "core/odetailspropertybrowser.h"
 #include "core/ogradedrangerenames.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/DialogOpenMeasurements.h"
+#include "dialogs/opatternopendialog.h"
+#include "dialogs/osavepatterndialog.h"
 #include "dialogs/dialognewpattern.h"
 #include "dialogs/vwidgetbackgroundimages.h"
 #include "dialogs/vwidgetdependencies.h"
@@ -345,12 +348,37 @@ auto MainWindow::on_actionSaveAs_triggered() -> bool
     }
     else
     {
-        newFileName = tr("pattern") + QStringLiteral(".ostara");
+        // The first save proposes the pattern's own name when it has one: that is the name its reader has just
+        // written in the Property Browser, and the file is worth being called after it. A file name cannot hold
+        // a separator — they are taken out here, and the dialog refuses them again on its side.
+        QString proposed = doc != nullptr ? doc->GetPatternName().trimmed() : QString();
+        proposed.remove(QLatin1Char('/'));
+        proposed.remove(QLatin1Char('\\'));
+        newFileName = proposed.isEmpty() ? tr("pattern") + QStringLiteral(".ostara")
+                                         : proposed + QStringLiteral(".ostara");
     }
 
-    QString const filters(tr("Pattern files") + QStringLiteral(" (*.ostara)"));
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save as"), dir + '/'_L1 + newFileName, filters, nullptr,
-                                                    VAbstractApplication::VApp()->NativeFileDialog());
+    // Where the file goes is asked by our dialog, which **offers the pattern library** — and which hands the
+    // question back to the system's own panel when the reader says "not the library". The two paths below are
+    // the same they always were: one name, then the same forcing, the same lock, the same write.
+    QString fileName;
+    OSavePatternDialog saveDialog(OPatternLibrary::DefaultDirectory(), newFileName, patternPath, this);
+    saveDialog.exec(); // ce qui compte est ce qu'elle a répondu, pas le code de retour du dialogue
+    switch (saveDialog.ChosenDestination())
+    {
+        case OSavePatternDialog::Destination::Library:
+            fileName = saveDialog.LibraryPath();
+            break;
+        case OSavePatternDialog::Destination::Elsewhere:
+        {
+            QString const filters(tr("Pattern files") + QStringLiteral(" (*.ostara)"));
+            fileName = QFileDialog::getSaveFileName(this, tr("Save as"), dir + '/'_L1 + newFileName, filters,
+                                                    nullptr, VAbstractApplication::VApp()->NativeFileDialog());
+            break;
+        }
+        case OSavePatternDialog::Destination::Cancelled:
+            return false;
+    }
 
     if (fileName.isEmpty())
     {
@@ -485,6 +513,29 @@ void MainWindow::on_actionOpen_triggered()
     LoadPattern(filePath);
 }
 
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief on_actionOpen_triggered's counterpart for the welcome screen: the library first, the computer second.
+ */
+void MainWindow::OpenPatternFromLibrary()
+{
+    OPatternOpenDialog dialog(OPatternLibrary::DefaultDirectory(), this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        // L'écran d'accueil est toujours là : rien n'a été demandé, rien ne bouge.
+        return;
+    }
+
+    const QString filePath = dialog.SelectedPath();
+    if (filePath.isEmpty())
+    {
+        return;
+    }
+
+    ShowEditor();
+    LoadPattern(filePath);
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
