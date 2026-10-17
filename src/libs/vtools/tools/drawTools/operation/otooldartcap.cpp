@@ -652,8 +652,9 @@ void OToolDartCap::ApplyFigureVisibility()
     // What the box adds, and only that: the two tracés of the cap and the crank that marks it. "The point exists
     // either way, the two tracés are what the box adds" — the very sentence the point tool wrote over the box (see
     // the dock's own comment), so the point C is left alone and the rest follows the flag. Read here and not only
-    // where the flag is set: the layer pass sets every object of an operation visible again
-    // (VAbstractOperation::GroupVisibility), and a parse is what re-applies this.
+    // where the flag is set: every parse rebuilds the items of the figure — a fresh item is drawn — so the flags have
+    // to be given back to them at each pass. A hidden layer does not enter here: it hides the item of the operation,
+    // and the whole figure goes with it (VAbstractOperation::GroupVisibility).
     for (const OPleatMarkDisplay &mark : std::as_const(m_display.marks))
     {
         for (const quint32 id : {mark.curve1, mark.curve2, mark.side1, mark.side2})
@@ -1162,11 +1163,10 @@ void OToolDartCap::SetCapDrawn(bool drawn)
     // framework reads it — leaving it behind meant unticking "Draw the cap" changed the attribute and nothing else.
     m_display.show = drawn;
 
-    // The command and the parse FIRST, and the visibility after them: `SaveOptionsAndReparse` attaches the figure to
-    // its layer, and attaching re-runs the layer pass, which sets every object of the operation visible again
-    // (VAbstractPattern::AddItemsToGroup → ParseGroups → GroupVisibility). Hidden before that pass, the tracés came
-    // back for the time of it; hidden after, the last word is ours. A parse re-applies the same thing anyway
-    // (FullUpdateFromFile → ApplyFigureVisibility), which is what the pleat relies on for its own halves.
+    // The command and the parse FIRST, and the visibility after them: the parse rebuilds what the figure changed and
+    // hands a fresh item to anything it adds — a fresh item is drawn — so the tracés would come back for the time of
+    // it. Hidden after, the last word is ours. The layer pass of `SaveOptionsAndReparse` does not show them any more:
+    // it hides the item of the operation, not the objects of its figure (VAbstractOperation::GroupVisibility).
     SaveOptionsAndReparse(false, drawn ? tr("draw the cap") : tr("stop drawing the cap"));
 
     // Taken off the canvas at once, and not a parse later: the box is what asks for the tracés, and the eye must see

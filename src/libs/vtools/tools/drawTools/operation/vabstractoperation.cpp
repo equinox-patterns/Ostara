@@ -554,23 +554,22 @@ auto VAbstractOperation::ExtraLayerableObjects(const QDomElement &toolElement) c
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::GroupVisibility(quint32 object, bool visible)
 {
+    // A layer's eye is ONE eye for the whole figure, and the figure is drawn by the items the operation PARENTS — the
+    // point C, its two sides, its crank, the lines it makes. So the answer is given by the item that carries them, and
+    // Qt composes the two questions by itself: a hidden parent hides every child, and a child's own flag still says
+    // what the figure shows when the layer comes back — the sides of a cap that is not drawn stay off, the halves a
+    // crank cuts stay off.
+    //
+    // Hiding the objects one by one was the other way, and it could not work: a side carried by a CURVE is no tool of
+    // its own — a layer names it by an id no tool answers (see OToolDartCap::AttachFigureToLayer) — so the only object
+    // of the figure a layer could reach was the point, and the two tracés of a cap stayed drawn on a hidden layer. The
+    // point is what brings the question here; this item is what carries the whole figure.
     if (!operatedObjects.contains(object))
     {
         return;
     }
 
-    if (VAbstractSimple *obj = operatedObjects.value(object); (obj != nullptr) && obj->GetType() == GOType::Point)
-    {
-        auto *item = qobject_cast<VSimplePoint *>(obj);
-        SCASSERT(item != nullptr)
-        item->setVisible(visible);
-    }
-    else
-    {
-        auto *item = qobject_cast<VSimpleCurve *>(obj);
-        SCASSERT(item != nullptr)
-        item->setVisible(visible);
-    }
+    setVisible(visible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
