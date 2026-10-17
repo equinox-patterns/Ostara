@@ -304,7 +304,8 @@ void AbstractObjectRename::ProcessNodeElement(QDomElement &node) const
                                    VAbstractPattern::AttrSAAfter,
                                    VAbstractPattern::AttrPassmarkLength,
                                    VAbstractPattern::AttrPassmarkWidth,
-                                   VAbstractPattern::AttrPassmarkAngle};
+                                   VAbstractPattern::AttrPassmarkAngle,
+                                   VAbstractPattern::AttrPassmarkVisibility};
     for (const auto &attr : nodeAttrs)
     {
         ProcessAttribute(node, attr);

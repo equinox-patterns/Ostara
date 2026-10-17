@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<vst>
+    <!-- Minimal .vst 0.4.2: no <dimensions>, size_increase/height_increase on the measures. -->
+    <version>0.4.2</version>
+    <read-only>false</read-only>
+    <unit>cm</unit>
+    <pm_system>51</pm_system>
+    <size base="50"/>
+    <height base="176"/>
+    <body-measurements>
+        <m name="height" base="176" height_increase="6" size_increase="0"/>
+        <m name="size" base="50" height_increase="0" size_increase="2"/>
+        <m name="waist_circ" base="80" height_increase="0" size_increase="2"/>
+    </body-measurements>
+</vst>

@@ -2,7 +2,7 @@
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
 # Un exécutable par fichier `tst_*.cpp` : la panne de l'un n'emporte pas les autres.
-set(OSTARA_TESTS tst_incrementtables tst_pieceenvelope)
+set(OSTARA_TESTS tst_incrementtables tst_pieceenvelope tst_vbackgroundpatternimage tst_vpatternconverter tst_expressionwalkers tst_oomtconverter)
 
 # Les sources de l'application qu'un essai emporte avec lui. `OPieceDocument` n'est pas dans une bibliothèque — il
 # est compilé avec l'exécutable — et l'enveloppe d'une pièce ne se vérifie pas sans lui.
@@ -15,6 +15,10 @@ foreach(test IN LISTS OSTARA_TESTS)
     target_include_directories(${test} PRIVATE
         ${CMAKE_SOURCE_DIR}/src/libs
         ${CMAKE_SOURCE_DIR}/src/app/ostara/core)
+
+    # Fixtures partagées (patrons et mesures d'essai), lues depuis la source et non depuis le build.
+    target_compile_definitions(${test} PRIVATE
+        OSTARA_TEST_FIXTURES_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures")
 
     target_link_libraries(${test} PRIVATE
         Qt6::Core

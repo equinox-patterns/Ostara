@@ -507,6 +507,15 @@ void MainWindow::ProcessCMD()
             return;
         }
 
+        // SetDimensionX() only starts the size-switch debounce: the measurements are recomputed and the pattern
+        // re-parsed by GradationChanged(), one event-loop turn later. Nothing turns the loop before DoExport()
+        // below, so without this flush the export would carry the geometry of the size stored in the file — the
+        // flag would be accepted and change nothing.
+        if (m_gradation->isActive())
+        {
+            GradationChanged();
+        }
+
         if (not cmd->IsTestModeEnabled())
         {
             if (cmd->IsExportEnabled() && not DoExport(cmd))

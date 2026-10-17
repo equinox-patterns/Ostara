@@ -976,6 +976,16 @@ void OOmtDocument::ComputeGrid()
 {
     ClearGrid();
 
+    // The grid was just emptied: this pass creates every cell, so it appends straight to the element instead of
+    // going through SetGridCell(), which rescans the whole grid to find a cell to update — quadratic when the
+    // grid holds tens of thousands of cells.
+    QDomElement root = RootElement();
+    if (root.isNull())
+    {
+        return;
+    }
+    QDomElement gridEl = EnsureChildElement(root, TagGrid);
+
     QStringList groupNames = GetSizeGroupNames();
     if (groupNames.isEmpty())
     {
@@ -1037,6 +1047,41 @@ void OOmtDocument::ComputeGrid()
             groupValueIndex.append(idxMap);
         }
 
+        // The increment of a step depends on the axis, on the direction and on the pair of values — never on the
+        // cell being built. Walking each cell's path again was the cost: up to 676 cells × 76 measurements × up to
+        // 26 steps, each running FindIncrementForTransition. One cumulative pass per axis gives the same numbers,
+        // and a cell then costs one lookup per axis.
+        QList<QVector<qreal>> axisOffset;
+        axisOffset.reserve(groupNames.size());
+        for (int d = 0; d < groupNames.size(); ++d)
+        {
+            const QString &gn = groupNames.at(d);
+            const GroupIncrement &gi = incs.value(gn);
+            const QStringList &gvals = groupValues.at(d);
+            const QVector<RangeDef> ranges = rangeLookup.value(gn);
+            const int anchorIdx = groupValueIndex.at(d).value(anchor.value(gn), -1);
+
+            QVector<qreal> offsets(gvals.size(), 0);
+            if (anchorIdx < 0)
+            {
+                qCWarning(vOmtDoc) << "ComputeGrid: anchor value" << anchor.value(gn) << "not found in group" << gn;
+            }
+            else
+            {
+                for (int i = anchorIdx + 1; i < gvals.size(); ++i)
+                {
+                    offsets[i] =
+                        offsets.at(i - 1) + FindIncrementForTransition(gi, gvals.at(i - 1), gvals, ranges, 1);
+                }
+                for (int i = anchorIdx - 1; i >= 0; --i)
+                {
+                    offsets[i] =
+                        offsets.at(i + 1) - FindIncrementForTransition(gi, gvals.at(i + 1), gvals, ranges, -1);
+                }
+            }
+            axisOffset.append(offsets);
+        }
+
         // Compute the cartesian product of all group values
         QStringList currentCoord(groupNames.size());
 
@@ -1050,44 +1095,21 @@ void OOmtDocument::ComputeGrid()
 
                 for (int d = 0; d < groupNames.size(); ++d)
                 {
-                    const QString &gn = groupNames.at(d);
-                    QString anchorVal = anchor.value(gn);
-
-                    int currentIdx = groupValueIndex.at(d).value(currentCoord.at(d), -1);
-                    int anchorIdx = groupValueIndex.at(d).value(anchorVal, -1);
-
+                    const int currentIdx = groupValueIndex.at(d).value(currentCoord.at(d), -1);
                     if (currentIdx < 0)
                     {
                         qCWarning(vOmtDoc) << "ComputeGrid: value" << currentCoord.at(d)
-                                           << "not found in group" << gn;
+                                           << "not found in group" << groupNames.at(d);
                         continue;
                     }
-                    if (anchorIdx < 0)
-                    {
-                        qCWarning(vOmtDoc) << "ComputeGrid: anchor value" << anchorVal
-                                           << "not found in group" << gn;
-                        continue;
-                    }
-
-                    const GroupIncrement &gi = incs.value(gn);
-                    int steps = currentIdx - anchorIdx;
-                    if (steps != 0)
-                    {
-                        int direction = (steps > 0) ? 1 : -1;
-                        const QStringList &gvals = groupValues.at(d);
-                        for (int s = 0; s != steps; s += direction)
-                        {
-                            int srcIdx = anchorIdx + s;
-                            if (srcIdx >= 0 && srcIdx < gvals.size())
-                            {
-                                double inc = FindIncrementForTransition(gi, gvals.at(srcIdx), gvals, rangeLookup.value(gn), direction);
-                                value += inc * direction;
-                            }
-                        }
-                    }
+                    value += axisOffset.at(d).at(currentIdx);
                 }
 
-                SetGridCell(mName, coord, value);
+                QDomElement cell = createElement(TagCell);
+                cell.setAttribute(AttrM, mName);
+                cell.setAttribute(AttrSg, coord);
+                SetAttribute(cell, AttrV, value);
+                gridEl.appendChild(cell);
                 return;
             }
 

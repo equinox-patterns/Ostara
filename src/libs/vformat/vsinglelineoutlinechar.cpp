@@ -51,6 +51,10 @@ QT_WARNING_DISABLE_CLANG("-Wunused-member-function")
 
 Q_GLOBAL_STATIC(QMutex, singleLineOutlineCharMutex)                         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(VOutlineCorrectionsCache, cachedCorrections, (5)) // NOLINT
+// Directory each font family was looked up in, so a draw does not list it again (see LoadCorrections()).
+using CorrectionsDirMap = QHash<QString, QString>;
+Q_GLOBAL_STATIC(CorrectionsDirMap, loadedCorrectionsDir)  // NOLINT
+Q_GLOBAL_STATIC(CorrectionsDirMap, missingCorrectionsDir) // NOLINT
 
 QT_WARNING_POP
 
@@ -163,6 +167,31 @@ void VSingleLineOutlineChar::ExportCorrections(const QString &dirPath) const
 void VSingleLineOutlineChar::LoadCorrections(const QString &dirPath) const
 {
     auto const fileName = QStringLiteral("%1.json").arg(m_font.family());
+    const QString family = m_font.family();
+
+    // A correction file is looked for every time a fold-line label is drawn. On a slow or unreachable path (an
+    // external disk, a network share), listing the directory again on every refresh is what froze the interface —
+    // and a file that was missing was retried forever. Remember the outcome per family: a miss is remembered too,
+    // so a path that answers nothing is not listed again. ClearCorrectionsCache() forgets both, so installing a
+    // font or pointing the preference elsewhere is still picked up.
+    {
+        QMutexLocker const locker(singleLineOutlineCharMutex());
+        if (missingCorrectionsDir()->value(family) == dirPath)
+        {
+            return;
+        }
+        if (loadedCorrectionsDir()->value(family) == dirPath && cachedCorrections()->contains(family))
+        {
+            return;
+        }
+    }
+
+    auto const remember = [family, &dirPath](bool found)
+    {
+        QMutexLocker const locker(singleLineOutlineCharMutex());
+        (found ? loadedCorrectionsDir() : missingCorrectionsDir())->insert(family, dirPath);
+        (found ? missingCorrectionsDir() : loadedCorrectionsDir())->remove(family);
+    };
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
     using F = QDirListing::IteratorFlag;
@@ -180,6 +209,7 @@ void VSingleLineOutlineChar::LoadCorrections(const QString &dirPath) const
 
     if (filePath.isEmpty())
     {
+        remember(false);
         return; // No matching files found
     }
 #else
@@ -188,6 +218,7 @@ void VSingleLineOutlineChar::LoadCorrections(const QString &dirPath) const
     QStringList const matchingFiles = directory.entryList();
     if (matchingFiles.isEmpty())
     {
+        remember(false);
         return; // No matching files found
     }
     QString const filePath = directory.absoluteFilePath(matchingFiles.constFirst());
@@ -197,6 +228,7 @@ void VSingleLineOutlineChar::LoadCorrections(const QString &dirPath) const
     if (!jsonFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         qDebug() << "Failed to open file for reading.";
+        remember(false);
         return;
     }
 
@@ -209,11 +241,15 @@ void VSingleLineOutlineChar::LoadCorrections(const QString &dirPath) const
     if (jsonDocument.isNull())
     {
         qDebug() << "Failed to parse JSON document.";
+        remember(false);
         return;
     }
 
-    QMutexLocker const locker(singleLineOutlineCharMutex());
-    cachedCorrections()->insert(m_font.family(), ParseCorrectiosn(jsonDocument.object()));
+    {
+        QMutexLocker const locker(singleLineOutlineCharMutex());
+        cachedCorrections()->insert(family, ParseCorrectiosn(jsonDocument.object()));
+    }
+    remember(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -221,6 +257,8 @@ void VSingleLineOutlineChar::ClearCorrectionsCache()
 {
     QMutexLocker const locker(singleLineOutlineCharMutex());
     cachedCorrections()->remove(m_font.family());
+    loadedCorrectionsDir()->remove(m_font.family());
+    missingCorrectionsDir()->remove(m_font.family());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

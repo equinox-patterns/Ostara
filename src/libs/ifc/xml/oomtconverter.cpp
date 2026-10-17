@@ -35,6 +35,11 @@
 #include <QLoggingCategory>
 #include <QMap>
 
+#include <memory>
+
+#include "vexception.h"
+#include "vvstconverter.h"
+
 Q_LOGGING_CATEGORY(vOmtConvert, "v.omt.convert")
 
 using GroupIncMap = QMap<QString, GroupIncrement>;
@@ -114,8 +119,26 @@ auto OOmtConverter::Convert(const QString &vstPath) -> OOmtConversionResult
 {
     OOmtConversionResult result;
 
+    // A .vst written before 0.5.0 carries no <dimensions> element — only single base values for size and height —
+    // and its measures use size_increase/height_increase instead of shiftA/B/C. Upgrade it first, exactly as the
+    // pattern loader does; read as is, there is simply nothing to find.
+    // Kept alive for the whole function: Convert() hands back a temporary file that the converter owns and
+    // deletes with itself.
+    std::unique_ptr<VVSTConverter> converter;
+    QString source = vstPath;
+    try
+    {
+        converter = std::make_unique<VVSTConverter>(vstPath);
+        source = converter->Convert();
+    }
+    catch (const VException &e)
+    {
+        qCWarning(vOmtConvert) << "Cannot upgrade .vst file:" << e.ErrorMessage();
+        return result;
+    }
+
     // --- Load .vst XML ---
-    QFile file(vstPath);
+    QFile file(source);
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         qCWarning(vOmtConvert) << "Cannot open .vst file:" << vstPath;

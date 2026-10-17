@@ -221,7 +221,10 @@ MainWindow::MainWindow(QWidget *parent)
             });
 
     doc = new VPattern(pattern, m_sceneDraw, m_sceneDetails);
-    connect(doc, &VPattern::ClearMainWindow, this, &MainWindow::Clear);
+    // Clear() empties the undo stack, so it must never run inside an undo(): the command would be destroyed while
+    // still sitting on the stack. Queued, it lands once the emitting command has returned. Same reason as the
+    // sibling connection below.
+    connect(doc, &VPattern::ClearMainWindow, this, &MainWindow::Clear, Qt::QueuedConnection);
     connect(doc, &VPattern::patternChanged, this, &MainWindow::PatternChangesWereSaved);
     connect(doc, &VPattern::UndoCommand, this, &MainWindow::FullParseFile, Qt::QueuedConnection);
     connect(doc, &VPattern::SetEnabledGUI, this, &MainWindow::SetEnabledGUI);

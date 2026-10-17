@@ -118,6 +118,15 @@ VAbstractCurve::~VAbstractCurve() = default;
 auto VAbstractCurve::GetSegmentPoints(const QVector<QPointF> &points, const QPointF &begin, const QPointF &end,
                                       bool reverse, QString &error) -> QVector<QPointF>
 {
+    // A curve whose geometry failed to build (an invalid length after a formula edit, for instance) has no
+    // points: constFirst()/constLast() on an empty list would be undefined. Report it instead, and let the
+    // existing warning / pedantic-exception path carry the message.
+    if (points.isEmpty())
+    {
+        error = QObject::tr("Curve has no points.");
+        return {};
+    }
+
     // Walk the curve in the asked direction and keep the part that goes from `begin` to `end`.
     auto Extract = [&points, &begin, &end](bool reverseDirection, QString &extractError) -> QVector<QPointF>
     {

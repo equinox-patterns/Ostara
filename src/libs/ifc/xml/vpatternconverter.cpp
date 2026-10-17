@@ -42,6 +42,7 @@
 #include "../exception/vexceptionemptyparameter.h"
 #include "../exception/vexceptionwrongid.h"
 #include "../qmuparser/qmutokenparser.h"
+#include "../qmuparser/qmuparsererror.h"
 #include "../vmisc/def.h"
 #include "vexception.h"
 #include "../vmisc/compatibility.h"
@@ -187,6 +188,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, strInUse, ("inUse"_L1))                
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, strCalculation, ("calculation"_L1))           // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, strOperation, ("operation"_L1))               // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, strDestination, ("destination"_L1))           // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, strSource, ("source"_L1))                     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, strSuffix, ("suffix"_L1))                     // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, strP2Line, ("p2Line"_L1))                     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, strItem, ("item"_L1))                         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, strDetails, ("details"_L1))                   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, strSegment1Id, ("segment1Id"_L1))             // NOLINT
@@ -908,6 +912,7 @@ void VPatternConverter::ToV1_1_0()
     Q_STATIC_ASSERT_X(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 0), "Time to refactor the code.");
 
     RemoveInUseAttributeV1_1_0();
+    ConvertHeightLineNamesV1_1_0();
 
     SetVersion(QStringLiteral("1.1.0"));
     Save();
@@ -2601,6 +2606,137 @@ void VPatternConverter::RemoveInUseAttributeV1_1_0() const
             }
             domNode = domNode.nextSibling();
         }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPatternConverter::ConvertHeightLineNamesV1_1_0() const
+{
+    // TODO. Delete if minimal supported version is 1.1.0
+    Q_STATIC_ASSERT_X(VPatternConverter::PatternMinVer < FormatVersion(1, 1, 0), "Time to refactor the code.");
+
+    // Since 1.1.0 a Height point H with second line point P2 registers Line_H_P2 and AngleLine_H_P2 instead of
+    // Line_P2_H and AngleLine_P2_H.
+    QHash<quint32, QString> names;
+    QHash<QString, QString> replacements;
+
+    const QDomNodeList calcSections = elementsByTagName(*strCalculation);
+    for (int s = 0; s < calcSections.size(); ++s)
+    {
+        for (QDomElement el = calcSections.at(s).firstChildElement(); not el.isNull(); el = el.nextSiblingElement())
+        {
+            if (el.tagName() == *strPoint)
+            {
+                const QString name = el.attribute(*strName);
+                names.insert(el.attribute(*strId).toUInt(), name);
+
+                if (el.attribute(*strType) == "height"_L1)
+                {
+                    if (const QString p2 = names.value(el.attribute(*strP2Line).toUInt()); not p2.isEmpty())
+                    {
+                        replacements.insert(QStringLiteral("Line_%1_%2").arg(p2, name),
+                                            QStringLiteral("Line_%1_%2").arg(name, p2));
+                        replacements.insert(QStringLiteral("AngleLine_%1_%2").arg(p2, name),
+                                            QStringLiteral("fmod(AngleLine_%1_%2+180;360)").arg(name, p2));
+                    }
+                }
+            }
+            else if (el.tagName() == *strOperation)
+            {
+                // Operation results have no name attribute, their name is the source name plus suffix
+                const QString suffix = el.attribute(*strSuffix);
+                const QDomNodeList source = el.firstChildElement(*strSource).elementsByTagName(*strItem);
+                const QDomNodeList destination = el.firstChildElement(*strDestination).elementsByTagName(*strItem);
+                for (int i = 0; i < qMin(source.size(), destination.size()); ++i)
+                {
+                    if (const QString name = names.value(source.at(i).toElement().attribute(*strIdObject).toUInt());
+                        not name.isEmpty())
+                    {
+                        names.insert(destination.at(i).toElement().attribute(*strIdObject).toUInt(), name + suffix);
+                    }
+                }
+            }
+        }
+    }
+
+    if (replacements.isEmpty())
+    {
+        return;
+    }
+
+    const QStringList formulaAttributes{QStringLiteral("length"),
+                                        QStringLiteral("angle"),
+                                        QStringLiteral("c1Radius"),
+                                        QStringLiteral("c2Radius"),
+                                        QStringLiteral("cRadius"),
+                                        QStringLiteral("radius"),
+                                        QStringLiteral("width"),
+                                        QStringLiteral("height"),
+                                        QStringLiteral("angle1"),
+                                        QStringLiteral("angle2"),
+                                        QStringLiteral("radius1"),
+                                        QStringLiteral("radius2"),
+                                        QStringLiteral("length1"),
+                                        QStringLiteral("length2"),
+                                        QStringLiteral("kAsm1"),
+                                        QStringLiteral("kAsm2"),
+                                        QStringLiteral("formula"),
+                                        QStringLiteral("before"),
+                                        QStringLiteral("after"),
+                                        QStringLiteral("rotation"),
+                                        QStringLiteral("rotationAngle"),
+                                        QStringLiteral("passmarkLength"),
+                                        QStringLiteral("passmarkWidth"),
+                                        QStringLiteral("passmarkAngleFormula"),
+                                        QStringLiteral("visible"),
+                                        QStringLiteral("center"),
+                                        QStringLiteral("closingDivisor")};
+
+    // Walk the tree by siblings, a live QDomNodeList is rebuilt after each attribute change
+    QDomElement el = documentElement();
+    while (not el.isNull())
+    {
+        for (const auto &attribute : formulaAttributes)
+        {
+            QString formula = el.attribute(attribute);
+            if (not formula.contains("Line_"_L1))
+            {
+                continue;
+            }
+
+            QMap<qmusizetype, QString> tokens;
+            try
+            {
+                tokens = qmu::QmuTokenParser(formula, false, false).GetTokens();
+            }
+            catch (const qmu::QmuParserError &)
+            {
+                continue; // Broken formula, leave as is
+            }
+
+            // Back to front, so positions of the remaining tokens stay valid
+            for (auto i = tokens.constEnd(); i != tokens.constBegin();)
+            {
+                --i;
+                if (const auto r = replacements.constFind(i.value()); r != replacements.constEnd())
+                {
+                    formula.replace(i.key(), i.value().length(), r.value());
+                }
+            }
+
+            if (formula != el.attribute(attribute))
+            {
+                el.setAttribute(attribute, formula);
+            }
+        }
+
+        QDomElement next = el.firstChildElement();
+        while (next.isNull() && not el.isNull())
+        {
+            next = el.nextSiblingElement();
+            el = el.parentNode().toElement();
+        }
+        el = next;
     }
 }
 

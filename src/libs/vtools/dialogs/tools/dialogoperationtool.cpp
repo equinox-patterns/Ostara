@@ -171,13 +171,7 @@ void DialogOperationTool::SetSourceObjects(const QVector<SourceItem> &value)
         // First call populates the dialog from the tool; remember the committed object set (by object id, the one
         // the pattern holds) so later edits (add/remove) can be detected. Subsequent calls (add/remove/rename) must
         // not move the baseline.
-        m_baselineSourceIds.clear();
-        m_baselineSourceIds.reserve(value.size());
-        for (const auto &item : value)
-        {
-            m_baselineSourceIds.append(item.id);
-        }
-        m_sourceBaselineCaptured = true;
+        CaptureSourceBaseline();
     }
 
     OnSourceObjectsSet();
@@ -198,8 +192,7 @@ void DialogOperationTool::SetLineSources(const QVector<OOperationLine> &value)
 
     if (!m_lineBaselineCaptured)
     {
-        m_baselineLineSources = value;
-        m_lineBaselineCaptured = true;
+        CaptureLineBaseline();
     }
 
     OnSourceObjectsSet();
@@ -445,6 +438,37 @@ void DialogOperationTool::ToggleSourceObject(quint32 id)
             }
         }
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::CaptureSourceBaseline()
+{
+    m_baselineSourceIds.clear();
+    m_baselineSourceIds.reserve(m_sourceObjects.size());
+    for (const auto &item : m_sourceObjects)
+    {
+        m_baselineSourceIds.append(item.id);
+    }
+    m_sourceBaselineCaptured = true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::CaptureLineBaseline()
+{
+    m_baselineLineSources = m_lineSources;
+    m_lineBaselineCaptured = true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogOperationTool::ToolCommitted()
+{
+    // Apply just created the tool from the objects listed right now, so they are the committed set and become the
+    // new baseline. Without this the creation flow never captures a baseline at all - objects picked on the scene go
+    // straight into SourceObjects(), bypassing SetSourceObjects() - and the first add/remove after Apply would
+    // capture its own already-changed set. SourceObjectsChanged() would then report no change, leaving Apply enabled
+    // for a structural change that forces a full reparse and destroys the tool this dialog points at.
+    CaptureSourceBaseline();
+    CaptureLineBaseline();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -107,11 +107,12 @@ auto RotatePath(const QVector<VPieceNode> &path, vsizetype index) -> QVector<VPi
 
 //---------------------------------------------------------------------------------------------------------------------
 void AddRegularPoint(const VContainer *data,
-                     const VPieceNode &node,
+                     const QVector<VPieceNode> &nodes,
+                     vsizetype nodeIndex,
                      const QLineF &mirrorLine,
                      QVector<VSAPoint> &pointsEkv)
 {
-    VSAPoint ekvPoint = VPiecePath::PreparePointEkv(node, data);
+    VSAPoint ekvPoint = VPiecePath::PreparePointEkv(nodes, nodeIndex, data);
 
     if (!mirrorLine.isNull())
     {
@@ -209,7 +210,8 @@ void CheckAndEndCSA(const VContainer *data,
 
 //---------------------------------------------------------------------------------------------------------------------
 void ProcessPointNode(const VContainer *data,
-                      const VPieceNode &node,
+                      const QVector<VPieceNode> &nodes,
+                      vsizetype nodeIndex,
                       const QVector<CustomSARecord> &records,
                       qreal width,
                       const QLineF &mirrorLine,
@@ -217,9 +219,11 @@ void ProcessPointNode(const VContainer *data,
                       int &recordIndex,
                       bool &insertingCSA)
 {
+    const VPieceNode &node = nodes.at(nodeIndex);
+
     if (not insertingCSA)
     {
-        AddRegularPoint(data, node, mirrorLine, pointsEkv);
+        AddRegularPoint(data, nodes, nodeIndex, mirrorLine, pointsEkv);
         CheckAndStartCSA(data, node, records, width, pointsEkv, recordIndex, insertingCSA);
     }
     else
@@ -1358,7 +1362,7 @@ auto VPiece::GetNodeSAPoints(const QVector<VPieceNode> &path, vsizetype index, c
 
     if (node.GetTypeTool() == Tool::NodePoint)
     {
-        VSAPoint ekvPoint = VPiecePath::PreparePointEkv(node, data);
+        VSAPoint ekvPoint = VPiecePath::PreparePointEkv(path, index, data);
 
         if (!mirrorLine.isNull())
         {
@@ -1680,7 +1684,15 @@ void VPiece::ProcessNode(const VContainer *data,
     switch (node.GetTypeTool())
     {
         case Tool::NodePoint:
-            ProcessPointNode(data, node, records, width, mirrorLine, pointsEkv, recordIndex, insertingCSA);
+            ProcessPointNode(data,
+                             unitedPath,
+                             nodeIndex,
+                             records,
+                             width,
+                             mirrorLine,
+                             pointsEkv,
+                             recordIndex,
+                             insertingCSA);
             break;
         case Tool::NodeArc:
         case Tool::NodeElArc:

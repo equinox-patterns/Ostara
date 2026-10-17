@@ -569,6 +569,11 @@ void MainWindow::Clear()
     qCDebug(vMainWindow, "Clearing scenes.");
     m_sceneDraw->clear();
     qCDebug(vMainWindow, "Draw scene cleared.");
+    // The scene has just deleted the background image items and their controls. Forget them here, or
+    // NewBackgroundImageItem() reuses the dangling controls — and connects an item to a destroyed QObject —
+    // as soon as the next pattern gets its first background image.
+    m_backgroudcontrols = nullptr;
+    m_backgroundImages.clear();
     m_sceneDraw->SetAcceptDrop(false);
     // The group holders live in the details scene: forget them BEFORE the scene destroys
     // them, so RefreshGroupHolders (fired by the undo-stack clear below) never touches a

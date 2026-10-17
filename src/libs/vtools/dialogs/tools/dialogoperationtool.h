@@ -117,6 +117,8 @@ protected:
 
     void CheckState() override;
 
+    void ToolCommitted() override;
+
     // True when the set of operated objects differs from the set the dialog was opened with. Compared by
     // **object id**, the key the pattern itself carries in <source> — and never by the recordId of the session,
     // which every parse makes anew — so adding/removing - or removing and re-adding - an object counts as a
@@ -171,6 +173,9 @@ private:
      *  reparse to create or drop the transformed lines, exactly like an object-set change. */
     QVector<OOperationLine> m_baselineLineSources{};
     bool m_lineBaselineCaptured{false};
+
+    void CaptureSourceBaseline();
+    void CaptureLineBaseline();
 
     bool stage1{true};
     bool flagGroupName{true};

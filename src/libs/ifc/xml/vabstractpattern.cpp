@@ -1974,6 +1974,7 @@ auto VAbstractPattern::ListPointExpressions() const -> QVector<VFormulaField>
         ReadExpressionAttribute(expressions, dom, AttrRadius);
         ReadExpressionAttribute(expressions, dom, AttrWidth);
         ReadExpressionAttribute(expressions, dom, AttrHeight);
+        ReadExpressionAttribute(expressions, dom, AttrVisible);
     }
 
     return expressions;
@@ -2117,6 +2118,7 @@ auto VAbstractPattern::ListOperationExpressions() const -> QVector<VFormulaField
 
         // Each tag can contains several attributes.
         ReadExpressionAttribute(expressions, dom, AttrAngle);
+        ReadExpressionAttribute(expressions, dom, AttrRotationAngle);
         ReadExpressionAttribute(expressions, dom, AttrLength);
         // The only formula of the tool that closes a dart.
         ReadExpressionAttribute(expressions, dom, AttrClosingDivisor);
@@ -2166,6 +2168,9 @@ auto VAbstractPattern::ListNodesExpressions(const QDomElement &nodes) const -> Q
             ReadExpressionAttribute(expressions, element, VAbstractPattern::AttrSABefore);
             ReadExpressionAttribute(expressions, element, VAbstractPattern::AttrSAAfter);
             ReadExpressionAttribute(expressions, element, VAbstractPattern::AttrPassmarkLength);
+            ReadExpressionAttribute(expressions, element, VAbstractPattern::AttrPassmarkWidth);
+            ReadExpressionAttribute(expressions, element, VAbstractPattern::AttrPassmarkAngle);
+            ReadExpressionAttribute(expressions, element, VAbstractPattern::AttrPassmarkVisibility);
         }
     }
     return expressions;
@@ -2189,6 +2194,7 @@ auto VAbstractPattern::ListPathExpressions() const -> QVector<VFormulaField>
             continue;
         }
 
+        ReadExpressionAttribute(expressions, dom, AttrVisible);
         expressions << ListNodesExpressions(dom.firstChildElement(TagNodes));
     }
 
@@ -2229,6 +2235,22 @@ auto VAbstractPattern::ListPieceExpressions() const -> QVector<VFormulaField>
 
         // Each tag can contains several attributes.
         ReadExpressionAttribute(expressions, dom, AttrWidth);
+
+        // The fold line carries three formulas of its own.
+        if (const QDomElement mirrorLine = dom.firstChildElement(TagMirrorLine); not mirrorLine.isNull())
+        {
+            ReadExpressionAttribute(expressions, mirrorLine, AttrFoldLineHeightFormula);
+            ReadExpressionAttribute(expressions, mirrorLine, AttrFoldLineWidthFormula);
+            ReadExpressionAttribute(expressions, mirrorLine, AttrFoldLineCenterFormula);
+        }
+
+        // An annotation carries its rotation as a formula. Bare tag name, like the pleat value above: a pattern
+        // knows nothing of the tools that write it, and including the tool header here would invert the layers.
+        const QDomNodeList annotations = dom.elementsByTagName(QStringLiteral("annotation"));
+        for (int j = 0; j < annotations.size(); ++j)
+        {
+            ReadExpressionAttribute(expressions, annotations.at(j).toElement(), AttrRotation);
+        }
 
         expressions << ListNodesExpressions(dom.firstChildElement(TagNodes));
         expressions << ListGrainlineExpressions(dom.firstChildElement(TagGrainline));
