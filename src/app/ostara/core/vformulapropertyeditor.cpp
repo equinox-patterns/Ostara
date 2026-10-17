@@ -45,6 +45,18 @@
 #include "../vpropertyexplorer/vproperty.h"
 #include "../vtools/dialogs/support/dialogeditwrongformula.h"
 
+namespace
+{
+// Preset-angle button icons. A hovered button sits on the accent background, which is dark in
+// both themes, so its icon must come from the dark set even in the light theme (Icons.md §2).
+auto PresetIcon(const QString &arrow, bool hovered) -> QIcon
+{
+    const bool dark = hovered || VTheme::ColorSheme() == VColorSheme::Dark;
+    return QIcon(QStringLiteral(":/icons/%1/arrow-%2_%1.svg")
+                     .arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), arrow));
+}
+} // namespace
+
 // VFormulaPropertyEditor
 //---------------------------------------------------------------------------------------------------------------------
 VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
@@ -89,11 +101,12 @@ VFormulaPropertyEditor::VFormulaPropertyEditor(QWidget *parent)
     for (int i = 0; i < 4; ++i)
     {
         const int angle = kPresetAngles[i];
+        const QString arrow = QString::fromLatin1(kPresetArrows[i]);
         auto *button = new QPushButton(QString::number(angle) + degreeSymbol, m_presetRow);
         button->setObjectName(QStringLiteral("anglePresetBtn") + QString::number(angle));
-        button->setIcon(QIcon(QStringLiteral(":/icons/%1/arrow-%2_%1.svg")
-                                  .arg(isDark ? QStringLiteral("dark") : QStringLiteral("light"),
-                                       QString::fromLatin1(kPresetArrows[i]))));
+        button->setIcon(PresetIcon(arrow, false));
+        button->setProperty("arrow", arrow);
+        button->installEventFilter(this);
         button->setLayoutDirection(Qt::RightToLeft);
         button->setCursor(Qt::ArrowCursor);
         connect(button, &QPushButton::clicked, this, [this, angle]() {
@@ -153,6 +166,20 @@ auto VFormulaPropertyEditor::eventFilter(QObject *obj, QEvent *ev) -> bool
         // Ignore the event, so that eventually the delegate gets the event.
         ev->ignore();
         return true;
+    }
+
+    // The preset-angle buttons turn the dark accent background on hover, so their icon must
+    // switch to the dark set too — the light one is unreadable there (Icons.md §2).
+    if (ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
+    {
+        if (auto *button = qobject_cast<QPushButton *>(obj))
+        {
+            const QString arrow = button->property("arrow").toString();
+            if (!arrow.isEmpty())
+            {
+                button->setIcon(PresetIcon(arrow, ev->type() == QEvent::Enter));
+            }
+        }
     }
 
     return QWidget::eventFilter(obj, ev);

@@ -683,10 +683,31 @@ void MainWindow::InitDimensionGradation(int index, const MeasurementDimension_p 
 {
     SCASSERT(control != nullptr)
 
+    // ⚠️ Un combo fraîchement construit est vide : sa sélection doit alors venir de la dimension que
+    // le patron affiche réellement, pas de son premier item. Sinon une top bar reconstruite (nouveau
+    // patron né d'une pièce, changement de langue) annonce la plus petite valeur de chaque axe alors
+    // que le canvas garde la taille courante.
     qreal current = -1;
     if (control->currentIndex() != -1)
     {
         current = control->currentData().toDouble();
+    }
+    else
+    {
+        switch (index)
+        {
+            case 0:
+                current = m_currentDimensionA;
+                break;
+            case 1:
+                current = m_currentDimensionB;
+                break;
+            case 2:
+                current = m_currentDimensionC;
+                break;
+            default:
+                break;
+        }
     }
 
     QSignalBlocker blocker(control);

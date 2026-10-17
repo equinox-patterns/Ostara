@@ -39,6 +39,7 @@
 #include <QCursor>
 #include <QDateTime>
 #include <QDir>
+#include <QEventLoop>
 #include <QFileInfo>
 #include <QFormLayout>
 #include <QFrame>
@@ -50,8 +51,8 @@
 #include <QPushButton>
 #include <QSignalBlocker>
 #include <QtGlobal>
+#include <memory>
 #include <new>
-
 #include "core/opiecebuilder.h"
 #include "core/opiecedocument.h"
 #include "core/opiecelibrary.h"
@@ -68,6 +69,7 @@
 #include "dialogs/opiecelibrarydialog.h"
 #include "dialogs/opieceimportdialog.h"
 #include "dialogs/osavepiecedialog.h"
+#include "dialogs/owaitdialog.h"
 #include "dialogs/vwidgetdetails.h"
 #include "dialogs/vwidgetdependencies.h"
 #include "dialogs/vwidgetgroups.h"
@@ -905,6 +907,7 @@ auto MainWindow::InsertLibraryPiece(const QString &filePath) -> bool
     // The dialog is opened when there is something to decide, which is an alias to look at or a value read
     // elsewhere that several pieces can satisfy: a piece that asks nothing enters in one gesture, the gesture of
     // every other import.
+    QHash<QString, QString> bound; // the piece's citations, rewritten to the instance chosen in the dialog
     if (not proposal.aliases.isEmpty() || not ambiguous.isEmpty())
     {
         OPieceImportDialog dialog(proposal, blockNames, OPieceInsert::Keys(pattern), ambiguous, this);
@@ -919,12 +922,31 @@ auto MainWindow::InsertLibraryPiece(const QString &filePath) -> bool
         // Les citations de la pièce vers l'instance choisie : `Curve_dos` devient `Curve_dos__P1` quand c'est la
         // seconde instance qui est choisie, et **rien** quand c'est la première — ses noms sont ceux que la pièce
         // écrit déjà. Le renommage passe par la même porte que la marque, donc par les mêmes formes de jetons.
-        if (const QHash<QString, QString> bound = OPieceImport::ChosenNames(piece, doc, dialog.ChosenReferences());
-            not bound.isEmpty())
+        bound = OPieceImport::ChosenNames(piece, doc, dialog.ChosenReferences());
+    }
+
+    // Une seconde instance réécrit tous les noms et tous les ids qu'elle porte avant d'entrer, et le parse qui
+    // suit reconstruit tout le patron : ce travail bloque le fil de l'interface, et sans fenêtre pour le dire le
+    // canvas passerait pour figé. La première instance, qui n'entre en collision avec rien, garde le chemin
+    // silencieux — c'est l'affaire d'un souffle.
+    std::unique_ptr<OWaitDialog> waitDialog;
+    if (not proposal.table.isEmpty() || not bound.isEmpty())
+    {
+        waitDialog = std::unique_ptr<OWaitDialog>(new OWaitDialog(tr("Loading the piece. Please, wait."), this));
+        waitDialog->show();
+        // Le système de fenêtres a besoin de quelques tours d'événements pour mapper et peindre la fenêtre : un
+        // seul pump peut laisser le dessin en attente, et le travail bloque le fil juste après — la fenêtre ne
+        // serait alors jamais visible (même précaution que dans mainwindow_graded_build.cpp).
+        for (int i = 0; i < 4; ++i)
         {
-            QDomElement root = piece.documentElement();
-            OPieceMark::Rename(root, bound);
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         }
+    }
+
+    if (not bound.isEmpty())
+    {
+        QDomElement root = piece.documentElement();
+        OPieceMark::Rename(root, bound);
     }
 
     // Where it takes place, decided before anything is written: a piece brings a whole construction with it, and
@@ -937,6 +959,8 @@ auto MainWindow::InsertLibraryPiece(const QString &filePath) -> bool
     const OPieceInsert::Prepared prepared = OPieceInsert::Prepare(piece, pattern, proposal, anchorTarget);
     if (not prepared.IsReady())
     {
+        // The wait window is application-modal: let it go before the warning, or the two would stack.
+        waitDialog.reset();
         QMessageBox::warning(this, tr("Piece library"), tr("This piece holds no block to insert."));
         return false;
     }

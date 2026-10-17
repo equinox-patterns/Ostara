@@ -347,6 +347,9 @@ void DialogTool::FillComboBoxCrossCirclesPoints(QComboBox *box) const
 {
     SCASSERT(box != nullptr)
 
+    // The combo comes from the dialog's .ui, so it takes ApplyComboBoxView instead of the
+    // MakeComboBox factory: the native macOS popup ignores QSS.
+    ApplyComboBoxView(box);
     box->addItem(tr("First point"), QVariant(static_cast<int>(CrossCirclesPoint::FirstPoint)));
     box->addItem(tr("Second point"), QVariant(static_cast<int>(CrossCirclesPoint::SecondPoint)));
 }

@@ -25,6 +25,8 @@
 #include <QLocale>
 #include <QWidget>
 
+#include "vmisc/FactoryWidgets.h"
+
 #include "../vproperty_p.h"
 
 // Out-of-line destructor: keeps the scalar deleting destructor inside the DLL on MSVC,
@@ -83,7 +85,8 @@ auto VPE::VEnumProperty::createEditor(QWidget *parent, const QStyleOptionViewIte
 {
     Q_UNUSED(options)
     Q_UNUSED(delegate)
-    auto *tmpEditor = new QComboBox(parent);
+    // The factory (vmisc/FactoryWidgets.h) replaces the native macOS popup, which ignores QSS.
+    auto *tmpEditor = MakeComboBox(parent);
     tmpEditor->clear();
     tmpEditor->setLocale(parent->locale());
     tmpEditor->addItems(EnumerationLiterals);

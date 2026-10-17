@@ -8123,6 +8123,11 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>Pièce enregistrée : %1</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="935"/>
+        <source>Loading the piece. Please, wait.</source>
+        <translation>Chargement de la pièce. Veuillez patienter.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2397"/>
         <source>Pieces</source>
         <translation>Pièces</translation>
@@ -25980,7 +25985,7 @@ Voulez-vous continuer ?</translation>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="336"/>
         <source>Point along normal to line</source>
-        <translation>Point sur la normale à la ligne</translation>
+        <translation>Point le long d&apos;une perpendiculaire</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="339"/>
