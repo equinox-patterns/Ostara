@@ -83,7 +83,8 @@ void VToolLineIntersectAxis::SetDialog()
     dialogTool->CheckDependencyTreeComplete();
     dialogTool->SetTypeLine(m_lineType);
     dialogTool->SetLineColor(lineColor);
-    dialogTool->SetAngle(formulaAngle);
+    dialogTool->SetAngle(EffectiveAngleFormula());
+    dialogTool->SetAxis(m_axis);
     dialogTool->SetBasePointId(basePointId);
     dialogTool->SetFirstPointId(firstPointId);
     dialogTool->SetSecondPointId(secondPointId);
@@ -102,6 +103,7 @@ auto VToolLineIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGra
 
     VToolLineIntersectAxisInitData initData;
     initData.formulaAngle = dialogTool->GetAngle();
+    initData.axis = dialogTool->GetAxis();
     initData.basePointId = dialogTool->GetBasePointId();
     initData.firstPointId = dialogTool->GetFirstPointId();
     initData.secondPointId = dialogTool->GetSecondPointId();
@@ -125,26 +127,56 @@ auto VToolLineIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGra
     return point;
 }
 
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Where the point lands for a given direction: the base point run along the angle until it crosses the
+ *  line the tool is built on.
+ *
+ *  One construction for the creation of the tool and for the living preview of an axis, so the preview can never
+ *  show a place the real tool would not take. False when the direction cannot cross that line. */
+auto IntersectLinePoint(const VContainer *data,
+                        quint32 basePointId,
+                        quint32 firstPointId,
+                        quint32 secondPointId,
+                        qreal angle,
+                        QPointF *point) -> bool
+{
+    const QSharedPointer<VPointF> basePoint = data->GeometricObject<VPointF>(basePointId);
+    auto axisLine = QLineF(static_cast<QPointF>(*basePoint), QPointF(basePoint->x() + 100, basePoint->y()));
+    axisLine.setAngle(angle);
+
+    const QSharedPointer<VPointF> firstPoint = data->GeometricObject<VPointF>(firstPointId);
+    const QSharedPointer<VPointF> secondPoint = data->GeometricObject<VPointF>(secondPointId);
+    const QLineF line(static_cast<QPointF>(*firstPoint), static_cast<QPointF>(*secondPoint));
+
+    return VToolLineIntersectAxis::FindPoint(axisLine, line, point);
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolLineIntersectAxis::Create(VToolLineIntersectAxisInitData &initData) -> VToolLineIntersectAxis *
 {
     const QSharedPointer<VPointF> basePoint = initData.data->GeometricObject<VPointF>(initData.basePointId);
-    auto axis = QLineF(static_cast<QPointF>(*basePoint), QPointF(basePoint->x() + 100, basePoint->y()));
-    axis.setAngle(CheckFormula(initData.id, initData.formulaAngle, initData.data));
-
     const QSharedPointer<VPointF> firstPoint = initData.data->GeometricObject<VPointF>(initData.firstPointId);
     const QSharedPointer<VPointF> secondPoint = initData.data->GeometricObject<VPointF>(initData.secondPointId);
-    QLineF const line(static_cast<QPointF>(*firstPoint), static_cast<QPointF>(*secondPoint));
+
+    const qreal calcAngle = CheckFormula(initData.id, initData.formulaAngle, initData.data);
+    // An axis only fills the angle: the intersection is the one the same number typed by hand would give.
+    const qreal angle = initData.axis.IsValid() ? AxisAngle(initData.axis, initData.data) : calcAngle;
 
     QPointF fPoint;
-    const bool success = FindPoint(axis, line, &fPoint);
+    const bool success = IntersectLinePoint(initData.data,
+                                            initData.basePointId,
+                                            initData.firstPointId,
+                                            initData.secondPointId,
+                                            angle,
+                                            &fPoint);
 
     if (not success)
     {
         const QString errorMsg = tr("Error calculating point '%1'. Line (%2;%3) doesn't have intersection with axis "
                                     "through point '%4' and angle %5°")
                                      .arg(initData.name, firstPoint->name(), secondPoint->name(), basePoint->name())
-                                     .arg(axis.angle());
+                                     .arg(angle);
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VExceptionObjectError(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
@@ -182,6 +214,14 @@ auto VToolLineIntersectAxis::Create(VToolLineIntersectAxisInitData &initData) ->
     patternGraph->AddEdge(initData.firstPointId, initData.id);
     patternGraph->AddEdge(initData.secondPointId, initData.id);
 
+    // The two points of the axis are dependencies, as the three the point is already built on: declared on the
+    // path both the reader and the interface take, so the point follows them and cannot outlive one of them.
+    if (initData.axis.IsValid())
+    {
+        patternGraph->AddEdge(initData.axis.P1(), initData.id);
+        patternGraph->AddEdge(initData.axis.P2(), initData.id);
+    }
+
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
         initData.doc->UpdateToolData(initData.id, initData.data);
@@ -191,6 +231,7 @@ auto VToolLineIntersectAxis::Create(VToolLineIntersectAxisInitData &initData) ->
     {
         VAbstractTool::AddRecord(initData.id, Tool::LineIntersectAxis, initData.doc);
         auto *point = new VToolLineIntersectAxis(initData);
+        point->SetAxis(initData.axis);
         initData.scene->addItem(point);
         InitPointToolConnections(initData.scene, point);
         VAbstractPattern::AddTool(initData.id, point);
@@ -241,7 +282,7 @@ auto VToolLineIntersectAxis::SecondLinePoint() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolLineIntersectAxis::GetFormulaAngle() const -> VFormula
 {
-    VFormula fAngle(formulaAngle, getData());
+    VFormula fAngle(EffectiveAngleFormula(), getData());
     fAngle.setToolId(m_id);
     fAngle.setPostfix(degreeSymbol);
     fAngle.Eval();
@@ -254,6 +295,8 @@ void VToolLineIntersectAxis::SetFormulaAngle(const VFormula &value)
     if (value.error() == false)
     {
         formulaAngle = value.GetFormula(FormulaType::FromUser);
+        // A formula written by hand gives the axis up, entirely (see AngleParAxe.md).
+        m_axis.Clear();
 
         QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
         SaveOption(obj);
@@ -291,6 +334,13 @@ void VToolLineIntersectAxis::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrTypeLine, dialogTool->GetTypeLine());
     doc->SetAttribute(domElement, AttrLineColor, dialogTool->GetLineColor());
     doc->SetAttribute(domElement, AttrAngle, dialogTool->GetAngle());
+    // The dialog only carries the axis; an angle written by hand gives it up (see AngleParAxe.md).
+    SaveAxis(doc,
+             domElement,
+             AxisAfterHandWrittenAngle(dialogTool->GetAxis(), EffectiveAngleFormula(), dialogTool->GetAngle()),
+             AttrAxisP1,
+             AttrAxisP2,
+             AttrAxisSense);
     doc->SetAttribute(domElement, AttrBasePoint, QString().setNum(dialogTool->GetBasePointId()));
     doc->SetAttribute(domElement, AttrP1Line, QString().setNum(dialogTool->GetFirstPointId()));
     doc->SetAttribute(domElement, AttrP2Line, QString().setNum(dialogTool->GetSecondPointId()));
@@ -307,7 +357,8 @@ void VToolLineIntersectAxis::SaveOptions(QDomElement &tag, QSharedPointer<VGObje
     VToolLinePoint::SaveOptions(tag, obj);
 
     doc->SetAttribute(tag, AttrType, ToolType);
-    doc->SetAttribute(tag, AttrAngle, formulaAngle);
+    doc->SetAttribute(tag, AttrAngle, EffectiveAngleFormula());
+    SaveAxisInto(tag);
     doc->SetAttribute(tag, AttrBasePoint, basePointId);
     doc->SetAttribute(tag, AttrP1Line, firstPointId);
     doc->SetAttribute(tag, AttrP2Line, secondPointId);
@@ -492,4 +543,28 @@ void VToolLineIntersectAxis::SetLineRoleName(const QString &suffix)
     auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
     connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     VAbstractApplication::VApp()->getUndoStack()->push(command);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLineIntersectAxis::AngleFormulaString() const -> QString
+{
+    return formulaAngle;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLineIntersectAxis::SetAngleFormulaString(const QString &formula)
+{
+    formulaAngle = formula;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLineIntersectAxis::PointForAxisAngle(qreal angle) const -> std::optional<QPointF>
+{
+    QPointF point;
+    if (IntersectLinePoint(getData(), basePointId, firstPointId, secondPointId, angle, &point))
+    {
+        return point;
+    }
+
+    return std::nullopt;
 }

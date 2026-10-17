@@ -191,6 +191,18 @@ void DialogCurveIntersectAxis::SetTypeLine(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogCurveIntersectAxis::GetAxis() const -> OAxis
+{
+    return axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogCurveIntersectAxis::SetAxis(const OAxis &value)
+{
+    axis = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogCurveIntersectAxis::GetAngle() const -> QString
 {
     return m_formula->formula();

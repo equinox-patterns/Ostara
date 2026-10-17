@@ -34,20 +34,20 @@
 #include <QVBoxLayout>
 
 //---------------------------------------------------------------------------------------------------------------------
-auto CurveAxisSenseText(CurveAxisSense sense) -> QString
+auto AxisSenseText(AxisSense sense) -> QString
 {
     switch (sense)
     {
-        case CurveAxisSense::Line:
-            return QCoreApplication::translate("CurveAxisSense", "Angle of the line");
-        case CurveAxisSense::LineReverse:
-            return QCoreApplication::translate("CurveAxisSense", "Reverse angle of the line");
-        case CurveAxisSense::Perpendicular:
-            return QCoreApplication::translate("CurveAxisSense", "Perpendicular to the line");
-        case CurveAxisSense::PerpendicularReverse:
-            return QCoreApplication::translate("CurveAxisSense", "Reverse perpendicular to the line");
+        case AxisSense::Line:
+            return QCoreApplication::translate("AxisSense", "Angle of the line");
+        case AxisSense::LineReverse:
+            return QCoreApplication::translate("AxisSense", "Reverse angle of the line");
+        case AxisSense::Perpendicular:
+            return QCoreApplication::translate("AxisSense", "Perpendicular to the line");
+        case AxisSense::PerpendicularReverse:
+            return QCoreApplication::translate("AxisSense", "Reverse perpendicular to the line");
     }
-    return QCoreApplication::translate("CurveAxisSense", "Angle of the line");
+    return QCoreApplication::translate("AxisSense", "Angle of the line");
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -71,12 +71,12 @@ OChooseAxisDirectionDialog::OChooseAxisDirectionDialog(const Config &config, QWi
     // The four directions, and only four: turning the handle round and reading the axis the other way are the
     // same half-turn, so the two questions are one (see AngleParAxe.md).
     auto *group = new QButtonGroup(this);
-    const QVector<CurveAxisSense> senses{CurveAxisSense::Line, CurveAxisSense::LineReverse,
-                                         CurveAxisSense::Perpendicular, CurveAxisSense::PerpendicularReverse};
+    const QVector<AxisSense> senses{AxisSense::Line, AxisSense::LineReverse,
+                                         AxisSense::Perpendicular, AxisSense::PerpendicularReverse};
 
-    for (const CurveAxisSense sense : senses)
+    for (const AxisSense sense : senses)
     {
-        auto *button = new QRadioButton(CurveAxisSenseText(sense), this);
+        auto *button = new QRadioButton(AxisSenseText(sense), this);
         button->setChecked(sense == m_selected);
         layout->addWidget(button);
         // The id is the value of the sense: the group answers by the direction itself, so no table to keep.
@@ -89,7 +89,7 @@ OChooseAxisDirectionDialog::OChooseAxisDirectionDialog(const Config &config, QWi
             {
                 // idClicked fires on every press, even on the button already checked — and the caller redraws
                 // the curve on each signal. Re-checking the direction in force changes nothing: say nothing.
-                if (const auto sense = static_cast<CurveAxisSense>(id); sense != m_selected)
+                if (const auto sense = static_cast<AxisSense>(id); sense != m_selected)
                 {
                     m_selected = sense;
                     emit SenseChanged(m_selected);
@@ -120,7 +120,7 @@ OChooseAxisDirectionDialog::OChooseAxisDirectionDialog(const Config &config, QWi
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OChooseAxisDirectionDialog::ChosenSense() const -> CurveAxisSense
+auto OChooseAxisDirectionDialog::ChosenSense() const -> AxisSense
 {
     return m_selected;
 }

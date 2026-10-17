@@ -34,7 +34,7 @@
 #include <QtMath>
 
 #include "../vmisc/vabstractvalapplication.h"
-#include "ocurveaxis.h"
+#include "oaxis.h"
 #include "vpointf.h"
 
 QT_WARNING_PUSH
@@ -90,10 +90,10 @@ public:
     qreal kCurve{1}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief axis1 the axis the first handle angle is taken from, when it is delegated to one. */
-    OCurveAxis axis1{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    OAxis axis1{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     /** @brief axis2 the axis the second handle angle is taken from, when it is delegated to one. */
-    OCurveAxis axis2{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    OAxis axis2{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
 private:
     Q_DISABLE_ASSIGN_MOVE(VSplineData) // NOLINT

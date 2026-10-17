@@ -70,13 +70,13 @@ namespace
  *  comes back as NULL_ID and the axis answers IsValid() with false. An unreadable sense falls back to "line",
  *  the direction of the axis itself, which is the least surprising reading of a damaged file. */
 auto ReadCurveAxis(const QDomElement &element, const QString &attrP1, const QString &attrP2, const QString &attrSense)
-    -> OCurveAxis
+    -> OAxis
 {
     const quint32 p1 = VDomDocument::GetParametrUInt(element, attrP1, NULL_ID_STR);
     const quint32 p2 = VDomDocument::GetParametrUInt(element, attrP2, NULL_ID_STR);
     const QString sense = VDomDocument::GetParametrEmptyString(element, attrSense);
 
-    return {p1, p2, OCurveAxis::SenseFromName(sense)};
+    return {p1, p2, OAxis::SenseFromName(sense)};
 }
 } // namespace
 

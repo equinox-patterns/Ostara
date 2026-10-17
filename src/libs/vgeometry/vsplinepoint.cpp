@@ -364,13 +364,13 @@ auto VSplinePoint::IsMovable() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VSplinePoint::Axis() const -> OCurveAxis
+auto VSplinePoint::Axis() const -> OAxis
 {
     return d->axis;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSplinePoint::SetAxis(const OCurveAxis &axis)
+void VSplinePoint::SetAxis(const OAxis &axis)
 {
     d->axis = axis;
 }

@@ -29,6 +29,7 @@
 
 #include "vtooloptionspropertybrowser.h"
 #include <QPushButton>
+#include "oaxisrows.h"
 #include "vtoppb_templates.h"
 #include "../dialogs/ochooseaxisdirectiondialog.h"
 #include "../vgeometry/vpointf.h"
@@ -377,26 +378,6 @@ auto MakeLineColor(const QString &label) -> PropertyDesc
             }};
 }
 
-// The direction a handle takes from its axis, said in one line. The two points are deliberately NOT named:
-// they are visible on the canvas, the row has no use for their labels, and a long axis made two short labels
-// read like a formula nobody asked for.
-auto AxisSummaryText(const OCurveAxis &axis) -> QString
-{
-    if (not axis.IsValid())
-    {
-        return T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "by hand"));
-    }
-
-    return CurveAxisSenseText(axis.Sense());
-}
-
-// What the row's button offers to do, which is not the same thing once an axis is in place.
-auto AxisButtonText(const OCurveAxis &axis) -> QString
-{
-    return axis.IsValid() ? T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Change the axis"))
-                          : T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Set the angle by an axis"));
-}
-
 // The title of a group ends with its colon, the way a form labels its rows; a sentence quoting it must not.
 auto WithoutTrailingColon(QString text) -> QString
 {
@@ -411,7 +392,7 @@ auto WithoutTrailingColon(QString text) -> QString
  *
  *  One recipe for the two shapes the feature takes — one slot per end of a simple curve, one per anchor point
  *  of a path — so the button, its sentence and the way back can never drift apart between them. */
-void AddAxisRows(VPE::VProperty *group, VToolOptionsPropertyBrowser *browser, const OCurveAxis &axis, int slot,
+void AddAxisRows(VPE::VProperty *group, VToolOptionsPropertyBrowser *browser, const OAxis &axis, int slot,
                  const QString &slotTitle, const QString &label)
 {
     auto *stateProp = new VPE::VLabelProperty(label);
@@ -423,7 +404,7 @@ void AddAxisRows(VPE::VProperty *group, VToolOptionsPropertyBrowser *browser, co
     QObject::connect(button, &QPushButton::clicked, browser,
                      [browser, slot, slotName]()
                      {
-                         if (auto *tool = dynamic_cast<VToolAbstractCurve *>(browser->currentItem()))
+                         if (auto *tool = dynamic_cast<VDrawTool *>(browser->currentItem()))
                          {
                              browser->StartAxisPicking(tool, slot, slotName);
                          }
@@ -432,7 +413,7 @@ void AddAxisRows(VPE::VProperty *group, VToolOptionsPropertyBrowser *browser, co
 }
 
 /** @brief Puts the axis rows back in step with the tool, after an edit or a session. */
-void RefreshAxisRows(VPE::VProperty *group, int firstAxisChild, const OCurveAxis &axis)
+void RefreshAxisRows(VPE::VProperty *group, int firstAxisChild, const OAxis &axis)
 {
     if (auto *stateProp = group->getChild(firstAxisChild))
     {
@@ -458,8 +439,8 @@ auto MakeSplineHandleGroup(const QString &attrId, const QString &title,
                            void (VSpline::*lengthSetter)(qreal, const QString &),
                            QString (VSpline::*angleFormulaGetter)() const,
                            void (VSpline::*angleSetter)(qreal, const QString &),
-                           OCurveAxis (VSpline::*axisGetter)() const,
-                           void (VSpline::*axisSetter)(const OCurveAxis &),
+                           OAxis (VSpline::*axisGetter)() const,
+                           void (VSpline::*axisSetter)(const OAxis &),
                            int axisSlot) -> PropertyDesc
 {
     return {attrId, title,
@@ -635,7 +616,7 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                         // Angles of a strict (smooth) point are linked: SetAngle1 derives Angle2 and
                         // SetAngle2 derives Angle1. Writing both would let the stale sibling overwrite
                         // the edited angle, so write only the angle that actually changed.
-                        OCurveAxis axis = path[pointIndex].Axis();
+                        OAxis axis = path[pointIndex].Axis();
                         for (int h = 0; h < handles.size(); ++h)
                         {
                             const auto angF =

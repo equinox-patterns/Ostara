@@ -240,11 +240,11 @@ extern const QString TypeLineDotLine;
 extern const QString TypeLineDashDotLine;
 extern const QString TypeLineDashDotDotLine;
 
-// The four directions a curve handle can take from its axis (see OCurveAxis).
-extern const QString CurveAxisSenseLine;
-extern const QString CurveAxisSenseLineReverse;
-extern const QString CurveAxisSensePerpendicular;
-extern const QString CurveAxisSensePerpendicularReverse;
+// The four directions a curve handle can take from its axis (see OAxis).
+extern const QString AxisSenseLine;
+extern const QString AxisSenseLineReverse;
+extern const QString AxisSensePerpendicular;
+extern const QString AxisSensePerpendicularReverse;
 
 auto StylesList() -> QStringList;
 auto LineStyleToPenStyle(const QString &typeLine) -> Qt::PenStyle;

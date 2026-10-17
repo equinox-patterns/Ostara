@@ -36,6 +36,7 @@
 #include <vector>
 
 #include <QPixmap>
+#include <QPushButton>
 
 #include "vtooloptionspropertybrowser.h"
 #include "../ifc/xml/vabstractpattern.h"
@@ -48,9 +49,12 @@
 #include "../vpropertyexplorer/plugins/vpointfproperty.h"
 #include "../vpropertyexplorer/plugins/vstringproperty.h"
 #include "../vpropertyexplorer/plugins/vtextproperty.h"
+#include "../vpropertyexplorer/plugins/vwidgetproperty.h"
 #include "../vpatterndb/vformula.h"
 #include "../vpatterndb/variables/vlinelength.h"
+#include "../vtools/tools/drawTools/vdrawtool.h"
 #include "../vtools/undocommands/vchangelinerolename.h"
+#include "oaxisrows.h"
 #include "vformulaproperty.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -80,6 +84,75 @@ struct PropertyDesc
     std::function<void(VToolOptionsPropertyBrowser *, VPE::VProperty *)> apply;
     std::function<void(VToolOptionsPropertyBrowser *, VPE::VProperty *)> refresh;
 };
+
+/** @brief The row that says what direction the tool's angle follows: its axis, or "by hand".
+ *
+ *  The flat twin of the rows the curve handles put inside their group (see vtoppb_curves.cpp): a tool whose
+ *  Options page is a plain list — a point placed by direction — reads the same sentence and pushes the same
+ *  button, so the feature says the same thing everywhere. */
+template <typename Tool> auto AxisSummaryProperty() -> PropertyDesc
+{
+    const QString label = VToolOptionsPropertyBrowser::tr(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis:"));
+    return {QStringLiteral("axis"), label,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                t->RefreshAxisFromFile();
+                auto *prop = new VPE::VLabelProperty(label);
+                prop->setValue(AxisSummaryText(t->GetAxis()));
+                return prop;
+            },
+            nullptr,
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    t->RefreshAxisFromFile();
+                    prop->setValue(AxisSummaryText(t->GetAxis()));
+                }
+            }};
+}
+
+/** @brief The button that starts the two-point pick for the tool's angle. */
+template <typename Tool> auto AxisButtonProperty() -> PropertyDesc
+{
+    return {QStringLiteral("axisButton"), QString(),
+            [](VToolOptionsPropertyBrowser *browser, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                t->RefreshAxisFromFile();
+                auto *button = new QPushButton(AxisButtonText(t->GetAxis()));
+                QObject::connect(button,
+                                 &QPushButton::clicked,
+                                 browser,
+                                 [browser]()
+                                 {
+                                     if (auto *drawTool = dynamic_cast<VDrawTool *>(browser->currentItem()))
+                                     {
+                                         browser->StartAxisPicking(
+                                             drawTool, 0,
+                                             VToolOptionsPropertyBrowser::tr(
+                                                 QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Angle")));
+                                     }
+                                 });
+                return new VPE::VWidgetProperty(AxisButtonText(t->GetAxis()), button);
+            },
+            nullptr,
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    t->RefreshAxisFromFile();
+                    if (auto *buttonProp = dynamic_cast<VPE::VWidgetProperty *>(prop))
+                    {
+                        if (auto *button = qobject_cast<QPushButton *>(buttonProp->getWidget()))
+                        {
+                            button->setText(AxisButtonText(t->GetAxis()));
+                        }
+                    }
+                }
+            }};
+}
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wheader-hygiene")

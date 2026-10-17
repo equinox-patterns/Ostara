@@ -52,8 +52,8 @@ struct VToolSplineInitData : VToolAbstractCurveInitData
     QString a2{};            // NOLINT(misc-non-private-member-variables-in-classes)
     QString l1{};            // NOLINT(misc-non-private-member-variables-in-classes)
     QString l2{};            // NOLINT(misc-non-private-member-variables-in-classes)
-    OCurveAxis axis1{};      // NOLINT(misc-non-private-member-variables-in-classes)
-    OCurveAxis axis2{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    OAxis axis1{};      // NOLINT(misc-non-private-member-variables-in-classes)
+    OAxis axis2{};      // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 duplicate{0};    // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
@@ -90,8 +90,8 @@ public:
     void PreviewSpline(const VSpline &spl);
 
     auto AxisSlotCount() const -> int override;
-    auto AxisSlot(int slot) const -> OCurveAxis override;
-    void PreviewAxis(int slot, const OCurveAxis &axis) override;
+    auto AxisSlot(int slot) const -> OAxis override;
+    void PreviewAxis(int slot, const OAxis &axis) override;
     void CommitAxis() override;
     void RevertAxis() override;
 

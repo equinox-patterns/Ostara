@@ -455,3 +455,147 @@ void VToolLinePoint::SyncLineRoleNameToDom(const QString &pairKey)
         lineNamesElement.appendChild(lineEl);
     }
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLinePoint::EffectiveAngleFormula() const -> QString
+{
+    if (m_axis.IsValid())
+    {
+        return QString::number(AxisAngle(m_axis, getData()));
+    }
+
+    return AngleFormulaString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLinePoint::AngleFormulaString() const -> QString
+{
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::SetAngleFormulaString(const QString &formula)
+{
+    Q_UNUSED(formula)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLinePoint::AxisSlot(int slot) const -> OAxis
+{
+    Q_UNUSED(slot)
+    return m_axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolLinePoint::PointForAxisAngle(qreal angle) const -> std::optional<QPointF>
+{
+    Q_UNUSED(angle)
+    return std::nullopt;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Shows the point the direction would give it, without writing anything.
+ *
+ *  The point is placed where the tool's own geometry puts it for that angle — along its length for a line end,
+ *  on the line or the curve it crosses for an intersection — and the container is updated in place, exactly as
+ *  the free curve preview does. Only what the preview started from is kept, so RevertAxis() can put back the
+ *  very state the gesture found. */
+void VToolLinePoint::PreviewAxis(int slot, const OAxis &axis)
+{
+    Q_UNUSED(slot)
+
+    if (not m_axisPreviewing)
+    {
+        const QSharedPointer<VPointF> point = VDrawTool::data.GeometricObject<VPointF>(m_id);
+        if (point.isNull())
+        {
+            return;
+        }
+
+        m_axisPreviewStart = QSharedPointer<VPointF>::create(*point);
+        m_axisFormulaStart = AngleFormulaString();
+        m_axisAngleStart = angle;
+        m_axisStart = m_axis;
+        m_axisPreviewing = true;
+    }
+
+    const qreal newAngle = AxisAngle(axis, getData());
+    const std::optional<QPointF> position = PointForAxisAngle(newAngle);
+    if (not position.has_value())
+    {
+        // No intersection in that direction: nothing to show, and the point stays where it stands rather than
+        // jumping to a place the geometry does not hold.
+        return;
+    }
+
+    m_axis = axis;
+    angle = newAngle;
+    SetAngleFormulaString(QString::number(newAngle));
+
+    const QSharedPointer<VPointF> point = VDrawTool::data.GeometricObject<VPointF>(m_id);
+    point->setX(position->x());
+    point->setY(position->y());
+
+    RefreshGeometry();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::CommitAxis()
+{
+    if (not m_axisPreviewing)
+    {
+        return;
+    }
+
+    m_axisPreviewing = false;
+    m_axisPreviewStart.clear();
+
+    // The file never heard of the preview, so this one command tells the whole story: its old element is the
+    // point as it stood before, its new one what is now shown.
+    QSharedPointer<VGObject> obj = VDrawTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::RevertAxis()
+{
+    if (not m_axisPreviewing)
+    {
+        return;
+    }
+
+    m_axisPreviewing = false;
+
+    if (not m_axisPreviewStart.isNull())
+    {
+        const QSharedPointer<VPointF> point = VDrawTool::data.GeometricObject<VPointF>(m_id);
+        *point.data() = *m_axisPreviewStart;
+    }
+    m_axisPreviewStart.clear();
+
+    m_axis = m_axisStart;
+    angle = m_axisAngleStart;
+    SetAngleFormulaString(m_axisFormulaStart);
+
+    RefreshGeometry();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::ReadToolAttributes(const QDomElement &domElement)
+{
+    VToolSinglePoint::ReadToolAttributes(domElement);
+
+    m_axis = ReadAxis(domElement, AttrAxisP1, AttrAxisP2, AttrAxisSense);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::SaveAxisInto(QDomElement &element)
+{
+    SaveAxis(doc, element, m_axis, AttrAxisP1, AttrAxisP2, AttrAxisSense);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLinePoint::RefreshAxisFromFile()
+{
+    ReadAttributes();
+}

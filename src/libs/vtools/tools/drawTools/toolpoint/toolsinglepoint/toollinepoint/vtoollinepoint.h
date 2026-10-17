@@ -35,6 +35,9 @@
 #include <QString>
 #include <QtGlobal>
 
+#include <optional>
+
+#include "../vgeometry/oaxis.h"
 #include "../vmisc/def.h"
 #include "../vpatterndb/vformula.h"
 #include "../vtoolsinglepoint.h"
@@ -47,6 +50,7 @@ struct VToolLinePointInitData : VToolSinglePointInitData
 
     QString typeLine{TypeLineLine};
     QString lineColor{ColorBlack};
+    OAxis axis{};
 };
 
 /**
@@ -104,6 +108,31 @@ public:
      *  here, once the layer pass has decided, and again on every refresh (RefreshGeometry). */
     void GroupVisibility(quint32 object, bool visible) override;
 
+    /** @brief The axis this tool's angle is delegated to, unknown when the angle is written by hand. */
+    auto GetAxis() const -> OAxis { return m_axis; }
+    void SetAxis(const OAxis &axis) { m_axis = axis; }
+
+    /**
+     * @brief The angle formula the file carries — or the number the axis dictates, when there is one.
+     *
+     * The axis only fills the angle: what is shown, saved and measured stays a plain number, so everything that
+     * reads an angle keeps working unchanged. The value is recomputed here and never cached, so a point that
+     * moved after the fact never leaves a stale number on screen.
+     */
+    auto EffectiveAngleFormula() const -> QString;
+
+    /** @brief Reads this tool's attributes back from the file — the axis included — so the Options dock can
+     *  never show an axis an undo has taken away. */
+    void RefreshAxisFromFile();
+
+    // The axis contract (see VDrawTool). A line point offers ONE slot, its angle: the point is placed along the
+    // direction the axis gives, at the distance its length formula says. Only the tools that offer it override
+    // AxisSlotCount(); the implementation below is shared by them.
+    auto AxisSlot(int slot) const -> OAxis override;
+    void PreviewAxis(int slot, const OAxis &axis) override;
+    void CommitAxis() override;
+    void RevertAxis() override;
+
 public slots:
     void Enable() override;
 
@@ -122,6 +151,36 @@ protected:
 
     /** @brief lineColor color of a line. */
     QString lineColor;
+
+    /** @brief The axis of the angle, when the direction comes from two points instead of a formula. */
+    OAxis m_axis{};
+
+    /**
+     * @brief The angle written by hand — what the axis replaces when it is set. Every tool that offers an
+     *  axis holds its own member; the base asks for it through these two, so the shared preview, save and
+     *  display code never needs to know which tool it holds.
+     */
+    virtual auto AngleFormulaString() const -> QString;
+    virtual void SetAngleFormulaString(const QString &formula);
+
+    /**
+     * @brief Where this tool's point lands for a given angle, in pattern coordinates.
+     *
+     * Empty when the tool cannot place its point there — no intersection with the line or the curve it is
+     * built on — and the preview then leaves the point where it stands instead of jumping to nowhere.
+     */
+    virtual auto PointForAxisAngle(qreal angle) const -> std::optional<QPointF>;
+
+    void ReadToolAttributes(const QDomElement &domElement) override;
+
+    void SaveAxisInto(QDomElement &element);
+
+    /** @brief What the preview started from, kept only while a direction window is open. */
+    QSharedPointer<VPointF> m_axisPreviewStart{};
+    QString m_axisFormulaStart{};
+    OAxis m_axisStart{};
+    qreal m_axisAngleStart{0};
+    bool m_axisPreviewing{false};
 
     void RefreshGeometry() override;
 

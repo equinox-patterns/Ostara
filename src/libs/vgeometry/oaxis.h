@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   ocurveaxis.h
+ **  @file   oaxis.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   16/10/2026
  **
@@ -40,7 +40,7 @@
  * Flipping the sense and flipping the handle are the same 180 degrees, so four states are enough for the two
  * handles of a path point: there is no need for a per-handle sense.
  */
-enum class CurveAxisSense : quint8
+enum class AxisSense : quint8
 {
     Line = 0,
     LineReverse,
@@ -55,19 +55,19 @@ enum class CurveAxisSense : quint8
  * needs no alias and adds nothing to the variables table. The angle itself is computed and stored as a plain
  * number, which keeps the file readable and the handle usable by everything that reads an angle.
  */
-class OCurveAxis
+class OAxis
 {
 public:
-    OCurveAxis() = default;
-    OCurveAxis(quint32 p1, quint32 p2, CurveAxisSense sense);
+    OAxis() = default;
+    OAxis(quint32 p1, quint32 p2, AxisSense sense);
 
     auto P1() const -> quint32;
     auto P2() const -> quint32;
-    auto Sense() const -> CurveAxisSense;
+    auto Sense() const -> AxisSense;
     void SetP1(quint32 id);
     void SetP2(quint32 id);
-    void SetSense(CurveAxisSense sense);
-    void Set(quint32 p1, quint32 p2, CurveAxisSense sense);
+    void SetSense(AxisSense sense);
+    void Set(quint32 p1, quint32 p2, AxisSense sense);
     void Clear();
 
     /** @brief An axis is usable only when both of its points are known. */
@@ -84,15 +84,15 @@ public:
     static auto OppositeAngle(qreal angle) -> qreal;
 
     auto SenseName() const -> QString;
-    static auto SenseFromName(const QString &name) -> CurveAxisSense;
+    static auto SenseFromName(const QString &name) -> AxisSense;
 
 private:
     quint32 m_p1{NULL_ID};
     quint32 m_p2{NULL_ID};
-    CurveAxisSense m_sense{CurveAxisSense::Line};
+    AxisSense m_sense{AxisSense::Line};
 };
 
-Q_DECLARE_TYPEINFO(OCurveAxis, Q_MOVABLE_TYPE); // NOLINT
+Q_DECLARE_TYPEINFO(OAxis, Q_MOVABLE_TYPE); // NOLINT
 
 /**
  * @brief The axis to keep when an angle is written by hand: none as soon as the formula changes.
@@ -105,10 +105,10 @@ Q_DECLARE_TYPEINFO(OCurveAxis, Q_MOVABLE_TYPE); // NOLINT
  * @param before the formula the tool held
  * @param after the formula the field holds
  */
-inline auto AxisAfterHandWrittenAngle(const OCurveAxis &axis, const QString &before, const QString &after)
-    -> OCurveAxis
+inline auto AxisAfterHandWrittenAngle(const OAxis &axis, const QString &before, const QString &after)
+    -> OAxis
 {
-    return before == after ? axis : OCurveAxis();
+    return before == after ? axis : OAxis();
 }
 
 #endif // OCURVEAXIS_H

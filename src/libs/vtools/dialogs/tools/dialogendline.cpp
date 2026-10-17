@@ -430,6 +430,18 @@ auto DialogEndLine::GetFormula() const -> QString
  * @brief GetAngle return formula angle of line
  * @return angle formula
  */
+auto DialogEndLine::GetAxis() const -> OAxis
+{
+    return axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogEndLine::SetAxis(const OAxis &value)
+{
+    axis = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogEndLine::GetAngle() const -> QString
 {
     return m_formulaAngle->formula();

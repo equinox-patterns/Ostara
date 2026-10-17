@@ -36,7 +36,7 @@
 
 #include "../qmuparser/qmutokenparser.h"
 #include "../vmisc/def.h"
-#include "ocurveaxis.h"
+#include "oaxis.h"
 #include "vpointf.h"
 
 QT_WARNING_PUSH
@@ -126,7 +126,7 @@ public:
     /** @brief axis the axis the two handle angles are taken from, when they are delegated to one.
      *  The first handle stands at its angle, the second at +180. An unknown axis means the angles are
      *  managed by hand. */
-    OCurveAxis axis{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    OAxis axis{}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     bool strict{true};
 

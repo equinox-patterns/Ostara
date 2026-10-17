@@ -122,7 +122,7 @@
     </message>
 </context>
 <context>
-    <name>CurveAxisSense</name>
+    <name>AxisSense</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="42"/>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="50"/>
@@ -11426,39 +11426,39 @@ Cette action ne peut pas être annulée.</translation>
     </message>
 </context>
 <context>
-    <name>OCurveAxisSession</name>
+    <name>OAxisSession</name>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="215"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="215"/>
         <source>%1 — the angle follows the axis.</source>
         <translation>%1 — l&apos;angle suit l&apos;axe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="158"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="158"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="92"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="92"/>
         <source>Click a point of the pattern (Esc to cancel)</source>
         <translation>Cliquez sur un point du patron (Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="99"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="99"/>
         <source>Click another point than the first one (Esc to cancel)</source>
         <translation>Cliquez sur un autre point que le premier (Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="73"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="73"/>
         <source>Click the first point of the axis (Esc to cancel)</source>
         <translation>Cliquez sur le premier point de l&apos;axe (Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="108"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="108"/>
         <source>Click the second point of the axis (Esc to cancel)</source>
         <translation>Cliquez sur le second point de l&apos;axe (Échap pour annuler)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="212"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="212"/>
         <source>The angle follows the axis.</source>
         <translation>L&apos;angle suit l&apos;axe.</translation>
     </message>
@@ -26455,6 +26455,11 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="387"/>
         <source>by hand</source>
         <translation>à la main</translation>
+    </message>
+    <message>
+        <location filename="core/vtoppb_templates.h" line="1"/>
+        <source>Angle</source>
+        <translation>Angle</translation>
     </message>
 </context>
 <context>

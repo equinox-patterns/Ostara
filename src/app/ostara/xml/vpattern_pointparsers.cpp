@@ -81,6 +81,23 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The axis an angle takes its direction from, unknown when the two attributes are absent.
+ *
+ *  The same three attributes on every <point>: the tools that offer the feature read them, the others simply
+ *  find none. The sense is stored as a name (line, lineReverse, …) so the file says what it means. */
+auto ReadPointAxis(const QDomElement &element) -> OAxis
+{
+    const quint32 p1 = VDomDocument::GetParametrUInt(element, AttrAxisP1, NULL_ID_STR);
+    const quint32 p2 = VDomDocument::GetParametrUInt(element, AttrAxisP2, NULL_ID_STR);
+    const QString sense = VDomDocument::GetParametrEmptyString(element, AttrAxisSense);
+
+    return {p1, p2, OAxis::SenseFromName(sense)};
+}
+} // namespace
+
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -482,6 +499,7 @@ void VPattern::ParseToolEndLine(VMainGraphicsScene *scene, QDomElement &domEleme
 
         initData.formulaAngle = GetParametrString(domElement, AttrAngle, QStringLiteral("0.0"));
         const QString angleFix = initData.formulaAngle;
+        initData.axis = ReadPointAxis(domElement);
 
         VToolEndLine::Create(initData);
         // Rewrite attribute formula. Need for situation when we have wrong formula.
@@ -1185,6 +1203,7 @@ void VPattern::ParseToolLineIntersectAxis(VMainGraphicsScene *scene, QDomElement
 
         initData.formulaAngle = GetParametrString(domElement, AttrAngle, QStringLiteral("0.0"));
         const QString angleFix = initData.formulaAngle;
+        initData.axis = ReadPointAxis(domElement);
 
         VToolLineIntersectAxis::Create(initData);
         // Rewrite attribute formula. Need for situation when we have wrong formula.
@@ -1236,6 +1255,7 @@ void VPattern::ParseToolCurveIntersectAxis(VMainGraphicsScene *scene, QDomElemen
         initData.curveId = GetParametrUInt(domElement, AttrCurve, NULL_ID_STR);
         initData.formulaAngle = GetParametrString(domElement, AttrAngle, QStringLiteral("0.0"));
         const QString angleFix = initData.formulaAngle;
+        initData.axis = ReadPointAxis(domElement);
         initData.name1 = GetParametrEmptyString(domElement, AttrName1);
         initData.name2 = GetParametrEmptyString(domElement, AttrName2);
         initData.aliasSuffix1 = GetParametrEmptyString(domElement, AttrAlias1);

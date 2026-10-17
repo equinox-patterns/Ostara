@@ -219,7 +219,7 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData, const QSharedPoi
     // outlive one of its axis points.
     for (vsizetype i = 0; i < curve->CountPoints(); ++i)
     {
-        if (const OCurveAxis axis = curve->at(i).Axis(); axis.IsValid())
+        if (const OAxis axis = curve->at(i).Axis(); axis.IsValid())
         {
             patternGraph->AddEdge(axis.P1(), initData.id);
             patternGraph->AddEdge(axis.P2(), initData.id);
@@ -592,15 +592,15 @@ auto VToolSplinePath::AxisSlotCount() const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolSplinePath::AxisSlot(int slot) const -> OCurveAxis
+auto VToolSplinePath::AxisSlot(int slot) const -> OAxis
 {
     const VSplinePath path = getSplinePath();
     const auto index = static_cast<vsizetype>(slot);
-    return index >= 0 && index < path.CountPoints() ? path.at(index).Axis() : OCurveAxis();
+    return index >= 0 && index < path.CountPoints() ? path.at(index).Axis() : OAxis();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSplinePath::PreviewAxis(int slot, const OCurveAxis &axis)
+void VToolSplinePath::PreviewAxis(int slot, const OAxis &axis)
 {
     const VSplinePath path = getSplinePath();
     const auto index = static_cast<vsizetype>(slot);
@@ -726,7 +726,7 @@ void VToolSplinePath::AddPathPoint(VAbstractPattern *doc, QDomElement &domElemen
     doc->SetAttribute(pathPoint, AttrAngle1, splPoint.Angle1Formula());
     doc->SetAttribute(pathPoint, AttrAngle2, splPoint.Angle2Formula());
 
-    VToolAbstractCurve::SaveAxis(doc, pathPoint, splPoint.Axis(), AttrAxisP1, AttrAxisP2, AttrAxisSense);
+    VDrawTool::SaveAxis(doc, pathPoint, splPoint.Axis(), AttrAxisP1, AttrAxisP2, AttrAxisSense);
 
     if (domElement.hasAttribute(AttrKAsm1))
     {

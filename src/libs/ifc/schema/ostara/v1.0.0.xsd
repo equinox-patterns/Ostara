@@ -225,6 +225,11 @@
                           <xs:attribute name="radius" type="xs:string"/>
                           <xs:attribute name="axisP1" type="xs:unsignedInt"/>
                           <xs:attribute name="axisP2" type="xs:unsignedInt"/>
+                          <!-- Which of the four directions an angle takes from the axis above: a point placed
+                               by direction (endLine, lineIntersectAxis, curveIntersectAxis) reads it, while a
+                               triangle uses the same two points without a sense. Absent means "the angle is
+                               written by hand". -->
+                          <xs:attribute name="axisSense" type="axisSenseType"/>
                           <xs:attribute name="arc" type="xs:unsignedInt"/>
                           <xs:attribute name="elArc" type="xs:unsignedInt"/>
                           <xs:attribute name="curve" type="xs:unsignedInt"/>
@@ -640,7 +645,7 @@
                                          Absent attributes mean the angles are not delegated. -->
                                     <xs:attribute name="axisP1" type="xs:unsignedInt"/>
                                     <xs:attribute name="axisP2" type="xs:unsignedInt"/>
-                                    <xs:attribute name="axisSense" type="curveAxisSenseType"/>
+                                    <xs:attribute name="axisSense" type="axisSenseType"/>
                                   </xs:complexType>
                                 </xs:element>
                               </xs:sequence>
@@ -688,10 +693,10 @@
                                axis2* drives angle2 (end point4). See pathPoint above. -->
                           <xs:attribute name="axis1P1" type="xs:unsignedInt"/>
                           <xs:attribute name="axis1P2" type="xs:unsignedInt"/>
-                          <xs:attribute name="axis1Sense" type="curveAxisSenseType"/>
+                          <xs:attribute name="axis1Sense" type="axisSenseType"/>
                           <xs:attribute name="axis2P1" type="xs:unsignedInt"/>
                           <xs:attribute name="axis2P2" type="xs:unsignedInt"/>
-                          <xs:attribute name="axis2Sense" type="curveAxisSenseType"/>
+                          <xs:attribute name="axis2Sense" type="axisSenseType"/>
                         </xs:complexType>
                       </xs:element>
                     </xs:choice>
@@ -1820,7 +1825,7 @@
   <!-- Which of the four directions a curve handle takes from its axis (point A -> point B).
        Flipping the sense and flipping the handle are the same 180 degrees, so four states cover
        both handles of a path point: no need for a per-handle sense. -->
-  <xs:simpleType name="curveAxisSenseType">
+  <xs:simpleType name="axisSenseType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="line"/>
       <xs:enumeration value="lineReverse"/>

@@ -45,6 +45,7 @@
 #include "../ifc/xml/vdomdocument.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../vabstracttool.h"
+#include "../vgeometry/vpointf.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vabstractmainwindow.h"
 
@@ -687,6 +688,84 @@ auto VDrawTool::IsLabelVisible(quint32 id) const -> bool
 auto VDrawTool::GetNotes() const -> QString
 {
     return m_notes;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::AxisAngle(const OAxis &axis, const VContainer *data) -> qreal
+{
+    SCASSERT(data != nullptr)
+    SCASSERT(axis.IsValid())
+
+    const QSharedPointer<VPointF> p1 = data->GeometricObject<VPointF>(axis.P1());
+    const QSharedPointer<VPointF> p2 = data->GeometricObject<VPointF>(axis.P2());
+
+    return axis.HandleAngle(static_cast<QPointF>(*p1), static_cast<QPointF>(*p2));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::SaveAxis(VAbstractPattern *doc,
+                         QDomElement &element,
+                         const OAxis &axis,
+                         const QString &attrP1,
+                         const QString &attrP2,
+                         const QString &attrSense)
+{
+    SCASSERT(doc != nullptr)
+
+    if (not axis.IsValid())
+    {
+        element.removeAttribute(attrP1);
+        element.removeAttribute(attrP2);
+        element.removeAttribute(attrSense);
+        return;
+    }
+
+    doc->SetAttribute(element, attrP1, axis.P1());
+    doc->SetAttribute(element, attrP2, axis.P2());
+    doc->SetAttribute(element, attrSense, axis.SenseName());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::ReadAxis(const QDomElement &element,
+                         const QString &attrP1,
+                         const QString &attrP2,
+                         const QString &attrSense) -> OAxis
+{
+    const quint32 p1 = VDomDocument::GetParametrUInt(element, attrP1, NULL_ID_STR);
+    const quint32 p2 = VDomDocument::GetParametrUInt(element, attrP2, NULL_ID_STR);
+    const QString sense = VDomDocument::GetParametrEmptyString(element, attrSense);
+
+    return {p1, p2, OAxis::SenseFromName(sense)};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::AxisSlotCount() const -> int
+{
+    return 0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VDrawTool::AxisSlot(int slot) const -> OAxis
+{
+    Q_UNUSED(slot)
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::PreviewAxis(int slot, const OAxis &axis)
+{
+    Q_UNUSED(slot)
+    Q_UNUSED(axis)
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::CommitAxis()
+{
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VDrawTool::RevertAxis()
+{
 }
 
 //---------------------------------------------------------------------------------------------------------------------

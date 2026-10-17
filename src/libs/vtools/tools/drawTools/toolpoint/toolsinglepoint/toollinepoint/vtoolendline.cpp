@@ -84,7 +84,8 @@ void VToolEndLine::SetDialog()
     dialogTool->SetTypeLine(m_lineType);
     dialogTool->SetLineColor(lineColor);
     dialogTool->SetFormula(formulaLength);
-    dialogTool->SetAngle(formulaAngle);
+    dialogTool->SetAngle(EffectiveAngleFormula());
+    dialogTool->SetAxis(m_axis);
     dialogTool->SetBasePointId(basePointId);
     dialogTool->SetPointName(p->name());
     dialogTool->SetNotes(m_notes);
@@ -110,6 +111,7 @@ auto VToolEndLine::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene
     VToolEndLineInitData initData;
     initData.formulaLength = dialogTool->GetFormula();
     initData.formulaAngle = dialogTool->GetAngle();
+    initData.axis = dialogTool->GetAxis();
     initData.basePointId = dialogTool->GetBasePointId();
     initData.typeLine = dialogTool->GetTypeLine();
     initData.lineColor = dialogTool->GetLineColor();
@@ -132,20 +134,37 @@ auto VToolEndLine::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief Where the point lands for a given direction: the base point, moved by the length formula along the angle.
+ *
+ *  One construction for the two callers — the creation of the tool and the living preview of an axis — so the
+ *  preview can never show a place the real tool would not take. */
+auto EndLinePoint(const VContainer *data, quint32 id, quint32 basePointId, const QString &formulaLength,
+                  qreal angle) -> QPointF
+{
+    const QSharedPointer<VPointF> basePoint = data->GeometricObject<VPointF>(basePointId);
+    auto line = QLineF(static_cast<QPointF>(*basePoint), QPointF(basePoint->x() + 100, basePoint->y()));
+
+    line.setAngle(angle);
+    QString length = formulaLength;
+    line.setLength(VAbstractValApplication::VApp()->toPixel(VAbstractTool::CheckFormula(id, length, data)));
+
+    return line.p2();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief Create help create tool.
  * @param initData init data.
  */
 auto VToolEndLine::Create(VToolEndLineInitData &initData) -> VToolEndLine *
 {
-    const QSharedPointer<VPointF> basePoint = initData.data->GeometricObject<VPointF>(initData.basePointId);
-    auto line = QLineF(static_cast<QPointF>(*basePoint), QPointF(basePoint->x() + 100, basePoint->y()));
+    const qreal calcAngle = CheckFormula(initData.id, initData.formulaAngle, initData.data);
+    // An axis only fills the angle: the tool is placed as if the same number had been typed by hand.
+    const qreal angle = initData.axis.IsValid() ? AxisAngle(initData.axis, initData.data) : calcAngle;
 
-    line.setAngle(CheckFormula(initData.id, initData.formulaAngle, initData.data)); // First set angle.
-    line.setLength(
-        VAbstractValApplication::VApp()->toPixel(CheckFormula(initData.id, initData.formulaLength, initData.data)));
-
-    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(line.p2(), initData.name, initData.mx, initData.my);
+    QSharedPointer<VPointF> p = QSharedPointer<VPointF>::create(
+        EndLinePoint(initData.data, initData.id, initData.basePointId, initData.formulaLength, angle), initData.name,
+        initData.mx, initData.my);
     p->SetShowLabel(initData.showLabel);
 
     if (initData.typeCreation == Source::FromGui)
@@ -177,6 +196,15 @@ auto VToolEndLine::Create(VToolEndLineInitData &initData) -> VToolEndLine *
 
     patternGraph->AddEdge(initData.basePointId, initData.id);
 
+    // The axis points are dependencies of the point, exactly as its base point is: declared here, on the path
+    // both the reader and the interface take, so the point follows a point of another block and cannot outlive
+    // one of its axis points.
+    if (initData.axis.IsValid())
+    {
+        patternGraph->AddEdge(initData.axis.P1(), initData.id);
+        patternGraph->AddEdge(initData.axis.P2(), initData.id);
+    }
+
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {
         initData.doc->UpdateToolData(initData.id, initData.data);
@@ -186,6 +214,7 @@ auto VToolEndLine::Create(VToolEndLineInitData &initData) -> VToolEndLine *
     {
         VAbstractTool::AddRecord(initData.id, Tool::EndLine, initData.doc);
         auto *point = new VToolEndLine(initData);
+        point->SetAxis(initData.axis);
         initData.scene->addItem(point);
         InitPointToolConnections(initData.scene, point);
         VAbstractPattern::AddTool(initData.id, point);
@@ -209,6 +238,15 @@ void VToolEndLine::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrLineColor, dialogTool->GetLineColor());
     doc->SetAttribute(domElement, AttrLength, dialogTool->GetFormula());
     doc->SetAttribute(domElement, AttrAngle, dialogTool->GetAngle());
+    // The dialog only CARRIES the axis — it cannot set one (its window is modal). What it must not do is erase
+    // it: an angle written by hand gives the axis up, entirely, and an untouched field keeps it (see
+    // AxisAfterHandWrittenAngle).
+    SaveAxis(doc,
+             domElement,
+             AxisAfterHandWrittenAngle(dialogTool->GetAxis(), EffectiveAngleFormula(), dialogTool->GetAngle()),
+             AttrAxisP1,
+             AttrAxisP2,
+             AttrAxisSense);
     doc->SetAttribute(domElement, AttrBasePoint, QString().setNum(dialogTool->GetBasePointId()));
     doc->SetAttributeOrRemoveIf<QString>(domElement,
                                          AttrNotes,
@@ -226,8 +264,9 @@ void VToolEndLine::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 
     doc->SetAttribute(tag, AttrType, ToolType);
     doc->SetAttribute(tag, AttrLength, formulaLength);
-    doc->SetAttribute(tag, AttrAngle, formulaAngle);
+    doc->SetAttribute(tag, AttrAngle, EffectiveAngleFormula());
     doc->SetAttribute(tag, AttrBasePoint, basePointId);
+    SaveAxisInto(tag);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -278,7 +317,7 @@ void VToolEndLine::ApplyToolOptions(const QDomElement &oldDomElement, const QDom
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolEndLine::GetFormulaAngle() const -> VFormula
 {
-    VFormula fAngle(formulaAngle, getData());
+    VFormula fAngle(EffectiveAngleFormula(), getData());
     fAngle.setToolId(m_id);
     fAngle.setPostfix(degreeSymbol);
     fAngle.Eval();
@@ -291,6 +330,9 @@ void VToolEndLine::SetFormulaAngle(const VFormula &value)
     if (value.error() == false)
     {
         formulaAngle = value.GetFormula(FormulaType::FromUser);
+        // A formula written by hand gives the axis up, entirely: the angle is either taken from the axis or
+        // written here, never composed of the two.
+        m_axis.Clear();
 
         QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
         SaveOption(obj);
@@ -344,4 +386,22 @@ void VToolEndLine::SetLineRoleName(const QString &suffix)
     auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
     connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     VAbstractApplication::VApp()->getUndoStack()->push(command);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolEndLine::AngleFormulaString() const -> QString
+{
+    return formulaAngle;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolEndLine::SetAngleFormulaString(const QString &formula)
+{
+    formulaAngle = formula;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolEndLine::PointForAxisAngle(qreal angle) const -> std::optional<QPointF>
+{
+    return EndLinePoint(getData(), m_id, basePointId, formulaLength, angle);
 }

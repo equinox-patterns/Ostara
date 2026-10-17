@@ -781,25 +781,25 @@ void VSpline::SetEndAngle(qreal angle, const QString &formula)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VSpline::GetAxis1() const -> OCurveAxis
+auto VSpline::GetAxis1() const -> OAxis
 {
     return d->axis1;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VSpline::GetAxis2() const -> OCurveAxis
+auto VSpline::GetAxis2() const -> OAxis
 {
     return d->axis2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSpline::SetAxis1(const OCurveAxis &axis)
+void VSpline::SetAxis1(const OAxis &axis)
 {
     d->axis1 = axis;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSpline::SetAxis2(const OCurveAxis &axis)
+void VSpline::SetAxis2(const OAxis &axis)
 {
     d->axis2 = axis;
 }

@@ -77,6 +77,16 @@ public:
     auto GetFormulaAngle() const -> VFormula;
     void SetFormulaAngle(const VFormula &value);
 
+    // The point takes the direction of an axis instead of a formula when one is set (see AngleParAxe.md).
+    auto AxisSlotCount() const -> int override { return 1; }
+
+protected:
+    auto AngleFormulaString() const -> QString override;
+    void SetAngleFormulaString(const QString &formula) override;
+    auto PointForAxisAngle(qreal angle) const -> std::optional<QPointF> override;
+
+public:
+
     auto GetLineRoleName() const -> QString;
     void SetLineRoleName(const QString &suffix);
 

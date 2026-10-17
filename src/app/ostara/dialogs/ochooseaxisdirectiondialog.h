@@ -31,7 +31,7 @@
 #include <QString>
 #include <QVector>
 
-#include "../vgeometry/ocurveaxis.h"
+#include "../vgeometry/oaxis.h"
 
 class QRadioButton;
 
@@ -51,28 +51,28 @@ public:
     {
         QString intro{};      // the sentence above the choices, translated by the caller; may be empty
         QString acceptText{}; // the action's own word — "OK" when the caller has none
-        CurveAxisSense selected{CurveAxisSense::Line};
+        AxisSense selected{AxisSense::Line};
     };
 
     explicit OChooseAxisDirectionDialog(const Config &config, QWidget *parent = nullptr);
     ~OChooseAxisDirectionDialog() override = default;
 
     /** @brief The direction the user settled on. */
-    auto ChosenSense() const -> CurveAxisSense;
+    auto ChosenSense() const -> AxisSense;
 
 signals:
     /** @brief The direction the user is looking at, before any validation. Not emitted when the click only
      *  re-checks the direction already in force: nothing changed, so there is nothing to preview. */
-    void SenseChanged(CurveAxisSense sense);
+    void SenseChanged(AxisSense sense);
 
 private:
     Q_DISABLE_COPY_MOVE(OChooseAxisDirectionDialog) // NOLINT
 
     QVector<QRadioButton *> m_buttons{};
-    CurveAxisSense m_selected{CurveAxisSense::Line};
+    AxisSense m_selected{AxisSense::Line};
 };
 
 /** @brief The name of a direction, as the radio buttons say it and as the Options dock repeats it. */
-auto CurveAxisSenseText(CurveAxisSense sense) -> QString;
+auto AxisSenseText(AxisSense sense) -> QString;
 
 #endif // OCHOOSEAXISDIRECTIONDIALOG_H

@@ -181,6 +181,18 @@ void DialogLineIntersectAxis::SetTypeLine(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto DialogLineIntersectAxis::GetAxis() const -> OAxis
+{
+    return axis;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLineIntersectAxis::SetAxis(const OAxis &value)
+{
+    axis = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto DialogLineIntersectAxis::GetAngle() const -> QString
 {
     return VTranslateVars::TryFormulaFromUser(formulaAngle, VAbstractApplication::VApp()->Settings()->GetOsSeparator());

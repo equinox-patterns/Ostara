@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   ocurveaxis.cpp
+ **  @file   oaxis.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   16/10/2026
  **
@@ -24,7 +24,7 @@
  **
  *************************************************************************/
 
-#include "ocurveaxis.h"
+#include "oaxis.h"
 
 #include <QLineF>
 #include <QtMath>
@@ -55,7 +55,7 @@ auto NormalizeAngle(qreal angle) -> qreal
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-OCurveAxis::OCurveAxis(quint32 p1, quint32 p2, CurveAxisSense sense)
+OAxis::OAxis(quint32 p1, quint32 p2, AxisSense sense)
   : m_p1(p1),
     m_p2(p2),
     m_sense(sense)
@@ -63,43 +63,43 @@ OCurveAxis::OCurveAxis(quint32 p1, quint32 p2, CurveAxisSense sense)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::P1() const -> quint32
+auto OAxis::P1() const -> quint32
 {
     return m_p1;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::P2() const -> quint32
+auto OAxis::P2() const -> quint32
 {
     return m_p2;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::Sense() const -> CurveAxisSense
+auto OAxis::Sense() const -> AxisSense
 {
     return m_sense;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxis::SetP1(quint32 id)
+void OAxis::SetP1(quint32 id)
 {
     m_p1 = id;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxis::SetP2(quint32 id)
+void OAxis::SetP2(quint32 id)
 {
     m_p2 = id;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxis::SetSense(CurveAxisSense sense)
+void OAxis::SetSense(AxisSense sense)
 {
     m_sense = sense;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxis::Set(quint32 p1, quint32 p2, CurveAxisSense sense)
+void OAxis::Set(quint32 p1, quint32 p2, AxisSense sense)
 {
     m_p1 = p1;
     m_p2 = p2;
@@ -107,35 +107,35 @@ void OCurveAxis::Set(quint32 p1, quint32 p2, CurveAxisSense sense)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxis::Clear()
+void OAxis::Clear()
 {
     m_p1 = NULL_ID;
     m_p2 = NULL_ID;
-    m_sense = CurveAxisSense::Line;
+    m_sense = AxisSense::Line;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::IsValid() const -> bool
+auto OAxis::IsValid() const -> bool
 {
     return m_p1 != NULL_ID && m_p2 != NULL_ID;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::HandleAngle(const QPointF &p1, const QPointF &p2) const -> qreal
+auto OAxis::HandleAngle(const QPointF &p1, const QPointF &p2) const -> qreal
 {
     QLineF line(p1, p2);
 
     switch (m_sense)
     {
-        case CurveAxisSense::Line:
+        case AxisSense::Line:
             break;
-        case CurveAxisSense::LineReverse:
+        case AxisSense::LineReverse:
             line.setAngle(line.angle() + 180);
             break;
-        case CurveAxisSense::Perpendicular:
+        case AxisSense::Perpendicular:
             line.setAngle(line.angle() + 90);
             break;
-        case CurveAxisSense::PerpendicularReverse:
+        case AxisSense::PerpendicularReverse:
             line.setAngle(line.angle() + 270);
             break;
     }
@@ -146,7 +146,7 @@ auto OCurveAxis::HandleAngle(const QPointF &p1, const QPointF &p2) const -> qrea
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::OppositeAngle(qreal angle) -> qreal
+auto OAxis::OppositeAngle(qreal angle) -> qreal
 {
     QLineF line(0, 0, 100, 0);
     line.setAngle(angle + 180);
@@ -154,36 +154,36 @@ auto OCurveAxis::OppositeAngle(qreal angle) -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::SenseName() const -> QString
+auto OAxis::SenseName() const -> QString
 {
     switch (m_sense)
     {
-        case CurveAxisSense::Line:
-            return CurveAxisSenseLine;
-        case CurveAxisSense::LineReverse:
-            return CurveAxisSenseLineReverse;
-        case CurveAxisSense::Perpendicular:
-            return CurveAxisSensePerpendicular;
-        case CurveAxisSense::PerpendicularReverse:
-            return CurveAxisSensePerpendicularReverse;
+        case AxisSense::Line:
+            return AxisSenseLine;
+        case AxisSense::LineReverse:
+            return AxisSenseLineReverse;
+        case AxisSense::Perpendicular:
+            return AxisSensePerpendicular;
+        case AxisSense::PerpendicularReverse:
+            return AxisSensePerpendicularReverse;
     }
-    return CurveAxisSenseLine;
+    return AxisSenseLine;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxis::SenseFromName(const QString &name) -> CurveAxisSense
+auto OAxis::SenseFromName(const QString &name) -> AxisSense
 {
-    if (name == CurveAxisSenseLineReverse)
+    if (name == AxisSenseLineReverse)
     {
-        return CurveAxisSense::LineReverse;
+        return AxisSense::LineReverse;
     }
-    if (name == CurveAxisSensePerpendicular)
+    if (name == AxisSensePerpendicular)
     {
-        return CurveAxisSense::Perpendicular;
+        return AxisSense::Perpendicular;
     }
-    if (name == CurveAxisSensePerpendicularReverse)
+    if (name == AxisSensePerpendicularReverse)
     {
-        return CurveAxisSense::PerpendicularReverse;
+        return AxisSense::PerpendicularReverse;
     }
-    return CurveAxisSense::Line;
+    return AxisSense::Line;
 }

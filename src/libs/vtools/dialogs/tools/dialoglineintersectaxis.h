@@ -35,6 +35,7 @@
 #include <QtGlobal>
 
 #include "../vmisc/def.h"
+#include "../vgeometry/oaxis.h"
 #include "dialogtool.h"
 
 namespace Ui
@@ -58,6 +59,11 @@ public:
 
     auto GetAngle() const -> QString;
     void SetAngle(const QString &value);
+
+    /// The axis the tool takes its angle from, carried through the dialog untouched: the dialog cannot set one,
+    /// but applying it must not erase it (see AngleParAxe.md).
+    auto GetAxis() const -> OAxis;
+    void SetAxis(const OAxis &axis);
 
     auto GetBasePointId() const -> quint32;
     void SetBasePointId(quint32 value);
@@ -109,6 +115,9 @@ private:
     int formulaBaseHeightAngle;
 
     QString pointName;
+
+    /// Carried, never set here: the Options dock is the only place an axis is chosen.
+    OAxis axis{};
 
     bool m_firstRelease;
 

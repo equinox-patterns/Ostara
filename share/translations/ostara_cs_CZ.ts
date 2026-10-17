@@ -122,7 +122,7 @@
     </message>
 </context>
 <context>
-    <name>CurveAxisSense</name>
+    <name>AxisSense</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="42"/>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="50"/>
@@ -11393,39 +11393,39 @@ This action cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>OCurveAxisSession</name>
+    <name>OAxisSession</name>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="73"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="73"/>
         <source>Click the first point of the axis (Esc to cancel)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="92"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="92"/>
         <source>Click a point of the pattern (Esc to cancel)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="99"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="99"/>
         <source>Click another point than the first one (Esc to cancel)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="108"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="108"/>
         <source>Click the second point of the axis (Esc to cancel)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="158"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="158"/>
         <source>Apply</source>
         <translation type="unfinished">Použít</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="212"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="212"/>
         <source>The angle follows the axis.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/ocurveaxissession.cpp" line="215"/>
+        <location filename="../../src/app/ostara/core/oaxissession.cpp" line="215"/>
         <source>%1 — the angle follows the axis.</source>
         <translation type="unfinished"></translation>
     </message>

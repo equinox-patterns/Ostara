@@ -50,6 +50,7 @@
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../toolsdef.h"
 #include "../vdatatool.h"
+#include "../vgeometry/oaxis.h"
 #include "../vinteractivetool.h"
 #include "../vmisc/def.h"
 #include "../vwidgets/vmaingraphicsscene.h"
@@ -88,6 +89,63 @@ public:
      *  both the context menu of the canvas and the picking of the Layers dock ask HERE: the two cannot write two
      *  different contents into the same XML. */
     auto GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, quint32>>;
+
+    /**
+     * @brief The angles of this tool whose value can be delegated to an axis: two points, and four directions.
+     *
+     * A simple curve offers two slots, one per end; a path offers one per anchor point, its two handles then
+     * following the same line; a point placed by direction offers the angle of its line. The default says no
+     * slot, which is the truth for every tool that does not offer the feature and keeps the interface honest
+     * where it is not implemented.
+     *
+     * These five calls are the whole contract the Options dock and the picking session need; they never learn
+     * which tool they hold, nor what kind of angle it is.
+     */
+    virtual auto AxisSlotCount() const -> int;
+
+    /** @brief The axis of one slot, unknown when the angle stays written by hand. */
+    virtual auto AxisSlot(int slot) const -> OAxis;
+
+    /**
+     * @brief Shows this tool as if this slot took its angle from this axis: the living preview.
+     *
+     * Nothing is written and nothing reaches the undo stack — the file keeps the tool it had — so the user can
+     * walk away, and RevertAxis() puts back what the session started from.
+     */
+    virtual void PreviewAxis(int slot, const OAxis &axis);
+
+    /** @brief Writes what the preview shows, as a single undo command. */
+    virtual void CommitAxis();
+
+    /** @brief Puts back the state the preview started from. */
+    virtual void RevertAxis();
+
+    /**
+     * @brief The angle, in degrees, an axis dictates — its two points are read from the container.
+     *
+     * The whole geometry of the feature is here: one base angle, four senses. The formal construction is that of
+     * VToolNormal (a run through QLineF), so an axis gives exactly what the same angle typed by hand would give.
+     */
+    static auto AxisAngle(const OAxis &axis, const VContainer *data) -> qreal;
+
+    /**
+     * @brief Writes an axis into an element, or removes its three attributes when there is none.
+     *
+     * Absence is how the file says "this angle is managed by hand": never write an axis with an unknown point,
+     * the schema knows nothing of that and the reader would take it for a dependency.
+     */
+    static void SaveAxis(VAbstractPattern *doc,
+                         QDomElement &element,
+                         const OAxis &axis,
+                         const QString &attrP1,
+                         const QString &attrP2,
+                         const QString &attrSense);
+
+    /** @brief Reads an axis from an element: unknown when both of its point attributes are absent. */
+    static auto ReadAxis(const QDomElement &element,
+                         const QString &attrP1,
+                         const QString &attrP2,
+                         const QString &attrSense) -> OAxis;
 
 signals:
     void ChangedToolSelection(bool selected, quint32 object, quint32 tool);

@@ -226,7 +226,7 @@ auto VToolSpline::Create(VToolSplineInitData &initData, const QSharedPointer<VSp
     // The axis points are dependencies of the curve, exactly as its two ends are: declared here, on the path
     // both the reader and the interface take, so the curve follows a point of another block and cannot
     // outlive one of its axis points.
-    for (const OCurveAxis &axis : {curve->GetAxis1(), curve->GetAxis2()})
+    for (const OAxis &axis : {curve->GetAxis1(), curve->GetAxis2()})
     {
         if (axis.IsValid())
         {
@@ -328,14 +328,14 @@ auto VToolSpline::AxisSlotCount() const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolSpline::AxisSlot(int slot) const -> OCurveAxis
+auto VToolSpline::AxisSlot(int slot) const -> OAxis
 {
     const auto spline = VAbstractTool::data.GeometricObject<VSpline>(m_id);
     return slot == 0 ? spline->GetAxis1() : spline->GetAxis2();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolSpline::PreviewAxis(int slot, const OCurveAxis &axis)
+void VToolSpline::PreviewAxis(int slot, const OAxis &axis)
 {
     const auto spline = VAbstractTool::data.GeometricObject<VSpline>(m_id);
 
@@ -823,8 +823,8 @@ void VToolSpline::SetSplineAttributes(QDomElement &domElement, const VSpline &sp
     doc->SetAttributeOrRemoveIf<QString>(domElement, AttrAlias, spl.GetAliasSuffix(),
                                          [](const QString &suffix) noexcept { return suffix.isEmpty(); });
 
-    VToolAbstractCurve::SaveAxis(doc, domElement, spl.GetAxis1(), AttrAxis1P1, AttrAxis1P2, AttrAxis1Sense);
-    VToolAbstractCurve::SaveAxis(doc, domElement, spl.GetAxis2(), AttrAxis2P1, AttrAxis2P2, AttrAxis2Sense);
+    VDrawTool::SaveAxis(doc, domElement, spl.GetAxis1(), AttrAxis1P1, AttrAxis1P2, AttrAxis1Sense);
+    VDrawTool::SaveAxis(doc, domElement, spl.GetAxis2(), AttrAxis2P1, AttrAxis2P2, AttrAxis2Sense);
 
     if (domElement.hasAttribute(AttrKCurve))
     {

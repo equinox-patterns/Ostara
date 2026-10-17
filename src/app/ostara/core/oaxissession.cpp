@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   ocurveaxissession.cpp
+ **  @file   oaxissession.cpp
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   16/10/2026
  **
@@ -24,26 +24,26 @@
  **
  *************************************************************************/
 
-#include "ocurveaxissession.h"
+#include "oaxissession.h"
 
 #include <QSharedPointer>
 
 #include "../dialogs/ochooseaxisdirectiondialog.h"
 #include "../ifc/exception/vexceptionbadid.h"
-#include "../vtools/tools/drawTools/toolcurve/vtoolabstractcurve.h"
+#include "../vtools/tools/drawTools/vdrawtool.h"
 #include "../vgeometry/vpointf.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/vcontainer.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-OCurveAxisSession::OCurveAxisSession(QObject *parent)
+OAxisSession::OAxisSession(QObject *parent)
   : QObject(parent)
 {
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-OCurveAxisSession::~OCurveAxisSession()
+OAxisSession::~OAxisSession()
 {
     // A session cut short — the dock gone, the window closed — must not leave the curve showing a state the
     // file does not hold.
@@ -54,7 +54,7 @@ OCurveAxisSession::~OCurveAxisSession()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::Start(VToolAbstractCurve *tool, int slot, const QString &slotName)
+void OAxisSession::Start(VDrawTool *tool, int slot, const QString &slotName)
 {
     if (IsRunning() || tool == nullptr || slot < 0 || slot >= tool->AxisSlotCount())
     {
@@ -68,19 +68,19 @@ void OCurveAxisSession::Start(VToolAbstractCurve *tool, int slot, const QString 
 
     // The direction the handle already has is the one the window opens on: changing only the direction is then
     // a matter of picking the axis again and pressing the same button twice more.
-    m_sense = tool->AxisSlot(slot).IsValid() ? tool->AxisSlot(slot).Sense() : CurveAxisSense::Line;
+    m_sense = tool->AxisSlot(slot).IsValid() ? tool->AxisSlot(slot).Sense() : AxisSense::Line;
 
     emit ShowStatusTip(tr("Click the first point of the axis (Esc to cancel)"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxisSession::IsRunning() const -> bool
+auto OAxisSession::IsRunning() const -> bool
 {
     return not m_tool.isNull() && m_slot >= 0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::OnPointClicked(quint32 pointId)
+void OAxisSession::OnPointClicked(quint32 pointId)
 {
     if (not IsRunning())
     {
@@ -113,7 +113,7 @@ void OCurveAxisSession::OnPointClicked(quint32 pointId)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::Cancel()
+void OAxisSession::Cancel()
 {
     if (not IsRunning())
     {
@@ -127,19 +127,19 @@ void OCurveAxisSession::Cancel()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::OpenDirectionWindow()
+void OAxisSession::OpenDirectionWindow()
 {
     if (not IsRunning())
     {
         return;
     }
 
-    const auto Apply = [this](CurveAxisSense sense)
+    const auto Apply = [this](AxisSense sense)
     {
         m_sense = sense;
         if (IsRunning())
         {
-            Show(OCurveAxis(m_points.at(0), m_points.at(1), m_sense));
+            Show(OAxis(m_points.at(0), m_points.at(1), m_sense));
 
             // The preview rebuilds the curve, and rebuilding it puts the visualization's magenta discs back on
             // top of the points just taken: Visualization::DrawPoint ends on setVisible(true), so hiding them
@@ -185,7 +185,7 @@ void OCurveAxisSession::OpenDirectionWindow()
  *
  *  Idempotent on purpose: it is called after every preview, and each call must leave both points — not only the
  *  last one — wearing the orange of the picking. */
-void OCurveAxisSession::ReassertHighlights()
+void OAxisSession::ReassertHighlights()
 {
     for (const quint32 pointId : m_points)
     {
@@ -194,7 +194,7 @@ void OCurveAxisSession::ReassertHighlights()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::Show(const OCurveAxis &axis)
+void OAxisSession::Show(const OAxis &axis)
 {
     if (IsRunning())
     {
@@ -205,7 +205,7 @@ void OCurveAxisSession::Show(const OCurveAxis &axis)
 //---------------------------------------------------------------------------------------------------------------------
 // The sentence deliberately does NOT name the two points the axis joins: the user has just clicked them, they
 // are marked on the canvas, and their labels are pattern vocabulary she does not need to read back.
-auto OCurveAxisSession::AxisIntro(const QString &slotName) const -> QString
+auto OAxisSession::AxisIntro(const QString &slotName) const -> QString
 {
     if (slotName.isEmpty())
     {
@@ -216,7 +216,7 @@ auto OCurveAxisSession::AxisIntro(const QString &slotName) const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OCurveAxisSession::HasPoint(quint32 pointId) const -> bool
+auto OAxisSession::HasPoint(quint32 pointId) const -> bool
 {
     if (m_tool.isNull() || pointId == NULL_ID)
     {
@@ -236,7 +236,7 @@ auto OCurveAxisSession::HasPoint(quint32 pointId) const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::ReleaseHighlights()
+void OAxisSession::ReleaseHighlights()
 {
     for (const quint32 pointId : std::as_const(m_points))
     {
@@ -245,7 +245,7 @@ void OCurveAxisSession::ReleaseHighlights()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OCurveAxisSession::End()
+void OAxisSession::End()
 {
     ReleaseHighlights();
 
@@ -253,7 +253,7 @@ void OCurveAxisSession::End()
     m_tool.clear();
     m_slot = -1;
     m_slotName.clear();
-    m_sense = CurveAxisSense::Line;
+    m_sense = AxisSense::Line;
 
     emit ShowStatusTip(QString());
     emit Finished();

@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   ocurveaxissession.h
+ **  @file   oaxissession.h
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   16/10/2026
  **
@@ -32,9 +32,9 @@
 #include <QString>
 #include <QVector>
 
-#include "../vgeometry/ocurveaxis.h"
+#include "../vgeometry/oaxis.h"
 
-class VToolAbstractCurve;
+class VDrawTool;
 
 /**
  * @brief One run of the "angle by an axis" gesture: pick two points on the canvas, then choose a direction.
@@ -47,24 +47,24 @@ class VToolAbstractCurve;
  * Kept apart from the dock because it owns a state of its own — which points are already picked, what the
  * curve looked like before — and from the window, which knows nothing of curves.
  */
-class OCurveAxisSession : public QObject
+class OAxisSession : public QObject
 {
     Q_OBJECT // NOLINT
 
 public:
-    explicit OCurveAxisSession(QObject *parent = nullptr);
-    ~OCurveAxisSession() override;
+    explicit OAxisSession(QObject *parent = nullptr);
+    ~OAxisSession() override;
 
     /**
      * @brief Starts a session on one axis slot of a curve: the user then picks the two points of its axis.
      * @param tool the curve to change, and the one that will do the writing
-     * @param slot which of its handles (see VToolAbstractCurve::AxisSlotCount)
+     * @param slot which of its handles (see VDrawTool::AxisSlotCount)
      * @param slotName how the interface names that handle, for the sentence of the window
      *
      * Ignored while a session is already running, so a stray second click on the button cannot restart the
      * gesture under the user's hands.
      */
-    void Start(VToolAbstractCurve *tool, int slot, const QString &slotName);
+    void Start(VDrawTool *tool, int slot, const QString &slotName);
 
     auto IsRunning() const -> bool;
 
@@ -81,21 +81,21 @@ signals:
     void Finished();
 
 private:
-    Q_DISABLE_COPY_MOVE(OCurveAxisSession) // NOLINT
+    Q_DISABLE_COPY_MOVE(OAxisSession) // NOLINT
 
     void OpenDirectionWindow();
-    void Show(const OCurveAxis &axis);
+    void Show(const OAxis &axis);
     void ReassertHighlights();
     auto AxisIntro(const QString &slotName) const -> QString;
     auto HasPoint(quint32 pointId) const -> bool;
     void ReleaseHighlights();
     void End();
 
-    QPointer<VToolAbstractCurve> m_tool{};
+    QPointer<VDrawTool> m_tool{};
     int m_slot{-1};
     QString m_slotName{};
     QVector<quint32> m_points{};
-    CurveAxisSense m_sense{CurveAxisSense::Line};
+    AxisSense m_sense{AxisSense::Line};
 };
 
 #endif // OCURVEAXISSESSION_H

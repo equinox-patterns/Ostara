@@ -44,8 +44,8 @@ class QScrollArea;
 class QStackedWidget;
 class VFormula;
 class OPatternPropertiesWidget;
-class OCurveAxisSession;
-class VToolAbstractCurve;
+class OAxisSession;
+class VDrawTool;
 
 struct PropertyDesc;
 
@@ -81,9 +81,9 @@ public:
      * @brief Starts the "angle by an axis" gesture on one handle of a curve.
      *
      * The gesture belongs to the dock because the dock is what offers it, and to a session object because it
-     * outlives a rebuild of the rows: see OCurveAxisSession.
+     * outlives a rebuild of the rows: see OAxisSession.
      */
-    void StartAxisPicking(VToolAbstractCurve *tool, int slot, const QString &slotName);
+    void StartAxisPicking(VDrawTool *tool, int slot, const QString &slotName);
 
     /** @brief True while that gesture waits for its two points: the window routes canvas clicks to it. */
     auto IsPickingAxisPoints() const -> bool;
@@ -133,7 +133,7 @@ private:
     QMap<QString, VPE::VProperty *> m_idToProperty{};
 
     /** @brief The running "angle by an axis" gesture, created with the dock and idle most of the time. */
-    OCurveAxisSession *m_axisSession{nullptr};
+    OAxisSession *m_axisSession{nullptr};
 
     /** @brief Add a whole set of rows to the dock in one insertion: the form view rebuilds every editor on
      *  each insertion, so one by one they would cost n(n+1)/2 editor creations instead of n. */

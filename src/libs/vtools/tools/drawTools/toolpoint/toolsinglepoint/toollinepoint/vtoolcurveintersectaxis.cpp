@@ -357,7 +357,8 @@ void VToolCurveIntersectAxis::SetDialog()
     dialogTool->CheckDependencyTreeComplete();
     dialogTool->SetTypeLine(m_lineType);
     dialogTool->SetLineColor(lineColor);
-    dialogTool->SetAngle(formulaAngle);
+    dialogTool->SetAngle(EffectiveAngleFormula());
+    dialogTool->SetAxis(m_axis);
     dialogTool->SetBasePointId(basePointId);
     dialogTool->setCurveId(curveId);
     dialogTool->SetPointName(p->name());
@@ -385,6 +386,7 @@ auto VToolCurveIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGr
     QT_WARNING_POP
 
     initData.formulaAngle = dialogTool->GetAngle();
+    initData.axis = dialogTool->GetAxis();
     initData.basePointId = dialogTool->GetBasePointId();
     initData.curveId = dialogTool->getCurveId();
     initData.typeLine = dialogTool->GetTypeLine();
@@ -412,14 +414,35 @@ auto VToolCurveIntersectAxis::Create(const QPointer<DialogTool> &dialog, VMainGr
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief Where the point lands for a given direction: the base point run along the angle until it crosses the
+ *  curve the tool is built on.
+ *
+ *  One construction for the creation of the tool and for the living preview of an axis, so the preview can never
+ *  show a place the real tool would not take. False when the direction cannot cross that curve. */
+auto IntersectCurvePoint(const VContainer *data,
+                         quint32 basePointId,
+                         quint32 curveId,
+                         qreal angle,
+                         QPointF *point) -> bool
+{
+    const QSharedPointer<VPointF> basePoint = data->GeometricObject<VPointF>(basePointId);
+    const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(curveId);
+
+    return VToolCurveIntersectAxis::FindPoint(static_cast<QPointF>(*basePoint), angle, curve->GetPoints(), point);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VToolCurveIntersectAxis::Create(VToolCurveIntersectAxisInitData &initData) -> VToolCurveIntersectAxis *
 {
     const QSharedPointer<VPointF> basePoint = initData.data->GeometricObject<VPointF>(initData.basePointId);
-    const qreal angle = CheckFormula(initData.id, initData.formulaAngle, initData.data);
     const QSharedPointer<VAbstractCurve> curve = initData.data->GeometricObject<VAbstractCurve>(initData.curveId);
 
+    const qreal calcAngle = CheckFormula(initData.id, initData.formulaAngle, initData.data);
+    // An axis only fills the angle: the intersection is the one the same number typed by hand would give.
+    const qreal angle = initData.axis.IsValid() ? AxisAngle(initData.axis, initData.data) : calcAngle;
+
     QPointF fPoint;
-    const bool success = FindPoint(static_cast<QPointF>(*basePoint), angle, curve->GetPoints(), &fPoint);
+    const bool success = IntersectCurvePoint(initData.data, initData.basePointId, initData.curveId, angle, &fPoint);
 
     if (not success)
     {
@@ -487,6 +510,13 @@ auto VToolCurveIntersectAxis::Create(VToolCurveIntersectAxisInitData &initData) 
     initData.name2 = details.name2;
 
     patternGraph->AddEdge(initData.basePointId, initData.id);
+
+    // The two points of the axis are dependencies, as the base point and the curve already are.
+    if (initData.axis.IsValid())
+    {
+        patternGraph->AddEdge(initData.axis.P1(), initData.id);
+        patternGraph->AddEdge(initData.axis.P2(), initData.id);
+    }
     patternGraph->AddEdge(initData.curveId, initData.id);
 
     if (initData.typeCreation == Source::FromGui)
@@ -510,6 +540,7 @@ auto VToolCurveIntersectAxis::Create(VToolCurveIntersectAxisInitData &initData) 
     {
         VAbstractTool::AddRecord(initData.id, Tool::CurveIntersectAxis, initData.doc);
         auto *point = new VToolCurveIntersectAxis(initData);
+        point->SetAxis(initData.axis);
         initData.scene->addItem(point);
         InitPointToolConnections(initData.scene, point);
         InitSegmentConnections(initData.scene, point, curve->getType());
@@ -530,7 +561,7 @@ auto VToolCurveIntersectAxis::FindPoint(const QPointF &point, qreal angle, const
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolCurveIntersectAxis::GetFormulaAngle() const -> VFormula
 {
-    VFormula fAngle(formulaAngle, getData());
+    VFormula fAngle(EffectiveAngleFormula(), getData());
     fAngle.setToolId(m_id);
     fAngle.setPostfix(degreeSymbol);
     fAngle.Eval();
@@ -543,6 +574,8 @@ void VToolCurveIntersectAxis::SetFormulaAngle(const VFormula &value)
     if (!value.error())
     {
         formulaAngle = value.GetFormula(FormulaType::FromUser);
+        // A formula written by hand gives the axis up, entirely (see AngleParAxe.md).
+        m_axis.Clear();
 
         QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
         SaveOption(obj);
@@ -694,6 +727,13 @@ void VToolCurveIntersectAxis::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrTypeLine, dialogTool->GetTypeLine());
     doc->SetAttribute(domElement, AttrLineColor, dialogTool->GetLineColor());
     doc->SetAttribute(domElement, AttrAngle, dialogTool->GetAngle());
+    // The dialog only carries the axis; an angle written by hand gives it up (see AngleParAxe.md).
+    SaveAxis(doc,
+             domElement,
+             AxisAfterHandWrittenAngle(dialogTool->GetAxis(), EffectiveAngleFormula(), dialogTool->GetAngle()),
+             AttrAxisP1,
+             AttrAxisP2,
+             AttrAxisSense);
     doc->SetAttribute(domElement, AttrBasePoint, QString().setNum(dialogTool->GetBasePointId()));
     doc->SetAttribute(domElement, AttrCurve, QString().setNum(dialogTool->getCurveId()));
     doc->SetAttribute(domElement, AttrName1, dialogTool->GetName1());
@@ -720,7 +760,8 @@ void VToolCurveIntersectAxis::SaveOptions(QDomElement &tag, QSharedPointer<VGObj
     VToolLinePoint::SaveOptions(tag, obj);
 
     doc->SetAttribute(tag, AttrType, ToolType);
-    doc->SetAttribute(tag, AttrAngle, formulaAngle);
+    doc->SetAttribute(tag, AttrAngle, EffectiveAngleFormula());
+    SaveAxisInto(tag);
     doc->SetAttribute(tag, AttrBasePoint, basePointId);
     doc->SetAttribute(tag, AttrCurve, curveId);
     doc->SetAttribute(tag, AttrName1, m_name1);
@@ -983,4 +1024,28 @@ void VToolCurveIntersectAxis::SetLineRoleName(const QString &suffix)
     auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
     connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     VAbstractApplication::VApp()->getUndoStack()->push(command);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCurveIntersectAxis::AngleFormulaString() const -> QString
+{
+    return formulaAngle;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCurveIntersectAxis::SetAngleFormulaString(const QString &formula)
+{
+    formulaAngle = formula;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCurveIntersectAxis::PointForAxisAngle(qreal angle) const -> std::optional<QPointF>
+{
+    QPointF point;
+    if (IntersectCurvePoint(getData(), basePointId, curveId, angle, &point))
+    {
+        return point;
+    }
+
+    return std::nullopt;
 }

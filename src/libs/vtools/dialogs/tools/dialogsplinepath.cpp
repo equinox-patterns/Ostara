@@ -845,7 +845,7 @@ void DialogSplinePath::SavePath()
 
     for (vsizetype i = 0; i < path.CountPoints() && i < before.CountPoints(); ++i)
     {
-        OCurveAxis axis = path.at(i).Axis();
+        OAxis axis = path.at(i).Axis();
         axis = AxisAfterHandWrittenAngle(axis, before.at(i).Angle1Formula(), path.at(i).Angle1Formula());
         axis = AxisAfterHandWrittenAngle(axis, before.at(i).Angle2Formula(), path.at(i).Angle2Formula());
         path[i].SetAxis(axis);

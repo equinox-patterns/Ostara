@@ -52,7 +52,7 @@
 #include "../vdrawtool.h"
 #include "../vgeometry/vabstractarc.h"
 #include "../vgeometry/vgobject.h"
-#include "../vgeometry/ocurveaxis.h"
+#include "../vgeometry/oaxis.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/vspline.h"
 #include "../vgeometry/vsplinepoint.h"
@@ -97,20 +97,6 @@ auto CurveKeyInFormulas(const QSharedPointer<VAbstractCurve> &curve, const QStri
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The angle, in degrees, an axis dictates — its two points are read from the container.
- *
- *  The whole geometry of the feature is here: one base angle, four senses. The formal construction is that of
- *  VToolNormal (a run through QLineF), so an axis gives exactly what the same angle typed by hand would give. */
-auto AxisAngle(const OCurveAxis &axis, const VContainer *data) -> qreal
-{
-    SCASSERT(data != nullptr)
-    SCASSERT(axis.IsValid())
-
-    const QSharedPointer<VPointF> p1 = data->GeometricObject<VPointF>(axis.P1());
-    const QSharedPointer<VPointF> p2 = data->GeometricObject<VPointF>(axis.P2());
-
-    return axis.HandleAngle(static_cast<QPointF>(*p1), static_cast<QPointF>(*p2));
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -421,45 +407,15 @@ void VToolAbstractCurve::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VToolAbstractCurve::AxisSlotCount() const -> int
-{
-    return 0;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolAbstractCurve::AxisSlot(int slot) const -> OCurveAxis
-{
-    Q_UNUSED(slot)
-    return {};
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolAbstractCurve::PreviewAxis(int slot, const OCurveAxis &axis)
-{
-    Q_UNUSED(slot)
-    Q_UNUSED(axis)
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolAbstractCurve::CommitAxis()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolAbstractCurve::RevertAxis()
-{
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VToolAbstractCurve::ApplyAxes(VSpline &spline, const VContainer *data)
 {
-    if (const OCurveAxis axis = spline.GetAxis1(); axis.IsValid())
+    if (const OAxis axis = spline.GetAxis1(); axis.IsValid())
     {
         const qreal angle = AxisAngle(axis, data);
         spline.SetStartAngle(angle, QString::number(angle));
     }
 
-    if (const OCurveAxis axis = spline.GetAxis2(); axis.IsValid())
+    if (const OAxis axis = spline.GetAxis2(); axis.IsValid())
     {
         const qreal angle = AxisAngle(axis, data);
         spline.SetEndAngle(angle, QString::number(angle));
@@ -469,14 +425,14 @@ void VToolAbstractCurve::ApplyAxes(VSpline &spline, const VContainer *data)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolAbstractCurve::ApplyAxes(VSplinePoint &point, const VContainer *data)
 {
-    const OCurveAxis axis = point.Axis();
+    const OAxis axis = point.Axis();
     if (not axis.IsValid())
     {
         return;
     }
 
     const qreal angle = AxisAngle(axis, data);
-    const qreal opposite = OCurveAxis::OppositeAngle(angle);
+    const qreal opposite = OAxis::OppositeAngle(angle);
 
     // Which of the two handles takes the angle of the axis, and not the other way round: on a path point the
     // handle that leaves the point is written angle2, the one that arrives is written angle1 — measured on
@@ -488,28 +444,6 @@ void VToolAbstractCurve::ApplyAxes(VSplinePoint &point, const VContainer *data)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolAbstractCurve::SaveAxis(VAbstractPattern *doc,
-                                  QDomElement &element,
-                                  const OCurveAxis &axis,
-                                  const QString &attrP1,
-                                  const QString &attrP2,
-                                  const QString &attrSense)
-{
-    SCASSERT(doc != nullptr)
-
-    if (not axis.IsValid())
-    {
-        element.removeAttribute(attrP1);
-        element.removeAttribute(attrP2);
-        element.removeAttribute(attrSense);
-        return;
-    }
-
-    doc->SetAttribute(element, attrP1, axis.P1());
-    doc->SetAttribute(element, attrP2, axis.P2());
-    doc->SetAttribute(element, attrSense, axis.SenseName());
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolAbstractCurve::CorrectedSpline(const VSpline &spline, const SplinePointPosition &position, const QPointF &pos)
     -> VSpline

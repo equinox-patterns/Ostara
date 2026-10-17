@@ -226,10 +226,10 @@ const QString TypeLineDotLine = QStringLiteral("dotLine");
 const QString TypeLineDashDotLine = QStringLiteral("dashDotLine");
 const QString TypeLineDashDotDotLine = QStringLiteral("dashDotDotLine");
 
-const QString CurveAxisSenseLine = QStringLiteral("line");
-const QString CurveAxisSenseLineReverse = QStringLiteral("lineReverse");
-const QString CurveAxisSensePerpendicular = QStringLiteral("perpendicular");
-const QString CurveAxisSensePerpendicularReverse = QStringLiteral("perpendicularReverse");
+const QString AxisSenseLine = QStringLiteral("line");
+const QString AxisSenseLineReverse = QStringLiteral("lineReverse");
+const QString AxisSensePerpendicular = QStringLiteral("perpendicular");
+const QString AxisSensePerpendicularReverse = QStringLiteral("perpendicularReverse");
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
