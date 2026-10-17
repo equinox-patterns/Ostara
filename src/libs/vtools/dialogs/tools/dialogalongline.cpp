@@ -309,9 +309,12 @@ void DialogAlongLine::ChosenSecondPoint(quint32 id, const QString &toolTip)
     if (m_firstPointId != m_secondPointId)
     {
         line->SetPoint2Id(id);
+        // The value the tool lends has to exist as soon as the two points are known: a dialog that has not
+        // been linked to a created tool yet has no `CurrentLength` in its container, and `LongueurActuelle`
+        // is refused there. Midpoint only got it because it asked for it before prefilling its formula.
+        SetCurrentLength();
         if (m_buildMidpoint)
         {
-            SetCurrentLength();
             SetFormula(currentLength + "/2"_L1);
             line->SetMode(Mode::Show);
         }
