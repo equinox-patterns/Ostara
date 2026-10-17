@@ -769,7 +769,15 @@ auto VMeasurements::IsFullCircumference() const -> bool
         return GetParametrBool(dimenstionsTag, AttrFullCircumference, falseStr);
     }
 
-    qDebug() << "Can't read full circumference " << Q_FUNC_INFO;
+    // A native .omt/.otu file carries no <dimensions> element at all: it describes its axes with <sizeGroup> (see
+    // setXMLContent), and this value has never existed in that format. Nothing is missing, so nothing is reported --
+    // the callers ask once per axis, which turned every load into a burst of the same line. Only the legacy formats
+    // can genuinely be short of the element.
+    const QString rootTag = documentElement().tagName();
+    if (rootTag != TagOMT && rootTag != TagOTU)
+    {
+        qDebug("No <dimensions> element: the full circumference cannot be read.");
+    }
 
     return false;
 }

@@ -83,7 +83,7 @@ void AddGroup::undo()
     }
     else
     {
-        qCDebug(vUndo, "Can't get tag Groups.");
+        qCDebug(vUndo, "Cannot reach the layers: no active pattern piece.");
         return;
     }
 
@@ -111,7 +111,7 @@ void AddGroup::redo()
     }
     else
     {
-        qCDebug(vUndo, "Can't get tag Groups.");
+        qCDebug(vUndo, "Cannot reach the layers: no active pattern piece.");
         return;
     }
 
@@ -316,7 +316,7 @@ void AddItemToGroup::performUndoRedo(bool isUndo)
         }
         else
         {
-            qCDebug(vUndo, "Can't get tag Groups.");
+            qCDebug(vUndo, "Cannot reach the layers: no active pattern piece.");
             return;
         }
 
@@ -412,7 +412,7 @@ void RemoveItemFromGroup::performUndoRedo(bool isUndo)
         }
         else
         {
-            qCDebug(vUndo, "Can't get tag Groups.");
+            qCDebug(vUndo, "Cannot reach the layers: no active pattern piece.");
             return;
         }
 
@@ -675,7 +675,7 @@ void DelGroup::undo()
     }
     else
     {
-        qCDebug(vUndo, "Can't get tag Groups.");
+        qCDebug(vUndo, "Cannot reach the layers: no active pattern piece.");
         return;
     }
 
@@ -730,7 +730,7 @@ void DelGroup::redo()
     }
     else
     {
-        qCDebug(vUndo, "Can't get tag Groups.");
+        qCDebug(vUndo, "Cannot reach the layers: no active pattern piece.");
         return;
     }
 

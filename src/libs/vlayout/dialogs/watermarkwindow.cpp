@@ -196,7 +196,7 @@ auto WatermarkWindow::Open(QString path) -> bool
         return false;
     }
 
-    qDebug("Loking watermark file");
+    qDebug("Locking watermark file");
     VlpCreateLock(lock, path);
 
     if (lock->IsLocked())

@@ -3588,7 +3588,9 @@ auto VAbstractPattern::GetGroups(const QString &patternPieceName) -> QMap<quint3
         }
         else
         {
-            qDebug("Can't get tag Groups.");
+            // CreateGroups() creates <groups> when it is missing, so a null element does not mean the tag is absent:
+            // it means there is no such pattern piece to read the layers of. The old wording said the opposite.
+            qCDebug(vXML, "Cannot read the layers: no pattern piece '%s'.", qUtf8Printable(patternPieceName));
         }
     }
     catch (const VExceptionConversionError &)
@@ -3645,7 +3647,8 @@ auto VAbstractPattern::GetGroupsContainingItem(quint32 toolId, quint32 objectId,
     }
     else
     {
-        qDebug("Can't get tag Groups.");
+        // Same as GetGroups: the tag is created on demand, so this is "no active pattern piece", not "no <groups>".
+        qCDebug(vXML, "Cannot read the layers: no active pattern piece.");
     }
 
     return data;

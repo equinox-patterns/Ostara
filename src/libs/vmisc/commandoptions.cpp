@@ -70,6 +70,8 @@ const QString SINGLE_OPTION_TEST = QStringLiteral("t");
 
 const QString LONG_OPTION_PENDANTIC = QStringLiteral("pedantic");
 
+const QString LONG_OPTION_VERBOSE = QStringLiteral("verbose");
+
 const QString LONG_OPTION_DIMENSION_A = QStringLiteral("dimensionA");
 const QString LONG_OPTION_DIMENSION_B = QStringLiteral("dimensionB");
 const QString LONG_OPTION_DIMENSION_C = QStringLiteral("dimensionC");
@@ -143,6 +145,7 @@ auto AllKeys() -> QStringList
                        LONG_OPTION_TEST,
                        SINGLE_OPTION_TEST,
                        LONG_OPTION_PENDANTIC,
+                       LONG_OPTION_VERBOSE,
                        LONG_OPTION_DIMENSION_A,
                        LONG_OPTION_DIMENSION_B,
                        LONG_OPTION_DIMENSION_C,

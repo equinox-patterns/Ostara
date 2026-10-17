@@ -656,7 +656,7 @@ void VPattern::setCurrentData()
     }
 
     const quint32 id = localHistory.constLast().GetId();
-    qCDebug(vXML, "Resoring data from tool with id %u", id);
+    qCDebug(vXML, "Restoring data from tool with id %u", id);
 
     if (tools.isEmpty())
     {
@@ -671,7 +671,7 @@ void VPattern::setCurrentData()
     catch (VExceptionBadId &e)
     {
         Q_UNUSED(e)
-        qCDebug(vXML, "List of tools doesn't containe id= %u", id);
+        qCDebug(vXML, "List of tools doesn't contain id %u", id);
         return;
     }
 

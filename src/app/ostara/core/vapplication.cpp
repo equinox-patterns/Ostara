@@ -41,6 +41,7 @@
 #include "../vdispatch/qt_dispatch.h"
 #include "otranslation.h"
 #include "vtheme.h"
+#include "../vmisc/commandoptions.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "vvalentinashortcutmanager.h"
@@ -48,6 +49,7 @@
 #include "QtConcurrent/qtconcurrentrun.h"
 #include <vcsRepoState.h>
 #include <QAtomicInt>
+#include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QEvent>
@@ -61,6 +63,7 @@
 #include <QProcess>
 #include <QScopeGuard>
 #include <QStandardPaths>
+#include <QStringList>
 #include <QStyleFactory>
 #include <QTemporaryFile>
 #include <QThread>
@@ -107,11 +110,35 @@ Q_NORETURN void TerminateOnFatalException(int exitCode)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
+/// @brief Whether the debug lines also go to the console.
+///
+/// Every message used to go to both the console and the log file, which left no way to watch the file alone and made
+/// the console unreadable on any normal use. The file keeps everything — it is what a crash report carries — and the
+/// console now shows warnings and criticals only, unless the run asked for --verbose.
+///
+/// The arguments are read here rather than through VCommandLine because the first messages are logged before that
+/// parser exists (see VApplication::InitOptions), and this must answer from the very first one.
+auto ConsoleVerbose() -> bool
+{
+    static const bool verbose = []()
+    {
+        const QStringList args = QCoreApplication::arguments();
+        return args.contains(QStringLiteral("--") + LONG_OPTION_VERBOSE);
+    }();
+    return verbose;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QString debugdate = "["_L1 + QDateTime::currentDateTime().toString(QStringLiteral("yyyy.MM.dd hh:mm:ss"));
     QString const file = VAbstractApplication::ReduceLogContextFilePath(context.file);
     const bool isPatternMessage = VAbstractApplication::IsWarningMessage(msg);
+
+    // The console spells the level itself, never through tr(): its lines are read by tools and by whoever reports a
+    // bug, so their shape must not depend on the interface language. The file has always done this.
+    bool consoleOut = false;
+    bool consoleErr = false;
 
     switch (type)
     {
@@ -120,7 +147,11 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
                              .arg(file)
                              .arg(context.line)
                              .arg(context.function, context.category, msg);
-            vStdOut() << QApplication::translate("vNoisyHandler", "DEBUG:") << msg << "\n";
+            if (ConsoleVerbose())
+            {
+                vStdOut() << QStringLiteral("DEBUG: ") << msg << "\n";
+                consoleOut = true;
+            }
             break;
         case QtWarningMsg:
             if (isPatternMessage)
@@ -131,7 +162,8 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
                              .arg(file)
                              .arg(context.line)
                              .arg(context.function, context.category, msg);
-            vStdErr() << QApplication::translate("vNoisyHandler", "WARNING:") << msg << "\n";
+            vStdErr() << QStringLiteral("WARNING: ") << msg << "\n";
+            consoleErr = true;
             break;
         case QtCriticalMsg:
             if (isPatternMessage)
@@ -142,14 +174,16 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
                              .arg(file)
                              .arg(context.line)
                              .arg(context.function, context.category, msg);
-            vStdErr() << QApplication::translate("vNoisyHandler", "CRITICAL:") << msg << "\n";
+            vStdErr() << QStringLiteral("CRITICAL: ") << msg << "\n";
+            consoleErr = true;
             break;
         case QtFatalMsg:
             debugdate += QStringLiteral(":FATAL:%1(%2)] %3: %4: %5")
                              .arg(file)
                              .arg(context.line)
                              .arg(context.function, context.category, msg);
-            vStdErr() << QApplication::translate("vNoisyHandler", "FATAL:") << msg << "\n";
+            vStdErr() << QStringLiteral("FATAL: ") << msg << "\n";
+            consoleErr = true;
             break;
         case QtInfoMsg:
             if (isPatternMessage)
@@ -160,13 +194,22 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
                              .arg(file)
                              .arg(context.line)
                              .arg(context.function, context.category, msg);
-            vStdOut() << QApplication::translate("vNoisyHandler", "INFO:") << msg << "\n";
+            vStdOut() << QStringLiteral("INFO: ") << msg << "\n";
+            consoleOut = true;
             break;
         default:
             break;
     }
-    vStdOut().flush();
-    vStdErr().flush();
+    // Only the stream that was written to is flushed: flushing both cost a write on the other one for every line,
+    // and most lines do not touch the console at all any more.
+    if (consoleOut)
+    {
+        vStdOut().flush();
+    }
+    if (consoleErr)
+    {
+        vStdErr().flush();
+    }
 
     (*VApplication::VApp()->LogFile()) << debugdate << Qt::endl;
 }
@@ -660,12 +703,18 @@ void VApplication::InitOptions()
 
     StartLogging();
 
-    qDebug() << "Version:" << AppVersionStr();
-    qDebug() << "Build revision:" << VCS_REPO_STATE_REVISION;
-    qDebug() << buildCompatibilityString();
-    qDebug() << "Built on" << __DATE__ << "at" << __TIME__;
-    qDebug() << "Command-line arguments:" << arguments();
-    qDebug() << "Process ID:" << applicationPid();
+    // Four lines on the console, always. The console is silent otherwise (see ConsoleVerbose), and a terminal that
+    // says nothing at all leaves the user unable to tell the application started -- nor where the log is, which is
+    // the first thing a bug report needs. Info, not debug: info is what the console keeps.
+    qInfo("Version: %s", qUtf8Printable(AppVersionStr()));
+    qInfo("Build revision: %s", qUtf8Printable(QStringLiteral(VCS_REPO_STATE_REVISION)));
+    qInfo("Log file: %s", qUtf8Printable(LogPath()));
+    qInfo("Process ID: %s", qUtf8Printable(QString::number(applicationPid())));
+
+    // The rest of the banner is only ever read to diagnose a crash report: it stays in the file.
+    qCDebug(vApp, "%s", qUtf8Printable(buildCompatibilityString()));
+    qCDebug(vApp, "Built on %s at %s", __DATE__, __TIME__);
+    qCDebug(vApp, "Command-line arguments: %s", qUtf8Printable(arguments().join(QLatin1Char(' '))));
 
     LoadTranslation(QString()); // By default the console version uses system locale
 

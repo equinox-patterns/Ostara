@@ -70,6 +70,10 @@ extern const QString SINGLE_OPTION_TEST;
 
 extern const QString LONG_OPTION_PENDANTIC;
 
+// Also print the debug lines to the console. They always reach the log file; this only decides whether the console
+// repeats them. See ConsoleVerbose() in vapplication.cpp.
+extern const QString LONG_OPTION_VERBOSE;
+
 extern const QString LONG_OPTION_DIMENSION_A;
 extern const QString LONG_OPTION_DIMENSION_B;
 extern const QString LONG_OPTION_DIMENSION_C;

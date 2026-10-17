@@ -75,7 +75,9 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wmissing-prototypes")
 QT_WARNING_DISABLE_INTEL(1418)
 
-Q_LOGGING_CATEGORY(vDxf, "v.undo") // NOLINT
+// Its own category: this used to declare "v.undo", the one vUndo commands already own, so every DXF warning was
+// filed under undo and no "v.dxf" rule could ever reach it.
+Q_LOGGING_CATEGORY(vDxf, "v.dxf") // NOLINT
 
 QT_WARNING_POP
 
@@ -152,7 +154,7 @@ auto VDxfEngine::begin(QPaintDevice *pdev) -> bool
 
     if (isActive())
     {
-        qCWarning(vDxf) << qUtf8Printable("VDxfEngine::begin(), the engine was alredy activated"_L1);
+        qCWarning(vDxf) << qUtf8Printable("VDxfEngine::begin(), the engine was already activated"_L1);
         return false;
     }
 

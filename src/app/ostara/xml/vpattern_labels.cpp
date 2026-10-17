@@ -160,7 +160,7 @@ auto VPattern::GenerateLabel(const LabelType &type, const QString &reservedName)
         qCDebug(vXML, "Point label: %s", qUtf8Printable(name));
         return name;
     }
-    qCDebug(vXML, "Got unknow type %d", static_cast<int>(type));
+    qCDebug(vXML, "Got unknown type %d", static_cast<int>(type));
     return QString();
 }
 

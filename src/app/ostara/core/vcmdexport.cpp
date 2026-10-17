@@ -504,6 +504,12 @@ void VCommandLine::InitCommandLineOptions()
     // keep in mind order here - that is how user will see it, so group-up for usability
     //==================================================================================================================
     parser.addOptions({
+        // First, because it is not about what the run does but about how much it says. The debug lines always reach
+        // the log file; without this key the console keeps to warnings and criticals.
+        {LONG_OPTION_VERBOSE,
+         translate("VCommandLine",
+                   "Print the debug messages to the console too. They always go to the log file; this key only "
+                   "repeats them on the console.")},
         {{SINGLE_OPTION_BASENAME, LONG_OPTION_BASENAME},
          translate("VCommandLine", "The base filename of exported layout files. Use it to enable console export mode."),
          translate("VCommandLine", "The base filename of layout files")},

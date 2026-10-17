@@ -913,7 +913,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         }
     }
 
-    qCDebug(vMainWindow, "Loking file");
+    qCDebug(vMainWindow, "Locking file");
     VlpCreateLock(m_lock, fileName);
 
     if (m_lock->IsLocked())
@@ -1408,7 +1408,7 @@ auto MainWindow::SavePatternAs(const QString &fileName) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitAutoSave()
 {
-    // Autosaving file each 1 minutes
+    // Autosaving the pattern every N minutes. N comes from the settings, and is 1 by default.
     delete m_autoSaveTimer;
     m_autoSaveTimer = nullptr;
 
@@ -1421,7 +1421,8 @@ void MainWindow::InitAutoSave()
     {
         const qint32 autoTime = VAbstractValApplication::VApp()->ValentinaSettings()->GetAutosaveTime();
         m_autoSaveTimer->start(std::chrono::minutes{autoTime});
-        qCDebug(vMainWindow, "Autosaving each %d minutes.", autoTime);
+        const QString minute = autoTime == 1 ? QStringLiteral("minute") : QStringLiteral("minutes");
+        qCDebug(vMainWindow, "Autosaving every %d %s.", autoTime, qUtf8Printable(minute));
     }
     VApplication::VApp()->setAutoSaveTimer(m_autoSaveTimer);
 }
