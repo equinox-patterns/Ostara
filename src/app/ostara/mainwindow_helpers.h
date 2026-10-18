@@ -120,6 +120,13 @@ auto StripGroupTags(QDomDocument *doc) -> bool;
 // Returns true if at least one item was dropped.
 auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool;
 
+// Seed an unlayered half of a cut with the layers of the curve it replaces. A cut's two halves are objects of
+// their own for the layers, but files written before that rule carry no entry for them: the normalisation below
+// would put them in the automatic "Unnamed" layer, away from the curve they draw. Only what no layer names is
+// seeded — a half the user has already filed stays exactly where it is.
+// Returns true if at least one pair was added.
+auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool;
+
 // Give every object of every piece a layer. An object outside every layer is visible by default and
 // unreachable from the Layers dock, so a pattern written before layers existed (a .val, or an .ostara
 // carrying objects no layer references) is given ONE automatic layer per piece — the one the dock shows as
@@ -138,14 +145,15 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool;
 // Refresh scale- and theme-dependent item state (labels, pens) for a whole scene.
 void RefreshSceneItemPens(const VMainGraphicsScene *scene);
 
-// Mark (or unmark) an item and everything below it as part of a layer's content: points, lines and curves drawn
-// magenta and bold. The state lives on each renderer — Qt's own selection only draws a dashed frame, which is not
-// what the layer workflow shows.
-void SetLayerObjectsInLayer(QGraphicsItem *item, bool inLayer);
+// Mark (or unmark) ONE object of a tool as part of a layer's content: points, lines and curves drawn magenta and
+// bold. The state lives on each renderer — Qt's own selection only draws a dashed frame, which is not what the
+// layer workflow shows. A tool that draws several objects — a copy of an operation, a cut's point and its two
+// halves — is marked on the object alone; every other tool keeps its whole figure.
+void SetLayerObjectsInLayer(QGraphicsItem *item, quint32 objectId, bool inLayer);
 
-// Mark (or unmark) an item and everything below it as SELECTED for the layer workflow: orange and bold, the colour
-// that says what Enter is about to do — add it, or take it out. Orange wins over magenta, because an object can be
-// both at once: in the layer being emptied, and picked to leave it.
-void SetLayerObjectsSelected(QGraphicsItem *item, bool selected);
+// Mark (or unmark) ONE object of a tool as SELECTED for the layer workflow: orange and bold, the colour that says
+// what Enter is about to do — add it, or take it out. Orange wins over magenta, because an object can be both at
+// once: in the layer being emptied, and picked to leave it.
+void SetLayerObjectsSelected(QGraphicsItem *item, quint32 objectId, bool selected);
 
 #endif // MAINWINDOW_HELPERS_H

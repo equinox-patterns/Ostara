@@ -489,6 +489,27 @@ auto VAbstractTool::ObjectIdOfItem(const QGraphicsItem *item) -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractTool::ToolOfItem(const QGraphicsItem *item) -> VAbstractTool *
+{
+    for (const QGraphicsItem *probe = item; probe != nullptr; probe = probe->parentItem())
+    {
+        if (const auto *tool = dynamic_cast<const VAbstractTool *>(probe); tool != nullptr)
+        {
+            return const_cast<VAbstractTool *>(tool);
+        }
+    }
+
+    // A renderer that lives on its own: a cut's two halves are top-level items so that each can follow its own
+    // layer, but they are QObject children of the cut tool, and that is where the tool is read.
+    if (const auto *object = dynamic_cast<const QObject *>(item); object != nullptr)
+    {
+        return qobject_cast<VAbstractTool *>(object->parent());
+    }
+
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractTool::ColorsList() -> QMap<QString, QString>
 {
     QMap<QString, QString> map;

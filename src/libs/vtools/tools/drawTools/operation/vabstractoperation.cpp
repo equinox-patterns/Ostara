@@ -573,6 +573,24 @@ void VAbstractOperation::GroupVisibility(quint32 object, bool visible)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractOperation::OperatedItem(quint32 objectId) const -> QGraphicsItem *
+{
+    return dynamic_cast<QGraphicsItem *>(operatedObjects.value(objectId, nullptr));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::SetOperatedObjectReplaced(quint32 objectId, bool replaced)
+{
+    // The item carries the flag of its own visibility; Qt composes it with the operation's. A layer that hides
+    // the operation hides the copy anyway, and a copy given back stays hidden by its parent until the layer
+    // comes back — which is exactly what the layers already expect from a hidden object.
+    if (QGraphicsItem *item = OperatedItem(objectId); item != nullptr)
+    {
+        item->setVisible(!replaced);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(painter)

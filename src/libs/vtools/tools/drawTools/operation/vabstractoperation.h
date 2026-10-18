@@ -136,6 +136,18 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     void ChangeLabelPosition(quint32 id, const QPointF &pos) override;
 
+    /** @brief The scene item one destination object is drawn by; null for a referenced source or an unknown id.
+     *
+     *  The layers address a copy by its own id (a cut on a copy, the mark of a single copy in the dock), and the
+     *  operation item draws every copy as a child: this is the one way to reach one of them from the outside. */
+    auto OperatedItem(quint32 objectId) const -> QGraphicsItem *;
+
+    /** @brief Hide or give back ONE copy because a cut replaces it with its two sub-curves.
+     *
+     *  A cut's halves take the place of the curve they cut, and that curve may be a copy this operation draws.
+     *  The copy keeps its layers while it is hidden, so unchecking the cut's box gives it back where it was. */
+    void SetOperatedObjectReplaced(quint32 objectId, bool replaced);
+
     auto IsLabelVisible(quint32 id) const -> bool override;
     void SetLabelVisible(quint32 id, bool visible) override;
 

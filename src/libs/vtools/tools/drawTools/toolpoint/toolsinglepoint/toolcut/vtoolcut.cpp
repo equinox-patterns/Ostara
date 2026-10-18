@@ -29,6 +29,7 @@
 #include "vtoolcut.h"
 
 #include <QDomElement>
+#include <QGraphicsScene>
 #include <QSharedPointer>
 #include <QUndoStack>
 
@@ -49,6 +50,7 @@
 #include "../vtoolsinglepoint.h"
 #include "../vwidgets/vsegmentlabel.h"
 #include "../vwidgets/vsimplecurve.h"
+#include "../../../operation/vabstractoperation.h"
 #include "xml/vpatterngraph.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -113,13 +115,14 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
     {
         QSharedPointer<VAbstractCurve> const curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(segmentId);
 
-        auto *item = new VSimpleCurve(segmentId, curve);
-        item->setParentItem(this);
-        // Behind the cut point, so the point stays clickable where the two segments meet.
-        item->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
+        // A QObject child of the tool, so it dies with it — but a TOP-LEVEL item of the scene: a layer must be
+        // able to show one half while the point's own layer is hidden, and Qt hides every child with its parent.
+        // Its geometry is absolute, so it sits at the scene origin.
+        auto *item = new VSimpleCurve(segmentId, curve, this);
         item->SetType(curve->getType());
         item->RefreshGeometry(curve);
-        item->setPos(-pos().x(), -pos().y());
+        // Behind the cut point, so the point stays clickable where the two halves meet.
+        item->setZValue(-1);
         item->setVisible(false);
 
         connect(item,
@@ -131,6 +134,13 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
                                    VAbstractTool::data.GeometricObject<VAbstractCurve>(segmentId)->SceneObjectType());
                 });
         connect(item, &VSimpleCurve::Selected, this, &VToolCut::PointSelected);
+        // The two halves are the curve on the canvas once the cut replaces it, and each one is an object of its
+        // own for the layers: a right click on one must speak about THAT half, never about the cut as a whole.
+        connect(item,
+                &VSimpleCurve::ShowContextMenu,
+                this,
+                [this, segmentId](QGraphicsSceneContextMenuEvent *event, quint32) -> void
+                { ShowContextMenu(event, segmentId); });
         return item;
     };
 
@@ -246,6 +256,18 @@ auto VToolCut::BaseCurveItem() const -> VToolAbstractCurve *
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::BaseCurveOperation() const -> VAbstractOperation *
+{
+    const QSharedPointer<VGObject> object = VAbstractTool::data.GetGObject(baseCurveId);
+    if (object.isNull())
+    {
+        return nullptr;
+    }
+
+    return qobject_cast<VAbstractOperation *>(VAbstractPattern::FindTool(object->getIdTool()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VToolCut::BaseCurveCut() const -> VToolCut *
 {
     const QSharedPointer<VGObject> object = VAbstractTool::data.GetGObject(baseCurveId);
@@ -321,7 +343,6 @@ void VToolCut::RefreshSegmentCurves()
 
         QSharedPointer<VAbstractCurve> const curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(segmentId);
         item->RefreshGeometry(curve);
-        item->setPos(-pos().x(), -pos().y());
     };
 
     Update(m_segment1Id, m_segment1Curve);
@@ -329,26 +350,112 @@ void VToolCut::RefreshSegmentCurves()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolCut::GroupVisibility(quint32 object, bool visible)
+{
+    // The two halves are objects of their own — a layer may hold one and not the other — so each one answers for
+    // itself. The point answers for itself too: its layer hides the point and its labels, never the halves.
+    if (m_segment1Id != NULL_ID && object == m_segment1Id)
+    {
+        m_segment1LayerVisible = visible;
+        ApplySegmentsVisibility();
+        return;
+    }
+
+    if (m_segment2Id != NULL_ID && object == m_segment2Id)
+    {
+        m_segment2LayerVisible = visible;
+        ApplySegmentsVisibility();
+        return;
+    }
+
+    setVisible(visible);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolCut::LayerObjectItem(quint32 objectId) const -> QGraphicsItem *
+{
+    if (objectId == m_id)
+    {
+        return const_cast<VToolCut *>(this);
+    }
+
+    if (objectId == m_segment1Id)
+    {
+        return m_segment1Curve;
+    }
+
+    if (objectId == m_segment2Id)
+    {
+        return m_segment2Curve;
+    }
+
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::EnsureSegmentsInScene(QGraphicsScene *scene)
+{
+    for (VSimpleCurve *item : {m_segment1Curve, m_segment2Curve})
+    {
+        if (item == nullptr)
+        {
+            continue;
+        }
+
+        if (scene == nullptr)
+        {
+            if (item->scene() != nullptr)
+            {
+                item->scene()->removeItem(item);
+            }
+            continue;
+        }
+
+        if (item->scene() != scene)
+        {
+            scene->addItem(item);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolCut::ApplySegmentsVisibility()
 {
+    // The two halves take the base curve's place when the box is checked: the base leaves the canvas, and the
+    // halves draw it. That replacement now exists for every base — a curve tool, another cut, and the copy an
+    // operation produces (VAbstractOperation::SetOperatedObjectReplaced). Each half is then shown per its OWN
+    // layer: hiding the layer of one half leaves the other one drawn, and the base curve does NOT come back —
+    // the box is still checked, so the two halves remain the curve's drawing.
+    VToolAbstractCurve *const baseCurve = BaseCurveItem();
+    VAbstractOperation *const baseOperation = (baseCurve == nullptr) ? BaseCurveOperation() : nullptr;
+    VToolCut *const parentCut
+        = (baseCurve == nullptr && baseOperation == nullptr) ? BaseCurveCut() : nullptr;
+
     // The prolongation stays on the canvas even when the two segments are hidden: without it the cut
     // point would sit past the drawn curve, apparently floating on its own.
     if (m_segment1Curve != nullptr)
     {
-        m_segment1Curve->setVisible((m_showTwoSegments || m_prolongedSegment == 1) && !m_segment1Replaced);
+        m_segment1Curve->setVisible(m_segment1LayerVisible
+                                    && (m_showTwoSegments || m_prolongedSegment == 1) && !m_segment1Replaced);
     }
 
     if (m_segment2Curve != nullptr)
     {
-        m_segment2Curve->setVisible((m_showTwoSegments || m_prolongedSegment == 2) && !m_segment2Replaced);
+        m_segment2Curve->setVisible(m_segment2LayerVisible
+                                    && (m_showTwoSegments || m_prolongedSegment == 2) && !m_segment2Replaced);
     }
 
-    // The base curve leaves the canvas while the two sub-curves replace it. It is never deleted.
-    if (auto *baseCurve = BaseCurveItem())
+    // The base curve leaves the canvas while the two sub-curves replace it. It is never deleted, and it keeps
+    // its layers: unchecking the box gives it back to them.
+    if (baseCurve != nullptr)
     {
         baseCurve->SetReplacedBySegments(m_showTwoSegments);
     }
-    else if (auto *parentCut = BaseCurveCut())
+    else if (baseOperation != nullptr)
+    {
+        baseOperation->SetOperatedObjectReplaced(baseCurveId, m_showTwoSegments);
+    }
+    else if (parentCut != nullptr)
     {
         // The base curve is itself a sub-curve: ask its own cut tool to hide it.
         parentCut->SetSegmentReplaced(baseCurveId, m_showTwoSegments);
@@ -465,7 +572,12 @@ void VToolCut::ProcessToolCutOptions(const QDomElement &oldDomElement,
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolCut::itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant
 {
-    if (change == QGraphicsItem::ItemSelectedHasChanged && !m_selectedFromChild)
+    if (change == QGraphicsItem::ItemSceneHasChanged)
+    {
+        // The two halves are top-level items: they follow the tool into its scene and leave it with the tool.
+        EnsureSegmentsInScene(value.value<QGraphicsScene *>());
+    }
+    else if (change == QGraphicsItem::ItemSelectedHasChanged && !m_selectedFromChild)
     {
         if (m_segment1Id != NULL_ID)
         {

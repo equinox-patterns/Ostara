@@ -1357,19 +1357,19 @@ void MainWindow::InitDocksContain()
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ObjectInLayerChanged, this,
             [](quint32 objectId, quint32 toolId, bool inLayer)
     {
-        Q_UNUSED(objectId)
         // FindTool, not getTool, and this is not a style choice: getTool() THROWS VExceptionBadId on an id the
         // document does not hold, and an exception thrown from a slot has no handler above it — the application
         // aborts. A layer entry can name such a tool (VWidgetGroups::LayerItems drops them, this is the second
         // line of defence). SetLayerObjectsInLayer tolerates a null item.
-        SetLayerObjectsInLayer(dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(toolId)), inLayer);
+        SetLayerObjectsInLayer(dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(toolId)), objectId, inLayer);
     });
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ObjectSelectedChanged, this,
             [](quint32 objectId, quint32 toolId, bool selected)
     {
-        Q_UNUSED(objectId)
-        // Same reason as above.
-        SetLayerObjectsSelected(dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(toolId)), selected);
+        // Same reason as above. The object is passed on: a tool may draw several, and only the one the dock
+        // speaks about takes the mark.
+        SetLayerObjectsSelected(dynamic_cast<QGraphicsItem *>(VAbstractPattern::FindTool(toolId)), objectId,
+                                selected);
     });
     connect(m_dockManager->groupsWidget(), &VWidgetGroups::ShowStatusTip, this,
             [this](const QString &text) { m_statusLabel->setText(text); });

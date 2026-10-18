@@ -3907,21 +3907,38 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         if (not(toolElement.hasAttribute(AttrPoint1) && toolElement.hasAttribute(AttrPoint2)))
         {
             objects.append({toolId, toolId});
-            return objects;
+        }
+        else
+        {
+            // A double point — trueDarts, rectangle. Its points live as attributes of the same <point>, and the
+            // base class answers to those two ids only. The <spline> family writes point1/point4 too, but on its
+            // own tag, which is why the tag is read before the attributes.
+            for (const QString &attribute : {AttrPoint1, AttrPoint2, AttrPoint4})
+            {
+                if (not toolElement.hasAttribute(attribute))
+                {
+                    continue;
+                }
+                if (const quint32 pointId = toolElement.attribute(attribute).toUInt(); pointId != NULL_ID)
+                {
+                    objects.append({pointId, toolId});
+                }
+            }
         }
 
-        // A double point — trueDarts, rectangle. Its points live as attributes of the same <point>, and the base
-        // class answers to those two ids only. The <spline> family writes point1/point4 too, but on its own tag,
-        // which is why the tag is read before the attributes.
-        for (const QString &attribute : {AttrPoint1, AttrPoint2, AttrPoint4})
+        // A cut point draws two more objects besides the point itself: the sub-curves that take the base curve's
+        // place when "show two segments" is on. Each one is an object of its own — a layer may hold one and not
+        // the other — so they are enumerated here like any other object of the tool. The loading pass and the
+        // dock both read this list: a pair written by the transfer of a single half therefore stays valid.
+        for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
         {
             if (not toolElement.hasAttribute(attribute))
             {
                 continue;
             }
-            if (const quint32 pointId = toolElement.attribute(attribute).toUInt(); pointId != NULL_ID)
+            if (const quint32 segmentId = toolElement.attribute(attribute).toUInt(); segmentId != NULL_ID)
             {
-                objects.append({pointId, toolId});
+                objects.append({segmentId, toolId});
             }
         }
     }

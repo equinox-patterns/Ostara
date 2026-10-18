@@ -415,16 +415,13 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
         && m_dockManager->groupsWidget()->IsSelectingObjects())
     {
         // Which tool the click speaks for. The item under the cursor is a renderer — a point, a curve, a line —
-        // and the tool is the one that owns it, one level up. Except inside an operation: everything an
-        // operation produces belongs to its result, so the nearest operation ancestor wins over the renderer
-        // itself — a transformed line is a tool of its own, and stopping on it would hand back that single line
-        // while the operation's points and curves answered for the operation. The options browser routes a result
-        // line the same way (VToolOptionsPropertyBrowser::ShowItemOptions).
-        auto *tool = dynamic_cast<VAbstractTool *>(item);
-        if (tool == nullptr)
-        {
-            tool = dynamic_cast<VAbstractTool *>(item->parentItem());
-        }
+        // and the tool is the one that owns it, one level up. A cut's two halves are top-level items so that each
+        // can follow its own layer: VAbstractTool::ToolOfItem reads the tool from the object they draw. Except
+        // inside an operation: everything an operation produces belongs to its result, so the nearest operation
+        // ancestor wins over the renderer itself — a transformed line is a tool of its own, and stopping on it
+        // would hand back that single line while the operation's points and curves answered for the operation.
+        // The options browser routes a result line the same way (VToolOptionsPropertyBrowser::ShowItemOptions).
+        auto *tool = VAbstractTool::ToolOfItem(item);
 
         for (QGraphicsItem *ancestor = item; ancestor != nullptr; ancestor = ancestor->parentItem())
         {

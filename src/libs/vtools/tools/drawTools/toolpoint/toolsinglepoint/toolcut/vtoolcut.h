@@ -46,6 +46,7 @@
 class VFormula;
 class VSegmentLabel;
 class VSimpleCurve;
+class VAbstractOperation;
 
 struct VToolCutInitData : VToolSinglePointInitData
 {
@@ -124,6 +125,16 @@ public:
 
     /** @brief SetSegmentReplaced is called by a nested cut tool that replaces one of our sub-curves. */
     void SetSegmentReplaced(quint32 segmentId, bool replaced);
+
+    /** @brief A layer's eye, object by object: the point itself, or one of the two sub-curves.
+     *
+     *  The cut used to hide as a whole — `VToolSinglePoint::GroupVisibility` ignores the object it is handed —
+     *  because its halves were not addressable. They are now: each one can be filed in a layer of its own, so
+     *  the eye of that layer must hide that half alone, and the point's layer must leave the halves alone. */
+    void GroupVisibility(quint32 object, bool visible) override;
+
+    /** @brief The scene item a layer pair speaks about: the point for the tool's own id, a half for a segment. */
+    auto LayerObjectItem(quint32 objectId) const -> QGraphicsItem *;
 
     void ShowVisualization(bool show) override;
     void ChangeSegmentLabelPosition(SegmentLabel segment, const QPointF &pos) override;
@@ -228,9 +239,17 @@ private:
     /** @brief Sub-curve prolonging the curve (0 none, 1 first, 2 second). Derived, never stored. */
     quint8 m_prolongedSegment{0};
 
-    /** @brief Items drawing the two sub-curves on the canvas, so they can be clicked directly. */
+    /** @brief Items drawing the two sub-curves on the canvas, so they can be clicked directly.
+     *
+     *  They are top-level items of the scene, not children of the point: a layer must be able to hold one half
+     *  while the point's layer is hidden, and Qt hides every child with its parent. They are QObject children of
+     *  the tool all the same, so they die with it. */
     VSimpleCurve *m_segment1Curve{nullptr};
     VSimpleCurve *m_segment2Curve{nullptr};
+
+    /** @brief Whether the layer of each half lets it be drawn. The "show two segments" box decides the rest. */
+    bool m_segment1LayerVisible{true};
+    bool m_segment2LayerVisible{true};
 
     /** @brief A nested cut tool may replace one of our sub-curves by its own two sub-curves. */
     bool m_segment1Replaced{false};
@@ -238,7 +257,9 @@ private:
 
     void RefreshSegmentCurves();
     void ApplySegmentsVisibility();
+    void EnsureSegmentsInScene(QGraphicsScene *scene);
     auto BaseCurveItem() const -> VToolAbstractCurve *;
+    auto BaseCurveOperation() const -> VAbstractOperation *;
     auto BaseCurveCut() const -> VToolCut *;
 
     void UpdateNameField(VToolCutNameField field, const QString &value);

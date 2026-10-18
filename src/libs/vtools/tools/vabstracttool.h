@@ -117,6 +117,13 @@ public:
      * NULL_ID when the click carried none (a piece, the background). */
     static auto ObjectIdOfItem(const QGraphicsItem *item) -> quint32;
 
+    /** @brief The tool a click landed on, renderer or tool alike.
+     *
+     *  Usually the item itself or one of its ancestors. A renderer that lives on its own — the two sub-curves
+     *  of a cut, which are top-level items so that a layer can show one half while the point's layer is hidden —
+     *  is a QObject child of its tool, and that is the last step here. */
+    static auto ToolOfItem(const QGraphicsItem *item) -> VAbstractTool *;
+
     static auto GetRecord(quint32 id, const Tool &toolType, VAbstractPattern *doc) -> VToolRecord;
     static void AddRecord(const VToolRecord &record, VAbstractPattern *doc);
     static void AddRecord(quint32 id, const Tool &toolType, VAbstractPattern *doc);

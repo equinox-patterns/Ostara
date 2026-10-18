@@ -62,6 +62,9 @@
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolabstractcurve.h"
+#include "../vtools/tools/drawTools/operation/vabstractoperation.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcut.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
 #include "mainwindowsnogui.h"
 
 #include <QtDebug>
@@ -793,15 +796,37 @@ void ApplyLayerObjectMark(QGraphicsItem *item, bool inLayer, bool on)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-void SetLayerObjectsSelected(QGraphicsItem *item, bool selected)
+namespace
 {
-    ApplyLayerObjectMark(item, /*inLayer=*/false, selected);
+// The dock speaks about ONE object, and a tool may draw several: an operation draws one item per copy, a cut
+// draws the point and each of its two halves. The mark has to land on that object alone; the tool's whole item is
+// only the answer for a figure that travels as a whole (a rectangle, a double point).
+auto LayerObjectItemOf(QGraphicsItem *item, quint32 objectId) -> QGraphicsItem *
+{
+    if (auto *operation = dynamic_cast<VAbstractOperation *>(item); operation != nullptr)
+    {
+        return operation->OperatedItem(objectId);
+    }
+
+    if (auto *cut = dynamic_cast<VToolCut *>(item); cut != nullptr)
+    {
+        return cut->LayerObjectItem(objectId);
+    }
+
+    return item;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void SetLayerObjectsSelected(QGraphicsItem *item, quint32 objectId, bool selected)
+{
+    ApplyLayerObjectMark(LayerObjectItemOf(item, objectId), /*inLayer=*/false, selected);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void SetLayerObjectsInLayer(QGraphicsItem *item, bool inLayer)
+void SetLayerObjectsInLayer(QGraphicsItem *item, quint32 objectId, bool inLayer)
 {
-    ApplyLayerObjectMark(item, /*inLayer=*/true, inLayer);
+    ApplyLayerObjectMark(LayerObjectItemOf(item, objectId), /*inLayer=*/true, inLayer);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -968,6 +993,146 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
             {
                 group.removeChild(item);
                 changed = true;
+            }
+        }
+    }
+
+    return changed;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+auto GroupHoldsPair(const QDomElement &group, quint32 toolId, quint32 objectId) -> bool
+{
+    for (QDomElement item = group.firstChildElement(VAbstractPattern::TagGroupItem); !item.isNull();
+         item = item.nextSiblingElement(VAbstractPattern::TagGroupItem))
+    {
+        const quint32 itemTool = item.attribute(VAbstractPattern::AttrTool).toUInt();
+        const quint32 itemObject = item.hasAttribute(VAbstractPattern::AttrObject)
+                                       ? item.attribute(VAbstractPattern::AttrObject).toUInt()
+                                       : itemTool;
+        if (itemTool == toolId && itemObject == objectId)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+auto AppendPairIfMissing(VAbstractPattern *doc, QDomElement &group, quint32 toolId, quint32 objectId) -> bool
+{
+    if (GroupHoldsPair(group, toolId, objectId))
+    {
+        return false;
+    }
+
+    QDomElement item = doc->createElement(VAbstractPattern::TagGroupItem);
+    item.setAttribute(VAbstractPattern::AttrTool, toolId);
+    if (objectId != toolId)
+    {
+        item.setAttribute(VAbstractPattern::AttrObject, objectId);
+    }
+    group.appendChild(item);
+    return true;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
+{
+    // A cut's two halves became objects of their own for the layers (see LayerableObjectsOfTool): each one can
+    // hold a layer of its own, and the eye of that layer hides that half alone. Files written before that rule
+    // carry no entry for them, and the loading pass would put them in the automatic "Unnamed" layer — away from
+    // the curve they draw. This pass gives an unlayered half the layers of the base curve it replaces: the layers
+    // of the drawing it takes the place of. It only seeds what no layer names, so a half the user has filed
+    // somewhere is left exactly where it is.
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    const QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    bool changed = false;
+
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); !draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        const QDomElement calculation = draw.firstChildElement(VAbstractPattern::TagCalculation);
+        QDomElement const modeling = draw.firstChildElement(VAbstractPattern::TagModeling);
+        QDomElement const groups = draw.firstChildElement(VAbstractPattern::TagGroups);
+        if (calculation.isNull() || groups.isNull())
+        {
+            continue;
+        }
+
+        // Every object of the piece, with the tool that produces it — the reading the layers themselves use.
+        QMap<quint32, quint32> objectTool;
+        for (const QDomElement &container : {calculation, modeling})
+        {
+            for (const auto &[objectId, toolId] : ContainerObjects(container))
+            {
+                objectTool.insert(objectId, toolId);
+            }
+        }
+
+        const QMap<quint32, QSet<quint32>> layered = CollectLayeredPairs(draw);
+
+        for (QDomElement point = calculation.firstChildElement(VAbstractPattern::TagPoint); !point.isNull();
+             point = point.nextSiblingElement(VAbstractPattern::TagPoint))
+        {
+            const quint32 cutId = point.attribute(VDomDocument::AttrId).toUInt();
+            const quint32 segment1 = point.attribute(AttrSegment1Id).toUInt();
+            const quint32 segment2 = point.attribute(AttrSegment2Id).toUInt();
+            if (cutId == NULL_ID || (segment1 == NULL_ID && segment2 == NULL_ID))
+            {
+                continue;
+            }
+
+            // The curve the cut sits on: how the three cut tools write it.
+            quint32 baseId = NULL_ID;
+            for (const QString &attribute : {VToolCutSplinePath::AttrSplinePath, AttrSpline, AttrArc})
+            {
+                if (point.hasAttribute(attribute))
+                {
+                    baseId = point.attribute(attribute).toUInt();
+                    break;
+                }
+            }
+
+            const quint32 baseTool = objectTool.value(baseId, NULL_ID);
+            if (baseId == NULL_ID || baseTool == NULL_ID)
+            {
+                continue; // the base object is gone: the halves will be counted as orphans, as before
+            }
+
+            // A half the user has already filed somewhere keeps its own layers: this pass only gives a home to
+            // one that no layer names yet.
+            const bool segment1Layered = layered.value(cutId).contains(segment1);
+            const bool segment2Layered = layered.value(cutId).contains(segment2);
+
+            for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+                 group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+            {
+                if (not GroupHoldsPair(group, baseTool, baseId))
+                {
+                    continue;
+                }
+
+                if (segment1 != NULL_ID && not segment1Layered)
+                {
+                    changed = AppendPairIfMissing(doc, group, cutId, segment1) || changed;
+                }
+                if (segment2 != NULL_ID && not segment2Layered)
+                {
+                    changed = AppendPairIfMissing(doc, group, cutId, segment2) || changed;
+                }
             }
         }
     }

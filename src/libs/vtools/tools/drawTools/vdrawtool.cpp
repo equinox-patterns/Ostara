@@ -618,9 +618,14 @@ auto VDrawTool::GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, qui
             // landed on — never on the whole set. That is also what the layer of an operation already does: it
             // holds the sources that were picked, never all of them, so the copies can be hidden and filed one by
             // one (asked for on 01-10-2026: "je ne peux pas ajouter la courbe spécifiquement dans un
-            // calque"). Every other tool draws ONE figure whose parts travel together — a rectangle, a double
-            // point, a dart cap — and the whole figure is what goes in or out (§5quinquies).
-            if (element.tagName() == VAbstractPattern::TagOperation)
+            // calque"). A cut is the other case: the point and its two halves are three objects, each filed on
+            // its own, so the click speaks for the one it landed on. Every other tool draws ONE figure whose
+            // parts travel together — a rectangle, a double point, a dart cap — and the whole figure is what
+            // goes in or out (§5quinquies).
+            const bool cutPoint = element.tagName() == VAbstractPattern::TagPoint
+                                  && (element.hasAttribute(AttrSegment1Id)
+                                      || element.hasAttribute(AttrSegment2Id));
+            if (element.tagName() == VAbstractPattern::TagOperation || cutPoint)
             {
                 for (const auto &object : objects)
                 {

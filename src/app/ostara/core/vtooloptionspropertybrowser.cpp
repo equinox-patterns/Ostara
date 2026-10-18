@@ -50,6 +50,7 @@ using namespace VtoppbConstants;
 #include "../vpropertyexplorer/plugins/vwidgetproperty.h"
 #include "../vtools/tools/backgroundimage/vbackgroundpixmapitem.h"
 #include "../vtools/tools/backgroundimage/vbackgroundsvgitem.h"
+#include "../vtools/tools/vabstracttool.h"
 #include "../vwidgets/vcontrolpointspline.h"
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/scalesceneitems.h"
@@ -378,10 +379,19 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
         case VSimpleCurve::Type:
         case VSegmentLabel::Type:
         case VScaledLine::Type: // line child of point tools (EndLine, Bisector…)
-            m_currentItem = item->parentItem();
+        {
+            QGraphicsItem *parent = item->parentItem();
+            if (parent == nullptr)
+            {
+                // A cut's two halves are top-level items — each one follows its own layer, so they cannot be
+                // children of the point — and their QObject parent is the cut tool. The page is the cut's.
+                parent = dynamic_cast<QGraphicsItem *>(VAbstractTool::ToolOfItem(item));
+            }
+            m_currentItem = parent;
             m_currentObject = dynamic_cast<QObject *>(m_currentItem);
             ShowItemOptions(m_currentItem);
             break;
+        }
         case VToolLineIntersectAxis::Type:
             ShowToolOptions<VToolLineIntersectAxis>(item, tr("Point of intersection line and axis"), LineIntersectAxisProperties());
             break;

@@ -1035,6 +1035,11 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // passes below so they count the orphans on what is left.
         CleanStaleLayerItems(doc);
 
+        // A cut's two halves are objects of their own for the layers; a file written before that rule names
+        // neither. Give an unlayered half the layers of the curve it replaces, so it stays with the drawing it
+        // takes the place of instead of falling into the automatic "Unnamed" layer.
+        CoupleCutSegmentsToBaseLayers(doc);
+
         // Give every object of every piece a layer. Deliberately OUTSIDE the block above, for the same
         // reason: a .val arrives without layers, and an .ostara written before this rule carries objects
         // that belong to none. Such an object is visible by default and unreachable from the Layers dock,
