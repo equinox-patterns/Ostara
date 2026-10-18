@@ -57,6 +57,10 @@ public:
 
     auto type() const -> int override {return Type;}
     enum {Type = UserType + static_cast<int>(Vis::ToolAlongLine)};
+
+protected:
+    void InitPen() override;
+
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(VisToolAlongLine) // NOLINT

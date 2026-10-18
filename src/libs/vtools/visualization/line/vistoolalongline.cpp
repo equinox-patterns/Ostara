@@ -31,6 +31,7 @@
 #include <QColor>
 #include <QGraphicsLineItem>
 #include <QLineF>
+#include <QPen>
 #include <QPointF>
 #include <QSharedPointer>
 #include <new>
@@ -57,6 +58,23 @@ VisToolAlongLine::VisToolAlongLine(const VContainer *data, QGraphicsItem *parent
     m_line2 = InitItem<VScaledLine>(VColorRole::VisSupportColor4, this);
     m_line2->setFlag(QGraphicsItem::ItemStacksBehindParent, false);
     m_point = InitPoint(VColorRole::VisSupportColor, this);
+
+    InitPen(); // The root draws nothing — see InitPen()
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VisToolAlongLine::InitPen()
+{
+    // The root item is only the container of the gesture. Its children carry every stroke: the support line A→B is
+    // m_line, the two halves the tool marks are m_line1 (A→C) and m_line2 (C→B). The root has no line of its own,
+    // and never had one since `DrawLine(this, mainLine)` moved to m_line1 (a93872e9). A QGraphicsLineItem whose
+    // line was never set still paints: the square cap of a zero-length line is exactly one pixel, at the item's
+    // origin — the scene's (0,0), which is why a red dot sat one centimetre up and left of the pattern's base
+    // point for as long as a preview existed, at creation and on hover or click alike. A penless root paints
+    // nothing, and RefreshPen() keeps whatever style it finds, so the pen stays empty across zooms and themes.
+    QPen visPen = pen();
+    visPen.setStyle(Qt::NoPen);
+    setPen(visPen);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
