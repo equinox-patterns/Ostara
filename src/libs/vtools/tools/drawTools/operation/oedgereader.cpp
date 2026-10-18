@@ -777,3 +777,36 @@ auto OEdgeReader::Position(quint32 pointId, const VContainer *data) -> QPointF
     const QSharedPointer<VPointF> point = qSharedPointerDynamicCast<VPointF>(data->GetGObject(pointId));
     return point.isNull() ? QPointF() : static_cast<QPointF>(*point);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OEdgeReader::SegmentsAt(quint32 pointId, const VContainer *data) -> QVector<QPointF>
+{
+    QVector<QPointF> directions;
+
+    if (data == nullptr || not data->HasObject(pointId))
+    {
+        return directions;
+    }
+
+    try
+    {
+        // The side only orders the candidates the reader collects, and every segment that meets the point is kept:
+        // any direction does here, since the caller decides which of the segments is the edge it is after.
+        QVector<OEdgeCarrier> candidates;
+        CandidatesFromSegments(Position(pointId, data), QPointF(0., -1.), data, &candidates);
+
+        directions.reserve(candidates.size());
+        for (const OEdgeCarrier &candidate : candidates)
+        {
+            directions.append(candidate.inward);
+        }
+    }
+    catch (const VException &) // NOLINT(bugprone-empty-catch)
+    {
+        // A point whose segments cannot be read is a point the caller will find nothing at — never an exception
+        // thrown into a parse.
+        directions.clear();
+    }
+
+    return directions;
+}

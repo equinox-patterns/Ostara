@@ -42,6 +42,7 @@
 #include <QSignalBlocker>
 #include <QWidget>
 
+#include "../../tools/drawTools/operation/odartcapedge.h"
 #include "../../tools/drawTools/operation/oedgereader.h"
 #include "../../tools/drawTools/toolpoint/toolsinglepoint/odartcaprule.h"
 #include "../../visualization/line/ovistooldartcap.h"
@@ -583,21 +584,21 @@ void ODialogDartCap::SetNotchDrawn(bool value)
 //---------------------------------------------------------------------------------------------------------------------
 auto ODialogDartCap::EdgeDirection() const -> QPointF
 {
-    // The edge is read at the opening point the SENSE designates, exactly as the figure reads it: the second point is
-    // the COPY of the first, and the operation that made it copied the curves of that point too — so a curve ends
-    // there as well, and the reader answers on it.
+    // The edge is read at the opening point the SENSE designates. A curve that ends there carries it: the figure
+    // builds its two sides from that curve, and the preview follows the very same direction.
     const quint32 baseId = m_secondSense ? m_secondPointId : m_firstPointId;
-    QPointF direction = OEdgeReader::Direction(baseId, &data);
-    if (not direction.isNull())
+    const quint32 otherId = m_secondSense ? m_firstPointId : m_secondPointId;
+
+    if (const QPointF curve = OEdgeReader::Direction(baseId, &data); not curve.isNull())
     {
-        return direction;
+        return curve;
     }
 
-    // No curve ends at that point: it is a copy whose operation copied the point and not the curve. The figure then
-    // reads the edge at the OTHER point of the opening, which a pleat made the image of the very same point, and
-    // carries the figure by the offset between the two — the same question, asked the same way (see OToolDartCap).
-    const quint32 otherId = m_secondSense ? m_firstPointId : m_secondPointId;
-    return (otherId > NULL_ID) ? OEdgeReader::Direction(otherId, &data) : QPointF();
+    // Otherwise the edge is a LINE, and which line is a question asked in one place only (ODartCapEdge) — with the
+    // very call the figure makes, so that a window accepting a cap the figure refuses is no longer possible. It
+    // answers nothing when two lines hold the point: the fourth click then asks the user which one.
+    return ODartCapEdge::Direction(baseId, GetApexId(), otherId, toolId, &data,
+                                   m_doc == nullptr ? nullptr : m_doc->PatternGraph());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -29,6 +29,7 @@
 
 #include <QPointF>
 #include <QtGlobal>
+#include <QVector>
 
 #include "../../toolsdef.h"
 
@@ -111,6 +112,17 @@ public:
 
     /** @brief The position of a point of the container, or the origin when the id names no point. */
     static auto Position(quint32 pointId, const VContainer *data) -> QPointF;
+
+    /** @brief The directions of the segments the pattern draws through a point, each pointing from the point into
+     *  its segment — unnormalized, and with no side taken.
+     *
+     *  A line point declares the segment of its own line (`DrawnSegments`), and every tool is asked, not only the
+     *  one that made this point. What the container records as a line — a `<line>`, a side of a rectangle, the pair
+     *  an intersection registers — is NOT read here: it is not a drawn segment, and the caller that needs every
+     *  line of the pattern reads the container for them.
+     *
+     *  Empty when no segment meets the point: the caller then has nothing to decide with. */
+    static auto SegmentsAt(quint32 pointId, const VContainer *data) -> QVector<QPointF>;
 
 private:
     Q_DISABLE_COPY_MOVE(OEdgeReader) // NOLINT

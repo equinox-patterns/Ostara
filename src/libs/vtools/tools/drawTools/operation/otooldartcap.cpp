@@ -51,6 +51,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../toolpoint/toolsinglepoint/odartcaprule.h"
 #include "../vtoolline.h"
+#include "odartcapedge.h"
 #include "oedgereader.h"
 #include "ooperationlines.h"
 #include "../../../visualization/line/ovistooldartcap.h"
@@ -168,6 +169,25 @@ void BuildFigure(OToolDartCapInitData &initData)
         prise.edgePointId = initData.extendPointId;
         OPleatSupport::Resolve(prise, data);
 
+        // The other point of the opening: the one a dart's copy stands on, and the one that wears the edge when
+        // nothing is drawn at the place the copy came to.
+        const quint32 otherPointId = initData.secondSense ? initData.firstPointId : initData.secondPointId;
+
+        // WHICH LINE carries the edge, when no point was designated: a question of its own, asked in one place
+        // (ODartCapEdge) — and the window asks it with the very same call. A designated point still wins: it is the
+        // way out when the pattern cannot say. What is read here is a line and not the origin of a copy: the cap of a
+        // dart prolongs the edge of its mouth, and that edge is often a `<line>` no other reader ever sees.
+        if (initData.extendPointId == NULL_ID)
+        {
+            const QPointF edge = ODartCapEdge::Direction(
+                prise.pointId, initData.apexId, otherPointId, initData.id, data,
+                initData.doc == nullptr ? nullptr : initData.doc->PatternGraph());
+            if (not edge.isNull())
+            {
+                prise.edgeDirection = edge;
+            }
+        }
+
         // The side the edge is read on: away from the OTHER point of the opening. The two senses name the two pieces
         // of the piece's outline — before the first point, after the copy — and only their own side leads to them.
         const QPointF side = initData.secondSense ? normal : -normal;
@@ -184,8 +204,6 @@ void BuildFigure(OToolDartCapInitData &initData)
         // that ends there — a point of a pleat's figure, where the figure draws points and no curve — the edge is read
         // at the OTHER point of the opening, which a pleat made the image of the very same point: a copy wears the
         // same edge, moved, and the offset between the two places IS that move (see OPleatCapRule::Dart).
-        const quint32 otherPointId = initData.secondSense ? initData.firstPointId : initData.secondPointId;
-
         const auto edgeAt = [data, &side](quint32 pointId) -> QSharedPointer<VAbstractCurve>
         {
             const OEdgeCarrier found = OEdgeReader::Carrier(pointId, side, data);
