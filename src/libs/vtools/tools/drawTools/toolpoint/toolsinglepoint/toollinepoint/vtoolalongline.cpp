@@ -216,12 +216,12 @@ auto VToolAlongLine::MakeToolTip() const -> QString
                             u"<tr> <td><b>%6:</b> %2 %3</td> </tr>"
                             u"<tr> <td><b>%7:</b> %8 %3</td> </tr>"
                             u"</table>"_s.arg(tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curLine.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curLine.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(curLine.angle())
+                                .arg(RoundForDisplay(curLine.angle()))
                                 .arg(QStringLiteral("%1->%2").arg(basePoint->name(), current->name()),
                                      QStringLiteral("%1->%2").arg(current->name(), secondPoint->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curToSecond.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curToSecond.length())))
                                 .arg(tr("Point name"), current->name());
     return toolTip;
 }

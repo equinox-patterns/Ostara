@@ -507,16 +507,16 @@ auto VToolEllipticalArcWithLength::MakeToolTip() const -> QString
                             u"<tr> <td><b>%10:</b> %11°</td> </tr>"
                             u"</table>"_s
                                 .arg(tr("Length"))                                                      // %1
-                                .arg(VAbstractValApplication::VApp()->fromPixel(elArc->GetLength()))    // %2
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(elArc->GetLength())))    // %2
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
                                      tr("Radius1"))                                                     // %4
-                                .arg(VAbstractValApplication::VApp()->fromPixel(elArc->GetRadius1()))   // %5
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(elArc->GetRadius1())))   // %5
                                 .arg(tr("Radius2"))                                                     // %6
-                                .arg(VAbstractValApplication::VApp()->fromPixel(elArc->GetRadius2()))   // %7
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(elArc->GetRadius2())))   // %7
                                 .arg(tr("Start angle"))                                                 // %8
-                                .arg(elArc->GetStartAngle())                                            // %9
+                                .arg(RoundForDisplay(elArc->GetStartAngle()))                                            // %9
                                 .arg(tr("End angle"))                                                   // %10
-                                .arg(elArc->GetEndAngle())                                              // %11
+                                .arg(RoundForDisplay(elArc->GetEndAngle()))                                              // %11
                                 .arg(tr("Label"),                                                       // %12
                                      elArc->ObjectName());                                              // %13
     return toolTip;

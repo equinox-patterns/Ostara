@@ -26,17 +26,31 @@
 
 #include "obezierextension.h"
 
+#include "vgeometrydef.h"
+
 #include <cmath>
 
 namespace
 {
-// Parameter step used to read the direction the curve is really travelling in at its ends.
-constexpr qreal directionStep = 1e-3;
-
-auto PointAt(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4, qreal t) -> QPointF
+// Direction the curve is travelling in when it reaches `end`, read from its handles. The handle
+// itself gives the tangent exactly; reading it from a small chord instead tilts the prolongation by
+// a few thousandths of a radian, so two curves whose end handles are both horizontal no longer
+// prolong in parallel. A zero handle leaves the tangent undefined, and the next control point then
+// gives the limit (the second order term). The far point is the last resort.
+auto EndDirection(const QPointF &end, const QPointF &handle, const QPointF &next, const QPointF &farPoint)
+    -> QPointF
 {
-    const qreal mt = 1.0 - t;
-    return (mt * mt * mt) * p1 + (3.0 * mt * mt * t) * p2 + (3.0 * mt * t * t) * p3 + (t * t * t) * p4;
+    if (!VFuzzyComparePoints(handle, end))
+    {
+        return end - handle;
+    }
+
+    if (!VFuzzyComparePoints(next, end))
+    {
+        return end - next;
+    }
+
+    return end - farPoint;
 }
 
 // Straight piece of the wanted length, leaving `from` in the given direction.
@@ -66,10 +80,10 @@ auto StraightPiece(const QPointF &from, const QPointF &direction, qreal length, 
 auto OBezierExtension::After(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4, qreal length)
     -> Piece
 {
-    // Direction the curve is really travelling in when it reaches its end. The prolongation follows
-    // it straight: following the cubic polynomial instead makes it hook back on itself a few pixels
-    // further, which reads as a 180 degree turn.
-    const QPointF travel = p4 - PointAt(p1, p2, p3, p4, 1.0 - directionStep);
+    // The prolongation follows the curve's real end direction, straight: following the cubic
+    // polynomial instead makes it hook back on itself a few pixels further, which reads as a
+    // 180 degree turn.
+    const QPointF travel = EndDirection(p4, p3, p2, p1);
 
     return StraightPiece(p4, travel, length, p4 - p1);
 }
@@ -80,7 +94,7 @@ auto OBezierExtension::Before(const QPointF &p1, const QPointF &p2, const QPoint
 {
     // Same reasoning as After, on the other end of the curve. The fallback chord points away from
     // the curve, so the piece is still built outwards.
-    const QPointF travel = p1 - PointAt(p1, p2, p3, p4, directionStep);
+    const QPointF travel = EndDirection(p1, p2, p3, p4);
 
     const Piece straight = StraightPiece(p1, travel, length, p1 - p4);
 

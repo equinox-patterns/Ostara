@@ -332,13 +332,14 @@ void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Clicking a child line acts like clicking its parent (e.g. a point tool's
     // child line): select and focus the parent so it reacts (PropertyBrowser +
     // Delete key). A line with no selectable parent (e.g. a visualization
-    // preview, or a top-level line tool) falls through to the default handler.
-    if (QGraphicsItem *parent = parentItem())
+    // preview, a top-level line tool, or a construction point the layers keep
+    // out of reach) falls through to the default handler: swallowing the click
+    // there would take the keyboard focus without selecting anything, and the
+    // Delete key would then act on an object the user never picked — instead of
+    // the line drawn underneath, which the scene then tries.
+    if (QGraphicsItem *parent = parentItem(); parent != nullptr && (parent->flags() & QGraphicsItem::ItemIsSelectable))
     {
-        if (parent->flags() & QGraphicsItem::ItemIsSelectable)
-        {
-            parent->setSelected(true);
-        }
+        parent->setSelected(true);
         if (parent->flags() & QGraphicsItem::ItemIsFocusable)
         {
             parent->setFocus(Qt::MouseFocusReason);

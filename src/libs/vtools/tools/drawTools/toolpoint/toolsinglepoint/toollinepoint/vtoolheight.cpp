@@ -307,13 +307,13 @@ auto VToolHeight::MakeToolTip() const -> QString
                             u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
                             u"<tr> <td><b>%8:</b> %9 %3</td> </tr>"
                             u"</table>"_s.arg(tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curLine.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curLine.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(curLine.angle())
+                                .arg(RoundForDisplay(curLine.angle()))
                                 .arg(u"%1->%2"_s.arg(p1Line->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length())))
                                 .arg(u"%1->%2"_s.arg(p2Line->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length())))
                                 .arg(tr("Point name"), current->name());
     return toolTip;
 }

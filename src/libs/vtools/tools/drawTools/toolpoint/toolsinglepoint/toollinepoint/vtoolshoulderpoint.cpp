@@ -358,11 +358,11 @@ auto VToolShoulderPoint::MakeToolTip() const -> QString
                             u"<tr> <td><b>%4:</b> %5°</td> </tr>"
                             u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
                             u"</table>"_s.arg(tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(firstToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(firstToCur.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(firstToCur.angle())
+                                .arg(RoundForDisplay(firstToCur.angle()))
                                 .arg(u"%1->%2"_s.arg(second->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(secondToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(secondToCur.length())))
                                 .arg(tr("Point name"), current->name());
     return toolTip;
 }

@@ -261,9 +261,9 @@ auto VToolLinePoint::MakeToolTip() const -> QString
                             u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
                             u"<tr> <td><b>%4:</b> %5°</td> </tr>"
                             u"</table>"_s.arg(tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(line.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(line.angle())
+                                .arg(RoundForDisplay(line.angle()))
                                 .arg(tr("Point name"), second->name());
     return toolTip;
 }

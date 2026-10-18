@@ -419,11 +419,11 @@ auto VToolCutArc::MakeToolTip() const -> QString
                            .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())))       // %2
                            .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
                                 arcStr + arcNumber + " "_L1 + radiusStr)                           // %4
-                           .arg(arc.GetRadius())                                                   // %5
+                           .arg(RoundForDisplay(arc.GetRadius()))                                                   // %5
                            .arg(arcStr + arcNumber + " "_L1 + startAngleStr)                       // %6
-                           .arg(arc.GetStartAngle())                                               // %7
+                           .arg(RoundForDisplay(arc.GetStartAngle()))                                               // %7
                            .arg(arcStr + arcNumber + " "_L1 + endAngleStr)                         // %8
-                           .arg(arc.GetEndAngle())                                                 // %9
+                           .arg(RoundForDisplay(arc.GetEndAngle()))                                                 // %9
                            .arg(arcStr + arcNumber + " "_L1 + labelStr,                            // %10
                                 arc.ObjectName());                                                 // %11
             return toolTip;
@@ -469,9 +469,9 @@ auto VToolCutArc::MakeToolTip() const -> QString
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + radius2Str)           // %6
                            .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius2())))      // %7
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + startAngleStr)        // %8
-                           .arg(arc.GetStartAngle())                                               // %9
+                           .arg(RoundForDisplay(arc.GetStartAngle()))                                               // %9
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + endAngleStr)          // %10
-                           .arg(arc.GetEndAngle())                                                 // %11
+                           .arg(RoundForDisplay(arc.GetEndAngle()))                                                 // %11
                            .arg(elArcStr + arcNumber + QChar(QChar::Space) + labelStr,             // %12
                                 arc.ObjectName());                                                 // %13
             return toolTip;

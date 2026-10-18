@@ -150,6 +150,13 @@ auto VInteractiveTool::IsRemovable() const -> RemoveStatus
         return RemoveStatus::Pending; // Lock timeout
     }
 
+    // A refusal that names what holds the object: the generic sentence alone leaves the user to guess.
+    for (const VNode &node : *dependecies)
+    {
+        qCDebug(vTool, "Tool %u cannot be deleted: it is used by tool %u (type %d).", getId(), node.id,
+                static_cast<int>(node.type));
+    }
+
     return dependecies->isEmpty() ? RemoveStatus::Removable : RemoveStatus::Blocked;
 }
 

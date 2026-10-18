@@ -899,9 +899,9 @@ auto OToolRectangle::PointToolTip(quint32 id) const -> QString
 
     const QString rowLabel = u"<tr> <td><b>%1:</b> %2</td> </tr>"_s.arg(tr("Label"), point->name());
     const QString rowSide1 =
-        u"<tr> <td><b>%1:</b> %2 %3, %4°</td> </tr>"_s.arg(name1).arg(l1).arg(unit).arg(side1.angle());
+        u"<tr> <td><b>%1:</b> %2 %3, %4°</td> </tr>"_s.arg(name1).arg(RoundForDisplay(l1)).arg(unit).arg(RoundForDisplay(side1.angle()));
     const QString rowSide2 =
-        u"<tr> <td><b>%1:</b> %2 %3, %4°</td> </tr>"_s.arg(name2).arg(l2).arg(unit).arg(side2.angle());
+        u"<tr> <td><b>%1:</b> %2 %3, %4°</td> </tr>"_s.arg(name2).arg(RoundForDisplay(l2)).arg(unit).arg(RoundForDisplay(side2.angle()));
 
     return u"<table>%1%2%3</table>"_s.arg(rowLabel, rowSide1, rowSide2);
 }

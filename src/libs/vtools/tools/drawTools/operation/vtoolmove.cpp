@@ -480,12 +480,12 @@ auto VToolMove::MakeToolTip() const -> QString
                           "<tr> <td><b>%8:</b> %9</td> </tr>"
                           "%10")
         .arg(tr("Angle"))                                                       // 1
-        .arg(GetFormulaAngle().getDoubleValue())                                // 2
+        .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaAngle().getDoubleValue()))) // 2
         .arg(tr("Length"))                                                      // 3
-        .arg(GetFormulaLength().getDoubleValue())                               // 4
+        .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaLength().getDoubleValue()))) // 4
         .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // 5
              tr("Rotation angle"))                                              // 6
-        .arg(GetFormulaRotationAngle().getDoubleValue())                        // 7
+        .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaRotationAngle().getDoubleValue()))) // 7
         .arg(tr("Pivot point"),                                                 // 8
              OriginPointName(),                                                 // 9
              VisibilityGroupToolTip());                                         // 10

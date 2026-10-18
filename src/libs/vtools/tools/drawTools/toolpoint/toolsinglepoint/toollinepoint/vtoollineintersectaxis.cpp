@@ -415,13 +415,13 @@ auto VToolLineIntersectAxis::MakeToolTip() const -> QString
                             u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
                             u"<tr> <td><b>%8:</b> %9 %3</td> </tr>"
                             u"</table>"_s.arg(tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curLine.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curLine.length())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(curLine.angle())
+                                .arg(RoundForDisplay(curLine.angle()))
                                 .arg(u"%1->%2"_s.arg(firstPoint->name(), current->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(firstToCur.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(firstToCur.length())))
                                 .arg(u"%1->%2"_s.arg(current->name(), secondPoint->name()))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(curToSecond.length()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curToSecond.length())))
                                 .arg(tr("Point name"), current->name());
     return toolTip;
 }

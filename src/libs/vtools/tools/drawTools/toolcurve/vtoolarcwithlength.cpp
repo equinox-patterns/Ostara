@@ -428,13 +428,13 @@ auto VToolArcWithLength::MakeToolTip() const -> QString
                             u"<tr> <td><b>%6:</b> %7°</td> </tr>"
                             u"<tr> <td><b>%8:</b> %9°</td> </tr>"
                             u"</table>"_s.arg(tr("Length"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(arc->GetLength()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc->GetLength())))
                                 .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Radius"))
-                                .arg(VAbstractValApplication::VApp()->fromPixel(arc->GetRadius()))
+                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc->GetRadius())))
                                 .arg(tr("Start angle"))
-                                .arg(arc->GetStartAngle())
+                                .arg(RoundForDisplay(arc->GetStartAngle()))
                                 .arg(tr("End angle"))
-                                .arg(arc->GetEndAngle())
+                                .arg(RoundForDisplay(arc->GetEndAngle()))
                                 .arg(tr("Label"), arc->ObjectName());
     return toolTip;
 }
