@@ -236,8 +236,12 @@ public:
 
     void DrawMiniature(QPainter &painter, bool togetherWithNotches) const;
 
-    Q_REQUIRED_RESULT auto GetItem(bool textAsPaths, bool togetherWithNotches, bool showLayoutAllowance) const
-        -> QGraphicsItem *;
+    /// @brief Build the piece as one graphics item.
+    /// @param grabSurface when true the main item is an OHitShapePathItem, so the caller may give
+    ///        it a surface wider than the path it draws. The Graded canvas cuts the contour into
+    ///        open stretches for its trace pattern, which leaves no surface at all (OCornerTrace).
+    Q_REQUIRED_RESULT auto GetItem(bool textAsPaths, bool togetherWithNotches, bool showLayoutAllowance,
+                                   bool grabSurface = false) const -> QGraphicsItem *;
 
     auto IsLayoutAllowanceValid(bool togetherWithNotches) const -> bool;
 
@@ -259,7 +263,8 @@ private:
 
     auto DetailPath() const -> QVector<VLayoutPoint>;
 
-    Q_REQUIRED_RESULT auto GetMainItem(bool togetherWithNotches, bool showLayoutAllowance) const -> QGraphicsPathItem *;
+    Q_REQUIRED_RESULT auto GetMainItem(bool togetherWithNotches, bool showLayoutAllowance,
+                                       bool grabSurface = false) const -> QGraphicsPathItem *;
     Q_REQUIRED_RESULT auto GetExternalContourPathItem() const -> QGraphicsPathItem *;
 
     void CreateGrainlineItem(QGraphicsItem *parent) const;

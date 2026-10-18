@@ -380,7 +380,10 @@ void MainWindow::BuildGradedScene()
                 m_gradedFrozenBases.insert(pieceId, livePos);
             }
 
-            QGraphicsItem *item = pieces.at(k).GetItem(false, false, false);
+            // grabSurface: the contour is cut at the corners right below (OCornerTrace, for the
+            // trace pattern), and a cut path has no surface left — the item would only answer on
+            // its outline. The closed contour is kept as the surface to grab on.
+            QGraphicsItem *item = pieces.at(k).GetItem(false, false, false, true);
             // GetItem paints every trace with a default (black) pen — apply the theme's piece
             // color, the same one Details paints piece/group silhouettes with (VColorRole::PieceColor).
             RecolorGradedItemPens(item);

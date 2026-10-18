@@ -26,6 +26,7 @@
 
 #include "ocornertrace.h"
 
+#include "vwidgets/ohitshapepathitem.h"
 #include "../vgeometry/vgeometrydef.h"
 
 #include <QGraphicsPathItem>
@@ -416,6 +417,13 @@ void OCornerTrace::RestartAtCorners(QGraphicsPathItem *item, qreal turnDegrees)
     }
     if (const auto cut = CutAtCorners(item->path(), turnDegrees); cut.has_value())
     {
+        // Cutting leaves one OPEN subpath per stretch: the item loses its surface and would only
+        // answer on its outline. The closed contour it had is kept as the surface to grab on —
+        // it is not painted, so the drawing is exactly the cut path (see OHitShapePathItem).
+        if (auto *grabItem = dynamic_cast<OHitShapePathItem *>(item); grabItem != nullptr)
+        {
+            grabItem->SetHitShape(item->path());
+        }
         item->setPath(cut.value());
     }
 }
@@ -673,6 +681,12 @@ auto OCornerTrace::RestartAtSharedStretches(const QVector<QGraphicsPathItem *> &
 
         if (changed)
         {
+            // Same reason as RestartAtCorners: the rewritten path is made of open stretches, so
+            // the member would lose its surface. Its closed contour becomes the surface to grab on.
+            if (auto *grabItem = dynamic_cast<OHitShapePathItem *>(member.item); grabItem != nullptr)
+            {
+                grabItem->SetHitShape(member.item->path());
+            }
             member.item->setPath(result);
         }
     }

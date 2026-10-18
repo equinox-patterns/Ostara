@@ -67,6 +67,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpassmark.h"
 #include "../vpatterndb/vpiecenode.h"
+#include "../vwidgets/ohitshapepathitem.h"
 #include "../vwidgets/vpiecegrainline.h"
 #include "vabstractpiece.h"
 #include "vboundary.h"
@@ -1373,10 +1374,10 @@ void VLayoutPiece::DrawMiniature(QPainter &painter, bool togetherWithNotches) co
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VLayoutPiece::GetItem(bool textAsPaths, bool togetherWithNotches, bool showLayoutAllowance) const
-    -> QGraphicsItem *
+auto VLayoutPiece::GetItem(bool textAsPaths, bool togetherWithNotches, bool showLayoutAllowance,
+                           bool grabSurface) const -> QGraphicsItem *
 {
-    QGraphicsPathItem *item = GetMainItem(togetherWithNotches, showLayoutAllowance);
+    QGraphicsPathItem *item = GetMainItem(togetherWithNotches, showLayoutAllowance, grabSurface);
 
     for (const auto &path : d->m_internalPaths)
     {
@@ -1679,9 +1680,20 @@ auto VLayoutPiece::DetailPath() const -> QVector<VLayoutPoint>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VLayoutPiece::GetMainItem(bool togetherWithNotches, bool showLayoutAllowance) const -> QGraphicsPathItem *
+auto VLayoutPiece::GetMainItem(bool togetherWithNotches, bool showLayoutAllowance,
+                               bool grabSurface) const -> QGraphicsPathItem *
 {
-    auto *item = new QGraphicsPathItem();
+    QGraphicsPathItem *item = nullptr;
+    if (grabSurface)
+    {
+        // The caller will cut the contour into open stretches (OCornerTrace, for its trace
+        // pattern) and keep the closed one aside as the surface to grab on.
+        item = new OHitShapePathItem();
+    }
+    else
+    {
+        item = new QGraphicsPathItem();
+    }
     QPen pen = item->pen();
     pen.setWidthF(VAbstractApplication::VApp()->Settings()->WidthHairLine());
     item->setPen(pen);
