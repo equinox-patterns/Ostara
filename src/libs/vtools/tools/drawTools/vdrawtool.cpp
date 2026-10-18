@@ -622,9 +622,7 @@ auto VDrawTool::GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, qui
             // its own, so the click speaks for the one it landed on. Every other tool draws ONE figure whose
             // parts travel together — a rectangle, a double point, a dart cap — and the whole figure is what
             // goes in or out (§5quinquies).
-            const bool cutPoint = element.tagName() == VAbstractPattern::TagPoint
-                                  && (element.hasAttribute(AttrSegment1Id)
-                                      || element.hasAttribute(AttrSegment2Id));
+            const bool cutPoint = VAbstractPattern::IsCutPoint(element);
             if (element.tagName() == VAbstractPattern::TagOperation || cutPoint)
             {
                 for (const auto &object : objects)

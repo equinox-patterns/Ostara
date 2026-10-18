@@ -1001,6 +1001,60 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto RemoveEmptyAutomaticLayers(VAbstractPattern *doc) -> bool
+{
+    // The automatic layer exists to hold objects no layer names. Once it holds none, it is a technical remnant —
+    // and the loading passes above can leave it empty: a pair the file carried but no tool can produce is taken
+    // out by CleanStaleLayerItems, and the layer it was in has no reason to stay. It is recognised by its marker
+    // (AttrAuto), never by its name. The LAST layer of a piece is kept even when empty: a piece always has one.
+    if (doc == nullptr)
+    {
+        return false;
+    }
+
+    const QDomElement root = doc->documentElement();
+    if (root.isNull())
+    {
+        return false;
+    }
+
+    bool changed = false;
+
+    for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); !draw.isNull();
+         draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+    {
+        QDomElement groups = draw.firstChildElement(VAbstractPattern::TagGroups);
+        if (groups.isNull())
+        {
+            continue;
+        }
+
+        int count = 0;
+        for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+             group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+        {
+            ++count;
+        }
+
+        for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();)
+        {
+            QDomElement const next = group.nextSiblingElement(VAbstractPattern::TagGroup);
+            const bool automatic = group.attribute(VAbstractPattern::AttrAuto) == trueStr;
+            const bool empty = group.firstChildElement(VAbstractPattern::TagGroupItem).isNull();
+            if (count > 1 && automatic && empty)
+            {
+                groups.removeChild(group);
+                --count;
+                changed = true;
+            }
+            group = next;
+        }
+    }
+
+    return changed;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 namespace
 {
 auto GroupHoldsPair(const QDomElement &group, quint32 toolId, quint32 objectId) -> bool
@@ -1087,6 +1141,13 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
         for (QDomElement point = calculation.firstChildElement(VAbstractPattern::TagPoint); !point.isNull();
              point = point.nextSiblingElement(VAbstractPattern::TagPoint))
         {
+            // The other point tools write segment1Id/segment2Id too, without drawing anything: their ids are
+            // graph objects, and seeding them here would file objects nobody can see (point A13, Buste.ostara).
+            if (not VAbstractPattern::IsCutPoint(point))
+            {
+                continue;
+            }
+
             const quint32 cutId = point.attribute(VDomDocument::AttrId).toUInt();
             const quint32 segment1 = point.attribute(AttrSegment1Id).toUInt();
             const quint32 segment2 = point.attribute(AttrSegment2Id).toUInt();

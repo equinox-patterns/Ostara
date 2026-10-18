@@ -501,6 +501,16 @@ public:
     static auto LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId)
         -> QVector<QPair<quint32, quint32>>;
 
+    /// Whether a `<point>` element is one of the three cut tools.
+    ///
+    /// Only a cut DRAWS the two sub-curves its `segment1Id`/`segment2Id` name: they replace the base curve when
+    /// "show two segments" is on, and each one is a layerable object. The other point tools that write the same
+    /// two attributes — curveIntersectAxis, pointOfIntersectionCurves/Arcs — use them to NAME the two halves of
+    /// the curve they cross without drawing them: those ids are graph objects, not scene items, and filing them
+    /// in a layer made the loading pass invent an "Unnamed" layer for objects nobody can see (measured on
+    /// Buste.ostara, point A13).
+    static auto IsCutPoint(const QDomElement &pointElement) -> bool;
+
     /// The same answer, found from the id alone. Needed for the one tool the document holds no element for: the
     /// line an operation produces. The operation keeps its id and the parse rebuilds it from the `<lines>` entry,
     /// so nothing in the file carries it — and it is still a line, named in a layer by (its id, its id) exactly

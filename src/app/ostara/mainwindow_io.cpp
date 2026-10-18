@@ -1040,6 +1040,11 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // takes the place of instead of falling into the automatic "Unnamed" layer.
         CoupleCutSegmentsToBaseLayers(doc);
 
+        // The automatic layer can be left empty by the pass above (a pair no tool can produce was its only
+        // content): it is a technical remnant, not a layer of the piece, and it goes before the normalisation
+        // below counts the orphans on what is left.
+        RemoveEmptyAutomaticLayers(doc);
+
         // Give every object of every piece a layer. Deliberately OUTSIDE the block above, for the same
         // reason: a .val arrives without layers, and an .ostara written before this rule carries objects
         // that belong to none. Such an object is visible by default and unreachable from the Layers dock,

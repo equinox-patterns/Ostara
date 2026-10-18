@@ -3892,6 +3892,21 @@ auto VAbstractPattern::AddItemsToGroup(const QVector<QPair<quint32, quint32>> &i
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::IsCutPoint(const QDomElement &pointElement) -> bool
+{
+    if (pointElement.isNull() || pointElement.tagName() != TagPoint)
+    {
+        return false;
+    }
+
+    // Written verbatim: the type values are the file's own vocabulary, not a class of libs/vtools (which this
+    // library does not depend on).
+    const QString type = pointElement.attribute(AttrType);
+    return type == QStringLiteral("cutArc") || type == QStringLiteral("cutSpline")
+           || type == QStringLiteral("cutSplinePath");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId)
     -> QVector<QPair<quint32, quint32>>
 {
@@ -3926,19 +3941,23 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
             }
         }
 
-        // A cut point draws two more objects besides the point itself: the sub-curves that take the base curve's
+        // A CUT point draws two more objects besides the point itself: the sub-curves that take the base curve's
         // place when "show two segments" is on. Each one is an object of its own — a layer may hold one and not
         // the other — so they are enumerated here like any other object of the tool. The loading pass and the
         // dock both read this list: a pair written by the transfer of a single half therefore stays valid.
-        for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
+        // The other point tools that write these attributes do NOT draw their segments (IsCutPoint).
+        if (IsCutPoint(toolElement))
         {
-            if (not toolElement.hasAttribute(attribute))
+            for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
             {
-                continue;
-            }
-            if (const quint32 segmentId = toolElement.attribute(attribute).toUInt(); segmentId != NULL_ID)
-            {
-                objects.append({segmentId, toolId});
+                if (not toolElement.hasAttribute(attribute))
+                {
+                    continue;
+                }
+                if (const quint32 segmentId = toolElement.attribute(attribute).toUInt(); segmentId != NULL_ID)
+                {
+                    objects.append({segmentId, toolId});
+                }
             }
         }
     }

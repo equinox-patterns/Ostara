@@ -127,6 +127,12 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool;
 // Returns true if at least one pair was added.
 auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool;
 
+// Remove the automatic layer once it holds nothing. It is recognised by its marker (AttrAuto), never by its name.
+// The loading passes above can empty it: a pair the file carried but no tool can produce is taken out by
+// CleanStaleLayerItems, and the layer that held it would otherwise stay in the dock as an empty "Unnamed".
+// The last layer of a piece is kept even when empty — a piece always has one.
+auto RemoveEmptyAutomaticLayers(VAbstractPattern *doc) -> bool;
+
 // Give every object of every piece a layer. An object outside every layer is visible by default and
 // unreachable from the Layers dock, so a pattern written before layers existed (a .val, or an .ostara
 // carrying objects no layer references) is given ONE automatic layer per piece — the one the dock shows as
