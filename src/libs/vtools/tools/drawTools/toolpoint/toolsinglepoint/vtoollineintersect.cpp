@@ -467,22 +467,5 @@ auto VToolLineIntersect::GetLineRoleName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLineIntersect::SetLineRoleName(const QString &suffix)
 {
-    const QString pairKey = Line1P1Name() + '_' + VAbstractTool::data.GetGObject(m_id)->name();
-    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
-    // Uniqueness: same check as curves (IsUnique)
-    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
-    {
-        return;
-    }
-
-        if (oldSuffix == suffix)
-    {
-        return;
-    }
-
-    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
-
-    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
-    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
-    VAbstractApplication::VApp()->getUndoStack()->push(command);
+    TrySetLineRoleName(Line1P1Name() + '_' + VAbstractTool::data.GetGObject(m_id)->name(), suffix);
 }

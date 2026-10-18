@@ -34,6 +34,7 @@
 #include <QLineF>
 #include <QLoggingCategory>
 #include <QRegularExpression>
+#include <QSet>
 #include <QUuid>
 #include <QVector>
 #include <QtDebug>
@@ -949,6 +950,72 @@ auto VContainer::LineRoleNames() const -> const QHash<QString, QString> &
 auto VContainer::LineRolePair(const QString &pairKey) const -> QPair<QString, QString>
 {
     return d->lineRolePairs.value(pairKey);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::IsLineRoleNameTaken(const QString &suffix, const QString &pairKeyToIgnore) const -> bool
+{
+    if (suffix.isEmpty())
+    {
+        return false;
+    }
+
+    for (auto i = d->lineRoleNames.constBegin(); i != d->lineRoleNames.constEnd(); ++i)
+    {
+        if (i.key() != pairKeyToIgnore && i.value() == suffix)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::PruneOrphanLineRoleNames() -> int
+{
+    QSet<QString> known;
+    known.reserve(d->calculationObjects.size()
+                  + (d->modelingObjects.isNull() ? 0 : static_cast<qsizetype>(d->modelingObjects->size())));
+
+    const auto Collect = [&known](const QHash<quint32, QSharedPointer<VGObject>> &objects)
+    {
+        for (const QSharedPointer<VGObject> &object : objects)
+        {
+            if (not object.isNull())
+            {
+                known.insert(object->name());
+            }
+        }
+    };
+
+    Collect(d->calculationObjects);
+    if (not d->modelingObjects.isNull())
+    {
+        Collect(*d->modelingObjects);
+    }
+
+    int dropped = 0;
+    const QStringList pairKeys = d->lineRoleNames.keys();
+    for (const QString &pairKey : pairKeys)
+    {
+        // Only a pair the container remembers as two names is judged: the key alone does not say where the
+        // second name begins when a name holds `_`, and a pair nobody can read is kept, not guessed away.
+        const QPair<QString, QString> pair = d->lineRolePairs.value(pairKey);
+        if (pair.first.isEmpty())
+        {
+            continue;
+        }
+
+        if (not known.contains(pair.first) || not known.contains(pair.second))
+        {
+            d->lineRoleNames.remove(pairKey);
+            d->lineRolePairs.remove(pairKey);
+            ++dropped;
+        }
+    }
+
+    return dropped;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

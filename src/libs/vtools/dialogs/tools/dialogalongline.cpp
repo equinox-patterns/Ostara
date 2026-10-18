@@ -137,7 +137,12 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     roleNameLayout->addWidget(containerRoleName);
     roleNameLayout->addWidget(lineEditRoleName);
     ui->verticalLayout->insertLayout(0, roleNameLayout);
-    connect(lineEditRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateLineRoleName);
+    connect(lineEditRoleName, &QLineEdit::textEdited, this,
+            [this]()
+            {
+                ValidateLineRoleName();
+                ValidateSecondLineRoleName();
+            });
 
     // Role name field C→B (just below A→C)
     auto *containerSecondRoleName = new QWidget();
@@ -159,7 +164,12 @@ DialogAlongLine::DialogAlongLine(const VContainer *data, VAbstractPattern *doc, 
     secondRoleNameLayout->addWidget(containerSecondRoleName);
     secondRoleNameLayout->addWidget(lineEditSecondRoleName);
     ui->verticalLayout->insertLayout(1, secondRoleNameLayout);
-    connect(lineEditSecondRoleName, &QLineEdit::textEdited, this, &DialogAlongLine::ValidateSecondLineRoleName);
+    connect(lineEditSecondRoleName, &QLineEdit::textEdited, this,
+            [this]()
+            {
+                ValidateLineRoleName();
+                ValidateSecondLineRoleName();
+            });
 
     // Separator between the line name fields and Length
     auto *lineSeparator = new QFrame();
@@ -529,6 +539,7 @@ auto DialogAlongLine::GetSecondPointId() const -> quint32
 //---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::SetLineRoleName(const QString &suffix)
 {
+    m_initialRoleName = suffix;
     if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
     {
         edit->setText(suffix);
@@ -573,20 +584,20 @@ void DialogAlongLine::ValidateLineRoleName()
         return;
     }
 
-    // Uniqueness: Line_<suffix> must not exist on another line
-    const QString aliasKey = line_ + suffix;
-    if (data.DataLengthLines().contains(aliasKey))
+    // A name designates one line: the pattern refuses a suffix another pair already holds, and the two lines of
+    // this tool share the table. The variable map is no witness here — its keys go through VarToUser (`Line_`
+    // becomes `Ligne_` in French), so a check written against it passes in every language but English. The
+    // line's own name is not a clash with itself.
+    const QString secondSuffix = GetSecondLineRoleName();
+    const bool taken = data.IsLineRoleNameTaken(suffix) || not data.IsUnique(line_ + suffix)
+                       || (not secondSuffix.isEmpty() && suffix == secondSuffix);
+    if (suffix != m_initialRoleName && taken)
     {
-        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
-        const QVector<quint32> refs = var->GetReferences();
-        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
-        {
-            flagRoleName = false;
-            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
-            ChangeColor(m_labelRoleName, errorColor);
-            CheckState();
-            return;
-        }
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
     }
     flagRoleName = true;
     if (edit) { edit->setStyleSheet({}); }
@@ -597,6 +608,7 @@ void DialogAlongLine::ValidateLineRoleName()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogAlongLine::SetSecondLineRoleName(const QString &suffix)
 {
+    m_initialSecondRoleName = suffix;
     if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditSecondRoleName")))
     {
         edit->setText(suffix);
@@ -641,20 +653,18 @@ void DialogAlongLine::ValidateSecondLineRoleName()
         return;
     }
 
-    // Uniqueness: Line_<suffix> must not exist on another line
-    const QString aliasKey = line_ + suffix;
-    if (data.DataLengthLines().contains(aliasKey))
+    // Same rule, and the other line of this tool counts as another line: two rows under one name would leave
+    // the second silently dropped by the pattern.
+    const QString firstSuffix = GetLineRoleName();
+    const bool taken = data.IsLineRoleNameTaken(suffix) || not data.IsUnique(line_ + suffix)
+                       || (not firstSuffix.isEmpty() && suffix == firstSuffix);
+    if (suffix != m_initialSecondRoleName && taken)
     {
-        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
-        const QVector<quint32> refs = var->GetReferences();
-        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
-        {
-            flagSecondRoleName = false;
-            edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
-            ChangeColor(m_labelSecondRoleName, errorColor);
-            CheckState();
-            return;
-        }
+        flagSecondRoleName = false;
+        edit->setStyleSheet(QStringLiteral("border: 1px solid red;"));
+        ChangeColor(m_labelSecondRoleName, errorColor);
+        CheckState();
+        return;
     }
     flagSecondRoleName = true;
     edit->setStyleSheet({});

@@ -179,46 +179,14 @@ inline void VToolOptionsPropertyBrowser::AddProperties(const QList<VPE::VPropert
 
 /** @brief Apply a name to the line of @a pairKey, on the tool @a tool and in the pattern.
  *
- *  One definition, for every tool that lets its lines be named: the container holds the pair, the command
- *  writes it to `<lineNames>` and the pattern re-reads it. The uniqueness and the format are the container's
- *  business — it refuses a name already taken and the dock shows the value it kept.
+ *  The dock is not a second author of a line's name: it asks the tool, which holds the one implementation —
+ *  the container holds the pair, the command writes it to `<lineNames>` and the pattern re-reads it. The
+ *  refusal therefore reads the same from here and from the tool's dialog, sentence included.
  *
- *  @return true when the name was applied. */
+ *  @return true when the name was applied (or already was). */
 inline auto ApplyLineName(VAbstractTool *tool, const QString &pairKey, const QString &suffix) -> bool
 {
-    if (tool == nullptr || pairKey.isEmpty())
-    {
-        return false;
-    }
-
-    VContainer *const data = tool->getData();
-    if (data == nullptr)
-    {
-        return false;
-    }
-
-    const QString oldSuffix = data->LineRoleName(pairKey);
-    if (oldSuffix == suffix)
-    {
-        return true; // nothing to do, and the caller must not revert the field
-    }
-
-    data->SetLineRoleName(pairKey, suffix);
-    if (data->LineRoleName(pairKey) != suffix)
-    {
-        return false; // the container refused it: a name already taken by another line
-    }
-
-    VAbstractPattern *const doc = VAbstractValApplication::VApp()->getCurrentDocument();
-    if (doc == nullptr)
-    {
-        return true;
-    }
-
-    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
-    QObject::connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
-    VAbstractApplication::VApp()->getUndoStack()->push(command);
-    return true;
+    return tool != nullptr && tool->TrySetLineRoleName(pairKey, suffix);
 }
 
 /** @brief The lines a tool draws that its own fields do not name, so the dock can offer to name them.

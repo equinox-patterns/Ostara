@@ -618,22 +618,7 @@ void OToolRectangle::SetHeightLineRoleName(const QString &suffix)
 //---------------------------------------------------------------------------------------------------------------------
 void OToolRectangle::SetLineRoleNameForPair(const QString &pairKey, const QString &suffix)
 {
-    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
-    if (not suffix.isEmpty() && not VAbstractTool::data.IsUnique(line_ + suffix))
-    {
-        return;
-    }
-
-    if (oldSuffix == suffix)
-    {
-        return;
-    }
-
-    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
-
-    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
-    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
-    VAbstractApplication::VApp()->getUndoStack()->push(command);
+    TrySetLineRoleName(pairKey, suffix);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

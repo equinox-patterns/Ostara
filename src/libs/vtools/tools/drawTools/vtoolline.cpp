@@ -322,27 +322,7 @@ auto VToolLine::GetLineRoleName() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void VToolLine::SetLineRoleName(const QString &suffix)
 {
-    const QString pairKey = FirstPointName() + '_' + SecondPointName();
-    const QString oldSuffix = VAbstractTool::data.LineRoleName(pairKey);
-    // Uniqueness: same check as curves (IsUnique)
-    if (!suffix.isEmpty() && !VAbstractTool::data.IsUnique(line_ + suffix))
-    {
-        return;
-    }
-
-        if (oldSuffix == suffix)
-    {
-        return;
-    }
-
-    // Update the local data copy (VAbstractTool::data is a copy-on-write snapshot;
-    // undo commands only update the DOM — the reparse rebuilds the parse-time
-    // VContainer, but this tool's local copy is never touched by the reparse.)
-    VAbstractTool::data.SetLineRoleName(pairKey, suffix);
-
-    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
-    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
-    VAbstractApplication::VApp()->getUndoStack()->push(command);
+    TrySetLineRoleName(FirstPointName() + '_' + SecondPointName(), suffix);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -115,6 +115,7 @@ private:
 
     bool m_flagName{true};
 
+    QString m_initialRoleName{}; // the name the line bears when the dialog opens: not a clash with itself
     bool flagRoleName{true};
     QLabel *m_labelRoleName{nullptr};
 

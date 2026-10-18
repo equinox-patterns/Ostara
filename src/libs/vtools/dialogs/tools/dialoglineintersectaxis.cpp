@@ -516,6 +516,7 @@ auto DialogLineIntersectAxis::GetNotes() const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 void DialogLineIntersectAxis::SetLineRoleName(const QString &suffix)
 {
+    m_initialRoleName = suffix;
     if (auto *edit = findChild<QLineEdit *>(QStringLiteral("lineEditRoleName")))
     {
         edit->setText(suffix);
@@ -560,20 +561,19 @@ void DialogLineIntersectAxis::ValidateLineRoleName()
         return;
     }
 
-    // Uniqueness: Line_<suffix> must not exist on another line
-    const QString aliasKey = line_ + suffix;
-    if (data.DataLengthLines().contains(aliasKey))
+    // A name designates one line: the pattern refuses a suffix another pair already holds. The variable map is
+    // no witness here — its keys go through VarToUser (`Line_` becomes `Ligne_` in French), so a check written
+    // against it passes in every language but English. The line's own name is not a clash with itself.
+    // Both witnesses are asked: the role table (what the pattern loads and writes) and the name table (what the
+    // tools registered), so the dialog never accepts what the setter would then refuse.
+    const bool taken = data.IsLineRoleNameTaken(suffix) || not data.IsUnique(line_ + suffix);
+    if (suffix != m_initialRoleName && taken)
     {
-        const QSharedPointer<VLengthLine> var = data.DataLengthLines().value(aliasKey);
-        const QVector<quint32> refs = var->GetReferences();
-        if (refs.size() >= 2 && refs.at(0) != NULL_ID && refs.at(1) != NULL_ID)
-        {
-            flagRoleName = false;
-            if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
-            ChangeColor(m_labelRoleName, errorColor);
-            CheckState();
-            return;
-        }
+        flagRoleName = false;
+        if (edit) { edit->setStyleSheet(QStringLiteral("border: 1px solid red;")); }
+        ChangeColor(m_labelRoleName, errorColor);
+        CheckState();
+        return;
     }
     flagRoleName = true;
     if (edit) { edit->setStyleSheet({}); }

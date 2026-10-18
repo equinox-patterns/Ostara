@@ -224,6 +224,36 @@ public:
      * in place — so this is what keeps a role name from being lost when a point name holds an underscore.
      */
     auto LineRolePair(const QString &pairKey) const -> QPair<QString, QString>;
+
+    /** @brief Whether @a suffix is already the name of a line other than the pair @a pairKeyToIgnore.
+     *
+     *  The question `SetLineRoleName` answers by refusing: a name designates one line, and two lines under one
+     *  name leave a formula unable to say which it means. Asked here **before** a dialog accepts the name, so
+     *  the refusal reaches the user while the field is still under their fingers.
+     *
+     *  Answered from @ref lineRoleNames alone, on purpose: it is the table the refusal itself reads, and it is
+     *  keyed in the internal notation. The variable map is not a witness here — its keys go through
+     *  `VarToUser`, which translates `Line_` to `Ligne_` in French, so a check written against it quietly
+     *  passes in every language but English. */
+    auto IsLineRoleNameTaken(const QString &suffix, const QString &pairKeyToIgnore = QString()) const -> bool;
+
+    /** @brief Drop the line names whose pair is no longer in the pattern.
+     *
+     *  A name means something only while both its points exist. A point — or a whole block — that leaves takes
+     *  its line with it, but `<lineNames>` is a sibling of the blocks: no command owns a row of it, and
+     *  deleting a piece never rewrites it. The name then stays taken for every line, shown by none, and no
+     *  dialog can explain why it is refused.
+     *
+     *  Called at the end of every parse, when every block has been read and the objects are known — which is
+     *  also the moment that follows every deletion, so the file heals without being asked. The next save
+     *  rewrites the section from what is left.
+     *
+     *  A pair whose two names cannot be recovered — a point name holding `_` — is left alone: the pattern keeps
+     *  what it cannot read, like every other name it does not understand.
+     *
+     *  @return how many names were dropped. */
+    auto PruneOrphanLineRoleNames() -> int;
+
     void AddArc(const QSharedPointer<VAbstractCurve> &arc, const quint32 &id, const quint32 &parentId = NULL_ID);
     void AddSpline(const QSharedPointer<VAbstractBezier> &curve, quint32 id, quint32 parentId = NULL_ID);
     void AddCurveWithSegments(const QSharedPointer<VAbstractCubicBezierPath> &curve, const quint32 &id,

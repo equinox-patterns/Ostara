@@ -86,6 +86,21 @@ public:
     ~VAbstractTool() override;
     auto getId() const -> quint32;
 
+    /** @brief Give the line @a pairKey the name @a suffix, and say whether the pattern took it.
+     *
+     *  A line has no object of its own to carry a name: it lives in the container under the pair of points it
+     *  joins, and the pattern writes it into `<lineNames>`. Applying one is therefore a single decision with
+     *  three consequences — the container holds it, the undo stack records it, the file receives it — and they
+     *  must not disagree. A name the container refuses must not reach the DOM: the row written anyway would sit
+     *  beside the real owner's, and the next parse drops it with nothing but a log.
+     *
+     *  Written once for every tool that lets its lines be named, so the refusal has one face: the field goes
+     *  back to the name the line really bears, and a message says why. The container's own rule is the judge —
+     *  the variable map is not, since its keys are translated (`Ligne_` in French).
+     *
+     *  @return true when the name was applied, or already was; false when another line holds it. */
+    auto TrySetLineRoleName(const QString &pairKey, const QString &suffix) -> bool;
+
     static bool m_suppressContextMenu;
 
     static auto CheckFormula(const quint32 &toolId, QString &formula, const VContainer *data) -> qreal;

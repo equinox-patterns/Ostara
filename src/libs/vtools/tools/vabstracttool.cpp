@@ -79,6 +79,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vwidgets/vmaingraphicsview.h"
+#include "../undocommands/vchangelinerolename.h"
 #include "nodeDetails/vabstractnode.h"
 #include "nodeDetails/vnodearc.h"
 #include "nodeDetails/vnodeellipticalarc.h"
@@ -287,6 +288,52 @@ VAbstractTool::VAbstractTool(VAbstractPattern *doc, VContainer *data, quint32 id
 VAbstractTool::~VAbstractTool()
 {
     delete vis.data();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractTool::TrySetLineRoleName(const QString &pairKey, const QString &suffix) -> bool
+{
+    if (pairKey.isEmpty())
+    {
+        return false;
+    }
+
+    const QString oldSuffix = data.LineRoleName(pairKey);
+    if (oldSuffix == suffix)
+    {
+        return true; // nothing to do, and the caller must not revert the field
+    }
+
+    // `IsUnique` reads the pattern-wide table of names, which every parse rebuilds: it is the one witness that
+    // does not go through the tool's own copy of the container (a copy can be older than the last parse). The
+    // same guard the setters carried until now, asked before anything is written — a refused name must not
+    // reach the DOM, where the row would sit beside the real owner's and be dropped by the next parse with
+    // nothing but a log.
+    if (not suffix.isEmpty() && not data.IsUnique(line_ + suffix))
+    {
+        if (VAbstractApplication::VApp()->IsAppInGUIMode())
+        {
+            // The sentence the formula assistant already shows, under its own context: it is translated in
+            // every language, and a second copy would be one more string to keep in step.
+            const QString message =
+                QCoreApplication::translate("DialogEditWrongFormula", "The name %1 is already used by another line.")
+                    .arg(suffix);
+            QMessageBox::warning(VAbstractValApplication::VApp()->getMainWindow(),
+                                 QCoreApplication::translate("DialogEditWrongFormula", "Name the line"), message);
+        }
+        return false;
+    }
+
+    data.SetLineRoleName(pairKey, suffix);
+    if (data.LineRoleName(pairKey) != suffix)
+    {
+        return false; // refused by the container for a reason of its own: nothing is written, and no undo entry
+    }
+
+    auto *command = new VChangeLineRoleName(doc, pairKey, oldSuffix, suffix);
+    connect(command, &VChangeLineRoleName::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
