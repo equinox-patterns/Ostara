@@ -30,6 +30,7 @@
 #include "olibrarystorage.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
+#include "vtranslatevars.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -86,6 +87,27 @@ auto Collect(const QStringList &files) -> QList<OPieceLibrary::Summary>
     }
 
     return summaries;
+}
+
+/// @brief A value's technical name, written as the canvas writes it.
+///
+/// `Line_ProfondeurEmmanchure` is the file's notation; the reader knows `Ligne_ProfondeurEmmanchure`, because a
+/// formula is written with the translated head and the window that lists what a piece reads says the same thing
+/// as the formula editor. The translation is the one the whole application uses (`VarToUser`), never a second
+/// copy: a head added to the vocabulary must not need a second edit here.
+auto DisplayToken(const QString &token) -> QString
+{
+    if (token.isEmpty())
+    {
+        return token;
+    }
+
+    if (const VTranslateVars *trVars = VAbstractApplication::VApp()->TrVars(); trVars != nullptr)
+    {
+        return trVars->VarToUser(token);
+    }
+
+    return token;
 }
 } // namespace
 
@@ -258,7 +280,7 @@ auto OPieceLibrary::Needs(const Summary &summary) -> QString
     QStringList pieces;
     for (const OPieceDocument::Dependency &dependency : summary.dependencies)
     {
-        pieces.append(dependency.origin.isEmpty() ? dependency.token : dependency.origin);
+        pieces.append(dependency.origin.isEmpty() ? DisplayToken(dependency.token) : dependency.origin);
     }
     pieces.removeDuplicates();
 
@@ -317,8 +339,8 @@ auto OPieceLibrary::Details(const Summary &summary) -> QString
             lines.append(dependency.origin.isEmpty()
                              ? QStringLiteral("    ")
                                    + QCoreApplication::translate("OPieceLibrary", "%1 - no piece declares it")
-                                         .arg(dependency.token)
-                             : QStringLiteral("    ") + dependency.token + QStringLiteral(" ← ")
+                                         .arg(DisplayToken(dependency.token))
+                             : QStringLiteral("    ") + DisplayToken(dependency.token) + QStringLiteral(" ← ")
                                    + dependency.origin);
         }
     }
