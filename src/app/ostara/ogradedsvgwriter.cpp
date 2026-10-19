@@ -729,7 +729,19 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
             // Mark every decor object wrapper as a layer (like Val Fork did) so
             // Rabnest's NestedSvgWriter moves it together with the piece — its
             // filter only transforms <g i:layer="yes"> children of this layer.
-            writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
+            //
+            // ⚠️ **Only when there IS a layout layer.** The mark is read by a filter that
+            // walks the layout layer's children; a flat document has no such layer, and the
+            // mark there says something else entirely: the PDF writer takes every
+            // `i:layer="yes"` at the top of the file for an optional content group, so the
+            // decor objects became the only "layers" — and everything written OUTSIDE one,
+            // the pieces and their cartouche, was dropped. A flat document has to be flat
+            // all the way down: no layer group, no layer mark, and the PDF writer then takes
+            // its plain branch and draws the whole file (see SvgToOcgPdf, "no layer group").
+            if (layered)
+            {
+                writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
+            }
 
             // Two wrappers, because the two halves of the decor do not live in the same
             // frame. The items were placed in the scene and already carry their owner's
