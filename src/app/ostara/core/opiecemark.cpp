@@ -40,6 +40,7 @@
 #include <QXmlStreamReader>
 
 #include <algorithm>
+#include <functional>
 #include <utility>
 
 namespace
@@ -728,6 +729,93 @@ auto OPieceMark::Aliases(const QDomElement &root) -> QVector<Alias>
               });
 
     return aliases;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceMark::BorneLineRoles(const QDomElement &root) -> QSet<QString>
+{
+    QSet<QString> borne;
+    if (root.isNull())
+    {
+        return borne;
+    }
+
+    const QDomElement draw = root.firstChildElement(QStringLiteral("draw"));
+    if (draw.isNull())
+    {
+        return borne;
+    }
+
+    // The block names its points with `id` + `name`; everything a tool joins is read back through that table.
+    QHash<QString, QString> nameById;
+    std::function<void(const QDomElement &)> collectNames = [&nameById, &collectNames](const QDomElement &element)
+    {
+        const QString id = element.attribute(QStringLiteral("id"));
+        const QString name = element.attribute(QStringLiteral("name"));
+        if (not id.isEmpty() && not name.isEmpty())
+        {
+            nameById.insert(id, name);
+        }
+
+        for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+        {
+            collectNames(child);
+        }
+    };
+    collectNames(draw);
+
+    // A role is taken by a tool that **joins** two points: a `<line>` joins its two ends, and a point tool joins
+    // its base (or first, or second) point to the point it places. The pair is written in both orders: the role
+    // table is ordered, and a file may have written the two names the other way round.
+    std::function<void(const QDomElement &)> collectPairs = [&borne, &nameById, &collectPairs](const QDomElement &element)
+    {
+        QStringList references;
+        const QDomNamedNodeMap attributes = element.attributes();
+        for (int i = 0; i < attributes.size(); ++i)
+        {
+            const QString value = attributes.item(i).toAttr().value();
+            if (const auto name = nameById.constFind(value); name != nameById.constEnd())
+            {
+                references.append(name.value());
+            }
+        }
+
+        const auto Join = [&borne](const QString &first, const QString &second)
+        {
+            if (first != second)
+            {
+                borne.insert(first + QLatin1Char('_') + second);
+                borne.insert(second + QLatin1Char('_') + first);
+            }
+        };
+
+        if (element.tagName() == QLatin1String("line"))
+        {
+            if (references.size() >= 2)
+            {
+                Join(references.at(0), references.at(1));
+            }
+        }
+        else
+        {
+            const QString own = nameById.value(element.attribute(QStringLiteral("id")));
+            if (not own.isEmpty())
+            {
+                for (const QString &reference : std::as_const(references))
+                {
+                    Join(own, reference);
+                }
+            }
+        }
+
+        for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+        {
+            collectPairs(child);
+        }
+    };
+    collectPairs(draw);
+
+    return borne;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

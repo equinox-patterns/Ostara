@@ -37,9 +37,9 @@
 
 namespace
 {
-auto AddPoint(VContainer &data, const QString &name) -> void
+auto AddPoint(VContainer &data, const QString &name) -> quint32
 {
-    data.AddGObject(QSharedPointer<VPointF>::create(0, 0, name));
+    return data.AddGObject(QSharedPointer<VPointF>::create(0, 0, name));
 }
 } // namespace
 
@@ -82,6 +82,33 @@ void TST_LineRoleNames::OrphanNameIsDroppedAndTheNameIsFreed()
     QCOMPARE(data.LineRoleName(QStringLiteral("A_B")), QStringLiteral("TailleDos"));
 
     // Nothing else to drop: a second pass is quiet.
+    QCOMPARE(data.PruneOrphanLineRoleNames(), 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_LineRoleNames::NameNoLineBearsIsDropped()
+{
+    VTranslateVars trVars;
+    Unit unit = Unit::Cm;
+    VContainer data(&trVars, &unit, VContainer::UniqueNamespace());
+
+    const quint32 a = AddPoint(data, QStringLiteral("A"));
+    const quint32 b = AddPoint(data, QStringLiteral("B"));
+
+    // Both points are there, and no line joins them: the name survives the point test, and only the bearer
+    // question can let it go. This is the reported case — a deleted line whose ends stayed in the piece.
+    data.SetLineRoleName(QStringLiteral("A"), QStringLiteral("B"), QStringLiteral("Carrure"));
+    QCOMPARE(data.PruneOrphanLineRoleNames(true), 1);
+    QVERIFY(data.LineRoleName(QStringLiteral("A_B")).isEmpty());
+    QVERIFY(not data.IsLineRoleNameTaken(QStringLiteral("Carrure")));
+
+    // A tool takes the role for the pair: the name is borne, and the bearer test keeps it.
+    data.SetLineRoleName(QStringLiteral("A"), QStringLiteral("B"), QStringLiteral("Carrure"));
+    data.AddLine(a, b, 0, true);
+    QCOMPARE(data.PruneOrphanLineRoleNames(true), 0);
+    QCOMPARE(data.LineRoleName(QStringLiteral("A_B")), QStringLiteral("Carrure"));
+
+    // And the old question still answers on its own: the pair lives, so its name is not an orphan.
     QCOMPARE(data.PruneOrphanLineRoleNames(), 0);
 }
 

@@ -42,6 +42,7 @@ public:
 
 private slots:
     void OrphanNameIsDroppedAndTheNameIsFreed();
+    void NameNoLineBearsIsDropped();
     void UnreadablePairIsKept();
     void NameOfAnotherLineIsTaken();
 };

@@ -110,6 +110,16 @@ public:
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QHash<QString, QPair<QString, QString>> lineRolePairs{};
 
+    /**
+     * @brief The pairs a tool has actually taken a role for during the last parse.
+     *
+     * A role is taken when a tool builds the line (`AddLine`), and only then: a `<lineNames>` row whose pair no
+     * tool joins any more is a name nobody can give to anything, and the parse drops it. Kept beside the names
+     * because the two are written and cleared together.
+     */
+    // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
+    QSet<QString> borneLineRolePairs{};
+
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
     QSharedPointer<QHash<quint32, VPiece>> pieces{QSharedPointer<QHash<quint32, VPiece>>::create()};
     // NOLINTNEXTLINE(misc-non-private-member-variables-in-classes)
@@ -225,6 +235,9 @@ public:
      */
     auto LineRolePair(const QString &pairKey) const -> QPair<QString, QString>;
 
+    /// @brief The pairs a tool has taken a role for during the last parse — see PruneOrphanLineRoleNames().
+    auto BorneLineRolePairs() const -> const QSet<QString> &;
+
     /** @brief Whether @a suffix is already the name of a line other than the pair @a pairKeyToIgnore.
      *
      *  The question `SetLineRoleName` answers by refusing: a name designates one line, and two lines under one
@@ -251,8 +264,12 @@ public:
      *  A pair whose two names cannot be recovered — a point name holding `_` — is left alone: the pattern keeps
      *  what it cannot read, like every other name it does not understand.
      *
+     *  @param requireBearer also drop the names no tool of the last parse has taken (`AddLine`), even when both
+     *         their points still exist. A line name means something only while a line bears it: a deleted line
+     *         leaves its points behind, and the name with them, still taken for every other line.
+     *
      *  @return how many names were dropped. */
-    auto PruneOrphanLineRoleNames() -> int;
+    auto PruneOrphanLineRoleNames(bool requireBearer = false) -> int;
 
     void AddArc(const QSharedPointer<VAbstractCurve> &arc, const quint32 &id, const quint32 &parentId = NULL_ID);
     void AddSpline(const QSharedPointer<VAbstractBezier> &curve, quint32 id, quint32 parentId = NULL_ID);

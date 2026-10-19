@@ -662,6 +662,10 @@ void VContainer::AddLine(quint32 firstPointId, quint32 secondPointId, quint32 ma
     const QString pairKey = first->name() + '_' + second->name();
     if (takeRoleName && d->lineRoleNames.contains(pairKey))
     {
+        // The pair has a bearer: the role is not a name left by a line this pattern no longer has. The parse
+        // reads this set at its end and drops the names no bearer took (PruneOrphanLineRoleNames(true)).
+        d->borneLineRolePairs.insert(pairKey);
+
         const QString &suffix = d->lineRoleNames[pairKey];
         // Register the derived aliases in uniqueNames so that IsUnique() can detect
         // duplicate RoleNames across different lines (same mechanism as curves/increments).
@@ -932,6 +936,7 @@ void VContainer::ClearLineRoleNames()
 {
     d->lineRoleNames.clear();
     d->lineRolePairs.clear();
+    d->borneLineRolePairs.clear();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -950,6 +955,12 @@ auto VContainer::LineRoleNames() const -> const QHash<QString, QString> &
 auto VContainer::LineRolePair(const QString &pairKey) const -> QPair<QString, QString>
 {
     return d->lineRolePairs.value(pairKey);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VContainer::BorneLineRolePairs() const -> const QSet<QString> &
+{
+    return d->borneLineRolePairs;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -972,7 +983,7 @@ auto VContainer::IsLineRoleNameTaken(const QString &suffix, const QString &pairK
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VContainer::PruneOrphanLineRoleNames() -> int
+auto VContainer::PruneOrphanLineRoleNames(bool requireBearer) -> int
 {
     QSet<QString> known;
     known.reserve(d->calculationObjects.size()
@@ -999,6 +1010,17 @@ auto VContainer::PruneOrphanLineRoleNames() -> int
     const QStringList pairKeys = d->lineRoleNames.keys();
     for (const QString &pairKey : pairKeys)
     {
+        // A name no tool has taken is a name nobody can give to a line, even when both its points still exist:
+        // the line was deleted, the points stayed, and the name would be offered forever. Judged first, because
+        // it is the one question that does not need the pair to be readable.
+        if (requireBearer && not d->borneLineRolePairs.contains(pairKey))
+        {
+            d->lineRoleNames.remove(pairKey);
+            d->lineRolePairs.remove(pairKey);
+            ++dropped;
+            continue;
+        }
+
         // Only a pair the container remembers as two names is judged: the key alone does not say where the
         // second name begins when a name holds `_`, and a pair nobody can read is kept, not guessed away.
         const QPair<QString, QString> pair = d->lineRolePairs.value(pairKey);

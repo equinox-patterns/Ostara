@@ -36,9 +36,12 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPainter>
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QStyle>
+#include <QStyledItemDelegate>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QVBoxLayout>
@@ -50,6 +53,36 @@ namespace
 /// Les deux colonnes : le genre d'objet, et le nom qu'il porte.
 constexpr int kObject = 0;
 constexpr int kAlias = 1;
+
+/// A row tall enough for a field whose text is read, not clipped: the field keeps the theme's own height, and the
+/// table no longer cuts 4 px above and below it (see FillAliases).
+constexpr int kAliasRowHeight = 36;
+
+/// The list's own height: never smaller than a few rows, never taller than a screen can hold around the rest of
+/// the dialog. Between the two, it is the number of aliases that decides, so the whole list is read at once.
+constexpr int kAliasListMinHeight = 200;
+constexpr int kAliasListMaxHeight = 560;
+
+/**
+ * @brief A row that does not answer the pointer.
+ *
+ * The theme paints every hovered item of an item view in the accent colour — right for a list where the pointer
+ * picks a line, wrong here: these rows are text fields, and the field under the mouse is already the one being
+ * typed in. Clearing the state before the base delegate paints leaves the row exactly as it is; the selected
+ * row keeps its colour, because the selection state is left alone.
+ */
+class NoHoverDelegate : public QStyledItemDelegate
+{
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        QStyleOptionViewItem plain = option;
+        plain.state &= ~QStyle::State_MouseOver;
+        QStyledItemDelegate::paint(painter, plain, index);
+    }
+};
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -212,6 +245,18 @@ void OPieceImportDialog::FillAliases()
     ui->tableAliases->setHorizontalHeaderLabels({tr("Object"), tr("Name")});
     ui->tableAliases->verticalHeader()->setVisible(false);
 
+    // The field is a cell widget: it is laid on the item's text rect, which the theme's `::item` rule shrinks by
+    // 4 px above and below. At the theme's own row height the text box was left 12 px high for a 15 px line, so
+    // the text was cut at both ends. The table gets a taller row, and its own item rule without vertical padding
+    // gives the field the whole height; the name it carries is what decides the import, and it has to be read.
+    ui->tableAliases->setObjectName(QStringLiteral("pieceAliasTable"));
+    ui->tableAliases->verticalHeader()->setDefaultSectionSize(kAliasRowHeight);
+
+    // No hover row here: the delegate below drops the state before painting, and the row stays as it is.
+    ui->tableAliases->setAlternatingRowColors(false);
+    ui->tableAliases->setStyleSheet(QStringLiteral("QTableWidget#pieceAliasTable::item { padding: 0px 8px; }"));
+    ui->tableAliases->setItemDelegate(new NoHoverDelegate(ui->tableAliases));
+
     // Les cellules ne s'éditent pas : le champ de droite est le widget, et c'est lui qui porte la décision.
     ui->tableAliases->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableAliases->setRowCount(static_cast<int>(m_proposal.aliases.size()));
@@ -236,6 +281,13 @@ void OPieceImportDialog::FillAliases()
     ui->tableAliases->resizeColumnsToContents();
     ui->tableAliases->horizontalHeader()->setSectionResizeMode(kObject, QHeaderView::ResizeToContents);
     ui->tableAliases->horizontalHeader()->setSectionResizeMode(kAlias, QHeaderView::Stretch);
+
+    // The dialog is as tall as its aliases, up to what a screen can hold: a list of names that has to be scrolled
+    // to be read is a list where a wrong name is easy to leave in place. Past the cap the scroll stays — nothing
+    // is gained by a window taller than the screen.
+    const int header = ui->tableAliases->horizontalHeader()->sizeHint().height();
+    const int content = header + static_cast<int>(m_proposal.aliases.size()) * kAliasRowHeight + 4;
+    ui->tableAliases->setMinimumHeight(qBound(kAliasListMinHeight, content, kAliasListMaxHeight));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

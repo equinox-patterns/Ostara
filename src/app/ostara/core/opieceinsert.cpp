@@ -153,7 +153,42 @@ auto OPieceInsert::Propose(const OPieceDocument &piece, VPattern *doc, VContaine
     // and a role the mark forgets is a copy that reads the original's lines. The aliases the dialog shows and the
     // table it proposes are therefore read from the same place, and cannot disagree.
     const QDomElement root = piece.documentElement();
-    proposal.aliases = OPieceMark::Aliases(root);
+
+    // The dialog shows every alias of the piece — the curves as much as the lines — with one exception: a line
+    // role whose line no longer exists. The pair of points is not enough to know that the line is there (an old
+    // file keeps both points and loses the line), so the piece's own block is asked, the way its tools read it.
+    // The row is not a conflict and not a formula: it is a name for a line that is not in the file, and asking
+    // the reader to give it one is asking about nothing.
+    const QVector<OPieceMark::Alias> declared = OPieceMark::Aliases(root);
+    const QSet<QString> borne = OPieceMark::BorneLineRoles(root);
+
+    QHash<QString, QString> pairOfLineRole;
+    for (QDomElement row = piece.LineNames().firstChildElement(VDomDocument::TagLine); not row.isNull();
+         row = row.nextSiblingElement(VDomDocument::TagLine))
+    {
+        const QStringList pair = row.attribute(AttrPoints).split(QLatin1Char(' '), Qt::SkipEmptyParts);
+        if (pair.size() == 2)
+        {
+            pairOfLineRole.insert(row.attribute(VAbstractPattern::AttrName),
+                                  pair.at(0) + QLatin1Char('_') + pair.at(1));
+        }
+    }
+
+    proposal.aliases.clear();
+    proposal.aliases.reserve(declared.size());
+    for (const OPieceMark::Alias &alias : declared)
+    {
+        if (alias.of == OPieceMark::AliasOf::Line)
+        {
+            const auto pair = pairOfLineRole.constFind(alias.name);
+            if (pair != pairOfLineRole.constEnd() && not borne.contains(pair.value()))
+            {
+                continue; // a line that is not in the piece
+            }
+        }
+
+        proposal.aliases.append(alias);
+    }
 
     // The names of the piece's own line roles: they live at the root of its envelope, so the walk over the block
     // will not meet them — and yet a formula of the block cites them by `Line_<role>` and `AngleLine_<role>`.
@@ -279,6 +314,12 @@ void OPieceInsert::AddPieceFromLibrary::redo()
 
     m_pattern->LiteParseTree(Document::FullLiteParse);
     m_pattern->NeedFullParsing();
+
+    // The block arrived with its own layers, and nothing else in this command creates one: no AddGroup, no
+    // AddItemToGroup, so nothing has told the Layers dock that the piece it is looking at now has layers. The
+    // full parse queued above does not tell it either — the dock reads the document, and its refresh is a signal
+    // of its own. Emitted here, the dock is right before the reader can look at it.
+    m_pattern->UpdateVisiblityGroups();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

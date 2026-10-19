@@ -297,18 +297,19 @@ void VPattern::Parse(const Document &parse)
 
     m_fileParsingCompleted = true;
 
-    // A line name means something only while both its points exist. A point — or a whole block — that leaves
-    // takes the line with it, but `<lineNames>` is a sibling of the blocks: no command owns a row of it, so a
-    // deleted piece or point leaves its names behind, still taken for every line and shown by none. Every parse
-    // follows a deletion, and every block is read by now, so this is where the file heals itself.
-    if (const int droppedNames = data->PruneOrphanLineRoleNames(); droppedNames > 0)
+    // A line name means something only while a line bears it. A point, a block or the line itself that leaves
+    // takes the name with it, but `<lineNames>` is a sibling of the blocks: no command owns a row of it, so a
+    // deleted piece or line leaves its names behind, still taken for every line and shown by none. Every parse
+    // follows a deletion, and every block is read by now — the names a tool has really taken are known — so this
+    // is where the file heals itself.
+    if (const int droppedNames = data->PruneOrphanLineRoleNames(true); droppedNames > 0)
     {
         // The container is not the section, and the section is what the **next** parse reads: an orphan left
         // there is adopted again, and then collides with the name the user is about to give the line that used
         // to bear it — "duplicate line role name, second occurrence ignored", with the new name thrown away.
         // Rewriting it here, from what is left, is the healing the save performs, done before anything reads it.
         SyncLineNamesToDom();
-        qCDebug(vXML, "Dropped %d line name(s) whose points no longer exist.", droppedNames);
+        qCDebug(vXML, "Dropped %d line name(s) no line bears any more.", droppedNames);
     }
 
     // Adopt an anchor for every piece child that carries a deliberate placement but no anchor

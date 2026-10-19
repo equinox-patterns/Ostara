@@ -237,7 +237,8 @@ void CollectPointNames(const QDomElement &element, const QString &parentTag, QSe
  * whole is left out rather than guessed at: a role carried for a line the piece does not have would name a line
  * of the host.
  */
-auto CollectLineRoles(const QDomElement &root, const QSet<QString> &pointNames) -> QDomElement
+auto CollectLineRoles(const QDomElement &root, const QSet<QString> &pointNames,
+                      const QSet<QString> &bornePairs) -> QDomElement
 {
     const QDomElement section = root.firstChildElement(VAbstractPattern::TagLineNames);
     if (section.isNull() || pointNames.isEmpty())
@@ -253,6 +254,14 @@ auto CollectLineRoles(const QDomElement &root, const QSet<QString> &pointNames) 
     {
         const QStringList pair = row.attribute(AttrPoints).split(QLatin1Char(' '), Qt::SkipEmptyParts);
         if (pair.size() != 2 || not pointNames.contains(pair.at(0)) || not pointNames.contains(pair.at(1)))
+        {
+            continue;
+        }
+
+        // Both points being there is not enough: a name whose line has been deleted keeps its pair of points and
+        // no line at all. The piece must not carry such a row — the import would offer it as a name to give,
+        // for a line that does not exist. Only what a tool has taken a role for during the last parse travels.
+        if (not bornePairs.contains(pair.at(0) + QLatin1Char('_') + pair.at(1)))
         {
             continue;
         }
@@ -510,7 +519,7 @@ auto OPieceBuilder::Build(VAbstractPattern *doc,
     // point names, because that is what a role is made of.
     QSet<QString> pointNames;
     CollectPointNames(block, QString(), pointNames);
-    piece->SetLineNames(CollectLineRoles(root, pointNames));
+    piece->SetLineNames(CollectLineRoles(root, pointNames, data->BorneLineRolePairs()));
 
     piece->SetDependencies(needed);
     piece->SetMeasurements(measurements.values());

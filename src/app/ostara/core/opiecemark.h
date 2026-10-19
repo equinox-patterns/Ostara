@@ -130,6 +130,16 @@ struct Alias
 auto Aliases(const QDomElement &root) -> QVector<Alias>;
 
 /**
+ * @brief The line-role pairs @p root's block really joins, written `A1_A3`, in both orders.
+ *
+ * A role in `<lineNames>` is just a pair of point names: an old file can carry one whose line was deleted while
+ * both points stayed. This is the piece's own answer — the block's tools, read as the tools read them: a `<line>`
+ * joins its two points, and a point tool joins its base (or first, or second) point to the point it places. The
+ * import dialog uses it to keep a line whose line exists and to drop the names of the lines that do not.
+ */
+auto BorneLineRoles(const QDomElement &root) -> QSet<QString>;
+
+/**
  * @brief The names @p root declares that the code **composed**, and that a formula therefore may not cite.
  *
  * A name that was **given** — an `alias`, the role of a line once it is more than the pair it joins, the name of
