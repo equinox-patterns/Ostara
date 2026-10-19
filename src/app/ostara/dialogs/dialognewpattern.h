@@ -87,6 +87,13 @@ protected:
     void showEvent(QShowEvent *event) override;
 private slots:
     void CheckState();
+
+    /// @brief The folder chosen in the combo: the list is read again, from that folder only.
+    void OnFolderChanged();
+
+    /// @brief The search, filtering the list of the folder already read — never the library again.
+    void OnSearchChanged();
+
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(DialogNewPattern) // NOLINT
@@ -105,10 +112,23 @@ private:
     QComboBox *m_layerColor{nullptr};
     void InitUnits();
 
-    /// Fill the second group from the library the caller gave: one line per piece, saying what it reads
-    /// elsewhere — that is what decides whether it can enter this pattern at all. A file that cannot be read
-    /// keeps its place and says why, unselectable, rather than disappearing from the list without a word.
+    /// Fill the second group from the library the caller gave: the folders in the combo, then the pieces of the
+    /// folder chosen — one line per piece, saying what it reads elsewhere, which is what decides whether it can
+    /// enter this pattern at all. A file that cannot be read declares no unit, so the unit filter leaves it out
+    /// and the count below says so, rather than it disappearing without a word.
     void FillLibrary();
+
+    /// @brief The folders of the library as combo entries — the library's own folder first, then the labels.
+    void PopulateFolders();
+
+    /// @brief The folder the combo points at — the library's own folder when it points at nothing.
+    auto CurrentFolder() const -> QString;
+
+    /// @brief Hides the rows the search does not match: the list is already the folder's, and stays that.
+    void FilterLibrary();
+
+    /// @brief Says which empty state the list is in — a folder with nothing, a search that matches nothing, etc.
+    void ShowLibraryState();
 
     /// The unit a piece must be in to be offered: the combo's when the pattern is being born, the one the caller
     /// gave otherwise. Every other unit is left out of the list, because the insertion would refuse it.
@@ -123,6 +143,11 @@ private:
     QString m_libraryDirectory{};
     QString m_importedPath{};
     Unit m_libraryUnit{Unit::LAST_UNIT_DO_NOT_USE};
+
+    /// What the folder held, and how much of it the unit filter left out: the two numbers that tell an empty
+    /// folder from a folder whose pieces are all in another unit.
+    int m_libraryCount{0};
+    int m_libraryLeftOut{0};
     /// The OK button's own text, kept so it can be given back when the choice goes back to creating a piece.
     QString m_okText{};
 };

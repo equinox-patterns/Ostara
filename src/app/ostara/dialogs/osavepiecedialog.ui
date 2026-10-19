@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>430</height>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -87,6 +87,54 @@
      </property>
      <property name="text">
       <string>A piece is written as a file in the library, so its name cannot hold a slash.</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupFolder">
+     <property name="title">
+      <string>Folder in the library</string>
+     </property>
+     <layout class="QVBoxLayout" name="folderLayout">
+      <item>
+       <widget class="QTreeWidget" name="treeFolder">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>170</height>
+         </size>
+        </property>
+        <property name="headerHidden">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="editTriggers">
+         <enum>QAbstractItemView::NoEditTriggers</enum>
+        </property>
+        <property name="uniformRowHeights">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="createFolderButton">
+        <property name="text">
+         <string>Create a folder</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelDestination">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

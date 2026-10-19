@@ -4,8 +4,8 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   12/10/2026
  **
- **  @brief  The pieces saved in the library: what each of them asks for, what the reader wrote about it, and the
- **          four gestures that manage them — insert one, copy one out, take one in, or delete it.
+ **  @brief  The pieces saved in the library, sorted into folders: what each of them asks for, what the reader
+ **          wrote about it, and the gestures that manage them — insert one, move one, copy one out, delete one.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -32,6 +32,7 @@
 #include <QDialog>
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 class QDialogButtonBox;
 class QGroupBox;
@@ -41,18 +42,22 @@ class QPlainTextEdit;
 class QPushButton;
 class QTableWidget;
 class QTimer;
+class QTreeWidget;
 
 /**
  * @brief The library of pieces: what it holds, what each piece needs, and what was written about it.
  *
- * The list is what a folder cannot say — a piece that reads a value it does not declare needs another piece, and
- * that other piece is named here before the piece is ever imported. Beside it, the same selection tells **what the
- * piece reads** in full and **what the reader noted** about it, and the note is written here as well as read: a
- * piece is managed from this window, so this is where it is described.
+ * The pieces are sorted into folders, the way the patterns are: the tree on the left is the library's shape, the
+ * list is the folder it points at, and the search is the one gesture that walks the whole library — a piece can be
+ * in a folder the reader is not looking at, and that is exactly what she is asking for.
  *
- * Four gestures live here, and none of them is a way of drawing: **Insert** gives the chosen piece to the caller,
- * **Export** copies it out of the library under another name, **Import** takes a piece in from elsewhere, and
- * **Delete** removes it. Import reads a piece before it copies it, and Delete asks.
+ * Beside the list, the selected piece says **what it reads** in full and **what the reader noted** about it, and
+ * the note is written here as well as read: a piece is managed from this window, so this is where it is described.
+ *
+ * Five gestures live here, and none of them is a way of drawing: **Insert** gives the chosen piece to the caller,
+ * **Transfer** moves it to another folder of the library, **Export** copies it out under another name, **Import**
+ * takes a piece in from elsewhere — into the folder the window is standing in — and **Delete** removes it. Import
+ * reads a piece before it copies it, and Delete asks.
  */
 class OPieceLibraryDialog : public QDialog
 {
@@ -76,15 +81,18 @@ protected:
 
 private slots:
     void OnSearchChanged(const QString &text);
+    void OnSearchTimeout();
+    void OnFolderSelected();
+    void OnCreateFolder();
     void ShowDetails();
 
-    /// @brief A click on one of the two action columns: the piece of that row is exported or deleted.
+    /// @brief A click on one of the three action columns: the piece of that row is moved, exported or deleted.
     void OnCellClicked(int row, int column);
 
-    /// @brief The library folder, opened where the system keeps its files.
+    /// @brief The folder the list shows, opened where the system keeps its files.
     void OnOpenFolder();
 
-    /// @brief A piece taken from elsewhere on the computer, read, and copied into the library.
+    /// @brief A piece taken from elsewhere on the computer, read, and copied into the current folder.
     void OnImportPiece();
 
     /// @brief The note the reader is typing, remembered once she stops.
@@ -97,14 +105,24 @@ private:
     void SetupUI();
     void Retranslate();
     void Refresh();
+    void PopulateTree();
     void Populate();
-    void Filter(const QString &filter);
+
+    /// @brief The folder the tree points at — the library's own folder when it points at nothing.
+    auto ActiveFolder() const -> QString;
 
     /// @brief Follow the selection: remember the piece chosen and say whether it can be inserted at all.
     void FollowSelection();
 
     /// @brief The row the selection is on, or -1 — a hidden row counts as no row at all.
     auto SelectedRow() const -> int;
+
+    void TransferPiece(int row);
+
+    /// @brief Asks where the piece goes: a combo of the library's folders, read by index — names repeat.
+    /// @return the folder chosen, absolute, or empty when the reader gave up.
+    auto AskTransferFolder(const QString &pieceName, const QStringList &labels, const QStringList &paths)
+        -> QString;
 
     void ExportPiece(int row);
     void DeletePiece(int row);
@@ -116,10 +134,16 @@ private:
     /// @return the path to copy to, or empty when the reader gave up.
     auto FreeImportPath(const QString &directory, const QString &baseName) -> QString;
 
+    /// @brief Writes the note still waiting, before the list it belongs to is rebuilt.
+    void CommitPendingNotes();
+
     QLabel *m_searchLabel{nullptr};
     QLineEdit *m_searchEdit{nullptr};
+    QPushButton *m_createFolderButton{nullptr};
+    QTreeWidget *m_tree{nullptr};
     QTableWidget *m_table{nullptr};
 
+    QLabel *m_stateLabel{nullptr};
     QGroupBox *m_needsGroup{nullptr};
     QLabel *m_needsLabel{nullptr};
     QGroupBox *m_notesGroup{nullptr};
@@ -129,6 +153,10 @@ private:
     QPushButton *m_importButton{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
     QPushButton *m_insertButton{nullptr};
+
+    /// The search is replayed a moment after the typing stops: the list is rebuilt, not filtered in place, and a
+    /// rebuild per letter is a list that flickers under the hand.
+    QTimer *m_searchTimer{nullptr};
 
     /// The note is written a moment after the typing stops, never on every keystroke: a file written per letter
     /// would be a file validated per letter.
@@ -141,8 +169,14 @@ private:
     /// was typed for, never to the one that just took its place.
     int m_notesRow{-1};
 
+    /// Every piece of the library, folders walked — the search reads this, never the disk again.
+    QList<OPieceLibrary::Summary> m_all{};
+
+    /// The pieces the list is showing: the folder chosen, or what the search found.
     QList<OPieceLibrary::Summary> m_summaries{};
+
     QString m_directory{};
+    QString m_activeFolder{};
     QString m_selectedPath{};
 };
 

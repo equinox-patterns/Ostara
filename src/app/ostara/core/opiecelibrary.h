@@ -71,8 +71,24 @@ auto Extension() -> QString;
 /** @brief The folder pieces are saved in, from settings (GetPathPieces). */
 auto DefaultDirectory() -> QString;
 
+/**
+ * @brief Makes the library's own folder, and does nothing when it is already there.
+ *
+ * Called at the first launch, before any piece was ever saved: the window that shows the library would otherwise
+ * be showing the absence of a folder rather than an empty library. Never fatal — a folder made here is a comfort,
+ * and a missing one is made again at the first write.
+ */
+void EnsureDirectory();
+
 /** @brief Every piece in @p dirPath, as absolute paths sorted by name — empty if there is none. */
 auto ScanDirectory(const QString &dirPath) -> QStringList;
+
+/// @brief A folder of the library, named the way a reader reads it: `Dupont/Hiver`, and where it lives.
+struct Folder
+{
+    QString label{}; ///< the path relative to the library's own folder, written with slashes.
+    QString path{};  ///< the folder itself, absolute.
+};
 
 /**
  * @brief Every piece in @p dirPath, read and summarised, in the order the scan gives.
@@ -82,6 +98,41 @@ auto ScanDirectory(const QString &dirPath) -> QStringList;
  * mistake of her own.
  */
 auto Summaries(const QString &dirPath) -> QList<Summary>;
+
+/**
+ * @brief Every piece under @p rootPath, sub-folders walked, judged as the folder's list judges it.
+ *
+ * The same summaries as Summaries, one level deeper: the search of the window reads the whole library at once,
+ * and the dialog that makes a pattern from a piece has to be able to offer a piece whatever folder it is in.
+ */
+auto AllSummaries(const QString &rootPath) -> QList<Summary>;
+
+/**
+ * @brief The sub-folders of @p rootPath, recursively, each with its readable label, sorted — root left out.
+ *
+ * The root is not a line of its own: it is where a reader already is when nothing is chosen, and naming it in
+ * the list would make two ways of saying "here".
+ */
+auto Folders(const QString &rootPath) -> QList<Folder>;
+
+/**
+ * @brief Makes @p name under @p parentPath, refusing an empty name, a separator, or a name already taken.
+ *
+ * @param error the refusal, translated — a folder the reader asked for and did not get has to say why.
+ */
+auto CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool;
+
+/// @brief Where the piece of @p sourcePath lands when moved into @p targetDirectory.
+auto TargetPath(const QString &sourcePath, const QString &targetDirectory) -> QString;
+
+/// @brief Moves the piece into @p targetDirectory — replacing what is there when @p overwrite says so.
+auto Transfer(const QString &sourcePath, const QString &targetDirectory, bool overwrite, QString *error) -> bool;
+
+/// @brief Copies the piece to @p targetPath, replacing what is there — never the file itself.
+auto Export(const QString &sourcePath, const QString &targetPath, QString *error) -> bool;
+
+/// @brief Removes the piece from the library, and says so when the file refuses.
+auto Remove(const QString &filePath, QString *error) -> bool;
 
 /**
  * @brief What @p summary reads elsewhere, named for a list — `Buste, Manche`.

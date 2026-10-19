@@ -28,9 +28,15 @@
 
 #include "ui_osavepiecedialog.h"
 
+#include "olibraryfolderdialog.h"
+
+#include "core/opiecelibrary.h"
 #include "def.h"
 #include "../qmuparser/qmudef.h"
+#include "widgets/olibraryicondelegate.h"
+#include "widgets/olibrarytree.h"
 
+#include <QDir>
 #include <QEvent>
 #include <QHeaderView>
 #include <QLabel>
@@ -39,23 +45,98 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QSet>
+#include <QSignalBlocker>
 #include <QTableWidget>
 #include <QTableWidgetItem>
+#include <QTreeWidget>
 
 //---------------------------------------------------------------------------------------------------------------------
-OSavePieceDialog::OSavePieceDialog(const QString &pieceName, const QVector<OPieceName::Blocker> &blockers,
-                                   const QSet<QString> &taken, QWidget *parent)
-    : QDialog(parent), ui(new Ui::OSavePieceDialog), m_blockers(blockers), m_taken(taken)
+OSavePieceDialog::OSavePieceDialog(const QString &pieceName, const QString &libraryDirectory,
+                                   const QVector<OPieceName::Blocker> &blockers, const QSet<QString> &taken,
+                                   QWidget *parent)
+    : QDialog(parent),
+      ui(new Ui::OSavePieceDialog),
+      m_library(libraryDirectory),
+      m_blockers(blockers),
+      m_taken(taken)
 {
     ui->setupUi(this);
+
+    // The same tree the library's window shows, down to its object name: the theme draws its branch carets from
+    // that name, and a tree that looked different here would look like another tree.
+    ui->treeFolder->setObjectName(QStringLiteral("libraryTree"));
+    ui->treeFolder->setIconSize(QSize(20, 20));
+    ui->treeFolder->setItemDelegate(new OLibraryRowDelegate(ui->treeFolder));
+    connect(ui->treeFolder, &QTreeWidget::itemSelectionChanged, this, &OSavePieceDialog::ShowDestination);
+    connect(ui->createFolderButton, &QPushButton::clicked, this, &OSavePieceDialog::OnCreateFolder);
 
     // The piece's own name, as a starting point and not as a decision: the library is shared, and two
     // patterns can hold a piece of the same name without it being the same piece.
     ui->lineEditName->setText(pieceName);
 
     FillBlockers();
+    PopulateTree();
     CheckState();
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &OSavePieceDialog::CheckState);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSavePieceDialog::PopulateTree()
+{
+    const QString current = OLibraryTree::SelectedPath(ui->treeFolder);
+
+    // Rebuilding the tree clears the selection, and that is not the reader choosing the library's own folder:
+    // the signals are cut, and the folder is put back before the destination is said.
+    const QSignalBlocker blocker(ui->treeFolder);
+
+    // Here the library's own folder **is** a line: a destination has to be visible at all times.
+    OLibraryTree::Fill(ui->treeFolder, m_library, true, tr("The library's own folder"),
+                       OLibraryIcon(QStringLiteral("folder-open")));
+    OLibraryTree::Select(ui->treeFolder, current.isEmpty() ? m_library : current);
+
+    ShowDestination();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSavePieceDialog::TargetFolder() const -> QString
+{
+    const QString selected = OLibraryTree::SelectedPath(ui->treeFolder);
+    return selected.isEmpty() ? m_library : selected;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSavePieceDialog::LibraryPath() const -> QString
+{
+    return QDir(TargetFolder()).absoluteFilePath(name() + QLatin1Char('.') + OPieceLibrary::Extension());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSavePieceDialog::ShowDestination()
+{
+    const QString name = ui->lineEditName->text();
+
+    // The consequence in plain words: a tree and a name do not make a path by themselves, and the reader is
+    // about to write a file she will have to find again.
+    ui->labelDestination->setText(name.isEmpty() ? tr("Give the file a name.")
+                                                 : tr("Will be saved in: %1").arg(TargetFolder()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSavePieceDialog::OnCreateFolder()
+{
+    OLibraryFolderDialog dialog(TargetFolder(), this);
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // The folder created becomes the destination, since that is why it was made.
+    const QString created = dialog.CreatedPath();
+    PopulateTree();
+
+    const QSignalBlocker blocker(ui->treeFolder);
+    OLibraryTree::Select(ui->treeFolder, created);
+    ShowDestination();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -171,6 +252,10 @@ void OSavePieceDialog::changeEvent(QEvent *event)
     if (event->type() == QEvent::LanguageChange)
     {
         ui->retranslateUi(this);
+
+        // The tree's only word is the library's own folder, and the destination sentence is built rather than
+        // written in the .ui: both are said again, in the language the dialogue now speaks.
+        PopulateTree();
     }
 
     QDialog::changeEvent(event);
@@ -235,4 +320,6 @@ void OSavePieceDialog::CheckState()
     ui->labelNamesProblem->setVisible(not problem.isEmpty());
 
     bOk->setEnabled(not name.isEmpty() && isFileName && problem.isEmpty());
+
+    ShowDestination();
 }

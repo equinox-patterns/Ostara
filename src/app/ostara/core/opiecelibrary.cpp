@@ -26,6 +26,8 @@
 
 #include "opiecelibrary.h"
 
+#include "olibraryscanner.h"
+#include "olibrarystorage.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 
@@ -35,11 +37,56 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include <algorithm>
+
 namespace
 {
 const QString kExtension = QStringLiteral("opiece");
 const QString kFilePattern = QStringLiteral("*.opiece");
 const QString kRootTag = QStringLiteral("piece");
+
+/// @brief One file, read and summarised — the file name is the fallback name, and not a lesser one.
+auto ReadSummary(const QString &filePath) -> OPieceLibrary::Summary
+{
+    const QFileInfo info(filePath);
+
+    OPieceLibrary::Summary summary;
+    summary.path = filePath;
+    // It is what the reader will recognise when the file cannot be read, and what she will go and look at.
+    summary.name = info.completeBaseName();
+    summary.modified = info.lastModified();
+
+    OPieceDocument piece;
+    QString error;
+    if (OPieceLibrary::Load(filePath, &piece, &error))
+    {
+        summary.name = piece.PieceName();
+        summary.unit = piece.Unit();
+        summary.notes = piece.Notes();
+        summary.dependencies = piece.Dependencies();
+        summary.measurements = piece.Measurements();
+    }
+    else
+    {
+        // A file that cannot be read is kept in the list, with its reason: a piece that disappears from the
+        // library without a word is worse than one that says it is unreadable.
+        summary.error = error;
+    }
+
+    return summary;
+}
+
+auto Collect(const QStringList &files) -> QList<OPieceLibrary::Summary>
+{
+    QList<OPieceLibrary::Summary> summaries;
+    summaries.reserve(files.size());
+    for (const QString &filePath : files)
+    {
+        summaries.append(ReadSummary(filePath));
+    }
+
+    return summaries;
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -55,63 +102,87 @@ auto OPieceLibrary::DefaultDirectory() -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OPieceLibrary::EnsureDirectory()
+{
+    const QString directory = DefaultDirectory();
+    if (directory.isEmpty())
+    {
+        return;
+    }
+
+    QDir().mkpath(directory);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OPieceLibrary::ScanDirectory(const QString &dirPath) -> QStringList
 {
-    QDir dir(dirPath);
-    if (not dir.exists())
-    {
-        return {};
-    }
-
-    const QStringList files = dir.entryList({kFilePattern}, QDir::Files, QDir::Name | QDir::IgnoreCase);
-
-    QStringList paths;
-    paths.reserve(files.size());
-    for (const QString &file : files)
-    {
-        paths.append(dir.absoluteFilePath(file));
-    }
-
-    return paths;
+    return OLibraryScanner::Files(dirPath, kFilePattern, false);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPieceLibrary::Summaries(const QString &dirPath) -> QList<Summary>
 {
-    const QStringList files = ScanDirectory(dirPath);
+    return Collect(ScanDirectory(dirPath));
+}
 
-    QList<Summary> summaries;
-    summaries.reserve(files.size());
-    for (const QString &filePath : files)
-    {
-        const QFileInfo info(filePath);
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::AllSummaries(const QString &rootPath) -> QList<Summary>
+{
+    QList<Summary> summaries = Collect(OLibraryScanner::Files(rootPath, kFilePattern, true));
 
-        Summary summary;
-        summary.path = filePath;
-        // The file name is the fallback, and not a lesser one: it is what the reader will recognise when the
-        // file cannot be read, and what she will go and look at.
-        summary.name = info.completeBaseName();
-        summary.modified = info.lastModified();
-
-        OPieceDocument piece;
-        QString error;
-        if (Load(filePath, &piece, &error))
-        {
-            summary.name = piece.PieceName();
-            summary.unit = piece.Unit();
-            summary.notes = piece.Notes();
-            summary.dependencies = piece.Dependencies();
-            summary.measurements = piece.Measurements();
-        }
-        else
-        {
-            summary.error = error;
-        }
-
-        summaries.append(summary);
-    }
+    // Read in the order the tree gives; shown in the order a reader looks a name up, which is not the same thing
+    // once several folders hold pieces: two pieces of the same name are told apart by their path.
+    std::sort(summaries.begin(), summaries.end(), [](const Summary &left, const Summary &right) {
+        const int byName = left.name.compare(right.name, Qt::CaseInsensitive);
+        return byName != 0 ? byName < 0 : left.path < right.path;
+    });
 
     return summaries;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Folders(const QString &rootPath) -> QList<Folder>
+{
+    QList<Folder> folders;
+    const QList<OLibraryScanner::Folder> scanned = OLibraryScanner::Folders(rootPath);
+    folders.reserve(scanned.size());
+    for (const OLibraryScanner::Folder &folder : scanned)
+    {
+        folders.append({folder.label, folder.path});
+    }
+
+    return folders;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool
+{
+    return OLibraryStorage::CreateDirectory(parentPath, name, error);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::TargetPath(const QString &sourcePath, const QString &targetDirectory) -> QString
+{
+    return OLibraryStorage::TargetPath(sourcePath, targetDirectory);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Transfer(const QString &sourcePath, const QString &targetDirectory, bool overwrite,
+                             QString *error) -> bool
+{
+    return OLibraryStorage::Transfer(sourcePath, targetDirectory, overwrite, error);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Export(const QString &sourcePath, const QString &targetPath, QString *error) -> bool
+{
+    return OLibraryStorage::Export(sourcePath, targetPath, error);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceLibrary::Remove(const QString &filePath, QString *error) -> bool
+{
+    return OLibraryStorage::Remove(filePath, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

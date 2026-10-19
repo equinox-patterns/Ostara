@@ -27,6 +27,7 @@
 #include "opatternlibrary.h"
 
 #include "olibraryscanner.h"
+#include "olibrarystorage.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
 
@@ -243,31 +244,15 @@ auto OPatternLibrary::SubDirectories(const QString &dirPath) -> QStringList
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-namespace
-{
-void CollectFolders(const QString &root, const QString &prefix, QList<OPatternLibrary::Folder> *folders)
-{
-    const QStringList subFolders = OLibraryScanner::Directories(root);
-    for (const QString &folder : subFolders)
-    {
-        const QString name = QFileInfo(folder).fileName();
-        const QString label = prefix.isEmpty() ? name : prefix + QLatin1Char('/') + name;
-
-        folders->append({label, folder});
-        CollectFolders(folder, label, folders);
-    }
-}
-} // namespace
-
-//---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::Folders(const QString &rootPath) -> QList<Folder>
 {
     QList<Folder> folders;
-    CollectFolders(rootPath, QString(), &folders);
-
-    std::sort(folders.begin(), folders.end(), [](const Folder &left, const Folder &right) {
-        return left.label.compare(right.label, Qt::CaseInsensitive) < 0;
-    });
+    const QList<OLibraryScanner::Folder> scanned = OLibraryScanner::Folders(rootPath);
+    folders.reserve(scanned.size());
+    for (const OLibraryScanner::Folder &folder : scanned)
+    {
+        folders.append({folder.label, folder.path});
+    }
 
     return folders;
 }
@@ -313,131 +298,36 @@ auto OPatternLibrary::Search(const QString &rootPath, const QString &needle) -> 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::ValidateChildName(const QString &parentPath, const QString &name, QString *error) -> bool
 {
-    const QString trimmed = name.trimmed();
-
-    if (trimmed.isEmpty())
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "A folder's name cannot be empty.");
-        return false;
-    }
-
-    if (trimmed.contains(QLatin1Char('/')) || trimmed.contains(QLatin1Char('\\')))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "A folder's name cannot hold a slash.");
-        return false;
-    }
-
-    if (QDir(parentPath).exists(trimmed))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "\"%1\" already exists here.").arg(trimmed);
-        return false;
-    }
-
-    return true;
+    return OLibraryStorage::ValidateChildName(parentPath, name, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool
 {
-    if (not ValidateChildName(parentPath, name, error))
-    {
-        return false;
-    }
-
-    const QString path = QDir(parentPath).absoluteFilePath(name.trimmed());
-    if (not QDir().mkpath(path))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "The folder could not be created.");
-        return false;
-    }
-
-    return true;
+    return OLibraryStorage::CreateDirectory(parentPath, name, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::TargetPath(const QString &sourcePath, const QString &targetDirectory) -> QString
 {
-    return QDir(targetDirectory).absoluteFilePath(QFileInfo(sourcePath).fileName());
+    return OLibraryStorage::TargetPath(sourcePath, targetDirectory);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::Transfer(const QString &sourcePath, const QString &targetDirectory, bool overwrite,
                                QString *error) -> bool
 {
-    const QString target = TargetPath(sourcePath, targetDirectory);
-    if (target == sourcePath)
-    {
-        return true; // Moved to where it already is: nothing to do, and nothing to explain.
-    }
-
-    if (QFileInfo::exists(target))
-    {
-        if (not overwrite)
-        {
-            *error = QCoreApplication::translate("OPatternLibrary", "\"%1\" already exists there.")
-                         .arg(QFileInfo(target).fileName());
-            return false;
-        }
-
-        // The reader said yes: a rename over an existing file is not something the file system promises, so the
-        // destination goes first.
-        if (not QFile::remove(target))
-        {
-            *error = QCoreApplication::translate("OPatternLibrary", "The file it replaces could not be removed.");
-            return false;
-        }
-    }
-
-    if (QFile::rename(sourcePath, target))
-    {
-        return true;
-    }
-
-    // Another volume: the move is a copy that must remove what it copied, or the library would hold two of it.
-    if (QFile::copy(sourcePath, target) && QFile::remove(sourcePath))
-    {
-        return true;
-    }
-
-    *error = QCoreApplication::translate("OPatternLibrary", "The pattern could not be moved there.");
-    return false;
+    return OLibraryStorage::Transfer(sourcePath, targetDirectory, overwrite, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::Export(const QString &sourcePath, const QString &targetPath, QString *error) -> bool
 {
-    if (QDir::cleanPath(targetPath) == QDir::cleanPath(sourcePath))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "The chosen destination is the file itself.");
-        return false;
-    }
-
-    // `QFile::copy` refuses to overwrite, while the save dialog offers to: the destination is removed first, so
-    // a reader who answered "replace it" is not told afterwards that the copy failed.
-    if (QFileInfo::exists(targetPath) && not QFile::remove(targetPath))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "The file it replaces could not be removed.");
-        return false;
-    }
-
-    if (not QFile::copy(sourcePath, targetPath))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary",
-                                            "Could not copy the pattern to the selected destination.");
-        return false;
-    }
-
-    return true;
+    return OLibraryStorage::Export(sourcePath, targetPath, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OPatternLibrary::Remove(const QString &filePath, QString *error) -> bool
 {
-    if (not QFile::remove(filePath))
-    {
-        *error = QCoreApplication::translate("OPatternLibrary", "Could not delete the file.");
-        return false;
-    }
-
-    return true;
+    return OLibraryStorage::Remove(filePath, error);
 }

@@ -684,11 +684,6 @@ void MainWindow::ActionSavePiece_triggered()
         return;
     }
 
-    // The name is asked before anything is written — and asked again as long as the library already holds
-    // one under that name: the question is the door, and the only way through it is to name the piece
-    // something else. A cancelled dialog leaves the library exactly as it was.
-    const QDir library(OPieceLibrary::DefaultDirectory());
-
     // Ce que la pièce emploie sans que personne l'ait nommé : une ligne connue par sa paire, une courbe connue
     // par la route qui la bâtit. La fenêtre les montre tous, le nom donné à chacun est écrit dans le patron — et
     // les formules qui les appelaient, chez les autres pièces comprises, sont réparées dans le même geste.
@@ -701,7 +696,11 @@ void MainWindow::ActionSavePiece_triggered()
 
     while (true)
     {
-        OSavePieceDialog dialog(blockName, named ? QVector<OPieceName::Blocker>() : blockers, taken, this);
+        // The name and the folder are asked before anything is written — and asked again as long as the library
+        // already holds one under that name: the question is the door, and the only way through it is to name the
+        // piece something else, or to put it in another folder. A cancelled dialog leaves the library as it was.
+        OSavePieceDialog dialog(blockName, OPieceLibrary::DefaultDirectory(),
+                                named ? QVector<OPieceName::Blocker>() : blockers, taken, this);
         // Ce que le lecteur a déjà écrit sur la pièce : la fenêtre le montre, donc enregistrer de nouveau ne le
         // perd pas — et ce qui est montré est exactement ce qui sera écrit, dans le fichier comme sur le bloc.
         dialog.SetNotes(doc->BlockNotes(blockName));
@@ -759,7 +758,7 @@ void MainWindow::ActionSavePiece_triggered()
         }
 
         const QString name = dialog.name();
-        const QString filePath = library.filePath(name + QLatin1Char('.') + OPieceLibrary::Extension());
+        const QString filePath = dialog.LibraryPath();
 
         if (OExportFileDialog::ConfirmOverwrite(this, filePath, tr("Save piece")))
         {

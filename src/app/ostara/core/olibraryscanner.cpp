@@ -29,6 +29,8 @@
 #include <QDir>
 #include <QFileInfo>
 
+#include <algorithm>
+
 namespace
 {
 /// The files of one level that match @p nameFilter, sorted by name, hidden ones left out — the filter `QDir`
@@ -118,4 +120,34 @@ auto OLibraryScanner::Files(const QString &dirPath, const QString &nameFilter, b
     QStringList paths;
     Walk(dir, nameFilter, recursive, &paths);
     return paths;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+void CollectFolders(const QString &root, const QString &prefix, QList<OLibraryScanner::Folder> *folders)
+{
+    const QStringList subFolders = OLibraryScanner::Directories(root);
+    for (const QString &folder : subFolders)
+    {
+        const QString name = QFileInfo(folder).fileName();
+        const QString label = prefix.isEmpty() ? name : prefix + QLatin1Char('/') + name;
+
+        folders->append({label, folder});
+        CollectFolders(folder, label, folders);
+    }
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OLibraryScanner::Folders(const QString &rootPath) -> QList<OLibraryScanner::Folder>
+{
+    QList<Folder> folders;
+    CollectFolders(rootPath, QString(), &folders);
+
+    std::sort(folders.begin(), folders.end(), [](const Folder &left, const Folder &right) {
+        return left.label.compare(right.label, Qt::CaseInsensitive) < 0;
+    });
+
+    return folders;
 }

@@ -27,6 +27,7 @@
 #ifndef OLIBRARYSCANNER_H
 #define OLIBRARYSCANNER_H
 
+#include <QList>
 #include <QString>
 #include <QStringList>
 
@@ -52,6 +53,21 @@ auto Directories(const QString &dirPath) -> QStringList;
  * would have read in the tree.
  */
 auto Files(const QString &dirPath, const QString &nameFilter, bool recursive) -> QStringList;
+
+/// @brief A folder of the library, named the way a reader reads it: `Dupont/Hiver`, and where it lives.
+struct Folder
+{
+    QString label{}; ///< the path relative to the library's own folder, written with slashes.
+    QString path{};  ///< the folder itself, absolute.
+};
+
+/**
+ * @brief Every sub-folder of @p rootPath, recursively, each labelled by its relative path, sorted by label.
+ *
+ * The root is not a line of its own: it is where a reader already is when nothing is chosen, and naming it in
+ * the list would make two ways of saying "here".
+ */
+auto Folders(const QString &rootPath) -> QList<Folder>;
 } // namespace OLibraryScanner
 
 #endif // OLIBRARYSCANNER_H

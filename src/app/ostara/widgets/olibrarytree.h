@@ -57,7 +57,8 @@ namespace OLibraryTree
 void Fill(QTreeWidget *tree, const QString &rootPath, bool includeRoot, const QString &rootLabel,
           const QIcon &folderIcon);
 
-/// @brief Points the selection at the folder @p path. @return false when the tree does not hold it.
+/// @brief Points the selection at the folder @p path, opening its parents so that it is seen.
+/// @return false when the tree does not hold it.
 auto Select(QTreeWidget *tree, const QString &path) -> bool;
 
 /// @brief The folder the tree points at — an empty string when it points at nothing.

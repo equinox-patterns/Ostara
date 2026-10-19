@@ -96,7 +96,15 @@ auto OLibraryTree::Select(QTreeWidget *tree, const QString &path) -> bool
             QTreeWidgetItem *current = stack.takeLast();
             if (current->data(0, Qt::UserRole).toString() == path)
             {
+                // A folder chosen after a search can be under a closed branch: selecting an item the reader
+                // cannot see would leave the tree pointing at nothing, while the list shows that folder.
+                for (QTreeWidgetItem *parent = current->parent(); parent != nullptr; parent = parent->parent())
+                {
+                    parent->setExpanded(true);
+                }
+
                 tree->setCurrentItem(current);
+                tree->scrollToItem(current);
                 return true;
             }
 

@@ -50,6 +50,7 @@
 #include <QSettings>
 #include <QScreen>
 #include <QShowEvent>
+#include <QSignalBlocker>
 
 namespace
 {
@@ -83,9 +84,10 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
     // Centring happens in showEvent, not here: see the comment there.
     ui->lineEditName->setText(patternPieceName);
 
-    // The combo comes from the .ui, so the factory cannot have built it — and without its Qt-styled popup
+    // The combos come from the .ui, so the factory cannot have built them — and without their Qt-styled popup
     // the native macOS one ignores the stylesheet. rules.md §3.4.
     ApplyComboBoxView(ui->comboBoxUnits);
+    ApplyComboBoxView(ui->comboBoxFolder);
 
     InitUnits();
 
@@ -104,16 +106,22 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
         m_okText = bOk->text();
     }
 
-    connect(ui->listPieces, &QListWidget::itemDoubleClicked, this,
-            [this](QListWidgetItem *item) -> void
-            {
-                if (item != nullptr && (item->flags() & Qt::ItemIsEnabled) != 0)
-                {
-                    m_importedPath = item->data(Qt::UserRole).toString();
-                    accept();
-                }
-            });
+    auto insertPiece = [this](QListWidgetItem *item) -> void
+    {
+        if (item != nullptr && not item->isHidden() && (item->flags() & Qt::ItemIsEnabled) != 0)
+        {
+            m_importedPath = item->data(Qt::UserRole).toString();
+            accept();
+        }
+    };
+    connect(ui->listPieces, &QListWidget::itemDoubleClicked, this, insertPiece);
+    // Enter, too: the gesture of the dialog that opens a pattern, and the one a reader tries first.
+    connect(ui->listPieces, &QListWidget::itemActivated, this, insertPiece);
     connect(ui->listPieces, &QListWidget::itemSelectionChanged, this, &DialogNewPattern::CheckState);
+
+    // The folder decides what the list holds; the search only hides rows of what is already read.
+    connect(ui->comboBoxFolder, &QComboBox::currentIndexChanged, this, &DialogNewPattern::OnFolderChanged);
+    connect(ui->lineEditSearch, &QLineEdit::textChanged, this, &DialogNewPattern::OnSearchChanged);
 
     // The unit is part of the question when a pattern is being born, and only then: changing it changes which
     // pieces the library can offer, so the list is read again.
@@ -190,7 +198,55 @@ void DialogNewPattern::SetTakenNames(const QStringList &names)
 void DialogNewPattern::SetLibraryDirectory(const QString &directory)
 {
     m_libraryDirectory = directory;
+    PopulateFolders();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::PopulateFolders()
+{
+    const QSignalBlocker blocker(ui->comboBoxFolder);
+
+    ui->comboBoxFolder->clear();
+
+    if (m_libraryDirectory.isEmpty())
+    {
+        FillLibrary();
+        return;
+    }
+
+    // The library's own folder is a line of its own here, like in the dialog that opens a pattern: a destination
+    // that cannot be named would make the pieces at the root of the library unreachable.
+    ui->comboBoxFolder->addItem(tr("The library's own folder"), m_libraryDirectory);
+    for (const OPieceLibrary::Folder &folder : OPieceLibrary::Folders(m_libraryDirectory))
+    {
+        ui->comboBoxFolder->addItem(folder.label, folder.path);
+    }
+
+    // The library's own folder is what one looks in first; the search then looks in the folder chosen, not in
+    // the whole library.
+    ui->comboBoxFolder->setCurrentIndex(0);
+
     FillLibrary();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DialogNewPattern::CurrentFolder() const -> QString
+{
+    const QString chosen = ui->comboBoxFolder->currentData().toString();
+    return chosen.isEmpty() ? m_libraryDirectory : chosen;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::OnFolderChanged()
+{
+    FillLibrary();
+    ui->listPieces->setFocus();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::OnSearchChanged()
+{
+    FilterLibrary();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -212,19 +268,26 @@ auto DialogNewPattern::WantedUnit() const -> Unit
 void DialogNewPattern::FillLibrary()
 {
     ui->listPieces->clear();
-    ui->labelImportHint->setText(tr("Double-click a piece to insert it, or select one and accept."));
+    m_libraryCount = 0;
+    m_libraryLeftOut = 0;
+
     ui->labelImportHidden->clear();
     ui->labelImportHidden->setVisible(false);
 
     if (m_libraryDirectory.isEmpty())
     {
+        ShowLibraryState();
         return;
     }
 
     const Unit wanted = WantedUnit();
-    const QList<OPieceLibrary::Summary> summaries = OPieceLibrary::Summaries(m_libraryDirectory);
 
-    int leftOut = 0;
+    // **Only the folder the combo points at.** Choosing a folder is the gesture that says where to look; the
+    // search then filters that list. A piece in another folder is reached by choosing that folder — the gesture
+    // of the dialog that opens a pattern, and the reason a reader sorts her pieces into folders at all.
+    const QList<OPieceLibrary::Summary> summaries = OPieceLibrary::Summaries(CurrentFolder());
+    m_libraryCount = static_cast<int>(summaries.size());
+
     for (const OPieceLibrary::Summary &summary : summaries)
     {
         // **Only the pieces this pattern could take.** A piece is written in one unit and a pattern holds one from
@@ -232,13 +295,12 @@ void DialogNewPattern::FillLibrary()
         // that cannot be read declares no unit at all, and is left out with the same count.
         if (OPieceImport::PieceUnit(summary.unit) != wanted)
         {
-            ++leftOut;
+            ++m_libraryLeftOut;
             continue;
         }
 
         // A line has no column header above it here, so what the row says has to be a sentence: the window's
-        // "Needs" column becomes "needs Buste". A piece that cannot be read needs no case of its own — it declares
-        // no unit, so the filter above has already left it out, and the count below says so.
+        // "Needs" column becomes "needs Buste".
         QString line = summary.name;
         if (const QString needs = OPieceLibrary::Needs(summary); not needs.isEmpty())
         {
@@ -246,34 +308,83 @@ void DialogNewPattern::FillLibrary()
         }
 
         auto *item = new QListWidgetItem(line, ui->listPieces);
-        item->setToolTip(OPieceLibrary::Details(summary));
+        // The path is in the tooltip, under the details: the file is where a reader goes to look.
+        item->setToolTip(OPieceLibrary::Details(summary) + QLatin1Char('\n') + summary.path);
         item->setData(Qt::UserRole, summary.path);
     }
 
-    if (summaries.isEmpty())
+    if (m_libraryLeftOut > 0)
     {
-        ui->labelImportHint->setText(tr("No piece is saved in the library yet."));
+        // Said rather than hidden: a reader who saved a piece in another unit and does not see it here must not go
+        // looking for a mistake of her own.
+        ui->labelImportHidden->setText(
+            tr("%n piece(s) not shown: another unit, or unreadable.", "", m_libraryLeftOut));
+        ui->labelImportHidden->setVisible(true);
+    }
+    else
+    {
+        ui->labelImportHidden->clear();
+        ui->labelImportHidden->setVisible(false);
+    }
+
+    FilterLibrary();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::FilterLibrary()
+{
+    const QString needle = ui->lineEditSearch->text().trimmed();
+
+    for (int row = 0; row < ui->listPieces->count(); ++row)
+    {
+        QListWidgetItem *item = ui->listPieces->item(row);
+        item->setHidden(not needle.isEmpty() && not item->text().contains(needle, Qt::CaseInsensitive));
+    }
+
+    // The list has just changed under the selection: a row hidden by the search is not a choice the button may
+    // offer, and the hint has to say which of the empty states the reader is looking at.
+    CheckState();
+    ShowLibraryState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::ShowLibraryState()
+{
+    if (m_libraryDirectory.isEmpty())
+    {
+        ui->labelImportHint->clear();
         return;
     }
 
     if (ui->listPieces->count() == 0)
     {
-        ui->labelImportHint->setText(tr("No piece in the library is in %1.").arg(UnitsToStr(wanted, true)));
+        // An empty folder and a folder whose pieces are all in another unit are not the same thing to a reader:
+        // the second one she can act on (another folder, another unit), the first one she cannot.
+        ui->labelImportHint->setText(m_libraryCount == 0
+                                         ? tr("This folder holds no piece.")
+                                         : tr("No piece in the library is in %1.")
+                                               .arg(UnitsToStr(WantedUnit(), true)));
+        return;
     }
 
-    if (leftOut > 0)
+    int visible = 0;
+    for (int row = 0; row < ui->listPieces->count(); ++row)
     {
-        // Said rather than hidden: a reader who saved a piece in another unit and does not see it here must not go
-        // looking for a mistake of her own.
-        ui->labelImportHidden->setText(tr("%n piece(s) not shown: another unit, or unreadable.", "", leftOut));
-        ui->labelImportHidden->setVisible(true);
+        if (not ui->listPieces->item(row)->isHidden())
+        {
+            ++visible;
+        }
     }
+
+    ui->labelImportHint->setText(visible == 0
+                                     ? tr("No piece matches the search.")
+                                     : tr("Double-click a piece to insert it, or select one and accept."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogNewPattern::SelectedLibraryPiece() const -> QString
 {
-    if (const QListWidgetItem *item = ui->listPieces->currentItem(); item != nullptr)
+    if (const QListWidgetItem *item = ui->listPieces->currentItem(); item != nullptr && not item->isHidden())
     {
         return item->data(Qt::UserRole).toString();
     }
