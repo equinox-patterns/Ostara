@@ -80,7 +80,8 @@ public:
     void SetTemplate(const QString &name);
 
     auto Dispatch() const -> const QHash<QString, int> &;
-    /** @return Block (1..11) of a section type, 0 when not dispatched. */
+    /** @return Block (1..11) of a section type, 0 when not dispatched. 0 is also the stored
+     *  "don't show" choice: a section asked for block 0 is rendered in no block at all. */
     auto BlockOfSection(const QString &type) const -> int;
     void SetSectionBlock(const QString &type, int block);
     void SetDispatch(const QHash<QString, int> &dispatch);

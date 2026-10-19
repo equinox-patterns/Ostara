@@ -74,15 +74,23 @@ VGrainlineItem::VGrainlineItem(VColorRole role, QGraphicsItem *pParent)
 //---------------------------------------------------------------------------------------------------------------------
 auto VGrainlineItem::shape() const -> QPainterPath
 {
-    // The whole block (m_polyBound) is part of the click target so a click
-    // anywhere in the 30px-wide zone activates the grainline, not just the thin
-    // line itself. The resize bars' enlarged hit zones are added in edit mode.
-    QPainterPath path = MainShape();
-    path.addPolygon(m_polyBound);
+    // The whole block (m_polyBound) is the click target so a click anywhere in the
+    // rectangle the editing outline will show activates the grainline, not just the
+    // thin line itself. The pieces must be **united**, not merely added: `addPolygon`
+    // stacks subpaths, and Qt's fill rule then counts the overlap twice — under
+    // odd-even (the default) the line and its arrows become a hole, under winding
+    // they cancel. Either way the one place a user aims at fell through to the piece
+    // underneath, which is exactly what made a grainline hard to grab.
+    QPainterPath bound;
+    bound.addPolygon(m_polyBound);
+    QPainterPath path = MainShape().united(bound);
     if (m_eMode != mNormal)
     {
-        path.addPolygon(m_resizeHit[0]);
-        path.addPolygon(m_resizeHit[1]);
+        QPainterPath hit0;
+        hit0.addPolygon(m_resizeHit[0]);
+        QPainterPath hit1;
+        hit1.addPolygon(m_resizeHit[1]);
+        path = path.united(hit0).united(hit1);
     }
     return path;
 }
@@ -578,11 +586,14 @@ void VGrainlineItem::UpdateRectangle()
         m_polyBound << QPointF(mainLine.p2().x() + rectWidth * cos(m_dRotation + M_PI / 2),
                                mainLine.p2().y() - rectWidth * sin(m_dRotation + M_PI / 2));
     }
+    // prepareGeometryChange() must run BEFORE the bounding rect changes: Qt un-indexes the item
+    // with the rectangle it has at that moment, so calling it afterwards left the scene's index
+    // describing the previous rectangle — and a click inside the new one could miss the grainline.
+    prepareGeometryChange();
     m_rectBoundingBox = m_polyBound.boundingRect().adjusted(-2, -2, 2, 2);
     setTransformOriginPoint(m_rectBoundingBox.center());
 
     UpdatePolyResize();
-    prepareGeometryChange();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

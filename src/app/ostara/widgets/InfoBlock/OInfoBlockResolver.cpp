@@ -197,6 +197,12 @@ auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstrac
             continue;
         }
         const int block = state.dispatch.value(type.Id(), 1);
+        if (block < 1 || block > 11)
+        {
+            // "Don't show": the section is asked for nowhere — not block 0, not a block that does
+            // not exist. Skipping it here is what makes the information disappear from the piece.
+            continue;
+        }
         const QList<OCartoucheRenderLine> lines =
             ResolveSectionLines(type, config.tpl.SectionAt(i).options, doc, piece, data, &table, renderLanguages,
                                 mainLocale);

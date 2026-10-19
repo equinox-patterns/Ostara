@@ -254,12 +254,16 @@ void OBlockConfigWidget::RebuildInfoList(const QString &templateName, const QHas
 
         auto *label = new QLabel(displayName, this);
         auto *combo = MakeComboBox(this);
+        // First entry: the information is shown nowhere. It is a real choice, stored as block 0,
+        // so a piece no longer needs a dedicated template just to leave one line out.
+        combo->addItem(tr("Don't show"), 0);
         for (int block = 1; block <= kMaxBlocks; ++block)
         {
             combo->addItem(tr("Block %1").arg(block), block);
         }
         const int currentBlock = dispatch.value(typeId, 1);
-        combo->setCurrentIndex(currentBlock - 1);
+        const int currentIndex = combo->findData(currentBlock);
+        combo->setCurrentIndex(currentIndex >= 0 ? currentIndex : combo->findData(1));
         connect(combo, &QComboBox::currentIndexChanged, this, [this](int) {
             if (!m_loading)
             {

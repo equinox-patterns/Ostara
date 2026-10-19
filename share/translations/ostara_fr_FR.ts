@@ -11188,6 +11188,11 @@ Voulez-vous le remplacer ?</translation>
         <source>Block %1</source>
         <translation>Bloc %1</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="259"/>
+        <source>Don&apos;t show</source>
+        <translation>Ne pas afficher</translation>
+    </message>
 </context>
 <context>
     <name>OChooseAxisDirectionDialog</name>

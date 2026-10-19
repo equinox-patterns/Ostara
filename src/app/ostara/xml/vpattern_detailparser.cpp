@@ -131,8 +131,11 @@ auto VPattern::ParsePieceCartoucheBlocks(const QDomElement &domElement) const ->
         if (element.tagName() == VToolSeamAllowance::TagDispatch)
         {
             const QString type = element.attribute(AttrType);
-            const int block = element.attribute(VToolSeamAllowance::AttrBlock).toInt();
-            if (not type.isEmpty() && block >= 1 && block <= 11)
+            bool ok = false;
+            const int block = element.attribute(VToolSeamAllowance::AttrBlock).toInt(&ok);
+            // 0 is not a block: it is the explicit "Don't show" of a section. An attribute that is
+            // missing or not a number is left unread, so a malformed line keeps the default (block 1).
+            if (not type.isEmpty() && ok && block >= 0 && block <= 11)
             {
                 dispatch.insert(type, block);
             }
