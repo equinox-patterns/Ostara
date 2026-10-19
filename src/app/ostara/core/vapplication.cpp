@@ -411,6 +411,20 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         type = QtDebugMsg;
     }
 
+    // macOS asks Qt for the cells of a table through its accessibility bridge — VoiceOver, Switch
+    // Control, or any assistive client querying the application. When that table is empty, Qt warns
+    // ("Cell requested for row 0 is out of bounds for table with 0 rows! Resizing table model.") and
+    // rebuilds its own representation of the table, which is exactly the recovery the message
+    // announces. The user can act on nothing here, but as a warning the handler turns it into a modal
+    // box — and since the query follows the window tree, the box lands over whatever dialog is open,
+    // Save As first of all. The whole accessibility family stays in the log: it only ever reports
+    // Qt's own bridge, never anything Valentina can fix.
+    if ((type == QtWarningMsg) && context.category != nullptr &&
+        QLatin1String(context.category).startsWith("qt.accessibility"_L1))
+    {
+        type = QtDebugMsg;
+    }
+
     QString logMsg = msg;
     const bool isPatternMessage = VAbstractApplication::IsWarningMessage(msg);
     if (isPatternMessage)

@@ -430,6 +430,34 @@ inline auto VAbstractPiece::RemoveDublicates(const QVector<T> &points, bool remo
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// Keep the explicit squaring when two points are merged into one.
+///
+/// A node point often sits within the duplicate-removal tolerance of the curve's last sampling point —
+/// 0.1 mm between C14 and the last point of its spline on the Poignet piece of Dewey.ostara. The sampling
+/// point survives, the node's angle type left with the dropped point, and the corner silently fell back to
+/// "by length" whatever the user had chosen: symmetry and right angle did nothing at that point. The
+/// generic overload is a no-op (a plain point carries no angle type); only an explicit choice is carried —
+/// ByLength is left alone so a smooth curve joint keeps its ByLengthCurve promotion.
+template <class T> inline void CarryAngleTypeToSurvivor(const T &, T &) {}
+inline void CarryAngleTypeToSurvivor(const VSAPoint &dropped, VSAPoint &survivor)
+{
+    switch (dropped.GetAngleType())
+    {
+        case PieceNodeAngle::ByPointsIntersection:
+        case PieceNodeAngle::ByFirstEdgeSymmetry:
+        case PieceNodeAngle::BySecondEdgeSymmetry:
+        case PieceNodeAngle::ByFirstEdgeRightAngle:
+        case PieceNodeAngle::BySecondEdgeRightAngle:
+            survivor.SetAngleType(dropped.GetAngleType());
+            break;
+        case PieceNodeAngle::ByLength:
+        case PieceNodeAngle::ByLengthCurve:
+        case PieceNodeAngle::LAST_ONE_DO_NOT_USE:
+            break;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 template <class T>
 inline auto VAbstractPiece::ComparePoints(QVector<T> &points, const T &p1, const T &p2, qreal accuracy) -> bool
 {
@@ -453,6 +481,11 @@ inline auto VAbstractPiece::ComparePoints(QVector<T> &points, const T &p1, const
     if (not points.isEmpty() && p2.CurvePoint())
     {
         points.last().SetCurvePoint(true);
+    }
+
+    if (not points.isEmpty())
+    {
+        CarryAngleTypeToSurvivor(p2, points.last()); // A chosen squaring must not vanish with the dropped point
     }
 
     return true;
