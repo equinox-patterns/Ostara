@@ -40,6 +40,7 @@
 #include "otransferlayersdialog.h"
 #include "ui_vwidgetgroups.h"
 
+#include <QApplication>
 #include <QCheckBox>
 #include <QCompleter>
 #include <QDomElement>
@@ -51,7 +52,9 @@
 #include <QPixmap>
 #include <QPushButton>
 #include <QScrollBar>
+#include <QStyle>
 #include <QStyledItemDelegate>
+#include <QStyleOptionViewItem>
 #include <QTableWidget>
 #include <QUndoStack>
 
@@ -187,6 +190,42 @@ public:
     }
 };
 
+//---------------------------------------------------------------------------------------------------------------------
+// The name column wears the group's caret and is painted by the base delegate, which only ever asks an icon for
+// Normal or Selected — never for the hovered state the action columns get from IconDelegate's Active mode. The
+// caret of a hovered group would therefore stay the theme's variant on the accent-filled row. The icon's Active
+// pixmap IS the dark variant (MakeCellIcon), so it is handed to the style as the only one.
+class LayerNameDelegate final : public QStyledItemDelegate
+{
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override
+    {
+        QStyleOptionViewItem opt(option);
+        initStyleOption(&opt, index);
+
+        // A chosen row is only tinted (UpdateActiveRowStyle) and keeps the theme's variant; a hovered one takes the
+        // full accent, where the dark set is the readable one.
+        const bool hovered = (opt.state & QStyle::State_MouseOver) != 0
+                             && (opt.state & QStyle::State_Selected) == 0;
+        if (hovered && not opt.icon.isNull())
+        {
+            const QSize size = opt.decorationSize.isValid() ? opt.decorationSize : QSize(kIconSize, kIconSize);
+            const QPixmap pixmap = opt.icon.pixmap(size, QIcon::Active);
+            if (not pixmap.isNull())
+            {
+                opt.icon = QIcon(pixmap);
+            }
+        }
+
+        const QWidget *widget = opt.widget;
+        QStyle *style = widget != nullptr ? widget->style() : QApplication::style();
+        style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
+    }
+};
+
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -230,6 +269,8 @@ VWidgetGroups::VWidgetGroups(VContainer *pattern, VAbstractPattern *doc, QWidget
         table->setColumnWidth(col, kIconColumnWidth);
         table->setItemDelegateForColumn(col, new IconDelegate(table));
     }
+    // The caret rides the name, so that column needs the same hover variant as the action icons.
+    table->setItemDelegateForColumn(kName, new LayerNameDelegate(table));
     // Compact fixed-height rows — the list never stretches rows vertically.
     table->verticalHeader()->setDefaultSectionSize(36);
     table->setIconSize(QSize(kIconSize, kIconSize));
@@ -1904,21 +1945,28 @@ void VWidgetGroups::FillLayerRow(int row, quint32 id, const VGroupData &data, bo
     visibleItem->setData(kKindRole, static_cast<quint32>(RowKind::Layer));
     // set the item non-editable (view only)
     visibleItem->setFlags(visibleItem->flags() & ~Qt::ItemIsEditable);
+    visibleItem->setToolTip(tr("Show or hide the layer"));
     ui->tableWidget->setItem(row, kVisible, visibleItem);
 
     // The layer's colour, so a glance at the list tells which pen its objects are drawn with.
     auto *colorItem = new QTableWidgetItem(MakeColorDot(data.color, dark), QString());
     colorItem->setFlags(colorItem->flags() & ~Qt::ItemIsEditable);
+    colorItem->setToolTip(tr("The colour the layer draws with"));
     ui->tableWidget->setItem(row, kColor, colorItem);
 
     auto *nameItem = new QTableWidgetItem(data.name);
     nameItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
     // The tooltip says where the layer sits: the row itself cannot show it without indenting the name, and the
-    // list is read as one column.
+    // list is read as one column. A layer outside every group says what a click on its name does, so that the
+    // cell never falls back to the tooltip of the whole dock.
     if (const quint32 groupId = data.layerGroup; groupId != NULL_ID)
     {
         nameItem->setToolTip(tr("Group: %1.").arg(m_doc->GetLayerGroupName(groupId)));
+    }
+    else
+    {
+        nameItem->setToolTip(tr("Make this layer the active one"));
     }
 
     if (data.items.isEmpty())
@@ -1930,15 +1978,20 @@ void VWidgetGroups::FillLayerRow(int row, quint32 id, const VGroupData &data, bo
 
     ui->tableWidget->setItem(row, kName, nameItem);
 
-    SetActionCell(ui->tableWidget, row, kEdit, MakeCellIcon(QStringLiteral("gear-six"), dark));
-    SetActionCell(ui->tableWidget, row, kAdd, MakeCellIcon(QStringLiteral("plus"), dark));
+    SetActionCell(ui->tableWidget, row, kEdit, MakeCellIcon(QStringLiteral("gear-six"), dark),
+                  tr("Rename the layer"));
+    SetActionCell(ui->tableWidget, row, kAdd, MakeCellIcon(QStringLiteral("plus"), dark),
+                  tr("Add objects to the layer"));
     // The bend arrow: an object changes layer without ever leaving every layer — the icon the library draws,
     // not one this dock invented.
-    SetActionCell(ui->tableWidget, row, kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark));
-    SetActionCell(ui->tableWidget, row, kRemove, MakeCellIcon(QStringLiteral("minus"), dark));
+    SetActionCell(ui->tableWidget, row, kTransfer, MakeCellIcon(QStringLiteral("arrow-bend-up-right"), dark),
+                  tr("Move objects of this layer to another one"));
+    SetActionCell(ui->tableWidget, row, kRemove, MakeCellIcon(QStringLiteral("minus"), dark),
+                  tr("Remove objects from the layer"));
     // The trash stays fully visible and clickable even on a layer holding objects: the refusal
     // is explained by a dialog (ActionDeleteLayer), not by a dimmed icon the reader cannot read.
-    SetActionCell(ui->tableWidget, row, kDelete, MakeCellIcon(QStringLiteral("trash"), dark));
+    SetActionCell(ui->tableWidget, row, kDelete, MakeCellIcon(QStringLiteral("trash"), dark),
+                  tr("Delete the layer - allowed once it holds no object"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

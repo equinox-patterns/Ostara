@@ -28129,6 +28129,46 @@ Voulez-vous continuer ?</translation>
         <translation>Supprimer le groupe - possible une fois qu’il ne contient plus de calque</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1948"/>
+        <source>Show or hide the layer</source>
+        <translation>Afficher ou masquer le calque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1954"/>
+        <source>The colour the layer draws with</source>
+        <translation>La couleur avec laquelle le calque dessine</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1969"/>
+        <source>Make this layer the active one</source>
+        <translation>Faire de ce calque le calque actif</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1982"/>
+        <source>Rename the layer</source>
+        <translation>Renommer le calque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1984"/>
+        <source>Add objects to the layer</source>
+        <translation>Ajouter des objets au calque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1988"/>
+        <source>Move objects of this layer to another one</source>
+        <translation>Transférer dans un autre calque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1990"/>
+        <source>Remove objects from the layer</source>
+        <translation>Retirer des objets du calque</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1994"/>
+        <source>Delete the layer - allowed once it holds no object</source>
+        <translation>Supprimer le calque - possible une fois qu’il ne contient plus d’objet</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1325"/>
         <source>Select the objects to transfer, then press Enter to choose the layer they move to - Escape cancels. Magenta is this layer&apos;s content, and every object of it can move.</source>
         <translation>Sélectionnez les objets à transférer, puis appuyez sur Entrée pour choisir le calque où ils vont - Échap annule. Le magenta est le contenu de ce calque, et chacun de ses objets peut partir.</translation>

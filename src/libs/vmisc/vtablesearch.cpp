@@ -55,6 +55,7 @@ void VTableSearch::Clear()
         {
             if (QTableWidgetItem *item = table->item(i, j))
             {
+                item->setData(HighlightRole, QVariant());
                 if (item->row() % 2 != 0 && table->alternatingRowColors())
                 {
                     item->setBackground(table->palette().alternateBase());
@@ -74,6 +75,50 @@ void VTableSearch::Clear()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VTableSearch::ClearHighlights()
+{
+    for (int i = 0; i < table->rowCount(); ++i)
+    {
+        for (int j = 0; j < table->columnCount(); ++j)
+        {
+            if (QTableWidgetItem *item = table->item(i, j))
+            {
+                item->setData(HighlightRole, QVariant());
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VTableSearch::MarkRow(int row, Highlight level)
+{
+    for (int column = 0; column < table->columnCount(); ++column)
+    {
+        if (QTableWidgetItem *cell = table->item(row, column))
+        {
+            cell->setData(HighlightRole, static_cast<int>(level));
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VTableSearch::ApplyHighlights()
+{
+    ClearHighlights();
+
+    for (QTableWidgetItem *item : std::as_const(searchList))
+    {
+        MarkRow(item->row(), Highlight::Row);
+        item->setData(HighlightRole, static_cast<int>(Highlight::Match));
+    }
+
+    if (searchIndex >= 0 && searchIndex < searchList.size())
+    {
+        searchList.at(searchIndex)->setData(HighlightRole, static_cast<int>(Highlight::Current));
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VTableSearch::ShowNext(vsizetype newIndex)
 {
     if (not searchList.isEmpty())
@@ -85,6 +130,7 @@ void VTableSearch::ShowNext(vsizetype newIndex)
         item->setBackground(Qt::red);
         table->scrollToItem(item);
         searchIndex = newIndex;
+        ApplyHighlights();
     }
     else
     {
@@ -197,6 +243,7 @@ void VTableSearch::Find(const QString &term)
         QTableWidgetItem *item = searchList.at(searchIndex);
         item->setBackground(Qt::red);
         table->scrollToItem(item);
+        ApplyHighlights();
 
         emit HasResult(true);
         return;
@@ -280,6 +327,7 @@ void VTableSearch::RefreshList(const QString &term)
 {
     SCASSERT(table != nullptr)
 
+    ClearHighlights();
     searchList = FindTableItems(term);
 
     if (not searchList.isEmpty())
@@ -301,6 +349,7 @@ void VTableSearch::RefreshList(const QString &term)
         QTableWidgetItem *item = searchList.at(searchIndex);
         item->setBackground(Qt::red);
         table->scrollToItem(item);
+        ApplyHighlights();
 
         emit HasResult(true);
     }

@@ -47,14 +47,19 @@
 #include "dialogincrementscsvcolumns.h"
 #include "ui_dialogincrements.h"
 
+#include <QApplication>
 #include <QCloseEvent>
 #include <QDir>
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPainter>
 #include <QSettings>
 #include <QSplitter>
+#include <QStyle>
+#include <QStyledItemDelegate>
+#include <QStyleOptionViewItem>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QtNumeric>
@@ -103,6 +108,64 @@ enum class RowKind : quint8
 /// else.
 constexpr int kIdRole = Qt::UserRole;
 constexpr int kKindRole = Qt::UserRole + 1;
+
+//---------------------------------------------------------------------------------------------------------------------
+// Both tables of the dialog wear it. It does two things the plain delegate cannot:
+//
+// - the group caret. A hovered or chosen line is dark (the full accent, or the accent fill of a selection), so the
+//   theme's own caret disappears into it: the icon is handed to the style with its dark pixmap as the only one.
+//   A chosen line would ask for that variant by itself; the hovered one does not, hence the swap.
+// - the search. The view's stylesheet paints `QAbstractItemView::item` over any brush set by VTableSearch, so the
+//   yellow it writes never shows. The search's state is read from its role instead and painted as a translucent
+//   wash over the row the style just drew — the text underneath stays legible, and the wash is the only thing
+//   added to it.
+class IncrementTableDelegate final : public QStyledItemDelegate
+{
+public:
+    explicit IncrementTableDelegate(QObject *parent = nullptr) : QStyledItemDelegate(parent) {}
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        QStyleOptionViewItem opt(option);
+        initStyleOption(&opt, index);
+
+        if ((opt.state & (QStyle::State_Selected | QStyle::State_MouseOver)) != 0 && not opt.icon.isNull())
+        {
+            const QSize size = opt.decorationSize.isValid() ? opt.decorationSize : QSize(16, 16);
+            const QPixmap pixmap = opt.icon.pixmap(size, QIcon::Selected);
+            if (not pixmap.isNull())
+            {
+                opt.icon = QIcon(pixmap);
+            }
+        }
+
+        const QWidget *widget = opt.widget;
+        QStyle *style = widget != nullptr ? widget->style() : QApplication::style();
+        style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, widget);
+
+        const auto level = static_cast<VTableSearch::Highlight>(index.data(VTableSearch::HighlightRole).toInt());
+
+        QColor tint;
+        switch (level)
+        {
+            case VTableSearch::Highlight::Row:
+                tint = QColor(255, 213, 79, 40); // the line, at a glance
+                break;
+            case VTableSearch::Highlight::Match:
+                tint = QColor(255, 213, 79, 115); // the cell that matched
+                break;
+            case VTableSearch::Highlight::Current:
+                tint = opt.palette.color(QPalette::Highlight); // the one the counter points at
+                tint.setAlpha(170);
+                break;
+            case VTableSearch::Highlight::None:
+            default:
+                return;
+        }
+
+        painter->fillRect(option.rect, tint);
+    }
+};
 
 //---------------------------------------------------------------------------------------------------------------------
 void SetIncrementDescription(int i, const QxtCsvModel &csv, const QVector<int> &map, IncrementData &measurement)
@@ -164,6 +227,7 @@ DialogIncrements::DialogIncrements(VContainer *data, VPattern *doc, QWidget *par
     for (QTableWidget *table : {ui->tableWidgetIncrement, ui->tableWidgetPC})
     {
         table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+        table->setItemDelegate(new IncrementTableDelegate(table));
     }
 
     // The two unit combos come from the .ui, so they get ApplyComboBoxView rather than MakeComboBox — the factory is
@@ -508,9 +572,22 @@ auto DialogIncrements::GroupCaret(bool collapsed) -> QIcon
 {
     // The pair the formula block of the tools already wears (FormulaInputWidget::updateExpandIcon): pointing down
     // while the group is folded away — its rows are below, one click brings them out — and up once they are out.
-    const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark") : QStringLiteral("light");
+    const bool dark = VTheme::ColorSheme() == VColorSheme::Dark;
     const QString caret = collapsed ? QStringLiteral("caret-down") : QStringLiteral("caret-up");
-    return QIcon(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, caret));
+    const auto path = [&caret](bool darkVariant)
+    {
+        return QStringLiteral(":/icons/%1/%2_%1.svg")
+            .arg(darkVariant ? QStringLiteral("dark") : QStringLiteral("light"), caret);
+    };
+
+    // Normal: the theme's own variant. Selected and hovered: the dark set's — a chosen line is accent-filled and a
+    // hovered one is as dark, so the theme's darker glyph disappears into it (Icons.md, « règle ligne foncée »).
+    // The hovered state is turned into Selected by the table's delegate, which the style alone would not ask for.
+    QIcon icon;
+    icon.addFile(path(dark), QSize(), QIcon::Normal);
+    icon.addFile(path(true), QSize(), QIcon::Selected);
+    icon.addFile(path(true), QSize(), QIcon::Active);
+    return icon;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

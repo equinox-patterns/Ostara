@@ -67,6 +67,22 @@ public:
 
     auto SearchPlaceholder() const -> QString;
 
+    /// What the search knows about a cell, for a table whose own delegate paints the matches.
+    ///
+    /// The item background the search writes (`Qt::BackgroundRole`) is enough for a plain table, but a view whose
+    /// stylesheet sets `QAbstractItemView::item { background-color: ... }` paints over it — the highlight then
+    /// exists and shows nothing. Such a table reads this role in its delegate instead: `Row` is every cell of a
+    /// line that holds at least one match, `Match` the cell that matched, `Current` the match the counter points
+    /// at, and `None` any other cell.
+    enum class Highlight : quint8
+    {
+        None = 0,
+        Row = 1,
+        Match = 2,
+        Current = 3
+    };
+    static constexpr int HighlightRole = Qt::UserRole + 100;
+
     static const int MaxHistoryRecords;
 
 signals:
@@ -87,6 +103,11 @@ private:
 
     void Clear();
     void ShowNext(vsizetype newIndex);
+    /// Write HighlightRole for the current matches: every cell of a matching line first, then the matched cells,
+    /// then the one the counter points at — so the current cell is never overwritten by its own line.
+    void ApplyHighlights();
+    void ClearHighlights();
+    void MarkRow(int row, Highlight level);
     auto FindTableItems(QString term) -> QList<QTableWidgetItem *>;
     auto FindCurrentMatchIndex() const -> int;
 };
