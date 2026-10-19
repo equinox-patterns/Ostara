@@ -44,6 +44,12 @@
  * once the pleat is applied, and Apply draws it on the canvas without closing the dialog. Drawing it a second time
  * would mean two renderings of the same thing, and the one here would carry neither the colours nor the pen styles
  * the user chose: the figure is read where it is built, on the canvas.
+ *
+ * The one exception is the notch: the pattern's notch is a point, laid exactly on the edge of the piece, and the
+ * piece is drawn above it — its own stroke covers the mark. So the notch is laid on again here, as a mark in the
+ * orange of an active point, for as long as the pleat is shown: the dialog open, or the operation taken in the
+ * Options dock. It is a highlight and not a second figure — no line, no cap, nothing the user could take for the
+ * pattern itself.
  */
 class VScaledEllipse;
 
@@ -111,6 +117,11 @@ private:
     QVector<VScaledEllipse *> m_firstDots{};
     QVector<VScaledEllipse *> m_secondDots{};
 
+    /** The notches of the plan, in the orange of an active point: the pattern's own notch is a point laid on the
+     *  edge of the piece, which the piece's stroke covers, so the pleat that is shown marks it again here. One pool
+     *  for every notch, like the two above, and the marks beyond the plan are hidden. */
+    QVector<VScaledEllipse *> m_notchDots{};
+
     /** @brief How bright the ends of one departure line are drawn: the line the dialog is editing is the only one
      *  at full light, and every other one is dimmed (see kDimmedLight). */
     auto Light(int departure) const -> qreal;
@@ -127,6 +138,9 @@ private:
     void CreateTransformedObjects(const OPleatTransform &transform);
 
     void DrawDeparturePoints();
+
+    /** @brief Lay the notches of the plan, in the orange of an active point (see @a m_notchDots). */
+    void DrawNotchPoints();
 
     /** @brief What the preview shows when there is no plan to draw: the lines attached to the pleat as they are, and
      *  the dots of the gesture. The single path both refreshes that give up on the plan go through, so what the pattern

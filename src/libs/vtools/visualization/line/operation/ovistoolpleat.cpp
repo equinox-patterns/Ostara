@@ -164,6 +164,7 @@ void OVisToolPleat::RefreshGeometry()
 
     // Last, because RefreshPreviewLines hides every line it does not use of the pool it shares with this call.
     DrawDeparturePoints();
+    DrawNotchPoints();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -186,6 +187,7 @@ void OVisToolPleat::DrawWithoutAPlan()
     }
 
     DrawDeparturePoints();
+    DrawNotchPoints();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -255,6 +257,45 @@ void OVisToolPleat::DrawDeparturePoints()
     for (int i = second; i < m_secondDots.size(); ++i)
     {
         m_secondDots.at(i)->setVisible(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolPleat::DrawNotchPoints()
+{
+    int index = 0;
+
+    for (int i = 0; i < m_plan.notches.size(); ++i)
+    {
+        const OPleatNotch &notch = m_plan.notches.at(i);
+
+        VScaledEllipse *item = nullptr;
+        if (index < m_notchDots.size())
+        {
+            item = m_notchDots.at(index);
+        }
+        else
+        {
+            // The orange of an active point — the state the application gives the object being worked on — and the
+            // Z of a mark: the notch stands ON the edge of the piece, whose stroke (the piece is at Z 10) would
+            // cover the point the pattern draws there. A mark is drawn above it, as the green and red dots are.
+            item = InitMark<VScaledEllipse>(VColorRole::ActivePointColor, this);
+            m_notchDots.append(item);
+        }
+
+        ++index;
+
+        // A notch belongs to a departure line, and the light says which one the dialog is editing — exactly the
+        // rule the green and red dots of that line follow.
+        item->setOpacity(Light(notch.departure));
+
+        DrawPoint(item, notch.point);
+        item->setVisible(true);
+    }
+
+    for (int i = index; i < m_notchDots.size(); ++i)
+    {
+        m_notchDots.at(i)->setVisible(false);
     }
 }
 
