@@ -33,9 +33,12 @@
 #include "nesting/CuttingRules.h"  // Trame — les règles du plan de coupe
 
 #include <QLineF>
+#include <QPointF>
 #include <QTransform>
 #include <QtNumeric>
 
+#include <algorithm>
+#include <cmath>
 #include <utility>
 #include <vector>
 
@@ -52,6 +55,86 @@ auto ToRules(const OExportCuttingDirection::Direction &direction) -> CuttingRule
     out.arrows = static_cast<CuttingRules::Arrows>(static_cast<int>(direction.arrows));
     return out;
 }
+
+/// @brief Le pli RAMENÉ sur l'arête de la pièce qu'il longe, quand il n'y est pas déjà.
+///
+/// ⚠️ **Le pli n'était pas un bord de sa propre pièce, et c'est un défaut de calcul, pas de dessin.**
+/// La ligne vient de `GetSeamAllowanceMirrorLine` — la ligne de miroir de la valeur de couture,
+/// calculée sur le RECTANGLE de la pièce — tandis que le contour extérieur sort de l'algorithme
+/// d'offset, qui recalcule ses propres coins. Deux calculs indépendants, donc deux résultats : sur
+/// « Devant x1 pli » d'un patron réel, l'axe longe l'arête en passant 0,04 px à côté de son sommet,
+/// qui se retrouve 0,013 px du mauvais côté. Trois millièmes de millimètre, invisibles à l'écran — et
+/// assez pour que tout lecteur refuse la pièce, Ostara comprise.
+///
+/// Le remède est à la source : on cherche l'arête du contour la plus proche de l'axe et parallèle à
+/// lui, et on TRANSLATE l'axe sur sa droite. Ses extrémités ne bougent pas — un pli ne change pas de
+/// longueur parce qu'on le recale — et il ne reste qu'un déplacement perpendiculaire du bruit du
+/// calcul. Une pièce dont le pli ne longe vraiment aucune arête garde son axe tel quel, et c'est le
+/// garde-fou qui le dit.
+auto SnapToEdge(const VLayoutPiece &piece, const QLineF &axis) -> QLineF
+{
+    if (axis.isNull())
+    {
+        return axis;
+    }
+
+    // Le MÊME contour que celui que le moteur reçoit, et dans le même repère que l'axe : celui de la
+    // pièce, avant sa matrice. Les comparer dans deux repères serait comparer deux dessins.
+    const QVector<VLayoutPoint> points = piece.GetExternalContourPoints();
+    if (points.size() < 3)
+    {
+        return axis;
+    }
+
+    constexpr qreal kAngleTolerance = 1e-3;  // degrés — deux droites sont parallèles ou non
+    constexpr qreal kDistanceLimit = 1.0;    // px — au-delà, ce n'est pas un pli posé sur un bord
+
+    const qreal axisAngle = axis.angle();
+    const qreal radians = axisAngle * M_PI / 180.0;
+    const QPointF normal(std::sin(radians), -std::cos(radians));
+
+    qreal bestOffset = 0.0;
+    qreal bestDistance = kDistanceLimit;
+    for (qsizetype i = 0; i < points.size(); ++i)
+    {
+        const QPointF a = points.at(i);
+        const QPointF b = points.at((i + 1) % points.size());
+        if (a == b)
+        {
+            continue;
+        }
+
+        // Parallèle : le sens de parcours du contour n'a pas d'importance, et une arête perpendiculaire
+        // au pli n'est pas le pli.
+        qreal turn = std::fmod(std::abs(QLineF(a, b).angle() - axisAngle), 180.0);
+        if (turn > 90.0)
+        {
+            turn = 180.0 - turn;
+        }
+        if (turn > kAngleTolerance)
+        {
+            continue;
+        }
+
+        // La distance SIGNÉE du premier sommet de l'arête à l'axe : c'est de ça qu'il faut décaler.
+        const qreal offset = QPointF::dotProduct(a - axis.p1(), normal);
+        const qreal distance = std::abs(offset);
+        if (distance > bestDistance)
+        {
+            continue;
+        }
+
+        bestDistance = distance;
+        bestOffset = offset;
+    }
+
+    if (bestDistance >= kDistanceLimit)
+    {
+        return axis;
+    }
+
+    return QLineF(axis.p1() - normal * bestOffset, axis.p2() - normal * bestOffset);
+}
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -66,7 +149,12 @@ auto OExportCuttingDirection::FoldLine(const VLayoutPiece &piece) -> QLineF
     {
         fold = piece.GetSeamMirrorLine();
     }
-    return fold;
+
+    // Et le pli devient LE BORD qu'il longe — voir `SnapToEdge`, et le défaut de 0,013 px qu'il
+    // répare. Fait ici, une fois : tout ce qui lit un pli dans l'export passe par cette fonction,
+    // donc le contrôle, l'angle de rotation, la place du décor et le payload disent tous la même
+    // ligne, exactement celle du contour.
+    return SnapToEdge(piece, fold);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

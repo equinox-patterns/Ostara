@@ -66,6 +66,20 @@ struct LayoutObject;
  * one of the two, and `stored` says which; `outlineAlt` carries the other, and only for a piece
  * that has a fold at all. A whole piece has no complement to speak of.
  *
+ * **Two contours, and they are not the same one.** `outline` is the plain outer form, without the
+ * notches, and that is the one the nesting unions: a notch is a cut, so unioning a notched contour
+ * gives a footprint SMALLER than the piece that gets cut. `outlineInk` is the contour as the canvas
+ * DRAWS it — sewing line, seam allowance and notches together — because a notch is not an ornament:
+ * it is the assembly mark, and a piece drawn without its notches cannot be mounted. A reader draws
+ * the second and nests the first; neither can stand in for the other.
+ *
+ * **The sizes are already aligned, and the offset is stated.** `OExportAlignment` shifts every size
+ * of a piece so that they superimpose — each size keeps its own place in the pattern, and a piece
+ * pinned at its fold does not drift like a piece growing from its centre. The contours above are
+ * written SHIFTED BY NOTHING, in the pattern's own frame, and `alignDelta` carries that shift in
+ * pixels. A reader that ignores it does not get a slightly wrong footprint: it gets one that is too
+ * large, because it unions shapes that do not lie on top of each other.
+ *
  * The frame is the pattern's own — the same pixels as the drawing's viewBox, before any placement —
  * because a plan places the pieces again: coordinates of the sheet would be a plan already made.
  */

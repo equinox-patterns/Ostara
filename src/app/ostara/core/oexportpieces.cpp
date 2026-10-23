@@ -28,6 +28,7 @@
 
 #include "../ogradedsvgwriter.h"  // OGradedSvg::OwnerDecorFor
 #include "../oexportgeometry.h"
+#include "../osvgutils.h"  // OSvg::PainterPathToSvgD
 #include "../vlayout/vlayoutpiece.h"
 #include "../vwidgets/vpiecegrainline.h"
 #include "../vpatterndb/vcontainer.h"
@@ -35,6 +36,9 @@
 #include "oexportcuttingguard.h"
 
 #include <QDomDocument>
+#include <QGraphicsItem>
+#include <QGraphicsPathItem>
+#include <QPainterPath>
 #include <QHash>
 #include <QLineF>
 #include <QStringList>
@@ -148,6 +152,60 @@ auto LineData(const QLineF &line) -> QString
     return QStringLiteral("%1,%2 %3,%4")
         .arg(Number(line.x1()), Number(line.y1()), Number(line.x2()), Number(line.y2()));
 }
+
+/// A point as « x,y » — the pair an offset is stated with.
+auto PointData(const QPointF &point) -> QString
+{
+    return QStringLiteral("%1,%2").arg(Number(point.x()), Number(point.y()));
+}
+
+/// @brief L'encre d'une pièce ENTIÈRE, telle qu'elle se dessine : contour, chemins internes, repères
+/// de placement et ligne de miroir, en un seul « d ».
+///
+/// ⚠️ **Une pièce est un tout, et le payload doit la porter d'un bloc.** Le contour seul ne suffit
+/// pas : les chemins internes, les place labels et le miroir sont dessinés par la pièce elle-même
+/// (`VLayoutPiece::GetItem`), pas par le décor — et c'est précisément ce que le filtre du décor avait
+/// fini par avaler, en les sortant de la pièce pour les mettre dans le tronc commun du fichier. On
+/// reprend donc ici la construction d'Ostara, et on garde exactement ce qu'elle dessine comme
+/// géométrie : la racine, puis chaque enfant qui n'est pas une information (le droit-fil, le pli et
+/// sa légende, qui voyagent avec le décor parce que leur place se projette d'une taille à l'autre).
+auto InkOf(const VLayoutPiece &piece) -> QString
+{
+    QGraphicsItem *item = piece.GetItem(false, true, false);
+    if (item == nullptr)
+    {
+        return {};
+    }
+
+    QStringList parts;
+    const auto add = [&parts](const QPainterPath &path)
+    {
+        const QString data = OSvg::PainterPathToSvgD(path);
+        if (!data.isEmpty())
+        {
+            parts.append(data);
+        }
+    };
+
+    if (const auto *root = qgraphicsitem_cast<QGraphicsPathItem *>(item); root != nullptr)
+    {
+        add(root->path());
+    }
+    for (QGraphicsItem *child : item->childItems())
+    {
+        if (OSvg::IsInfoChild(child))
+        {
+            continue;
+        }
+        if (const auto *path = qgraphicsitem_cast<QGraphicsPathItem *>(child); path != nullptr)
+        {
+            add(path->path());
+        }
+    }
+
+    delete item;
+    return parts.join(QLatin1Char(' '));
+}
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -156,10 +214,14 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
                        const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement
 {
     QDomElement pieces = doc.createElement(QStringLiteral("pieces"));
-    // Version 2 — the decor travels with every piece, one copy per size. A version-1 payload carries
-    // the same pieces with no decor at all, and a reader must not take it for a payload whose sizes
-    // simply have nothing to draw: it would then place ten pieces and not one grain line.
-    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("2"));
+    // Version 3 — the contour as it is DRAWN (notches included) and the alignment offset travel
+    // with every piece. A version-2 payload carries the same pieces, but a reader can only lay
+    // their sizes on top of each other by guessing an offset it never received, and can only draw
+    // them without their passmarks. A version-1 payload carries the same pieces with no decor at
+    // all, and a reader must not take it for a payload whose sizes simply have nothing to draw: it
+    // would then place ten pieces and not one grain line. A reader that cannot find what it asks
+    // for says so — it never reads the nearest older thing and draws it.
+    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("3"));
 
     // The decor is looked up by the owner's ID, never by its name: two owners may share a name — the
     // visible layer hands out unique ids for exactly that reason — and a name-keyed table would give
@@ -230,6 +292,35 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             {
                 piece.setAttribute(QStringLiteral("outline"), outline);
             }
+
+            // ── L'encre du contour ──────────────────────────────────────────────────────────────
+            //
+            // ⚠️ **Le contour DESSINÉ, qui n'est pas celui d'`outline`.** L'outline est la forme
+            // extérieure SANS les crans, et elle doit le rester : un cran est une entaille, donc
+            // l'union d'un contour entaillé donne une empreinte plus PETITE que la pièce qu'on coupe.
+            // Mais c'est le contour AVEC les crans que le canvas dessine, pour la raison inverse —
+            // un cran n'est pas un ornement, c'est le repère de montage, et une pièce qu'on ne peut
+            // pas monter est une pièce ratée. Les deux formes sont donc écrites : celle qu'on nest,
+            // celle qu'on voit. Sans la seconde, un lecteur ne peut dessiner que la moitié du
+            // dessin, et rien ne le lui dit.
+            const QString ink = InkOf(geometry.piece);
+            // Written even when it comes out empty — a piece whose main path is hidden and that
+            // carries no seam allowance draws nothing at all, and « nothing » is a fact the reader
+            // has to be told. Left out, the same piece would be indistinguishable from a payload
+            // that never carried the ink.
+            piece.setAttribute(QStringLiteral("outlineInk"), ink);
+
+            // ── L'écart d'alignement ────────────────────────────────────────────────────────────
+            //
+            // ⚠️ **Une traduction, et rien d'autre.** Les tailles d'une pièce ne se superposent pas
+            // dans le patron — l'une grandit depuis son centre, l'autre est épinglée à son pli — et
+            // c'est cet écart, calculé une fois pour toutes par `OExportAlignment`, qui les fait
+            // coïncider. Le contour ci-dessus est donc écrit DÉCALÉ PAR RIEN, et l'écart à part :
+            // un lecteur qui l'ignore n'obtient pas une empreinte un peu fausse, il obtient une
+            // empreinte trop grande — vingt-neuf feuilles là où le patron en demande vingt, mesuré.
+            // Toujours écrit, même nul : « aligné de zéro » est un fait, et une valeur absente
+            // obligerait le lecteur à connaître une valeur par défaut.
+            piece.setAttribute(QStringLiteral("alignDelta"), PointData(geometry.alignDelta));
 
             // ── La direction ────────────────────────────────────────────────────────────────────
             //
@@ -305,6 +396,11 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
                 {
                     piece.setAttribute(QStringLiteral("outlineAlt"), outline);
                 }
+                // Et son encre : un plan de coupe DESSINE la forme qu'il pose, et il la pose dans
+                // l'autre forme dès que le tissu le demande — la moitié sur du tissu plié, la pièce
+                // entière sur du tissu à plat. Sans cette encre, le plan n'aurait que le contour nu :
+                // pas de crans, pas de ligne de couture, et une pièce qu'on ne peut pas monter.
+                piece.setAttribute(QStringLiteral("outlineInkAlt"), InkOf(other));
             }
 
             // ── Les quantités ───────────────────────────────────────────────────────────────────

@@ -1133,6 +1133,14 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
 ///
 /// The very filter the SVG writer routes on: what it can write as a trace or as text.
 /// A cartouche and an annotation are neither, and travel as records instead.
+///
+/// ⚠️ **A plain `QGraphicsPathItem` is GEOMETRY, and it used to be taken for decor.** A piece builds
+/// its internal paths, its place labels and its mirror line as bare path items beside its contour
+/// (`VLayoutPiece::GetItem`), so this filter — which accepted every path — carried them out of the
+/// piece and into the decor. The result was visible in the file: with every size layer switched off,
+/// size 32's internal paths and place labels were still there, in the common trunk, where they belong
+/// to no size and to no piece. What is decor here is what a piece does not DRAW with: its grain line,
+/// its fold mark and the fold's caption.
 auto IsDecorChild(QGraphicsItem *child) -> bool
 {
     if (child == nullptr || !child->isVisible())
@@ -1141,10 +1149,9 @@ auto IsDecorChild(QGraphicsItem *child) -> bool
     }
 
     const int type = child->type();
-    return type == QGraphicsPathItem::Type
-           || type == VGraphicsFillItem::Type
-           || type == VGraphicsFoldLineItem::Type
-           || type == QGraphicsSimpleTextItem::Type;
+    return type == VGraphicsFillItem::Type      // the grain line
+           || type == VGraphicsFoldLineItem::Type  // the fold mark
+           || type == QGraphicsSimpleTextItem::Type;  // the fold's caption
 }
 
 //---------------------------------------------------------------------------------------------------------------------
