@@ -59,7 +59,139 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QStringList>
+#include <QTimer>
+#include <QUndoCommand>
 #include <QtGlobal>
+
+#include <optional>
+
+namespace
+{
+using GradedRanges = QHash<QString, OSizerange>;
+
+/**
+ * @brief One edit of the graded size ranges, undoable — the five gestures of the CRUD.
+ *
+ * **The whole set is the unit.** A range is a keyed definition: creating, duplicating, editing,
+ * renaming and deleting one are all moves in that key space, so a command that snapshots the key
+ * space before and after covers the five without five commands each re-deriving what changed.
+ *
+ * It writes what the gestures wrote directly until now — the model (`VContainer::SetSizeRanges`)
+ * and the document (`AddSizeRanges`, which announces the change) — and on undo it gives back what
+ * a move has to give back: the ranges, the active one, and the list the dock shows. The canvas
+ * needs nothing from it: `QUndoStack::indexChanged` already schedules a rebuild.
+ */
+class OSaveGradedRanges final : public QUndoCommand
+{
+public:
+    OSaveGradedRanges(MainWindow *window, VContainer *data, VAbstractPattern *doc,
+                      const GradedRanges &before, const GradedRanges &after,
+                      const QString &activeBefore, const QString &activeAfter, const QString &text,
+                      QUndoCommand *parent = nullptr)
+      : QUndoCommand(text, parent),
+        m_window(window),
+        m_data(data),
+        m_doc(doc),
+        m_before(before),
+        m_after(after),
+        m_activeBefore(activeBefore),
+        m_activeAfter(activeAfter)
+    {
+    }
+
+    /// The two states of a rename, when this command is one. Empty: nothing moved in the key space.
+    void SetRename(const std::optional<OSizerange> &before, const std::optional<OSizerange> &after)
+    {
+        m_renameBefore = before;
+        m_renameAfter = after;
+    }
+
+    void redo() override
+    {
+        Apply(m_after, m_activeAfter);
+        if (m_renameBefore.has_value() && m_renameAfter.has_value())
+        {
+            m_window->ApplyRangeRename(*m_renameBefore, *m_renameAfter);
+        }
+    }
+
+    void undo() override
+    {
+        Apply(m_before, m_activeBefore);
+        if (m_renameBefore.has_value() && m_renameAfter.has_value())
+        {
+            m_window->RevertRangeRename(*m_renameAfter, *m_renameBefore);
+        }
+    }
+
+private:
+    void Apply(const GradedRanges &ranges, const QString &active)
+    {
+        m_data->SetSizeRanges(ranges);
+        QDomElement root = m_doc->documentElement();
+        // Announces the change by itself — see VAbstractPattern::NotifyPatternChanged.
+        AddSizeRanges(m_doc, root, m_data);
+        m_window->RestoreGradedRangesState(active);
+    }
+
+    MainWindow *m_window;
+    VContainer *m_data;
+    VAbstractPattern *m_doc;
+    GradedRanges m_before;
+    GradedRanges m_after;
+    QString m_activeBefore;
+    QString m_activeAfter;
+    std::optional<OSizerange> m_renameBefore;
+    std::optional<OSizerange> m_renameAfter;
+};
+}  // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::PushGradedRangesCommand(const QHash<QString, OSizerange> &before,
+                                         const QHash<QString, OSizerange> &after,
+                                         const QString &activeBefore, const QString &activeAfter,
+                                         const QString &text, const OSizerange *renameFrom,
+                                         const OSizerange *renameTo)
+{
+    auto *command =
+        new OSaveGradedRanges(this, pattern, doc, before, after, activeBefore, activeAfter, text);
+    if (renameFrom != nullptr && renameTo != nullptr)
+    {
+        command->SetRename(*renameFrom, *renameTo);
+    }
+    VAbstractApplication::VApp()->getUndoStack()->push(command);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RestoreGradedRangesState(const QString &activeRangeName)
+{
+    m_activeGradedRangeName = activeRangeName;
+
+    if (activeRangeName.isEmpty() && m_sceneGraded != nullptr)
+    {
+        // Nothing left to draw — and the deferred rebuild skips an empty active range, so the
+        // scene would go on showing a range that no longer exists.
+        m_sceneGraded->clear();
+    }
+
+    RefreshSizeRangesDock();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ApplyRangeRename(const OSizerange &oldRange, const OSizerange &newRange)
+{
+    PropagateRangeRename(oldRange, newRange);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RevertRangeRename(const OSizerange &renamedRange, const OSizerange &formerRange)
+{
+    // The forward entry is taken back FIRST: leaving it beside the reverse one would make A→B and
+    // B→A, a loop the journal deliberately stops at — and a command still holding B would never
+    // find the range that has its name back.
+    OGradedRangeRenames::Forget(formerRange.name);
+    PropagateRangeRename(renamedRange, formerRange);
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ActionGraded(bool checked)
@@ -295,39 +427,63 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
         settings->SetSizeAxisForMeasurement(canonical, dialog.sizeAxis());
     }
 
-    OSizerange range;
+    // The ranges of the pattern, minus the stale one the dialog is allowed to reclaim. Copied ONCE,
+    // before anything is inserted: one gesture is one command, so one Ctrl+Z takes the whole batch
+    // back — a push per range would take one per range.
+    const QHash<QString, OSizerange> before =
+        existing != nullptr ? *existing : QHash<QString, OSizerange>();
+    QHash<QString, OSizerange> ranges = before;
+    ranges.remove(staleNameToDrop);
+
+    QStringList added;
     if (dialog.LoadedFromFavorite())
     {
-        // Load from a favorite: rebuild the range straight from the stored definition.
-        range = OGradedFavorites::RangeFromFavorite(settings, canonical, dialog.sizeAxis(),
-                                                    dialog.FavoriteName());
+        // One range per ticked favorite, in the list's own order. The dialog only lets a favorite be
+        // ticked when no range of the pattern already carries its name (the name is the key), so a
+        // collision cannot come from here — but a favorite the store no longer resolves is skipped
+        // rather than turned into a range with no ends.
+        for (const QString &favorite : dialog.FavoriteNames())
+        {
+            const OSizerange loaded =
+                OGradedFavorites::RangeFromFavorite(settings, canonical, dialog.sizeAxis(), favorite);
+            if (not loaded.IsValid() || ranges.contains(loaded.name))
+            {
+                continue;
+            }
+            ranges.insert(loaded.name, loaded);
+            added.append(loaded.name);
+        }
     }
     else
     {
-        range = dialog.range();
+        const OSizerange range = dialog.range();
+        if (not range.IsValid())
+        {
+            return {};
+        }
+        if (ranges.contains(range.name))
+        {
+            QMessageBox::warning(this, tr("Graded mode"),
+                                 tr("A size range with this name already exists."), QMessageBox::Ok);
+            return {};
+        }
+        ranges.insert(range.name, range);
+        added.append(range.name);
     }
-    if (not range.IsValid())
+
+    if (added.isEmpty())
     {
         return {};
     }
 
-    QHash<QString, OSizerange> ranges =
-        existing != nullptr ? *existing : QHash<QString, OSizerange>();
-    ranges.remove(staleNameToDrop);
-    if (ranges.contains(range.name))
-    {
-        QMessageBox::warning(this, tr("Graded mode"),
-                             tr("A size range with this name already exists."), QMessageBox::Ok);
-        return {};
-    }
-    ranges.insert(range.name, range);
-    pattern->SetSizeRanges(ranges);
+    // **Undoable, like every other move of the ranges — and once for the whole gesture.** The command
+    // writes the model and the document, and leaves ONE range active: the first one added, the one the
+    // list shows at the top. The graded canvas draws a single range at a time, so "the last one read"
+    // would make the active range depend on the order of a loop.
+    PushGradedRangesCommand(before, ranges, m_activeGradedRangeName, added.first(),
+                            added.size() == 1 ? tr("Add size range") : tr("Add size ranges"));
 
-    QDomElement rootElement = doc->documentElement();
-    AddSizeRanges(doc, rootElement, pattern);
-    doc->SetModified(true);
-
-    return range.name;
+    return added.first();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -437,10 +593,10 @@ bool MainWindow::AddGradedRange()
         return false;
     }
 
-    // The new range becomes the active one and its layout is captured.
-    m_activeGradedRangeName = newName;
-    RebuildGradedCanvas(true);
-    RefreshSizeRangesDock();
+    // The command made the new range active and refreshed the list; the canvas rebuild is
+    // scheduled by `indexChanged`. Fit the view once that rebuild has run — same event queue,
+    // later ticket, so the zoom lands on the new scene and not on the old one.
+    QTimer::singleShot(0, this, [this] { ui->view->ZoomFitBest(); });
     return true;
 }
 
@@ -488,18 +644,14 @@ bool MainWindow::DuplicateGradedRange(const QString &rangeName)
     OSizerange copy = source;
     copy.name = copyName;
 
-    QHash<QString, OSizerange> ranges = *existing;
+    const QHash<QString, OSizerange> before = *existing;
+    QHash<QString, OSizerange> ranges = before;
     ranges.insert(copyName, copy);
-    pattern->SetSizeRanges(ranges);
-
-    QDomElement rootElement = doc->documentElement();
-    AddSizeRanges(doc, rootElement, pattern);
-    doc->SetModified(true);
 
     // The copy becomes the active range so its (identical) layout is shown.
-    m_activeGradedRangeName = copyName;
-    RebuildGradedCanvas(true);
-    RefreshSizeRangesDock();
+    PushGradedRangesCommand(before, ranges, m_activeGradedRangeName, copyName,
+                            tr("Duplicate size range"));
+    QTimer::singleShot(0, this, [this] { ui->view->ZoomFitBest(); });
     return true;
 }
 
@@ -573,7 +725,8 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
         return false;
     }
 
-    QHash<QString, OSizerange> ranges = *existing;
+    const QHash<QString, OSizerange> before = *existing;
+    QHash<QString, OSizerange> ranges = before;
     ranges.remove(rangeName);
     if (ranges.contains(edited.name))
     {
@@ -582,26 +735,16 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
         return false;
     }
     ranges.insert(edited.name, edited);
-    pattern->SetSizeRanges(ranges);
 
-    QDomElement rootElement = doc->documentElement();
-    AddSizeRanges(doc, rootElement, pattern);
-    doc->SetModified(true);
+    // The dialog may have renamed the range. The command carries both names, so an undo moves
+    // everything that followed the name — the favorites and the generations — back with it.
+    const bool renamed = edited.name != rangeName;
+    const QString activeAfter =
+        m_activeGradedRangeName == rangeName ? edited.name : m_activeGradedRangeName;
 
-    // Everything that followed the range by its name follows it here: the graded favorite,
-    // the favorites of the Export mode, and the generations of the session. One definition,
-    // three readers — see PropagateRangeRename.
-    PropagateRangeRename(stored, edited);
-
-    // The active range may have been renamed, or its size interval changed (the
-    // layer count depends on min/max) → force a full re-capture.
-    if (m_activeGradedRangeName == rangeName)
-    {
-        m_activeGradedRangeName = edited.name;
-        RebuildGradedCanvas();
-    }
-
-    RefreshSizeRangesDock();
+    PushGradedRangesCommand(before, ranges, m_activeGradedRangeName, activeAfter,
+                            tr("Edit size range"), renamed ? &stored : nullptr,
+                            renamed ? &edited : nullptr);
     return true;
 }
 
@@ -614,19 +757,16 @@ bool MainWindow::DeleteGradedRange(const QString &rangeName)
         return false;
     }
 
-    QHash<QString, OSizerange> ranges = *existing;
+    const QHash<QString, OSizerange> before = *existing;
+    QHash<QString, OSizerange> ranges = before;
     ranges.remove(rangeName);
-    pattern->SetSizeRanges(ranges);
-
-    QDomElement rootElement = doc->documentElement();
-    AddSizeRanges(doc, rootElement, pattern);
-    doc->SetModified(true);
 
     // Deleting the active range: the next one is the lowest name still in the dock's
     // list — the same (table, axis) context the dock lists by. Taking it from the whole
     // hash would activate a range the user cannot see, leaving the list with no row
     // marked active. When nothing matches, the canvas and the list are simply empty:
     // the user leaves Graded, or adds a range.
+    QString activeAfter = m_activeGradedRangeName;
     if (m_activeGradedRangeName == rangeName)
     {
         const OGradedSizeRanges::Context context = OGradedSizeRanges::CurrentContext(doc);
@@ -642,22 +782,11 @@ bool MainWindow::DeleteGradedRange(const QString &rangeName)
                 next = it.key();
             }
         }
-        m_activeGradedRangeName = next;
-
-        if (m_sceneGraded != nullptr && VAbstractValApplication::VApp()->GetDrawMode() == Draw::Graded)
-        {
-            if (next.isEmpty())
-            {
-                m_sceneGraded->clear();
-            }
-            else
-            {
-                RebuildGradedCanvas();
-            }
-        }
+        activeAfter = next;
     }
 
-    RefreshSizeRangesDock();
+    PushGradedRangesCommand(before, ranges, m_activeGradedRangeName, activeAfter,
+                            tr("Delete size range"));
     return true;
 }
 
@@ -756,8 +885,8 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
         return;
     }
 
-    QHash<QString, OSizerange> ranges = *existing;
-    OSizerange range = ranges.take(oldName);
+    const QHash<QString, OSizerange> before = *existing;
+    OSizerange range = before.value(oldName);
     const OSizerange oldRange = range; // everything that follows the name uses the pre-rename range
 
     // Renaming a favorited range onto another favorite's name is refused — nothing
@@ -769,21 +898,14 @@ void MainWindow::RenameGradedRange(const QString &oldName, const QString &newNam
     }
 
     range.name = newName; // definition and content are untouched
+    QHash<QString, OSizerange> ranges = before;
+    ranges.remove(oldName);
     ranges.insert(newName, range);
-    pattern->SetSizeRanges(ranges);
 
-    QDomElement rootElement = doc->documentElement();
-    AddSizeRanges(doc, rootElement, pattern);
-    doc->SetModified(true);
-
-    // The favorite follows the range name, and so does everything else that named it — one
-    // definition, several readers: see PropagateRangeRename.
-    PropagateRangeRename(oldRange, range);
-
-    if (m_activeGradedRangeName == oldName)
-    {
-        m_activeGradedRangeName = newName;
-    }
-
-    RefreshSizeRangesDock();
+    // The favorite follows the range name, and so does everything else that named it — the
+    // command carries both names, so an undo moves them back. See PropagateRangeRename.
+    const QString activeAfter =
+        m_activeGradedRangeName == oldName ? newName : m_activeGradedRangeName;
+    PushGradedRangesCommand(before, ranges, m_activeGradedRangeName, activeAfter,
+                            tr("Rename size range"), &oldRange, &range);
 }

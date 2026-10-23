@@ -899,17 +899,17 @@ void OOmtDocument::ClearRangeGroups(const QString &axisGroupName)
 
 // ===== Grid =====
 
-auto OOmtDocument::GetGridCell(const QString &mName, const QString &coord) const -> double
+auto OOmtDocument::GetGridCell(const QString &mName, const QString &coord) const -> std::optional<qreal>
 {
     QDomElement root = RootElement();
     if (root.isNull())
     {
-        return 0.0;
+        return std::nullopt;
     }
     QDomElement gridEl = root.firstChildElement(TagGrid);
     if (gridEl.isNull())
     {
-        return 0.0;
+        return std::nullopt;
     }
     QDomNodeList cells = gridEl.elementsByTagName(TagCell);
     for (int i = 0; i < cells.count(); ++i)
@@ -920,7 +920,7 @@ auto OOmtDocument::GetGridCell(const QString &mName, const QString &coord) const
             return GetParametrDouble(cell, AttrV, "0");
         }
     }
-    return 0.0;
+    return std::nullopt;
 }
 
 void OOmtDocument::SetGridCell(const QString &mName, const QString &coord, double value)

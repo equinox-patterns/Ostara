@@ -842,10 +842,14 @@ auto ResolveOwnerMiniatures(const IPieceInfo &owner, bool isGroup, quint32 owner
 /// @param miniatureBoxes the box each piece is measured on when nobody ever placed its miniature's
 ///                frame, by piece id, in that same frame — see @ref ResolveOwnerMiniatures
 /// @param cuttingPlan a cutting plan carries no miniature at all
+/// @param sizeAxes the size this resolution describes — one value per axis, keyed the way the
+///                 measurement table names its axes. Empty means the table's reference size,
+///                 which is what every live canvas wants; the export hands over the run's own.
 auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                        const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
                        const VContainer *pattern, VAbstractPattern *doc,
-                       const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan)
+                       const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan,
+                       const QMap<QString, QString> &sizeAxes)
     -> OExportPieceDecor
 {
     OExportPieceDecor decor;
@@ -878,7 +882,8 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     // is no template to resolve, so the blocks are skipped and the annotations are not.
     if (doc != nullptr)
     {
-        const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(owner, doc, pattern);
+        const OInfoBlockEffectiveState state =
+            OInfoBlockResolver::ResolveEffectiveState(owner, doc, pattern, sizeAxes);
         const OInfoBlockData &info = owner.GetInfoBlockData();
 
         for (int block : state.blockContent.keys())
@@ -1107,11 +1112,12 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
                      const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
                      const VContainer *pattern, VAbstractPattern *doc,
                      const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan,
+                     const QMap<QString, QString> &sizeAxes = {},
                      OGradedSvg::LayoutObject *decor = nullptr) -> void
 {
     const OExportPieceDecor records = ResolveOwnerDecor(owner, isGroup, ownerId, centerLocal, mirrorX,
                                                         range, pattern, doc, miniatureBoxes,
-                                                        cuttingPlan);
+                                                        cuttingPlan, sizeAxes);
     DrawOwnerDecor(host, records);
 
     if (decor != nullptr)
@@ -1212,7 +1218,7 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
         // its own that nothing ever measured.
         BuildOwnerDecor(host, pieces->constFind(geometry.id).value(), false, geometry.id,
                         frame.bounds.center() - frame.origin, frame.mirrorX, range, pattern, doc,
-                        {{geometry.id, frame.bounds}}, cuttingPlan, decor);
+                        {{geometry.id, frame.bounds}}, cuttingPlan, {}, decor);
     }
 
     if (host->childItems().isEmpty())
@@ -1251,7 +1257,11 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
     if (decor != nullptr)
     {
         decor->name = group.value().GetName();
+        decor->ownerId = groupId;
+        decor->isGroup = true;
         decor->transform = host->sceneTransform();
+        // A group's children ARE placed by their host's transform, unlike a piece's.
+        decor->ownerPlacement = host->sceneTransform();
     }
 
     const VGrainlineData &geom = group.value().m_glGrainline;
@@ -1308,7 +1318,7 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
         }
 
         BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, qQNaN(), range, pattern, doc,
-                        memberBoxes, cuttingPlan, decor);
+                        memberBoxes, cuttingPlan, {}, decor);
     }
 
     if (decor != nullptr)
@@ -1333,8 +1343,8 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan)
-    -> OExportPieceDecor
+                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
+                       const QMap<QString, QString> &sizeAxes) -> OExportPieceDecor
 {
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
     if (pieces == nullptr)
@@ -1353,13 +1363,13 @@ auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *r
     const QPointF centerLocal = UnplacedBounds(geometry.piece).center();
     return ResolveOwnerDecor(piece.value(), false, geometry.id, centerLocal, geometry.mirrorX, range,
                              pattern, doc, {{geometry.id, UnplacedBounds(geometry.piece)}},
-                             cuttingPlan);
+                             cuttingPlan, sizeAxes);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
-                           const Unit &unit, const VContainer *pattern, bool cuttingPlan)
-    -> OExportPieceGrainline
+                           const Unit &unit, const VContainer *pattern, bool cuttingPlan,
+                           const QRectF &referenceSeat) -> OExportPieceGrainline
 {
     OExportPieceGrainline frozen;
 
@@ -1396,7 +1406,30 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
     // fallback for a grainline that was never placed, so it does not land on the document origin.
     const QPointF fallback = own.GetMainLine().p1();
 
-    const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, geometry.id, false);
+    OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, geometry.id, false);
+
+    // ── La place Graded, reportée sur CETTE taille ───────────────────────────────────────────
+    //
+    // The override is a point of the DOCUMENT, arranged in Graded where every size is drawn one on
+    // top of the other — one place, valid for all of them. A plan draws ONE size, on its own
+    // geometry, with no such alignment: the same point lands elsewhere, and the grain lines come out
+    // scattered. The seat is therefore carried over the way Graded carries it — the same relative
+    // position inside the piece, measured against the range's reference size, which is where the
+    // decor is resolved everywhere else in the application.
+    //
+    // Without a reference seat the raw point stands: that is the old behaviour, and it is exactly
+    // right for a run on the reference size itself.
+    if (ov.valid && !referenceSeat.isNull())
+    {
+        const QRectF now = UnplacedBounds(geometry.piece);
+        if (!now.isNull() && !qFuzzyIsNull(referenceSeat.width())
+            && !qFuzzyIsNull(referenceSeat.height()))
+        {
+            const qreal u = (ov.pos.x() - referenceSeat.left()) / referenceSeat.width();
+            const qreal v = (ov.pos.y() - referenceSeat.top()) / referenceSeat.height();
+            ov.pos = QPointF(now.left() + u * now.width(), now.top() + v * now.height());
+        }
+    }
     const OGraded::GrainlinePlacement placement =
         OGraded::ResolveGrainline(geom, ov, false, pattern, unit, fallback);
     const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), false, pattern);
@@ -1414,7 +1447,8 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 groupId,
                        const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                       VAbstractPattern *doc, bool cuttingPlan) -> OExportGroupDecor
+                       VAbstractPattern *doc, bool cuttingPlan,
+                       const QMap<QString, QString> &sizeAxes) -> OExportGroupDecor
 {
     OExportGroupDecor frozen;
 
@@ -1481,7 +1515,7 @@ auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 gro
     }
 
     frozen.owner = ResolveOwnerDecor(sized, true, groupId, centerLocal, qQNaN(), range, pattern, doc,
-                                     memberBoxes, cuttingPlan);
+                                     memberBoxes, cuttingPlan, sizeAxes);
 
     const VGrainlineData &geom = sized.m_glGrainline;
     if (geom.IsEnabled() && geom.IsVisible())
@@ -1866,6 +1900,10 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     // pass over the scene would have to guess at both.
                     OGradedSvg::LayoutObject entry;
                     entry.name = geometry.name;
+                    entry.ownerId = geometry.id;
+                    // The ink is already placed (the matrix is baked into the piece), so this is
+                    // what brings it back into the frame `outline` travels in.
+                    entry.ownerPlacement = placementMatrix;
                     // The records are written in the owner's own frame and the wrapper
                     // carries them; the items below are already placed and must not be.
                     entry.origin = QPointF(0.0, 0.0);

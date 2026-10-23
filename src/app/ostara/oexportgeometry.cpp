@@ -569,6 +569,60 @@ auto OExportGeometry::LabelOf(double base, int axisIndex) const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportGeometry::AxisLabels(qreal baseA, qreal baseB, qreal baseC) const -> QMap<QString, QString>
+{
+    QMap<QString, QString> labels;
+    if (m_measurements.isNull())
+    {
+        return labels;
+    }
+
+    // **The slot is read on the dimension's own type, never on its rank in the map.** A table
+    // missing one axis would otherwise shift every axis below it by one slot — the table is a map,
+    // and its key order is not a promise about which axis is which. This is the same mapping
+    // OExportPrintWidget uses to feed its rows.
+    const VDimensions dimensions = m_measurements->Dimensions();
+    for (auto it = dimensions.cbegin(); it != dimensions.cend(); ++it)
+    {
+        qreal base = 0.0;
+        switch (it.key())
+        {
+            case MeasurementDimension::X:
+                base = baseA;
+                break;
+            case MeasurementDimension::Y:
+                base = baseB;
+                break;
+            case MeasurementDimension::W:
+                base = baseC;
+                break;
+            default:
+                continue;  // Z drives no slot — the Details top bar shows it and sets nothing with it
+        }
+        if (base <= 0.0)
+        {
+            continue;
+        }
+
+        // The table's own word for that base; the number when it has none, exactly as the widget
+        // that chose it would read it back.
+        QString word;
+        const DimesionLabels words = it.value()->Labels();
+        for (auto label = words.constBegin(); label != words.constEnd(); ++label)
+        {
+            if (qAbs(label.key() - base) < kBaseTolerance)
+            {
+                word = label.value();
+                break;
+            }
+        }
+        labels.insert(it.value()->Name(), word.isEmpty() ? QString::number(base) : word);
+    }
+
+    return labels;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 {
     const QHash<quint32, VPiece> *pieces = m_container->DataPieces();

@@ -35,6 +35,8 @@
 #include "ogradedsvgwriter.h"
 
 #include "core/oexportoutput.h"
+#include "core/oexportpieces.h"
+#include "core/oexportrecipe.h"
 #include "core/oexporttemplate.h"
 
 #include "../vmisc/projectversion.h"
@@ -43,6 +45,7 @@
 #include "pdf/SvgToOcgPdf.h"  // Trame — writes the optional content groups
 
 #include <QCoreApplication>
+#include <QDomDocument>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QTemporaryDir>
@@ -50,6 +53,60 @@
 
 namespace
 {
+/// Puts the cover page INSIDE the payload, as its own element.
+///
+/// The cover page is drawn outside the plan's layers, so a reader of the payload cannot reconstruct
+/// it: the drawing is the only truth there is. Rabnest has to deliver the same first page — a plan
+/// delivered without its nomenclature looks perfectly normal and is not — so the page travels with
+/// the plan, as a document of its own, and Rabnest writes it back as the file's first sheet.
+///
+/// The SVG text is carried as TEXT and not as markup: the payload is one XML document, and a second
+/// root inside it would be a document that no longer parses.
+auto CarryCover(const QString &svgPath, const QString &coverPath) -> bool
+{
+    QFile coverFile(coverPath);
+    if (!coverFile.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+    const QByteArray cover = coverFile.readAll();
+    coverFile.close();
+
+    QFile svgFile(svgPath);
+    if (!svgFile.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+    QDomDocument document;
+    const bool parsed = static_cast<bool>(document.setContent(svgFile.readAll()));
+    svgFile.close();
+    if (!parsed)
+    {
+        return false;
+    }
+
+    QDomElement root = document.documentElement();
+    QDomElement metadata = root.firstChildElement(QStringLiteral("metadata"));
+    if (metadata.isNull())
+    {
+        metadata = document.createElement(QStringLiteral("metadata"));
+        root.insertBefore(metadata, root.firstChild()).isNull();
+    }
+
+    QDomElement element = document.createElement(QStringLiteral("exportCover"));
+    element.appendChild(document.createTextNode(QString::fromUtf8(cover)));
+    metadata.appendChild(element);
+
+    QFile out(svgPath);
+    if (!out.open(QIODevice::WriteOnly | QIODevice::Truncate))
+    {
+        return false;
+    }
+    out.write(document.toByteArray());
+    return true;
+}
+
+
 /// @brief The decor layer's name when the range has none of its own.
 ///
 /// Filed under MainWindow's context, and deliberately so: that is where the graded export
@@ -69,7 +126,7 @@ auto DefaultDecorLayerName() -> QString
 auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                        const VContainer *pattern, VAbstractPattern *doc,
                        const OExportTemplate *marks, bool framed, bool addLayoutLayer,
-                       const OExportCoverPage::Drawing *cover) -> bool
+                       const OExportCoverPage::Drawing *cover, bool rabnestPayload) -> bool
 {
     if (pattern == nullptr || doc == nullptr || output.layers.isEmpty() || !output.result.ok)
     {
@@ -256,8 +313,52 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     const QRectF imageRect = artboards.valid ? artboards.planRect : pages.first();
 
     const QString svgPath = dir.filePath(QStringLiteral("generation.svg"));
+
+    // Whether this plan HAS a decor at all — a sheet grid to draw it on and a template to draw it
+    // from. A rouleau and the A0 sheet have neither: no sheets are cut, so there is no frame, no
+    // numbering and no marks. That absence is a fact of the file and not a default, and it is what
+    // the recipe has to state, because it is the one case where the reader must supply its own
+    // decor rather than reproduce the one it was given.
+    const bool drawsDecor = artboards.valid && marks != nullptr;
+
+    // The recipe goes into that very file, and only when the file is going to be reopened: the SVG
+    // just written IS the payload, so a recipe written for a closed PDF would be a few hundred bytes
+    // of intent nobody reads. It states the format and the decor — the two things the drawing cannot
+    // state, since a frame drawn for A4 is wrong the moment the client asks for A3, while the same
+    // recipe draws the right one at any size.
+    //
+    // Written before the file is read back, because that is the file the payload is cut from.
+    QDomDocument recipe;
+    QDomElement recipeElement = rabnestPayload
+                                    ? OExportRecipe::Of(recipe, output, drawsDecor ? marks : nullptr,
+                                                        framed)
+                                    : QDomElement();
+
+    // The pieces travel with the recipe, and for the same reason: the recipe says what paper this
+    // is, and the drawing says where each piece stands — neither says what may be DONE with a
+    // piece. A plan that has to choose a rotation, glue a fold to the edge of the cloth or cut a
+    // piece three times cannot read any of that from ink, so it is stated here, once per piece.
+    if (!recipeElement.isNull())
+    {
+        // The names the drawing gives its layers, put back in the generation's own order: `layers`
+        // was walked backwards, and a piece names its layer with the words the reader will see.
+        QStringList displayLabels;
+        displayLabels.reserve(static_cast<int>(layers.size()));
+        for (int index = static_cast<int>(layers.size()) - 1; index >= 0; --index)
+        {
+            displayLabels.append(layers.at(index).label);
+        }
+
+        // The decor the drawing resolved — ONCE, on the reference layer — travels with the pieces,
+        // copied into every size by OExportPieces. It is the same `content.decor` the visible layer
+        // below is written from, so the payload and the paper cannot show two different drawings.
+        recipeElement.appendChild(
+            OExportPieces::Of(recipe, output.layers, displayLabels, pattern, content.decor));
+    }
+
     if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor, imageRect,
-                                    QMarginsF(), 1.0, 1.0, QString(), QString(), layered))
+                                    QMarginsF(), 1.0, 1.0, QString(), QString(), layered,
+                                    recipeElement))
     {
         qWarning() << "OExportPdf: the SVG could not be written";
         return false;
@@ -278,9 +379,10 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     //
     // Only where there is something to draw: a tiled run whose template resolved. A roll and
     // the A0 sheet have no sheets to cut and no frame to carry, and their export is left
-    // exactly as it was — no second document, nothing added to the file.
+    // exactly as it was — no second document, nothing added to the file. `drawsDecor` says the
+    // same thing to the recipe, so the file cannot claim a decor it does not carry.
     QString underlayPath;
-    if (artboards.valid && marks != nullptr)
+    if (drawsDecor)
     {
         underlayPath = dir.filePath(QStringLiteral("underlay.svg"));
         if (!OExportUnderlay::Write(underlayPath, svgPath, *marks, artboards, sheets, framed))
@@ -316,6 +418,11 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         }
     }
 
+    if (rabnestPayload && !coverPath.isEmpty() && !CarryCover(svgPath, coverPath))
+    {
+        qWarning() << "OExportPdf: the cover page could not be carried in the payload";
+    }
+
     // Trame reads the layers back out of the SVG and rebuilds them as optional content —
     // ONE set of layers for the whole document, not one per sheet, so switching a size off
     // hides it on every page at once. What it takes from us besides the file is the page
@@ -337,9 +444,16 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // whether the layout is offered as a layer — the one thing the dialog asks about, and it
     // opens on no. The seventh is the cover page, empty when there is none, and it is drawn
     // outside every layer whatever the sixth says. The eighth is the sheet that page gets when
-    // its format gives it one: empty leaves it on the plan's own sheets.
+    // its format gives it one: empty leaves it on the plan's own sheets. The ninth is the
+    // payload — what the plan was drawn from, written inside the file and read by nobody here.
+    //
+    // The SVG just written IS that payload: it is the plan as drawn, before Trame turned it
+    // into pages, and it is what Rabnest reopens to offer another format. It lives in a
+    // temporary directory that dies with this function, which is why the payload is handed
+    // over now rather than later.
+    const QString payloadPath = rabnestPayload ? svgPath : QString();
     if (!converter.convert(svgPath, pages, pdfPath, info, underlayPath, addLayoutLayer, coverPath,
-                           coverSheet))
+                           coverSheet, payloadPath))
     {
         qWarning() << "OExportPdf: the PDF could not be written";
         return false;

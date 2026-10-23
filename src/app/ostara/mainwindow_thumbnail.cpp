@@ -69,6 +69,12 @@ void MainWindow::ScheduleThumbnailSnapshots()
     {
         return;  // created by the constructor; nothing to arm otherwise
     }
+    // Une génération lit le document taille après taille : une capture de miniature le re-parserait
+    // à la taille de référence, sous les pieds de la marche en cours. Voir RunExportNesting.
+    if (m_thumbnailSnapshotsSuspended)
+    {
+        return;
+    }
     // The flag must be right before anything repaints: a block that would draw the live geometry
     // while a reference drawing is on its way is a block that changes size under the user's eyes.
     UpdateThumbnailReferenceFlag();

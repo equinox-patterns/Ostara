@@ -14226,6 +14226,22 @@ Laissée décochée, la mise en page est imprimée avec le plan et ne peut pas �
 c&apos;est le réglage le plus sûr : un plan imprimé sans son bloc d&apos;information, ses
 pliures et ses annotations a l&apos;air parfaitement normal.</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="74"/>
+        <source>Compatible with Rabnest</source>
+        <translation>Compatible avec Rabnest</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="75"/>
+        <source>Write what the plan was drawn from inside the file, so it can be reopened in
+Rabnest and delivered again in another format. Nothing in the PDF looks different
+and no reader shows it; the file is only heavier.
+Left unchecked, the PDF prints and nothing reopens it.</source>
+        <translation>&#201;crit dans le fichier ce &#224; partir de quoi le plan a &#233;t&#233; dessin&#233;, pour qu&apos;il puisse &#234;tre rouvert dans
+Rabnest et livr&#233; &#224; nouveau dans un autre format. Rien ne change dans le PDF et aucun lecteur ne le montre ;
+le fichier est seulement plus lourd.
+Laiss&#233;e d&#233;coch&#233;e, le PDF s&apos;imprime et rien ne le rouvre.</translation>
+    </message>
 </context>
 <context>
     <name>OExportPlotterWidget</name>

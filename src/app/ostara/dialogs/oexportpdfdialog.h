@@ -66,11 +66,22 @@ public:
     /// any other layer.
     auto AddLayoutLayer() const -> bool;
 
+    /// @brief Whether the file carries the payload Rabnest reads.
+    ///
+    /// True — the default — makes the PDF hybrid: the plan, plus what it was drawn from, so a
+    /// client can reopen it in Rabnest and ask for something else. False writes a closed PDF:
+    /// it prints, and nothing reopens it.
+    ///
+    /// The payload goes in under /PieceInfo, which no reader shows and no attachment panel
+    /// lists. Nothing about the page changes; the file only gets heavier.
+    auto CarriesPayload() const -> bool;
+
 protected:
     void Retranslate() override;
 
 private:
     QCheckBox *m_layoutLayerCheck{nullptr};
+    QCheckBox *m_payloadCheck{nullptr};
 };
 
 #endif  // OEXPORTPDFDIALOG_H

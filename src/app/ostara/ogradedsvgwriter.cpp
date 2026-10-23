@@ -31,9 +31,11 @@
 
 #include "ocartouchesvg.h"
 #include "osvgutils.h"
+#include "core/oexportrecipe.h"
 #include "../vlayout/vgraphicsfillitem.h"
 
 #include <QColor>
+#include <QDomDocument>
 #include <QFile>
 #include <QFont>
 #include <QFontInfo>
@@ -71,8 +73,65 @@ constexpr qreal kDefaultStrokeWidth = 0.1;
 /** @brief Value of the ostara:layout marker set on the decor layer's <g>. */
 constexpr auto kOstaraLayoutMarker = "yes";
 
+/**
+ * @brief Where one owner's decor is written: the file, or the owner's own frame.
+ *
+ * The SAME serializer serves two destinations, and this is the only thing that differs between
+ * them — so there is one implementation of "how a grainline is drawn", never two that could drift.
+ *
+ * @li the visible Layers, where the ink is in scene coordinates and the page transform brings it
+ *     into the file;
+ * @li the payload's per-size copy, where the ink is in the OWNER's frame — the same frame the
+ *     piece's outline travels in — so a reader places it with its own placement and computes
+ *     nothing.
+ *
+ * A record (cartouche, annotation) is already written in the owner's frame; only the page
+ * transform is added for the file. The item ink is in scene coordinates, so the file case maps it
+ * through `sceneTransform()`, the payload case through the parent's inverse — which is the same
+ * matrix composed the other way, and why one formula covers both.
+ */
+struct InkSpace
+{
+    QTransform page{};      ///< scene → file; identity for the payload
+    bool ownerFrame{false}; ///< true: the ink is written in its owner's frame
+
+    /// What the owner's placement did to its ink, to be undone — see LayoutObject::ownerPlacement.
+    ///
+    /// ⚠️ **Not the parent item's transform.** A piece's placement is baked into the paths
+    /// themselves, so its item transform is the identity and the parent's inversion would undo
+    /// nothing at all: the payload came out written at the sheet position of every piece, and the
+    /// reader placed it a second time.
+    QTransform ownerPlacement{};
+
+    /// Item-local → the space this ink is written in.
+    auto ToFile(const QGraphicsItem *item) const -> QTransform
+    {
+        if (item == nullptr)
+        {
+            return ownerFrame ? ownerPlacement.inverted() : page;
+        }
+        const QTransform scene = item->sceneTransform();
+        if (!ownerFrame)
+        {
+            return scene * page;
+        }
+        return ownerPlacement.inverted() * scene;
+    }
+
+    /// An owner-frame transform (a record's placement) → the space this ink is written in.
+    ///
+    /// ⚠️ In the owner's frame the answer is the IDENTITY, never @p owner: that transform is the
+    /// owner's own placement on the sheet (a group host carries one), and the records are already
+    /// stored in the frame that placement maps FROM. Keeping it would write the cartouche at the
+    /// sheet position inside a record that a reader will place again.
+    auto RecordsToFile(const QTransform &owner) const -> QTransform
+    {
+        return ownerFrame ? QTransform() : owner * page;
+    }
+};
+
 /** @brief Serialize one visible trace (path item) — mirrors the flat writer. */
-void WriteTrace(QXmlStreamWriter &writer, const QTransform &toSVG, const QPen &defaultPen,
+void WriteTrace(QXmlStreamWriter &writer, const InkSpace &space, const QPen &defaultPen,
                 QGraphicsItem *gitem)
 {
     QGraphicsPathItem *const pathItem = OSvg::AsPathItem(gitem);
@@ -80,12 +139,11 @@ void WriteTrace(QXmlStreamWriter &writer, const QTransform &toSVG, const QPen &d
     {
         return;
     }
-    const QPainterPath scenePath = pathItem->mapToScene(pathItem->path());
-    if (scenePath.isEmpty())
+    const QPainterPath svgPath = space.ToFile(pathItem).map(pathItem->path());
+    if (svgPath.isEmpty())
     {
         return;
     }
-    const QPainterPath svgPath = toSVG.map(scenePath);
 
     QPen pen = pathItem->pen();
     if (pen.style() == Qt::NoPen)
@@ -115,6 +173,19 @@ void WriteTrace(QXmlStreamWriter &writer, const QTransform &toSVG, const QPen &d
     writer.writeAttribute(QStringLiteral("fill"), fill);
     writer.writeAttribute(QStringLiteral("stroke"), stroke);
     writer.writeAttribute(QStringLiteral("stroke-width"), QString::number(pen.widthF()));
+    // **What this path IS, not only what it looks like.** A grainline and a fold line are drawn as
+    // paths like any other, so a reader that only sees the drawing cannot tell them from an outline
+    // — and Rabnest has to: the grain decides which way a piece may be turned, and the fold decides
+    // where it cannot be cut. Two attributes, written once, and the information stops being a
+    // picture.
+    if (gitem->type() == VGraphicsFillItem::Type)
+    {
+        writer.writeAttribute(QStringLiteral("ostara:grain"), QStringLiteral("yes"));
+    }
+    else if (gitem->type() == VGraphicsFoldLineItem::Type)
+    {
+        writer.writeAttribute(QStringLiteral("ostara:fold"), QStringLiteral("yes"));
+    }
     const QString dash = OSvg::DashArray(pen);
     if (!dash.isEmpty())
     {
@@ -124,7 +195,7 @@ void WriteTrace(QXmlStreamWriter &writer, const QTransform &toSVG, const QPen &d
 }
 
 /** @brief Serialize one editable simple-text item — mirrors the flat writer. */
-void WriteText(QXmlStreamWriter &writer, const QTransform &toSVG, QGraphicsSimpleTextItem *textItem)
+void WriteText(QXmlStreamWriter &writer, const InkSpace &space, QGraphicsSimpleTextItem *textItem)
 {
     if (textItem == nullptr || !textItem->isVisible() || textItem->text().isEmpty())
     {
@@ -132,7 +203,7 @@ void WriteText(QXmlStreamWriter &writer, const QTransform &toSVG, QGraphicsSimpl
     }
     const QFont font = textItem->font();
     const QFontMetricsF fm(font);
-    const QTransform tx = textItem->sceneTransform() * toSVG;
+    const QTransform tx = space.ToFile(textItem);
     writer.writeStartElement(QStringLiteral("text"));
     writer.writeAttribute(QStringLiteral("x"), QStringLiteral("0"));
     writer.writeAttribute(QStringLiteral("y"), QString::number(fm.ascent()));
@@ -557,11 +628,86 @@ void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
 }
 }  // namespace
 
+/**
+ * @brief The body of one owner's carrier: its two families of ink, written in @p space.
+ *
+ * Kept out of the layer loop because it has TWO callers — the visible decor layer and the
+ * payload's per-size copy — and because the two must never be two implementations.
+ */
+void WriteOwnerBody(QXmlStreamWriter &writer, const LayoutObject &object, const InkSpace &space,
+                    const QPen &defaultPen, const QTransform &foldProjection = QTransform())
+{
+        // Two wrappers, because the two halves of the decor do not live in the same
+        // frame. The items were placed in the scene and already carry their owner's
+        // placement; the records were not, they are written in their owner's own
+        // frame. The transform below therefore goes on an inner wrapper — put on the
+        // outer one it would move the items a second time.
+        for (QGraphicsItem *child : object.decorChildren)
+        {
+            // ⚠️ **The fold mark has its own seat.** It runs along the edge that goes on the cloth's
+            // fold, and that edge moves with the size while nothing else does; the payload therefore
+            // projects it on the fold's own axis, and the rest of the decor on the piece's centre.
+            const bool isFold = child->type() == VGraphicsFoldLineItem::Type;
+            const bool shifted = isFold && !foldProjection.isIdentity();
+            if (shifted)
+            {
+                writer.writeStartElement(QStringLiteral("g"));
+                writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(foldProjection));
+            }
+
+            if (child->type() == QGraphicsSimpleTextItem::Type)
+            {
+                WriteText(writer, space, static_cast<QGraphicsSimpleTextItem *>(child));
+            }
+            else
+            {
+                WriteTrace(writer, space, defaultPen, child);
+            }
+
+            if (shifted)
+            {
+                writer.writeEndElement();  // g (the fold's own seat)
+            }
+        }
+
+        // The records take the page offset and the owner's placement together, in that
+        // order: the owner's frame first, the page's own translation last. The decor
+        // children above need no wrapper — their scene coordinates are already mapped
+        // through the space one by one, so this is the only place the two meet.
+        const QTransform recordTx = space.RecordsToFile(object.transform);
+        const bool placed = !recordTx.isIdentity();
+        if (placed)
+        {
+            writer.writeStartElement(QStringLiteral("g"));
+            writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(recordTx));
+        }
+        for (const OInfoBlockSvg::Block &block : object.blocks)
+        {
+            WriteBlock(writer, object.origin, block);
+        }
+        for (const OInfoBlockSvg::Annotation &annotation : object.annotations)
+        {
+            WriteAnnotation(writer, object.origin, annotation);
+        }
+        // The miniatures close the records, after the two families of text. They are a child of
+        // the piece like the others: one per owner — a group carries one per member — written
+        // once, in the reference layer, whichever sizes the run covers.
+        for (const OInfoBlockSvg::Thumbnail &thumbnail : object.thumbnails)
+        {
+            WriteMiniature(writer, object.origin, thumbnail);
+        }
+        if (placed)
+        {
+            writer.writeEndElement();  // g (records, in their owner's frame)
+        }
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     const QString &layoutLayerName, const QList<LayoutObject> &layoutObjects,
                     const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
-                    const QString &title, const QString &description, bool layered)
+                    const QString &title, const QString &description, bool layered,
+                    const QDomElement &metadata)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -577,6 +723,11 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
     const QTransform toSVG(xScale, 0, 0, yScale, margins.left() - offsetX * xScale,
                            margins.top() - offsetY * yScale);
     const QPen defaultPen(Qt::black, kDefaultStrokeWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+    // The visible layers write their ink in SCENE coordinates, through the page transform — the one
+    // thing that differs from the payload's copy, which is written in its owner's frame.
+    InkSpace sceneSpace;
+    sceneSpace.page = toSVG;
 
     QXmlStreamWriter writer(&file);
     writer.setAutoFormatting(true);
@@ -606,18 +757,25 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
     {
         writer.writeTextElement(QStringLiteral("desc"), description);
     }
+    // What the file was made with, for whoever rebuilds the paper instead of reading it. Written
+    // before anything is drawn, because it is metadata and not content: a reader that skips it
+    // skips it whole, and the drawing below is exactly what it would have been without it.
+    if (!metadata.isNull())
+    {
+        OExportRecipe::Write(writer, metadata);
+    }
 
     // One unique-id table per layer: ids may repeat across size layers (each size shows
     // the same piece names) — Illustrator/Inkscape accept that, and a global counter
     // would wrongly rename "Piece 1" to "Piece 1_1" in layer 40.
     const auto emitPieceGeometry = [&](QGraphicsItem *root) {
-        WriteTrace(writer, toSVG, defaultPen, root);
+        WriteTrace(writer, sceneSpace, defaultPen, root);
         const QList<QGraphicsItem *> children = root->childItems();
         for (QGraphicsItem *child : children)
         {
             if (!OSvg::IsInfoChild(child))
             {
-                WriteTrace(writer, toSVG, defaultPen, child);
+                WriteTrace(writer, sceneSpace, defaultPen, child);
             }
         }
     };
@@ -743,53 +901,7 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                 writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
             }
 
-            // Two wrappers, because the two halves of the decor do not live in the same
-            // frame. The items were placed in the scene and already carry their owner's
-            // placement; the records were not, they are written in their owner's own
-            // frame. The transform below therefore goes on an inner wrapper — put on the
-            // outer one it would move the items a second time.
-            for (QGraphicsItem *child : object.decorChildren)
-            {
-                if (child->type() == QGraphicsSimpleTextItem::Type)
-                {
-                    WriteText(writer, toSVG, static_cast<QGraphicsSimpleTextItem *>(child));
-                }
-                else
-                {
-                    WriteTrace(writer, toSVG, defaultPen, child);
-                }
-            }
-
-            // The records take the page offset and the owner's placement together, in that
-            // order: the owner's frame first, the page's own translation last. The decor
-            // children above need no wrapper — their scene coordinates are already mapped
-            // through toSVG one by one, so this is the only place the two meet.
-            const QTransform recordTx = object.transform * toSVG;
-            const bool placed = !recordTx.isIdentity();
-            if (placed)
-            {
-                writer.writeStartElement(QStringLiteral("g"));
-                writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(recordTx));
-            }
-            for (const OInfoBlockSvg::Block &block : object.blocks)
-            {
-                WriteBlock(writer, object.origin, block);
-            }
-            for (const OInfoBlockSvg::Annotation &annotation : object.annotations)
-            {
-                WriteAnnotation(writer, object.origin, annotation);
-            }
-            // The miniatures close the records, after the two families of text. They are a child of
-            // the piece like the others: one per owner — a group carries one per member — written
-            // once, in the reference layer, whichever sizes the run covers.
-            for (const OInfoBlockSvg::Thumbnail &thumbnail : object.thumbnails)
-            {
-                WriteMiniature(writer, object.origin, thumbnail);
-            }
-            if (placed)
-            {
-                writer.writeEndElement();  // g (records, in their owner's frame)
-            }
+            WriteOwnerBody(writer, object, sceneSpace, defaultPen);
             writer.writeEndElement();  // g (layout object)
         }
         if (layered)
@@ -801,5 +913,45 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
     writer.writeEndElement();  // svg
     writer.writeEndDocument();
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OwnerDecorFor(QDomDocument &doc, const LayoutObject &object, const QTransform &projection,
+                  const QTransform &foldProjection) -> QDomElement
+{
+    // The same serializer as the visible layer, in the other frame — that is the whole point of
+    // InkSpace, and the reason this function exists instead of a second implementation.
+    QByteArray buffer;
+    QXmlStreamWriter writer(&buffer);
+
+    InkSpace space;
+    space.ownerFrame = true;
+    space.ownerPlacement = object.ownerPlacement;
+
+    writer.writeStartElement(QStringLiteral("decor"));
+    // One wrapper, and only when there is something to say: the projection of the reference's seat
+    // onto this size's piece. Wrapping the whole body — ink, records and captions together — is what
+    // keeps them one drawing; transforming them one by one is how they come apart.
+    const bool projected = !projection.isIdentity();
+    if (projected)
+    {
+        writer.writeStartElement(QStringLiteral("g"));
+        writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(projection));
+    }
+    WriteOwnerBody(writer, object, space,
+                   QPen(Qt::black, kDefaultStrokeWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin),
+                   foldProjection);
+    if (projected)
+    {
+        writer.writeEndElement();  // g (projection)
+    }
+    writer.writeEndElement();
+
+    QDomDocument fragment;
+    if (!fragment.setContent(buffer))
+    {
+        return {};
+    }
+    return doc.importNode(fragment.documentElement(), true).toElement();
 }
 }  // namespace OGradedSvg

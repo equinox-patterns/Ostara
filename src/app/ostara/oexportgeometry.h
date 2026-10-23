@@ -28,6 +28,7 @@
 #ifndef OEXPORTGEOMETRY_H
 #define OEXPORTGEOMETRY_H
 
+#include <QMap>
 #include <QPointF>
 #include <QSet>
 #include <QSharedPointer>
@@ -283,6 +284,18 @@ public:
     /// the exported geometry is then not the one the range names. The graded capture
     /// feeds its pieces exactly these values.
     auto RangeFixedBases(const QString &rangeName) -> OExportFixedBases;
+
+    /// @brief The value each axis stands at, for one size — axis name → the word the table writes.
+    ///
+    /// **The one input a cartouche cannot read from the document.** An information block that
+    /// states a size reads the measurement table, which only ever knows its reference row; the
+    /// bases a run applies are chosen here, and the words they print are the dimensions' labels.
+    /// Keyed by the dimension's name, which is the same word `OSizeTable::AxisNames()` returns for
+    /// that table — so a cartouche, a cover page and the Details top bar all name an axis alike.
+    ///
+    /// A base of zero — a slot this table does not carry — contributes nothing: an axis nobody
+    /// moved is not an axis the caller can state.
+    auto AxisLabels(qreal baseA, qreal baseB, qreal baseC) const -> QMap<QString, QString>;
 
     /// @brief Resolve every piece of the pattern at the size the document is on.
     ///

@@ -45,6 +45,13 @@ OExportPdfDialog::OExportPdfDialog(const QString &outputName, const QString &dir
     m_layoutLayerCheck->setChecked(false);
     AddOption(m_layoutLayerCheck);
 
+    // Checked, and the opposite of the box above for the same reason: an unticked box here
+    // produces a PDF that prints perfectly and that Rabnest cannot reopen, and nothing in
+    // the file says so. The client would be the one to discover it.
+    m_payloadCheck = new QCheckBox(this);
+    m_payloadCheck->setChecked(true);
+    AddOption(m_payloadCheck);
+
     // Retranslate est rappelée : la passe du squelette a posé ses textes et SON titre, alors que la
     // partie dérivée n'existait pas encore pour dire le sien ni nommer sa case.
     Retranslate();
@@ -54,6 +61,12 @@ OExportPdfDialog::OExportPdfDialog(const QString &outputName, const QString &dir
 auto OExportPdfDialog::AddLayoutLayer() const -> bool
 {
     return m_layoutLayerCheck->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportPdfDialog::CarriesPayload() const -> bool
+{
+    return m_payloadCheck->isChecked();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -68,4 +81,11 @@ void OExportPdfDialog::Retranslate()
            "Left unchecked, the layout is printed with the plan and cannot be switched off -\n"
            "which is the safer setting: a plan printed without its information block, its\n"
            "folds and its annotations looks perfectly normal."));
+
+    m_payloadCheck->setText(tr("Compatible with Rabnest"));
+    m_payloadCheck->setToolTip(
+        tr("Write what the plan was drawn from inside the file, so it can be reopened in\n"
+           "Rabnest and delivered again in another format. Nothing in the PDF looks different\n"
+           "and no reader shows it; the file is only heavier.\n"
+           "Left unchecked, the PDF prints and nothing reopens it."));
 }

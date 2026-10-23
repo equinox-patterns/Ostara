@@ -34,6 +34,7 @@
 #include <QString>
 #include <QStringList>
 #include <memory>
+#include <optional>
 
 /**
  * @brief In-memory model for .omt (Ostara Multi-Tailles) measurement files.
@@ -163,7 +164,12 @@ public:
     // --- Grid ---
     /// Returns the computed value for a given measurement and size group coordinate.
     /// Coordinate format: "v1,v2,v3" (comma-separated values matching group order).
-    auto GetGridCell(const QString &mName, const QString &coord) const -> double;
+    ///
+    /// **Nullopt is the honest answer for a size the grid does not describe** — a table saved
+    /// before the grid existed, or a coordinate the file does not declare. Returning 0.0 for
+    /// both would be a value nothing can tell apart from a real zero, and the callers that show
+    /// this figure to a user would then print one that was never computed.
+    auto GetGridCell(const QString &mName, const QString &coord) const -> std::optional<qreal>;
     void SetGridCell(const QString &mName, const QString &coord, double value);
     void ClearGrid();
 

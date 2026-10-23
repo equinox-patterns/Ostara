@@ -131,7 +131,13 @@ auto QmuFormulaBase::AddVariable(const QString &a_szName, void *a_pUserData) -> 
     Q_UNUSED(a_szName)
     Q_UNUSED(a_pUserData)
 
-    static qreal value = 0;
+    // **One slot PER THREAD, not one for the whole process.** Every variable of every parser used to
+    // point here, so two parsers evaluating at the same time wrote the same eight bytes — a data race
+    // ThreadSanitizer reports as soon as two token parsers run in parallel, which is exactly what
+    // VAbstractPattern::ListExpressions() and FindFormulaDependencies() do on a QtConcurrent pool.
+    // Tokenizing never reads a value (it only needs the names), so a slot of one's own is all it
+    // takes — and a thread's parser keeps the same address for its whole life.
+    static thread_local qreal value = 0;
     return &value;
 }
 

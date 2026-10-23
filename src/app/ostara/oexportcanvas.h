@@ -32,6 +32,7 @@
 #include "ogradedsvgwriter.h"  // OGradedSvg::LayoutObject
 
 #include <QList>
+#include <QMap>
 #include <QPair>
 #include <QString>
 #include <QVector>
@@ -60,17 +61,20 @@ struct OExportTemplate;
 ///
 /// @param cuttingPlan un plan de coupe n'enregistre **aucune miniature** — voir
 ///                    @ref OExportPieceDecor::thumbnails. Le drapeau est lu ici, à la résolution.
+/// @param sizeAxes    la taille que cette résolution décrit — valeur de chaque axe, nommée comme
+///                    le tableau de mesures nomme ses axes. Vide : la taille de référence du
+///                    tableau, ce que la résolution vivante veut. Voir @ref ResolveEffectiveState.
 auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan)
-    -> OExportPieceDecor;
+                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
+                       const QMap<QString, QString> &sizeAxes = {}) -> OExportPieceDecor;
 
 /// @brief The reference layer's grainline for one piece, resolved as the canvas would draw it.
 ///
 /// The same contract as @ref ResolvePieceDecor, and the same constraint: it reads the DOCUMENT, so it
 /// is only correct while the document is on the size being recorded.
 auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
-                           const Unit &unit, const VContainer *pattern, bool cuttingPlan)
-    -> OExportPieceGrainline;
+                           const Unit &unit, const VContainer *pattern, bool cuttingPlan,
+                           const QRectF &referenceSeat = QRectF()) -> OExportPieceGrainline;
 
 /// @brief One GROUP's decor, resolved as the canvas would draw it — the frozen form a run stores.
 ///
@@ -83,7 +87,8 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
 /// document is on the size being recorded.
 auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 groupId,
                        const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                       VAbstractPattern *doc, bool cuttingPlan) -> OExportGroupDecor;
+                       VAbstractPattern *doc, bool cuttingPlan,
+                       const QMap<QString, QString> &sizeAxes = {}) -> OExportGroupDecor;
 
 /// @brief Quel genre de plan ce run est, pour ce que le canvas en dessine.
 ///

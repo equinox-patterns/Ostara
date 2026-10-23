@@ -27,10 +27,12 @@
 #ifndef OSIZETABLE_H
 #define OSIZETABLE_H
 
+#include <QMap>
 #include <QString>
 #include <QStringList>
 
 #include <memory>
+#include <optional>
 
 class OOmtDocument;
 class OOtuDocument;
@@ -54,6 +56,16 @@ public:
     /// Re-resolve the current pattern's measurement table path (.omt or .otu)
     /// and re-parse only when it changed.
     void Load();
+
+    /**
+     * @brief Re-parse the table at @p absolutePath, whatever the pattern points at now.
+     *
+     * **A generation remembers the table it was generated under** (`OExportOutput::
+     * measurementCanonical`), and a page rebuilt from it must read THAT table — not the one the
+     * pattern happens to name at drawing time. An empty or missing path is "no table", exactly as
+     * in @ref Load: a table that has gone cannot answer for sizes it no longer carries.
+     */
+    void LoadFrom(const QString &absolutePath);
 
     /// True when a multi-size (.omt) table is currently loaded.
     auto HasMultiSizeTable() const -> bool;
@@ -85,6 +97,24 @@ public:
 
     /// Value of a measurement at the reference size (anchor value).
     auto MeasurementValue(const QString &name) const -> double;
+
+    /**
+     * @brief Value of a measurement at ANOTHER size, named by the axis values of that size.
+     *
+     * @param axisValues the value each axis stands at, as the table writes it (« 40 », « 176 »),
+     *                   keyed by the axis names `AxisNames()` returns.
+     *
+     * **The answer comes from the .omt's own computed grid** — the very cell the application
+     * reads when it puts a pattern on that size (`VMeasurements::LookupGridValue`), so the figure
+     * a cartouche prints is the figure the geometry was built with. It stays in the table's unit,
+     * which is why `UnitsStr()` can label it without a conversion.
+     *
+     * @return nullopt when the table has no such cell: a single-size table (.otu), an axis the
+     *         table does not declare, or a table saved before its grid was computed. The caller
+     *         then decides — never a zero invented here.
+     */
+    auto MeasurementValueAt(const QString &name, const QMap<QString, QString> &axisValues) const
+        -> std::optional<double>;
 
     /// Measurement unit of the table, as a display string (cm / mm / inch).
     auto UnitsStr() const -> QString;

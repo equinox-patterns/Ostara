@@ -28,6 +28,7 @@
 
 #include "../vmisc/FactoryWidgets.h"
 #include "core/ogradedsizerangename.h"
+#include "ocheckablerowlistwidget.h"
 #include "widgets/osizerangeaxis.h"
 
 #include <QCheckBox>
@@ -141,46 +142,64 @@ void OGradedRangeDialog::BuildModePage()
     auto *layout = new QVBoxLayout(m_modePage);
 
     m_newRadio = new QRadioButton(tr("Create a new size range"), m_modePage);
-    m_loadRadio = new QRadioButton(tr("Load existing from favorite"), m_modePage);
+    m_loadRadio = new QRadioButton(tr("Load existing from favorites"), m_modePage);
     m_newRadio->setChecked(true);
 
-    auto *favoriteLabel = new QLabel(tr("Favorite:"), m_modePage);
-    m_favoriteCombo = MakeComboBox(m_modePage);
-    m_favoriteCombo->setEnabled(false);
+    auto *favoriteLabel = new QLabel(tr("Favorites:"), m_modePage);
+    m_favoriteList = new OCheckableRowListWidget(m_modePage);
+    m_favoriteList->setEnabled(false);
+    // The list is a page of its own inside a dialog that must not jump from one step to the next:
+    // it takes the height it can and keeps it, rather than following the number of favorites.
+    m_favoriteList->setMinimumHeight(160);
 
     layout->addWidget(m_newRadio);
     layout->addWidget(m_loadRadio);
     layout->addSpacing(6);
     layout->addWidget(favoriteLabel);
-    layout->addWidget(m_favoriteCombo);
-    layout->addStretch(1);
+    layout->addWidget(m_favoriteList, 1);
 
     auto updateMode = [this]() {
         const bool load = m_loadRadio != nullptr && m_loadRadio->isChecked();
-        if (m_favoriteCombo != nullptr)
+        if (m_favoriteList != nullptr)
         {
-            m_favoriteCombo->setEnabled(load);
+            m_favoriteList->setEnabled(load);
         }
         UpdateModeState();
     };
     connect(m_newRadio, &QRadioButton::toggled, this, updateMode);
     connect(m_loadRadio, &QRadioButton::toggled, this, updateMode);
-    connect(m_favoriteCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, updateMode);
+    connect(m_favoriteList, &OCheckableRowListWidget::CheckedChanged, this,
+            &OGradedRangeDialog::UpdateModeState);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void OGradedRangeDialog::ShowModePage()
 {
-    m_favoriteCombo->clear();
+    QStringList names;
     if (m_config.favoriteNames)
     {
-        m_favoriteCombo->addItems(m_config.favoriteNames(m_sizeAxis));
+        names = m_config.favoriteNames(m_sizeAxis);
     }
 
-    const bool hasFavorites = m_favoriteCombo->count() > 0;
-    m_loadRadio->setEnabled(hasFavorites);
-    // Default: load a favorite when at least one exists, otherwise create new.
-    if (hasFavorites)
+    m_favoriteList->SetNames(names);
+
+    // A favorite whose name a range of this pattern already carries cannot be loaded — the name IS
+    // the range's key. Said on its own line, and before the dialog closes: the refusal used to come
+    // after it, one message box per name, when nothing could be corrected any more.
+    QStringList taken;
+    for (const QString &name : names)
+    {
+        if (m_config.takenNames.contains(name))
+        {
+            taken.append(name);
+        }
+    }
+    m_favoriteList->SetUnavailable(taken, tr("already in this pattern"));
+
+    // Default: load favorites when at least one may be loaded, otherwise create a new range.
+    const bool canLoad = m_favoriteList->CheckedCount() > 0;
+    m_loadRadio->setEnabled(canLoad);
+    if (canLoad)
     {
         m_loadRadio->setChecked(true);
     }
@@ -203,7 +222,7 @@ void OGradedRangeDialog::UpdateModeState()
     }
 
     const bool load = m_loadRadio != nullptr && m_loadRadio->isChecked();
-    const bool loadOk = load && m_favoriteCombo != nullptr && m_favoriteCombo->currentIndex() >= 0;
+    const bool loadOk = load && m_favoriteList != nullptr && m_favoriteList->CheckedCount() > 0;
     const bool createOk = m_newRadio != nullptr && m_newRadio->isChecked();
     m_nextButton->setEnabled(createOk || loadOk);
 }
@@ -224,11 +243,11 @@ void OGradedRangeDialog::OnNext()
 
     if (m_stack->currentWidget() == m_modePage)
     {
-        if (m_loadRadio != nullptr && m_loadRadio->isChecked()
-            && m_favoriteCombo != nullptr && m_favoriteCombo->currentIndex() >= 0)
+        if (m_loadRadio != nullptr && m_loadRadio->isChecked())
         {
-            // Load from favorite: build directly from the stored definition.
-            m_favoriteName = m_favoriteCombo->currentText();
+            // Load from favorites: one range per ticked name, straight from the stored definitions.
+            // Next is only enabled with at least one box ticked (see UpdateModeState).
+            m_favoriteNames = m_favoriteList->CheckedNames();
             m_loadedFromFavorite = true;
             accept();
         }
@@ -632,7 +651,7 @@ auto OGradedRangeDialog::LoadedFromFavorite() const -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OGradedRangeDialog::FavoriteName() const -> QString
+auto OGradedRangeDialog::FavoriteNames() const -> QStringList
 {
-    return m_favoriteName;
+    return m_favoriteNames;
 }

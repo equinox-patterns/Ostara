@@ -491,7 +491,11 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
         // Which of the two the page is: one that states a size, or one that lists the sizes it
         // holds. The answer decides the title, whether the sizes are listed, and where the axes
         // that do not run take their value.
-        const bool listsRange = sizeCase != OTemplateSizeCase::kSingle;
+        //
+        // **The run answers at export, the designer only in the preview.** The case is a fact about
+        // the output (`OTemplateSizeCase` says so itself), so a page designed for ranges printed
+        // from a single-size run cannot go on listing sizes the paper does not carry.
+        const bool listsRange = data.listsRange.value_or(sizeCase != OTemplateSizeCase::kSingle);
         if (table == nullptr)
         {
             return {}; // no .omt: an information about sizes has no sizes to state
@@ -542,10 +546,8 @@ auto OCoverPageResolver::Resolve(const OCoverPageTemplate::Section &section, con
         }
 
         // Under it, one line per axis the user asked for, in the order the table declares them.
-        // **A page printed from a single size can only be about one value per axis**, so that is
-        // what is written: the table's reference value, the size the pattern's measurements are
-        // written against. The run that prints the page knows the size it was asked for, and will
-        // hand it over the day a cover page is printed from a run at all.
+        // **A page printed from a single size can only be about one value per axis**, and that
+        // value is the one the run was asked for — see `PatternData::axisValues`.
         for (const QString &axis : axes)
         {
             if (!table->AxisNames().contains(axis))

@@ -415,8 +415,13 @@ void VPattern::ParseSizeRanges(const QDomElement &domElement)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VContainer *data)
+void WriteSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VContainer *data)
 {
+    if (doc == nullptr || data == nullptr)
+    {
+        return; // nothing to write — and no container is not the same thing as "no ranges"
+    }
+
     // <sizeRanges> is a single sibling element under the pattern root — replace any stale copy.
     for (QDomElement stale = rootElement.firstChildElement(kTagSizeRanges); not stale.isNull();
          stale = rootElement.firstChildElement(kTagSizeRanges))
@@ -424,10 +429,10 @@ void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VConta
         rootElement.removeChild(stale);
     }
 
-    const auto *ranges = data != nullptr ? data->SizeRanges() : nullptr;
+    const auto *ranges = data->SizeRanges();
     if (ranges == nullptr || ranges->isEmpty())
     {
-        return;
+        return; // the stale element is gone: "no ranges" is written by its absence
     }
 
     QDomElement rangesElement = doc->createElement(kTagSizeRanges);
@@ -509,4 +514,21 @@ void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VConta
     // already carries — groups, and the draws before them — and that question has one answer, asked
     // in one place. See VAbstractPattern::InsertRootElement.
     doc->InsertRootElement(rangesElement);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VContainer *data)
+{
+    if (doc == nullptr || data == nullptr)
+    {
+        return;
+    }
+
+    WriteSizeRanges(doc, rootElement, data);
+
+    // **A write made here is a write made outside the document's own setters**, so the pattern has
+    // to be told — the title, the Save action and the save prompt all read it. Done here, once:
+    // every writer of <sizeRanges> goes through this function. The save itself does not: it calls
+    // WriteSizeRanges, because a file being written must not come out looking dirty.
+    doc->NotifyPatternChanged();
 }

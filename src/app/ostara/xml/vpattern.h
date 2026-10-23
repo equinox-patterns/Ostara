@@ -344,6 +344,15 @@ private:
      * written to the file as it stood at the previous save. */
     void SyncChildGeometryToDom();
 
+    /** @brief Rewrites <sizeRanges> from the container before saving.
+     *
+     * **The container is the live answer, the DOM only the last written one.** Dissolving a group
+     * or deleting a piece moves a range's content (a group's offset is handed to its members, a
+     * removed piece leaves the ranges), and those moves touch the container only — nothing calls
+     * the writer. Saved without this, the file would keep the stale element and the graded layout
+     * would drift back on reopening. Same reason, same place as @ref SyncChildGeometryToDom. */
+    void SyncSizeRangesToDom();
+
     auto MakeEmptyIncrement(const QString &name, IncrementType type) -> QDomElement;
 
     void NewEmptyIncrement(const QString &type, const QString &name, IncrementType varType);

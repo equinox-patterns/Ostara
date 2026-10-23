@@ -51,6 +51,7 @@
 #include <QPainter>
 
 #include <algorithm>
+#include <optional>
 
 namespace
 {
@@ -162,8 +163,8 @@ auto OInfoBlockResolver::ResolveEffectiveConfig(const IPieceInfo &piece, VAbstra
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
-    -> OInfoBlockEffectiveState
+auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data,
+                                               const QMap<QString, QString> &sizeAxes) -> OInfoBlockEffectiveState
 {
     OInfoBlockResolvedConfig config = ResolveConfig(piece, doc, data);
     OInfoBlockEffectiveState &state = config.state;
@@ -205,7 +206,7 @@ auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstrac
         }
         const QList<OCartoucheRenderLine> lines =
             ResolveSectionLines(type, config.tpl.SectionAt(i).options, doc, piece, data, &table, renderLanguages,
-                                mainLocale);
+                                mainLocale, sizeAxes);
         if (lines.isEmpty())
         {
             continue;  // dead data -> no line
@@ -234,7 +235,8 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
                                              const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
                                              const IPieceInfo &piece, const VContainer *data,
                                              const OSizeTable *table, const QStringList &renderLanguages,
-                                             const QString &mainLocale) -> QList<OCartoucheRenderLine>
+                                             const QString &mainLocale, const QMap<QString, QString> &sizeAxes)
+    -> QList<OCartoucheRenderLine>
 {
     QList<OCartoucheRenderLine> lines;
     const QFont baseFont = OCartouchePainter::BaseFont();
@@ -275,9 +277,14 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
             {
                 continue;  // dead data: an axis the current table does not declare
             }
-            const QString anchorValue = table->AnchorValue(axis);
+            // **The size the caller is resolving for, else the table's reference value.** The same
+            // rule and the same fallback the cover page uses (OCoverPageResolver), so a cartouche
+            // and a cover page cannot state two different sizes for the same run. The reference is
+            // the one against which a pattern's measurements are written, and it is the honest
+            // answer for a canvas that only knows the document it draws.
+            const QString shownValue = sizeAxes.value(axis, table->AnchorValue(axis));
             const QStringList axisValues = table->AxisValues(axis);
-            const int anchorIndex = static_cast<int>(axisValues.indexOf(anchorValue));
+            const int shownIndex = static_cast<int>(axisValues.indexOf(shownValue));
             const OAxisRenames renames = renamesByAxis.value(axis);
 
             QStringList languageLines;
@@ -285,10 +292,11 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
             {
                 const OAxisRename rename = renames.value(locale);
                 const QString displayName = rename.name.isEmpty() ? axis : rename.name;
-                QString displayValue = anchorValue;
-                if (anchorIndex >= 0 && anchorIndex < rename.values.size() && not rename.values.at(anchorIndex).isEmpty())
+                QString displayValue = shownValue;
+                if (shownIndex >= 0 && shownIndex < rename.values.size()
+                    && not rename.values.at(shownIndex).isEmpty())
                 {
-                    displayValue = rename.values.at(anchorIndex);
+                    displayValue = rename.values.at(shownIndex);
                 }
                 const QString sep =
                     Translate(locale, "OInfoBlockPreview", qPrintable(options.value(QStringLiteral("separator")).toString()));
@@ -325,8 +333,15 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
         {
             return {};  // dead data: measurement not in the current table
         }
+        // **The value AT THE SIZE BEING RESOLVED, when the caller named one.** The table's grid is
+        // what the application itself reads to put a pattern on a size (`VMeasurements::LookupGridValue`),
+        // so this figure is the one the geometry was built with — and it stays in the table's unit,
+        // which is why the unit below still labels it. No cell for that size (a table saved before
+        // its grid, a single-size .otu) falls back to the reference value, never to a zero.
+        const std::optional<double> atSize = table->MeasurementValueAt(name, sizeAxes);
+        const double measurement = atSize.has_value() ? atSize.value() : table->MeasurementValue(name);
         const QString value =
-            OSizeTable::FormatValue(table->MeasurementValue(name)) + QLatin1Char(' ') + table->UnitsStr();
+            OSizeTable::FormatValue(measurement) + QLatin1Char(' ') + table->UnitsStr();
         const QMap<QString, OAxisRename> renames =
             ParseAxisRenames(options.value(OPieceCartoucheAxisRename::kRenames));
         const bool oneLine = options.value(OPieceCartoucheAxisRename::kOneLine, false).toBool();

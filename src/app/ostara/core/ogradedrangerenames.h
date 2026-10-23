@@ -63,6 +63,15 @@ void Remember(const QString &oldName, const QString &newName);
  */
 auto Resolve(const QString &name) -> QString;
 
+/**
+ * @brief Take back the rename that started at @p oldName — the undo of a rename.
+ *
+ * The reverse rename is written down separately by @ref Remember. Keeping BOTH entries would
+ * make a loop in the journal (A→B and B→A), and the walk stops at a loop: a command holding B
+ * would still be sent to B, which no longer exists. One entry per move, then.
+ */
+void Forget(const QString &oldName);
+
 /** @brief Forget everything — a pattern was opened or closed, and its ranges went with it. */
 void Forget();
 

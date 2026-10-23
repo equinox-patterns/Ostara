@@ -2541,6 +2541,17 @@ void VAbstractPattern::SetModified(bool modified)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VAbstractPattern::NotifyPatternChanged()
+{
+    // The same three things every setter of this class does after writing the DOM. `modified` alone
+    // is not enough: the window reads `patternChanged` to show the change and to offer the save, and
+    // a file that looks untouched is closed without a word.
+    modified = true;
+    SetPatternWasChanged(true);
+    emit patternChanged(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::CreateGroups(const QString &patternPieceName) -> QDomElement
 {
     QDomElement draw = patternPieceName.isEmpty() ? m_patternBlockMapper->GetActiveElement()

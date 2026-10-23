@@ -30,25 +30,29 @@
 #include "../vlayout/vlayoutpiece.h"
 #include "../vwidgets/vpiecegrainline.h"
 
+#include "nesting/CuttingRules.h"  // Trame — les règles du plan de coupe
+
 #include <QLineF>
 #include <QTransform>
 #include <QtNumeric>
 
+#include <utility>
+#include <vector>
+
+
 namespace
 {
-//---------------------------------------------------------------------------------------------------------------------
-// An angle in [0, 360), against 0: the engine compares angles modulo a full turn, and a negative
-// one would only ever be normalised there anyway.
-auto Normalized(qreal degrees) -> double
+// The export's own direction, in the socle's words. One conversion, at the boundary: the two enums
+// carry the same twelve values in the same order, and neither is allowed its own opinion.
+auto ToRules(const OExportCuttingDirection::Direction &direction) -> CuttingRules::Direction
 {
-    double angle = std::fmod(static_cast<double>(degrees), 360.0);
-    if (angle < 0.0)
-    {
-        angle += 360.0;
-    }
-    return angle;
+    CuttingRules::Direction out;
+    out.known = direction.known;
+    out.angle = static_cast<double>(direction.angle);
+    out.arrows = static_cast<CuttingRules::Arrows>(static_cast<int>(direction.arrows));
+    return out;
 }
-} // namespace
+}  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingDirection::FoldLine(const VLayoutPiece &piece) -> QLineF
@@ -75,79 +79,25 @@ auto OExportCuttingDirection::MappedFoldLine(const VLayoutPiece &piece) -> QLine
 auto OExportCuttingDirection::FoldAngle(const VLayoutPiece &piece, double *angle, bool *foldOnTheRight)
     -> bool
 {
+    // The same reading of the fold as everywhere else — `MappedFoldLine`, never the marking's type —
+    // and one frame for the axis and the contour: the one the engine will receive.
     const QLineF fold = MappedFoldLine(piece);
-    if (fold.isNull())
+
+    CuttingRules::Line line;
+    line.x1 = fold.x1();
+    line.y1 = fold.y1();
+    line.x2 = fold.x2();
+    line.y2 = fold.y2();
+
+    const QVector<VLayoutPoint> points = piece.GetMappedExternalContourPoints();
+    std::vector<std::pair<double, double>> contour;
+    contour.reserve(static_cast<std::size_t>(points.size()));
+    for (const VLayoutPoint &point : points)
     {
-        return false;
+        contour.emplace_back(point.x(), point.y());
     }
 
-    // Les deux rotations qui mettent le pli vertical — celles que `AllowedAngles` rend déjà pour un
-    // pli. Le signe est celui du chantier : `QLineF::angle()` tourne dans un sens, `rotatePath` dans
-    // l'autre, d'où le `− 90` et non le `+ 90`.
-    qreal alignment = std::fmod(fold.angle(), 180.0);
-    if (alignment < 0.0)
-    {
-        alignment += 180.0;
-    }
-    const double base = alignment - 90.0;
-
-    // ⚠️ **Laquelle des deux ? Celle qui ne retourne pas la pièce.** Elles diffèrent d'un
-    // demi-tour : l'une laisse la pièce dans son sens, l'autre la couche tête en bas — et les deux
-    // sont posables, la seconde simplement à l'envers. Un demi-tour, c'est un cosinus négatif :
-    // `rotatePath` retranche l'angle de l'angle écran, donc la rotation qui ne retourne rien est
-    // celle dont le cosinus est positif. C'est le même choix que `g − 90` pour une grainline.
-    const double candidates[2] = {base, base + 180.0};
-    double chosen = candidates[0];
-    for (const double candidate : candidates)
-    {
-        if (std::cos(candidate * M_PI / 180.0) > 0.0)
-        {
-            chosen = candidate;
-            break;
-        }
-    }
-
-    // Le contour que le moteur recevra, dans le même repère que le pli : c'est LUI que le pli doit
-    // border, pas la pièce d'un autre repère.
-    const QVector<VLayoutPoint> contour = piece.GetMappedExternalContourPoints();
-
-    // Un dixième de millième de pixel. La rotation est une transformation de coordonnées, et deux
-    // points que le calcul sépare de ça ne sont pas séparés : c'est du bruit, pas une pente.
-    constexpr qreal kTolerance = 1e-4;
-
-    QTransform turn;
-    turn.rotate(chosen); // Qt tourne dans le sens de l'écran, comme `rotatePath`
-
-    const QLineF turned = turn.map(fold);
-    if (std::abs(turned.dx()) <= kTolerance)
-    {
-        // Le corps tombe d'un côté du pli — ou de l'autre. Le pli doit être le bord extrême de la
-        // pièce dans ce sens-là, sinon il n'est pas un bord de sa propre pièce et rien ne le rendra
-        // posable : le dire est le travail de l'appelant.
-        const qreal edge = turned.x1();
-        bool bodyOnTheRight = true;
-        bool bodyOnTheLeft = true;
-        for (const VLayoutPoint &point : contour)
-        {
-            const qreal x = turn.map(QPointF(point.x(), point.y())).x();
-            bodyOnTheRight = bodyOnTheRight && (x >= edge - kTolerance);
-            bodyOnTheLeft = bodyOnTheLeft && (x <= edge + kTolerance);
-            if (!bodyOnTheRight && !bodyOnTheLeft)
-            {
-                break;
-            }
-        }
-
-        if (bodyOnTheRight != bodyOnTheLeft)
-        {
-            *angle = Normalized(chosen);
-            // Le corps à gauche veut un pli sur le bord DROIT pour l'accueillir, et réciproquement.
-            *foldOnTheRight = bodyOnTheLeft;
-            return true;
-        }
-    }
-
-    return false;
+    return CuttingRules::FoldAngle(contour, line, angle, foldOnTheRight);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -222,45 +172,23 @@ auto OExportCuttingDirection::GroupDirection(const OPieceGroup &group) -> Direct
 auto OExportCuttingDirection::Mirrored(const Direction &direction) -> Direction
 {
     Direction mirrored = direction;
-    mirrored.angle = Normalized(180.0 - static_cast<double>(direction.angle));
+    mirrored.angle = CuttingRules::Mirrored(ToRules(direction)).angle;
     return mirrored; // the arrows and the "known" flag do not depend on which way round it is
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportCuttingDirection::AllowedAngles(const Direction &direction, bool oneWay) -> QVector<double>
 {
-    if (not direction.known)
+    // **The rule lives in the socle, and only there.** A second application that needs a plan would
+    // otherwise copy this arithmetic — and a sign written twice is a sign that can be right in one
+    // place and wrong in the other, with nothing on screen to show which one is which.
+    const std::vector<double> angles = CuttingRules::AllowedAngles(ToRules(direction), oneWay);
+
+    QVector<double> out;
+    out.reserve(static_cast<int>(angles.size()));
+    for (const double angle : angles)
     {
-        return {};
+        out.append(angle);
     }
-
-    // ⚠️ THE sign of this whole feature. See the header: Qt's angle() is counter-clockwise on
-    // screen, the engine's rotatePath() is clockwise. Laying the direction along the fabric's
-    // length takes `g - 90`; `g + 90` is that same orientation turned a half-turn.
-    const double base = static_cast<double>(direction.angle) - 90.0;
-
-    // Ostara only ever writes two of the twelve values — the dock offers "Simple"
-    // (twoWaysUpDown) and "Double" (fourWays), and reads anything else as Simple. The ten others
-    // exist in imported .val files and are read here the way the dock reads them: as two ways.
-    // They deserve their own reading the day one of them is actually reachable.
-    if (direction.arrows == GrainlineArrowDirection::fourWays)
-    {
-        // The cross — TWO axes: droit-fil, and contre-fil. Both are legitimate, so the one-way
-        // option keeps them both and takes one sense of each. That is what the cross means here.
-        if (oneWay)
-        {
-            return {Normalized(base), Normalized(base + 90.0)};
-        }
-
-        return {Normalized(base), Normalized(base + 90.0), Normalized(base + 180.0), Normalized(base + 270.0)};
-    }
-
-    // One axis only, so one-way leaves a single orientation: the piece is laid the way it was
-    // drawn, and no copy of it is turned a half-turn.
-    if (oneWay)
-    {
-        return {Normalized(base)};
-    }
-
-    return {Normalized(base), Normalized(base + 180.0)};
+    return out;
 }

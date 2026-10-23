@@ -80,11 +80,14 @@ void MainWindow::UpdateUndoRedoActions(bool enabled)
 {
     // The mode decides which histories are available at all. Calculation and Modeling are what
     // the condition here used to call the design stage; Export joins them because it now HAS a
-    // history of its own — the hand corrections made on the plan. Layout and Graded stay out,
-    // exactly as they were: this was not the place to widen a policy nobody asked to change.
+    // history of its own — the hand corrections made on the plan. **Graded joins them too**: its
+    // edits live on the document's own stack (a range's definition is a command now, like its
+    // content), and a mode whose canvas is built from that document has to let the user take a
+    // gesture back — refusing Ctrl+Z there is what made a deleted range unrecoverable.
+    // Layout stays out: it has no history to offer.
     const Draw mode = VAbstractValApplication::VApp()->GetDrawMode();
     const bool historyStage = (mode == Draw::Calculation || mode == Draw::Modeling
-                               || mode == Draw::Export);
+                               || mode == Draw::Export || mode == Draw::Graded);
 
     const bool allowed = enabled && historyStage && not m_toolOptionsDialogVisible;
 

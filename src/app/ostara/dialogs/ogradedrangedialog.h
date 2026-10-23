@@ -6,8 +6,9 @@
  **
  **  @brief  Graded-mode size-range dialog (up to 3 steps):
  **          step 1 — choose the graded axis (skipped when already declared);
- **          step 2 — "create a new range" / "load existing from favorite"
- **                   (+ favorite combo, only relevant when loading);
+ **          step 2 — "create a new range" / "load existing from favorites"
+ **                   (+ tick list of the favorites, only relevant when loading —
+ **                   several may be ticked, one range is created per tick);
  **          step 3 — the range form (name, min/max, frozen other axes).
  **          "Load from favorite" accepts directly on step 2 (no step 3).
  **          In Edit mode the dialog opens directly on step 3, pre-filled.
@@ -43,6 +44,7 @@
 
 #include "../vpatterndb/osizerange.h"
 
+class OCheckableRowListWidget;
 class QCheckBox;
 class QComboBox;
 class QLineEdit;
@@ -53,8 +55,8 @@ class QStackedWidget;
 class QWidget;
 
 /**
- * @brief Creates one size range (definition only — the content is added by the
- *        graded canvas). Every combo is built with MakeComboBox().
+ * @brief Creates one size range, or several when loading from favorites (definition only — the
+ *        content is added by the graded canvas). Every combo is built with MakeComboBox().
  */
 class OGradedRangeDialog : public QDialog
 {
@@ -101,8 +103,11 @@ public:
     /// True when the dialog was accepted straight from a chosen favorite.
     auto LoadedFromFavorite() const -> bool;
 
-    /// The chosen favorite name (valid when LoadedFromFavorite()).
-    auto FavoriteName() const -> QString;
+    /// @brief The names of the favorites chosen in step 2 (valid when LoadedFromFavorite()).
+    ///
+    /// Several of them, in the order the list shows: one size range is created per name, in a
+    /// single gesture and a single undo step.
+    auto FavoriteNames() const -> QStringList;
 
 private:
     void BuildStep1Page();
@@ -121,7 +126,7 @@ private:
 
     Config m_config;
     QString m_sizeAxis;
-    QString m_favoriteName;
+    QStringList m_favoriteNames;
     bool m_loadedFromFavorite{false};
 
     QStackedWidget *m_stack = nullptr;
@@ -132,7 +137,7 @@ private:
     QComboBox *m_axisCombo = nullptr; // step 1: size axis
     QRadioButton *m_newRadio = nullptr;
     QRadioButton *m_loadRadio = nullptr;
-    QComboBox *m_favoriteCombo = nullptr; // step 2
+    OCheckableRowListWidget *m_favoriteList = nullptr; // step 2: one tick per favorite to load
     QComboBox *m_minCombo = nullptr;      // step 3
     QComboBox *m_maxCombo = nullptr;      // step 3
     QLineEdit *m_nameEdit = nullptr;      // step 3

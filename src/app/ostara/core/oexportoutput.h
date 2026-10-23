@@ -197,12 +197,13 @@ struct OExportOutput
     /// **The page's own question, answered where it is known.** A cover page that states one
     /// size must state the size the RUN was asked for; the preview can only state the table's
     /// reference value, and a page announcing a size the paper does not carry is the defect
-    /// §6 of the nomenclature spec was written about. Filled at nesting time from the tab that
-    /// asked, because the tab is the only place that knows which axis each slot belongs to and
-    /// what the table calls that value.
+    /// §6 of the nomenclature spec was written about. Filled at nesting time, from the bases the
+    /// walk actually applied — the same figures the reference layer's cartouche is resolved with —
+    /// because that is the only moment where the run's size and the table that names it meet.
     ///
-    /// Empty on a range run, whose frozen axis values are already in `range` — and empty is
-    /// also the preview's case, which is why the reader falls back to the table.
+    /// On a range run it names only the axes that do NOT run: the graded one has no single value,
+    /// and the page lists its sizes instead. Empty only when the run applied no axis at all (a
+    /// single-size table), and in the preview, which is why the reader falls back to the table.
     QMap<QString, QString> pinnedAxes{};
 
     /// The member kept for each piece group: group id → piece id. **Only a cutting plan fills

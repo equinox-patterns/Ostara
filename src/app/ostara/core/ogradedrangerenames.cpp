@@ -53,6 +53,12 @@ void OGradedRangeRenames::Remember(const QString &oldName, const QString &newNam
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OGradedRangeRenames::Forget(const QString &oldName)
+{
+    Journal().remove(oldName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OGradedRangeRenames::Resolve(const QString &name) -> QString
 {
     QString current = name;

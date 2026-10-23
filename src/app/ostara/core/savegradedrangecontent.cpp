@@ -80,8 +80,8 @@ void SaveGradedRangeContent::ApplyRange(const OSizerange &range)
     if (m_doc != nullptr)
     {
         QDomElement rootElement = m_doc->documentElement();
+        // The write announces itself — see AddSizeRanges / VAbstractPattern::NotifyPatternChanged.
         AddSizeRanges(m_doc, rootElement, m_data);
-        m_doc->SetModified(true);
     }
 }
 

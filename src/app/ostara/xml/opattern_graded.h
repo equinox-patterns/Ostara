@@ -33,6 +33,15 @@ class VContainer;
 
 /// Rewrite the <sizeRanges> root element of the pattern DOM from the ranges
 /// stored in @p data (replace any stale copy first). No-op when there is no range.
+///
+/// **It announces the change** — `VAbstractPattern::NotifyPatternChanged` — because it is a
+/// write made outside the document's own setters. Callers store a range and nothing else; the
+/// title, the Save action and the save prompt follow from here.
 void AddSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VContainer *data);
+
+/// The same DOM write, **without announcing anything** — for the one caller that must not: the
+/// save itself (see VPattern::SyncSizeRangesToDom). Announcing there would mark the pattern
+/// modified while it is being written, and the window would show a change that no longer exists.
+void WriteSizeRanges(VAbstractPattern *doc, QDomElement &rootElement, const VContainer *data);
 
 #endif // OPATTERN_GRADED_H

@@ -150,8 +150,20 @@ auto OExportCoverPage::Of(const OExportOutput &output, VAbstractPattern *doc) ->
     // be the one drawn — which is the same reason the assembly marks are re-read every time.
     OSymbolLibrary::Library symbols = OSymbolLibrary::Load();
     OSeamAllowanceLibrary::Library seams = OSeamAllowanceLibrary::Load();
+
+    // **The sizes are the RUN's, so the table is the run's too.** A generation remembers the table
+    // it was cut against; the pattern may since have been pointed at another one, and a page then
+    // stating the sizes of a table the paper was not generated from would be announcing values
+    // nobody asked for. The pattern's own table answers only when the generation recorded none.
     OSizeTable table;
-    table.Load();
+    if (output.measurementCanonical.isEmpty())
+    {
+        table.Load();
+    }
+    else
+    {
+        table.LoadFrom(output.measurementCanonical);
+    }
 
     const VCoverPageData page = doc == nullptr ? VCoverPageData() : doc->GetCoverPage();
 
@@ -174,11 +186,20 @@ auto OExportCoverPage::Of(const OExportOutput &output, VAbstractPattern *doc) ->
         }
         data.sizes = OCoverPageSizes(&table, axis, VAbstractApplication::VApp()->Settings());
 
+        // **Whether the page states a size or lists a range is a fact about the output**, not a
+        // design choice — `OTemplateSizeCase` says so itself. The designer's own answer is what the
+        // preview shows; on paper, the run answers. A page designed for ranges printed from a
+        // single-size run would otherwise list sizes the paper does not carry.
+        data.listsRange = output.hasRange;
+
         // **Where each axis stands, said by the RUN.** A range says which sizes run and says nothing
         // about the axes that do not: those are frozen, and the run recorded their values — as it
-        // recorded the one size a single-size run was asked for. Empty falls back to the table, which
-        // is the preview's case and the only honest answer left.
-        data.axisValues = output.hasRange ? output.range.axisValues : output.pinnedAxes;
+        // recorded the one size a single-size run was asked for. The range's own authored values
+        // answer only when the run recorded nothing; the table is the preview's case, and the only
+        // honest answer left there.
+        data.axisValues = !output.pinnedAxes.isEmpty()
+                              ? output.pinnedAxes
+                              : (output.hasRange ? output.range.axisValues : QMap<QString, QString>());
 
         // What belongs to the DOCUMENT, and is re-read on every rebuild: the pattern's own name, the
         // text left to be filled in, the legend it chose, the margins it is cut with.

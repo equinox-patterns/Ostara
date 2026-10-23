@@ -119,6 +119,23 @@ public:
 
     auto LoadPattern(QString fileName, const QString &customMeasureFile = QString()) -> bool;
 
+    /// @brief Give the graded ranges back the state an undo/redo command restored.
+    ///
+    /// The command has already written the model and the document; what is left is the session's
+    /// own answer — which range is active — and the list the user reads. The canvas follows on its
+    /// own: `QUndoStack::indexChanged` schedules a rebuild, and an empty active range means there
+    /// is nothing to draw, so the scene is emptied here.
+    void RestoreGradedRangesState(const QString &activeRangeName);
+
+    /// @brief Make every name that followed @p oldRange's follow @p newRange's, and its reverse.
+    ///
+    /// The ranges themselves are written by the command that owns them. These two exist because a
+    /// rename also moves things OUTSIDE the pattern — the graded favorite, the Export favorites,
+    /// the generations of the session — and an undo has to move them back. See
+    /// PropagateRangeRename, which does the forward move.
+    void ApplyRangeRename(const OSizerange &oldRange, const OSizerange &newRange);
+    void RevertRangeRename(const OSizerange &renamedRange, const OSizerange &formerRange);
+
 public slots:
     void ProcessCMD();
     void ShowToolTip(const QString &toolTip) override;
@@ -707,6 +724,13 @@ private:
     QTimer *m_thumbnailSnapshots{nullptr};
     /** @brief Guards the miniature capture against re-entrance: it parses the document twice. */
     bool m_thumbnailSnapshotBusy{false};
+    /** @brief Une génération est en cours : les miniatures n'ont rien à y faire.
+     *
+     *  Le minuteur est réarmé à chaque taille par `GradationChanged`, et l'export ouvre une boucle
+     *  d'événements pendant le nesting — il peut donc y partir, relancer `RefreshThumbnailSnapshots`,
+     *  qui re-parse le document à la taille de référence. Mesuré : deux métrages identiques
+     *  donnaient 33 puis 30 tailles « ok », trois tailles basculant entre un chiffre et un refus. */
+    bool m_thumbnailSnapshotsSuspended{false};
 
     QMap<QUuid, VBackgroundImageItem *> m_backgroundImages{};
     VBackgroundImageControls *m_backgroudcontrols{nullptr};
@@ -929,6 +953,21 @@ private:
     /// alone, they replay into an empty size loop). Called by the two rename paths.
     void PropagateRangeRename(const OSizerange &oldRange, const OSizerange &newRange);
 
+    /**
+     * @brief Push one undoable edit of the graded size ranges — the whole set, before and after.
+     *
+     * **The set is the unit**, because a range is a keyed definition: creating, duplicating,
+     * editing, renaming and deleting one are all moves in that key space, and one command that
+     * snapshots the key space covers the five without five commands each re-deriving what
+     * changed. @p renameFrom / @p renameTo are given only by the two gestures that move a NAME —
+     * the things outside the pattern that followed it have to move with the undo.
+     */
+    void PushGradedRangesCommand(const QHash<QString, OSizerange> &before,
+                                 const QHash<QString, OSizerange> &after,
+                                 const QString &activeBefore, const QString &activeAfter,
+                                 const QString &text, const OSizerange *renameFrom = nullptr,
+                                 const OSizerange *renameTo = nullptr);
+
     /// Make @p rangeName the active size range (single click in the dock list).
     void ActivateGradedRange(const QString &rangeName);
 
@@ -968,7 +1007,8 @@ private:
 
     /// Shared "create a size range" dialog + store, used by EnterGradedMode and
     /// AddGradedRange. @p staleNameToDrop (empty = none) is only removed on the
-    /// accept path. Returns the new range name, or an empty string when cancelled.
+    /// accept path. Returns the first new range name (one range is created per ticked
+    /// favorite, all in one undo step), or an empty string when cancelled.
     QString CreateGradedRange(const QString &canonical, const QStringList &axes,
                               const QMap<QString, QStringList> &axisValues,
                               const QString &staleNameToDrop);

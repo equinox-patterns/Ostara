@@ -391,36 +391,49 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     // the caption again on every repaint.
     const QString foldLineCaption = VFoldLine::ResolvedLabel(piece, doc);
 
-    QFuture<QVector<VLayoutPoint>> const futureSeamAllowance = QtConcurrent::run(
-        [piece, pattern]() -> QVector<VLayoutPoint>
+    // **Sériel, et ce n'est pas un choix de performance.**
+    //
+    // Ces six étapes parcourent TOUTES les mêmes objets de géométrie du conteneur, et l'une d'elles
+    // écrit pendant qu'elle parcourt : `VAbstractCubicBezierPath::GetPoints()` est `const` mais
+    // remplit un mémo `mutable` — `m_pointsMemo = pathPoints` échange le tampon puis libère
+    // l'ancien. Lancées de six threads à la fois, deux d'entre elles libèrent le même bloc : c'est
+    // le `BUG IN CLIENT OF LIBMALLOC: memory corruption of free block` dont ce patron mourait, en
+    // Graded comme en Export, et seulement quand le mémo était froid — c'est-à-dire après chaque
+    // re-parse, donc à chaque taille.
+    //
+    // ⚠️ Le thread appelant en était un SEPTIÈME : `SetSeamAllowanceMirrorLine`, plus bas, refait
+    // `SeamAllowancePoints` — donc `GetPoints` — pendant que les six tâches tournaient. C'est
+    // littéralement la frame du dernier rapport de crash.
+    //
+    // `RefreshDirtyPieceGeometry` (vpattern_geometryrefresh.cpp) a fait le même chemin pour la même
+    // raison, et le dit dans son commentaire. Ce qui est calculé ici est une pièce, et l'appelant
+    // marche les pièces une par une de toute façon : le parallélisme était à l'intérieur d'une
+    // seule pièce, là où il rapporte peu et coûte le tas.
+    QVector<VLayoutPoint> seamAllowance;
+    if (piece.IsSeamAllowance())
+    {
+        // ⚠️ Une pièce sans valeur de couture n'a **rien** à calculer ici : `SetSeamAllowancePoints`
+        // ne garde pas ce contour (`seamAllowance == false` y est un no-op complet, voir plus bas),
+        // et cet offset est la part chère de `Create`. La variante sans marges qu'un plan de coupe
+        // construit pour Clo3D/Style3D paie donc le contour, les chemins internes et les crans —
+        // jamais une marge qu'elle ne portera pas. Voir OExportPieceGeometry::withoutSeamAllowance.
+        if (!piece.SeamMirrorLine(pattern).isNull())
         {
-            // ⚠️ Une pièce sans valeur de couture n'a **rien** à calculer ici : `SetSeamAllowancePoints`
-            // ne garde pas ce contour (`seamAllowance == false` y est un no-op complet, voir plus bas),
-            // et cet offset est la part chère de `Create`. La variante sans marges qu'un plan de coupe
-            // construit pour Clo3D/Style3D paie donc le contour, les chemins internes et les crans —
-            // jamais une marge qu'elle ne portera pas. Voir OExportPieceGeometry::withoutSeamAllowance.
-            if (not piece.IsSeamAllowance())
-            {
-                return {};
-            }
+            VPiece tmp = piece;
+            tmp.SetShowFullPiece(false);
+            seamAllowance = tmp.SeamAllowancePoints(pattern);
+        }
+        else
+        {
+            seamAllowance = piece.SeamAllowancePoints(pattern);
+        }
+    }
 
-            if (!piece.SeamMirrorLine(pattern).isNull())
-            {
-                VPiece tmp = piece;
-                tmp.SetShowFullPiece(false);
-                return tmp.SeamAllowancePoints(pattern);
-            }
-            return piece.SeamAllowancePoints(pattern);
-        });
-    QFuture<bool> const futureSeamAllowanceValid = QtConcurrent::run([piece, pattern]() -> bool
-                                                                     { return piece.IsSeamAllowanceValid(pattern); });
-    QFuture<QVector<VLayoutPoint>> const futureMainPath = QtConcurrent::run([piece, pattern]() -> QVector<VLayoutPoint>
-                                                                            { return piece.MainPathPoints(pattern); });
-    QFuture<QVector<VLayoutPiecePath>> const futureInternalPaths =
-        QtConcurrent::run(ConvertInternalPaths, piece, pattern);
-    QFuture<QVector<VLayoutPassmark>> const futurePassmarks =
-        QtConcurrent::run(VLayoutPiece::ConvertPassmarks, piece, pattern);
-    QFuture<QVector<VLayoutPlaceLabel>> const futurePlaceLabels = QtConcurrent::run(ConvertPlaceLabels, piece, pattern);
+    const bool seamAllowanceValid = piece.IsSeamAllowanceValid(pattern);
+    const QVector<VLayoutPoint> mainPath = piece.MainPathPoints(pattern);
+    const QVector<VLayoutPiecePath> internalPaths = ConvertInternalPaths(piece, pattern);
+    const QVector<VLayoutPassmark> passmarks = VLayoutPiece::ConvertPassmarks(piece, pattern);
+    const QVector<VLayoutPlaceLabel> placeLabels = ConvertPlaceLabels(piece, pattern);
 
     VLayoutPiece det;
 
@@ -443,7 +456,7 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     // Le texte de la légende est décidé une fois, ici : le dessin ne fait ensuite que le lire.
     det.SetFoldLineCaption(foldLineCaption);
 
-    if (not futureSeamAllowanceValid.result())
+    if (not seamAllowanceValid)
     {
         const QString errorMsg = QObject::tr("Piece '%1'. Seam allowance is not valid.").arg(piece.GetName());
         VAbstractApplication::VApp()->IsPedantic()
@@ -452,11 +465,11 @@ auto VLayoutPiece::Create(const VPiece &piece, vidtype id, const VContainer *pat
     }
 
     VCommonSettings const *settings = VAbstractApplication::VApp()->Settings();
-    det.SetContourPoints(futureMainPath.result(), settings->IsPieceShowMainPath() ? false : piece.IsHideMainPath());
-    det.SetSeamAllowancePoints(futureSeamAllowance.result(), piece.IsSeamAllowance());
-    det.SetInternalPaths(futureInternalPaths.result());
-    det.SetPassmarks(futurePassmarks.result());
-    det.SetPlaceLabels(futurePlaceLabels.result());
+    det.SetContourPoints(mainPath, settings->IsPieceShowMainPath() ? false : piece.IsHideMainPath());
+    det.SetSeamAllowancePoints(seamAllowance, piece.IsSeamAllowance());
+    det.SetInternalPaths(internalPaths);
+    det.SetPassmarks(passmarks);
+    det.SetPlaceLabels(placeLabels);
     det.SetPriority(piece.GetPriority());
 
     // Very important to set main path first!

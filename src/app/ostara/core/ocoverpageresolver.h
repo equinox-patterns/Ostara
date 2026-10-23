@@ -41,6 +41,8 @@
 #include <QStringList>
 #include <QVector>
 
+#include <optional>
+
 /**
  * @brief What a cover page draws, for one information.
  *
@@ -80,6 +82,14 @@ struct PatternData
     /// reference value: a page may ask about an axis the run never pinned, and the table's own
     /// answer is then the only honest one.
     QMap<QString, QString> axisValues;
+
+    /// Whether this page states one size or lists a range — **the run's answer when it has one**.
+    ///
+    /// Empty is the preview's case: there, the page shows the case the designer is working on, which
+    /// is the section's own `sizeCase` option. At export the answer is not his to give — it follows
+    /// from how the output was generated (see `OTemplateSizeCase`), and a page designed for ranges
+    /// printed from a single-size run would list sizes the paper does not carry.
+    std::optional<bool> listsRange;
 
     /// The name of the pattern, as the pattern toolbar holds it.
     QString name;

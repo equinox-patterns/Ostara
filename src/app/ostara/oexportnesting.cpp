@@ -35,6 +35,7 @@
 
 #include "model/Piece.h"
 #include "nesting/Bin.h"
+#include "nesting/CuttingRules.h"
 #include "nesting/Engine.h"
 #include "nesting/Footprint.h"
 #include "nesting/TiledEngine.h"
@@ -338,16 +339,47 @@ auto ConstraintsFor(const QVector<PieceTalk> &talks, const std::vector<int> &ran
 /// soit. Le moteur a raison de dire « ça ne rentre pas » : il ignore qu'un espace a été demandé.
 /// L'appelant, lui, le sait — d'où cette phrase, écrite ici une fois pour les deux chemins. Sans
 /// elle, la seule piste laissée à l'utilisatrice est sa laize, qui n'y est pour rien.
-auto TooNarrowError(const OExportNestingParams &params) -> QString
+/// The keys of the pieces the engine could not place — see TooNarrowError.
+template <typename Keys, typename Placements>
+auto RefusedKeys(const Keys &keys, const Placements &placements) -> QStringList
 {
+    QStringList refused;
+    auto piece = placements.begin();
+    for (auto key = keys.begin(); key != keys.end() && piece != placements.end(); ++key, ++piece)
+    {
+        if (piece->rotation < 0.0)
+        {
+            refused.append(*key);
+        }
+    }
+    refused.removeDuplicates();
+    return refused;
+}
+
+auto TooNarrowError(const OExportNestingParams &params, const QStringList &refused) -> QString
+{
+    // ⚠️ **Le nom, et pas seulement le constat.** « Ça ne rentre pas » laisse deux causes possibles —
+    // une laize, ou un espace depuis les bords — et aucune façon de les distinguer : les pièces sont
+    // toutes plus étroites que la laize, et pourtant le moteur en refuse une. Sans le nom, on cherche
+    // dans la géométrie au hasard ; avec lui, on sait en une seconde si la pièce refusée est bien
+    // celle qu'on croit, ou si le bac qui la reçoit n'a pas la largeur qu'on imagine.
+    const QString who = refused.isEmpty()
+                            ? QString()
+                            : QObject::tr(" Refused: %1.").arg(refused.join(QStringLiteral(", ")));
+
     if (params.marginPx > 0.0)
     {
         return QObject::tr("The document is too narrow: some pieces could not be placed. "
                            "The space kept from the fabric's edges may be what leaves too little "
-                           "room.");
+                           "room.")
+               + who;
     }
 
-    return QObject::tr("The document is too narrow: some pieces could not be placed.");
+    return QObject::tr("The document is too narrow: some pieces could not be placed.") + who
+           + QObject::tr(" Usable width: %1 cm, cloth %2 cm, margin %3 cm.")
+                 .arg((params.binWidthPx - params.marginPx) / ToPixel(10.0, Unit::Mm), 0, 'f', 1)
+                 .arg(params.binWidthPx / ToPixel(10.0, Unit::Mm), 0, 'f', 1)
+                 .arg(params.marginPx / ToPixel(10.0, Unit::Mm), 0, 'f', 1);
 }
 
 /// Nidifie les rangs d'un plan dans un bac de largeur @p widthPx.
@@ -397,11 +429,32 @@ auto NestRanks(const Footprint::Result &footprint, const std::vector<ZoneConstra
 
     if (!AllPlaced(plan->placements))
     {
-        *error = TooNarrowError(params);
+        // The names, read through the ranks: this path holds the footprint the engine was given, and
+        // a rank is what points back at a key. Without them the message says "some pieces" — and the
+        // one thing the user needs is which.
+        QStringList refused;
+        auto piece = plan->placements.begin();
+        for (auto rank = plan->ranks.begin();
+             rank != plan->ranks.end() && piece != plan->placements.end(); ++rank, ++piece)
+        {
+            if (piece->rotation >= 0.0)
+            {
+                continue;
+            }
+            auto key = footprint.keys.begin() + static_cast<std::ptrdiff_t>(*rank);
+            if (key != footprint.keys.end())
+            {
+                refused.append(*key);
+            }
+        }
+        refused.removeDuplicates();
+
+        *error = TooNarrowError(params, refused);
         return false;
     }
 
     plan->usedHeightPx = Engine::UsedHeight(plan->placements, plan->polygons, bin);
+
     return true;
 }
 
@@ -442,12 +495,10 @@ struct Seat
 /// Deux règles différentes, deux endroits différents.
 auto SeatMargins(bool foldOnTheLeft, double edgePx) -> Bin::Margins
 {
-    Bin::Margins out;
-    out.left = foldOnTheLeft ? 0.0 : edgePx;
-    out.right = foldOnTheLeft ? edgePx : 0.0;
-    out.top = edgePx;
-    out.bottom = edgePx;
-    return out;
+    // The rule itself lives in the socle — `CuttingRules::SeatMargins` — and is called here
+    // rather than restated: a margin written twice is a margin that can be right in one place
+    // and wrong in the other, and the unfolded piece would come out `2 m` narrow.
+    return CuttingRules::SeatMargins(foldOnTheLeft, edgePx);
 }
 
 /// Le plan d'un tissu plié — **deux pliages en concurrence, et le plus court gagne.**
@@ -688,7 +739,52 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
 
         ZonePlan plans[3];
         double height = 0.0;
-        if (!evaluate(seats, assignment, plans, &height))
+
+        // ⚠️ **Une bande pleine ne condamne pas le plan.** Le candidat à deux bords est une
+        // OPTIMISATION : ses bandes sont dimensionnées sur une pose chacune, plus la moitié du
+        // surplus, donc la deuxième pièce qui s'y présente n'a souvent plus de place — et le moteur
+        // rend faux. Ce faux remontait tel quel et faisait échouer la nidification **entière**,
+        // alors que le candidat à un bord avait déjà réussi et donnait un plan juste. Un plan perdu
+        // pour une bande trop courte.
+        //
+        // Ce qui ne tient pas dans sa bande descend donc dans la colonne du bas, qui a la largeur du
+        // tissu : une pièce libre d'abord — les bandes existent pour les poses au pli, les vider les
+        // priverait de leur raison — puis, s'il le faut, les autres. Et si même la colonne ne peut
+        // rien recevoir, on rend faux comme avant : ce candidat-là est alors réellement impossible.
+        bool laid = evaluate(seats, assignment, plans, &height);
+        for (int attempt = 0; attempt < 8 && !laid; ++attempt)
+        {
+            int move = -1;
+            for (std::size_t rank = 0; rank < assignment.size(); ++rank)
+            {
+                if (assignment.at(rank) != kBelowZone
+                    && !talks.at(static_cast<qsizetype>(rank)).onFold)
+                {
+                    move = static_cast<int>(rank);
+                    break;
+                }
+            }
+            if (move < 0)
+            {
+                for (std::size_t rank = 0; rank < assignment.size(); ++rank)
+                {
+                    if (assignment.at(rank) != kBelowZone)
+                    {
+                        move = static_cast<int>(rank);
+                        break;
+                    }
+                }
+            }
+            if (move < 0)
+            {
+                break;
+            }
+
+            assignment.at(static_cast<std::size_t>(move)) = kBelowZone;
+            laid = evaluate(seats, assignment, plans, &height);
+        }
+
+        if (!laid)
         {
             return false;
         }
@@ -764,9 +860,18 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                     // la comparaison, `trialHeight` reste à zéro, et `0.0 < height` accepte alors
                     // tous les essais — la recherche ne redescend plus, `improved` reste vrai à
                     // chaque tour et la boucle ne rend jamais la main. Le nesting se bloquait là.
+                    // ⚠️ **Un essai qui échoue est un essai PERDANT, pas un run qui échoue.**
+                    //
+                    // Ce bloc cherche une meilleure répartition en déplaçant une pose d'un
+                    // rectangle à l'autre, et il en essaie beaucoup — la plupart du temps une
+                    // répartition que le moteur refuse, ce qui est normal et sans intérêt. Rendre
+                    // faux ici faisait remonter ce refus jusqu'en haut : la nidification entière
+                    // échouait alors que le plan courant, lui, était parfaitement posé, et que le
+                    // candidat à un bord avait réussi. « The document is too narrow » sur un plan
+                    // qui tenait. On passe simplement à l'essai suivant.
                     if (!evaluate(seats, trial, trialPlans, &trialHeight))
                     {
-                        return false;
+                        continue;
                     }
 
                     if (trialHeight < height)
@@ -1130,7 +1235,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // nothing else — no status, no exception.
     if (!AllPlaced(placements))
     {
-        result.error = TooNarrowError(params);
+        result.error = TooNarrowError(params, RefusedKeys(result.keys, placements));
         return result;
     }
 

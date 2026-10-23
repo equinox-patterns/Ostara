@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "vpattern.h"
+#include "opattern_graded.h"
 #include "../core/vapplication.h"
 #include "../ifc/exception/vexceptionconversionerror.h"
 #include "../ifc/exception/vexceptionemptyparameter.h"
@@ -634,6 +635,19 @@ void VPattern::SyncChildGeometryToDom()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::SyncSizeRangesToDom()
+{
+    QDomElement root = documentElement();
+    if (root.isNull() || data == nullptr)
+    {
+        return;
+    }
+
+    // The writer, without the announcement: a file being written must not come out looking dirty.
+    WriteSizeRanges(this, root, data);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::Clear()
 {
     VAbstractPattern::Clear();
@@ -873,6 +887,10 @@ auto VPattern::SaveDocument(const QString &fileName, QString &error) -> bool
     // A position that moved with the active size exists in the container only: the refresh that
     // moved it pushes no undo command, so no writer has seen it. This is where it reaches the file.
     SyncChildGeometryToDom();
+    // Same story for the graded ranges: dissolving a group or deleting a piece moves their content
+    // in the container, and no writer of <sizeRanges> has been called. Written here, or the file
+    // keeps a layout the pattern no longer has.
+    SyncSizeRangesToDom();
     // The id counter lives in memory only, and it is not readable from the declared ids alone: what the
     // document has handed out is written down here, so that the next read cannot hand one of those ids out
     // again (an operation's copies have no element of their own).

@@ -32,6 +32,8 @@
 
 #include "vtools/tools/oinfoblockcontent.h"
 
+#include <QMap>
+
 class IPieceInfo;
 class VAbstractPattern;
 class VContainer;
@@ -45,6 +47,14 @@ class OSizeTable;
  * piece follows the pattern-level seed (activation + template), a set
  * piece carries its explicit values. Sections resolve against the real
  * document / piece / measurement table; dead data is skipped (spec §4.3).
+ *
+ * @par Which size a cartouche describes
+ * The table's reference (anchor) size is the default, because that is the size a pattern's
+ * measurements are written against. A caller that resolves a cartouche for ANOTHER size — an
+ * export run putting its pieces on the size the user asked for — hands over that size as
+ * @c sizeAxes: the value each axis stands at, keyed the way the table names its axes. The
+ * axis lines print those values and the measure lines read the table's grid at that same
+ * size, so a printed cartouche cannot state a size the geometry it sits on does not have.
  */
 class OInfoBlockResolver
 {
@@ -54,7 +64,8 @@ public:
         -> OInfoBlockEffectiveState;
 
     /** @brief Full effective state including the rendered lines of every block. */
-    static auto ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
+    static auto ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data,
+                                      const QMap<QString, QString> &sizeAxes = {})
         -> OInfoBlockEffectiveState;
 
 private:
@@ -62,7 +73,8 @@ private:
                                     const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
                                     const IPieceInfo &piece, const VContainer *data,
                                     const OSizeTable *table, const QStringList &renderLanguages,
-                                    const QString &mainLocale) -> QList<OCartoucheRenderLine>;
+                                    const QString &mainLocale, const QMap<QString, QString> &sizeAxes)
+        -> QList<OCartoucheRenderLine>;
 };
 
 #endif // OINFOBLOCKRESOLVER_H

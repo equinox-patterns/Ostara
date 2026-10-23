@@ -107,11 +107,19 @@ namespace OExportPdf
 ///                Its SEAT belongs to the format and decides where the page stands: inside the
 ///                plan's own sheet, or on one of its own — and that one becomes the file's first
 ///                page, because a cover page opens what it covers.
+/// @param rabnestPayload  whether the file carries what the plan was drawn from — the graded
+///                SVG — inside it, under /PieceInfo, so Rabnest can reopen it and deliver it
+///                again in another format. True is the default because the point of the file is
+///                that a client can do something with it, and a closed PDF cannot be reopened
+///                by anything.
+///
+///                It changes nothing that is drawn: the same pages, the same layers, the same
+///                bytes for every one of them. It only makes the file heavier.
 /// @return false when the run cannot be reproduced; the reason has been logged.
 bool Write(const OExportOutput &output, const QString &pdfPath,
            const VContainer *pattern, VAbstractPattern *doc,
            const OExportTemplate *marks, bool framed, bool addLayoutLayer,
-           const OExportCoverPage::Drawing *cover = nullptr);
+           const OExportCoverPage::Drawing *cover = nullptr, bool rabnestPayload = true);
 }  // namespace OExportPdf
 
 #endif  // OEXPORTPDF_H

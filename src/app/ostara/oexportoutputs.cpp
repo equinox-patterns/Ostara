@@ -102,6 +102,8 @@ constexpr int kExportNestingThreads = 1;
 /// y a deux plans, sans qu'on lise quelque chose entre eux.
 constexpr qreal kLiningGapPx = 96.0;
 
+
+
 /// @brief Où le plan de DOUBLURE se pose dans la scène : à droite du plan de tissu, séparé par la
 ///        bande vide ci-dessus.
 ///
@@ -363,6 +365,25 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     QElapsedTimer generationTimer;
     generationTimer.start();
 
+    // **Les miniatures se taisent pendant toute la génération.**
+    //
+    // `GradationChanged` réarme ce minuteur à CHAQUE taille, et l'export ouvre une boucle
+    // d'événements pendant le nesting : il peut donc y partir, relancer `RefreshThumbnailSnapshots`
+    // — qui re-parse le document à la taille de référence, avec `ClearVariables(Measurement)` et un
+    // `LiteParseTree(FullLiteParse)` — et changer les mesures sous les pieds de la marche en cours.
+    //
+    // Mesuré : deux exécutions identiques du même métrage, même binaire, donnaient 33 puis 30
+    // tailles « ok », trois tailles basculant entre « 138,2 cm » et « document trop étroit ».
+    //
+    // La reprise réarme une fois, à la fin : une rafale de tailles se replie en un seul aller-retour,
+    // ce que ce minuteur existe pour faire.
+    m_thumbnailSnapshotsSuspended = true;
+    const auto resumeThumbnails = qScopeGuard([this]
+    {
+        m_thumbnailSnapshotsSuspended = false;
+        ScheduleThumbnailSnapshots();
+    });
+
     // Every length of the request is stored in millimetres and the engine consumes pixels:
     // the one conversion of the run happens here, once. The unit the user typed in plays no
     // part in it — it says how the figures are READ, not what they mean, which is why the
@@ -509,6 +530,20 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         }
     }
 
+    // The decor of a nameless run — a cutting plan, a plotter, a single-size print — follows the
+    // PIECE, and nothing else. It was briefly made to borrow a size range's Graded placements, on the
+    // reasoning that the user arranges them once for all sizes; that is true of the drawing but not of
+    // its SEAT, which is a fixed point of the document. Applied to another size's piece it put every
+    // grain line somewhere else — the plan came out with its lines scattered. Details is the answer
+    // that was validated, and it is the one that stays: a piece keeps the geometry it carries.
+    const OSizerange *decorRange = range;
+
+    // **Où chaque axe se tient pour CE run** — le seul endroit qui le sait, puisque c'est ici que
+    // les bases sont appliquées. Une taille unique les nomme toutes ; une plage ne nomme que celles
+    // qui ne défilent pas, l'axe gradué étant celui que la page liste. La page de garde et le
+    // cartouche lisent cette réponse au lieu du tableau de mesures, qui ne connaît que son ancrage.
+    QMap<QString, QString> runAxes;
+
     // ── The decor of the reference layer, frozen at generation ────────────────────────────────
     //
     // A piece's cartouche and annotations do not live in the piece: they live in the DOCUMENT, where
@@ -540,18 +575,53 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     const Unit *patternUnit = pattern != nullptr ? pattern->GetPatternUnit() : nullptr;
     const Unit grainlineUnit = patternUnit != nullptr ? *patternUnit : Unit::Mm;
 
-    const auto freezeDecor = [&](OExportSizeLayer &layer, QHash<quint32, OExportGroupDecor> &decor) {
+    // **The size the cartouche must state, handed over with the layer it belongs to.** A block that
+    // says « Taille : 40, Stature : 176 » reads the measurement table, and the table only knows its
+    // reference row; the size this run was asked for lives here, in the bases just applied. Without
+    // it the frozen decor carried the reference values into every exported page.
+    // ── La place de référence de chaque pièce, pour projeter le Graded sur la taille demandée ──
+    //
+    // The Graded override is a point of the document, arranged where every size is drawn superposed.
+    // A single-size run draws one piece, on its own geometry, so that point has to be carried over —
+    // and that is done by the same relative position inside the piece, measured on the range's
+    // REFERENCE size. This is that measurement: the pieces' extents with the document put on the
+    // range's first size, taken once, before the run's own size is applied.
+    QHash<quint32, QRectF> referenceSeats;
+
+    const auto seatOf = [](const VLayoutPiece &piece) -> QRectF {
+        const QVector<VLayoutPoint> points = piece.GetMappedExternalContourPoints();
+        if (points.isEmpty())
+        {
+            return {};
+        }
+        qreal lowX = points.first().x();
+        qreal highX = lowX;
+        qreal lowY = points.first().y();
+        qreal highY = lowY;
+        for (const VLayoutPoint &point : points)
+        {
+            lowX = std::min(lowX, point.x());
+            highX = std::max(highX, point.x());
+            lowY = std::min(lowY, point.y());
+            highY = std::max(highY, point.y());
+        }
+        return QRectF(QPointF(lowX, lowY), QPointF(highX, highY));
+    };
+
+    const auto freezeDecor = [&](OExportSizeLayer &layer, QHash<quint32, OExportGroupDecor> &decor,
+                                 const QMap<QString, QString> &sizeAxes) {
         QHash<quint32, QVector<OExportPieceGeometry>> members;
 
         for (OExportPieceGeometry &piece : layer.pieces)
         {
-            piece.decor = ResolvePieceDecor(piece, range, pattern, doc, request.cuttingPlan);
+            piece.decor = ResolvePieceDecor(piece, decorRange, pattern, doc, request.cuttingPlan, sizeAxes);
 
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
             // as a single-size run left the document on the run's own size.
-            piece.grainline = ResolvePieceGrainline(piece, range, grainlineUnit, pattern,
-                                                    request.cuttingPlan);
+            piece.grainline = ResolvePieceGrainline(piece, decorRange, grainlineUnit, pattern,
+                                                    request.cuttingPlan,
+                                                    referenceSeats.value(piece.id));
 
             if (piece.groupId != 0)
             {
@@ -564,8 +634,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         for (auto it = members.cbegin(); it != members.cend(); ++it)
         {
             decor.insert(it.key(),
-                         ResolveGroupDecor(it.value(), it.key(), range, grainlineUnit, pattern,
-                                           doc, request.cuttingPlan));
+                         ResolveGroupDecor(it.value(), it.key(), decorRange, grainlineUnit, pattern,
+                                           doc, request.cuttingPlan, sizeAxes));
         }
     };
 
@@ -737,7 +807,9 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 // vide n'est pas une erreur qu'on veut découvrir en release.
                 if (not planLayers.isEmpty())
                 {
-                    freezeDecor(planLayers.last(), planGroupDecor);
+                    // Aucun axe à nommer : une table taille unique n'a qu'une taille, et la valeur
+                    // de référence du cartouche est déjà la sienne.
+                    freezeDecor(planLayers.last(), planGroupDecor, {});
                 }
             }
             else
@@ -757,6 +829,47 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 const qreal baseOfB = baseOr(request.baseB, savedB);
                 const qreal baseOfC = baseOr(request.baseC, savedC);
 
+                // The range's reference size, walked once for the seats. `applySize`, not
+                // `applyPassSize`: this move is not the pass's own, and the restore below must not
+                // think it owes the document anything.
+                if (decorRange != nullptr && !decorRange->name.isEmpty())
+                {
+                    const QVector<OExportGeometry::OExportSizeRef> rangeSizes =
+                        geometry.RangeSizes(decorRange->name);
+                    if (!rangeSizes.isEmpty())
+                    {
+                        const OExportGeometry::OExportFixedBases pins =
+                            geometry.RangeFixedBases(decorRange->name);
+                        qreal seatA = pins.a > 0.0 ? pins.a : savedA;
+                        qreal seatB = pins.b > 0.0 ? pins.b : savedB;
+                        qreal seatC = pins.c > 0.0 ? pins.c : savedC;
+                        const OExportGeometry::OExportSizeRef first = rangeSizes.first();
+                        if (first.axisIndex == 0)
+                        {
+                            seatA = first.base;
+                        }
+                        else if (first.axisIndex == 1)
+                        {
+                            seatB = first.base;
+                        }
+                        else
+                        {
+                            seatC = first.base;
+                        }
+
+                        applySize(seatA, seatB, seatC);
+                        const QVector<OExportSizeLayer> seats =
+                            geometry.CollectCurrentSize(QStringLiteral("reference seat"));
+                        for (const OExportSizeLayer &one : seats)
+                        {
+                            for (const OExportPieceGeometry &geometryOne : one.pieces)
+                            {
+                                referenceSeats.insert(geometryOne.id, seatOf(geometryOne.piece));
+                            }
+                        }
+                    }
+                }
+
                 applyPassSize(baseOfA, baseOfB, baseOfC);
                 planLayers = geometry.CollectCurrentSize(
                     QStringLiteral("A=%1 B=%2 C=%3").arg(baseOfA).arg(baseOfB).arg(baseOfC));
@@ -764,7 +877,9 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 // Rien à geler quand la marche n'a gardé aucune pièce — même raison que ci-dessus.
                 if (not planLayers.isEmpty())
                 {
-                    freezeDecor(planLayers.last(), planGroupDecor);
+                    const QMap<QString, QString> axes = geometry.AxisLabels(baseOfA, baseOfB, baseOfC);
+                    runAxes = axes;
+                    freezeDecor(planLayers.last(), planGroupDecor, axes);
                 }
             }
         }
@@ -785,18 +900,25 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
             for (const OExportGeometry::OExportSizeRef &size : sizes)
             {
+                // **The three values this size stands at**, written once so that the geometry and
+                // the cartouche are fed the same triple — the graded axis takes the size, the other
+                // two keep what the range pins.
+                qreal appliedA = fixedA;
+                qreal appliedB = fixedB;
+                qreal appliedC = fixedC;
                 switch (size.axisIndex)
                 {
                     case 0:
-                        applyPassSize(size.base, fixedB, fixedC);
+                        appliedA = size.base;
                         break;
                     case 1:
-                        applyPassSize(fixedA, size.base, fixedC);
+                        appliedB = size.base;
                         break;
                     default:
-                        applyPassSize(fixedA, fixedB, size.base);
+                        appliedC = size.base;
                         break;
                 }
+                applyPassSize(appliedA, appliedB, appliedC);
 
                 planLayers += geometry.CollectCurrentSize(size.label);
 
@@ -804,7 +926,16 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 // The document is on it right now; it will not be again after the walk.
                 if (planLayers.size() == 1)
                 {
-                    freezeDecor(planLayers.last(), planGroupDecor);
+                    freezeDecor(planLayers.last(), planGroupDecor,
+                                geometry.AxisLabels(appliedA, appliedB, appliedC));
+
+                    // **La page, elle, ne nomme que les axes qui ne défilent pas.** L'axe gradué
+                    // n'a pas UNE valeur dans une plage : c'est la liste des tailles qui le dit. On
+                    // l'écarte donc du contexte de la page (base nulle = axe non nommé), sans quoi
+                    // elle annoncerait une taille comme si elle était la seule.
+                    runAxes = geometry.AxisLabels(size.axisIndex == 0 ? 0.0 : appliedA,
+                                                  size.axisIndex == 1 ? 0.0 : appliedB,
+                                                  size.axisIndex == 2 ? 0.0 : appliedC);
                 }
             }
 
@@ -1013,7 +1144,10 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.frameHeightMm = request.frameHeightMm;
     output.marksTemplateName = request.marksTemplateName;
     output.coverPageTemplateName = request.coverPageTemplateName;
-    output.pinnedAxes = request.pinnedAxes;
+    // **What the run actually generated, not what the request hoped for.** The request's own map is
+    // empty in every current path; the values the walk applied are the truth, and the page de garde
+    // reads them. Request kept as a fallback for a generation replayed from a favourite.
+    output.pinnedAxes = runAxes.isEmpty() ? request.pinnedAxes : runAxes;
     output.groupMemberChoices = request.groupMemberChoices;
     output.cuttingPlan = request.cuttingPlan;
     output.oneWayLayout = request.oneWayLayout;
@@ -1445,7 +1579,7 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     // cover page is not that choice and never was: it goes out of every layer whatever this says.
     if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc,
                            hasMarks ? &marks : nullptr, framed, dialog.AddLayoutLayer(),
-                           cover.IsEmpty() ? nullptr : &cover))
+                           cover.IsEmpty() ? nullptr : &cover, dialog.CarriesPayload()))
     {
         QMessageBox::warning(this, tr("Export mode"),
                              tr("\"%1\" could not be exported.").arg(existing->name));

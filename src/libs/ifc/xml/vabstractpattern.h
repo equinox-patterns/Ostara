@@ -345,6 +345,19 @@ public:
     auto IsModified() const -> bool;
     void SetModified(bool modified);
 
+    /**
+     * @brief Mark the pattern modified and ANNOUNCE it — what a write made outside the setters owes.
+     *
+     * Every setter of this class writes the DOM, then marks and emits by itself. A caller that
+     * writes the XML directly — replacing a whole element, as the Graded size ranges do — bypasses
+     * all of that, and the pattern then looks untouched: no asterisk in the title, no enabled Save
+     * action, and Cmd+W / Cmd+Q closing the window **without offering to save**, losing the work.
+     *
+     * One place decides what "the pattern changed" means, so a new direct writer has one call to
+     * make instead of three fields to remember.
+     */
+    void NotifyPatternChanged();
+
     void ParseGroups(const QDomElement &domElement);
     auto CreateGroups(const QString &patternPieceName = QString()) -> QDomElement;
     auto CreateGroup(quint32 id,

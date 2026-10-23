@@ -87,15 +87,19 @@ void OSizeTable::Load()
         return;
     }
 
-    const QString absolute = AbsoluteMPath(app->GetPatternPath(), doc->MPath());
-    const QFileInfo fi(absolute);
-    if (!fi.exists())
+    LoadFrom(AbsoluteMPath(app->GetPatternPath(), doc->MPath()));
+}
+
+void OSizeTable::LoadFrom(const QString &absolutePath)
+{
+    const QFileInfo fi(absolutePath);
+    if (absolutePath.isEmpty() || !fi.exists())
     {
         Clear();  // a missing table is "no table"
         return;
     }
 
-    if (absolute == m_sourcePath && (m_omtDoc != nullptr || m_otuDoc != nullptr))
+    if (absolutePath == m_sourcePath && (m_omtDoc != nullptr || m_otuDoc != nullptr))
     {
         return;  // already parsed
     }
@@ -108,16 +112,16 @@ void OSizeTable::Load()
         if (suffix == QStringLiteral("omt"))
         {
             auto table = std::make_unique<OOmtDocument>();
-            table->setXMLContent(absolute);
+            table->setXMLContent(absolutePath);
             m_omtDoc = std::move(table);
-            m_sourcePath = absolute;
+            m_sourcePath = absolutePath;
         }
         else if (suffix == QStringLiteral("otu"))
         {
             auto table = std::make_unique<OOtuDocument>();
-            table->setXMLContent(absolute);
+            table->setXMLContent(absolutePath);
             m_otuDoc = std::move(table);
-            m_sourcePath = absolute;
+            m_sourcePath = absolutePath;
         }
         // else: a legacy .vst/.vit or unknown table is "no table" — nothing cached.
     }
@@ -199,6 +203,35 @@ double OSizeTable::MeasurementValue(const QString &name) const
         return m_omtDoc->GetMValue(name);
     }
     return m_otuDoc != nullptr ? m_otuDoc->GetMValue(name) : 0.0;
+}
+
+std::optional<double> OSizeTable::MeasurementValueAt(const QString &name,
+                                                     const QMap<QString, QString> &axisValues) const
+{
+    // A single-size table has one value and no second size to name: the caller falls back.
+    if (m_omtDoc == nullptr || axisValues.isEmpty())
+    {
+        return std::nullopt;
+    }
+
+    // The grid's coordinate is the size it describes, axis after axis in the table's own order —
+    // the same string `ComputeGrid` wrote and `VMeasurements` reads back. An axis the caller did
+    // not name is a size nobody chose: there is no cell to look up, so no answer to give.
+    QStringList coord;
+    for (const QString &axis : m_omtDoc->GetSizeGroupNames())
+    {
+        const QString value = axisValues.value(axis);
+        if (value.isEmpty())
+        {
+            return std::nullopt;
+        }
+        coord.append(value);
+    }
+    if (coord.isEmpty())
+    {
+        return std::nullopt;
+    }
+    return m_omtDoc->GetGridCell(name, coord.join(QLatin1Char(',')));
 }
 
 QString OSizeTable::UnitsStr() const
