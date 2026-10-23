@@ -938,9 +938,31 @@ auto OwnerDecorFor(QDomDocument &doc, const LayoutObject &object, const QTransfo
         writer.writeStartElement(QStringLiteral("g"));
         writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(projection));
     }
+
+    // ⚠️ **Le pli ne suit pas l'assise du centre, et le groupe extérieur s'applique à lui aussi.**
+    // Le trait de pli doit garder son x sur l'axe du pli de CETTE taille — un axe qui ne bouge pas
+    // d'une taille à l'autre — tandis que le reste du décor suit le centre de la pièce, qui s'en va
+    // vers la droite à chaque taille qui grandit. Écrites l'une dans l'autre, les deux translations
+    // s'additionnaient : mesuré sur le payload de « Dos », le trait dérivait de +7,26 px à la 34
+    // jusqu'à +106,62 px (2,82 cm) à la 46, et de +151,18 px (4,00 cm) sur « Ourlet dos » — avec
+    // zéro à la taille de référence, où la projection du centre est l'identité, ce qui faisait croire
+    // que le pli était juste. L'assise du pli est donc écrite dans le repère d'AVANT la projection :
+    // `foldProjection · projection⁻¹`. Composée avec le groupe extérieur (SVG applique le transform
+    // de l'enfant d'abord), elle redonne exactement `foldProjection`, et le trait reste sur son axe.
+    QTransform foldSeat = foldProjection;
+    if (projected && !foldProjection.isIdentity())
+    {
+        bool invertible = false;
+        const QTransform back = projection.inverted(&invertible);
+        if (invertible)
+        {
+            foldSeat = foldProjection * back;
+        }
+    }
+
     WriteOwnerBody(writer, object, space,
                    QPen(Qt::black, kDefaultStrokeWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin),
-                   foldProjection);
+                   foldSeat);
     if (projected)
     {
         writer.writeEndElement();  // g (projection)
