@@ -104,6 +104,16 @@ struct InkSpace
     QTransform ownerPlacement{};
 
     /// Item-local → the space this ink is written in.
+    ///
+    /// ⚠️ **L'ordre compte, et il était à l'envers.** `QTransform::A * B` veut dire « A, puis B »
+    /// (la règle que les commentaires de ce fichier rappellent trois fois) : il faut donc amener
+    /// l'encre dans la scène D'ABORD, puis défaire le placement du propriétaire. Écrit dans l'autre
+    /// sens, on défaisait le placement avant de l'avoir subi, et un item qui porte son **propre**
+    /// transform — la légende du pli, tournée et posée le long de l'axe — ressortait en
+    /// `P⁻¹ · M · P` : mesuré sur le payload de ce matin, la légende de « Dos » était écrite à
+    /// **x = 4924**, à 129 cm de sa pièce, donc hors du dessin. Les items sans transform propre
+    /// (le trait de pli, le droit-fil) donnaient `P⁻¹ · P = I` dans les deux sens — c'est pourquoi
+    /// le défaut ne se voyait que sur la légende.
     auto ToFile(const QGraphicsItem *item) const -> QTransform
     {
         if (item == nullptr)
@@ -115,7 +125,7 @@ struct InkSpace
         {
             return scene * page;
         }
-        return ownerPlacement.inverted() * scene;
+        return scene * ownerPlacement.inverted();
     }
 
     /// An owner-frame transform (a record's placement) → the space this ink is written in.
@@ -191,6 +201,48 @@ void WriteTrace(QXmlStreamWriter &writer, const InkSpace &space, const QPen &def
     {
         writer.writeAttribute(QStringLiteral("stroke-dasharray"), dash);
     }
+    writer.writeEndElement();  // path
+}
+
+/** @brief The same caption, as OUTLINES — the form a file that carries no font can still draw.
+ *
+ * ⚠️ **Un `<text>` ne voyage pas.** Le lecteur d'un payload n'a pas la police du patron : d'une
+ * légende écrite en texte il ne reste rien, ou bien elle garde son ancre et se retrouve hors du
+ * dessin. Les cartouches ont déjà tranché la question (`OCartoucheSvg`, `textAsPaths`) ; la légende
+ * du pli suit la même règle et pour la même raison.
+ *
+ * Le tracé est construit exactement là où `WriteText` écrit son ancre — à l'origine de l'item, sur
+ * la ligne de base à `ascent` — puis posé par la MÊME transformation, pour que les deux formes
+ * donnent la même encre.
+ */
+void WriteTextAsPath(QXmlStreamWriter &writer, const InkSpace &space,
+                     QGraphicsSimpleTextItem *textItem)
+{
+    if (textItem == nullptr || !textItem->isVisible() || textItem->text().isEmpty())
+    {
+        return;
+    }
+    const QFont font = textItem->font();
+    const QFontMetricsF fm(font);
+    QPainterPath glyphs;
+    glyphs.addText(0.0, fm.ascent(), font, textItem->text());
+    if (glyphs.isEmpty())
+    {
+        return;
+    }
+    writer.writeStartElement(QStringLiteral("path"));
+    writer.writeAttribute(QStringLiteral("d"),
+                          OSvg::PainterPathToSvgD(space.ToFile(textItem).map(glyphs)));
+    writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("black"));
+    // ⚠️ **Les deux pièges des cartouches, qui coûtent un cerne noir autour de chaque glyphe.** Un
+    // tracé rempli qui suit un tracé tracé garde le stylo en main si le fichier ne le dit pas, et un
+    // tracé de texte est construit en OddEven quand SVG suppose nonzero : sans la règle, les creux
+    // des lettres se remplissent et les mots sortent gras et baveux.
+    writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("#000"));
+    writer.writeAttribute(QStringLiteral("stroke-width"), QStringLiteral(".01"));
+    writer.writeAttribute(QStringLiteral("fill-rule"),
+                          glyphs.fillRule() == Qt::OddEvenFill ? QStringLiteral("evenodd")
+                                                              : QStringLiteral("nonzero"));
     writer.writeEndElement();  // path
 }
 
@@ -635,7 +687,8 @@ void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
  * payload's per-size copy — and because the two must never be two implementations.
  */
 void WriteOwnerBody(QXmlStreamWriter &writer, const LayoutObject &object, const InkSpace &space,
-                    const QPen &defaultPen, const QTransform &foldProjection = QTransform())
+                    const QPen &defaultPen, const QTransform &foldProjection = QTransform(),
+                    bool textAsPaths = false)
 {
         // Two wrappers, because the two halves of the decor do not live in the same
         // frame. The items were placed in the scene and already carry their owner's
@@ -644,10 +697,19 @@ void WriteOwnerBody(QXmlStreamWriter &writer, const LayoutObject &object, const 
         // outer one it would move the items a second time.
         for (QGraphicsItem *child : object.decorChildren)
         {
-            // ⚠️ **The fold mark has its own seat.** It runs along the edge that goes on the cloth's
-            // fold, and that edge moves with the size while nothing else does; the payload therefore
-            // projects it on the fold's own axis, and the rest of the decor on the piece's centre.
-            const bool isFold = child->type() == VGraphicsFoldLineItem::Type;
+            // ⚠️ **The fold mark has its own seat, and its caption travels with it.** The mark runs
+            // along the edge that goes on the cloth's fold, and that edge moves with the size while
+            // nothing else does; the payload therefore projects it on the fold's own axis, and the
+            // rest of the decor on the piece's centre.
+            //
+            // ⚠️ **And the caption IS part of the mark.** The only `QGraphicsSimpleTextItem` a piece
+            // ever puts in its decor is the fold's caption — it is the only place one is created, in
+            // `VLayoutPiece::CreateLabel` (the mark's text branch) and in
+            // `VToolSeamAllowance::ApplyFoldLineLabel` (the live tool). Left out of this seat, the
+            // caption kept the centre's projection and slid off the drawing as the size grew.
+            const int childType = child->type();
+            const bool isFold = childType == VGraphicsFoldLineItem::Type
+                                || childType == QGraphicsSimpleTextItem::Type;
             const bool shifted = isFold && !foldProjection.isIdentity();
             if (shifted)
             {
@@ -655,9 +717,19 @@ void WriteOwnerBody(QXmlStreamWriter &writer, const LayoutObject &object, const 
                 writer.writeAttribute(QStringLiteral("transform"), OSvg::MatrixAttr(foldProjection));
             }
 
-            if (child->type() == QGraphicsSimpleTextItem::Type)
+            if (childType == QGraphicsSimpleTextItem::Type)
             {
-                WriteText(writer, space, static_cast<QGraphicsSimpleTextItem *>(child));
+                auto *text = static_cast<QGraphicsSimpleTextItem *>(child);
+                // The payload carries outlines, the visible layer keeps its editable text: a reader
+                // of the payload has none of the pattern's fonts.
+                if (textAsPaths)
+                {
+                    WriteTextAsPath(writer, space, text);
+                }
+                else
+                {
+                    WriteText(writer, space, text);
+                }
             }
             else
             {
@@ -962,7 +1034,10 @@ auto OwnerDecorFor(QDomDocument &doc, const LayoutObject &object, const QTransfo
 
     WriteOwnerBody(writer, object, space,
                    QPen(Qt::black, kDefaultStrokeWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin),
-                   foldSeat);
+                   foldSeat,
+                   // Le payload écrit les légendes en CONTOURS : son lecteur n'a pas les polices du
+                   // patron. La couche visible, elle, garde son texte éditable.
+                   true);
     if (projected)
     {
         writer.writeEndElement();  // g (projection)
