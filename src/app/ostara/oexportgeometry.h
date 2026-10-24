@@ -306,6 +306,19 @@ public:
     /// through the path the application itself uses — before calling this.
     auto CollectCurrentSize(const QString &label) -> QVector<OExportSizeLayer>;
 
+    /// @brief The size range this size belongs to, or an empty name when none takes it.
+    ///
+    /// A range is a sub-range of one axis plus the frozen value of every other one, so "belongs"
+    /// answers two questions at once: the axes it pins must stand where this size puts them, and the
+    /// graded axis must carry this very size. Only the DEFINITION is read — nothing of the range's
+    /// content — and the first range in name order answers, so a pattern that somehow holds two
+    /// overlapping ranges gives the same answer twice.
+    ///
+    /// It exists for the runs that name no range and still cut one size: a cutting plan. The rule
+    /// there is the one the rest of the application follows — inside a range the Graded placement
+    /// wins, outside every range Details does — and this is the only place that can say which.
+    auto RangeCoveringSize(qreal baseA, qreal baseB, qreal baseC) const -> QString;
+
     /// @brief Why the last traversal produced nothing usable. Empty when it worked.
     ///
     /// A silent empty result is indistinguishable from a pattern with no piece:

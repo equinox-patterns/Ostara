@@ -246,14 +246,17 @@ auto OExportCuttingDirection::GroupDirection(const OPieceGroup &group) -> Direct
 
     // A group's rotation is a LITERAL, unlike a piece's, which is a formula evaluated against the
     // measurement table (OGraded::GrainlineRotation draws that line — and it is the only one).
+    //
+    // ⚠️ **Et un littéral illisible vaut 0°, PAS « inconnu »** — c'est la lecture que la scène fait
+    // déjà (`EvaluateRotation`, opiecegroupholderitem.cpp) et celle du garde-fou, qui ne demande que
+    // `IsEnabled && IsVisible`. Un groupe ancien dont la rotation n'a jamais été écrite est donc une
+    // ligne à 0° sur l'écran, et il doit être une ligne à 0° pour le moteur : répondre « inconnu »
+    // laissait la pièce se poser librement dans un plan qui avait l'air fini, et c'est précisément le
+    // repli dont un membre a besoin quand il ne porte aucune direction à lui.
     bool ok = false;
     const qreal degrees = grainline.GetRotation().toDouble(&ok);
-    if (not ok)
-    {
-        return Direction{};
-    }
 
-    return Direction{true, degrees, grainline.GetArrowType()};
+    return Direction{true, ok ? degrees : 0.0, grainline.GetArrowType()};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

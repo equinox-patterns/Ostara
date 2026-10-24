@@ -126,6 +126,22 @@ auto PlacedPieces(const QVector<OExportSizeLayer> &layers, const OExportNestingR
                 // it too, for the same reason and in the same words.
                 piece.SetShowFoldLineLabel(false);
 
+                // ── Le droit-fil, et c'est celui du PLAN ─────────────────────────────────────────
+                //
+                // La ligne n'est pas forcément celle que la pièce transporte : le mode Graded place
+                // le droit-fil plage par plage, et ce placement-là gagne quand la taille appartient à
+                // une plage. Le canvas dessine la ligne GELÉE (`ApplyReferenceGrainline`, dans
+                // oexportcanvas.cpp) — donc le fichier doit dire la même chose. Deux positions pour
+                // une même ligne, c'est un plan qui se contredit entre son écran et sa machine, et
+                // rien ne le montre : la pièce se coupe pareil, le droit-fil est juste ailleurs.
+                //
+                // La ligne gelée est dans le repère de la PIÈCE, avant placement — c'est celui de la
+                // copie que voici, dont la matrice porte déjà le placement.
+                if (geometry.grainline.resolved)
+                {
+                    piece.GetGrainline().SetMainLine(geometry.grainline.mainLine);
+                }
+
                 placed.append(piece);
             }
         }

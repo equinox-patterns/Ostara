@@ -113,13 +113,27 @@ auto FoldAngle(const VLayoutPiece &piece, double *angle, bool *foldOnTheRight) -
 
 /// @brief The direction of a piece: its own grainline when it is switched on, its fold axis otherwise.
 ///
-/// ⚠️ **Never call this on a member of a piece group.** A grouped member carries no direction of its
-/// own — the group hosts one for all of them — but `VLayoutPiece::Create` does not mask the member's
-/// grainline: it reads `IsEnabled()` and nothing else. The masking is done on the ITEM, not on the
-/// data, so the flag can be true while the direction belongs to the group. Use @ref GroupDirection.
+/// **This is a group member's direction too, and it comes first.** A group used to host THE direction
+/// of all its members, so a member's own grainline was ignored on the strength of that — and a
+/// cutting plan then laid its pieces along a line it never drew. Both canvases put that line ON the
+/// member: Details (`VToolSeamAllowance::UpdateGrainline`) and a cutting plan
+/// (`ApplyReferenceGrainline`) — the one thing a plan shows of a piece at all (§4.2).
+///
+/// @ref GroupDirection is what a member falls back on when it carries none of its own: the repli the
+/// group has always been for what can be missing (§6.1 of the cutting-plan spec).
 auto PieceDirection(const VLayoutPiece &piece) -> Direction;
 
 /// @brief The direction of a group — its grainline, whose rotation is a literal and not a formula.
+///
+/// A **fallback**, never an override — see @ref PieceDirection. The order (the member, then its fold,
+/// then the group) is the one `OExportCuttingGuard::HasKnownDirection` applies, and the two must stay
+/// the same: a guard that reads one line while the resolver reads another has already let a plan
+/// leave with no constraint at all, and nothing on screen said so.
+///
+/// A rotation that was never written reads **0°**, exactly as the canvas reads it
+/// (`EvaluateRotation`, `opiecegroupholderitem.cpp`): the group is what a member with no direction
+/// of its own falls back on, so answering "unknown" there would lay that piece at random in a plan
+/// that looks finished.
 auto GroupDirection(const OPieceGroup &group) -> Direction;
 
 /// @brief The direction of a piece mirrored about a **vertical** axis.

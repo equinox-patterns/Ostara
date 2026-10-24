@@ -588,6 +588,42 @@ void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &g
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// Give a grouped member the fold line the GROUP carries — that is, only the member it chose.
+///
+/// **A group draws one fold line, and it is the chosen member's.** Details says it with the stack
+/// (`OPieceGroupHolderItem::RefreshMemberShapes`: the mirror line, its mark and its captions are
+/// taken from the one member `m_foldLineMemberId` names), Graded says it on its reference layer, and
+/// a plotter does not care because it decomposes the groups. The export canvas drew each member's
+/// own — so a printed group showed as many fold lines as it had members carrying one, and the choice
+/// the group exists for disappeared on paper.
+///
+/// ⚠️ **A cutting plan and a plotter are NOT concerned.** Both cut pieces one by one, so the member
+/// being cut keeps its own fold line exactly as its own piece draws it. The caller poses the rule
+/// once, above, and it is the same one the grainline obeys.
+///
+/// ⚠️ **La ligne miroir, elle, n'est PAS touchée.** Elle ne dessine pas le pli : elle dessine l'axe
+/// d'une pièce dépliée, et c'est elle qui fabrique aussi les place-labels en miroir
+/// (`VLayoutPiece::GetItem`) — l'effacer retirerait les étiquettes du membre. Ce que le groupe ne
+/// prend pas à un membre qu'il n'a pas choisi, c'est son PLI : sa ligne, ses flèches, son texte.
+void ApplyGroupFoldLine(VLayoutPiece &placed, const OExportPieceGeometry &geometry,
+                        const VContainer *pattern)
+{
+    const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
+    if (groups == nullptr || geometry.groupId == NULL_ID)
+    {
+        return;
+    }
+
+    const auto group = groups->constFind(geometry.groupId);
+    if (group == groups->cend() || group.value().m_foldLineMemberId == geometry.id)
+    {
+        return; // the group's own choice — its line stays where the member draws it
+    }
+
+    placed.SetFoldLineType(FoldLineType::None);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /// The extent a piece is drawn with, measured before the placement is applied.
 ///
 /// Read from an item built exactly like the one the canvas draws — same pen, same
@@ -1854,6 +1890,14 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 if (isReference)
                 {
                     ApplyReferenceGrainline(placed, geometry, range, unit, pattern, cuttingPlan);
+
+                    // Et le pli, qui est le décor du GROUPE : seul le membre qu'il désigne le porte.
+                    // Ni un plan de coupe ni un plotter ne sont concernés — ils décomposent les
+                    // groupes, donc chacun de leurs membres garde le sien.
+                    if (!cuttingPlan && !run.plotterPlan)
+                    {
+                        ApplyGroupFoldLine(placed, geometry, pattern);
+                    }
                 }
 
                 QGraphicsItem *item = placed.GetItem(false, true, false);

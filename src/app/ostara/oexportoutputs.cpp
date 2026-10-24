@@ -82,6 +82,7 @@
 #include <QtConcurrent>
 
 #include <atomic>
+#include <algorithm>
 #include <memory>
 #include <optional>
 #include <utility>
@@ -509,8 +510,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
     // The range is the authority on where the decor of the reference layer goes: it holds
     // an override for every owner the user positioned in Graded, and the mode reads it
-    // without ever writing to it. A single-size run names no range — there is nothing to
-    // read, and every piece keeps the geometry it carries.
+    // without ever writing to it. A run that names no range reads nothing here — every piece keeps
+    // the geometry it carries — and a cutting plan is told which range covers its size further down.
     //
     // The generation takes a COPY of it: a generation is frozen, so editing or deleting
     // the live range must not move what was already nested.
@@ -530,12 +531,17 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         }
     }
 
-    // The decor of a nameless run — a cutting plan, a plotter, a single-size print — follows the
-    // PIECE, and nothing else. It was briefly made to borrow a size range's Graded placements, on the
-    // reasoning that the user arranges them once for all sizes; that is true of the drawing but not of
-    // its SEAT, which is a fixed point of the document. Applied to another size's piece it put every
-    // grain line somewhere else — the plan came out with its lines scattered. Details is the answer
-    // that was validated, and it is the one that stays: a piece keeps the geometry it carries.
+    // The decor of a nameless run — a plotter, a single-size print — follows the PIECE, and nothing
+    // else. It was briefly made to borrow a size range's Graded placements, on the reasoning that the
+    // user arranges them once for all sizes; that is true of the drawing but not of its SEAT, which is
+    // a fixed point of the document. Applied to another size's piece it put every grain line somewhere
+    // else — the plan came out with its lines scattered. The SEAT is now carried over (the reference
+    // seats below), so the question is no longer "can it be done" but "who decides".
+    //
+    // **Un plan de coupe, lui, ne nomme aucune plage et n'en est pas moins soumis à la règle** : si la
+    // taille qu'il coupe appartient à une plage, c'est le placement du mode Graded qui gagne, et hors
+    // de toute plage c'est Details qui répond. Il ne peut pas la trouver ici — c'est `runOnePlan` qui
+    // connaît la taille — donc il reçoit `decorRange` et le remplace par la plage qui la couvre.
     const OSizerange *decorRange = range;
 
     // **Où chaque axe se tient pour CE run** — le seul endroit qui le sait, puisque c'est ici que
@@ -608,18 +614,22 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         return QRectF(QPointF(lowX, lowY), QPointF(highX, highY));
     };
 
+    // **La plage est un PARAMÈTRE, et non plus une capture.** Un run qui nomme sa plage la donne
+    // telle quelle ; un plan de coupe, lui, n'en nomme aucune et doit pourtant savoir laquelle couvre
+    // la taille qu'il coupe — c'est `runOnePlan` qui la trouve, parce que c'est lui qui connaît la
+    // taille. Deux plans, deux réponses possibles.
     const auto freezeDecor = [&](OExportSizeLayer &layer, QHash<quint32, OExportGroupDecor> &decor,
-                                 const QMap<QString, QString> &sizeAxes) {
+                                 const QMap<QString, QString> &sizeAxes, const OSizerange *range) {
         QHash<quint32, QVector<OExportPieceGeometry>> members;
 
         for (OExportPieceGeometry &piece : layer.pieces)
         {
-            piece.decor = ResolvePieceDecor(piece, decorRange, pattern, doc, request.cuttingPlan, sizeAxes);
+            piece.decor = ResolvePieceDecor(piece, range, pattern, doc, request.cuttingPlan, sizeAxes);
 
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
             // as a single-size run left the document on the run's own size.
-            piece.grainline = ResolvePieceGrainline(piece, decorRange, grainlineUnit, pattern,
+            piece.grainline = ResolvePieceGrainline(piece, range, grainlineUnit, pattern,
                                                     request.cuttingPlan,
                                                     referenceSeats.value(piece.id));
 
@@ -634,7 +644,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         for (auto it = members.cbegin(); it != members.cend(); ++it)
         {
             decor.insert(it.key(),
-                         ResolveGroupDecor(it.value(), it.key(), decorRange, grainlineUnit, pattern,
+                         ResolveGroupDecor(it.value(), it.key(), range, grainlineUnit, pattern,
                                            doc, request.cuttingPlan, sizeAxes));
         }
     };
@@ -781,6 +791,40 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             geometry.SetPieceFilter(QSet<quint32>(kept.cbegin(), kept.cend()));
         }
 
+        // ── La plage qui gouverne CETTE taille, quand le run n'en nomme aucune ───────────────────
+        //
+        // Un plan de coupe ne nomme pas de plage : il coupe UNE taille, et c'est tout. Mais une taille
+        // peut appartenir à une plage, et là la règle est celle du reste de l'application — **le
+        // placement du mode Graded gagne, et hors de toute plage c'est Details qui répond**.
+        //
+        // Ce que ça déplace ici est exactement ce que ce mode montre d'une pièce : son droit-fil (§4.2).
+        // Le membre choisi porte le sien, et le mode Graded le place plage par plage ; sans plage, le
+        // plan garde la ligne de Details, celle que la pièce transporte.
+        //
+        // ⚠️ **La copie est locale à la passe**, comme `exportRange` l'est au run : une génération est
+        // gelée, donc retoucher la plage vivante ne doit pas déplacer un plan déjà calculé.
+        OSizerange coveringRange;
+        const OSizerange *planRange = decorRange;
+        if (request.cuttingPlan && planRange == nullptr && pattern != nullptr)
+        {
+            const auto orFloor = [](qreal chosen, qreal fromDocument)
+            { return chosen > 0.0 ? chosen : (fromDocument > 0.0 ? fromDocument : 1.0); };
+
+            const QString covering = geometry.RangeCoveringSize(orFloor(request.baseA, savedA),
+                                                                orFloor(request.baseB, savedB),
+                                                                orFloor(request.baseC, savedC));
+            const QHash<QString, OSizerange> *ranges = pattern->SizeRanges();
+            if (ranges != nullptr && !covering.isEmpty())
+            {
+                const auto it = ranges->constFind(covering);
+                if (it != ranges->cend())
+                {
+                    coveringRange = it.value();
+                    planRange = &coveringRange;
+                }
+            }
+        }
+
         // Le décor des groupes de CETTE passe, et les couches de CETTE passe : deux plans, deux jeux.
         QHash<quint32, OExportGroupDecor> planGroupDecor;
         QVector<OExportSizeLayer> planLayers;
@@ -809,7 +853,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 {
                     // Aucun axe à nommer : une table taille unique n'a qu'une taille, et la valeur
                     // de référence du cartouche est déjà la sienne.
-                    freezeDecor(planLayers.last(), planGroupDecor, {});
+                    freezeDecor(planLayers.last(), planGroupDecor, {}, planRange);
                 }
             }
             else
@@ -832,14 +876,25 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 // The range's reference size, walked once for the seats. `applySize`, not
                 // `applyPassSize`: this move is not the pass's own, and the restore below must not
                 // think it owes the document anything.
-                if (decorRange != nullptr && !decorRange->name.isEmpty())
+                //
+                // ⚠️ **Une place ne sert qu'à une chose : reprojeter un droit-fil de la plage sur la
+                // taille du run.** Un plan de coupe n'a que ce décor-là (§4.2) : sans override de
+                // droit-fil dans la plage, cette marche ne porterait rien, et il n'y a pas de raison
+                // de re-parser tout le patron pour elle — un lot de métrage en compte des centaines.
+                const bool seatMatters =
+                    planRange == nullptr || !request.cuttingPlan
+                    || std::any_of(planRange->pieceContent.cbegin(), planRange->pieceContent.cend(),
+                                   [](const OSizerange::PieceContent &content)
+                                   { return content.grainline.valid; });
+
+                if (planRange != nullptr && !planRange->name.isEmpty() && seatMatters)
                 {
                     const QVector<OExportGeometry::OExportSizeRef> rangeSizes =
-                        geometry.RangeSizes(decorRange->name);
+                        geometry.RangeSizes(planRange->name);
                     if (!rangeSizes.isEmpty())
                     {
                         const OExportGeometry::OExportFixedBases pins =
-                            geometry.RangeFixedBases(decorRange->name);
+                            geometry.RangeFixedBases(planRange->name);
                         qreal seatA = pins.a > 0.0 ? pins.a : savedA;
                         qreal seatB = pins.b > 0.0 ? pins.b : savedB;
                         qreal seatC = pins.c > 0.0 ? pins.c : savedC;
@@ -879,7 +934,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 {
                     const QMap<QString, QString> axes = geometry.AxisLabels(baseOfA, baseOfB, baseOfC);
                     runAxes = axes;
-                    freezeDecor(planLayers.last(), planGroupDecor, axes);
+                    freezeDecor(planLayers.last(), planGroupDecor, axes, planRange);
                 }
             }
         }
@@ -927,7 +982,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 if (planLayers.size() == 1)
                 {
                     freezeDecor(planLayers.last(), planGroupDecor,
-                                geometry.AxisLabels(appliedA, appliedB, appliedC));
+                                geometry.AxisLabels(appliedA, appliedB, appliedC), planRange);
 
                     // **La page, elle, ne nomme que les axes qui ne défilent pas.** L'axe gradué
                     // n'a pas UNE valeur dans une plage : c'est la liste des tailles qui le dit. On

@@ -623,6 +623,75 @@ auto OExportGeometry::AxisLabels(qreal baseA, qreal baseB, qreal baseC) const ->
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportGeometry::RangeCoveringSize(qreal baseA, qreal baseB, qreal baseC) const -> QString
+{
+    if (m_container == nullptr || m_measurements.isNull())
+    {
+        return {};
+    }
+
+    const QHash<QString, OSizerange> *ranges = m_container->SizeRanges();
+    if (ranges == nullptr || ranges->isEmpty())
+    {
+        return {};
+    }
+
+    // Les mots de CETTE taille, dans le vocabulaire où les plages sont écrites — donc les libellés que
+    // l'utilisatrice lit, jamais des bases : une plage fige « 160 », et c'est ce mot-là qu'elle oppose.
+    const QMap<QString, QString> labels = AxisLabels(baseA, baseB, baseC);
+
+    // L'ordre des noms, jamais celui d'une QHash : deux plages qui se recouvrent (le dock n'en produit
+    // pas, le fichier peut en porter) doivent répondre la même chose d'une exécution à l'autre.
+    QStringList names = ranges->keys();
+    std::sort(names.begin(), names.end());
+
+    for (const QString &name : names)
+    {
+        const OSizerange range = ranges->value(name);
+        if (not range.IsValid())
+        {
+            continue;
+        }
+
+        // 1. Tout axe que la plage FIGE doit se tenir là où cette taille le met : une plage des 160
+        //    ne dit rien d'une stature 176, et lui prêter son placement serait lui prêter un autre
+        //    patron.
+        bool pinnedHere = true;
+        for (auto pinned = range.axisValues.cbegin(); pinned != range.axisValues.cend(); ++pinned)
+        {
+            if (labels.value(pinned.key()) != pinned.value())
+            {
+                pinnedHere = false;
+                break;
+            }
+        }
+        if (not pinnedHere)
+        {
+            continue;
+        }
+
+        // 2. Et l'axe gradué doit offrir cette taille — ses deux bouts sont des libellés, et l'axe est
+        //    le seul à connaître l'ordre dans lequel ils défilent.
+        const QString word = labels.value(range.sizeAxis);
+        if (word.isEmpty())
+        {
+            continue;
+        }
+
+        const AxisSelection selection = SelectAxis(range);
+        for (const qreal base : selection.bases)
+        {
+            if (LabelOf(base, selection.index) == word)
+            {
+                return name;
+            }
+        }
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 {
     const QHash<quint32, VPiece> *pieces = m_container->DataPieces();
@@ -833,24 +902,34 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
                 geometry.withoutSeamAllowance->SetShowFullPiece(geometry.piece.IsShowFullPiece());
             }
 
-            // ⚠️ The GROUP first, and the piece only when the group has nothing: a member's own
-            // grainline can be enabled while the direction belongs to the group — Create does not
-            // mask it, the masking is done on the item. Read here rather than at nesting time
-            // because this is the only place that still holds the container.
+            // ── La direction : CELLE DU MEMBRE, le groupe seulement en repli ──────────────────────
+            //
+            // Le membre d'abord, et pour la raison qui décide de tout dans ce mode : un plan de coupe
+            // ne montre d'une pièce QUE son droit-fil et son pli (§4.2). Ce que le canvas dessine est
+            // donc ce qui doit poser la pièce — et il dessine la ligne du MEMBRE, celle que Details
+            // montre aussi (`VToolSeamAllowance::UpdateGrainline`), et que `ApplyReferenceGrainline`
+            // reconstruit ici pour le plan.
+            //
+            // ⚠️ **Le groupe passait avant**, et le plan posait alors les pièces sur une ligne qu'il
+            // n'affichait pas : le membre choisi décidait du cut, le groupe décidait du sens, et rien
+            // à l'écran ne disait lequel des deux avait parlé. Un membre porte son propre droit-fil —
+            // Details le montre, le mode Graded le place plage par plage — donc c'est le sien qui
+            // vaut, et le groupe redevient ce que le §6.1 en dit : **un lieu de repli pour ce qui peut
+            // manquer**, ici un membre qui n'a aucune direction à lui.
+            //
+            // ⚠️ Et l'ORDRE est celui du garde-fou (`OExportCuttingGuard::HasKnownDirection` : la
+            // pièce, puis son pli, puis le groupe). Il doit rester le même : un garde-fou qui lit une
+            // ligne et un résolveur qui en lit une autre a déjà laissé partir un plan entier sans
+            // contrainte, chaque pièce posée au hasard sous un plan qui avait l'air fini.
             geometry.direction = OExportCuttingDirection::PieceDirection(resolved);
 
             const auto *groups = m_container->DataPieceGroups();
-            if (groups != nullptr && geometry.groupId != NULL_ID)
+            if (not geometry.direction.known and groups != nullptr and geometry.groupId != NULL_ID)
             {
                 const auto groupIt = groups->constFind(geometry.groupId);
                 if (groupIt != groups->constEnd())
                 {
-                    const OExportCuttingDirection::Direction groupDirection =
-                        OExportCuttingDirection::GroupDirection(groupIt.value());
-                    if (groupDirection.known)
-                    {
-                        geometry.direction = groupDirection;
-                    }
+                    geometry.direction = OExportCuttingDirection::GroupDirection(groupIt.value());
                 }
             }
 
