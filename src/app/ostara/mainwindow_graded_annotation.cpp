@@ -139,7 +139,7 @@ void MainWindow::RefreshGradedReferenceAnnotations(quint32 onlyPieceId, quint32 
     auto items = m_sceneGraded->items();
     for (auto *owner : items)
     {
-        const quint32 ownerPiece = GradedPieceId(owner);
+        const quint32 ownerPiece = GradedDecorOwnerPiece(owner); // a piece, or its own decor deck
         const quint32 ownerGroup =
             ownerPiece == 0 ? owner->data(kGradedHostGroupIdRole).toUInt() : 0;
         if (ownerPiece == 0 && ownerGroup == 0)
@@ -301,7 +301,8 @@ void MainWindow::RefreshGradedReferenceAnnotations(quint32 onlyPieceId, quint32 
         }
     };
 
-    // Lone (non-grouped) reference pieces.
+    // Reference pieces — a group member included: its own annotations are re-placed per size range,
+    // like in Details, where a member shows its own.
     for (auto *item : items)
     {
         if (!GradedIsReference(item))
@@ -319,14 +320,11 @@ void MainWindow::RefreshGradedReferenceAnnotations(quint32 onlyPieceId, quint32 
         }
         if (onlyPieceId != 0 && pieceId != onlyPieceId)
         {
-            continue; // targeted rebuild of another lone piece
-        }
-        if (pattern->GetPieceGroupId(pieceId) != NULL_ID)
-        {
-            continue; // grouped → the group hosts the (single) set of annotations
+            continue; // targeted rebuild of another piece
         }
         const VPiece &piece = piecesMap->value(pieceId);
-        BuildOwnerAnnotations(item, pieceId, false, piece.GetAnnotationData().Annotations());
+        BuildOwnerAnnotations(GradedDecorHost(GradedPieceDecorOwner(m_sceneGraded, pieceId, item)),
+                              pieceId, false, piece.GetAnnotationData().Annotations());
     }
 
     // Groups.

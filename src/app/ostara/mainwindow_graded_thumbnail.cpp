@@ -133,7 +133,7 @@ void MainWindow::RefreshGradedReferenceThumbnails(quint32 onlyPieceId, quint32 o
     // Drop previous interactive miniature items, then rebuild (the old list must not be reused).
     for (auto *owner : sceneItems)
     {
-        const quint32 ownerPiece = GradedPieceId(owner);
+        const quint32 ownerPiece = GradedDecorOwnerPiece(owner); // a piece, or its own decor deck
         const quint32 ownerGroup = ownerPiece == 0 ? owner->data(kGradedHostGroupIdRole).toUInt() : 0;
         if (ownerPiece == 0 && ownerGroup == 0)
         {
@@ -226,18 +226,15 @@ void MainWindow::RefreshGradedReferenceThumbnails(quint32 onlyPieceId, quint32 o
                 });
     };
 
-    // Lone pieces: their miniature sits on their own reference item, in the piece's own frame — the
-    // very frame Details stores it in, so a range needs no conversion to apply it.
+    // Every reference piece's own miniature sits on its own item, in the piece's own frame — the very
+    // frame Details stores it in, so a range needs no conversion to apply it. A group member keeps
+    // hers here like in Details; the one the group carries for it is drawn on the group's host.
     for (auto it = referenceItems.cbegin(); it != referenceItems.cend(); ++it)
     {
         const quint32 pieceId = it.key();
         if (onlyPieceId != 0 && pieceId != onlyPieceId)
         {
             continue;
-        }
-        if (pattern->GetPieceGroupId(pieceId) != NULL_ID)
-        {
-            continue; // a member's miniature is carried by its group, on the group's host
         }
         const auto pieceIt = pieces->constFind(pieceId);
         if (pieceIt == pieces->constEnd())
@@ -251,11 +248,13 @@ void MainWindow::RefreshGradedReferenceThumbnails(quint32 onlyPieceId, quint32 o
         {
             override = contentIt->thumbnail;
         }
-        BuildThumbnail(it.value(), pieceId, NULL_ID, stored, override, it.value()->boundingRect());
+        BuildThumbnail(GradedDecorHost(GradedPieceDecorOwner(m_sceneGraded, pieceId, it.value())), pieceId,
+                       NULL_ID, stored, override, it.value()->boundingRect());
     }
 
-    // Groups: one miniature per member, on the group's host — the group carries them, the members'
-    // own stay masked, and each frame is stored per range like the group's other children.
+    // Groups: one miniature per member, on the group's host — the group carries its own set, next to
+    // the ones the members carry themselves, and each frame is stored per range like the group's
+    // other children (groupContent.memberThumbnails).
     if (onlyPieceId != 0)
     {
         return; // a piece-targeted refresh never concerns a group host

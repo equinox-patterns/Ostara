@@ -115,6 +115,12 @@ void MainWindow::GradedAlignContextMenu(const QPoint &globalPos)
                 groupId = hostId.toUInt();
                 break;
             }
+            const quint32 viewPiece = GradedMemberViewPiece(p);
+            if (viewPiece != NULL_ID)
+            {
+                pieceId = viewPiece; // a member grabbed on its own view resolves to its piece
+                break;
+            }
             const quint32 pid = GradedPieceId(p);
             if (pid != NULL_ID)
             {
@@ -533,4 +539,7 @@ void MainWindow::RealignGradedUnit(quint32 unitId, bool isGroup)
             }
         }
     }
+
+    // 6) The members' editing views stand on their stack: the stack moved, so do they.
+    PositionGradedMemberViews();
 }

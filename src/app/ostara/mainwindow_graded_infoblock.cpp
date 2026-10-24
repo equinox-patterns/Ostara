@@ -100,7 +100,7 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
     auto items = m_sceneGraded->items();
     for (auto *owner : items)
     {
-        const quint32 ownerPiece = GradedPieceId(owner);
+        const quint32 ownerPiece = GradedDecorOwnerPiece(owner); // a piece, or its own decor deck
         const quint32 ownerGroup =
             ownerPiece == 0 ? owner->data(kGradedHostGroupIdRole).toUInt() : 0;
         if (ownerPiece == 0 && ownerGroup == 0)
@@ -247,7 +247,8 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
         }
     };
 
-    // Lone (non-grouped) reference pieces.
+    // Reference pieces — a group member included, whose own blocks are re-placed per size range
+    // exactly like those of a lone piece (in Details a member shows its own blocks too).
     for (auto *item : items)
     {
         if (!GradedIsReference(item))
@@ -265,11 +266,7 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
         }
         if (onlyPieceId != 0 && pieceId != onlyPieceId)
         {
-            continue; // targeted rebuild of another lone piece
-        }
-        if (pattern->GetPieceGroupId(pieceId) != NULL_ID)
-        {
-            continue; // grouped → the group hosts the (single) set of blocks
+            continue; // targeted rebuild of another piece
         }
         const VPiece &piece = piecesMap->value(pieceId);
         const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(piece, doc, pattern);
@@ -277,7 +274,8 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
         {
             continue;
         }
-        BuildOwnerBlocks(item, pieceId, false, piece.GetInfoBlockData(), state);
+        BuildOwnerBlocks(GradedDecorHost(GradedPieceDecorOwner(m_sceneGraded, pieceId, item)), pieceId,
+                         false, piece.GetInfoBlockData(), state);
     }
 
     // Groups.

@@ -338,11 +338,22 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
         for (int k = 0; k < pieces.size() && k < details.size(); ++k)
         {
             const quint32 pieceId = details.at(k).id;
+            // Same rule as the live canvas: a group member stands at its group's stack position, the
+            // group's own geometry, never at its workshop position (see BuildGradedScene).
             const QPointF livePos(pieces.at(k).GetMx(), pieces.at(k).GetMy());
-            const QPointF basePos = frozenBases.value(pieceId, livePos);
-            if (!frozenBases.contains(pieceId))
+            const quint32 groupId = pattern->GetPieceGroupId(pieceId);
+            QPointF basePos;
+            if (groupId != NULL_ID && pattern->DataPieceGroups() != nullptr)
             {
-                frozenBases.insert(pieceId, livePos);
+                basePos = pattern->DataPieceGroups()->value(groupId).MemberStackPosition(pieceId, livePos);
+            }
+            else
+            {
+                basePos = frozenBases.value(pieceId, livePos);
+                if (!frozenBases.contains(pieceId))
+                {
+                    frozenBases.insert(pieceId, livePos);
+                }
             }
 
             QGraphicsItem *item = pieces.at(k).GetItem(false, false, false);

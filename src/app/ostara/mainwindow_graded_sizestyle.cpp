@@ -117,7 +117,9 @@ void MainWindow::ApplyGradedSizeStylesToScene()
     const auto items = m_sceneGraded->items();
     for (auto *item : items)
     {
-        if (GradedPieceId(item) == 0) // a silhouette root (reference or ghost layer)
+        // A silhouette root (reference or ghost layer) — and a member view too: a member is a graded
+        // stack of its own, so each of its sizes must carry the style of that size.
+        if (GradedPieceId(item) == 0 && GradedMemberViewPiece(item) == 0)
         {
             continue;
         }

@@ -1072,6 +1072,11 @@ private:
     /// children refresh is limited to what actually changed in the active size range.
     void ApplyGradedLayoutOffsets(bool forceFull = false);
 
+    /// Stand each member view on its group's stack: the stack position (alignment and the range's
+    /// group offset already applied to it) plus the offset this range records for that member —
+    /// the place the member is edited, which never changes the group's own drawing.
+    void PositionGradedMemberViews();
+
     /// End of a graded reference drag: fan the offset out to all layers / groups
     /// and push an undo command saving the range content.
     void GradedMouseReleased();

@@ -193,22 +193,27 @@ void MainWindow::ApplyGradedLayoutOffsets(bool forceFull)
     // alignment, rigid-group alignment, then the per-range content offsets.
     const QList<QGraphicsItem *> allItems = m_sceneGraded->items();
     OGraded::ApplyOffsets(allItems, range, pattern);
+    PositionGradedMemberViews();
 
     // Refresh the reference drag baselines.
     m_gradedBasePositions.clear();
     for (auto *baseItem : allItems)
     {
-        if (GradedIsReference(baseItem))
+        // A member view carries the reference flag too, but no piece id: it is moved on its own
+        // path (PositionGradedMemberViews), never through this map.
+        const quint32 pieceId = GradedPieceId(baseItem);
+        if (GradedIsReference(baseItem) && pieceId != 0)
         {
-            m_gradedBasePositions.insert(GradedPieceId(baseItem), baseItem->pos());
+            m_gradedBasePositions.insert(pieceId, baseItem->pos());
         }
     }
 
     // Positions are final. Refresh the decor + children according to the change scope. forceFull
     // (a fresh capture) or any change that cannot be attributed to a single owner → full refresh
-    // (always-correct default). A lone-piece drag touches nothing (its children are parented to
-    // the piece and follow it); a child override refreshes only the affected piece or group — the
-    // expensive content resolution (info blocks / annotations) never runs for the other owners.
+    // (always-correct default). A piece drag touches nothing (its children are parented to the piece
+    // and follow it); a child override refreshes only the affected piece or group — the expensive
+    // content resolution (info blocks / annotations) never runs for the other owners. A group member
+    // is a piece here too: its own children have their own overrides, so its change stays targeted.
     using ChangeKind = GradedChangeKind;
     ChangeKind kind = ChangeKind::None;
     quint32 ownerId = 0;
@@ -223,11 +228,7 @@ void MainWindow::ApplyGradedLayoutOffsets(bool forceFull)
         }
     }
 
-    const bool pieceIsGrouped = ownerId != 0 && kind != ChangeKind::None
-                                && kind != ChangeKind::GroupOffset && kind != ChangeKind::GroupChild
-                                && pattern->GetPieceGroupId(ownerId) != NULL_ID;
-
-    if (forceFull || kind == ChangeKind::None || kind == ChangeKind::GroupOffset || pieceIsGrouped)
+    if (forceFull || kind == ChangeKind::None || kind == ChangeKind::GroupOffset)
     {
         // Full decor + children: entry/structural change, group drag (hosts are re-anchored and
         // every group child re-hosted) or a change not reducible to a single owner.
@@ -267,6 +268,79 @@ void MainWindow::ApplyGradedLayoutOffsets(bool forceFull)
         m_gradedAppliedRange = OSizerange{};
     }
 }
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::PositionGradedMemberViews()
+{
+    if (m_sceneGraded == nullptr || pattern == nullptr || m_activeGradedRangeName.isEmpty())
+    {
+        return;
+    }
+    const auto *ranges = pattern->SizeRanges();
+    if (ranges == nullptr || !ranges->contains(m_activeGradedRangeName))
+    {
+        return;
+    }
+    const OSizerange &range = ranges->value(m_activeGradedRangeName);
+    const auto *groups = pattern->DataPieceGroups();
+
+    // The group's layers, by size then piece: they carry the alignment and the group's own offset,
+    // and they are what the member's stack is measured against.
+    QHash<QString, QHash<quint32, QGraphicsItem *>> stacks;
+    QVector<QGraphicsItem *> views;
+    const auto items = m_sceneGraded->items();
+    for (auto *item : items)
+    {
+        if (GradedMemberViewPiece(item) != 0)
+        {
+            views.append(item);
+            continue;
+        }
+        const quint32 pieceId = GradedPieceId(item);
+        if (pieceId != 0)
+        {
+            stacks[item->data(kGradedSizeRole).toString()].insert(pieceId, item);
+        }
+    }
+
+    for (auto *view : views)
+    {
+        const quint32 pieceId = GradedMemberViewPiece(view);
+        QGraphicsItem *stack = stacks.value(view->data(kGradedSizeRole).toString()).value(pieceId, nullptr);
+        if (stack == nullptr)
+        {
+            view->hide(); // the member left the layout: its stack has no layer to measure
+            continue;
+        }
+
+        QPointF groupOffset;
+        const quint32 groupId = pattern->GetPieceGroupId(pieceId);
+        if (groupId != NULL_ID && groups != nullptr)
+        {
+            const auto content = range.groupContent.constFind(groupId);
+            if (content != range.groupContent.cend())
+            {
+                groupOffset = QPointF(content->dx, content->dy);
+            }
+        }
+
+        // What the group's layer took from the alignment — its own offset removed, because the group
+        // moving must leave the members where they are. Each size keeps its own share, so the
+        // member's stack is graded exactly like the group's.
+        const QPointF layerDelta =
+            stack->pos() - stack->data(kGradedBasePosRole).toPointF() - groupOffset;
+
+        const auto content = range.pieceContent.constFind(pieceId);
+        const QPointF memberOffset = content == range.pieceContent.cend()
+                                         ? QPointF()
+                                         : QPointF(content->dx, content->dy);
+
+        const QPointF pos = view->data(kGradedMemberBaseRole).toPointF() + layerDelta + memberOffset;
+        view->setPos(pos);
+        view->setData(kGradedBasePosRole, pos); // drag baseline — a view is moved, never re-based
+        view->show();
+    }
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::GradedMouseReleased()
 {
@@ -311,6 +385,10 @@ void MainWindow::GradedMouseReleased()
         }
 
         const quint32 pieceId = GradedPieceId(baseItem);
+        if (pieceId == 0)
+        {
+            continue; // a member view: moved through its own offset, below
+        }
         const auto baseIt = m_gradedBasePositions.constFind(pieceId);
         if (baseIt == m_gradedBasePositions.cend())
         {
@@ -323,9 +401,9 @@ void MainWindow::GradedMouseReleased()
             continue;
         }
 
-        // The dragged piece belongs to a group → move the whole group as one rigid unit:
-        // fan the same delta to every member × every layer, persisted as a group offset
-        // (a member never drags alone, like in Details).
+        // The dragged piece belongs to a group → the STACK itself was grabbed (its editing views
+        // cover it as long as no member has been pulled aside): move the whole group as one rigid
+        // unit, persisted as a group offset. A member is dragged on its own view, below.
         if (const quint32 groupId = GroupOfPiece(pieceId); groupId != 0)
         {
             const QList<quint32> memberIds = groups->value(groupId).pieceIds;
@@ -375,6 +453,30 @@ void MainWindow::GradedMouseReleased()
                 otherItem->setPos(otherItem->pos() + delta);
             }
         }
+    }
+
+    // A member moved on its own view: only that member, only this range. The group keeps drawing it
+    // at the stack, so what is printed does not move — the same rule Details applies to a member
+    // standing in the workshop.
+    for (auto *view : items)
+    {
+        const quint32 pieceId = GradedMemberViewPiece(view);
+        if (pieceId == 0)
+        {
+            continue;
+        }
+        const QPointF baseline = view->data(kGradedBasePosRole).toPointF();
+        const QPointF delta = view->pos() - baseline;
+        if (qAbs(delta.x()) < 0.5 && qAbs(delta.y()) < 0.5)
+        {
+            continue;
+        }
+
+        OSizerange::PieceContent &content = newRange.pieceContent[pieceId];
+        content.dx += delta.x();
+        content.dy += delta.y();
+        view->setData(kGradedBasePosRole, view->pos());
+        changed = true;
     }
 
     if (changed)

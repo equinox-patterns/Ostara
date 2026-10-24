@@ -36,6 +36,7 @@
 #include <QtGlobal>
 
 #include "../vlayout/vfoldline.h"
+#include "../vwidgets/ogroupmembershipmark.h"
 #include "../vwidgets/osamarginhighlights.h"
 #include "../vwidgets/vgrainlineitem.h"
 #include "oannotationdata.h"

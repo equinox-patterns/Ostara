@@ -2316,26 +2316,11 @@ void VToolSeamAllowance::PaintGroupMembershipMark(QPainter *painter) const
         return;
     }
 
+    // The drawing itself is shared with the Graded canvas, which has no tool to paint it
+    // (OGroupMark): one rule, two carriers.
     const OPieceGroup &group = groups->value(groupId);
-    const QString caption = group.name.isEmpty() ? tr("Member of a group")
-                                                 : tr("Member of %1").arg(group.name);
-
-    painter->save();
-    const QColor grey(128, 128, 128, 170);
-    QPen framePen(grey);
-    framePen.setStyle(Qt::DashLine);
-    framePen.setWidthF(0); // cosmetic pen: 1 px on screen, whatever the zoom
-    painter->setPen(framePen);
-    painter->setBrush(Qt::NoBrush);
-    const QRectF rect = boundingRect();
-    painter->drawRect(rect.adjusted(-2, -2, 2, 2));
-
-    QFont font = painter->font();
-    font.setPixelSize(std::max(8, qRound(ToPixel(0.4, *VAbstractTool::data.GetPatternUnit()))));
-    painter->setFont(font);
-    painter->setPen(grey);
-    painter->drawText(QPointF(rect.left(), rect.top() - font.pixelSize() * 0.45), caption);
-    painter->restore();
+    OGroupMark::Paint(painter, boundingRect(), OGroupMark::Caption(group.name),
+                      *VAbstractTool::data.GetPatternUnit());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

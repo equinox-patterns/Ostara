@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/09/2026
  **
- **  @brief  Graded mode: mask grouped members' own decor and host the shared group grainline.
+ **  @brief  Graded mode: hang the group's shared children on a host, and mark every member.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -33,6 +33,7 @@
 #include "../vlayout/vgraphicsfillitem.h"
 #include "../vmisc/def.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vwidgets/ogroupmembershipmark.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -40,34 +41,132 @@
 #include <QObject>
 #include <QtGlobal>
 
-
 namespace
 {
-/// A grouped member masks its own decor: grainline hidden everywhere, fold line kept only on
-/// the member that carries the group's fold (mirror of Details + the SVG export path).
-void HideGroupedReferenceMemberDecor(QGraphicsItem *memberItem, quint32 pieceId, const OPieceGroup &group)
+/**
+ * @brief The invisible deck a reference piece hangs its own children on.
+ *
+ * It is not a rect item: its shape() is empty, so no click and no PickItem ever lands on the deck
+ * itself — the pieces and the children keep every gesture, whichever deck is on top. Only its
+ * boundingRect() matters, because the decor builders use the owner's rect as the frame a child that
+ * was never placed is stacked in, and that frame must be the piece's.
+ */
+class DeckItem : public QGraphicsItem
+{
+public:
+    DeckItem(const QRectF &frame, QGraphicsItem *parent)
+        : QGraphicsItem(parent)
+        , m_frame(frame)
+    {
+        setFlag(QGraphicsItem::ItemIsSelectable, false);
+        setFlag(QGraphicsItem::ItemIsMovable, false);
+        setFlag(QGraphicsItem::ItemIsFocusable, false);
+        setAcceptedMouseButtons(Qt::NoButton);
+    }
+
+    auto boundingRect() const -> QRectF override { return m_frame; }
+    auto shape() const -> QPainterPath override { return {}; } // never picked, never in the way
+    void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *) override {}
+
+private:
+    QRectF m_frame{};
+};
+
+/**
+ * What a group's stack item shows of a member: its geometry, and nothing the group does not print.
+ *
+ * The stack is the group — what it draws, what it prints. The group's shared grainline is hosted on
+ * the group itself, and the group's fold is the carrier member's, so a member's own static grainline
+ * has no place here, and neither has its fold unless it carries the group's. The member shows both
+ * on its own view, where it is edited.
+ */
+void HideStackMemberDecor(QGraphicsItem *stackItem, quint32 pieceId, const OPieceGroup &group)
 {
     const bool foldCarrier = (group.m_foldLineMemberId == pieceId);
-    const QList<QGraphicsItem *> children = memberItem->childItems();
+    const QList<QGraphicsItem *> children = stackItem->childItems();
     for (QGraphicsItem *child : children)
     {
         if (child->type() == VGraphicsFillItem::Type)
         {
-            child->hide(); // member's grainline → the group host shows the shared one
+            child->hide(); // the group's shared grainline is hosted on the group
         }
         else if (!foldCarrier && (child->type() == VGraphicsFoldLineItem::Type
                                   || child->type() == QGraphicsSimpleTextItem::Type))
         {
-            child->hide(); // fold mark/text, unless this member is the group fold carrier
+            child->hide(); // only the carrier's fold is the group's
+        }
+    }
+}
+
+/// A ghost layer carries no per-piece decor: only the reference size shows a grainline or a fold.
+void HideGhostLayerDecor(QGraphicsItem *item)
+{
+    const QList<QGraphicsItem *> children = item->childItems();
+    for (QGraphicsItem *child : children)
+    {
+        if (child->type() == VGraphicsFillItem::Type || child->type() == VGraphicsFoldLineItem::Type
+            || child->type() == QGraphicsSimpleTextItem::Type)
+        {
+            child->hide();
         }
     }
 }
 } // namespace
 
-/// Rebuild the per-group reference decoration (run once positions are final): mask the grouped
-/// members' own grainline/fold and host the GROUP's shared grainline on an invisible root whose
-/// anchor is the union of the graded reference members — like the Details group holder, but
-/// anchored to the graded items (mirror of the SVG export, mainwindowsnogui.cpp:657-747).
+//---------------------------------------------------------------------------------------------------------------------
+auto GradedMemberView(QGraphicsScene *scene, quint32 pieceId) -> QGraphicsItem *
+{
+    if (scene == nullptr || pieceId == 0)
+    {
+        return nullptr;
+    }
+    const auto items = scene->items();
+    for (auto *item : items)
+    {
+        if (GradedMemberViewPiece(item) == pieceId && GradedIsReference(item))
+        {
+            return item;
+        }
+    }
+    return nullptr;
+}
+
+/// The deck a reference piece hangs its own children on: an invisible frame in the piece's own
+/// coordinates, one step above the group's host, so a piece's child and a group's child are both
+/// reachable (see kGradedDecorDeckZ). Created on first use — the decor passes share it, the piece
+/// deletes it with itself, and an empty shape keeps it out of every gesture.
+auto GradedDecorHost(QGraphicsItem *pieceItem) -> QGraphicsItem *
+{
+    if (pieceItem == nullptr)
+    {
+        return nullptr;
+    }
+    const auto children = pieceItem->childItems();
+    for (auto *child : children)
+    {
+        if (!child->data(kGradedDecorHostRole).isNull())
+        {
+            return child;
+        }
+    }
+
+    auto *deck = new DeckItem(pieceItem->boundingRect(), pieceItem);
+    deck->setZValue(kGradedDecorDeckZ);
+    deck->setData(kGradedDecorHostRole, true);
+    return deck;
+}
+
+/// Rebuild the per-group reference decoration (run once positions are final): mask what a ghost
+/// layer must not show, hang the "Member of <group>" mark above each grouped reference member, and
+/// host the GROUP's shared children on an invisible root whose anchor is the union of the graded
+/// reference members — like the Details group holder, but anchored to the graded items (mirror of
+/// the SVG export, mainwindowsnogui.cpp:657-747).
+///
+/// A grouped member keeps its OWN children in Graded, exactly as in Details: they are what a size
+/// range re-places (pieceContent), and masking them is what kept a member from being edited here.
+/// The group's own children (shared grainline, blocks, annotations, per-member miniatures) stay on
+/// the host. The host is placed UNDER the reference pieces: a member's own children are the ones a
+/// size range re-places, so they must be the ones a click lands on where the two coincide.
 void RefreshGradedReferenceGroupDecor(VContainer *pattern, QGraphicsScene *scene)
 {
     if (pattern == nullptr || scene == nullptr)
@@ -75,63 +174,68 @@ void RefreshGradedReferenceGroupDecor(VContainer *pattern, QGraphicsScene *scene
         return;
     }
 
-    // Drop previous hosts (and, with them, their interactive children) — they are re-created
-    // from scratch now that positions are final. Collect the hosts to delete FIRST, then
+    // Drop previous hosts and marks (and, with them, their interactive children) — they are
+    // re-created from scratch now that positions are final. Collect what to delete FIRST, then
     // delete, so the code never dereferences an already-freed child inside the snapshot
     // (ordering-independent, robust to future reparenting).
     const auto stale = scene->items();
-    QList<QGraphicsItem *> hostsToDelete;
+    QList<QGraphicsItem *> itemsToDelete;
     for (auto *item : stale)
     {
-        if (!item->data(kGradedHostGroupIdRole).isNull())
+        if (!item->data(kGradedHostGroupIdRole).isNull() || !item->data(kGradedMemberMarkRole).isNull())
         {
-            hostsToDelete.append(item);
+            itemsToDelete.append(item);
         }
     }
-    for (auto *host : hostsToDelete)
+    for (auto *item : itemsToDelete)
     {
-        scene->removeItem(host);
-        delete host;
+        scene->removeItem(item);
+        delete item;
     }
     const auto items = scene->items();
 
-    // 1) Mask the decor that must NOT appear per piece:
-    //    - ghost layers (any piece): no grainline/fold — only the reference size carries decor;
-    //    - reference grouped members: own grainline hidden, own fold kept only on the fold
-    //      carrier (the group host shows the shared grainline instead, like Details).
+    // 1) Mask the decor a ghost layer must not carry, then collect what the reference layer needs:
+    //    the bounds of every group's reference members (the host's frame) and one mark per member.
+    struct MarkRequest
+    {
+        QGraphicsItem *item;
+        quint32 pieceId;
+        QString caption;
+    };
     QHash<quint32, QRectF> groupBounds;
+    QVector<MarkRequest> marks;
     for (auto *item : items)
     {
         const quint32 pieceId = GradedPieceId(item);
-        if (pieceId == 0)
+        if (pieceId == 0 && GradedMemberViewPiece(item) == 0)
         {
-            continue;
+            continue; // not a piece layer (group host, decor deck, interactive child)
         }
 
+        // Only the smallest size carries a grainline or a fold — whichever stack the layer belongs
+        // to: a group's layer or a member's own. The member's stack is graded, but its children are
+        // not: they are edited on the reference layer and read there alone.
         if (not GradedIsReference(item))
         {
-            // Ghost layer: the sizes under the reference carry no per-piece decor.
-            const QList<QGraphicsItem *> children = item->childItems();
-            for (QGraphicsItem *child : children)
-            {
-                if (child->type() == VGraphicsFillItem::Type
-                    || child->type() == VGraphicsFoldLineItem::Type
-                    || child->type() == QGraphicsSimpleTextItem::Type)
-                {
-                    child->hide();
-                }
-            }
+            HideGhostLayerDecor(item);
             continue;
         }
 
-        // Reference layer.
-        const quint32 gid = pattern->GetPieceGroupId(pieceId);
-        if (gid == NULL_ID)
+        if (pieceId == 0)
         {
-            continue; // a lone piece keeps its own grainline/fold on the reference
+            continue; // the reference member view: it is the edited one, its own decor stays
+        }
+
+        // Reference layer: a member of a group is marked and feeds the group's bounds; a lone piece
+        // keeps everything it has and needs neither.
+        const quint32 gid = pattern->GetPieceGroupId(pieceId);
+        if (gid == NULL_ID || pattern->DataPieceGroups() == nullptr)
+        {
+            continue;
         }
         const OPieceGroup &group = pattern->DataPieceGroups()->value(gid);
-        HideGroupedReferenceMemberDecor(item, pieceId, group);
+        HideStackMemberDecor(item, pieceId, group);
+        marks.append({item, pieceId, OGroupMark::Caption(group.name)});
 
         const QRectF r = item->sceneBoundingRect();
         QRectF &b = groupBounds[gid];
@@ -139,10 +243,23 @@ void RefreshGradedReferenceGroupDecor(VContainer *pattern, QGraphicsScene *scene
     }
     if (groupBounds.isEmpty())
     {
-        return; // no group on the reference → nothing to host
+        return; // no group on the reference → nothing to mark, nothing to host
+    }
+
+    // 2) The mark: a dashed frame and "Member of <group>" — the same drawing Details paints on the
+    //    piece itself, here carried by an item because a graded piece is a VLayoutPiece, not a tool.
+    //    It follows the member's editing view: a member pulled aside carries its mark with it.
+    for (const MarkRequest &request : marks)
+    {
+        QGraphicsItem *owner = GradedPieceDecorOwner(scene, request.pieceId, request.item);
+        auto *mark = new OGroupMembershipMarkItem(GradedDecorHost(owner));
+        mark->setData(kGradedMemberMarkRole, request.pieceId);
+        mark->SetMark(owner->boundingRect(), request.caption, *pattern->GetPatternUnit());
     }
 
     // Highest layer z, so the host draws above the reference pieces without intercepting clicks.
+    // A piece's own children do not lose to it: they hang one step higher, on their own deck
+    // (GradedDecorHost / kGradedDecorDeckZ).
     qreal topZ = 0.0;
     for (auto *item : items)
     {
@@ -152,9 +269,9 @@ void RefreshGradedReferenceGroupDecor(VContainer *pattern, QGraphicsScene *scene
         }
     }
 
-    // 2) per-group invisible host sized to the union box: it gives the interactive group
-    //    grainline (built by RefreshGradedReferenceGrainlines) a valid local frame to clamp
-    //    into, without intercepting any mouse event itself.
+    // 3) per-group invisible host sized to the union box: it gives the group's own children (the
+    //    shared grainline, the group's blocks and annotations, the per-member miniatures) a valid
+    //    local frame to sit in, without intercepting any mouse event itself.
     for (auto it = groupBounds.cbegin(); it != groupBounds.cend(); ++it)
     {
         const QRectF &box = it.value();

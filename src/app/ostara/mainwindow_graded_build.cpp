@@ -362,6 +362,7 @@ void MainWindow::BuildGradedScene()
         // main path + seam allowance + internal paths + passmarks + place labels + grainline
         // + fold line — NOT an invented silhouette.
         QVector<QGraphicsItem *> itemsOfSize;
+        QHash<quint32, QGraphicsItem *> viewsOfSize; // grouped members' editing views, by piece id
 
         const int layerPos = idx - minIdx;
         const int z = layerCount - layerPos;
@@ -371,13 +372,31 @@ void MainWindow::BuildGradedScene()
         {
             const quint32 pieceId = details.at(k).id;
 
-            // Frozen base: captured the first time the piece enters a graded build. A plain
-            // Details move afterwards must NOT relocate the graded canvas, even across captures.
+            // Where the piece stands on the graded canvas.
+            //
+            // A lone piece: the frozen base, captured the first time it enters a graded build — a
+            // plain Details move afterwards must NOT relocate the graded canvas, even across
+            // captures.
+            //
+            // A group member: the STACK position its group holds for it. That is the group's own
+            // geometry (Details draws the stack from it, and the print comes from it); the member's
+            // live mx/my is only where its editing copy stands, in the workshop. Reading mx/my here
+            // would scatter a group's members across the workshop row and there would be no group
+            // left on the canvas at all.
             const QPointF livePos(pieces.at(k).GetMx(), pieces.at(k).GetMy());
-            const QPointF basePos = m_gradedFrozenBases.value(pieceId, livePos);
-            if (!m_gradedFrozenBases.contains(pieceId))
+            const quint32 groupId = pattern->GetPieceGroupId(pieceId);
+            QPointF basePos;
+            if (groupId != NULL_ID && pattern->DataPieceGroups() != nullptr)
             {
-                m_gradedFrozenBases.insert(pieceId, livePos);
+                basePos = pattern->DataPieceGroups()->value(groupId).MemberStackPosition(pieceId, livePos);
+            }
+            else
+            {
+                basePos = m_gradedFrozenBases.value(pieceId, livePos);
+                if (!m_gradedFrozenBases.contains(pieceId))
+                {
+                    m_gradedFrozenBases.insert(pieceId, livePos);
+                }
             }
 
             // grabSurface: the contour is cut at the corners right below (OCornerTrace, for the
@@ -406,6 +425,33 @@ void MainWindow::BuildGradedScene()
             }
             m_sceneGraded->addItem(item);
             itemsOfSize.append(item);
+
+            // A grouped member is TWO graded units on this canvas, exactly as in Details:
+            //
+            //  - the item added above is the GROUP's layer for that member: at the stack position,
+            //    never moved by a member drag, and what the group draws and prints;
+            //  - the view added here is the MEMBER's own layer: the same piece, drawn again, at the
+            //    place Details gives the member (its mx/my, in the workshop row). Each size gets one,
+            //    so a member is graded too — that is the whole point: children are placed against a
+            //    graded content, not against a single size.
+            //
+            // The two are independent: moving the group leaves the member's stack alone and the other
+            // way round. PositionGradedMemberViews settles their position once offsets are applied.
+            if (groupId != NULL_ID)
+            {
+                auto *view = pieces.at(k).GetItem(false, false, false, true);
+                RecolorGradedItemPens(view);
+                view->setPos(basePos);
+                view->setData(kGradedMemberViewRole, pieceId);
+                view->setData(kGradedMemberBaseRole, livePos); // where Details puts the member
+                view->setData(kGradedSizeRole, gradedValues.at(idx));
+                view->setData(kGradedIsRefRole, isReference); // the reference view is the edited one
+                view->setZValue(z + 0.25); // above the group's layer of the same size
+                view->setFlag(QGraphicsItem::ItemIsSelectable, false);
+                view->setFlag(QGraphicsItem::ItemIsMovable, isReference);
+                m_sceneGraded->addItem(view);
+                viewsOfSize.insert(pieceId, view);
+            }
         }
 
         // The dash pattern leaves from the places the group's members have in common — the corners of
@@ -436,6 +482,26 @@ void MainWindow::BuildGradedScene()
                     if (members.size() > 1)
                     {
                         OCornerTrace::RestartAtSharedStretches(members);
+                    }
+
+                    // The members' editing views are the same geometry, drawn again: they must break
+                    // their dashes at the same places, or the two drawings would show a moiré.
+                    QVector<QGraphicsPathItem *> viewMembers;
+                    for (const quint32 pieceId : group.value().pieceIds)
+                    {
+                        if (auto *path = dynamic_cast<QGraphicsPathItem *>(viewsOfSize.value(pieceId, nullptr));
+                            path != nullptr)
+                        {
+                            viewMembers.append(path);
+                        }
+                    }
+                    if (viewMembers.size() == 1)
+                    {
+                        OCornerTrace::RestartAtCorners(viewMembers.first());
+                    }
+                    else if (viewMembers.size() > 1)
+                    {
+                        OCornerTrace::RestartAtSharedStretches(viewMembers);
                     }
                 }
             }
@@ -472,9 +538,10 @@ void MainWindow::BuildGradedScene()
     const auto allItems = m_sceneGraded->items();
     for (auto *baseItem : allItems)
     {
-        if (GradedIsReference(baseItem))
+        const quint32 pieceId = GradedPieceId(baseItem); // 0 for a member view — see layout.cpp
+        if (GradedIsReference(baseItem) && pieceId != 0)
         {
-            m_gradedBasePositions.insert(GradedPieceId(baseItem), baseItem->pos());
+            m_gradedBasePositions.insert(pieceId, baseItem->pos());
         }
     }
 

@@ -97,7 +97,7 @@ void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 o
     auto items = m_sceneGraded->items();
     for (auto *owner : items)
     {
-        const quint32 ownerPiece = GradedPieceId(owner);
+        const quint32 ownerPiece = GradedDecorOwnerPiece(owner); // a piece, or its own decor deck
         const quint32 ownerGroup =
             ownerPiece == 0 ? owner->data(kGradedHostGroupIdRole).toUInt() : 0;
         if (ownerPiece == 0 && ownerGroup == 0)
@@ -131,7 +131,9 @@ void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 o
         return ok ? value : 0.0;
     };
 
-    // 2) Lone (non-grouped) reference pieces with an enabled grainline → interactive item.
+    // 2) Reference pieces with an enabled grainline → interactive item. A group member keeps its
+    //    own here, like in Details: the group's shared grainline is a second, separate item, hosted
+    //    on the group (step 3), and each of the two is re-placed per size range on its own.
     for (auto *item : items)
     {
         if (!GradedIsReference(item))
@@ -149,11 +151,7 @@ void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 o
         }
         if (onlyPieceId != 0 && pieceId != onlyPieceId)
         {
-            continue; // targeted rebuild of another lone piece
-        }
-        if (pattern->GetPieceGroupId(pieceId) != NULL_ID)
-        {
-            continue; // grouped → the group hosts the (single) grainline
+            continue; // targeted rebuild of another piece
         }
 
         const VPiece &piece = piecesMap->value(pieceId);
@@ -176,8 +174,11 @@ void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 o
                     *pattern->GetPatternUnit());
         const qreal lenPx = (ov && pit->grainline.lengthPx > 0.0) ? pit->grainline.lengthPx : baseLenPx;
 
-        // Hide the static grainline GetItem drew — the interactive item replaces it.
-        const auto children = item->childItems();
+        // Hide the static grainline GetItem drew — the interactive item replaces it. It is hidden
+        // where the interactive one is hung: on the piece's own item, or on a member's view (the
+        // group's layer keeps none — the group's shared grainline is hosted on the group).
+        QGraphicsItem *owner = GradedPieceDecorOwner(m_sceneGraded, pieceId, item);
+        const auto children = owner->childItems();
         for (auto *child : children)
         {
             if (child->type() == VGraphicsFillItem::Type)
@@ -186,7 +187,7 @@ void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 o
             }
         }
 
-        auto *gl = new VGrainlineItem(VColorRole::PieceColor, item);
+        auto *gl = new VGrainlineItem(VColorRole::PieceColor, GradedDecorHost(owner));
         gl->setData(kGradedGrainlineOwnerRole, pieceId);
         gl->setFlag(QGraphicsItem::ItemIsMovable, true);
         gl->SetMoveType(VPieceItem::MoveTypes(VPieceItem::IsMovable | VPieceItem::IsResizable));
@@ -261,7 +262,7 @@ void MainWindow::RefreshGradedReferenceGrainlines(quint32 onlyPieceId, quint32 o
                     *pattern->GetPatternUnit());
         const qreal lenPx = (ov && git->grainline.lengthPx > 0.0) ? git->grainline.lengthPx : baseLenPx;
 
-        auto *gl = new VGrainlineItem(VColorRole::PieceColor, item);
+        auto *gl = new VGrainlineItem(VColorRole::PieceColor, item); // the group's own, on its host
         gl->setData(kGradedGrainlineOwnerRole, groupId);
         gl->setFlag(QGraphicsItem::ItemIsMovable, true);
         gl->SetMoveType(VPieceItem::MoveTypes(VPieceItem::IsMovable | VPieceItem::IsResizable));

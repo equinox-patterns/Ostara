@@ -127,10 +127,12 @@ public:
     {
         qreal dx = 0.0; // piece drag offset (all sizes of the piece)
         qreal dy = 0.0;
-        GrainlineOverride grainline;              // only meaningful for a lone (non-grouped) piece
+        GrainlineOverride grainline;              // this piece's own grainline — a group member
+                                                  // keeps hers, the group carries a second one
         QHash<int, BlockOverride> blocks;         // block index 1..11 → override (only edited ones)
         QHash<int, AnnotationOverride> annotations; // annotation list index → override (0-based)
-        ThumbnailOverride thumbnail;              // only meaningful for a lone (non-grouped) piece
+        ThumbnailOverride thumbnail;              // this piece's own miniature — a group member keeps
+                                                  // hers, the group carries one per member as well
         QString annotationsFp;                    // fingerprint of the annotation list that the
                                                   // overrides were made against (empty = none)
 

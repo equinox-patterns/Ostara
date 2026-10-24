@@ -28,6 +28,7 @@ set(VWIDGETS_SOURCES
     vabstractmainwindow.cpp
     ocartouchepainter.cpp
     ohitshapepathitem.cpp
+    ogroupmembershipmark.cpp
     vgrainlineitem.cpp
     vpieceitem.cpp
     vcurvepathitem.cpp
@@ -63,6 +64,7 @@ set(VWIDGETS_SOURCES
     vabstractmainwindow.h
     ocartouchepainter.h
     ohitshapepathitem.h
+    ogroupmembershipmark.h
     vgrainlineitem.h
     vpieceitem.h
     vcurvepathitem.h
