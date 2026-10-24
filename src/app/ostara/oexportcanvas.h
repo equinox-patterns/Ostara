@@ -186,6 +186,14 @@ struct OExportCanvasContent
 
     /// The decor of the reference layer, one entry per owner that carries any.
     QList<OGradedSvg::LayoutObject> decor;
+
+    /// Les enfants qu'un membre de groupe porte POUR LUI — **payload seulement, jamais dessinés.**
+    ///
+    /// Le plan d'impression dessine le groupe : ses membres ne portent qu'une copie masquée de leurs
+    /// propres enfants, construite pour que Rabnest puisse afficher un membre SEUL. Cette liste-là ne
+    /// va donc qu'à `OExportPieces::Of`, quand `decor` va aussi bien au payload qu'à la couche
+    /// visible — les mélanger ajouterait au plan l'encre de chaque membre.
+    QList<OGradedSvg::LayoutObject> payloadDecor;
 };
 
 /// The index, in `OExportNestingResult::placements`, of the placement an item belongs to.

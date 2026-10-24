@@ -526,14 +526,18 @@ auto IsGroupedMember(const VContainer *pattern, quint32 groupId, bool cuttingPla
 /// own rotation formula still supplies the angle, since a range stores none.
 void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &geometry,
                              const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                             bool cuttingPlan)
+                             bool cuttingPlan, bool asLonePiece = false)
 {
     VPieceGrainline &grainline = placed.GetGrainline();
 
-    if (IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
+    if (!asLonePiece && IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
     {
         // A grouped member carries no grainline of its own: the group hosts one for all
         // of them, exactly as Details and Graded do it.
+        //
+        // ⚠️ **Sauf pour le payload.** Rabnest doit pouvoir afficher un membre SEUL, et il lui faut
+        // alors la ligne de ce membre : `asLonePiece` demande la sienne, et cette copie-là ne va pas
+        // au plan — elle est masquée aussitôt construite. Ce que le groupe dessine n'est pas touché.
         grainline.SetEnabled(false);
         return;
     }
@@ -665,6 +669,18 @@ struct DecorFrame
     /// way: **a miniature nobody ever placed lands on the PIECE IT DRAWS**, never on the union of the
     /// group. Empty for a lone piece, which is its own box (@c bounds).
     QHash<quint32, QRectF> memberBoxes{};
+
+    /// Le pli du groupe — porté par UN membre (`m_foldLineMemberId`), et ramassé ici.
+    ///
+    /// ⚠️ **Le groupe n'a aucune géométrie de pli : il désigne un membre, et c'est la pièce de ce
+    /// membre qui porte le trait.** Sur le canvas, ce trait est un enfant de l'item du porteur, donc il
+    /// se voit — mais la couche de décor du PDF ne sérialise que les enfants des PORTEURS DE DÉCOR, et
+    /// le porteur est le groupe : le trait n'était écrit nulle part, et le PDF d'un groupe n'avait pas
+    /// de pli alors que le canvas en montrait un. Mesuré sur un vrai run.
+    ///
+    /// Ils sont écrits dans le décor du groupe (`InkSpace::ToFile` ramène chaque item dans le repère
+    /// du propriétaire à partir de sa transformation de scène), donc rien n'est reparenté.
+    QVector<QGraphicsItem *> foldChildren{};
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1196,10 +1212,15 @@ auto IsDecorChild(QGraphicsItem *child) -> bool
 /// A piece's children are stored in the document's own coordinates, so its carrier takes
 /// the placement as-is and its local origin is the document origin. A piece of a group of
 /// one keeps its own decor: below kMinGroupMembers a group is not a block.
+///
+/// @param hostOut receives the carrier the children hang under, when the caller has to hide it —
+///        the member of a group keeps its own decor FOR THE PAYLOAD only (Rabnest may show it
+///        alone), and that ink must not be drawn on a plan the group already decorates.
 void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry,
                      const QTransform &placement, qreal rotation, int footprintIndex,
                      const OSizerange *range, const VContainer *pattern, VAbstractPattern *doc,
-                     bool cuttingPlan, OGradedSvg::LayoutObject *decor = nullptr)
+                     bool cuttingPlan, OGradedSvg::LayoutObject *decor = nullptr,
+                     QGraphicsItem **hostOut = nullptr)
 {
     DecorFrame frame;
     frame.placement = placement;
@@ -1268,12 +1289,115 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
     {
         delete host;
     }
+    else if (hostOut != nullptr)
+    {
+        *hostOut = host;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/// The decor of one group, on the reference layer: its grainline, its cartouche and its
-/// annotations.
+/// Les enfants qu'un membre de groupe porte POUR LUI, pour le payload seulement.
 ///
+/// Un plan d'impression dessine le groupe : c'est le groupe qui porte la grainline, le cartouche, les
+/// annotations et les miniatures de ses membres. Mais Rabnest doit pouvoir n'afficher **qu'un
+/// membre** — et il lui faut alors les enfants de ce membre, pas ceux du groupe. Ostara les écrit donc
+/// dans le payload, à côté du `<decor>` du groupe : le lecteur choisit, le plan ne bouge pas.
+///
+/// ⚠️ **Rien de ce qui est construit ici n'est visible.** La pièce et son porteur sont masqués
+/// aussitôt : le plan continue de montrer le groupe, et seul le sérialiseur lit cette encre. C'est le
+/// même geste que le plan de coupe, où le membre retenu porte son décor parce qu'il est seul.
+void CollectMemberOwnDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry,
+                           const QTransform &placement, qreal rotation, int footprintIndex,
+                           const OSizerange *range, const Unit &unit, const VContainer *pattern,
+                           VAbstractPattern *doc, const QVector<QGraphicsItem *> &foldChildren,
+                           OGradedSvg::LayoutObject *entry)
+{
+    // Sa pièce, avec SA ligne : `asLonePiece` demande celle du membre là où le plan l'éteint.
+    VLayoutPiece placed = geometry.piece;
+    placed.SetMatrix(geometry.piece.GetMatrix() * placement);
+    ApplyReferenceGrainline(placed, geometry, range, unit, pattern, false, /*asLonePiece=*/true);
+
+    // ── Un membre montré SEUL montre TOUT ce qu'il a ────────────────────────────────────────────
+    //
+    // Deux drapeaux de DESSIN du plan ne valent pas pour ce bloc-là :
+    //
+    // 1. une grainline **cachée** en Details (elle existe, on ne l'affiche pas sur le patron) — un
+    //    lecteur qui n'affiche que ce membre n'a rien d'autre à montrer, et c'est cette ligne-là qui
+    //    dit le sens ;
+    // 2. le pli d'une pièce dépliée sans son axe (`IsShowFullPiece() && !IsShowMirrorLine()`) — la
+    //    ligne existe et c'est elle qui dit le pli.
+    //
+    // Aucun des deux ne touche le plan : cette copie est masquée aussitôt construite.
+    if (placed.GetGrainline().IsEnabled())
+    {
+        placed.GetGrainline().SetVisible(true);
+    }
+    placed.SetShowMirrorLine(true);
+
+    QGraphicsItem *item = placed.GetItem(false, true, false);
+    if (item == nullptr)
+    {
+        return;
+    }
+
+    entry->name = geometry.name;
+    entry->ownerId = geometry.id;
+    // The ink is already placed (the matrix is baked into the piece), so this is what brings it back
+    // into the frame `outline` travels in — exactly what the lone-piece entry does.
+    entry->ownerPlacement = placement;
+    entry->origin = QPointF(0.0, 0.0);
+    bool hasOwnFold = false;
+    for (QGraphicsItem *child : item->childItems())
+    {
+        if (IsDecorChild(child))
+        {
+            entry->decorChildren.append(child);
+            hasOwnFold = hasOwnFold || child->type() == VGraphicsFoldLineItem::Type;
+        }
+    }
+
+    // ── Le pli, repris de la copie VISIBLE quand le membre n'en produit pas ─────────────────────
+    //
+    // Le porteur du pli du groupe le doit à SON item ; les autres n'en ont aucun (le plan l'éteint
+    // chez eux, et c'est la règle du groupe). On ne reprend donc les items du groupe que si la copie
+    // n'a rien donné — sinon le trait serait écrit DEUX fois, à l'identique : mesuré sur « Dos x1
+    // pli », deux `path fold` aux mêmes coordonnées.
+    if (!hasOwnFold)
+    {
+        entry->decorChildren += foldChildren;
+    }
+
+    // ── Et on retire le CONTENU, pas la visibilité ───────────────────────────────────────────────
+    //
+    // ⚠️ **Le sérialiseur saute un item dont `isVisible()` est faux — et l'enfant d'un parent masqué
+    // n'est jamais visible.** Masquer la pièce, comme le faisait la première version, effaçait donc
+    // justement les enfants qu'on venait de ramasser : le bloc du membre sortait vide (mesuré sur un
+    // vrai payload, pli et grainline absents). On les garde donc VISIBLES et on leur retire leur
+    // contenu : `ItemHasNoContents` ne peint rien, mais l'item existe et se sérialise. Aucune encre
+    // n'entre dans le plan.
+    const std::function<void(QGraphicsItem *)> mute = [&](QGraphicsItem *it)
+    {
+        it->setFlag(QGraphicsItem::ItemHasNoContents, true);
+        it->setAcceptedMouseButtons(Qt::NoButton);
+        it->setFlag(QGraphicsItem::ItemIsSelectable, false);
+        const auto kids = it->childItems();
+        for (QGraphicsItem *child : kids)
+        {
+            mute(child);
+        }
+    };
+    mute(item);
+    scene->addItem(item);
+
+    QGraphicsItem *host = nullptr;
+    BuildPieceDecor(scene, geometry, placement, rotation, footprintIndex, range, pattern, doc, false,
+                    entry, &host);
+    if (host != nullptr)
+    {
+        host->setVisible(false);
+    }
+}
+
 /// A group has no item of its own in this scene: the nesting places its members. Graded
 /// builds the same invisible carrier — its origin is the top-left corner of the members,
 /// which is the frame the group stores all of its children in.
@@ -1375,6 +1499,15 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
                 decor->decorChildren.append(child);
             }
         }
+
+        // ── Et le pli, qui appartient au PORTEUR et non au groupe ────────────────────────────────
+        //
+        // Le groupe n'a aucune géométrie de pli : il désigne un membre, et le trait est un enfant de
+        // l'item de ce membre. Sans cette ligne, le canvas montrait le pli du groupe et le PDF n'en
+        // avait aucun — la couche de décor ne sérialise que les enfants des porteurs, et le porteur
+        // est le groupe, qui n'en a pas. `InkSpace::ToFile` ramène chaque item de la scène dans le
+        // repère du propriétaire, donc celui du membre arrive à sa place dans le repère du groupe.
+        decor->decorChildren += frame.foldChildren;
     }
 
     if (host->childItems().isEmpty())
@@ -1416,12 +1549,16 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
 {
     OExportPieceGrainline frozen;
 
-    // A grouped member is answered by the DRAWING side, which turns the grainline off on the placed
-    // piece — that answer depends on nothing the document says about a size, so it is not frozen here.
-    if (IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
-    {
-        return frozen;
-    }
+    // `cuttingPlan` ne décide plus rien ici : toutes les pièces gelent leur ligne, membres compris —
+    // c'est le DESSIN qui l'éteint sur une copie posée (voir ApplyReferenceGrainline), pas le record.
+    Q_UNUSED(cuttingPlan)
+
+    // ── Le membre d'un groupe : sa ligne est gelée ELLE AUSSI ────────────────────────────────────
+    //
+    // Le plan ne la dessine pas — c'est le groupe qui porte sa grainline, et `ApplyReferenceGrainline`
+    // l'éteint sur la copie posée. Mais le payload doit pouvoir la donner à un lecteur qui n'affiche
+    // QUE ce membre : Rabnest reçoit donc, dans le `<piece>` du membre, ses enfants à lui. Une ligne
+    // gelée n'est qu'un enregistrement ; rien ne la dessine ici, et le dessin du groupe ne bouge pas.
 
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
     if (pieces == nullptr)
@@ -1934,6 +2071,59 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     // of the walk, when that frame's origin is known.
                     frame.memberBoxes.insert(geometry.id, UnplacedBounds(geometry.piece));
                     frame.footprintIndex = i;
+
+                    // ── Le pli du groupe : c'est CE membre qui le porte ───────────────────────────
+                    //
+                    // Le groupe désigne le porteur (`m_foldLineMemberId`) et n'a aucune géométrie de
+                    // pli. Son trait est un enfant de l'item du porteur : il se voit au canvas, mais
+                    // il n'était écrit nulle part, donc le PDF sortait sans pli là où l'écran en
+                    // montrait un. On les ramasse ici, pour les joindre au décor du groupe.
+                    //
+                    // ⚠️ Un seul membre les donne, et c'est le porteur : c'est la règle du groupe
+                    // (`ApplyGroupFoldLine` a déjà éteint celle des autres), et la doubler ici ferait
+                    // deux traits.
+                    bool carriesFold = false;
+                    if (content != nullptr && !run.plotterPlan)
+                    {
+                        const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
+                        if (groups != nullptr)
+                        {
+                            const auto group = groups->constFind(geometry.groupId);
+                            carriesFold = group != groups->cend()
+                                          && group.value().m_foldLineMemberId == geometry.id;
+                        }
+                        if (carriesFold)
+                        {
+                            for (QGraphicsItem *child : item->childItems())
+                            {
+                                if (IsDecorChild(child))
+                                {
+                                    frame.foldChildren.append(child);
+                                }
+                            }
+                        }
+                    }
+
+                    // ── Et ses enfants À LUI, pour le payload ───────────────────────────────────
+                    //
+                    // Le plan dessine le groupe, et c'est très bien : un cartouche, une grainline pour
+                    // deux pièces. Mais Rabnest peut n'afficher QUE ce membre — il lui faut alors les
+                    // enfants de ce membre, que le payload doit donc porter à côté de ceux du groupe.
+                    // Construits ici et masqués aussitôt : rien de tout cela n'entre dans le dessin.
+                    if (content != nullptr && !run.plotterPlan)
+                    {
+                        OGradedSvg::LayoutObject member;
+                        CollectMemberOwnDecor(scene, geometry, placementMatrix, placement.rotation, i,
+                                              range, unit, pattern, doc,
+                                              carriesFold ? frame.foldChildren
+                                                          : QVector<QGraphicsItem *>(),
+                                              &member);
+                        if (!member.decorChildren.isEmpty() || !member.blocks.isEmpty()
+                            || !member.annotations.isEmpty() || !member.thumbnails.isEmpty())
+                        {
+                            content->payloadDecor.append(member);
+                        }
+                    }
                 }
 
                 scene->addItem(item);

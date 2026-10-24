@@ -352,16 +352,51 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         // The decor the drawing resolved — ONCE, on the reference layer — travels with the pieces,
         // copied into every size by OExportPieces. It is the same `content.decor` the visible layer
         // below is written from, so the payload and the paper cannot show two different drawings.
+        //
+        // **Et les enfants de chaque membre de groupe viennent en plus** — `payloadDecor`, construits
+        // par le canvas sans être dessinés. Ils ne vont QUE dans le payload : Rabnest en a besoin pour
+        // afficher un membre seul, la couche visible n'en porte aucun. Les fondre dans `content.decor`
+        // ajouterait au plan l'encre de chaque membre.
+        QList<OGradedSvg::LayoutObject> payloadDecor = content.decor;
+        payloadDecor += content.payloadDecor;
         recipeElement.appendChild(
-            OExportPieces::Of(recipe, output.layers, displayLabels, pattern, content.decor));
+            OExportPieces::Of(recipe, output.layers, displayLabels, pattern, payloadDecor));
     }
 
+    // ── Le DESSIN, sans la métadonnée ────────────────────────────────────────────────────────────
+    //
+    // ⚠️ **Le payload ne va plus dans le fichier qui est dessiné.** Il y vivait, dans `<metadata>`,
+    // et un convertisseur qui rend les enfants de tout élément qu'il ne connaît pas le DESSINAIT :
+    // les cartouches, annotations et droit-fils de chaque pièce réapparaissaient une seconde fois,
+    // écrits dans le repère de la pièce — donc posés n'importe où sur la feuille. Constaté sur deux
+    // exports du même patron : sans l'option Rabnest la page est propre, avec elle elle se remplit
+    // de cartouches flottants.
+    //
+    // Trame sait écarter `<metadata>` ; mais faire reposer un dessin juste sur ce que le
+    // convertisseur ignore est un pari, et il a déjà été perdu une fois. Le payload est donc écrit
+    // dans SON fichier, et le fichier dessiné n'en porte plus rien du tout.
     if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor, imageRect,
                                     QMarginsF(), 1.0, 1.0, QString(), QString(), layered,
-                                    recipeElement))
+                                    QDomElement()))
     {
         qWarning() << "OExportPdf: the SVG could not be written";
         return false;
+    }
+
+    // ── Le PAYLOAD, dans un fichier à part ──────────────────────────────────────────────────────
+    //
+    // Le même document, métadonnée comprise : c'est ce que Rabnest réouvre. Personne ne le dessine.
+    QString payloadSvgPath;
+    if (!recipeElement.isNull())
+    {
+        payloadSvgPath = dir.filePath(QStringLiteral("payload.svg"));
+        if (!OGradedSvg::WriteGradedSvg(payloadSvgPath, layers, layoutLayerName, content.decor,
+                                        imageRect, QMarginsF(), 1.0, 1.0, QString(), QString(),
+                                        layered, recipeElement))
+        {
+            qWarning() << "OExportPdf: the payload SVG could not be written";
+            return false;
+        }
     }
 
     // The sheet's own frame, its numbering and its registration marks go in as a SECOND
@@ -451,7 +486,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // into pages, and it is what Rabnest reopens to offer another format. It lives in a
     // temporary directory that dies with this function, which is why the payload is handed
     // over now rather than later.
-    const QString payloadPath = rabnestPayload ? svgPath : QString();
+    const QString payloadPath = rabnestPayload ? payloadSvgPath : QString();
     if (!converter.convert(svgPath, pages, pdfPath, info, underlayPath, addLayoutLayer, coverPath,
                            coverSheet, payloadPath))
     {

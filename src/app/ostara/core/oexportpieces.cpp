@@ -79,73 +79,6 @@ auto PathData(const QVector<VLayoutPoint> &points) -> QString
     return commands.join(QLatin1Char(' '));
 }
 
-/// The extent of a piece's outline, in the frame the payload writes — the shape a reader places.
-auto OutlineBox(const VLayoutPiece &piece) -> QRectF
-{
-    const QVector<VLayoutPoint> points = piece.GetMappedExternalContourPoints();
-    if (points.isEmpty())
-    {
-        return {};
-    }
-
-    qreal lowX = points.first().x();
-    qreal highX = lowX;
-    qreal lowY = points.first().y();
-    qreal highY = lowY;
-    for (const VLayoutPoint &point : points)
-    {
-        lowX = std::min(lowX, point.x());
-        highX = std::max(highX, point.x());
-        lowY = std::min(lowY, point.y());
-        highY = std::max(highY, point.y());
-    }
-    return QRectF(QPointF(lowX, lowY), QPointF(highX, highY));
-}
-
-/// The midpoint of a piece's fold axis, or NaN when it has none.
-auto FoldSeat(const VLayoutPiece &piece) -> QPointF
-{
-    const QLineF fold = OExportCuttingDirection::MappedFoldLine(piece);
-    return fold.isNull() ? QPointF(qQNaN(), qQNaN()) : fold.center();
-}
-
-/// A translation by @p delta, as a transform.
-auto Shift(const QPointF &delta) -> QTransform
-{
-    QTransform transform;
-    transform.translate(delta.x(), delta.y());
-    return transform;
-}
-
-/// Where the rest of the decor lands: the same offset from the piece's CENTRE.
-///
-/// One authoring, one seat, applied to every size — but the seat has to follow the piece, because the
-/// sizes do not occupy the same place in the document. Exact at the reference by construction: the
-/// two extents are the same and the shift is zero, so nothing moves where it was drawn.
-auto CentreSeat(const QRectF &from, const QRectF &to) -> QTransform
-{
-    if (from.isNull() || to.isNull())
-    {
-        return {};
-    }
-    return Shift(to.center() - from.center());
-}
-
-/// Where the FOLD's ink lands: the same place on the fold's own axis.
-///
-/// ⚠️ **A fold mark is not centred on anything.** It runs along the edge that goes on the cloth's
-/// fold, and that edge moves with the size while the centre barely does — so a centre seat left the
-/// mark floating beside the edge, visibly not touching it, and dragged its caption with it. The axis
-/// is the only seat that keeps it on the edge it belongs to. A piece with no fold keeps the centre.
-auto FoldSeatShift(const QPointF &from, const QPointF &to) -> QTransform
-{
-    if (qIsNaN(from.x()) || qIsNaN(to.x()))
-    {
-        return {};
-    }
-    return Shift(to - from);
-}
-
 /// A line as « x1,y1 x2,y2 ».
 auto LineData(const QLineF &line) -> QString
 {
@@ -214,14 +147,20 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
                        const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement
 {
     QDomElement pieces = doc.createElement(QStringLiteral("pieces"));
-    // Version 3 — the contour as it is DRAWN (notches included) and the alignment offset travel
-    // with every piece. A version-2 payload carries the same pieces, but a reader can only lay
-    // their sizes on top of each other by guessing an offset it never received, and can only draw
-    // them without their passmarks. A version-1 payload carries the same pieces with no decor at
-    // all, and a reader must not take it for a payload whose sizes simply have nothing to draw: it
-    // would then place ten pieces and not one grain line. A reader that cannot find what it asks
-    // for says so — it never reads the nearest older thing and draws it.
-    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("3"));
+    // Version 4 — **chaque membre d'un groupe porte ses propres enfants.** Jusqu'ici son `<piece>`
+    // restait sans `<decor>` et le `<group>` portait le seul jeu : un lecteur qui n'affichait qu'un
+    // membre lui donnait le cartouche, les annotations et la droit-fil du groupe, dans le repère du
+    // groupe. Version 3 dit la même chose SANS les enfants des membres, donc un lecteur de 4 qui
+    // recevrait une 3 retomberait sur le groupe — le comportement d'avant, et c'est ce que la version
+    // déclare.
+    //
+    // Les deux précédentes, pour mémoire : la 3 ajoute le contour DESSINÉ (crans) et l'offset
+    // d'alignement à chaque pièce ; la 2 n'avait ni l'un ni l'autre, donc un lecteur ne pouvait
+    // superposer les tailles qu'en devinant un décalage qu'il n'avait jamais reçu ; la 1 n'avait aucun
+    // décor, et la prendre pour un payload dont les tailles n'ont rien à dessiner donnait dix pièces
+    // et pas une ligne de droit-fil. **Un lecteur qui ne trouve pas ce qu'il demande le dit** — il ne
+    // lit jamais la version la plus proche et ne la dessine.
+    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("4"));
 
     // The decor is looked up by the owner's ID, never by its name: two owners may share a name — the
     // visible layer hands out unique ids for exactly that reason — and a name-keyed table would give
@@ -242,18 +181,6 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
         else
         {
             pieceDecorById.insert(object.ownerId, &object);
-        }
-    }
-
-    // The reference seat, per piece: the first layer is the one the decor was resolved on.
-    QHash<quint32, QRectF> referenceBox;
-    QHash<quint32, QPointF> referenceFold;
-    if (!layers.isEmpty())
-    {
-        for (const OExportPieceGeometry &geometry : layers.first().pieces)
-        {
-            referenceBox.insert(geometry.id, OutlineBox(geometry.piece));
-            referenceFold.insert(geometry.id, FoldSeat(geometry.piece));
         }
     }
 
@@ -427,19 +354,35 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             // deliberate: the copy is what lets a reader find the children of the size it was asked
             // for and place them without computing anything.
             //
-            // A member of a group has no decor of its own (Graded and Details both hand it to the
-            // group), so its record stays without one and the `<group>` below carries it.
+            // **Un membre de groupe porte les SIENS, désormais.**
+            //
+            // Le canvas les construit pour lui sans les dessiner (`OExportCanvasContent::payloadDecor`),
+            // et le `<group>` plus bas porte en plus le jeu commun. C'est le LECTEUR qui choisit : le
+            // groupe s'il dessine le groupe entier, le membre s'il n'en affiche qu'un. Sans les deux, un
+            // membre seul recevait le cartouche et la droit-fil du groupe, dans le repère du groupe.
             const auto entry = pieceDecorById.constFind(geometry.id);
             if (entry != pieceDecorById.cend() && entry.value() != nullptr)
             {
-                // Where this size put the same piece, and therefore where the reference's seat goes.
-                const QRectF here = OutlineBox(geometry.piece);
-                const QRectF there = referenceBox.value(geometry.id);
-                const QTransform projection = CentreSeat(there, here);
-                const QTransform foldProjection =
-                    FoldSeatShift(referenceFold.value(geometry.id), FoldSeat(geometry.piece));
-                const QDomElement ink =
-                    OGradedSvg::OwnerDecorFor(doc, *entry.value(), projection, foldProjection);
+                // ── Le bloc est le RENDU DE RÉFÉRENCE, et il ne bouge pas d'une taille à l'autre ──
+                //
+                // ⚠️ **Aucune projection.** Le décor d'un size range est placé UNE fois, en Graded,
+                // de façon à valoir pour n'importe quelle taille de la plage ; seule la plus petite
+                // l'affiche, et les autres en portent une copie IDENTIQUE. C'est le contrat du
+                // payload (`000_Rabnest.md:131` : « géométrie des pièces, par taille, et rendu de
+                // référence […] tout ce que Rabnest ne recalcule pas sort identique — pas de
+                // dérive »), et c'est ce que Rabnest fait : il pose le bloc avec la transformation
+                // de la pièce, sans rien recalculer.
+                //
+                // ⚠️ **Ce qui était là décalait le bloc par la différence des CENTRES** entre la
+                // boîte de la taille de référence et celle de la taille courante (`CentreSeat`), pour
+                // « suivre la pièce ». Cette différence n'est pas la croissance de la pièce : mesuré
+                // sur un vrai run, la plus petite taille était juste et les suivantes glissaient, un
+                // peu plus à chacune, jusqu'à poser le cartouche hors de la pièce. Le pli avait même
+                // son propre rattrapage (`FoldSeatShift`) pour ne pas suivre ce décalage — deux
+                // mécanismes pour compenser une translation qui n'a pas lieu d'être.
+                //
+                // Le bloc est donc écrit tel qu'il a été résolu : mêmes octets pour toutes les tailles.
+                const QDomElement ink = OGradedSvg::OwnerDecorFor(doc, *entry.value());
                 if (!ink.isNull())
                 {
                     piece.appendChild(ink);

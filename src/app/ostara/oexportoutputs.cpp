@@ -977,8 +977,13 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
                 planLayers += geometry.CollectCurrentSize(size.label);
 
-                // The first size of the range is the reference layer — the only one that carries decor.
-                // The document is on it right now; it will not be again after the walk.
+                // ⚠️ **Le décor est UN SEUL pour tout un size range**, et c'est la décision de Sophie
+                // (24-10-2026) : en Graded, l'utilisatrice place chaque enfant de façon à ce que la
+                // position vaille pour N'IMPORTE QUELLE taille de la plage, puis le run d'impression
+                // s'en sert — et seule la plus petite taille l'affiche. Les enfants ne changent donc
+                // pas de position d'une taille à l'autre : il n'y a rien à résoudre par taille, et
+                // c'est la PROJECTION d'un décor d'une taille sur une autre qui faisait dériver les
+                // blocs, un peu plus à chaque taille.
                 if (planLayers.size() == 1)
                 {
                     freezeDecor(planLayers.last(), planGroupDecor,
