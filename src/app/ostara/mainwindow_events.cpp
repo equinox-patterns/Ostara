@@ -479,25 +479,6 @@ void MainWindow::HandleItemClicked(QGraphicsItem *item)
         }
     }
 
-    // Group member foldline definition — route node clicks to the group widget.
-    if (item != nullptr && m_dockManager->detailsOptions() != nullptr &&
-        m_dockManager->detailsOptions()->IsSelectingGroupFoldLinePoints())
-    {
-        auto *node = dynamic_cast<VNodePoint *>(item);
-        if (node == nullptr)
-        {
-            if (auto *parentItem = item->parentItem())
-            {
-                node = dynamic_cast<VNodePoint *>(parentItem);
-            }
-        }
-        if (node != nullptr)
-        {
-            m_dockManager->detailsOptions()->OnNodeSelectedForGroupFoldLine(node->getId());
-            return;
-        }
-    }
-
     // Forced alignment point — route node clicks to the details property browser.
     if (item != nullptr && m_dockManager->detailsOptions() != nullptr
         && m_dockManager->detailsOptions()->IsSelectingAlignPoint())
@@ -731,11 +712,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingFoldLinePoints())
             {
                 m_dockManager->detailsOptions()->CancelFoldLineSelection();
-                break;
-            }
-            if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingGroupFoldLinePoints())
-            {
-                m_dockManager->detailsOptions()->CancelGroupFoldLineSelection();
                 break;
             }
             if (m_dockManager->detailsOptions() != nullptr && m_dockManager->detailsOptions()->IsSelectingSAPoints())

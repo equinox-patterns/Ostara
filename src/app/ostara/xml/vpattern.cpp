@@ -1215,6 +1215,29 @@ void VPattern::ParsePieceGroups(const QDomElement &domElement)
                                     }
                                 }
 
+                                // Where the member stands in the group's stack: the arrangement the
+                                // group shows and exports. The member's own mx/my is only where its
+                                // tool stands on the canvas — the workshop it is edited in. Absent
+                                // = the member's own position is the stack (a group linked before
+                                // the stack was stored, and what those files really say).
+                                const QString stackStr =
+                                    GetParametrEmptyString(childElement, QStringLiteral("stack"));
+                                if (not stackStr.isEmpty())
+                                {
+                                    const QStringList stackParts = stackStr.split(QLatin1Char(','));
+                                    if (stackParts.size() == 2)
+                                    {
+                                        bool okX = false;
+                                        bool okY = false;
+                                        const qreal x = stackParts.at(0).toDouble(&okX);
+                                        const qreal y = stackParts.at(1).toDouble(&okY);
+                                        if (okX && okY)
+                                        {
+                                            group.SetMemberStackPosition(pieceId, QPointF(x, y));
+                                        }
+                                    }
+                                }
+
                                 // The member's miniature, when the group carries one for it. Absent
                                 // stays absent: the map is sparse, a member with no miniature being
                                 // the ordinary case, not a stored inactive thumbnail.

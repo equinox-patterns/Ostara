@@ -39,6 +39,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/ochildanchor.h"
+#include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vpatterndb/vpiecepath.h"
@@ -49,6 +50,7 @@
 #include "../vtools/dialogs/tools/piece/dialogpiecepathoptions.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/undocommands/deltool.h"
+#include "../vtools/undocommands/savepiecegroupoptions.h"
 #include "../vtools/undocommands/savepieceoptions.h"
 #include "../vtools/undocommands/savepiecepathoptions.h"
 #include "../vexception/vexception.h"
@@ -1054,10 +1056,60 @@ void ODetailsPieceWidget::CommitPending()
     // size keeps it where it was put. The piece's own fields are unaffected.
     OChildAnchor::SyncFollowedChildren(oldDet, m_pendingDet, m_currentTool->ChildAnchorRefRect());
 
-    VAbstractApplication::VApp()->getUndoStack()->push(
-        new SavePieceOptions(oldDet, m_pendingDet,
-                             VAbstractValApplication::VApp()->getCurrentDocument(),
-                             m_currentTool->getId()));
+    // **A group adopts the fold line its member has just gained**, when there is nothing to choose:
+    // no other member has one. The group never defines a fold line — it uses one of its members' —
+    // so the first one is also the only one. Saving the piece and choosing the carrier is one
+    // action, hence one undo step.
+    const quint32 pieceId = m_currentTool->getId();
+    const quint32 groupId = data->GetPieceGroupId(pieceId);
+    OPieceGroup groupOld;
+    bool adoptFoldLine = false;
+    if (groupId != NULL_ID && m_pendingDet.GetFoldLineType() != FoldLineType::None)
+    {
+        const auto *groups = data->DataPieceGroups();
+        if (groups != nullptr && groups->contains(groupId))
+        {
+            groupOld = groups->value(groupId);
+            adoptFoldLine = groupOld.m_foldLineMemberId != pieceId;
+            for (const quint32 memberId : groupOld.pieceIds)
+            {
+                if (!adoptFoldLine || memberId == pieceId)
+                {
+                    continue;
+                }
+                try
+                {
+                    if (data->GetPiece(memberId).GetFoldLineType() != FoldLineType::None)
+                    {
+                        adoptFoldLine = false; // another member has one: the choice is the user's
+                    }
+                }
+                catch (const VExceptionBadId &)
+                {
+                    continue;
+                }
+            }
+        }
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    if (adoptFoldLine)
+    {
+        undoStack->beginMacro(tr("Set the fold line"));
+    }
+    undoStack->push(new SavePieceOptions(oldDet, m_pendingDet,
+                                         VAbstractValApplication::VApp()->getCurrentDocument(), pieceId));
+    if (adoptFoldLine)
+    {
+        OPieceGroup groupNew = groupOld;
+        groupNew.m_foldLineMemberId = pieceId;
+        // The command writes the group back through the container, which the tool hands over as a
+        // read-only view; the group it owns is exactly what this command is for.
+        undoStack->push(new SavePieceGroupOptions(groupOld, groupNew,
+                                                  VAbstractValApplication::VApp()->getCurrentDocument(),
+                                                  const_cast<VContainer *>(data), groupId));
+        undoStack->endMacro();
+    }
 
     // Resync pending state with the container after the undo.
     m_pendingDet = data->GetPiece(m_currentTool->getId());

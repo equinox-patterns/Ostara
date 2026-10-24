@@ -1370,6 +1370,7 @@
                         </xs:sequence>
                         <xs:attribute name="piece" type="xs:unsignedInt" use="required"/>
                         <xs:attribute name="offset" type="xs:string"/>
+                        <xs:attribute name="stack" type="xs:string"/>
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="grainline" minOccurs="0" maxOccurs="1">

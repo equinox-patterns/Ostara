@@ -32,6 +32,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QPainter>
+#include <QGraphicsSimpleTextItem>
 #include <QStyleOptionGraphicsItem>
 #include <QUndoStack>
 
@@ -49,6 +50,7 @@
 #include "../vwidgets/global.h"
 #include "../vwidgets/vgrainlineitem.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "othumbnailtextbuilder.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 
 namespace
@@ -63,7 +65,9 @@ auto GroupCenter(const OPieceGroup &group) -> QPointF
             auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
             if (tool != nullptr)
             {
-                return tool->sceneBoundingRect().center();
+                // The centre of where the member stands in the stack, not where its tool stands.
+                const QPointF shift = group.MemberStackPosition(pieceId, tool->pos()) - tool->pos();
+                return tool->sceneBoundingRect().translated(shift).center();
             }
         }
         catch (const VExceptionBadId &)
@@ -156,6 +160,10 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
     // The holder sits at the top-left of the union of the members' bounds (Val Fork
     // VPieceGroupHolderItem): children are laid out in LOCAL coordinates so they move
     // together with the group, and the frame is the group's clickable area.
+    // **The stack is the group's own geometry.** A member's tool stands in the workshop, where its
+    // points, margins and notches are edited; the group places it where it belongs in the stack —
+    // the position stored when it was linked. Every rectangle below is measured there, so a piece
+    // being edited beside the group never drags the group's frame, children or miniatures.
     QRectF bounds;
     QRectF outlineBounds; // in scene coordinates, like bounds
     for (quint32 pieceId : group.pieceIds)
@@ -165,11 +173,13 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
             auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
             if (tool != nullptr)
             {
-                bounds = bounds.united(tool->sceneBoundingRect());
+                const QPointF shift = group.MemberStackPosition(pieceId, tool->pos()) - tool->pos();
+                bounds = bounds.united(tool->sceneBoundingRect().translated(shift));
                 // What a member's own children keep to: its outline, never the seam allowance drawn
                 // around it — a cartouche placed inside the margin is outside the piece as soon as
                 // the margins are turned off, and this rectangle does not move when they are.
-                outlineBounds = outlineBounds.united(tool->sceneTransform().mapRect(tool->PieceOutlineRect()));
+                outlineBounds = outlineBounds.united(
+                    tool->sceneTransform().mapRect(tool->PieceOutlineRect()).translated(shift));
             }
         }
         catch (const VExceptionBadId &)
@@ -218,7 +228,98 @@ void OPieceGroupHolderItem::Refresh(const OPieceGroup &group, VAbstractPattern *
         data->UpdatePieceGroup(m_groupId, followed);
     }
     RefreshThumbnails(followed, data);
+    RefreshMemberShapes(followed);
     update();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceGroupHolderItem::RefreshMemberShapes(const OPieceGroup &group)
+{
+    m_memberShapes.clear();
+
+    // A legacy group has no stored stack: its members are exactly where the group draws, so they
+    // render themselves and there is nothing to redraw here.
+    if (group.memberStackPositions.isEmpty())
+    {
+        for (QGraphicsSimpleTextItem *item : m_captionItems)
+        {
+            item->hide();
+        }
+        return;
+    }
+
+    for (quint32 pieceId : group.pieceIds)
+    {
+        try
+        {
+            auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
+            if (tool == nullptr)
+            {
+                continue;
+            }
+
+            MemberShape shape;
+            shape.mainPath = tool->path();
+            shape.seamAllowance = tool->SeamAllowancePath();
+            shape.passmarks = tool->PassmarksPath();
+            shape.placeLabels = tool->PlaceLabelsPath();
+            // **The group's fold line is the chosen member's.** Only that member gives its line to
+            // the stack; the others keep theirs where their own piece is edited.
+            if (group.m_foldLineMemberId == pieceId)
+            {
+                shape.mirrorLine = tool->MirrorLinePath();
+                shape.foldLineMark = tool->FoldLineMarkPath();
+                shape.foldLineLabel = tool->FoldLineLabelPath();
+                shape.foldLineCaptions = tool->FoldLineCaptions();
+            }
+            shape.pen = tool->pen();
+            shape.brush = tool->brush();
+            // Where the member's place in the stack falls in the holder's own frame: the paths below
+            // are in the tool's local coordinates, and the holder is a translated frame.
+            shape.shift = mapFromScene(group.MemberStackPosition(pieceId, tool->pos()));
+            const QVector<QGraphicsPathItem *> internalPaths = tool->InternalPathItems();
+            for (const QGraphicsPathItem *internalPath : internalPaths)
+            {
+                shape.internalPaths.append(internalPath->path());
+            }
+            m_memberShapes.append(shape);
+        }
+        catch (const VExceptionBadId &)
+        {
+            continue; // stale member id (hand-edited file) — skip it
+        }
+    }
+
+    // The fold line's captions, as real text items carrying their own transform: the very same
+    // words, font and angle as on the piece, placed where the piece places them.
+    vsizetype captionIndex = 0;
+    for (const MemberShape &shape : m_memberShapes)
+    {
+        for (const VToolSeamAllowance::FoldLineCaption &caption : shape.foldLineCaptions)
+        {
+            QGraphicsSimpleTextItem *item = nullptr;
+            if (captionIndex < m_captionItems.size())
+            {
+                item = m_captionItems.at(captionIndex);
+            }
+            else
+            {
+                item = new QGraphicsSimpleTextItem(this);
+                m_captionItems.append(item);
+            }
+            item->setFont(caption.font);
+            item->setText(caption.text);
+            item->setBrush(QBrush(shape.pen.color()));
+            item->setTransform(caption.transform);
+            item->setPos(shape.shift);
+            item->show();
+            ++captionIndex;
+        }
+    }
+    for (vsizetype i = captionIndex; i < m_captionItems.size(); ++i)
+    {
+        m_captionItems.at(i)->hide();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -404,8 +505,8 @@ void OPieceGroupHolderItem::RefreshThumbnails(const OPieceGroup &group, VContain
         if (thumbnail == nullptr)
         {
             thumbnail = new OThumbnailItem(this);
-            // One item per member, created once: the pieces never disagree on what a miniature shows,
-            // because what it shows is their own drawing — only its frame belongs to the group.
+            // One item per member, created once: what a miniature shows is that member, and the group
+            // carries one per member — the piece's own, in the workshop, is another.
             connect(thumbnail, &OThumbnailItem::GeometryChanged, this,
                     [this, pieceId](const QPointF &pos, qreal width, qreal height) {
                         OnThumbnailGeometryChanged(pieceId, pos, width, height);
@@ -458,9 +559,10 @@ void OPieceGroupHolderItem::RefreshThumbnails(const OPieceGroup &group, VContain
                 continue;
             }
 
-            // The frame lives in the group's frame — the holder's own — but what it is measured
-            // against when nobody chose it is the member it draws, not the group's union box.
-            const QRectF pieceBox = mapRectFromScene(tool->sceneBoundingRect());
+            // Measured where the member stands in the stack, not where its tool stands in the
+            // workshop: the miniature belongs to the group.
+            const QPointF memberShift = group.MemberStackPosition(pieceId, tool->pos()) - tool->pos();
+            const QRectF pieceBox = mapRectFromScene(tool->sceneBoundingRect().translated(memberShift));
             const OThumbnailGeom geom =
                 OThumbnailItem::ResolveBlockGeom(stored.Geom(), pieceBox, stored.HasGeometry());
 
@@ -583,6 +685,36 @@ QPainterPath OPieceGroupHolderItem::shape() const
 void OPieceGroupHolderItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget)
+
+    // The members, drawn as the pieces they are: the outline, the seam allowance, the passmarks,
+    // the place labels and the fold line, with their own pens and fill, at the place they hold in
+    // the stack. This is what makes a group still look like the pieces the user linked, while the
+    // pieces themselves stay editable in the workshop.
+    for (const MemberShape &shape : m_memberShapes)
+    {
+        painter->save();
+        painter->translate(shape.shift);
+        painter->setPen(shape.pen);
+        painter->setBrush(shape.brush);
+        painter->drawPath(shape.mainPath);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawPath(shape.seamAllowance);
+        painter->drawPath(shape.passmarks);
+        painter->drawPath(shape.placeLabels);
+        painter->drawPath(shape.foldLineMark);
+        painter->drawPath(shape.foldLineLabel);
+        for (const QPainterPath &internalPath : shape.internalPaths)
+        {
+            painter->drawPath(internalPath);
+        }
+
+        QPen mirrorPen = shape.pen;
+        mirrorPen.setStyle(Qt::DashDotLine);
+        painter->setPen(mirrorPen);
+        painter->drawPath(shape.mirrorLine);
+        painter->restore();
+    }
+
     if (m_selected)
     {
         // Selection block like a selected piece: dashed rect + contrasting outline (cosmetic).
@@ -617,32 +749,10 @@ void OPieceGroupHolderItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    // Grouped into a single undo step ("Move piece group"), like dragging a member piece.
-    if (not m_movedSincePress)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("Move piece group"));
-        m_movedSincePress = true;
-    }
-
-    if (const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
-        groups != nullptr && groups->contains(m_groupId))
-    {
-        const OPieceGroup &group = groups->value(m_groupId);
-        for (quint32 pid : group.pieceIds)
-        {
-            auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid));
-            if (tool != nullptr)
-            {
-                VAbstractApplication::VApp()->getUndoStack()->push(
-                    new MovePiece(m_doc, tool->pos().x() + delta.x(), tool->pos().y() + delta.y(), pid,
-                                  scene()));
-            }
-        }
-    }
-
-    // Live preview: indexChanged is suppressed while the undo macro is open, so the usual
-    // RefreshGroupHolders → Refresh repaint does not run during the drag. Move the holder with
-    // the group so its local-coordinate children follow in real time (like a piece).
+    // **Dragging the frame moves the group, not the pieces.** The members stand in the workshop;
+    // their place in the stack is the group's own arrangement, and it is that arrangement the drag
+    // shifts. Only the preview happens here: the move is committed once, on release.
+    m_dragTotal += delta;
     setPos(pos() + delta);
 
     m_pressScenePos = event->scenePos();
@@ -652,11 +762,27 @@ void OPieceGroupHolderItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceGroupHolderItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (m_movedSincePress)
+    // **One move, one undo step.** The drag previewed the group elsewhere; what it really changed is
+    // the place every member holds in the stack, and that is what gets written — the pieces in the
+    // workshop have not moved by a single pixel.
+    if (m_dragging && (not qFuzzyIsNull(m_dragTotal.x()) || not qFuzzyIsNull(m_dragTotal.y())))
     {
-        VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        m_movedSincePress = false;
+        const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+        if (groups != nullptr && groups->contains(m_groupId))
+        {
+            const OPieceGroup oldGroup = groups->value(m_groupId);
+            OPieceGroup newGroup = oldGroup;
+            for (quint32 pid : oldGroup.pieceIds)
+            {
+                newGroup.SetMemberStackPosition(pid,
+                                                oldGroup.MemberStackPosition(pid, QPointF()) + m_dragTotal);
+            }
+            VAbstractApplication::VApp()->getUndoStack()->push(
+                new SavePieceGroupOptions(oldGroup, newGroup, m_doc, m_data, m_groupId));
+        }
+        m_dragTotal = QPointF();
     }
+    m_movedSincePress = false;
     m_dragging = false;
     event->accept();
 }

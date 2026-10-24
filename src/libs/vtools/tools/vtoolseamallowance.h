@@ -206,6 +206,9 @@ public:
     void ShowVisualization(bool show) override;
     void GroupVisibility(quint32 object, bool visible) override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    /** @brief Draws the mark that says this piece is a member of a group — see the implementation:
+     *  a grey dashed frame and "Member of <group>" above the piece. */
+    void PaintGroupMembershipMark(QPainter *painter) const;
     auto boundingRect() const -> QRectF override;
     auto shape() const -> QPainterPath override;
 
@@ -234,6 +237,60 @@ public:
      * blocks and the annotations may not leave (the grainline keeps its historical bounds, see
      * VGrainlineItem). Empty until the geometry has been applied once. */
     auto PieceOutlineRect() const -> QRectF;
+
+    /** @brief The seam-allowance outline as the tool draws it, in the tool's own coordinates.
+     *
+     * The group's stack redraws each member from the very paths the tool draws — so what the group
+     * shows can never disagree with the piece it is made of. A member's tool stands in the workshop,
+     * where its margins and notches are edited; the group draws it in its stack. */
+    auto SeamAllowancePath() const -> QPainterPath;
+    /** @brief The passmarks as the tool draws them, in the tool's own coordinates. */
+    auto PassmarksPath() const -> QPainterPath;
+    /** @brief The place labels as the tool draws them, in the tool's own coordinates. */
+    auto PlaceLabelsPath() const -> QPainterPath;
+    /** @brief The fold line (the symmetry line when the piece is shown full) as the tool draws it. */
+    auto MirrorLinePath() const -> QPainterPath;
+    /** @brief The fold line's mark — what marks the fold along that line. */
+    auto FoldLineMarkPath() const -> QPainterPath;
+    /** @brief The fold line's caption drawn as glyph outlines (the single-line font modes). */
+    auto FoldLineLabelPath() const -> QPainterPath;
+
+    /** @brief One caption of the fold line, as the tool draws it: the words, their font, and the
+     *  transform that places them — position, angle and all.
+     *
+     * The angle of a caption lives in the item's transform, not in its rotation property: reading
+     * pos() and rotation() alone drew the words flat and at the top of the piece. The transform
+     * carried here maps the caption's own coordinates onto the tool's, so the group redraws it
+     * exactly where the piece does. */
+    struct FoldLineCaption
+    {
+        QTransform transform{};
+        QString text{};
+        QFont font{};
+    };
+    /** @brief The fold line's captions drawn as text (the ordinary font modes). */
+    auto FoldLineCaptions() const -> QVector<FoldLineCaption>;
+    /** @brief The piece's internal paths (darts, pockets, …), as the tool draws them. */
+    auto InternalPathItems() const -> QVector<QGraphicsPathItem *>;
+
+    /** @brief The member's own decor items: grainline, information blocks, annotations.
+     *
+     * A member's own children now stay with it, in the workshop: its copy is the piece itself. The
+     * group carries its own children separately, on the stack. */
+    auto DecorItems() const -> QVector<QGraphicsItem *>;
+
+    /** @return The group this piece belongs to, or NULL_ID. */
+    auto PieceGroupId() const -> quint32;
+
+    /** @brief Whether this piece's own children must stay hidden because its group shows them.
+     *
+     * A group linked before the stack was stored has its members standing exactly where the group
+     * draws them: there is no workshop yet, so a member's grainline, blocks or fold line would land
+     * on top of the group's own. Their children stay masked, exactly as they always were. A group
+     * with a stored stack has its members beside it, being edited — from then on they show their own
+     * children, and the group draws the stack from them. */
+    auto AreChildrenMasked() const -> bool;
+
 
     /** @brief The miniature block's wording: the stored seam-allowance labels paired with the
      *  app-side resolver's texts, plus the legend sentence. Empty when no resolver is registered. */
@@ -366,7 +423,6 @@ private:
     bool m_isPieceIsolated{false};
 
     /** @brief Guards the "Move piece group" undo macro (ported from Val Fork events.cpp). */
-    static bool s_isInGroupMoveMacro;
 
     /** @brief Group Link selection: draw the orange contour. */
     bool m_groupSelectionHighlight{false};

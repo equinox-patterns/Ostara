@@ -84,9 +84,6 @@ public:
     void OnNodeSelectedForFoldLine(quint32 nodeId);
     void CancelFoldLineSelection();
 
-    auto IsSelectingGroupFoldLinePoints() const -> bool;
-    void OnNodeSelectedForGroupFoldLine(quint32 nodeId);
-    void CancelGroupFoldLineSelection();
 
     auto IsSelectingSAPoints() const -> bool;
     void OnNodeSelectedForSA(quint32 nodeId);
@@ -105,7 +102,6 @@ signals:
     void HighlightNode(quint32 nodeId, bool highlight, QColor color = Qt::red);
     void HighlightTemporaryNode(quint32 nodeId, bool selected);
     void ClearHighlight();
-    void StartFoldLineMember(quint32 pieceId);
     /** @brief Ask the canvas to highlight/clear a whole internal path (trace + points). */
     void InternalPathHighlight(quint32 pieceId, quint32 pathId, bool highlight);
 

@@ -50,7 +50,6 @@ class QTabWidget;
 class OAnnotationsConfigWidget;
 class ODetailsGrainlineWidget;
 class OGradedAlignWidget;
-class ODetailsFoldLineValuesWidget;
 class OGroupThumbnailsConfigWidget;
 class OPieceInfoWidget;
 class OBlockConfigWidget;
@@ -99,35 +98,14 @@ public:
      *  re-population that would flicker the lists once. */
     auto IsShowing(quint32 groupId) const -> bool { return m_groupId == groupId; }
 
-    void OnNodeSelectedForFoldLine(quint32 nodeId);
-    void CancelFoldLineSelection();
-    auto IsSelectingFoldLinePoint() const -> bool { return m_pendingFoldLineMemberId != NULL_ID; }
-
     /** @brief Drop the orange highlight on the group's common point, if any. */
     void ClearAlignPointHighlight();
 
 signals:
     void ShowStatusTip(const QString &text);
-    void StartFoldLineMember(quint32 pieceId);
     void HighlightNode(quint32 nodeId, bool highlight);
 
 private:
-    struct MemberFLRow
-    {
-        QPushButton *toggleBtn{nullptr};
-        QFrame *content{nullptr};
-        QPushButton *defineBtn{nullptr};
-        QPushButton *deactivateBtn{nullptr};
-        QLabel *statusLabel{nullptr};
-        QCheckBox *showFullPieceCheck{nullptr};
-        QCheckBox *showMirrorLineCheck{nullptr};
-        QButtonGroup *typeGroup{nullptr}; // same type buttons as the piece foldline
-        QLineEdit *labelEdit{nullptr};
-        // Width / Height / Center, built on the carrier's row only: the group's fold line is drawn
-        // by that single member, the others are masked.
-        ODetailsFoldLineValuesWidget *valuesWidget{nullptr};
-    };
-
     void Commit(std::function<void(OPieceGroup &)> func);
     void ModifyMemberPiece(quint32 pieceId, std::function<void(VPiece &)> func);
     // The layout flags belong to the members, not to the group: reading shows what the members say, writing
@@ -135,18 +113,10 @@ private:
     auto MemberPieceIds() const -> QVector<quint32>;
     void ShowLayoutFlags();
     void WriteLayoutFlags(bool forceFlipping, bool symmetricalCopy);
-    void RefreshGroupMemberFoldLines();
-    void BuildMemberFoldLines();
-    void OnMemberToggle(quint32 pieceId, bool expanded);
-    void OnMemberDefineClicked(quint32 pieceId);
-    void OnMemberDeactivate(quint32 pieceId);
-    void UpdateMemberFoldLineStatus(quint32 pieceId);
-    void RefreshMemberFoldLineStatuses();
-    /// Re-apply the texts of the member rows that already exist, without rebuilding them.
-    void RetranslateMemberRows();
-    auto IsFoldLineCarrier(quint32 pieceId) const -> bool;
-    void SetMemberFoldLineSelecting(quint32 pieceId, bool selecting);
-    void ResetFoldLineHighlight();
+    /// The group's fold line is one of its members': this fills the list of members that have one
+    /// and shows the chosen one. Nothing is created here — a fold line belongs to a piece.
+    void RefreshFoldLineChoices(const OPieceGroup &group);
+    void OnFoldLineMemberChosen(int index);
 
     QTabWidget *m_tabWidget{nullptr};
     QTabWidget *m_infoSubTabs{nullptr};
@@ -182,19 +152,14 @@ private:
     /// edits the members' pieces — through the same SavePieceOptions command a piece page uses.
     OGroupThumbnailsConfigWidget *m_thumbnailsConfigWidget{nullptr};
 
-    // Member foldlines
-    QGroupBox *m_memberSection{nullptr};
-    QVBoxLayout *m_memberFLLayout{nullptr};
-    QHash<quint32, MemberFLRow> m_memberFLRows{};
+    // The fold line the group uses, chosen among its members
+    QGroupBox *m_foldLineSection{nullptr};
+    QComboBox *m_foldLineCombo{nullptr};
+    QLabel *m_foldLineHint{nullptr};
 
     quint32 m_groupId{NULL_ID};
     VContainer *m_data{nullptr};
     VAbstractPattern *m_doc{nullptr};
-
-    // Foldline definition state (one member at a time)
-    quint32 m_pendingFoldLineMemberId{NULL_ID};
-    quint32 m_foldLineFirstPoint{NULL_ID};
-    VPiecePath m_foldLinePath{};
 
     bool m_updating{false};
 

@@ -29,16 +29,20 @@
 #define OPIECEGROUPHOLDERITEM_H
 
 #include <QGraphicsObject>
+#include <QBrush>
 #include <QHash>
 #include <QPainterPath>
+#include <QPen>
 #include <QVector>
 
 #include <functional>
 
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/othumbnaildata.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 
 class OAnnotationItem;
+class QGraphicsSimpleTextItem;
 class OInfoBlockItem;
 class OThumbnailItem;
 class QGraphicsSceneContextMenuEvent;
@@ -116,6 +120,33 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 private:
+    /**
+     * @brief One member as the stack draws it.
+     *
+     * A member of a group is a real piece standing in the workshop — that is what makes its
+     * margins, its notches and its points editable. The group therefore draws the member itself,
+     * from the very paths and pens the piece would use, translated to the place it holds in the
+     * stack. Nothing is approximated: same paths, same pens, so the group still looks like the
+     * piece the user built.
+     */
+    struct MemberShape
+    {
+        QPainterPath mainPath{};
+        QPainterPath seamAllowance{};
+        QPainterPath passmarks{};
+        QPainterPath placeLabels{};
+        QPainterPath mirrorLine{};
+        QPainterPath foldLineMark{};
+        QPainterPath foldLineLabel{};
+        QVector<VToolSeamAllowance::FoldLineCaption> foldLineCaptions{};
+        QVector<QPainterPath> internalPaths{};
+        QPen pen{};    // the piece's own pen, as drawn by its tool
+        QBrush brush{}; // the piece's own fill
+        QPointF shift{}; // where the member's tool stands → where its place in the stack is
+    };
+
+    void RefreshMemberShapes(const OPieceGroup &group);
+
     void RefreshGrainline(const OPieceGroup &group, VContainer *data);
     void RefreshBlocks(const OPieceGroup &group, VAbstractPattern *doc, VContainer *data);
     void RefreshAnnotations(const OPieceGroup &group);
@@ -125,8 +156,8 @@ private:
      *  @return true when the group changed, so the caller writes it once for the anchors and for
      *          this correction together. */
     auto ContainChildPlacements(OPieceGroup &group) -> bool;
-    /** @brief The group's miniatures: one per member, drawn from the **group's** data — a member's
-     *  own miniature stays masked while it is linked, and an unlink finds it untouched. */
+    /** @brief The group's miniatures: one per member, drawn from the **group's** own data — a
+     *  member's own miniature stays its own, and an unlink finds it untouched. */
     void RefreshThumbnails(const OPieceGroup &group, VContainer *data);
     /** @brief Drops the miniatures of members that left the group. */
     void PruneThumbnailItems(const OPieceGroup &group);
@@ -162,11 +193,25 @@ private:
      *  local frame, like the children's positions. */
     QRectF m_outlineBounds;
     QRectF m_childRefRect; // Rect the group's children anchor against, in the holder's local frame
+    /** @brief The members as the stack draws them — see MemberShape. */
+    QVector<MemberShape> m_memberShapes;
+    /** @brief The fold line's words, drawn by real text items.
+     *
+     * Deliberately not painted by hand: a caption is positioned by a transform that carries its
+     * angle, and Qt draws its own text items a very precise way. Using the same item class, with
+     * the same transform, is what makes the group's caption land exactly where the piece's does. */
+    QVector<QGraphicsSimpleTextItem *> m_captionItems;
+    /** @brief How far the frame was dragged before the release commits it to the stack positions. */
+    QPointF m_dragTotal;
     VGrainlineItem *m_grainlineItem{nullptr};
     QVector<OInfoBlockItem *> m_blockItems;
     QVector<OAnnotationItem *> m_annotationItems;
     /** @brief One miniature per member, created on demand and kept as long as the piece is a member.
-     *  Keyed by piece id; the holder owns them (Qt deletes the children with it). */
+     *  Keyed by piece id; the holder owns them (Qt deletes the children with it).
+     *
+     * The group carries several miniatures — one per member — each drawing that member where the group
+     * stacks it. They belong to the group, not to the pieces: a member's own miniature stays its own,
+     * in the workshop. */
     QHash<quint32, OThumbnailItem *> m_thumbnailItems;
     VAbstractPattern *m_doc{nullptr};
     VContainer *m_data{nullptr};

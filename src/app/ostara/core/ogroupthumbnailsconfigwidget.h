@@ -46,10 +46,14 @@ struct OPieceGroup;
 /**
  * @brief The group page's Thumbnail sub-tab: the miniature of each member piece.
  *
- * **The group owns no miniature.** Its blocks, annotations and grainline are one set for the whole
- * group, but a miniature draws a piece — so there is one per member, and it belongs to that member.
- * This page is therefore an editor of the members, not of the group: one box per member, titled with
- * the member's name, each one driving that member's own thumbnail data through the piece command.
+ * **The group carries several miniatures — one per member.** A group is one piece for counting and
+ * for printing, but each of its members has its own outline and its own margins, so each gets its
+ * own block, drawn where the group stacks it. They are the group's data: a member's own miniature
+ * stays the member's, in the workshop.
+ *
+ * A member that already shows a miniature when it joins brings it along: the group copies it at that
+ * instant — switches, values and where they were placed — and from then on the two live their own
+ * lives. Nothing is linked, nothing is kept in step.
  */
 class OGroupThumbnailsConfigWidget : public QWidget
 {

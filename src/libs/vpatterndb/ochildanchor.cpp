@@ -240,12 +240,15 @@ auto OChildAnchor::RefRect(const OPieceGroup &group, const VContainer *data, con
         try
         {
             const VPiece member = data->GetPiece(pieceId);
-            // A piece's path is built from the pattern points, and its own mx/my is what translates
-            // it into place — that offset is what puts the members of a group on their common point,
-            // and what a canvas drag changes. Leaving it out makes the reference invariant while the
-            // group moves, so a dragged group would leave its children behind.
-            const QRectF memberBox = PointsBox(member.MainPathNodePoints(data, false))
-                                         .translated(member.GetMx(), member.GetMy());
+            // A piece's path is built from the pattern points, and an origin is what translates it
+            // into place. For a group member that origin is its position in the **stack** — where
+            // the group draws, prints and exports it — not where its tool stands on the canvas: the
+            // group's children are anchored to the group, and a member's editing workshop is not
+            // part of it. A group with no stored stack falls back to the piece's own position,
+            // which is exactly what such a file says.
+            const QPointF memberPos = group.MemberStackPosition(pieceId,
+                                                                QPointF(member.GetMx(), member.GetMy()));
+            const QRectF memberBox = PointsBox(member.MainPathNodePoints(data, false)).translated(memberPos);
             if (memberBox.isNull())
             {
                 continue;

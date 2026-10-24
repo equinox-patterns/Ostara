@@ -59,6 +59,9 @@ private:
     OPieceGroup m_group;
     VContainer *m_data;
     quint32 m_groupId{NULL_ID};
+    /** @brief Where each member stood on the canvas before it was sent to the workshop — what undo
+     *  has to give back. The stack keeps that very position; the tool leaves it. */
+    QHash<quint32, QPointF> m_preLinkPositions;
 };
 
 #endif // LINKPIECEGROUP_H

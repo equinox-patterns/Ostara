@@ -45,6 +45,7 @@
 #include <QUndoStack>
 
 #include "../vlayout/vfoldline.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/floatItemData/floatitemdef.h"
 #include "../vpatterndb/vcontainer.h"
@@ -124,50 +125,6 @@ private:
 
     QString m_theme;
 };
-
-//---------------------------------------------------------------------------------------------------------------------
-auto FoldLineDefined(const VPiece &det) -> bool
-{
-    return det.GetMirrorLineStartPoint() != NULL_ID && det.GetMirrorLineEndPoint() != NULL_ID;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ValidateMirrorLinePoints(const VPiecePath &path, quint32 startPoint, quint32 endPoint) -> bool
-{
-    if (startPoint == NULL_ID || endPoint == NULL_ID || startPoint == endPoint)
-    {
-        return false;
-    }
-
-    const int startIdx = path.indexOfNode(startPoint);
-    const int endIdx = path.indexOfNode(endPoint);
-    if (startIdx == -1 || endIdx == -1)
-    {
-        return false;
-    }
-
-    if (path.at(startIdx).IsExcluded() || path.at(endIdx).IsExcluded())
-    {
-        return false;
-    }
-
-    // Walk clockwise from startIdx (wrapping around the closed loop) to check
-    // that endPoint is reachable without crossing excluded nodes.
-    const auto nodeCount = path.CountNodes();
-    for (int i = 1; i < nodeCount; ++i)
-    {
-        const auto idx = (startIdx + i) % nodeCount;
-        const VPieceNode &node = path.at(idx);
-        if (!node.IsExcluded() && node.GetTypeTool() == Tool::NodePoint)
-        {
-            if (node.GetId() == endPoint)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
 // Outer-tab indices of the group options (order of addTab), then the first sub-tab of the
 // Information tab (Group / Blocks / Annotations). A group opens on the first of each.
@@ -281,10 +238,22 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_grainlineWidget = new ODetailsGrainlineWidget(grainlinePage);
     grainlineLayout->addWidget(m_grainlineWidget);
 
-    m_memberSection = new QGroupBox(tr("Member fold lines"), grainlinePage);
-    auto *memberLayout = new QVBoxLayout(m_memberSection);
-    m_memberFLLayout = memberLayout;
-    grainlineLayout->addWidget(m_memberSection);
+    // **The group's fold line is one of its members'.** A fold line belongs to a piece — its points,
+    // its type, its label are edited there, in the piece's Fold line tab. The group only says which
+    // member's it uses, and the choice is all this section holds.
+    m_foldLineSection = new QGroupBox(tr("Fold line"), grainlinePage);
+    auto *foldLineLayout = new QVBoxLayout(m_foldLineSection);
+    auto *foldLineRow = new QHBoxLayout();
+    foldLineRow->addWidget(new QLabel(tr("Use the fold line of"), m_foldLineSection));
+    m_foldLineCombo = MakeComboBox(m_foldLineSection);
+    foldLineRow->addWidget(m_foldLineCombo, 1);
+    foldLineLayout->addLayout(foldLineRow);
+    m_foldLineHint = new QLabel(m_foldLineSection);
+    m_foldLineHint->setWordWrap(true);
+    foldLineLayout->addWidget(m_foldLineHint);
+    grainlineLayout->addWidget(m_foldLineSection);
+    connect(m_foldLineCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
+            &ODetailsGroupWidget::OnFoldLineMemberChosen);
     grainlineLayout->addStretch();
 
     const int grainlineTabIndex = m_tabWidget->addTab(grainlinePage, QString());
@@ -357,8 +326,8 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     m_blockConfigWidget->SetModifyPending(modifyGroup);
     m_annotationsConfigWidget->SetModifyPending(modifyGroup);
 
-    // The miniatures are group data — one per member, the group carrying no miniature of its own —
-    // so they commit through the group snapshot pipeline, exactly like the group's blocks.
+    // The miniature is the group's own data — one block, drawn from all its members — so it commits
+    // through the group snapshot pipeline, exactly like the group's blocks.
     m_thumbnailsConfigWidget->SetModifyGroup([this](std::function<void(OPieceGroup &)> func)
     {
         Commit(func);
@@ -429,7 +398,7 @@ void ODetailsGroupWidget::Show(quint32 groupId, VContainer *data, VAbstractPatte
     m_annotationsConfigWidget->Show(group, data);
     m_thumbnailsConfigWidget->Show(groupId, data);
 
-    BuildMemberFoldLines();
+    RefreshFoldLineChoices(group);
 
     m_updating = false;
 
@@ -529,13 +498,12 @@ void ODetailsGroupWidget::RetranslateUI()
         tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each "
            "even-numbered copy of the piece will be flipped vertically."));
 
-    m_memberSection->setTitle(tr("Member fold lines"));
-
-    // ⚠️ **Les lignes de membres ne sont PAS reconstruites ici — mais elles sont bien retraduites.**
-    // Leur état déplié ne vit que dans la visibilité de leur contenu (`OnMemberToggle`) : repasser par
-    // `BuildMemberFoldLines()` replierait tout ce que l'utilisatrice a ouvert. C'est précisément
-    // pourquoi la reprise existe à part, et réécrit les textes sans toucher aux widgets.
-    RetranslateMemberRows();
+    m_foldLineSection->setTitle(tr("Fold line"));
+    if (const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
+        groups != nullptr && groups->contains(m_groupId))
+    {
+        RefreshFoldLineChoices(groups->value(m_groupId));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -601,15 +569,6 @@ void ODetailsGroupWidget::Clear()
     m_annotationsConfigWidget->Clear();
     m_thumbnailsConfigWidget->Clear();
 
-    // Delete the member-row widgets (same cleanup as BuildMemberFoldLines) so a
-    // later Show rebuilds a clean list instead of stacking duplicates.
-    for (auto it = m_memberFLRows.constBegin(); it != m_memberFLRows.constEnd(); ++it)
-    {
-        const MemberFLRow &row = it.value();
-        delete row.toggleBtn;
-        delete row.content;
-    }
-    m_memberFLRows.clear();
     m_updating = false;
 }
 
@@ -682,512 +641,66 @@ void ODetailsGroupWidget::WriteLayoutFlags(bool forceFlipping, bool symmetricalC
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::RefreshGroupMemberFoldLines()
+void ODetailsGroupWidget::RefreshFoldLineChoices(const OPieceGroup &group)
 {
-    // The foldline mask decision (UpdateFoldLine) depends on which member is the group's foldline
-    // carrier — re-render every member so the new carrier shows and the previous one re-masks.
-    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
-    if (groups == nullptr || not groups->contains(m_groupId))
+    if (m_foldLineCombo == nullptr || m_data == nullptr)
     {
         return;
     }
-    for (quint32 pid : groups->value(m_groupId).pieceIds)
+
+    // Filling the list is not a choice: the signals stay quiet, or every refresh would commit.
+    const QSignalBlocker blocker(m_foldLineCombo);
+    m_foldLineCombo->clear();
+    m_foldLineCombo->addItem(tr("None"), QVariant::fromValue<quint32>(NULL_ID));
+
+    int selectedIndex = 0;
+    int candidates = 0;
+    for (const quint32 pieceId : group.pieceIds)
     {
-        auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid));
-        if (tool != nullptr)
+        VPiece member;
+        try
         {
-            tool->RefreshGroupedChildren(); // re-derives the mask; includes RefreshFoldLine
+            member = m_data->GetPiece(pieceId);
         }
-    }
-}
+        catch (const VExceptionBadId &)
+        {
+            continue; // stale member id (hand-edited file) — skip it
+        }
 
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::BuildMemberFoldLines()
-{
-    // Drop stale rows (delete the tracked widgets; deleting a widget also removes it from its layout).
-    for (auto it = m_memberFLRows.constBegin(); it != m_memberFLRows.constEnd(); ++it)
-    {
-        const MemberFLRow &row = it.value();
-        delete row.toggleBtn;
-        delete row.content;
-    }
-    m_memberFLRows.clear();
-
-    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
-    if (groups == nullptr || not groups->contains(m_groupId))
-    {
-        return;
-    }
-    const OPieceGroup group = groups->value(m_groupId);
-
-    for (quint32 pieceId : group.pieceIds)
-    {
-        // A member may have been deleted while still listed in the group — skip it.
-        if (m_data->DataPieces() == nullptr || not m_data->DataPieces()->contains(pieceId))
+        // What makes a fold line: the type the piece draws. Without one there is nothing to use.
+        if (member.GetFoldLineType() == FoldLineType::None)
         {
             continue;
         }
-        const VPiece det = m_data->GetPiece(pieceId);
-        const QString name = det.GetName().isEmpty() ? tr("Unnamed") : det.GetName();
-
-        MemberFLRow row;
-
-        // Toggle button: caret-right (collapsed) / caret-down (expanded), regular set, theme-aware,
-        // with the dark-set caret-right on hover while collapsed (MemberFoldToggleButton).
-        const bool dark = VAbstractApplication::VApp()->Settings()->GetThemeMode() == VThemeMode::Dark;
-        const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
-
-        auto *toggleBtn = new MemberFoldToggleButton(name, theme, this);
-        toggleBtn->setCheckable(true);
-        toggleBtn->setObjectName(QStringLiteral("memberFoldToggle"));
-        row.toggleBtn = toggleBtn;
-        const quint32 pid = pieceId;
-        connect(toggleBtn, &QPushButton::toggled, this, [this, pid](bool expanded) { OnMemberToggle(pid, expanded); });
-        m_memberFLLayout->addWidget(toggleBtn);
-
-        // Transparent container: the "Member fold lines" QGroupBox carries the background
-        // (SubtiliteCode §23 — no inner box with a background).
-        row.content = new QFrame(this);
-        row.content->setFrameStyle(QFrame::NoFrame);
-        auto *contentLayout = new QVBoxLayout(row.content);
-
-        row.statusLabel = new QLabel(row.content);
-        contentLayout->addWidget(row.statusLabel);
-
-        auto *btnRow = new QHBoxLayout();
-        row.defineBtn = new QPushButton(tr("Define foldline"), row.content);
-        row.deactivateBtn = new QPushButton(tr("Deactivate"), row.content);
-        btnRow->addWidget(row.defineBtn);
-        btnRow->addWidget(row.deactivateBtn);
-        contentLayout->addLayout(btnRow);
-
-        row.showFullPieceCheck = new QCheckBox(tr("Show unfolded piece"), row.content);
-        row.showMirrorLineCheck = new QCheckBox(tr("Show symmetry line"), row.content);
-        contentLayout->addWidget(row.showFullPieceCheck);
-        contentLayout->addWidget(row.showMirrorLineCheck);
-
-        // Foldline type — the very same buttons as the piece foldline widget ("With text" is the
-        // default foldline type), built from the shared list so the two pages can never offer
-        // different sets. Both rows (buttons + label edit) span the member content width (~85% of
-        // the Member fold lines group box), like the piece.
-        auto *typeLayout = new QHBoxLayout();
-        row.typeGroup = new QButtonGroup(row.content);
-        row.typeGroup->setExclusive(true);
-        for (const auto &item : OFoldLineTypeItems())
+        ++candidates;
+        m_foldLineCombo->addItem(member.GetName().isEmpty() ? tr("Unnamed") : member.GetName(),
+                                 QVariant::fromValue<quint32>(pieceId));
+        if (pieceId == group.m_foldLineMemberId)
         {
-            auto *btn = new QPushButton(OFoldLineTypeText(item), row.content);
-            btn->setCheckable(true);
-            row.typeGroup->addButton(btn, static_cast<int>(item.type));
-            typeLayout->addWidget(btn);
+            selectedIndex = m_foldLineCombo->count() - 1;
         }
-        contentLayout->addLayout(typeLayout);
-
-        // Built on every member row, but shown on the carrier's one only — see
-        // UpdateMemberFoldLineStatus. Building it everywhere is deliberate: a carrier change then
-        // only has to flip visibility, instead of rebuilding rows from inside the click handler of
-        // one of their own buttons, which would destroy the emitting widget mid-signal.
-        row.valuesWidget = new ODetailsFoldLineValuesWidget(row.content);
-        row.valuesWidget->SetModifyPending([this, pid](std::function<void(VPiece &)> func)
-        {
-            ModifyMemberPiece(pid, func);
-        });
-        contentLayout->addWidget(row.valuesWidget);
-
-        row.labelEdit = new QLineEdit(row.content);
-        row.labelEdit->setPlaceholderText(tr("Cut on fold"));
-        contentLayout->addWidget(row.labelEdit);
-
-        row.content->hide();
-        m_memberFLLayout->addWidget(row.content);
-
-        connect(row.defineBtn, &QPushButton::clicked, this, [this, pid]() { OnMemberDefineClicked(pid); });
-        connect(row.deactivateBtn, &QPushButton::clicked, this, [this, pid]() { OnMemberDeactivate(pid); });
-        connect(row.showFullPieceCheck, &QCheckBox::toggled, this, [this, pid](bool checked)
-        {
-            if (m_updating)
-            {
-                return;
-            }
-            ModifyMemberPiece(pid, [checked](VPiece &det)
-            {
-                det.SetShowFullPiece(checked);
-                if (checked)
-                {
-                    det.SetShowMirrorLine(true);
-                }
-            });
-            UpdateMemberFoldLineStatus(pid);
-        });
-        connect(row.showMirrorLineCheck, &QCheckBox::toggled, this, [this, pid](bool checked)
-        {
-            if (m_updating)
-            {
-                return;
-            }
-            ModifyMemberPiece(pid, [checked](VPiece &det) { det.SetShowMirrorLine(checked); });
-            UpdateMemberFoldLineStatus(pid);
-        });
-        connect(row.typeGroup, QOverload<QAbstractButton *, bool>::of(&QButtonGroup::buttonToggled), this,
-                [this, pid, row](QAbstractButton *button, bool checked)
-        {
-            if (m_updating || !checked)
-            {
-                return;
-            }
-            const auto lineType = static_cast<FoldLineType>(row.typeGroup->id(button));
-            ModifyMemberPiece(pid, [lineType](VPiece &det) { det.SetFoldLineType(lineType); });
-        });
-        connect(row.labelEdit, &QLineEdit::editingFinished, this, [this, pid, row]
-        {
-            if (m_updating)
-            {
-                return;
-            }
-            const QString label = row.labelEdit->text();
-            ModifyMemberPiece(pid, [label](VPiece &det) { det.SetFoldLineLabel(label); });
-        });
-
-        UpdateMemberFoldLineStatus(pieceId);
-        m_memberFLRows.insert(pieceId, row);
     }
+
+    m_foldLineCombo->setEnabled(candidates > 0);
+    // The stored carrier may have lost its fold line: then the group uses none, and the list says so
+    // rather than naming a member with nothing to give.
+    m_foldLineCombo->setCurrentIndex(selectedIndex);
+    m_foldLineHint->setText(candidates > 0
+                                ? tr("The group uses that member's fold line. It is edited on the "
+                                     "piece, in its Grainline tab.")
+                                : tr("No member has a fold line yet. Set one on a piece, in its "
+                                     "Grainline tab."));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::OnMemberToggle(quint32 pieceId, bool expanded)
+void ODetailsGroupWidget::OnFoldLineMemberChosen(int index)
 {
-    if (m_memberFLRows.contains(pieceId))
-    {
-        m_memberFLRows.value(pieceId).content->setVisible(expanded);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::OnMemberDefineClicked(quint32 pieceId)
-{
-    // Toggle: if already selecting for this piece, cancel.
-    if (m_pendingFoldLineMemberId == pieceId)
-    {
-        auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
-        if (tool != nullptr && tool->IsInPieceIsolation())
-        {
-            tool->ExitPieceIsolation();
-        }
-        m_pendingFoldLineMemberId = NULL_ID;
-        m_foldLineFirstPoint = NULL_ID;
-        m_foldLinePath = VPiecePath();
-        SetMemberFoldLineSelecting(pieceId, false);
-        emit ShowStatusTip(QString());
-        return;
-    }
-
-    // Selecting for a different member: cancel the previous one first.
-    if (m_pendingFoldLineMemberId != NULL_ID)
-    {
-        auto *prevTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(m_pendingFoldLineMemberId));
-        if (prevTool != nullptr && prevTool->IsInPieceIsolation())
-        {
-            prevTool->ExitPieceIsolation();
-        }
-        SetMemberFoldLineSelecting(m_pendingFoldLineMemberId, false);
-    }
-
-    auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
-    if (tool == nullptr)
+    if (m_updating || m_groupId == NULL_ID || index < 0 || m_foldLineCombo == nullptr)
     {
         return;
     }
-
-    tool->EnterPieceIsolation();
-    m_pendingFoldLineMemberId = pieceId;
-    m_foldLineFirstPoint = NULL_ID;
-    m_foldLinePath = m_data->GetPiece(pieceId).GetPath();
-    SetMemberFoldLineSelecting(pieceId, true);
-    emit StartFoldLineMember(pieceId);
-    emit ShowStatusTip(tr("Select the first point of the foldline - respect clockwise direction"));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::OnMemberDeactivate(quint32 pieceId)
-{
-    if (m_pendingFoldLineMemberId == pieceId)
-    {
-        auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
-        if (tool != nullptr && tool->IsInPieceIsolation())
-        {
-            tool->ExitPieceIsolation();
-        }
-        m_pendingFoldLineMemberId = NULL_ID;
-        m_foldLineFirstPoint = NULL_ID;
-        m_foldLinePath = VPiecePath();
-    }
-    ModifyMemberPiece(pieceId, [](VPiece &det)
-    {
-        det.SetMirrorLineStartPoint(NULL_ID);
-        det.SetMirrorLineEndPoint(NULL_ID);
-        det.SetShowMirrorLine(false);
-        det.SetShowFullPiece(false);
-    });
-    // This member no longer carries the group's foldline.
-    Commit([pieceId](OPieceGroup &group)
-    {
-        if (group.m_foldLineMemberId == pieceId)
-        {
-            group.m_foldLineMemberId = NULL_ID;
-        }
-    });
-    RefreshGroupMemberFoldLines();
-    // No carrier any more: every row has to drop the dimensions.
-    RefreshMemberFoldLineStatuses();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::OnNodeSelectedForFoldLine(quint32 nodeId)
-{
-    if (m_pendingFoldLineMemberId == NULL_ID)
-    {
-        return;
-    }
-
-    if (m_foldLinePath.indexOfNode(nodeId) == -1)
-    {
-        ResetFoldLineHighlight();
-        m_foldLineFirstPoint = NULL_ID;
-        emit ShowStatusTip(tr("This point does not belong to the selected piece"));
-        return;
-    }
-
-    if (m_foldLineFirstPoint == NULL_ID)
-    {
-        m_foldLineFirstPoint = nodeId;
-        emit ShowStatusTip(tr("Select the second point of the foldline - respect clockwise direction"));
-        return;
-    }
-
-    const quint32 startPoint = m_foldLineFirstPoint;
-    const quint32 endPoint = nodeId;
-    const quint32 pieceId = m_pendingFoldLineMemberId;
-
-    if (!ValidateMirrorLinePoints(m_foldLinePath, startPoint, endPoint))
-    {
-        ResetFoldLineHighlight();
-        m_foldLineFirstPoint = NULL_ID;
-        emit ShowStatusTip(tr("Invalid points - start over"));
-        return;
-    }
-
-    auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId));
-    if (tool != nullptr && tool->IsInPieceIsolation())
-    {
-        tool->ExitPieceIsolation();
-    }
-    m_pendingFoldLineMemberId = NULL_ID;
-    m_foldLineFirstPoint = NULL_ID;
-    m_foldLinePath = VPiecePath();
-    SetMemberFoldLineSelecting(pieceId, false);
-    emit ShowStatusTip(QString());
-
-    ModifyMemberPiece(pieceId, [startPoint, endPoint](VPiece &det)
-    {
-        det.SetMirrorLineStartPoint(startPoint);
-        det.SetMirrorLineEndPoint(endPoint);
-        det.SetShowMirrorLine(true);
-        det.SetShowFullPiece(false);
-        det.SetFoldLineType(FoldLineType::TwoArrowsTextAbove);
-    });
-    // The group's foldline is carried by this member — its VToolSeamAllowance renders it.
+    const quint32 pieceId = m_foldLineCombo->itemData(index).value<quint32>();
     Commit([pieceId](OPieceGroup &group) { group.m_foldLineMemberId = pieceId; });
-    // The mask decision depends on the carrier: re-render every member's foldline now.
-    RefreshGroupMemberFoldLines();
-    // The carrier moved: the previous one has to stop showing the dimensions.
-    RefreshMemberFoldLineStatuses();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::CancelFoldLineSelection()
-{
-    if (m_pendingFoldLineMemberId == NULL_ID)
-    {
-        return;
-    }
-    auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(m_pendingFoldLineMemberId));
-    if (tool != nullptr && tool->IsInPieceIsolation())
-    {
-        tool->ExitPieceIsolation();
-    }
-    SetMemberFoldLineSelecting(m_pendingFoldLineMemberId, false);
-    m_pendingFoldLineMemberId = NULL_ID;
-    m_foldLineFirstPoint = NULL_ID;
-    m_foldLinePath = VPiecePath();
-    emit ShowStatusTip(QString());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief Réécrit les textes des lignes de membres **existantes**, sans les reconstruire.
- *
- * ⚠️ **La reconstruction est ce qu'il faut éviter ici, et c'est tout l'objet de cette fonction.**
- * L'état déplié d'une ligne ne vit que dans la visibilité de son contenu (`OnMemberToggle`) :
- * repasser par `BuildMemberFoldLines()` replierait tout ce que l'utilisatrice a ouvert. Chaque ligne
- * garde donc ses widgets, et on se contente de réécrire ce qu'ils portent.
- */
-void ODetailsGroupWidget::RetranslateMemberRows()
-{
-    for (auto it = m_memberFLRows.cbegin(); it != m_memberFLRows.cend(); ++it)
-    {
-        const quint32 pieceId = it.key();
-        const MemberFLRow &row = it.value();
-
-        // Le bouton de repli porte le NOM de la pièce — une donnée, qui ne se traduit pas — ou son
-        // repli, qui si.
-        if (row.toggleBtn != nullptr && m_data != nullptr && m_data->DataPieces() != nullptr
-            && m_data->DataPieces()->contains(pieceId))
-        {
-            const QString name = m_data->GetPiece(pieceId).GetName();
-            row.toggleBtn->setText(name.isEmpty() ? tr("Unnamed") : name);
-        }
-
-        if (row.defineBtn != nullptr)
-        {
-            row.defineBtn->setText(tr("Define foldline"));
-        }
-        if (row.deactivateBtn != nullptr)
-        {
-            row.deactivateBtn->setText(tr("Deactivate"));
-        }
-        if (row.showFullPieceCheck != nullptr)
-        {
-            row.showFullPieceCheck->setText(tr("Show unfolded piece"));
-        }
-        if (row.showMirrorLineCheck != nullptr)
-        {
-            row.showMirrorLineCheck->setText(tr("Show symmetry line"));
-        }
-        if (row.labelEdit != nullptr)
-        {
-            row.labelEdit->setPlaceholderText(tr("Cut on fold"));
-        }
-
-        // Les boutons de type viennent de la liste partagée avec la page Pièce : `OFoldLineTypeText`
-        // les traduit dans le contexte de l'éditeur de pliure, qui est le leur.
-        if (row.typeGroup != nullptr)
-        {
-            for (const OFoldLineTypeItem &item : OFoldLineTypeItems())
-            {
-                if (QAbstractButton *btn = row.typeGroup->button(static_cast<int>(item.type)); btn != nullptr)
-                {
-                    btn->setText(OFoldLineTypeText(item));
-                }
-            }
-        }
-
-        // Largeur / hauteur / centre, et leurs infobulles.
-        if (row.valuesWidget != nullptr)
-        {
-            row.valuesWidget->RetranslateUI();
-        }
-    }
-
-    // Le libellé d'état — « définie » ou « pas définie » — s'écrit en HTML : on le repose par le
-    // chemin qui l'écrit d'ordinaire, plutôt que de reconstruire sa mise en forme ici.
-    RefreshMemberFoldLineStatuses();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::UpdateMemberFoldLineStatus(quint32 pieceId)
-{
-    if (m_data == nullptr || m_data->DataPieces() == nullptr || not m_data->DataPieces()->contains(pieceId) ||
-        not m_memberFLRows.contains(pieceId))
-    {
-        return;
-    }
-    const VPiece det = m_data->GetPiece(pieceId);
-    const bool defined = FoldLineDefined(det);
-    MemberFLRow row = m_memberFLRows.value(pieceId);
-    if (defined)
-    {
-        row.statusLabel->setText(
-            QStringLiteral("<span style='color:#228B22;'>✓ %1</span>").arg(tr("Foldline defined")));
-    }
-    else
-    {
-        row.statusLabel->setText(
-            QStringLiteral("<span style='color:#DC143C;'>✗ %1</span>").arg(tr("Foldline not defined")));
-    }
-    row.deactivateBtn->setVisible(defined);
-    m_updating = true;
-    row.showFullPieceCheck->setChecked(det.IsShowFullPiece());
-    row.showMirrorLineCheck->setChecked(det.IsShowMirrorLine());
-    row.showMirrorLineCheck->setEnabled(det.IsShowFullPiece());
-    // No button matches a type Ostara no longer offers, and Qt refuses to uncheck the checked
-    // button of an exclusive group — so the exclusivity is lifted for the pass.
-    row.typeGroup->setExclusive(false);
-    for (auto *btn : row.typeGroup->buttons())
-    {
-        btn->setChecked(static_cast<FoldLineType>(row.typeGroup->id(btn)) == det.GetFoldLineType());
-    }
-    row.typeGroup->setExclusive(true);
-
-    // The label only exists for the type that draws one.
-    row.labelEdit->setText(det.GetFoldLineLabel());
-    row.labelEdit->setEnabled(VFoldLine::TypeHasLabel(det.GetFoldLineType()));
-
-    // The three dimensions appear on the CARRIER's row only: the group's fold line is drawn by that
-    // single member and the others are masked, so on any other row the fields would change nothing
-    // the user could see. Hidden too on "Invisible fold line", which keeps the fold but draws no
-    // marker at all.
-    const bool showValues = defined && det.GetFoldLineType() != FoldLineType::None && IsFoldLineCarrier(pieceId);
-    row.valuesWidget->setVisible(showValues);
-
-    if (showValues)
-    {
-        row.valuesWidget->Show(det, m_data, pieceId);
-    }
-    else
-    {
-        // Also skips building the mirror axis, which is expensive when the main path is hidden.
-        row.valuesWidget->Clear();
-    }
-
-    m_updating = false;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::RefreshMemberFoldLineStatuses()
-{
-    // Called whenever the carrier may have moved: every row decides again whether it shows the
-    // dimensions. Deliberately not a row rebuild — one of these calls comes from a row's own button.
-    const QList<quint32> pieceIds = m_memberFLRows.keys();
-    for (quint32 pieceId : pieceIds)
-    {
-        UpdateMemberFoldLineStatus(pieceId);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODetailsGroupWidget::IsFoldLineCarrier(quint32 pieceId) const -> bool
-{
-    const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;
-    if (groups == nullptr || not groups->contains(m_groupId))
-    {
-        return false;
-    }
-    return groups->value(m_groupId).m_foldLineMemberId == pieceId;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::SetMemberFoldLineSelecting(quint32 pieceId, bool selecting)
-{
-    if (m_memberFLRows.contains(pieceId))
-    {
-        MemberFLRow row = m_memberFLRows.value(pieceId);
-        row.defineBtn->setText(selecting ? tr("Cancel") : tr("Define foldline"));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsGroupWidget::ResetFoldLineHighlight()
-{
-    // No persistent node-highlight state in this widget; the status tip is enough.
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -903,8 +903,7 @@ bool MainWindow::IsNodePickingActive() const
 {
     const auto *options = m_dockManager->detailsOptions();
     if (options != nullptr && (options->IsSelectingPassmarkPoints() || options->IsSelectingFoldLinePoints() ||
-                               options->IsSelectingGroupFoldLinePoints() || options->IsSelectingSAPoints() ||
-                               options->IsSelectingAlignPoint()))
+                               options->IsSelectingSAPoints() || options->IsSelectingAlignPoint()))
     {
         return true;
     }
@@ -1542,6 +1541,26 @@ void MainWindow::RefreshGroupHolders()
         else
         {
             ++it;
+        }
+    }
+
+    // The mark a member carries — "Member of <group>" — is painted by the piece itself, so a group
+    // renamed, or a member that just joined one, has to be asked to repaint.
+    for (auto git = groups->cbegin(); git != groups->cend(); ++git)
+    {
+        for (const quint32 pieceId : git.value().pieceIds)
+        {
+            try
+            {
+                if (auto *memberTool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pieceId)))
+                {
+                    memberTool->update();
+                }
+            }
+            catch (const VExceptionBadId &)
+            {
+                // Member tool not registered (mid-parse) — skip it.
+            }
         }
     }
 

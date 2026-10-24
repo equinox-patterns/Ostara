@@ -117,7 +117,6 @@ ODetailsPropertyBrowser::ODetailsPropertyBrowser(QWidget *parent)
     });
 
     connect(m_groupWidget, &ODetailsGroupWidget::ShowStatusTip, this, &ODetailsPropertyBrowser::ShowStatusTip);
-    connect(m_groupWidget, &ODetailsGroupWidget::StartFoldLineMember, this, &ODetailsPropertyBrowser::StartFoldLineMember);
     connect(m_groupWidget, &ODetailsGroupWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight) { emit HighlightNode(nodeId, highlight); });
 
@@ -341,24 +340,6 @@ void ODetailsPropertyBrowser::OnNodeSelectedForFoldLine(quint32 nodeId)
 void ODetailsPropertyBrowser::CancelFoldLineSelection()
 {
     m_pieceWidget->CancelFoldLineSelection();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto ODetailsPropertyBrowser::IsSelectingGroupFoldLinePoints() const -> bool
-{
-    return m_groupWidget->IsSelectingFoldLinePoint();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsPropertyBrowser::OnNodeSelectedForGroupFoldLine(quint32 nodeId)
-{
-    m_groupWidget->OnNodeSelectedForFoldLine(nodeId);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void ODetailsPropertyBrowser::CancelGroupFoldLineSelection()
-{
-    m_groupWidget->CancelFoldLineSelection();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -11861,6 +11861,30 @@ Cette action ne peut pas être annulée.</translation>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
+    <message>
+        <source>Fold line</source>
+        <translation>Ligne de pli</translation>
+    </message>
+    <message>
+        <source>Use the fold line of</source>
+        <translation>Utiliser la ligne de pli de</translation>
+    </message>
+    <message>
+        <source>The group uses that member's fold line. It is edited on the piece, in its Grainline tab.</source>
+        <translation>Le groupe utilise la ligne de pli de ce membre. Elle se modifie sur la pièce, dans son onglet Grainline.</translation>
+    </message>
+    <message>
+        <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
+        <translation>Aucun membre n'a encore de ligne de pli. Définissez-la sur une pièce, dans son onglet Grainline.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Aucun</translation>
+    </message>
+    <message>
+        <source>Unnamed</source>
+        <translation>Sans nom</translation>
+    </message>
 </context>
 <context>
     <name>ODetailsInternalPathWidget</name>
@@ -12345,6 +12369,10 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="515"/>
         <source>Symmetrical copy</source>
         <translation>Copie symétrique</translation>
+    </message>
+    <message>
+        <source>Set the fold line</source>
+        <translation>Définir la ligne de pli</translation>
     </message>
 </context>
 <context>
@@ -26925,6 +26953,14 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3675"/>
         <source>Tool was used after deleting.</source>
         <translation>L&apos;outil a été utilisé après suppression.</translation>
+    </message>
+    <message>
+        <source>Member of a group</source>
+        <translation>Membre d'un groupe</translation>
+    </message>
+    <message>
+        <source>Member of %1</source>
+        <translation>Membre de %1</translation>
     </message>
 </context>
 <context>

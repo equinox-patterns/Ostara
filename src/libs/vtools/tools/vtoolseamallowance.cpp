@@ -114,7 +114,6 @@ OInfoBlockContentBuilder VToolSeamAllowance::s_infoBlockContentBuilder; // NOLIN
 OAnnotationStyleResolver VToolSeamAllowance::s_annotationStyleResolver; // NOLINT(cert-err58-cpp)
 OThumbnailTextResolver VToolSeamAllowance::s_thumbnailTextResolver;     // NOLINT(cert-err58-cpp)
 
-bool VToolSeamAllowance::s_isInGroupMoveMacro = false;
 
 const QString VToolSeamAllowance::TagCSA = QStringLiteral("csa");                 // NOLINT(cert-err58-cpp)
 const QString VToolSeamAllowance::TagRecord = QStringLiteral("record");           // NOLINT(cert-err58-cpp)
@@ -1116,6 +1115,16 @@ void VToolSeamAllowance::AddPieceGroups(VAbstractPattern *doc, QDomElement &domE
                 }
             }
 
+            // Where the member stands in the group's stack — the arrangement the group shows and
+            // exports. Its own mx/my is where its tool stands on the canvas, so this is the only
+            // thing that keeps the group in one piece across a reload.
+            if (group.memberStackPositions.contains(pieceId))
+            {
+                const QPointF &stackPos = group.memberStackPositions.value(pieceId);
+                doc->SetAttribute(memberElement, QStringLiteral("stack"),
+                                  QStringLiteral("%1,%2").arg(stackPos.x()).arg(stackPos.y()));
+            }
+
             // The member's miniature, nested in its own <member>: the group carries one per member,
             // and it is the very <thumbnail> element a piece writes — read back by the same parser.
             // The piece's own miniature is untouched by this (it is masked while linked).
@@ -1556,8 +1565,9 @@ void VToolSeamAllowance::UpdatePassmarks()
  */
 void VToolSeamAllowance::UpdateGrainline()
 {
-    // A group member's own grainline is masked: the group carries the common one.
-    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    // A member of a group shows its own grainline here, where the piece is edited — unless the group
+    // is a legacy one, whose members still stand on its stack: see AreChildrenMasked().
+    if (AreChildrenMasked())
     {
         m_grainLine->hide();
         return;
@@ -1654,8 +1664,9 @@ void VToolSeamAllowance::UpdateInfoBlocks()
     {
         return;  // no app-side resolver registered
     }
-    // A group member's own blocks are masked: the group carries the common cartouche.
-    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    // A member of a group shows its own blocks here, where the piece is edited — unless the group is
+    // a legacy one, whose members still stand on its stack: see AreChildrenMasked().
+    if (AreChildrenMasked())
     {
         for (OInfoBlockItem *blockItem : m_infoBlockItems)
         {
@@ -1663,6 +1674,7 @@ void VToolSeamAllowance::UpdateInfoBlocks()
         }
         return;
     }
+
     constexpr qreal kBlockStackingGap = 12.0;
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const OInfoBlockEffectiveState state = s_infoBlockContentBuilder(detail, doc, getData());
@@ -1864,12 +1876,19 @@ void VToolSeamAllowance::UpdateThumbnail()
         return;
     }
 
-    // **A member's own miniature stays masked.** The group carries its own miniatures — one per
-    // member, in its own data — so a linked piece shows nothing of its own here, and an unlink finds
-    // its miniature exactly as it was. This is the rule every other child of a member follows.
+    // A member of a group shows its own miniature, here, where the piece is edited: its children are
+    // its own again. The group keeps its own miniature per member — on its stack — in its own data,
+    // and an unlink never touches the piece's.
+    if (AreChildrenMasked())
+    {
+        m_thumbnailItem->SetActive(false);
+        m_thumbnailItem->hide();
+        return;
+    }
+
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const OThumbnailData data = std::as_const(detail).GetThumbnailData();
-    if (not data.IsActive() || VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    if (not data.IsActive())
     {
         m_thumbnailItem->SetActive(false);
         m_thumbnailItem->hide();
@@ -1915,7 +1934,7 @@ void VToolSeamAllowance::CaptureThumbnailContent()
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolSeamAllowance::IsThumbnailShown() const -> bool
 {
-    // The piece's own miniature, or the one a group carries for it. A group keeps one miniature per
+    // The piece's own miniature, or the one the group carries for it. A group keeps one miniature per
     // member — the member's own switch says nothing about it, and the drawing has to be captured all
     // the same, or the group's block would have nothing to show at any size but the reference one.
     if (VAbstractTool::data.GetPiece(m_id).GetThumbnailData().IsActive())
@@ -1956,8 +1975,9 @@ void VToolSeamAllowance::SaveThumbnailGeometry(const QPointF &pos, qreal width, 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::UpdateAnnotations()
 {
-    // A group member's own annotations are masked: the group carries the common ones.
-    if (VAbstractTool::data.GetPieceGroupId(m_id) != NULL_ID)
+    // A member of a group shows its own annotations here, where the piece is edited — unless the
+    // group is a legacy one, whose members still stand on its stack: see AreChildrenMasked().
+    if (AreChildrenMasked())
     {
         for (OAnnotationItem *item : m_annotationItems)
         {
@@ -1965,6 +1985,7 @@ void VToolSeamAllowance::UpdateAnnotations()
         }
         return;
     }
+
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
     const QList<OAnnotation> annotations = detail.GetAnnotationData().Annotations();
 
@@ -2270,6 +2291,51 @@ void VToolSeamAllowance::paint(QPainter *painter, const QStyleOptionGraphicsItem
         painter->drawRect(r.adjusted(pad, pad, -pad, -pad));
         painter->restore();
     }
+
+    PaintGroupMembershipMark(painter);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSeamAllowance::PaintGroupMembershipMark(QPainter *painter) const
+{
+    // **"This piece is not the one in use — the group is."** A member of a group is a real piece,
+    // standing here where its margins, its notches and its children are edited, but it is the group
+    // that counts, exports and prints. The mark says so: a grey dashed frame and the name of the
+    // group it belongs to, above its top-left corner.
+    //
+    // A legacy group has no stack — its members are still drawn where the group is — and there is
+    // nothing to tell apart: see AreChildrenMasked().
+    const quint32 groupId = VAbstractTool::data.GetPieceGroupId(m_id);
+    if (groupId == NULL_ID || AreChildrenMasked())
+    {
+        return;
+    }
+    const auto *groups = VAbstractTool::data.DataPieceGroups();
+    if (groups == nullptr || !groups->contains(groupId))
+    {
+        return;
+    }
+
+    const OPieceGroup &group = groups->value(groupId);
+    const QString caption = group.name.isEmpty() ? tr("Member of a group")
+                                                 : tr("Member of %1").arg(group.name);
+
+    painter->save();
+    const QColor grey(128, 128, 128, 170);
+    QPen framePen(grey);
+    framePen.setStyle(Qt::DashLine);
+    framePen.setWidthF(0); // cosmetic pen: 1 px on screen, whatever the zoom
+    painter->setPen(framePen);
+    painter->setBrush(Qt::NoBrush);
+    const QRectF rect = boundingRect();
+    painter->drawRect(rect.adjusted(-2, -2, 2, 2));
+
+    QFont font = painter->font();
+    font.setPixelSize(std::max(8, qRound(ToPixel(0.4, *VAbstractTool::data.GetPatternUnit()))));
+    painter->setFont(font);
+    painter->setPen(grey);
+    painter->drawText(QPointF(rect.left(), rect.top() - font.pixelSize() * 0.45), caption);
+    painter->restore();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2320,6 +2386,116 @@ auto VToolSeamAllowance::ChildAnchorRefRect() const -> QRectF
 auto VToolSeamAllowance::PieceOutlineRect() const -> QRectF
 {
     return m_pieceOutlineRect;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::SeamAllowancePath() const -> QPainterPath
+{
+    return m_seamAllowance->path();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::PassmarksPath() const -> QPainterPath
+{
+    return m_passmarks->path();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::PlaceLabelsPath() const -> QPainterPath
+{
+    return m_placeLabels->path();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::MirrorLinePath() const -> QPainterPath
+{
+    return m_mirrorLine->itemTransform(this, nullptr).map(m_mirrorLine->path());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::FoldLineMarkPath() const -> QPainterPath
+{
+    return m_foldLineMark->itemTransform(this, nullptr).map(m_foldLineMark->path());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::FoldLineLabelPath() const -> QPainterPath
+{
+    return m_foldLineLabel->itemTransform(this, nullptr).map(m_foldLineLabel->path());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::FoldLineCaptions() const -> QVector<FoldLineCaption>
+{
+    QVector<FoldLineCaption> captions;
+    for (const QGraphicsSimpleTextItem *item : m_foldLineLabelTexts)
+    {
+        if (item == nullptr || !item->isVisible() || item->text().isEmpty())
+        {
+            continue;
+        }
+        FoldLineCaption caption;
+        caption.transform = item->itemTransform(this, nullptr);
+        caption.text = item->text();
+        caption.font = item->font();
+        captions.append(caption);
+    }
+    return captions;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::InternalPathItems() const -> QVector<QGraphicsPathItem *>
+{
+    QVector<QGraphicsPathItem *> items;
+    const QList<QGraphicsItem *> children = childItems();
+    for (QGraphicsItem *child : children)
+    {
+        if (auto *path = qgraphicsitem_cast<VToolPiecePath *>(child))
+        {
+            items.append(path);
+        }
+    }
+    return items;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::DecorItems() const -> QVector<QGraphicsItem *>
+{
+    QVector<QGraphicsItem *> items;
+    items.append(m_grainLine);
+    for (OInfoBlockItem *blockItem : m_infoBlockItems)
+    {
+        items.append(blockItem);
+    }
+    for (OAnnotationItem *annotationItem : m_annotationItems)
+    {
+        items.append(annotationItem);
+    }
+    // **Not the fold line.** The group's fold line is the carrier member's own, and it is what the
+    // stack draws; adopting it would take it off the group. The copy leaves it alone.
+    return items;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::AreChildrenMasked() const -> bool
+{
+    const quint32 groupId = VAbstractTool::data.GetPieceGroupId(m_id);
+    if (groupId == NULL_ID)
+    {
+        return false;
+    }
+    const auto *groups = VAbstractTool::data.DataPieceGroups();
+    if (groups == nullptr || !groups->contains(groupId))
+    {
+        return false;
+    }
+    return groups->value(groupId).memberStackPositions.isEmpty();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSeamAllowance::PieceGroupId() const -> quint32
+{
+    return VAbstractTool::data.GetPieceGroupId(m_id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2432,44 +2608,9 @@ auto VToolSeamAllowance::itemChange(QGraphicsItem::GraphicsItemChange change, co
             // value - this is new position.
             const QPointF newPos = value.toPointF();
 
-            // Ported from Val Fork events.cpp: dragging a member piece moves the whole group.
-            const quint32 groupId = getData()->GetPieceGroupId(m_id);
-            if (groupId != NULL_ID && not s_isInGroupMoveMacro && not m_isPieceIsolated)
-            {
-                VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("Move piece group"));
-                s_isInGroupMoveMacro = true;
-            }
-
-            if (groupId != NULL_ID && not m_isPieceIsolated)
-            {
-                const QPointF oldPos = this->pos();
-                const QPointF delta = newPos - oldPos;
-
-                if (not qFuzzyIsNull(delta.x()) || not qFuzzyIsNull(delta.y()))
-                {
-                    const auto *groups = getData()->DataPieceGroups();
-                    if (groups != nullptr && groups->contains(groupId))
-                    {
-                        const OPieceGroup &group = groups->value(groupId);
-                        for (quint32 pid : group.pieceIds)
-                        {
-                            if (pid == m_id)
-                            {
-                                continue;
-                            }
-                            auto *memberTool =
-                                qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(pid));
-                            if (memberTool != nullptr && not memberTool->IsInPieceIsolation())
-                            {
-                                VAbstractApplication::VApp()->getUndoStack()->push(
-                                    new MovePiece(doc, memberTool->pos().x() + delta.x(),
-                                                  memberTool->pos().y() + delta.y(), pid, scene()));
-                            }
-                        }
-                    }
-                }
-            }
-
+            // **A member moves alone.** Its place in the group's stack belongs to the group — that
+            // is what the group's own frame drags — so a piece being worked on beside the group
+            // never drags the group, nor its other members, along with it.
             VAbstractApplication::VApp()->getUndoStack()->push(
                 new MovePiece(doc, newPos.x(), newPos.y(), m_id, scene()));
 
@@ -2542,13 +2683,6 @@ void VToolSeamAllowance::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton && (flags() & QGraphicsItem::ItemIsMovable))
     {
         SetItemOverrideCursor(this, cursorArrowOpenHand, 1, 1);
-    }
-
-    // Close the "Move piece group" undo macro opened in itemChange.
-    if (s_isInGroupMoveMacro)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->endMacro();
-        s_isInGroupMoveMacro = false;
     }
 
     if (m_selectionType == SelectionType::ByMouseRelease && IsSelectedByReleaseEvent(this, event))
@@ -3964,13 +4098,14 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
 {
     const VPiece detail = VAbstractTool::data.GetPiece(m_id);
 
-    // A group member's OWN fold line / symmetry line is masked: the group carries the fold
-    // formulas and the chosen member (m_foldLineMemberId) renders the common line like a
-    // normal piece — its foldline must NOT be masked.
-    const quint32 groupId = VAbstractTool::data.GetPieceGroupId(m_id);
-    if (groupId != NULL_ID)
+    // A member of a group shows its own fold line here, where the piece is edited: its children are
+    // its own again. The group draws the fold line it carries — the one of the member it designates
+    // (m_foldLineMemberId) — on its stack, from this very item (VToolSeamAllowance::MirrorLinePath).
+    // A legacy group still has its members on its stack: only the carrier draws, as it always did.
+    if (AreChildrenMasked())
     {
         const auto *groups = VAbstractTool::data.DataPieceGroups();
+        const quint32 groupId = VAbstractTool::data.GetPieceGroupId(m_id);
         const bool isGroupFoldCarrier = groups != nullptr && groups->contains(groupId)
                                         && groups->value(groupId).m_foldLineMemberId == m_id;
         if (!isGroupFoldCarrier)

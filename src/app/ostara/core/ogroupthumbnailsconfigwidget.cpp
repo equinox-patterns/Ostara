@@ -5,7 +5,7 @@
  **  @date   26 September, 2026
  **
  **  @brief  Thumbnail sub-tab of the group page (Information tab): one
- **          miniature editor per member piece.
+ **          editor per member, the group carrying one miniature for each.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -27,10 +27,10 @@
 
 #include "ogroupthumbnailsconfigwidget.h"
 
-#include "othumbnailconfigwidget.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiece.h"
+#include "othumbnailconfigwidget.h"
 
 #include <QGroupBox>
 #include <QVBoxLayout>
@@ -86,8 +86,8 @@ void OGroupThumbnailsConfigWidget::Show(quint32 groupId, const VContainer *data)
         {
             box->setTitle(name);
         }
-        // The group's own miniature of that member — never the piece's, which stays masked while the
-        // piece is linked and is found untouched after an unlink.
+        // The group's own miniature of that member — never the piece's, which is the piece's own and
+        // stays where the piece is edited.
         member.editor->Show(group.MemberThumbnail(member.pieceId), data, member.pieceId, name);
     }
 }
@@ -95,7 +95,13 @@ void OGroupThumbnailsConfigWidget::Show(quint32 groupId, const VContainer *data)
 //---------------------------------------------------------------------------------------------------------------------
 void OGroupThumbnailsConfigWidget::Clear()
 {
-    ClearMemberBoxes();
+    for (const MemberBox &member : std::as_const(m_boxes))
+    {
+        if (member.editor != nullptr)
+        {
+            member.editor->Clear();
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -115,7 +121,7 @@ void OGroupThumbnailsConfigWidget::BuildMemberBoxes(const QVector<quint32> &piec
     for (quint32 pieceId : pieceIds)
     {
         // One box per member: the member's name is the subject, and the editor inside it names that
-        // same member in its own labels — there is no group-level miniature to speak of.
+        // same member in its own labels.
         auto *box = new QGroupBox(this);
         auto *boxLayout = new QVBoxLayout(box);
         boxLayout->setContentsMargins(8, 8, 8, 8);
@@ -135,17 +141,16 @@ void OGroupThumbnailsConfigWidget::BuildMemberBoxes(const QVector<quint32> &piec
                 group.SetMemberThumbnail(pieceId, thumbnail);
             });
         });
-        editor->RetranslateUI();
         boxLayout->addWidget(editor);
-
-        // Inserted before the trailing stretch, so the boxes stay packed at the top.
-        m_boxesLayout->insertWidget(m_boxesLayout->count() - 1, box);
 
         MemberBox member;
         member.pieceId = pieceId;
         member.box = box;
         member.editor = editor;
         m_boxes.append(member);
+
+        // Before the stretch, so the boxes stay at the top of the tab.
+        m_boxesLayout->insertWidget(m_boxesLayout->count() - 1, box);
     }
 }
 
@@ -154,7 +159,7 @@ void OGroupThumbnailsConfigWidget::ClearMemberBoxes()
 {
     for (const MemberBox &member : std::as_const(m_boxes))
     {
-        delete member.box; // takes the editor with it
+        delete member.box;
     }
     m_boxes.clear();
 }
@@ -174,11 +179,12 @@ auto OGroupThumbnailsConfigWidget::BoxMemberIds() const -> QVector<quint32>
 //---------------------------------------------------------------------------------------------------------------------
 auto OGroupThumbnailsConfigWidget::MemberName(quint32 pieceId, const VContainer *data) -> QString
 {
-    // The same fallback the rest of the group page uses: a piece with no name still has to be
-    // designatable in the box that edits it. The container is checked first — GetPiece() *throws* on
-    // an id it does not hold (Bugs.md, 27-08), and a group can name a piece that is already gone.
+    if (data == nullptr)
+    {
+        return tr("Unnamed");
+    }
     const auto *pieces = data->DataPieces();
-    if (pieces == nullptr || not pieces->contains(pieceId))
+    if (pieces == nullptr || !pieces->contains(pieceId))
     {
         return tr("Unnamed");
     }

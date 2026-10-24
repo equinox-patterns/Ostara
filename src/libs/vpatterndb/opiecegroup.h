@@ -52,6 +52,33 @@ struct OPieceGroup : public IPieceInfo
     QString name{};                          // User-defined group name
     QVector<quint32> pieceIds{};             // Member piece IDs (min 2)
     QHash<quint32, QPointF> memberOffsets{}; // Offset per member (scene coords): refNode - memberNode
+
+    /**
+     * @brief Where the member sits **in the group's stack**, in the piece origin convention (Mx/My).
+     *
+     * A member of a group is a real piece, with its own points, margins and notches: its tool lives
+     * on the canvas where the user edits it, in the workshop. The stack — what the group shows, and
+     * what it exports — is drawn from this position: the place the member occupied when it was
+     * linked, the one where the members' common point coincides.
+     *
+     * That is why the group is still one piece: its stack is a fixed arrangement of the members,
+     * and the member's own live position is only where its editing copy stands.
+     *
+     * Absent entry = no stack stored (group linked before this existed, or hand-written file): the
+     * member's live position is the stack, which is exactly what the file says in that case.
+     */
+    QHash<quint32, QPointF> memberStackPositions{};
+
+    /** @return The stack position stored for @p pieceId; @p fallback when the group has none. */
+    auto MemberStackPosition(quint32 pieceId, const QPointF &fallback) const -> QPointF
+    {
+        return memberStackPositions.value(pieceId, fallback);
+    }
+
+    void SetMemberStackPosition(quint32 pieceId, const QPointF &pos)
+    {
+        memberStackPositions.insert(pieceId, pos);
+    }
     bool m_inLayout{true};                   // In-layout state (check/x) — governs export AND canvas masking
                                              // of the whole group (a group behaves like one piece)
     quint32 m_foldLineMemberId{NULL_ID};     // Member whose VToolSeamAllowance renders the group's foldline
