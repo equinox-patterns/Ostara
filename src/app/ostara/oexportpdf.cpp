@@ -126,7 +126,8 @@ auto DefaultDecorLayerName() -> QString
 auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                        const VContainer *pattern, VAbstractPattern *doc,
                        const OExportTemplate *marks, bool framed, bool addLayoutLayer,
-                       const OExportCoverPage::Drawing *cover, bool rabnestPayload) -> bool
+                       const OExportCoverPage::Drawing *cover, bool rabnestPayload,
+                       const QString &gradedDrawing) -> bool
 {
     if (pattern == nullptr || doc == nullptr || output.layers.isEmpty() || !output.result.ok)
     {
@@ -390,9 +391,49 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     if (!recipeElement.isNull())
     {
         payloadSvgPath = dir.filePath(QStringLiteral("payload.svg"));
-        if (!OGradedSvg::WriteGradedSvg(payloadSvgPath, layers, layoutLayerName, content.decor,
-                                        imageRect, QMarginsF(), 1.0, 1.0, QString(), QString(),
-                                        layered, recipeElement))
+
+        // ── Le payload EST le dessin du mode Graded, quand on le lui donne ──────────────────────
+        //
+        // ⚠️ **Pas le dessin de ce run.** Le canvas d'export dessine le PLAN — pièces nestées,
+        // tournées — et ses enfants sont refabriqués par une règle qui n'est pas celle de l'écran :
+        // mesuré sur « Manche » à la taille 32, le droit-fil sortait à 0.796 de la pièce là où le
+        // mode Graded est à 0.853. Le fichier du mode Graded, lui, porte les pièces à plat, non
+        // tournées, et UN décor : c'est lui que la cliente doit retrouver.
+        bool payloadWritten = false;
+        if (!gradedDrawing.isEmpty())
+        {
+            QFile graded(gradedDrawing);
+            if (graded.open(QIODevice::ReadOnly))
+            {
+                QString document = QString::fromUtf8(graded.readAll());
+                // ⚠️ **Après l'ouverture de `<svg>`, jamais après la déclaration XML.** Le premier
+                // `>` du fichier est celui de `<?xml ... ?>` : y insérer la métadonnée la plaçait
+                // AVANT l'élément racine, donc à côté — un document à deux racines ou une
+                // métadonnée que personne ne lit.
+                const qsizetype svgTag = document.indexOf(QStringLiteral("<svg"));
+                const qsizetype after = svgTag < 0 ? -1 : document.indexOf(QLatin1Char('>'), svgTag) + 1;
+                // ⚠️ **La métadonnée s'écrit depuis l'ÉLÉMENT, pas depuis `recipe`.** `OExportRecipe::Of`
+                // rend un élément qui appartient à un autre document : `recipe.toString()` est vide,
+                // et c'est ce qui a produit un payload sans `<pieces>` du tout.
+                QDomDocument metaDoc;
+                metaDoc.appendChild(metaDoc.importNode(recipeElement, true));
+                const QString metadata = metaDoc.toString(-1);
+                if (after > 0 && after < document.size() && !metadata.isEmpty())
+                {
+                    document.insert(after, QLatin1Char('\n') + metadata + QLatin1Char('\n'));
+                    QFile out(payloadSvgPath);
+                    if (out.open(QIODevice::WriteOnly | QIODevice::Truncate))
+                    {
+                        out.write(document.toUtf8());
+                        payloadWritten = true;
+                    }
+                }
+            }
+        }
+        if (!payloadWritten
+            && !OGradedSvg::WriteGradedSvg(payloadSvgPath, layers, layoutLayerName, content.decor,
+                                           imageRect, QMarginsF(), 1.0, 1.0, QString(), QString(),
+                                           layered, recipeElement))
         {
             qWarning() << "OExportPdf: the payload SVG could not be written";
             return false;
@@ -453,7 +494,15 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         }
     }
 
-    if (rabnestPayload && !coverPath.isEmpty() && !CarryCover(svgPath, coverPath))
+    // ⚠️ **C'est le PAYLOAD qu'il faut modifier, pas le dessin du run.** Le payload a son fichier à
+    // lui depuis `227f8d49` (« le payload sort du dessin ») : `svgPath` est la génération de CE run,
+    // que Trame convertit en pages, et `payloadSvgPath` le document que Rabnest réouvre. Laisser ici
+    // `svgPath` écrivait la page de garde dans un fichier qui ne quitte pas la fonction — le PDF
+    // gardait sa page (Trame la reçoit séparément, en `coverPath`) et le payload n'en portait plus
+    // trace, donc Rabnest ne pouvait plus la redessiner : c'est la régression constatée le
+    // 25-10-2026, « la page de garde a disparu dans Print ».
+    if (rabnestPayload && !coverPath.isEmpty() && !payloadSvgPath.isEmpty()
+        && !CarryCover(payloadSvgPath, coverPath))
     {
         qWarning() << "OExportPdf: the cover page could not be carried in the payload";
     }
