@@ -287,14 +287,19 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // fichier de référence en porte un ; c'est un reste d'Illustrator, et il a été relevé comme tel.
     //
     // Les noms sont en clair : la traduction attend la validation du format (`Projector.md` §4).
-    OGradedSvg::Overlays projectOverlays;
-    const OGradedSvg::Overlays *overlayData = nullptr;
+    // ⚠️ **Écrits par le SOCLE** (`io/GradedOverlays.h`) : Rabnest écrit les mêmes calques pour son
+    // propre export projecteur, et les valeurs ci-dessous sont les seules qu'Ostara décide.
+    GradedOverlays::Set projectOverlays;
+    const GradedOverlays::Set *overlayData = nullptr;
     if (projector && layered)
     {
         // Les noms se lisent dans le panneau du lecteur PDF : ils sont donc TRADUITS, comme tout ce
         // que l'utilisatrice voit. Le rôle, lui, ne l'est jamais : `ostara:role` est une clé de
         // fichier, et c'est lui que Trame et Rabnest lisent, pas le nom.
-        projectOverlays.background = QColor(QLatin1String("#E6007E"));
+        // `.name()` : la même écriture qu'avant la descente au socle, pour que le SVG reste
+        // identique à l'octet près — la casse d'une couleur ne change rien au rendu, mais elle
+        // change un fichier validé.
+        projectOverlays.background = QColor(QLatin1String("#E6007E")).name();
         projectOverlays.backgroundName =
             QCoreApplication::translate("OExportPdf", "Magenta background");
         projectOverlays.backgroundId = projectOverlays.backgroundName;

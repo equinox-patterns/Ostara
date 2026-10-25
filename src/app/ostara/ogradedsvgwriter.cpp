@@ -79,9 +79,8 @@ constexpr auto kOstaraLayoutMarker = "yes";
 /// ⚠️ **Un troisième rôle, et c'est ce qui manquait.** Jusqu'ici `ostara:layout="yes"` disait « décor »
 /// et **tout le reste était une taille** : un fond magenta et deux grilles seraient donc devenus des
 /// tailles — listés dans le panneau du lecteur, nidifiés par Rabnest, et peints au-dessus des pièces.
-constexpr auto kOstaraRoleAttr = "ostara:role";
-constexpr auto kOstaraRoleBackground = "background";
-constexpr auto kOstaraRoleCalibration = "calibration";
+/// Les valeurs du rôle sont au socle (`io/GradedOverlays.h`), qui écrit ces calques pour les deux
+/// applications : elles ne sont plus recopiées ici.
 
 /**
  * @brief Where one owner's decor is written: the file, or the owner's own frame.
@@ -796,7 +795,7 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     const QString &layoutLayerName, const QList<LayoutObject> &layoutObjects,
                     const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
                     const QString &title, const QString &description, bool layered,
-                    const QDomElement &metadata, bool textAsPaths, const Overlays *overlays)
+                    const QDomElement &metadata, bool textAsPaths, const GradedOverlays::Set *overlays)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -881,66 +880,19 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
     // ⚠️ **Chacun porte `ostara:role`.** Sans lui, Trame en fait une TAILLE : le calque entre dans le
     // panneau du lecteur, Rabnest le liste comme une taille à nidifier, et la peinture ne suit plus
     // l'ordre voulu. C'est ce rôle que Trame lit, et c'est lui qui décide de la place dans /Order.
+    // ── Les calques du format Projecteur : SOUS tout le reste ─────────────────────────────────────
+    //
+    // Un fond plein page, puis les grilles de calibration. Ils sont écrits depuis les dimensions de
+    // la page, parce qu'ils n'existent NULLE PART ailleurs : ni dans la scène, ni sur l'écran —
+    // décision de Sophie, « on ne l'ajoute pas dans le canvas, mais dans l'export PDF ».
+    //
+    // ⚠️ **L'émission est au SOCLE** (`io/GradedOverlays.h`), et pas ici : Rabnest écrit le même
+    // fichier pour son propre export projecteur, et deux copies des mêmes valeurs divergeraient au
+    // premier changement. Ostara ne décide plus que les trois valeurs — magenta, 5 cm, 3 in.
     if (layered && overlays != nullptr)
     {
-        const auto writeOverlay = [&](const QString &id, const QString &name, const char *role) {
-            writer.writeStartElement(QStringLiteral("g"));
-            writer.writeAttribute(QStringLiteral("id"), OSvg::SanitizeSvgId(id));
-            writer.writeAttribute(QStringLiteral("i:layer"), QStringLiteral("yes"));
-            writer.writeAttribute(QStringLiteral("inkscape:label"), name);
-            writer.writeAttribute(QStringLiteral("inkscape:groupmode"), QStringLiteral("layer"));
-            writer.writeAttribute(QLatin1String(kOstaraRoleAttr), QLatin1String(role));
-            writer.writeTextElement(QStringLiteral("title"), name);
-        };
-
-        if (overlays->background.isValid())
-        {
-            writeOverlay(overlays->backgroundId, overlays->backgroundName, kOstaraRoleBackground);
-
-            // Le fond est la PAGE : elle part de l'origine et fait toute la surface écrite.
-            writer.writeStartElement(QStringLiteral("rect"));
-            writer.writeAttribute(QStringLiteral("x"), QStringLiteral("0"));
-            writer.writeAttribute(QStringLiteral("y"), QStringLiteral("0"));
-            writer.writeAttribute(QStringLiteral("width"), QString::number(totalWidth));
-            writer.writeAttribute(QStringLiteral("height"), QString::number(totalHeight));
-            writer.writeAttribute(QStringLiteral("fill"), overlays->background.name());
-            writer.writeAttribute(QStringLiteral("stroke"), QStringLiteral("none"));
-            writer.writeEndElement();  // rect
-
-            writer.writeEndElement();  // g (background layer)
-        }
-
-        for (const CalibrationLayer &grid : overlays->grids)
-        {
-            if (grid.stepPx <= 0.0)
-            {
-                continue;
-            }
-
-            writeOverlay(grid.id, grid.name, kOstaraRoleCalibration);
-
-            // **Une seule trajectoire par grille**, jamais un chemin par trait : c'est une grille, et
-            // un lecteur qui la sélectionne doit la prendre d'un bloc.
-            QStringList moves;
-            for (qreal x = 0.0; x <= totalWidth; x += grid.stepPx)
-            {
-                moves << QStringLiteral("M%1 0V%2").arg(x).arg(totalHeight);
-            }
-            for (qreal y = 0.0; y <= totalHeight; y += grid.stepPx)
-            {
-                moves << QStringLiteral("M0 %1H%2").arg(y).arg(totalWidth);
-            }
-
-            writer.writeStartElement(QStringLiteral("path"));
-            writer.writeAttribute(QStringLiteral("d"), moves.join(QLatin1Char(' ')));
-            writer.writeAttribute(QStringLiteral("fill"), QStringLiteral("none"));
-            writer.writeAttribute(QStringLiteral("stroke"), OExportInk::Ink().name());
-            writer.writeAttribute(QStringLiteral("stroke-width"),
-                                  QString::number(OExportInk::kGridPx));
-            writer.writeEndElement();  // path
-
-            writer.writeEndElement();  // g (calibration layer)
-        }
+        GradedOverlays::Write(writer, *overlays, totalWidth, totalHeight, OExportInk::kGridPx,
+                              OExportInk::Ink().name());
     }
 
     for (const SizeLayer &layer : sizeLayers)

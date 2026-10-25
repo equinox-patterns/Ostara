@@ -42,6 +42,8 @@
 
 #include "widgets/InfoBlock/oinfoblockexport.h"  // OInfoBlockSvg::Block / Annotation
 
+#include "io/GradedOverlays.h"  // Trame — les calques du projecteur
+
 #include <QDomElement>
 #include <QList>
 #include <QMarginsF>
@@ -149,47 +151,6 @@ struct LayoutObject
 };
 
 /**
- * @brief Une grille de calibration : un pas, et le nom que le lecteur lit.
- *
- * Le pas est en pixels du fichier — l'unité du `viewBox` — parce que c'est l'unité dans laquelle le
- * dessin est écrit : 5 cm y pèsent 188,976 px, et 3 in 288 px. Le convertir ici une fois est ce qui
- * empêche le lecteur de l'écrire en millimètres sur une page qui n'en parle pas.
- */
-struct CalibrationLayer
-{
-    QString name{};   ///< ce que le lecteur lit dans son panneau
-    QString id{};     ///< la clé du PDF — un nom, pas une phrase
-    qreal stepPx{0.0}; ///< le pas de la grille
-};
-
-/**
- * @brief Les calques que le format Projecteur ajoute SOUS les pièces.
- *
- * Un fond plein page et des grilles de calibration. **Ils ne viennent pas de la scène** : rien de
- * tout cela n'existe à l'écran — décision de Sophie, *« on ne l'ajoute pas dans le canvas, mais dans
- * l'export PDF »* — et ils sont donc écrits ici, depuis les dimensions mêmes de la page.
- *
- * ⚠️ **Le fond magenta est SOUS les pièces, et les grilles aussi.** Un rayon lumineux traverse le
- * trait ; un aplat, non. Une grille posée sur les pièces les cacherait, alors qu'une grille dessous
- * se lit à travers un contour.
- *
- * ⚠️ Ils portent `ostara:role`, et c'est ce qui les distingue d'une TAILLE : sans ce rôle, Trame en
- * ferait des calques de tailles — ils entreraient dans le panneau du lecteur, Rabnest les listerait
- * comme des tailles à nidifier, et l'ordre de peinture ne serait plus garanti.
- *
- * @see Projector.md §4 et §14
- */
-struct Overlays
-{
-    /// Le fond, en aplat plein page. **Vide : pas de fond** — et c'est l'état de tous les autres
-    /// formats, qui n'ont rien à écrire ici.
-    QColor background{};
-    QString backgroundName{};
-    QString backgroundId{};
-    QVector<CalibrationLayer> grids{};
-};
-
-/**
  * @brief Write the graded multi-layer SVG.
  *
  * @param sizeLayers  layers grand → petit (smallest last, = reference).
@@ -215,7 +176,7 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
                     const QString &title, const QString &description, bool layered = true,
                     const QDomElement &metadata = QDomElement(), bool textAsPaths = false,
-                    const Overlays *overlays = nullptr);
+                    const GradedOverlays::Set *overlays = nullptr);
 
 /**
  * @brief One owner's decor as SVG elements, written in the OWNER's own frame.
