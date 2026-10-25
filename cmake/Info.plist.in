@@ -19,8 +19,13 @@
 	<key>CFBundleShortVersionString</key>
 	<string>${MACOSX_BUNDLE_SHORT_VERSION_STRING}</string>
 
-	<key>LSMinimumSystemVersion</key>
-	<string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string>
+	<!--
+	  LSMinimumSystemVersion a été retiré le 26-10-2026 : ${CMAKE_OSX_DEPLOYMENT_TARGET} n'est pas
+	  défini dans ce projet, donc la clé partait avec une valeur VIDE, et une version minimale vide
+	  n'est pas une absence de contrainte — c'est une métadonnée invalide que LaunchServices lit de
+	  travers. Le jour où un minimum sera voulu, il faudra le poser explicitement dans le CMake et
+	  le réintroduire ici.
+	-->
 
 	<key>NSHumanReadableCopyright</key>
 	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
@@ -38,7 +43,6 @@
 		<string>es</string>
 		<string>fi</string>
 		<string>fr</string>
-		<string>he</string>
 		<string>hr</string>
 		<string>hu</string>
 		<string>id</string>
@@ -51,6 +55,17 @@
 		<string>uk</string>
 		<string>zh</string>
 	</array>
+
+	<!--
+	  La catégorie de l'application : la métadonnée qu'Apple attend de tout paquet, que Launchpad et
+	  le magasin lisent, et qui manquait ici. `graphics-design` est la famille d'un outil de dessin de
+	  patrons.
+	  ⚠️ Ce n'est PAS ce qui cachait Ostara de la liste d'applications : la cause était les quatre
+	  bundles de build portant le même identifiant, enregistrés en même temps que celui des
+	  Applications. La catégorie est juste, mais elle n'a rien réparé.
+	-->
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.graphics-design</string>
 
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>

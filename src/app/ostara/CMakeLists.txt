@@ -165,11 +165,13 @@ if(APPLE)
         DESTINATION "Ostara.app/Contents/Resources/svgfonts"
     )
 
-    # App icon — volontairement vide pour l'instant (sera remplacé par l'icône Ostara)
-    # set_target_properties(Ostara PROPERTIES MACOSX_BUNDLE_ICON_FILE "Valentina.icns")
-    # install(FILES "${CMAKE_SOURCE_DIR}/dist/Valentina.icns"
-    #     DESTINATION "Ostara.app/Contents/Resources"
-    # )
+    # L'icône de l'application. Elle a été longtemps absente : CFBundleIconFile partait vide et le
+    # paquet n'avait aucun .icns, donc le Finder affichait l'icône générique et LaunchServices
+    # n'avait rien à dessiner. Le .icns est engendré depuis share/icons/app/Ostara.svg.
+    set_target_properties(Ostara PROPERTIES MACOSX_BUNDLE_ICON_FILE "Ostara.icns")
+    install(FILES "${CMAKE_SOURCE_DIR}/share/icons/app/Ostara.icns"
+        DESTINATION "Ostara.app/Contents/Resources"
+    )
 
     # qt.conf
     file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
