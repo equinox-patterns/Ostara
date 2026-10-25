@@ -685,27 +685,111 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         rightWidth = columnPx - leftWidth;
     }
 
-    // ── Le candidat à UN bord ────────────────────────────────────────────────────────────────
-    {
-        // Le pli à gauche, et la colonne entière : elle paie ses trois autres côtés.
-        const std::vector<Seat> seats{
-            Seat{true, columnPx, SeatMargins(true, params.marginPx)}};
-        std::vector<int> assignment(static_cast<std::size_t>(talks.size()), 0);
+    // ── Le candidat à UN bord, et les DEUX côtés du pli ────────────────────────────────────────
+    //
+    // ⚠️ **Le côté du pli est un choix, et il ne coûte rien.** Plier le tissu d'un bord ou de
+    // l'autre donne le même patron déplié et la même longueur, mais pas les mêmes moitiés : d'un
+    // côté ce sont les formes naturelles qui entrent, de l'autre leurs miroirs. Le code pliait
+    // toujours à gauche, donc il miroitait toutes les pièces dont le pli tombe à droite sans que
+    // cela fasse gagner un millimètre. Décision de Sophie (25-10-2026) : **un miroir ne vaut que
+    // s'il fait gagner de la longueur** ; à longueur égale, le côté qui en miroite le moins gagne.
+    const auto mirrorsOf = [&talks](const ZonePlan &plan) {
+        int mirrored = 0;
+        for (const int rank : plan.ranks)
+        {
+            if (talks.at(rank).mirrored)
+            {
+                ++mirrored;
+            }
+        }
+        return mirrored;
+    };
 
-        ZonePlan plans[3];
+    // Le même compte, sur les trois rectangles d'un plan à deux bandes.
+    const auto mirrorsOfPlans = [&talks](const ZonePlan (&plan)[3]) {
+        int mirrored = 0;
+        for (int zone = 0; zone < 3; ++zone)
+        {
+            for (const int rank : plan[zone].ranks)
+            {
+                if (talks.at(rank).mirrored)
+                {
+                    ++mirrored;
+                }
+            }
+        }
+        return mirrored;
+    };
+
+    bool bestFoldOnTheLeft = true;
+    // Les miroirs du plan retenu : le juge du départage, quelle que soit la forme du plan.
+    int bestMirrors = 0;
+    {
+        const auto singleEdge = [&](bool foldOnTheLeft, ZonePlan *plan, double *height) {
+            const std::vector<Seat> seats{
+                Seat{foldOnTheLeft, columnPx, SeatMargins(foldOnTheLeft, params.marginPx)}};
+            std::vector<int> assignment(static_cast<std::size_t>(talks.size()), 0);
+            ZonePlan trial[3];
+            if (!evaluate(seats, assignment, trial, height))
+            {
+                return false;
+            }
+            *plan = trial[0];
+            return true;
+        };
+
+        // Le pli à gauche d'abord : c'est le plan qui a toujours été rendu, donc celui qui reste
+        // quand les deux se valent en miroirs.
+        ZonePlan plan;
         double height = 0.0;
-        if (!evaluate(seats, assignment, plans, &height))
+        if (!singleEdge(true, &plan, &height))
         {
             return false;
         }
 
         bestHeight = height;
-        best[kLeftZone] = plans[0];
+        best[kLeftZone] = plan;
+        bestMirrors = mirrorsOf(plan);
+
+        ZonePlan flipped;
+        double flippedHeight = 0.0;
+        if (singleEdge(false, &flipped, &flippedHeight))
+        {
+            const int mirrored = mirrorsOf(flipped);
+            if (flippedHeight < bestHeight - 1e-6
+                || (std::abs(flippedHeight - bestHeight) <= 1e-6 && mirrored < bestMirrors))
+            {
+                bestHeight = flippedHeight;
+                best[kLeftZone] = flipped;
+                bestMirrors = mirrored;
+                bestFoldOnTheLeft = false;
+            }
+        }
     }
 
-    // ── Le candidat à DEUX bords ─────────────────────────────────────────────────────────────
+    // ── Le candidat à DEUX bords, et les DEUX affectations des bandes ──────────────────────────
+    //
+    // ⚠️ **Les deux bandes peuvent recevoir l'une ou l'autre des deux poses les plus larges, et le
+    // choix ne coûte rien.** La bande de gauche a son pli à gauche, celle de droite à droite : mettre
+    // une pose d'un côté ou de l'autre décide donc si elle sera posée naturelle ou MIRÓIRÉE, à
+    // largeur et à longueur identiques. Le code mettait toujours la plus large à gauche, sans jamais
+    // essayer l'inverse — d'où des pièces miroitées sans que cela fasse gagner un millimètre.
+    // Décision de Sophie (25-10-2026) : le miroir ne vaut que s'il fait gagner de la longueur.
+    double bestLeftWidth = leftWidth;
+    double bestRightWidth = rightWidth;
+    ZonePlan bestTwo[3];
+    double bestTwoHeight = 0.0;
+    int bestTwoMirrors = 0;
+    bool bestTwoOk = false;
     if (doubleEdge)
     {
+        const double baseLeftWidth = leftWidth;
+        const double baseRightWidth = rightWidth;
+        for (int variant = 0; variant < 2; ++variant)
+        {
+            // Les bandes inversées : mêmes pièces, mêmes largeurs, autre côté.
+            leftWidth = variant == 0 ? baseLeftWidth : baseRightWidth;
+            rightWidth = variant == 0 ? baseRightWidth : baseLeftWidth;
         // L et R sont les deux bandes du haut, chacune avec son pli ; B est la colonne entière sous
         // elles. **Les trois paient leurs trois côtés** : les deux rectangles du haut paient donc
         // chacun la ligne qui les sépare de celui du bas, et celui du bas la paie aussi — la bande
@@ -734,8 +818,8 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                 assignment[static_cast<std::size_t>(foldPose.mirror)] = seat;
             }
         };
-        settle(posesByWidth.at(0), kLeftZone);
-        settle(posesByWidth.at(1), kRightZone);
+        settle(posesByWidth.at(variant == 0 ? 0 : 1), kLeftZone);
+        settle(posesByWidth.at(variant == 0 ? 1 : 0), kRightZone);
 
         ZonePlan plans[3];
         double height = 0.0;
@@ -874,7 +958,9 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                         continue;
                     }
 
-                    if (trialHeight < height)
+                    if (trialHeight < height - 1e-9
+                        || (std::abs(trialHeight - height) <= 1e-9
+                            && mirrorsOfPlans(trialPlans) < mirrorsOfPlans(plans)))
                     {
                         assignment = std::move(trial);
                         for (int z = 0; z < 3; ++z)
@@ -888,14 +974,37 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
             }
         }
 
-        // Strictement moins : à égalité, le bord unique reste la référence.
-        if (height < bestHeight)
+        // Entre les deux variantes : longueur d'abord, puis le moins de miroirs.
+        if (!bestTwoOk || height < bestTwoHeight - 1e-6
+            || (std::abs(height - bestTwoHeight) <= 1e-6
+                && mirrorsOfPlans(plans) < bestTwoMirrors))
         {
-            bestHeight = height;
-            bestIsDouble = true;
+            bestTwoOk = true;
+            bestTwoHeight = height;
+            bestTwoMirrors = mirrorsOfPlans(plans);
+            bestLeftWidth = leftWidth;
+            bestRightWidth = rightWidth;
             for (int z = 0; z < 3; ++z)
             {
-                best[z] = plans[z];
+                bestTwo[z] = plans[z];
+            }
+        }
+        }
+
+        // Contre le plan à un bord : strictement moins, ou à égalité moins de miroirs. Un plan à
+        // deux bandes est plus complexe ; il ne s'impose donc que s'il fait gagner quelque chose.
+        if (bestTwoOk
+            && (bestTwoHeight < bestHeight - 1e-6
+                || (std::abs(bestTwoHeight - bestHeight) <= 1e-6 && bestTwoMirrors < bestMirrors)))
+        {
+            bestHeight = bestTwoHeight;
+            bestIsDouble = true;
+            bestMirrors = bestTwoMirrors;
+            leftWidth = bestLeftWidth;
+            rightWidth = bestRightWidth;
+            for (int z = 0; z < 3; ++z)
+            {
+                best[z] = bestTwo[z];
             }
         }
     }
@@ -929,7 +1038,7 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
 
         OExportFoldedZone zone;
         zone.rect = QRectF(0.0, 0.0, columnPx, bestHeight);
-        zone.foldOnTheLeft = true;
+        zone.foldOnTheLeft = bestFoldOnTheLeft;
         foldedZones->append(zone);
         return true;
     }
