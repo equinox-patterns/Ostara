@@ -430,6 +430,25 @@ auto OExportGeometry::CollectCurrentSize(const QString &label) -> QVector<OExpor
     // Deliberately no EvaluateAt here. The document is already on the size the user
     // chose — Details set it, through its own drop-downs — so the geometry is read
     // as it stands, exactly like the graded capture does when it draws a size.
+    //
+    // ⚠️ **Et ses enfants remis à leur place POUR CETTE TAILLE, ce que le canvas fait d'office.**
+    // Graded dessine le droit-fil, le bloc, les annotations et la miniature d'une pièce à l'ancre
+    // (u,v) de celle-ci dans le rectangle de référence : c'est ce qui les fait suivre la pièce quand
+    // elle grandit, et c'est `MaterializeChildAnchors`, en fin de `Parse` (`vpattern.cpp:320`).
+    //
+    // Un changement de taille par la liste déroulante passe par `LiteParseTree`, qui ne refait pas
+    // cette passe — et le canvas ne s'en apercevait pas parce que l'outil la porte lui-même
+    // (`VToolSeamAllowance::MaterializeChildAnchors`). L'export, lui, lit le DOCUMENT : il héritait
+    // donc des enfants là où ils ont été écrits, pas là où Graded les dessine. Mesuré sur un vrai
+    // payload contre le SVG graded, en fraction de la largeur de la pièce : « Manche » 0.796 contre
+    // 0.957 pour le droit-fil et 0.309 contre 0.365 pour le bloc ; « Manche poignet » 0.512 contre
+    // 0.611. L'écart n'était nul à aucune taille, et c'est ce qui en faisait un décalage et non une
+    // projection.
+    if (m_doc != nullptr)
+    {
+        m_doc->MaterializeChildAnchors();
+    }
+
     OExportSizeLayer layer;
     layer.label = label;
     CollectPieces(layer);
@@ -461,9 +480,9 @@ void OExportGeometry::SetPieceExclusion(const QSet<quint32> &pieceIds)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportGeometry::SetCuttingPlan(bool cutting)
+void OExportGeometry::SetFormat(OExportFormat::Kind format)
 {
-    m_cuttingPlan = cutting;
+    m_format = format;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -752,7 +771,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // et c'est la règle : 0, la valeur d'une pièce jamais renseignée, veut dire « pas de coupe »
         // au lieu de « une fois ».
         int cutQuantity = 1;
-        if (m_cuttingPlan)
+        if (OExportFormat::IsCutting(m_format))
         {
             cutQuantity = OExportCuttingGuard::CutQuantity(id, m_container, m_cuttingMaterial);
             if (cutQuantity <= 0)
@@ -810,7 +829,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // un plan se dessine, se nouble et s'imprime sans elle, et la perdre pour un fichier qu'on
         // n'écrira peut-être jamais serait pire que le défaut qu'elle répare.
         std::optional<VLayoutPiece> withoutSeamAllowance;
-        if (m_cuttingPlan && resolved.IsSeamAllowance())
+        if (m_format == OExportFormat::Kind::CuttingPlan && resolved.IsSeamAllowance())
         {
             try
             {
@@ -869,7 +888,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         geometry.piece = resolved;
         geometry.withoutSeamAllowance = std::move(withoutSeamAllowance);
 
-        if (m_cuttingPlan)
+        if (OExportFormat::IsCutting(m_format))
         {
             // ── Le pli, puis le dépliage ──────────────────────────────────────────────────────
             //
@@ -968,6 +987,34 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             }
         }
 
+        // ── Le projecteur ne voit aucun groupe ────────────────────────────────────────────────
+        //
+        // Décision de Sophie : « les groupes n'existent plus, on n'utilise que ses membres comme des
+        // pièces classiques ». Chaque membre est donc une pièce ordinaire : `groupId` à zéro, donc
+        // `IsGroupedMember` répond faux, la clé n'est plus `g<id>`, et l'écart de 10 cm s'applique
+        // vraiment entre deux membres au lieu de les voir comme un bloc rigide.
+        //
+        // ⚠️ **La clé vient de l'identifiant, jamais du nom.** Le plotter, lui, prend le nom — mais il
+        // fragmente et ses morceaux sont uniques par construction. Ici deux membres d'un même groupe
+        // peuvent porter le même nom (deux « Devant »), et `Footprint::compute` regroupe sur la clé :
+        // les deux seraient alors une seule empreinte, dessinés l'un sur l'autre, et l'un des deux
+        // manquerait au plan **sans que rien ne le dise**. `p<id>` est unique par définition.
+        //
+        // ⚠️ Et **l'`id` est GARDÉ**, contrairement au plotter qui le met à zéro : c'est lui qui fait
+        // retrouver le décor du membre (`ResolvePieceDecor`) — son cartouche, ses annotations et sa
+        // miniature. Un membre sans id redeviendrait une coque vide, et c'est exactement ce que ce
+        // format ne veut pas.
+        //
+        // ⚠️ Enfin la décomposition se fait **après la direction** : le repli sur la grainline du
+        // groupe lit `geometry.groupId`, et le mettre à zéro plus tôt priverait de direction un membre
+        // qui n'en porte pas — pour lui prêter celle de personne.
+        if (OExportFormat::IsProjector(m_format))
+        {
+            geometry.groupId = 0;
+            geometry.groupName.clear();
+            geometry.key = QStringLiteral("p%1").arg(id);
+        }
+
         // Forced alignment point, resolved against `target` while it still holds THIS size.
         geometry.alignPointX = OGraded::UnitAlignPointX(id, piece, target);
 
@@ -980,7 +1027,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // Un run d'impression garde une entrée par pièce : une feuille porte une silhouette, et
         // c'est le moteur qui décide où. Seul un plan de coupe répète.
         int quantity = cutQuantity;
-        if (m_cuttingPlan)
+        if (OExportFormat::IsCutting(m_format))
         {
             // ── Et sur du tissu plié, la moitié ──────────────────────────────────────────────
             //

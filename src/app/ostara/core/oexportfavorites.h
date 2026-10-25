@@ -40,10 +40,11 @@ class VCommonSettings;
 /**
  * @brief One stored favorite: the name it was starred under, and the run it replays.
  *
- * The TYPE is not a field. It is read from the request itself — `cuttingPlan` for a cutting
- * plan, `plotterPlan` for a plotter plan, and neither for a print. That is what the generator
- * switches on, so a second field saying the same thing would be a second thing to keep in
- * step, and the one that would rot.
+ * The type IS a field now — `format`, stored as a token (`print`, `cutting`, `plotter`,
+ * `projector`). It used to be read from the request's two flags, one per format, and the third
+ * format is what made that untenable: two flags describe four formats only by agreeing never to
+ * be true together. A record written back then carries no token, and its flags are read instead —
+ * see `OExportFormat::FromLegacyFlags` — so no favourite is lost.
  *
  * The per-piece choices (`groupMemberChoices`, `excludedPieces`) are deliberately NOT in the
  * recipe: a favorite is a layout, and which piece of a group is cut — or which members of a

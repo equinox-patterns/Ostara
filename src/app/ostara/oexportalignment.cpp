@@ -135,7 +135,8 @@ auto GroupMembership(const VContainer *container) -> QHash<quint32, quint32>
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer *container)
+void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer *container,
+                             bool centreEveryPiece)
 {
     if (container == nullptr || layers.isEmpty())
     {
@@ -167,7 +168,14 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
         }
 
         OGraded::AlignRule rule;
-        if (pieces != nullptr && pieces->contains(it.key()))
+        if (centreEveryPiece)
+        {
+            // 2 = centre, en horizontal comme en vertical (voir `OGraded::AnchorPoint`), et pas de
+            // point forcé : il reprendrait la main sur l'horizontale.
+            rule.alignH = 2;
+            rule.alignV = 2;
+        }
+        else if (pieces != nullptr && pieces->contains(it.key()))
         {
             const VPiece &piece = pieces->value(it.key());
             rule.alignH = piece.GetGradedAlignH();
@@ -186,7 +194,15 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
 
         // Slots are indexed in increasing layer order, so the first one is the smallest size —
         // the same reference the canvas uses. It carries the X every other size is brought onto.
-        rule.refPointX = layers.at(it.value().first().layer).pieces.at(it.value().first().piece).alignPointX;
+        //
+        // Centrer, c'est refuser ce point : `UnitLayerDelta` lui donne la priorité sur la règle
+        // horizontale, et une pièce centrée par la règle resterait décalée par le point.
+        if (!centreEveryPiece)
+        {
+            rule.refPointX = layers.at(it.value().first().layer)
+                                 .pieces.at(it.value().first().piece)
+                                 .alignPointX;
+        }
 
         for (int i = 0; i < it.value().size(); ++i)
         {
@@ -254,10 +270,10 @@ void OExportAlignment::Apply(QVector<OExportSizeLayer> &layers, const VContainer
         }
 
         OGraded::AlignRule rule;
-        rule.alignH = group.alignH;
-        rule.alignV = group.alignV;
+        rule.alignH = centreEveryPiece ? 2 : group.alignH;
+        rule.alignV = centreEveryPiece ? 2 : group.alignV;
         // rectByLayer is keyed by layer index: its first entry is the smallest size present.
-        if (!rectByLayer.isEmpty())
+        if (!centreEveryPiece && !rectByLayer.isEmpty())
         {
             rule.refPointX = pointXByLayer.value(rectByLayer.firstKey(), qQNaN());
         }

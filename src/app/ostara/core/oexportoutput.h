@@ -37,6 +37,7 @@
 #include <QString>
 #include <QVector>
 
+#include "oexportformat.h"
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
 #include "../vpatterndb/osizerange.h"
@@ -215,12 +216,17 @@ struct OExportOutput
     /// others are simply not collected, and the group's footprint is then the one piece's.
     QMap<quint32, quint32> groupMemberChoices{};
 
-    /// @brief Whether this generation was asked for as a cutting plan.
+    /// @brief What this generation IS — see @ref OExportFormat.
     ///
-    /// It says what the run IS, and the two runs differ in more than a parameter: a cutting plan
-    /// lays pieces on fabric, so each one is pinned to the rotations its direction allows and is
-    /// laid unfolded. A print run is none of that. Kept so the Refresh entry replays the same run.
-    bool cuttingPlan{false};
+    /// **One value, and not the pair of booleans it replaces.** `cuttingPlan` already carried a dozen
+    /// unrelated decisions — the code said so itself — and `plotterPlan` was added beside it for the
+    /// ones that were really about a mat. A third format would have made three flags, eight states for
+    /// four formats, and every reader guessing which combinations mean anything.
+    ///
+    /// It says what the run IS, and the formats differ in more than a parameter: a cutting plan and a
+    /// projector both lay pieces on fabric and follow the grain; a projector keeps the whole decor,
+    /// where a cutting plan keeps none. Kept so the Refresh entry replays the same run.
+    OExportFormat::Kind format{OExportFormat::Kind::Print};
 
     /// @brief « Sens unique » — aucune pièce n'est retournée d'un demi-tour.
     ///
@@ -240,16 +246,6 @@ struct OExportOutput
     /// says 140. Kept so that the Refresh entry replays the same plan.
     bool foldedFabric{false};
 
-    /// @brief Whether this run is a plan for a DOMESTIC PLOTTER — one that cuts on mats.
-    ///
-    /// Three things follow, and none of them is a parameter of the run: there is no continuous
-    /// length (the mat is a hard cell), the goal is not the smallest height but the **fewest
-    /// pieces**, and a piece larger than a mat is **split at the mat borders**, its parts put back
-    /// together like a puzzle.
-    ///
-    /// Deliberately NOT `cuttingPlan`: that flag carries a dozen unrelated decisions, and a plotter
-    /// cuts the pattern as the model draws it — unfolded, and once.
-    bool plotterPlan{false};
 
     /// @brief The cutting mat's usable size, in millimetres. **Zero on a run that has no mat.**
     ///
@@ -310,8 +306,8 @@ struct OExportRunRequest
     /// @see OExportOutput::groupMemberChoices — the same map, from the other side.
     QMap<quint32, quint32> groupMemberChoices{};
 
-    /// @see OExportOutput::cuttingPlan — the same flag, from the other side.
-    bool cuttingPlan{false};
+    /// @see OExportOutput::format — the same value, from the other side.
+    OExportFormat::Kind format{OExportFormat::Kind::Print};
 
     /// @see OExportOutput::oneWayLayout — the same flag, from the other side.
     bool oneWayLayout{false};
@@ -319,8 +315,6 @@ struct OExportRunRequest
     /// @see OExportOutput::foldedFabric — the same flag, from the other side.
     bool foldedFabric{false};
 
-    /// @see OExportOutput::plotterPlan — the same flag, from the other side.
-    bool plotterPlan{false};
 
     /// @see OExportOutput::excludedPieces — the same set, from the other side.
     QSet<quint32> excludedPieces{};

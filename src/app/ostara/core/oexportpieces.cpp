@@ -161,7 +161,17 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
     // ne pouvait superposer les tailles qu'en devinant un décalage qu'il n'avait jamais reçu ; la 1
     // n'avait aucun décor. **Un lecteur qui ne trouve pas ce qu'il demande le dit** — il ne lit jamais
     // la version la plus proche et ne la dessine.
-    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("5"));
+    // ── Version 6 : UN décor, celui de la référence, pour toutes les tailles ─────────────────────
+    //
+    // La 5 écrivait un décor par taille, résolu sur la pièce de cette taille. Le canvas, lui, n'en
+    // dessine qu'un — sur sa couche de référence — et superpose les tailles : le cartouche occupe
+    // donc UNE place, et sa fraction dans la pièce VARIE quand la pièce grandit (mesuré sur le SVG
+    // graded : 0.853 à la 32, 0.752 à la 46 pour le droit-fil de « Manche »). La 5 gardait la
+    // fraction constante, ce qui décalait tout de 5 cm à la 46.
+    //
+    // Le lecteur sait quoi faire de la 6 : il applique l'écart d'alignement à la PIÈCE et pas au
+    // décor, ce qui laisse le décor à sa place. Il ne devine rien : la version le dit.
+    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("6"));
     if (!layers.isEmpty())
     {
         pieces.setAttribute(QStringLiteral("reference"),
@@ -265,32 +275,22 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             // direction, so the field is left empty and the piece still HAS one. Reading it here
             // rather than at nesting time costs one pure function, and it is the same reading the
             // cutting plan makes — `PieceDirection`, never a second opinion on the fold.
-            auto direction = geometry.direction;
-            if (!direction.known)
-            {
-                direction = OExportCuttingDirection::PieceDirection(geometry.piece);
-                if (direction.known && geometry.mirrored)
-                {
-                    // A reflection about a vertical axis sends an angle `a` to `180 − a`, and it
-                    // lives in the matrix — which leaves the stored grainline untouched.
-                    direction = OExportCuttingDirection::Mirrored(direction);
-                }
-            }
-            if (direction.known)
-            {
-                piece.setAttribute(QStringLiteral("grain"), Number(direction.angle));
-                // The arrow type is the whole of « the same way round »: it says whether the piece
-                // has one axis or two, so it says what that option is allowed to keep.
-                piece.setAttribute(QStringLiteral("arrows"),
-                                    QString::number(static_cast<int>(direction.arrows)));
-            }
-
             // ── La ligne de droit-fil ──────────────────────────────────────────────────────────
             //
-            // The ANGLE above is what a plan READS; the line is what a plan DRAWS. Written in the
+            // The ANGLE below is what a plan READS; the line is what a plan DRAWS. Written in the
             // same frame as the outline — mapped, so a piece that carries a mirror has its line
             // where the piece actually is — because a segment in any other frame would sit beside
             // the piece the moment the plan lays it somewhere else.
+            //
+            // ⚠️ **The line is read FIRST, because the angle is taken FROM it.** `PieceDirection`
+            // answers on the piece's STORED grainline, which no matrix has touched; the line written
+            // here is mapped. Mirroring the stored angle afterwards therefore described a piece that
+            // the file does not draw: on « Parementure manche » (the one piece of the sample whose
+            // grainline is not at 90°) the payload carried `grain="135.000"` beside
+            // `grainLine` at **45°** and a drawn grainline at **45°** — its own mirror image, and
+            // two facts out of three agreed. A plan that pinned the piece on the angle would have
+            // turned it by 90° across the grain. One reading, one source: when the piece has a line,
+            // the angle IS that line's direction.
             QLineF grainline;
             if (geometry.grainline.resolved)
             {
@@ -302,10 +302,50 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             {
                 grainline = geometry.piece.GetGrainline().GetMainLine();
             }
-            if (!grainline.isNull())
+            const QLineF mappedGrainline =
+                grainline.isNull() ? QLineF() : geometry.piece.GetMatrix().map(grainline);
+
+            auto direction = geometry.direction;
+            if (!direction.known)
             {
-                piece.setAttribute(QStringLiteral("grainLine"),
-                                    LineData(geometry.piece.GetMatrix().map(grainline)));
+                direction = OExportCuttingDirection::PieceDirection(geometry.piece);
+                if (direction.known && geometry.mirrored)
+                {
+                    // A reflection about a vertical axis sends an angle `a` to `180 − a`, and it
+                    // lives in the matrix — which leaves the stored grainline untouched. Only the
+                    // piece with NO grainline needs it: the one that has a line takes its angle from
+                    // the mapped line, mirror included, a few lines below.
+                    direction = OExportCuttingDirection::Mirrored(direction);
+                }
+            }
+            if (!mappedGrainline.isNull() || direction.known)
+            {
+                if (mappedGrainline.isNull())
+                {
+                    piece.setAttribute(QStringLiteral("grain"), Number(direction.angle));
+                }
+                else
+                {
+                    // An axis, not a direction: its two ends have no order, so half a turn is the
+                    // same orientation and the plan must not see `-135` where the pattern means `45`.
+                    qreal alignment = std::fmod(mappedGrainline.angle(), 180.0);
+                    if (alignment < 0.0)
+                    {
+                        alignment += 180.0;
+                    }
+                    piece.setAttribute(QStringLiteral("grain"), Number(alignment));
+                }
+                // The arrow type is the whole of « the same way round »: it says whether the piece
+                // has one axis or two, so it says what that option is allowed to keep.
+                if (direction.known)
+                {
+                    piece.setAttribute(QStringLiteral("arrows"),
+                                        QString::number(static_cast<int>(direction.arrows)));
+                }
+            }
+            if (!mappedGrainline.isNull())
+            {
+                piece.setAttribute(QStringLiteral("grainLine"), LineData(mappedGrainline));
             }
 
             // ── Le pli ──────────────────────────────────────────────────────────────────────────
@@ -369,16 +409,21 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             // et le `<group>` plus bas porte en plus le jeu commun. C'est le LECTEUR qui choisit : le
             // groupe s'il dessine le groupe entier, le membre s'il n'en affiche qu'un. Sans les deux, un
             // membre seul recevait le cartouche et la droit-fil du groupe, dans le repère du groupe.
-            // Le décor de CETTE taille, et celui de la référence à défaut.
-            const auto entry = pieceDecorByLayerAndId.constFind({index, geometry.id});
+            // ── UN décor, celui de la RÉFÉRENCE, pour toutes les tailles ─────────────────────────
+            //
+            // ⚠️ **C'est la règle de Graded, et la seule qui reproduise ce qu'on voit.** Le canvas
+            // dessine le décor UNE fois — ses enfants sont masqués sur toutes les couches sauf la
+            // référence — et les tailles sont superposées : un cartouche occupe donc UNE place, la
+            // même pour tout le monde. Un décor résolu PAR TAILLE, comme le faisait la version 5,
+            // suivait la fraction de la pièce : mesuré contre le SVG graded, « Manche » passait de
+            // 0.796 à 0.805 là où le canvas est à 0.957, et l'écart atteignait 5 cm à la taille 46.
+            //
+            // Ce que le lecteur reçoit est donc le dessin de la référence, écrit dans le repère des
+            // `outline` : il applique l'écart d'alignement aux deux, et ne recalcule plus rien.
             const auto referenceEntry = pieceDecorByLayerAndId.constFind({0, geometry.id});
             const OGradedSvg::LayoutObject *pieceDecor = nullptr;
-            if (entry != pieceDecorByLayerAndId.cend() && entry.value() != nullptr)
-            {
-                pieceDecor = entry.value();
-            }
-            else if (referenceEntry != pieceDecorByLayerAndId.cend()
-                     && referenceEntry.value() != nullptr)
+            if (referenceEntry != pieceDecorByLayerAndId.cend()
+                && referenceEntry.value() != nullptr)
             {
                 pieceDecor = referenceEntry.value();
             }

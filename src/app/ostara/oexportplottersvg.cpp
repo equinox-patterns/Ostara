@@ -58,8 +58,8 @@ auto OExportPlotterSvg::Write(const QString &path, const OExportOutput &output,
     OExportCanvas::Build(&scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, &content,
                          {}, nullptr, false, nullptr,
-                         {output.cuttingPlan, output.foldedFabric, output.plotterPlan,
-                          output.matWidthMm, output.matHeightMm, output.result.matCount});
+                         {output.format, output.foldedFabric, output.matWidthMm,
+                          output.matHeightMm, output.result.matCount});
 
     if (content.layers.isEmpty())
     {

@@ -164,13 +164,17 @@ struct OExportNestingParams
     double marginPx{0.0};
     double gapPx{0.0};      ///< space kept between two pieces
 
-    /// @brief Whether this run is a cutting plan.
+    /// @brief Whether the pieces must follow their grain — each pinned to the rotations its
+    ///        direction allows.
     ///
-    /// It is the one thing that separates the two runs: a cutting plan lays pieces on fabric, whose
-    /// grain the pieces must follow, so each one is pinned to the rotations its direction allows.
-    /// **A print run is not**, and false here leaves the engine exactly as it was — free to turn
-    /// every piece to any of its 180 orientations.
-    bool cuttingPlan{false};
+    /// **C'est la seule chose que le moteur en demande, et elle est plus étroite que le format.** Un
+    /// plan de coupe et un projecteur la demandent tous deux : on pose des pièces sur du tissu, dont
+    /// le sens ne se négocie pas. Une impression ne la demande pas — false ici laisse le moteur
+    /// exactement comme il était, libre de tourner chaque pièce dans ses 180 orientations.
+    ///
+    /// ⚠️ Elle s'appelait `cuttingPlan`, et c'était le format qu'elle nommait, pas la question
+    /// qu'elle pose : le projecteur est un plan de tissu sans être un plan de coupe.
+    bool grainlinePinned{false};
 
     /// @brief « Sens unique » — aucune pièce n'est retournée d'un demi-tour.
     ///
@@ -232,6 +236,20 @@ public:
     /// @param params the imposed width, and the two lengths that space the pieces out
     static auto Run(const QVector<OExportSizeLayer> &layers, const OExportNestingParams &params)
         -> OExportNestingResult;
+
+    /// @brief L'aire totale des EMPREINTES, en pixels² — ce que le moteur doit poser, sans les espaces.
+    ///
+    /// **C'est une borne inférieure de la place nécessaire, et elle est EXACTE.** Une empreinte est
+    /// l'union des contours d'une pièce sur toutes les tailles ; le moteur n'en pose jamais deux au
+    /// même endroit, donc leur somme est la surface qu'un bac doit au moins offrir. Les espaces et la
+    /// forme des pièces n'y sont pas : un bac qui ne la couvre pas ne peut rien poser, et un bac qui
+    /// la couvre peut encore échouer — c'est le sens dans lequel une estimation a le droit de se
+    /// tromper ici.
+    ///
+    /// ⚠️ **Elle se calcule SANS nidifier** : c'est la même union de contours que le moteur
+    /// construira, quelques millisecondes, et c'est ce qui permet à un format de refuser un plan
+    /// impossible avant de faire tourner quoi que ce soit.
+    static auto FootprintAreaPx(const QVector<OExportSizeLayer> &layers) -> double;
 };
 
 #endif // OEXPORTNESTING_H

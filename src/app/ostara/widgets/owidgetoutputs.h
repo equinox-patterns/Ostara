@@ -56,10 +56,10 @@ struct OExportOutputRow
     bool favorite{false};    ///< a favorite of the current context already carries this name
     bool canFavorite{true};  ///< false when the pattern has no measurements table to key on
 
-    /// Whether this generation was asked for as a cutting plan. A cutting plan has **no export**
-    /// today — HPGL/PLT comes later — so its export cell is drawn disabled. The dock is told the
-    /// fact and draws it; it is not the dock's to know what a format is (spec CuttingPlan §8).
-    bool cuttingPlan{false};
+    /// Whether this generation leaves as a **cutting file** — DXF, PLT, HPGL — rather than as a PDF
+    /// or a plotter SVG. The dock is told the fact and only uses it for the export cell's tooltip; it
+    /// is not the dock's to know what a format is (spec CuttingPlan §8).
+    bool cuttingFile{false};
 };
 
 /**

@@ -45,6 +45,7 @@
 #include "oexportpdf.h"
 #include "oexportplanimage.h"
 #include "oexportplanimagewriter.h"
+#include "oexportprojector.h"
 #include "oexportplotterlayout.h"
 #include "oexportplottersvg.h"
 #include "oexportsheets.h"
@@ -76,6 +77,7 @@
 #include <QFutureWatcher>
 #include <QHash>
 #include <QMessageBox>
+#include <QTemporaryDir>
 #include <QScopeGuard>
 #include <QStringList>
 #include <QThreadPool>
@@ -194,7 +196,7 @@ auto GenerationTimeText(qint64 milliseconds) -> QString
 /// sélectionner une autre ligne du dock, ou annuler une correction, ramène le temps qui l'a produite.
 auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing) -> QString
 {
-    if (output.plotterPlan)
+    if (output.format == OExportFormat::Kind::Plotter)
     {
         // Un plan plotter n'a ni laize ni pages : il a un **tapis**, et un **nombre de morceaux** —
         // le chiffre que tout l'onglet cherche à faire descendre. Le tapis ouvre la ligne, parce
@@ -231,9 +233,9 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
         return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
     }
 
-    if (!output.cuttingPlan)
+    if (output.format != OExportFormat::Kind::CuttingPlan)
     {
-        // ⚠️ **Le test porte sur `cuttingPlan`, surtout PAS sur « pas d'artboards »** : un rouleau
+        // ⚠️ **Le test porte sur le FORMAT, surtout PAS sur « pas d'artboards »** : un rouleau
         // d'impression n'a pas d'artboards lui non plus, et la forme neuve y paraîtrait juste par
         // accident — en appelant « laize » la largeur d'un rouleau de papier.
         //
@@ -446,8 +448,20 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
     // What separates the two runs. False leaves the engine turning every piece freely, which is
     // what a print run wants and what it has always done.
-    params.cuttingPlan = request.cuttingPlan;
-    params.oneWayLayout = request.oneWayLayout;
+    // Le moteur ne demande qu'une chose : les pièces suivent-elles leur droit-fil ? Un plan de
+    // coupe et un projecteur, oui ; une impression, non.
+    params.grainlinePinned = OExportFormat::IsCutting(request.format);
+
+    // ── Le sens unique est une RÈGLE du projecteur, pas un réglage ───────────────────────────────
+    //
+    // Un plan projeté se lit d'un coup d'œil sur le tissu : deux pièces dont l'une est couchée tête
+    // en bas ne se lisent pas, et c'est exactement ce que « toutes les pièces dans le même sens »
+    // demande. Le plan de coupe, lui, en fait une case à cocher — il a ses raisons, et le projecteur
+    // n'en a pas.
+    //
+    // ⚠️ « Sens unique » retire un SENS, pas un axe : une pièce à droit-fil « Double » garde ses deux
+    // axes (c'est ce que dit `CuttingRules::AllowedAngles`), elle n'est simplement jamais retournée.
+    params.oneWayLayout = request.oneWayLayout || OExportFormat::IsProjector(request.format);
 
     // **Closing this dialog is how the run is given up.** The engine has no abort hook of its own,
     // so one is handed to it below: the cross sets a flag, the engine reads it between its
@@ -564,7 +578,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // path has already put the document back on the size it was found on.
     //
     // La MINIATURE est du voyage, résolue dans le même appel : c'est le même dessin
-    // gelé, la même fenêtre, et un plan de coupe n'en porte aucune — `request.cuttingPlan` le dit à
+    // gelé, la même fenêtre, et un plan de coupe n'en porte aucune — `request.format` le dit à
     // `ResolvePieceDecor`, qui ne l'enregistre alors pas du tout.
     // Le décor des GROUPES de la couche de référence, résolu au même moment et pour la même raison —
     // voir OExportGroupDecor. Rangé à part parce que le résultat du nesting n'existe pas encore : il
@@ -640,15 +654,14 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         for (OExportPieceGeometry &piece : layer.pieces)
         {
             piece.decor =
-                ResolvePieceDecor(piece, ownerRange, pattern, doc, request.cuttingPlan, sizeAxes);
+                ResolvePieceDecor(piece, ownerRange, pattern, doc, request.format, sizeAxes);
 
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
             // as a single-size run left the document on the run's own size. It follows the piece, so
             // it is frozen per size exactly like the decor.
             piece.grainline = ResolvePieceGrainline(piece, ownerRange, grainlineUnit, pattern,
-                                                    request.cuttingPlan,
-                                                    referenceSeats.value(piece.id));
+                                                    request.format, referenceSeats.value(piece.id));
         }
     };
 
@@ -675,7 +688,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         {
             decor.insert(it.key(),
                          ResolveGroupDecor(it.value(), it.key(), range, grainlineUnit, pattern,
-                                           doc, request.cuttingPlan, sizeAxes));
+                                           doc, request.format, sizeAxes));
         }
     };
 
@@ -716,7 +729,10 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // ferait re-parser le document pour rien.
     //
     // Ni un plan de coupe ni un run plotter n'en porte : rien à geler, et donc rien à leur donner.
-    if (not request.cuttingPlan and not request.plotterPlan)
+    // Seuls l'impression et le projecteur portent des miniatures : le plan de coupe n'en veut pas,
+    // et le plotter dessine le patron tel quel, sans cartouche.
+    if (OExportFormat::CarriesDecor(request.format)
+        and request.format != OExportFormat::Kind::Plotter)
     {
         if (m_thumbnailSnapshots != nullptr)
         {
@@ -738,6 +754,15 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         QVector<OExportSizeLayer> layers{};
         OExportNestingResult result{};
         QHash<quint32, OExportGroupDecor> groupDecor{};
+
+        /// **Ce que la passe a RÉELLEMENT posé**, quand ce n'est pas ce que la requête demandait.
+        ///
+        /// Un projecteur cherche sa largeur et son espacement : la requête dit « 10 cm », le plan
+        /// retenu peut en avoir posé 5, et sa largeur n'était dans aucune requête. La génération
+        /// enregistre ce qui s'est passé — c'est ce que la barre d'état et la recette lisent — et
+        /// zéro veut dire « rien de particulier », donc les valeurs de la requête.
+        int widthMm{0};
+        qreal gapMm{0.0};
     };
 
     /// Le sort d'une passe : son plan, ou la raison pour laquelle il n'y en a pas. **Aucun message
@@ -782,7 +807,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         // stays on the GUI thread: VLayoutPiece::Create reads the application settings, and
         // the container it reads is the one the scenes are built from.
         OExportGeometry geometry(pattern, doc, m_m);
-        geometry.SetCuttingPlan(request.cuttingPlan);
+        geometry.SetFormat(request.format);
         // **La matière, et c'est tout ce que le jeu de pièces a de plus** : chaque plan lit la sienne.
         geometry.SetCuttingMaterial(material);
         // Et si le tissu est plié : c'est de là que la pièce au pli garde son pli au lieu d'être
@@ -795,7 +820,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         //
         // La conversion mm → px est la même qu'ailleurs, et au même endroit que les autres : une seule
         // fois, à l'entrée du run.
-        if (request.plotterPlan)
+        if (request.format == OExportFormat::Kind::Plotter)
         {
             geometry.SetCuttingMat(ToPixel(request.matWidthMm, Unit::Mm),
                                    ToPixel(request.matHeightMm, Unit::Mm));
@@ -835,7 +860,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         // gelée, donc retoucher la plage vivante ne doit pas déplacer un plan déjà calculé.
         OSizerange coveringRange;
         const OSizerange *planRange = decorRange;
-        if (request.cuttingPlan && planRange == nullptr && pattern != nullptr)
+        if (OExportFormat::IsCutting(request.format) && planRange == nullptr && pattern != nullptr)
         {
             const auto orFloor = [](qreal chosen, qreal fromDocument)
             { return chosen > 0.0 ? chosen : (fromDocument > 0.0 ? fromDocument : 1.0); };
@@ -913,7 +938,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 // droit-fil dans la plage, cette marche ne porterait rien, et il n'y a pas de raison
                 // de re-parser tout le patron pour elle — un lot de métrage en compte des centaines.
                 const bool seatMatters =
-                    planRange == nullptr || !request.cuttingPlan
+                    planRange == nullptr || !OExportFormat::IsCutting(request.format)
                     || std::any_of(planRange->pieceContent.cbegin(), planRange->pieceContent.cend(),
                                    [](const OSizerange::PieceContent &content)
                                    { return content.grainline.valid; });
@@ -1066,7 +1091,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         // drift like a piece growing from its centre. Unioning them into one footprint only
         // means something once they line up — which is what Graded does before it draws,
         // and what the nesting needs for the same reason.
-        OExportAlignment::Apply(planLayers, pattern);
+        // Le projecteur CENTRE chaque pièce sur elle-même : une pièce au pli est rangée sur le côté
+        // qu'elle occupe pliée, et dépliée elle pendrait d'un côté — l'empreinte s'allonge et la
+        // projection n'est plus centrée. Un plan projeté n'a pas de pli à border (voir
+        // OExportAlignment::Apply).
+        OExportAlignment::Apply(planLayers, pattern, OExportFormat::IsProjector(request.format));
 
         int pieceCount = 0;
         for (const OExportSizeLayer &layer : planLayers)
@@ -1085,6 +1114,53 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             return pass;
         }
 
+        // ── Le projecteur cherche sa largeur ──────────────────────────────────────────────────────
+        //
+        // Le moteur EXIGE une largeur, et un projecteur n'a pas de laize : sa largeur est cherchée,
+        // palier par palier, jusqu'au premier dont la page tient sous le plafond. C'est fait ici
+        // plutôt qu'à l'appelant parce que c'est ici que les pièces résolues et alignées existent —
+        // la recherche ne fait tourner que le MOTEUR, jamais la géométrie : une, deux, trois passes
+        // sur les mêmes empreintes.
+        if (OExportFormat::IsProjector(request.format))
+        {
+            OExportProjector::Limits limits;
+            limits.gapMm = request.gapMm;
+            limits.pageMaxMm = 5000.0;
+
+            QFuture<OExportProjector::Outcome> future = QtConcurrent::run(
+                &pool, &OExportProjector::Nest, planLayers, planParams, limits);
+
+            QFutureWatcher<OExportProjector::Outcome> watcher;
+            QEventLoop fitLoop;
+            connect(&watcher, &QFutureWatcher<OExportProjector::Outcome>::finished, &fitLoop,
+                    &QEventLoop::quit);
+            watcher.setFuture(future);
+            fitLoop.exec();
+
+            const OExportProjector::Outcome outcome = watcher.result();
+            waitDialog.reset();
+
+            if (outcome.abandoned)
+            {
+                pass.stop = PassResult::Stop::Abandoned;
+                return pass;
+            }
+
+            if (!outcome.ok)
+            {
+                // **Le refus, et il est chiffré.** Aucun fichier ne sera écrit : au-delà du plafond
+                // le PDF sortirait rétréci en silence, et c'est exactement le fichier qui a l'air
+                // juste. Le message dit quoi changer, et par combien.
+                pass.stop = PassResult::Stop::Failed;
+                pass.error = outcome.error;
+                return pass;
+            }
+
+            pass.plan = PlanPass{std::move(planLayers), outcome.result, std::move(planGroupDecor),
+                                 outcome.widthMm, outcome.gapMm};
+            return pass;
+        }
+
         // Un run plotter ne parle PAS au moteur de nesting, et ce n'est pas un raccourci : un vrai
         // nesting déplacerait et tournerait les morceaux, et le puzzle ne se recollerait plus. Sa mise
         // en page est arithmétique — les morceaux empilés par blocs — et c'est tout ce qu'un plotter
@@ -1093,7 +1169,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         // Le même endroit, le même thread, le même dialogue d'attente, le même report d'erreur : seule
         // la fonction qui calcule change.
         QFuture<OExportNestingResult> future =
-            request.plotterPlan
+            request.format == OExportFormat::Kind::Plotter
                 ? QtConcurrent::run(&pool, &OExportPlotterLayout::Run, planLayers,
                                     OExportPlotter::Mat{ToPixel(request.matWidthMm, Unit::Mm),
                                                         ToPixel(request.matHeightMm, Unit::Mm)})
@@ -1177,7 +1253,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         }
 
         QString message = tr("This size range carries no piece to nest.");
-        if (request.cuttingPlan)
+        if (OExportFormat::IsCutting(request.format))
         {
             // Un plan de coupe ne prend que les pièces dont la section Cut de SA matière est
             // renseignée : c'est la seule raison possible que la géométrie ne montre pas, donc elle est
@@ -1230,6 +1306,14 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.rangeName = request.rangeName;
     output.documentWidthMm = request.documentWidthMm;
 
+    // Le projecteur n'a pas de laize : ce qu'il a trouvé, c'est un palier de largeur et un espacement
+    // qui a pu descendre au plancher. La génération garde **ce qui a été posé**, jamais ce qui avait
+    // été demandé — sinon la barre d'état et la recette décriraient un autre plan.
+    if (OExportFormat::IsProjector(request.format) && fabric.plan.has_value())
+    {
+        output.documentWidthMm = fabric.plan->widthMm;
+    }
+
     // What this run was asked for. Kept so the run can be asked again — the Refresh entry
     // replays this exact request, and these values are the part of it nothing else records.
     output.singleSize = request.singleSize;
@@ -1238,6 +1322,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.baseC = request.baseC;
     output.marginMm = request.marginMm;
     output.gapMm = request.gapMm;
+    if (OExportFormat::IsProjector(request.format) && fabric.plan.has_value()
+        && fabric.plan->gapMm > 0.0)
+    {
+        output.gapMm = fabric.plan->gapMm;
+    }
     output.unit = request.unit;
     output.printModelToken = request.printModelToken;
     output.columns = request.columns;
@@ -1249,10 +1338,9 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // reads them. Request kept as a fallback for a generation replayed from a favourite.
     output.pinnedAxes = runAxes.isEmpty() ? request.pinnedAxes : runAxes;
     output.groupMemberChoices = request.groupMemberChoices;
-    output.cuttingPlan = request.cuttingPlan;
-    output.oneWayLayout = request.oneWayLayout;
+    output.format = request.format;
+    output.oneWayLayout = params.oneWayLayout;
     output.foldedFabric = request.foldedFabric;
-    output.plotterPlan = request.plotterPlan;
     output.excludedPieces = request.excludedPieces;
     output.matWidthMm = request.matWidthMm;
     output.matHeightMm = request.matHeightMm;
@@ -1629,7 +1717,7 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     // l'ouvre — le dock reste le seul endroit qui décide ce qu'un run produit, sans une colonne de
     // plus ni un menu.
     if (const OExportOutput *cutting = m_exportOutputs.Find(id);
-        cutting != nullptr && cutting->cuttingPlan)
+        cutting != nullptr && cutting->format == OExportFormat::Kind::CuttingPlan)
     {
         ExportOutputToCuttingFile(id);
         return;
@@ -1639,7 +1727,7 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     // pas un mot**. Le même bouton ouvre le dialogue de son type de run — c'est ainsi que le dock
     // reste le seul endroit qui décide ce qu'un run produit, sans une colonne de plus ni un menu.
     if (const OExportOutput *plotter = m_exportOutputs.Find(id);
-        plotter != nullptr && plotter->plotterPlan)
+        plotter != nullptr && plotter->format == OExportFormat::Kind::Plotter)
     {
         ExportOutputToPlotterSvg(id);
         return;
@@ -1677,9 +1765,35 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     // The dialog's one choice, straight through: whether the layout is written as a layer the
     // reader can switch off. It opens on no, and no is the answer that cannot lose anything. The
     // cover page is not that choice and never was: it goes out of every layer whatever this says.
+    // ── Le dessin du mode Graded, écrit par SON chemin ─────────────────────────────────────────
+    //
+    // ⚠️ **C'est le fichier du mode Graded qui part dans le PDF, pas le dessin de ce run.** Le canvas
+    // d'export dessine le PLAN — pièces nestées et tournées — et refabrique les enfants par une règle
+    // qui n'est pas celle de l'écran : mesuré, le droit-fil de « Manche » sortait à 0.796 de la pièce
+    // là où le mode Graded est à 0.853. Le mode Graded écrit les pièces à plat et UN décor, celui
+    // qu'on voit : c'est ce document-là que la cliente doit retrouver dans Rabnest.
+    //
+    // Écrit dans un dossier temporaire qui vit jusqu'à la fin de l'appel — le PDF le lit avant.
+    QTemporaryDir gradedDir;
+    QString gradedDrawing;
+    if (existing->hasRange && !existing->rangeName.isEmpty() && gradedDir.isValid())
+    {
+        QString written;
+        QString gradedError;
+        // La copie du payload : même image, texte en CONTOURS — celui qui part dans le PDF.
+        QString payloadCopy = gradedDir.filePath(QStringLiteral("graded-payload.svg"));
+        if (ExportGradedRangeTo(existing->rangeName, gradedDir.path(), false, &written, &gradedError,
+                                &payloadCopy)
+            && !payloadCopy.isEmpty())
+        {
+            gradedDrawing = payloadCopy;
+        }
+    }
+
     if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc,
                            hasMarks ? &marks : nullptr, framed, dialog.AddLayoutLayer(),
-                           cover.IsEmpty() ? nullptr : &cover, dialog.CarriesPayload()))
+                           cover.IsEmpty() ? nullptr : &cover, dialog.CarriesPayload(),
+                           gradedDrawing))
     {
         QMessageBox::warning(this, tr("Export mode"),
                              tr("\"%1\" could not be exported.").arg(existing->name));
@@ -2016,8 +2130,8 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
     bool framed = false;
     const bool hasMarks = ExportMarksOf(output, marks, framed);
 
-    const OExportRunFlags flags{output.cuttingPlan, output.foldedFabric, output.plotterPlan,
-                                output.matWidthMm, output.matHeightMm, output.result.matCount};
+    const OExportRunFlags flags{output.format, output.foldedFabric, output.matWidthMm,
+                                output.matHeightMm, output.result.matCount};
 
     // Le plan de TISSU ouvre la scène — c'est lui qui la vide, et il part de son origine.
     OExportCanvas::Build(scene, output.layers, output.result,
@@ -2044,8 +2158,8 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
             scene, output.liningLayers, output.liningResult,
             output.hasRange ? &output.range : nullptr, pattern, doc, nullptr, {}, nullptr, false,
             nullptr,
-            {output.cuttingPlan, output.foldedFabric, output.plotterPlan, output.matWidthMm,
-             output.matHeightMm, output.liningResult.matCount},
+            {output.format, output.foldedFabric, output.matWidthMm, output.matHeightMm,
+             output.liningResult.matCount},
             seat);
     }
 }
@@ -2202,7 +2316,7 @@ void MainWindow::RefreshOutputsDock()
         if (const OExportOutput *output = m_exportOutputs.Find(id))
         {
             rows.append(OExportOutputRow{output->id, output->name, favorites.contains(output->name),
-                                         canFavorite, output->cuttingPlan});
+                                         canFavorite, output->format == OExportFormat::Kind::CuttingPlan});
         }
     }
 

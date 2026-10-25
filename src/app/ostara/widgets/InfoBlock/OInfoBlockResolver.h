@@ -63,9 +63,27 @@ public:
     static auto ResolveEffectiveConfig(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data)
         -> OInfoBlockEffectiveState;
 
+    /**
+     * @brief Une quantité de coupe IMPOSÉE — pour un format où le nombre écrit n'est pas le vrai.
+     *
+     * Le projecteur montre chaque pièce **une fois par coupe** : une pièce coupée deux fois apparaît
+     * deux fois, et chacune doit dire `Cut 1`. La quantité réelle reste dans la charge utile, où
+     * Rabnest la relit ; c'est un mensonge LOCAL et voulu, et il ne doit pas sortir du PDF.
+     *
+     * ⚠️ Il n'y a donc rien à décider par occurrence : la chaîne est la même pour toutes. Ce que
+     * l'override remplace, c'est la lecture du MODÈLE — et il ne s'applique qu'à la section « cut »,
+     * qui est la seule à nommer une quantité.
+     */
+    struct CutOverride
+    {
+        int quantity{1};
+        bool onFold{false};
+    };
+
     /** @brief Full effective state including the rendered lines of every block. */
     static auto ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data,
-                                      const QMap<QString, QString> &sizeAxes = {})
+                                      const QMap<QString, QString> &sizeAxes = {},
+                                      const CutOverride *cut = nullptr)
         -> OInfoBlockEffectiveState;
 
 private:
@@ -73,8 +91,8 @@ private:
                                     const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
                                     const IPieceInfo &piece, const VContainer *data,
                                     const OSizeTable *table, const QStringList &renderLanguages,
-                                    const QString &mainLocale, const QMap<QString, QString> &sizeAxes)
-        -> QList<OCartoucheRenderLine>;
+                                    const QString &mainLocale, const QMap<QString, QString> &sizeAxes,
+                                    const CutOverride *cut = nullptr) -> QList<OCartoucheRenderLine>;
 };
 
 #endif // OINFOBLOCKRESOLVER_H

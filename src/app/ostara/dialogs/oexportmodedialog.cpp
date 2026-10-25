@@ -30,6 +30,7 @@
 #include "oexportfavoriteswidget.h"
 #include "oexportgenerationlistwidget.h"
 #include "oexportplotterwidget.h"
+#include "oexportprojectorwidget.h"
 #include "oexportprintwidget.h"
 
 #include "oexportbatchpreflightdialog.h"
@@ -67,6 +68,13 @@ constexpr int kPrintTabIndex = 2;
 /// The tab that cuts a pattern on the mats of a domestic plotter.
 constexpr int kPlotterTabIndex = 3;
 
+/// L'onglet qui projette le patron à l'échelle 1:1 — le cinquième.
+///
+/// **Il ne demande ni laize, ni matière, ni page de garde** : la largeur est cherchée par le run, une
+/// projection est toujours du tissu, et un projecteur n'a pas de page de garde. Ce qu'il demande, ce
+/// sont les deux écarts et les tailles — une taille, ou une plage, comme Print.
+constexpr int kProjectorTabIndex = 4;
+
 // ── Les sous-onglets de la page « à générer » ────────────────────────────────────────────────
 //
 // La liste de travail, puis une liste de favoris par type. Les favoris sont triés par la recette
@@ -76,6 +84,7 @@ constexpr int kWorkingListTabIndex = 0;
 constexpr int kCuttingFavoritesTabIndex = 1;
 constexpr int kPrintFavoritesTabIndex = 2;
 constexpr int kPlotterFavoritesTabIndex = 3;
+constexpr int kProjectorFavoritesTabIndex = 4;
 
 /// Below this the dialog is cramped, whatever the tab bars need.
 ///
@@ -139,16 +148,19 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
     m_cuttingFavorites = new OExportFavoritesWidget(m_listTabs);
     m_printFavorites = new OExportFavoritesWidget(m_listTabs);
     m_plotterFavorites = new OExportFavoritesWidget(m_listTabs);
+    m_projectorFavorites = new OExportFavoritesWidget(m_listTabs);
 
     m_listTabs->addTab(m_listWidget, QString());
     m_listTabs->addTab(m_cuttingFavorites, QString());
     m_listTabs->addTab(m_printFavorites, QString());
     m_listTabs->addTab(m_plotterFavorites, QString());
+    m_listTabs->addTab(m_projectorFavorites, QString());
     m_listTabs->setTabToolTip(kWorkingListTabIndex,
                               tr("The runs described in the tabs beside, waiting to be generated.\n"
                                  "They are not kept: closing the pattern takes them with the session."));
 
-    for (OExportFavoritesWidget *favoritesView : {m_cuttingFavorites, m_printFavorites, m_plotterFavorites})
+    for (OExportFavoritesWidget *favoritesView :
+         {m_cuttingFavorites, m_printFavorites, m_plotterFavorites, m_projectorFavorites})
     {
         // Ce qui est coché décide de ce que le lot lance : le bouton suit chaque case, sinon il
         // promettrait un lot vide ou refuserait un lot plein.
@@ -161,6 +173,8 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
             [this](const QString &name) { OnFavoriteRemoveRequested(name, m_printFavorites); });
     connect(m_plotterFavorites, &OExportFavoritesWidget::RemoveRequested, this,
             [this](const QString &name) { OnFavoriteRemoveRequested(name, m_plotterFavorites); });
+    connect(m_projectorFavorites, &OExportFavoritesWidget::RemoveRequested, this,
+            [this](const QString &name) { OnFavoriteRemoveRequested(name, m_projectorFavorites); });
 
     listPageLayout->addWidget(m_listTabs);
 
@@ -188,6 +202,15 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
     m_plotterLayout->insertWidget(0, m_plotterWidget);
     connect(m_plotterWidget, &OExportPlotterWidget::Changed, this, &OExportModeDialog::OnFormChanged);
 
+    m_projectorTab = new QWidget(m_tabs);
+    m_projectorLayout = new QVBoxLayout(m_projectorTab);
+    // The stretch keeps the form at the top of the page; the widget is inserted before it.
+    m_projectorLayout->addStretch();
+
+    m_projectorWidget = new OExportProjectorWidget(m_data, m_measurements, m_context, m_projectorTab);
+    m_projectorLayout->insertWidget(0, m_projectorWidget);
+    connect(m_projectorWidget, &OExportProjectorWidget::Changed, this, &OExportModeDialog::OnFormChanged);
+
     // A tab bar that runs out of room shortens its labels, or hides the surplus behind
     // scroll arrows. Neither is readable, so the dialog is widened to the labels instead
     // — see AdjustMinimumWidth, which Retranslate calls once the titles are known.
@@ -198,6 +221,7 @@ OExportModeDialog::OExportModeDialog(const VContainer *data, const QSharedPointe
     m_tabs->addTab(m_cuttingTab, QString());
     m_tabs->addTab(m_printTab, QString());
     m_tabs->addTab(m_plotterTab, QString());
+    m_tabs->addTab(m_projectorTab, QString());
     m_tabs->setCurrentIndex(kListTabIndex);
     layout->addWidget(m_tabs);
 
@@ -247,6 +271,19 @@ void OExportModeDialog::ResetPlotterTab()
     m_plotterLayout->insertWidget(0, m_plotterWidget);
 
     connect(m_plotterWidget, &OExportPlotterWidget::Changed, this, &OExportModeDialog::OnFormChanged);
+
+    RefreshGenerateButtons();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportModeDialog::ResetProjectorTab()
+{
+    delete m_projectorWidget;
+
+    m_projectorWidget = new OExportProjectorWidget(m_data, m_measurements, m_context, m_projectorTab);
+    m_projectorLayout->insertWidget(0, m_projectorWidget);
+
+    connect(m_projectorWidget, &OExportProjectorWidget::Changed, this, &OExportModeDialog::OnFormChanged);
 
     RefreshGenerateButtons();
 }
@@ -410,7 +447,7 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         request.baseB = m_cuttingWidget->DimensionBase(1);
         request.baseC = m_cuttingWidget->DimensionBase(2);
         request.groupMemberChoices = m_cuttingWidget->MemberChoices();
-        request.cuttingPlan = true;
+        request.format = OExportFormat::Kind::CuttingPlan;
         request.oneWayLayout = m_cuttingWidget->IsOneWayLayout();
         request.foldedFabric = m_cuttingWidget->IsFoldedFabric();
 
@@ -432,7 +469,7 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
 
         // La destination. C'est elle qui fait découper la géométrie en morceaux — et c'est elle
         // aussi qui décidera du dialogue que le bouton d'export ouvrira.
-        request.plotterPlan = true;
+        request.format = OExportFormat::Kind::Plotter;
         request.matWidthMm = m_plotterWidget->MatWidthMm();
         request.matHeightMm = m_plotterWidget->MatHeightMm();
         request.matUnit = m_plotterWidget->MatUnit();
@@ -447,6 +484,28 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
         // Et rien d'autre : ni laize, ni pli, ni espacement, ni marge — un plotter coupe un patron,
         // une fois, sur un tapis. **Ni modèle de repères ni page de garde** : les laisser nommés
         // poserait des repères et un second document sur un fichier de découpe.
+        return request;
+    }
+
+    if (m_tabs != nullptr && m_tabs->currentIndex() == kProjectorTabIndex)
+    {
+        if (m_projectorWidget == nullptr)
+        {
+            return request;
+        }
+
+        // **Ni laize, ni matière, ni page de garde** — et `documentWidthMm` reste à zéro : c'est la
+        // recherche de largeur qui la trouvera, palier par palier, dans le run.
+        request.unit = m_projectorWidget->DisplayUnit();
+        request.rangeName = m_projectorWidget->SizeRangeName();
+        request.singleSize = m_projectorWidget->IsSingleSize();
+        request.baseA = m_projectorWidget->DimensionBase(0);
+        request.baseB = m_projectorWidget->DimensionBase(1);
+        request.baseC = m_projectorWidget->DimensionBase(2);
+        request.gapMm = m_projectorWidget->GapMm();
+        request.marginMm = m_projectorWidget->EdgeMarginMm();
+        request.format = OExportFormat::Kind::Projector;
+
         return request;
     }
 
@@ -483,6 +542,7 @@ auto OExportModeDialog::CurrentName() const -> QString
     //    la fin changeait. Trouvé.
     const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
     const bool plotter = m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex;
+    const bool projector = m_tabs != nullptr && m_tabs->currentIndex() == kProjectorTabIndex;
 
     QStringList bases;
     if (request.singleSize)
@@ -497,6 +557,10 @@ auto OExportModeDialog::CurrentName() const -> QString
             {
                 bases.append(m_plotterWidget->DimensionLabel(slot));
             }
+            else if (projector && m_projectorWidget != nullptr)
+            {
+                bases.append(m_projectorWidget->DimensionLabel(slot));
+            }
             else
             {
                 bases.append(m_printWidget->DimensionLabel(slot));
@@ -509,7 +573,8 @@ auto OExportModeDialog::CurrentName() const -> QString
     // Un plan plotter non plus : sa largeur est celle de son tapis, et son jeton dit lequel.
     const QString token = cutting && m_cuttingWidget != nullptr ? CuttingToken()
                          : plotter && m_plotterWidget != nullptr ? PlotterToken()
-                                                                 : request.printModelToken;
+                         : projector ? ProjectorToken()
+                                     : request.printModelToken;
 
     const QString base = OExportNameBuilder::Base(request.singleSize ? QString() : request.rangeName,
                                                   bases, token);
@@ -564,6 +629,15 @@ auto OExportModeDialog::PlotterToken() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportModeDialog::ProjectorToken() const -> QString
+{
+    // **Pas de laize dans le nom, et c'est le format qui le veut** : un projecteur n'en a pas, sa
+    // largeur est cherchée. Le mot seul dit ce que le fichier est ; la taille, elle, est déjà dans le
+    // nom quand elle est unique, et dans le nom de la plage sinon.
+    return tr("Projector");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportModeDialog::SetRunGenerator(RunGenerator generator)
 {
     m_generator = std::move(generator);
@@ -578,13 +652,17 @@ void OExportModeDialog::SetFavoriteRemover(FavoriteRemover remover)
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportModeDialog::KindOf(const OExportRunRequest &request) -> FavoriteKind
 {
-    if (request.cuttingPlan)
+    if (request.format == OExportFormat::Kind::CuttingPlan)
     {
         return FavoriteKind::Cutting;
     }
-    if (request.plotterPlan)
+    if (request.format == OExportFormat::Kind::Plotter)
     {
         return FavoriteKind::Plotter;
+    }
+    if (request.format == OExportFormat::Kind::Projector)
+    {
+        return FavoriteKind::Projector;
     }
     return FavoriteKind::Print;
 }
@@ -598,6 +676,8 @@ auto OExportModeDialog::ViewFor(FavoriteKind kind) const -> OExportFavoritesWidg
             return m_cuttingFavorites;
         case FavoriteKind::Plotter:
             return m_plotterFavorites;
+        case FavoriteKind::Projector:
+            return m_projectorFavorites;
         case FavoriteKind::Print:
         default:
             return m_printFavorites;
@@ -610,6 +690,7 @@ void OExportModeDialog::PopulateFavorites(const QVector<OExportFavorite> &favori
     QStringList cutting;
     QStringList print;
     QStringList plotter;
+    QStringList projector;
 
     for (const OExportFavorite &favorite : favorites)
     {
@@ -621,6 +702,9 @@ void OExportModeDialog::PopulateFavorites(const QVector<OExportFavorite> &favori
             case FavoriteKind::Plotter:
                 plotter.append(favorite.name);
                 break;
+            case FavoriteKind::Projector:
+                projector.append(favorite.name);
+                break;
             case FavoriteKind::Print:
             default:
                 print.append(favorite.name);
@@ -631,6 +715,7 @@ void OExportModeDialog::PopulateFavorites(const QVector<OExportFavorite> &favori
     m_cuttingFavorites->SetFavorites(cutting);
     m_printFavorites->SetFavorites(print);
     m_plotterFavorites->SetFavorites(plotter);
+    m_projectorFavorites->SetFavorites(projector);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -702,6 +787,10 @@ auto OExportModeDialog::BatchJobs() const -> QVector<BatchJob>
             appendChecked(FavoriteKind::Plotter);
             break;
 
+        case kProjectorFavoritesTabIndex:
+            appendChecked(FavoriteKind::Projector);
+            break;
+
         default:
             break;
     }
@@ -763,8 +852,12 @@ void OExportModeDialog::OnAddToList()
 {
     // The button exists on two tabs now, and each has its own idea of a run that can be filed.
     const bool cutting = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex;
+    const bool plotter = m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex;
+    const bool projector = m_tabs != nullptr && m_tabs->currentIndex() == kProjectorTabIndex;
     const bool valid = cutting ? m_cuttingWidget != nullptr && m_cuttingWidget->IsValid()
-                               : m_printWidget != nullptr && m_printWidget->IsValid();
+                     : plotter ? m_plotterWidget != nullptr && m_plotterWidget->IsValid()
+                     : projector ? m_projectorWidget != nullptr && m_projectorWidget->IsValid()
+                                 : m_printWidget != nullptr && m_printWidget->IsValid();
 
     if (m_batchRunning || not valid)
     {
@@ -791,9 +884,13 @@ void OExportModeDialog::OnAddToList()
     {
         ResetCuttingTab();
     }
-    else if (m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex)
+    else if (plotter)
     {
         ResetPlotterTab();
+    }
+    else if (projector)
+    {
+        ResetProjectorTab();
     }
     else
     {
@@ -920,8 +1017,8 @@ void OExportModeDialog::OnGenerateAll()
         {
             continue;
         }
-        cuttingFavorites = cuttingFavorites || job.request.cuttingPlan;
-        plotterFavorites = plotterFavorites || job.request.plotterPlan;
+        cuttingFavorites = cuttingFavorites || job.request.format == OExportFormat::Kind::CuttingPlan;
+        plotterFavorites = plotterFavorites || job.request.format == OExportFormat::Kind::Plotter;
     }
 
     QMap<quint32, quint32> groupChoices;
@@ -953,11 +1050,11 @@ void OExportModeDialog::OnGenerateAll()
             // Les réponses du pré-vol, écrites au dernier moment — le seul endroit qui sache qu'elles
             // valent pour ce run-ci. Un favori de la liste de travail n'est pas concerné : il a été
             // décrit dans son onglet, où ses choix ont déjà été faits.
-            if (request.cuttingPlan)
+            if (request.format == OExportFormat::Kind::CuttingPlan)
             {
                 request.groupMemberChoices = groupChoices;
             }
-            else if (request.plotterPlan)
+            else if (request.format == OExportFormat::Kind::Plotter)
             {
                 request.excludedPieces = excludedPieces;
             }
@@ -1068,6 +1165,18 @@ void OExportModeDialog::RebuildButtonBox()
             m_buttonBox->addButton(QDialogButtonBox::Cancel);
             break;
 
+        case kProjectorTabIndex:
+            // Le projecteur décrit un run à la fois, et son bouton Generate accepte le dialogue sans
+            // générer lui-même : `OExportMode::Run` génère ensuite, à partir de `CurrentRequest()`.
+            m_addToListButton = m_buttonBox->addButton(tr("Add to list"), QDialogButtonBox::ActionRole);
+            m_addToListButton->setAutoDefault(false);
+            connect(m_addToListButton, &QPushButton::clicked, this, &OExportModeDialog::OnAddToList);
+
+            m_generateButton = m_buttonBox->addButton(tr("Generate this output"), QDialogButtonBox::AcceptRole);
+
+            m_buttonBox->addButton(QDialogButtonBox::Cancel);
+            break;
+
         case kPlotterTabIndex:
             // Le plotter décrit un run à la fois, comme le plan de coupe. Son bouton Generate
             // accepte le dialogue sans générer lui-même : c'est `OExportMode::Run` qui génère
@@ -1152,9 +1261,12 @@ void OExportModeDialog::RefreshGenerateButtons()
     const bool printValid = m_printWidget != nullptr && m_printWidget->IsValid() && not m_batchRunning;
     const bool cuttingValid = m_cuttingWidget != nullptr && m_cuttingWidget->IsValid() && not m_batchRunning;
     const bool plotterValid = m_plotterWidget != nullptr && m_plotterWidget->IsValid() && not m_batchRunning;
+    const bool projectorValid =
+        m_projectorWidget != nullptr && m_projectorWidget->IsValid() && not m_batchRunning;
     const bool valid = m_tabs != nullptr && m_tabs->currentIndex() == kCuttingTabIndex ? cuttingValid
                      : m_tabs != nullptr && m_tabs->currentIndex() == kPlotterTabIndex ? plotterValid
-                                                                                       : printValid;
+                     : m_tabs != nullptr && m_tabs->currentIndex() == kProjectorTabIndex ? projectorValid
+                                                                                         : printValid;
 
     if (m_generateButton != nullptr)
     {
@@ -1198,6 +1310,7 @@ void OExportModeDialog::Retranslate()
     m_tabs->setTabText(kCuttingTabIndex, tr("Cutting plan"));
     m_tabs->setTabText(kPrintTabIndex, tr("Print"));
     m_tabs->setTabText(kPlotterTabIndex, tr("Plotter"));
+    m_tabs->setTabText(kProjectorTabIndex, tr("Projector"));
 
     // Les sous-onglets de la page 0. « Working list » plutôt que « List to generate » : c'est la
     // liste qu'on remplit et qu'on ne garde pas, et le mot doit le dire — les trois autres
@@ -1206,6 +1319,7 @@ void OExportModeDialog::Retranslate()
     m_listTabs->setTabText(kCuttingFavoritesTabIndex, tr("Cutting plan favorites"));
     m_listTabs->setTabText(kPrintFavoritesTabIndex, tr("Print favorites"));
     m_listTabs->setTabText(kPlotterFavoritesTabIndex, tr("Plotter favorites"));
+    m_listTabs->setTabText(kProjectorFavoritesTabIndex, tr("Projector favorites"));
 
     m_addedLabel->setText(m_addedName.isEmpty() ? QString() : tr("%1 was added to the list.").arg(m_addedName));
 

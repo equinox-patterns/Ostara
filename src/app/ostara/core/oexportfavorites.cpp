@@ -53,10 +53,13 @@ constexpr auto kFrameHeight = "frameHeightMm";
 constexpr auto kMarksTemplate = "marksTemplateName";
 constexpr auto kCoverPageTemplate = "coverPageTemplateName";
 constexpr auto kPinnedAxes = "pinnedAxes";
+constexpr auto kFormat = "format";
+// Les deux drapeaux d'avant le format. **Ils restent écrits**, pour qu'une version antérieure rouvre
+// encore un plan de coupe ou un plotter ; ils ne sont plus lus dès que le jeton est là.
 constexpr auto kCuttingPlan = "cuttingPlan";
+constexpr auto kPlotterPlan = "plotterPlan";
 constexpr auto kOneWayLayout = "oneWayLayout";
 constexpr auto kFoldedFabric = "foldedFabric";
-constexpr auto kPlotterPlan = "plotterPlan";
 constexpr auto kMatWidth = "matWidthMm";
 constexpr auto kMatHeight = "matHeightMm";
 constexpr auto kMatUnit = "matUnit";
@@ -92,10 +95,13 @@ auto RecipeOf(const OExportRunRequest &request) -> QVariantMap
     record.insert(QLatin1String(kMarksTemplate), request.marksTemplateName);
     record.insert(QLatin1String(kCoverPageTemplate), request.coverPageTemplateName);
     record.insert(QLatin1String(kPinnedAxes), pinned);
-    record.insert(QLatin1String(kCuttingPlan), request.cuttingPlan);
+    record.insert(QLatin1String(kFormat), OExportFormat::Token(request.format));
+    // Un format que cette version-ci ne connaît pas ne s'écrit pas comme un plan de coupe : le repli
+    // des deux drapeaux est « impression », et c'est le moins faux des deux.
+    record.insert(QLatin1String(kCuttingPlan), request.format == OExportFormat::Kind::CuttingPlan);
+    record.insert(QLatin1String(kPlotterPlan), request.format == OExportFormat::Kind::Plotter);
     record.insert(QLatin1String(kOneWayLayout), request.oneWayLayout);
     record.insert(QLatin1String(kFoldedFabric), request.foldedFabric);
-    record.insert(QLatin1String(kPlotterPlan), request.plotterPlan);
     record.insert(QLatin1String(kMatWidth), request.matWidthMm);
     record.insert(QLatin1String(kMatHeight), request.matHeightMm);
     record.insert(QLatin1String(kMatUnit), static_cast<int>(request.matUnit));
@@ -130,10 +136,14 @@ auto RequestOf(const QVariantMap &record) -> OExportRunRequest
     request.marksTemplateName = record.value(QLatin1String(kMarksTemplate), request.marksTemplateName).toString();
     request.coverPageTemplateName =
         record.value(QLatin1String(kCoverPageTemplate), request.coverPageTemplateName).toString();
-    request.cuttingPlan = record.value(QLatin1String(kCuttingPlan), request.cuttingPlan).toBool();
+    // **Le jeton d'abord.** Un favori écrit avant que le format ne soit une valeur n'en a pas, et
+    // c'est alors ses deux drapeaux qui répondent — dans l'ordre où ils étaient lus.
+    request.format = OExportFormat::FromToken(
+        record.value(QLatin1String(kFormat)).toString(),
+        OExportFormat::FromLegacyFlags(record.value(QLatin1String(kCuttingPlan)).toBool(),
+                                       record.value(QLatin1String(kPlotterPlan)).toBool()));
     request.oneWayLayout = record.value(QLatin1String(kOneWayLayout), request.oneWayLayout).toBool();
     request.foldedFabric = record.value(QLatin1String(kFoldedFabric), request.foldedFabric).toBool();
-    request.plotterPlan = record.value(QLatin1String(kPlotterPlan), request.plotterPlan).toBool();
     request.matWidthMm = record.value(QLatin1String(kMatWidth), request.matWidthMm).toDouble();
     request.matHeightMm = record.value(QLatin1String(kMatHeight), request.matHeightMm).toDouble();
     request.matUnit =

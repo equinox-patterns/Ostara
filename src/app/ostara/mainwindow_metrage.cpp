@@ -247,7 +247,7 @@ auto MainWindow::DoMetrageBatch(const VCommandLinePtr &expParams) -> bool
     const bool liningPlan = expParams->IsMetrageLining();
 
     OExportRunRequest request;
-    request.cuttingPlan = true;
+    request.format = OExportFormat::Kind::CuttingPlan;
     request.oneWayLayout = expParams->IsMetrageOneWay();
     request.foldedFabric = expParams->IsMetrageFolded();
     request.gapMm = expParams->MetragePieceGap();

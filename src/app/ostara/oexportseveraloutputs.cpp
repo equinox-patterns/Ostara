@@ -85,11 +85,11 @@ void MainWindow::ExportSeveralOutputs()
 
         // Le plan de coupe a sa catégorie, à côté des deux autres : il a un format depuis le
         // 15-10-2026 — DXF, PLT ou HPGL (`CuttingPlan.md` §24) — et le lot le prend comme les autres.
-        if (output->plotterPlan)
+        if (output->format == OExportFormat::Kind::Plotter)
         {
             plotterRows.append({output->id, output->name});
         }
-        else if (output->cuttingPlan)
+        else if (output->format == OExportFormat::Kind::CuttingPlan)
         {
             // **Une ligne par FICHIER, et non par génération.** Une génération qui porte la paire —
             // tissu et doublure — écrit deux fichiers, chacun avec son nom : elle se présente donc en

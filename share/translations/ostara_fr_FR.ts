@@ -14105,6 +14105,18 @@ Décochez un membre pour l&apos;écarter de ce run. Tout coché est ce qu&apos;u
 <context>
     <name>OExportModeDialog</name>
     <message>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1312"/>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="636"/>
+        <source>Projector</source>
+        <translation>Projecteur</translation>
+    </message>
+
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1321"/>
+        <source>Projector favorites</source>
+        <translation>Favoris de projecteur</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="106"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1195"/>
         <source>Export</source>
@@ -14286,6 +14298,133 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
         <translation>La surface que votre traceur peut réellement couper - ce que son propre logiciel vous montre, pas la taille du tapis lui-même.
 
 Une pièce plus grande que lui est découpée en morceaux aux bords du tapis, à rassembler comme un puzzle. Un tapis plus petit veut dire plus de morceaux, plus petits : c&apos;est ainsi qu&apos;on garde une marge de sécurité.</translation>
+    </message>
+</context>
+<context>
+    <name>OExportProjector</name>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="153"/>
+        <source>The plan does not fit in %1 × %1 cm</source>
+        <translation>Le plan ne tient pas dans %1 × %1 cm</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="160"/>
+        <source>The pieces take %1 m². With an edge margin of %2 cm, only %3 m² remain in a %4 × %4 cm plan.</source>
+        <translation>Les pièces occupent %1 m². Avec un écart au bord de %2 cm, il ne reste que %3 m² dans un plan de %4 × %4 cm.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="174"/>
+        <source>Reducing the edge margin to %1 cm would be enough.</source>
+        <translation>Réduire l&apos;écart au bord à %1 cm suffirait.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="179"/>
+        <source>No edge margin can make it fit: the pieces themselves fill the largest plan this format can hold.</source>
+        <translation>Aucun écart au bord ne peut le faire tenir : les pièces elles-mêmes remplissent le plus grand plan que ce format sache publier.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="199"/>
+        <source>The most compact plan obtained is %1 × %2 cm, with an edge margin of %3 cm and a space between pieces of %4 cm.</source>
+        <translation>Le plan le plus compact obtenu fait %1 × %2 cm, avec un écart au bord de %3 cm et un espace entre les pièces de %4 cm.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="207"/>
+        <source>Reduce the space between pieces, or split the plan.</source>
+        <translation>Réduisez l&apos;espace entre les pièces, ou coupez le plan.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="305"/>
+        <source>The pieces are wider than the largest plan this format can hold, with the edge margin asked for. Reduce the edge margin.</source>
+        <translation>Les pièces sont plus larges que le plus grand plan que ce format sache publier, avec l&apos;écart au bord demandé. Réduisez l&apos;écart au bord.</translation>
+    </message>
+</context>
+<context>
+    <name>OExportProjectorWidget</name>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="86"/>
+        <source>Unit:</source>
+        <translation>Unité :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="87"/>
+        <source>cm</source>
+        <translation>cm</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="88"/>
+        <source>inch</source>
+        <translation>Pouce</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="390"/>
+        <source>What to nest:</source>
+        <translation>Quoi imbriquer :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="391"/>
+        <source>Size range</source>
+        <translation>Panel de tailles</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="392"/>
+        <source>Single size</source>
+        <translation>Taille unique</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="393"/>
+        <source>Size range:</source>
+        <translation>Panel de tailles :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="395"/>
+        <source>Space between pieces:</source>
+        <translation>Espace entre les pièces :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="396"/>
+        <source>Room left between two pieces, to be able to lift one without dragging its neighbour.
+
+Never less than 5 cm: below that a projected plan is a cutting plan, and it is no longer what this format is for.</source>
+        <translation>La place laissée entre deux pièces, pour pouvoir en soulever une sans traîner sa voisine.
+
+Jamais moins de 5 cm : en dessous, un plan projeté est un plan de coupe, et ce n&apos;est plus ce que ce format existe pour faire.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="401"/>
+        <source>Space from the edge:</source>
+        <translation>Espace depuis les bords :</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="402"/>
+        <source>Room kept around the whole plan - a safety margin, and a place to put a hand.
+
+It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the pieces themselves rarely are the problem.</source>
+        <translation>La place gardée autour du plan entier - une marge de sécurité, et de quoi poser la main.
+
+C&apos;est la première chose à réduire quand le plan ne tient pas dans 500 x 500 cm : les pièces elles-mêmes sont rarement le problème.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="409"/>
+        <source>The PDF also carries three calibration layers, which the Ostara canvas does not show: a 5 cm grid, a 3 in grid and a magenta background.</source>
+        <translation>Le PDF contient aussi trois calques de calibration, que le canevas d&apos;Ostara n&apos;affiche pas : une grille de 5 cm, une grille de 3 pouces et un fond magenta.</translation>
+    </message>
+</context>
+<context>
+    <name>OExportPdf</name>
+    <message>
+        <location filename="../../src/app/ostara/oexportpdf.cpp" line="299"/>
+        <source>Magenta background</source>
+        <translation>Fond magenta</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportpdf.cpp" line="303"/>
+        <source>5cm grid</source>
+        <translation>Grille 5 cm</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/oexportpdf.cpp" line="306"/>
+        <source>3in grid</source>
+        <translation>Grille 3 pouces</translation>
     </message>
 </context>
 <context>

@@ -40,6 +40,8 @@
 #include "../core/oexportrunqueue.h"
 #include "../vmisc/def.h"
 
+class OExportProjectorWidget;
+
 class OExportCuttingWidget;
 class OExportFavoritesWidget;
 class OExportGenerationListWidget;
@@ -143,6 +145,12 @@ public:
     /// @brief Le jeton de l'onglet Plotter, sur le même contrat que CuttingToken.
     auto PlotterToken() const -> QString;
 
+    /// @brief Le jeton du nom d'une sortie projecteur — le mot seul, sans largeur.
+    ///
+    /// Un projecteur n'a pas de laize : sa largeur est cherchée par le run, et il n'y a donc rien
+    /// à écrire dans le nom. La taille, elle, y est déjà — par ses axes, ou par le nom de la plage.
+    auto ProjectorToken() const -> QString;
+
     /// @brief Hand in the one operation the dialog cannot do itself.
     void SetRunGenerator(RunGenerator generator);
 
@@ -179,6 +187,7 @@ private:
     /// @brief Give the Plotter tab a form that has never been touched — same doctrine as
     ///        ResetPrintTab: rebuilt, never reset field by field.
     void ResetPlotterTab();
+    void ResetProjectorTab();
 
     /// @brief Tout ce que l'onglet en cours décrit, déjà nommé.
     ///
@@ -223,14 +232,14 @@ private:
 
     /// @brief Which of the three lists a favorite's recipe belongs to.
     ///
-    /// Read from the recipe's own flags — `cuttingPlan`, `plotterPlan`, and neither for a print —
-    /// because that is what the generator switches on. A kind stored beside them would be a
-    /// second answer to a question that already has one.
+    /// Lu sur le FORMAT de la recette — et c'est la seule réponse à la question, puisque c'est
+    /// aussi ce sur quoi le générateur bascule. Un type stocké à côté en serait une seconde.
     enum class FavoriteKind
     {
         Cutting,
         Print,
-        Plotter
+        Plotter,
+        Projector
     };
 
     static auto KindOf(const OExportRunRequest &request) -> FavoriteKind;
@@ -302,11 +311,13 @@ private:
     OExportPrintWidget *m_printWidget{nullptr};
     OExportCuttingWidget *m_cuttingWidget{nullptr};
     OExportPlotterWidget *m_plotterWidget{nullptr};
+    OExportProjectorWidget *m_projectorWidget{nullptr};
     OExportGenerationListWidget *m_listWidget{nullptr};
     QTabWidget *m_tabs{nullptr};
     QVBoxLayout *m_printLayout{nullptr};
     QVBoxLayout *m_cuttingLayout{nullptr};
     QVBoxLayout *m_plotterLayout{nullptr};
+    QVBoxLayout *m_projectorLayout{nullptr};
     QDialogButtonBox *m_buttonBox{nullptr};
     QLabel *m_addedLabel{nullptr};
 
@@ -322,6 +333,7 @@ private:
     QWidget *m_cuttingTab{nullptr};
     QWidget *m_printTab{nullptr};
     QWidget *m_plotterTab{nullptr};
+    QWidget *m_projectorTab{nullptr};
 
     /// La page 0 : un conteneur, et non plus la liste elle-même — quatre sous-onglets y vivent.
     /// Le dispatch des boutons ne bouge pas : il lit toujours l'onglet EXTERNE (m_tabs).
@@ -333,6 +345,7 @@ private:
     OExportFavoritesWidget *m_cuttingFavorites{nullptr};
     OExportFavoritesWidget *m_printFavorites{nullptr};
     OExportFavoritesWidget *m_plotterFavorites{nullptr};
+    OExportFavoritesWidget *m_projectorFavorites{nullptr};
 
     /// Les favoris du contexte, tels que le MainWindow les a filtrés — RECETTES COMPRISES : le lot
     /// les rejoue, et le dialogue ne lit pas le store (il ne sait pas résoudre le contexte qui le

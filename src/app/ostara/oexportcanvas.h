@@ -27,6 +27,7 @@
 #ifndef OEXPORTCANVAS_H
 #define OEXPORTCANVAS_H
 
+#include "core/oexportformat.h"  // OExportFormat::Kind
 #include "oexportartboards.h"  // OExportArtboards::Grid
 #include "oexportcoverpage.h"  // OExportCoverPage::Drawing
 #include "ogradedsvgwriter.h"  // OGradedSvg::LayoutObject
@@ -59,13 +60,14 @@ struct OExportTemplate;
 /// ⚠️ It reads the DOCUMENT, so it is only correct while the document is on the size being recorded.
 /// The caller resolves it during the run, on the reference layer, and never afterwards.
 ///
-/// @param cuttingPlan un plan de coupe n'enregistre **aucune miniature** — voir
-///                    @ref OExportPieceDecor::thumbnails. Le drapeau est lu ici, à la résolution.
+/// @param format      ce que le run est — un plan de coupe n'enregistre **aucune miniature**, et
+///                    c'est @ref OExportFormat::CarriesDecor qui le dit, lu ici, à la résolution.
+///                    Voir @ref OExportPieceDecor::thumbnails.
 /// @param sizeAxes    la taille que cette résolution décrit — valeur de chaque axe, nommée comme
 ///                    le tableau de mesures nomme ses axes. Vide : la taille de référence du
 ///                    tableau, ce que la résolution vivante veut. Voir @ref ResolveEffectiveState.
 auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
+                       const VContainer *pattern, VAbstractPattern *doc, OExportFormat::Kind format,
                        const QMap<QString, QString> &sizeAxes = {}) -> OExportPieceDecor;
 
 /// @brief The reference layer's grainline for one piece, resolved as the canvas would draw it.
@@ -73,7 +75,7 @@ auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *r
 /// The same contract as @ref ResolvePieceDecor, and the same constraint: it reads the DOCUMENT, so it
 /// is only correct while the document is on the size being recorded.
 auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
-                           const Unit &unit, const VContainer *pattern, bool cuttingPlan,
+                           const Unit &unit, const VContainer *pattern, OExportFormat::Kind format,
                            const QRectF &referenceSeat = QRectF()) -> OExportPieceGrainline;
 
 /// @brief One GROUP's decor, resolved as the canvas would draw it — the frozen form a run stores.
@@ -87,7 +89,7 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
 /// document is on the size being recorded.
 auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 groupId,
                        const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                       VAbstractPattern *doc, bool cuttingPlan,
+                       VAbstractPattern *doc, OExportFormat::Kind format,
                        const QMap<QString, QString> &sizeAxes = {}) -> OExportGroupDecor;
 
 /// @brief Quel genre de plan ce run est, pour ce que le canvas en dessine.
@@ -97,19 +99,21 @@ auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 gro
 /// à ne pas confondre avec les onze autres. Le prochain en trouvera sa place ici.
 struct OExportRunFlags
 {
-    /// **Un plan de coupe décompose les groupes** : la pièce retenue n'est plus un membre, c'est la
-    /// pièce qu'on taille — elle porte donc SON décor, et le groupe n'en dessine plus aucun. Voir
-    /// IsGroupedMember, où tout se décide.
-    bool cuttingPlan{false};
+    /// **Le format du run** — ce que le canvas a besoin de savoir pour dessiner juste.
+    ///
+    /// Les deux drapeaux qu'il remplace disaient chacun une partie de la même chose : `cuttingPlan`
+    /// décompose les groupes et n'affiche aucun décor, `plotterPlan` dessine ses tapis. Un troisième
+    /// format les aurait rendus contradictoires. Ce qui reste ici est ce qui n'est PAS le format :
+    /// le pli, le tapis, leur compte.
+    OExportFormat::Kind format{OExportFormat::Kind::Print};
 
     /// **Un plan sur tissu plié est dessiné sur la DEMI-laize** — le bac fait la moitié du tissu
     /// acheté, et c'est ce qu'on trace. Son côté pli porte alors un trait distinct, pour qu'on voie
     /// du même coup d'œil où est le pli : c'est le bord auquel les pièces au pli sont collées.
     bool foldedFabric{false};
 
-    /// **Un plan plotter est dessiné sur ses TAPIS.** Un tapis est une CELLULE DURE : rien de plus
-    /// grand que lui ne peut être découpé, et c'est pourquoi l'aperçu les montre — chaque tapis est
-    /// un chargement de machine.
+    /// **Un plan plotter est dessiné sur ses TAPIS** — c'est son format qui le dit
+    /// (@ref OExportFormat::Kind::Plotter), et ce qui suit est ce que le dessin en a besoin.
     ///
     /// ⚠️ **Ils ne sont plus les lignes de coupe.** Ils l'étaient tant que chaque pièce gardait son
     /// bloc de tapis et que les morceaux tombaient sur les bords ; les morceaux se rangent maintenant
@@ -119,7 +123,6 @@ struct OExportRunFlags
     /// ⚠️ **Affichage seulement.** Le fichier est écrit en parcourant le CONTENU, jamais la scène :
     /// cette grille n'y entre pas — et c'est heureux, le logiciel du plotter découperait les bords
     /// des tapis.
-    bool plotterPlan{false};
 
     /// La zone utile du tapis, en MILLIMÈTRES. `Build` la convertit : c'est le seul endroit qui
     /// dessine, et il n'y a pas deux conversions à tenir en accord. Nulle : pas de tapis.

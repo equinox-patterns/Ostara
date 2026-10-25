@@ -53,7 +53,20 @@ public:
     /// The shift is written into each piece as `alignDelta`, in pixels, and is applied
     /// where the geometry is consumed: the engine and the canvas both add it. Pieces
     /// of a group move as one rigid block, anchored on the group's own alignment.
-    static void Apply(QVector<OExportSizeLayer> &layers, const VContainer *container);
+    ///
+    /// @param centreEveryPiece ignore every piece's own alignment rule and centre it.
+    ///
+    /// **Ce que le projecteur demande, et lui seul.** Une pièce au pli est rangée sur le côté
+    /// qu'elle occupe dans le patron — à gauche ou à droite — parce que c'est ce qu'on voit quand on
+    /// la trace pliée. Dépliée, la même règle la fait pendre d'un côté : les tailles s'empilent
+    /// alors décalées, l'empreinte s'allonge, et la pièce projetée n'est pas centrée sur elle-même.
+    /// Centrer toutes les pièces est la règle d'un plan qu'on projette — il n'y a pas de pli à
+    /// border, donc pas de côté à privilégier.
+    ///
+    /// ⚠️ Un point d'alignement forcé prend le dessus sur la règle horizontale : centrer sans
+    /// l'ignorer laisserait la pièce exactement là où elle est. Il est donc ignoré ici aussi.
+    static void Apply(QVector<OExportSizeLayer> &layers, const VContainer *container,
+                      bool centreEveryPiece = false);
 };
 
 #endif // OEXPORTALIGNMENT_H

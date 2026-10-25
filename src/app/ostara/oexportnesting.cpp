@@ -1082,6 +1082,88 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
 }
 } // namespace
 
+/// @brief La pièce telle que le moteur la voit : un nom, une clé, et un contour.
+///
+/// ⚠️ **Une seule construction pour les deux lectures** — la nidification et la mesure d'aire. Deux
+/// constructions qui divergeraient donneraient un élagage calculé sur autre chose que ce que le moteur
+/// pose, et le refus porterait alors sur un plan qui n'existe pas.
+auto EnginePieceOf(const OExportPieceGeometry &piece) -> Piece
+{
+    Piece enginePiece;
+    enginePiece.name = piece.name;
+    enginePiece.groupName = piece.groupName;
+
+    // ── La clé d'EMPREINTE, et c'est la pièce elle-même qui la donne ────────────────────────────
+    //
+    // `Footprint::compute` regroupe sur cette clé, et `OExportNestingResult::keys` la rend telle
+    // quelle : c'est par elle que le canvas appariera le placement à sa géométrie. Elle valait vide
+    // pour une pièce hors groupe — la clé tombait alors sur le NOM, et les deux n'étaient égaux que
+    // par accident. Le projecteur a cassé l'accident : sa clé est `p<id>`, son nom est « Devant »,
+    // et le canvas n'a plus rien apparié — un plan calculé, une page juste, et pas un trait dessus.
+    //
+    // La clé est donc TOUJOURS celle de la pièce. Pour une impression et un plan de coupe, elle vaut
+    // le nom (ou `g<id>` pour un groupe), donc rien ne change pour eux.
+    enginePiece.groupKey = piece.key;
+
+    ContourNode node;
+    node.type = QStringLiteral("Contour");
+    // Le contour MAPPÉ : c'est lui qui porte le miroir d'un plan de coupe. Sur un run d'impression
+    // la matrice de la pièce est l'identité, donc les deux getters rendent le même contour.
+    node.polyline = ToPath64(piece.piece.GetMappedExternalContourPoints(), piece.alignDelta);
+    if (node.polyline.size() >= 3)
+    {
+        enginePiece.contourNodes.append(node);
+    }
+
+    return enginePiece;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportNesting::FootprintAreaPx(const QVector<OExportSizeLayer> &layers) -> double
+{
+    QVector<SizeLayer> engineLayers;
+    engineLayers.reserve(layers.size());
+
+    for (const OExportSizeLayer &layer : layers)
+    {
+        SizeLayer engineLayer;
+        engineLayer.label = layer.label;
+
+        for (const OExportPieceGeometry &piece : layer.pieces)
+        {
+            const Piece enginePiece = EnginePieceOf(piece);
+            if (!enginePiece.contourNodes.isEmpty())
+            {
+                engineLayer.pieces.append(enginePiece);
+            }
+        }
+
+        if (!engineLayer.pieces.isEmpty())
+        {
+            engineLayers.append(engineLayer);
+        }
+    }
+
+    if (engineLayers.isEmpty())
+    {
+        return 0.0;
+    }
+
+    const Footprint::Result footprint = Footprint::compute(engineLayers);
+
+    double area = 0.0;
+    for (const Clipper2Lib::Path64 &polygon : footprint.polygons)
+    {
+        area += std::fabs(Clipper2Lib::Area(polygon));
+    }
+
+    // ⚠️ **Les polygones sont en fixe : un pixel vaut `kTrameScale` unités** (voir ToPath64). Une
+    // aire est donc en unités², soit un facteur `kTrameScale²` de trop — et ce facteur est assez
+    // grand pour qu'un patron de 1,7 m² annonce douze mille milliards de mètres carrés. C'est
+    // exactement ce qui est arrivé : le format a refusé un plan parfaitement possible.
+    return area / (kTrameScale * kTrameScale);
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportNestingParams &params)
     -> OExportNestingResult
@@ -1119,28 +1201,20 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
         for (const OExportPieceGeometry &piece : layer.pieces)
         {
-            Piece enginePiece;
-            enginePiece.name = piece.name;
-            enginePiece.groupName = piece.groupName;
-            // The group's identity travels separately from its name: the engine groups
-            // on the key, and displays the name.
-            enginePiece.groupKey = piece.groupId == 0 ? QString() : piece.key;
-
-            ContourNode node;
-            node.type = QStringLiteral("Contour");
-            // Le contour MAPPÉ : c'est lui qui porte le miroir d'un plan de coupe. Sur un run
-            // d'impression la matrice de la pièce est l'identité, donc les deux getters rendent le
-            // même contour et rien ne bouge.
-            node.polyline = ToPath64(piece.piece.GetMappedExternalContourPoints(), piece.alignDelta);
-            if (node.polyline.size() < 3)
+            Piece enginePiece = EnginePieceOf(piece);
+            if (enginePiece.contourNodes.isEmpty())
             {
                 continue;
             }
-            enginePiece.contourNodes.append(node);
+
+            // La polyligne du contour, sous son nom d'ici : c'est elle que la mesure de largeur
+            // interroge plus bas, et la relire depuis la pièce du moteur garde UNE source.
+            const Clipper2Lib::Path64 &node = enginePiece.contourNodes.constFirst().polyline;
+            Q_UNUSED(node)
 
             engineLayer.pieces.append(enginePiece);
 
-            if (params.cuttingPlan)
+            if (params.grainlinePinned)
             {
                 // Keyed, because the footprint is what the engine constrains — a group is nested as
                 // one block, and its members share the key.
@@ -1188,14 +1262,14 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
                         // direction : une pièce qui aurait une grainline ET un pli verrait sa
                         // largeur mesurée dans la mauvaise orientation, et une bande jugée trop
                         // étroite pour elle.
-                        talk.widthPx = NarrowestWidth(node.polyline, {talk.foldAngle});
+                        talk.widthPx = NarrowestWidth(node, {talk.foldAngle});
                     }
                     else
                     {
                         const QVector<double> angles = OExportCuttingDirection::AllowedAngles(
                             piece.direction, params.oneWayLayout);
                         talk.angles.assign(angles.cbegin(), angles.cend());
-                        talk.widthPx = NarrowestWidth(node.polyline, talk.angles);
+                        talk.widthPx = NarrowestWidth(node, talk.angles);
                     }
 
                     talkByKey.insert(piece.key, std::move(talk));
@@ -1273,7 +1347,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // Il a sa propre route parce que tout ce qui suit — l'arbitrage tuilé, le résultat — suppose
     // UN bac de la largeur `binWidthPx`. Le sien en fait trois, et il rend un plan déjà translaté
     // dans le repère de la colonne : le canvas n'a donc rien à savoir du découpage.
-    const bool foldedFabricPlan = params.cuttingPlan && params.foldedFabric;
+    const bool foldedFabricPlan = params.grainlinePinned && params.foldedFabric;
 
     if (foldedFabricPlan)
     {
@@ -1305,7 +1379,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         return result;
     }
 
-    if (params.cuttingPlan)
+    if (params.grainlinePinned)
     {
         allowedAngles.reserve(footprint.keys.size());
         for (const QString &key : footprint.keys)

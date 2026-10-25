@@ -110,7 +110,7 @@ QString MainWindow::GradedPatternNameToken() const
 //---------------------------------------------------------------------------------------------------------------------
 bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &forcedDir,
                                      const bool showDialogs, QString *writtenFilePath,
-                                     QString *errorOut)
+                                     QString *errorOut, QString *payloadFilePath)
 {
     if (doc == nullptr || pattern == nullptr || m_m.isNull())
     {
@@ -627,6 +627,7 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             }
             OGradedSvg::GradedObject object;
             object.name = piecesMap->value(it.key()).GetName();
+            object.ownerId = it.key();
             object.isGroup = false;
             object.loneItem = it.value().value(si);
             if (object.loneItem != nullptr)
@@ -643,6 +644,7 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
         {
             OGradedSvg::GradedObject object;
             object.name = group.name;
+            object.ownerId = group.id;
             object.isGroup = true;
             for (quint32 mid : group.members)
             {
@@ -675,6 +677,7 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
                 }
                 OGradedSvg::GradedObject object;
                 object.name = piecesMap->value(mid).GetName();
+                object.ownerId = mid;
                 object.isGroup = false;
                 object.loneItem = views.at(si);
                 layer.objects.append(object);
@@ -735,6 +738,30 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     const bool written = OGradedSvg::WriteGradedSvg(filePath, layers, layoutLayerName,
                                                     layoutObjects, imageRect, margins, xScale,
                                                     yScale, QString(), QString());
+
+    // ── La même image, texte en CONTOURS, pour le payload ───────────────────────────────────────
+    //
+    // ⚠️ **Un `<text>` ne voyage pas.** La cliente n'a pas les polices du patron : écrite en texte,
+    // la légende est rendue par une police de substitution, avec d'autres métriques — et un lecteur
+    // qui mesure une boîte de texte la mesure faux, ce qui déplace ce qu'il pose autour. Le fichier
+    // visible garde son texte éditable (c'est ce qu'on ouvre dans Illustrator) ; celui qui part dans
+    // le PDF est en tracés.
+    if (written && payloadFilePath != nullptr && !payloadFilePath->isEmpty())
+    {
+        // ⚠️ **Exactement la même mise en page que le fichier visible** — mêmes marges, même
+        // origine, même échelle. J'avais retiré la marge pour tenter d'aligner le dessin sur les
+        // `outline` de `<pieces>` : c'était faux, le canevas graded place ses objets librement et
+        // l'écart varie d'une pièce à l'autre. Cette marge en moins n'alignait donc rien et créait
+        // une différence gratuite entre les deux fichiers — à commencer par ce mm qui rendait toute
+        // comparaison suspecte.
+        if (!OGradedSvg::WriteGradedSvg(*payloadFilePath, layers, layoutLayerName, layoutObjects,
+                                        imageRect, margins, xScale, yScale, QString(), QString(),
+                                        true, QDomElement(), true))
+        {
+            qWarning() << "Export graded: the payload drawing could not be written";
+            payloadFilePath->clear();
+        }
+    }
     if (!written)
     {
         if (errorOut != nullptr)

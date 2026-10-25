@@ -137,6 +137,22 @@ public:
     // that reads the scene items right away — the piece thumbnail snapshot does exactly that.
     void FlushPieceGeometry();
 
+    /** @brief Re-seats every piece child on its anchor for the size the document is on.
+     *
+     * The pass `Parse` ends with, and the one the canvas relies on: the grain line, the blocks, the
+     * annotations and the miniature of a piece are read by their anchor (u,v) inside the piece's
+     * reference rect, so a child follows the piece as it grows.
+     *
+     * **A reader that captures one size at a time has to ask for it.** Switching size goes through
+     * `LiteParseTree`, which rebuilds the container from the DOM and re-seats nothing; the canvas
+     * never noticed because a tool carries the pass itself (`VToolSeamAllowance::
+     * MaterializeChildAnchors`). The export run reads the document, so it noticed: measured on a real
+     * payload, « Manche »'s grain line came out at 0.796 of the piece's width against 0.957 on the
+     * canvas, and its block at 0.309 against 0.365.
+     *
+     * Pieces only — see the definition for why a group cannot be done here. */
+    void MaterializeChildAnchors();
+
     void SetGBBackupFilePath(const QString &fileName);
 
 signals:
@@ -331,11 +347,6 @@ private:
     auto TransfertSourcesAreGraphVertices(const OToolTransfertInitData &initData) -> bool;
 
     auto EvalFormula(VContainer *data, const QString &formula, bool *ok) const -> qreal;
-
-    /** @brief Adopts an anchor for every piece child placed before the anchor existed.
-     *
-     * Pieces only — see the definition for why a group cannot be done here. */
-    void MaterializeChildAnchors();
 
     /** @brief Mirrors the children's resolved positions and anchors into the DOM before saving.
      *

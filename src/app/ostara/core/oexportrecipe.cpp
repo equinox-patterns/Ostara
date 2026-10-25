@@ -53,6 +53,11 @@ constexpr auto kTagName = "name";
 constexpr auto kAttrVersion = "version";
 constexpr auto kAttrToken = "token";
 constexpr auto kAttrFramed = "framed";
+/// @brief Ce que la génération EST — « print », « cutting », « plotter », « projector ».
+///
+/// Le jeton de `token`, lui, nomme le modèle de PAPIER : deux questions différentes, et c'est la
+/// seconde qui manquait. Un lecteur qui ne la connaît pas l'ignore — elle est optionnelle.
+constexpr auto kAttrDestination = "destination";
 constexpr auto kAttrColumns = "columns";
 constexpr auto kAttrMarginMm = "marginMm";
 constexpr auto kAttrGapMm = "gapMm";
@@ -107,6 +112,16 @@ auto OExportRecipe::Of(QDomDocument &doc, const OExportOutput &output, const OEx
     // reader that only saw the template would not know which of the two it was looking at.
     QDomElement format = doc.createElement(QLatin1String(kTagFormat));
     format.setAttribute(QLatin1String(kAttrToken), output.printModelToken);
+
+    // ── La DESTINATION, et c'est le marqueur qui manquait ────────────────────────────────────────
+    //
+    // `token` est le modèle de PAPIER (A4, rouleau), et il ne dit pas ce que la génération EST. Sans
+    // cette attribute, un PDF projecteur se lit exactement comme un PDF d'impression : Rabnest le
+    // re-nidifie en écart zéro et en tuilé, silencieusement — le fichier a l'air juste et ne l'est
+    // pas. Le jeton est celui du format (`OExportFormat::Token`), et il est écrit ici, dans le
+    // CONTENU de la charge utile, où l'espace est libre : les clés de l'enveloppe PDF sont des
+    // constantes que Rabbit ne peut pas apprendre.
+    format.setAttribute(QLatin1String(kAttrDestination), OExportFormat::Token(output.format));
     format.setAttribute(QLatin1String(kAttrFramed), framed);
     format.setAttribute(QLatin1String(kAttrColumns), QString::number(output.columns));
     format.setAttribute(QLatin1String(kAttrMarginMm), QString::number(output.marginMm));

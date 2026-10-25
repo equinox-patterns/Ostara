@@ -244,7 +244,7 @@ auto OExportCuttingFile::PlansOf(const OExportOutput &output) -> QVector<OExport
 
     // Ce qui n'est pas un plan de coupe ne porte aucune nappe — un run d'impression n'a pas de « plan
     // de tissu », et lui en prêter un ferait écrire un fichier de découpe pour un PDF.
-    if (not output.cuttingPlan)
+    if (output.format != OExportFormat::Kind::CuttingPlan)
     {
         return plans;
     }
@@ -298,7 +298,7 @@ auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output,
     const QVector<OExportSizeLayer> &layers = lining ? output.liningLayers : output.layers;
     const OExportNestingResult &result = lining ? output.liningResult : output.result;
 
-    const bool carried = lining ? output.liningPlan : output.cuttingPlan;
+    const bool carried = lining ? output.liningPlan : output.format == OExportFormat::Kind::CuttingPlan;
     if (path.isEmpty() || not carried || not result.ok || layers.isEmpty())
     {
         qWarning() << "OExportCuttingFile: the generation cannot be reproduced";

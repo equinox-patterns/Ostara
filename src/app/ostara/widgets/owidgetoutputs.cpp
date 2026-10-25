@@ -370,7 +370,7 @@ void OWidgetOutputs::Populate()
         auto *exportItem = new QTableWidgetItem(MakeCellIcon(QStringLiteral("download"), dark), QString());
         exportItem->setFlags(exportItem->flags() & ~Qt::ItemIsEditable);
         exportItem->setData(Qt::UserRole, output.id); // the cell knows the row it acts on
-        if (output.cuttingPlan)
+        if (output.cuttingFile)
         {
             // Un plan de coupe s'exporte aussi, mais **pas dans le même fichier** : DXF, PLT ou HPGL,
             // à 100 %, avec les options du mode Details moins l'échelle (CuttingPlan §24). La cellule

@@ -380,7 +380,8 @@ void OExportMetrageBatch::LogPlan()
         LogLine(QStringLiteral("composition             : ") + m_compositionNote);
     }
 
-    LogLine(QStringLiteral("plan de coupe           : ") + (m_template.cuttingPlan ? QStringLiteral("oui") : QStringLiteral("non")));
+    LogLine(QStringLiteral("plan de coupe           : ")
+            + (OExportFormat::IsCutting(m_template.format) ? QStringLiteral("oui") : QStringLiteral("non")));
     LogLine(QStringLiteral("tissu plié              : ") + (m_template.foldedFabric ? QStringLiteral("oui") : QStringLiteral("non")));
     LogLine(QStringLiteral("pièces dans le même sens: ") + (m_template.oneWayLayout ? QStringLiteral("oui") : QStringLiteral("non")));
     LogLine(QStringLiteral("écart entre les pièces  : ") + QString::number(m_template.gapMm, 'f', 3) + QStringLiteral(" mm"));

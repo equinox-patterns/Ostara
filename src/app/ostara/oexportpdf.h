@@ -119,7 +119,8 @@ namespace OExportPdf
 bool Write(const OExportOutput &output, const QString &pdfPath,
            const VContainer *pattern, VAbstractPattern *doc,
            const OExportTemplate *marks, bool framed, bool addLayoutLayer,
-           const OExportCoverPage::Drawing *cover = nullptr, bool rabnestPayload = true);
+           const OExportCoverPage::Drawing *cover = nullptr, bool rabnestPayload = true,
+           const QString &gradedDrawing = QString());
 }  // namespace OExportPdf
 
 #endif  // OEXPORTPDF_H

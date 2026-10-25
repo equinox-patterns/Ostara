@@ -164,7 +164,8 @@ auto OInfoBlockResolver::ResolveEffectiveConfig(const IPieceInfo &piece, VAbstra
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstractPattern *doc, const VContainer *data,
-                                               const QMap<QString, QString> &sizeAxes) -> OInfoBlockEffectiveState
+                                               const QMap<QString, QString> &sizeAxes,
+                                               const CutOverride *cut) -> OInfoBlockEffectiveState
 {
     OInfoBlockResolvedConfig config = ResolveConfig(piece, doc, data);
     OInfoBlockEffectiveState &state = config.state;
@@ -205,8 +206,8 @@ auto OInfoBlockResolver::ResolveEffectiveState(const IPieceInfo &piece, VAbstrac
             continue;
         }
         const QList<OCartoucheRenderLine> lines =
-            ResolveSectionLines(type, config.tpl.SectionAt(i).options, doc, piece, data, &table, renderLanguages,
-                                mainLocale, sizeAxes);
+            ResolveSectionLines(type, config.tpl.SectionAt(i).options, doc, piece, data, &table,
+                                renderLanguages, mainLocale, sizeAxes, cut);
         if (lines.isEmpty())
         {
             continue;  // dead data -> no line
@@ -235,8 +236,8 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
                                              const QHash<QString, QVariant> &options, const VAbstractPattern *doc,
                                              const IPieceInfo &piece, const VContainer *data,
                                              const OSizeTable *table, const QStringList &renderLanguages,
-                                             const QString &mainLocale, const QMap<QString, QString> &sizeAxes)
-    -> QList<OCartoucheRenderLine>
+                                             const QString &mainLocale, const QMap<QString, QString> &sizeAxes,
+                                             const CutOverride *cut) -> QList<OCartoucheRenderLine>
 {
     QList<OCartoucheRenderLine> lines;
     const QFont baseFont = OCartouchePainter::BaseFont();
@@ -393,6 +394,28 @@ auto OInfoBlockResolver::ResolveSectionLines(const OTemplateSection &type,
 
     if (typeId == QLatin1String("cut"))
     {
+        // ── La quantité imposée : le projecteur, et lui seul ─────────────────────────────────────
+        //
+        // Une pièce projetée est montrée **une fois par coupe**, donc chaque exemplaire dit « une
+        // fois ». Et « on fold » reste une instruction de placement, pas une quantité : une pièce au
+        // pli est dépliée, montrée une seule fois, et garde son « on fold ».
+        if (cut != nullptr)
+        {
+            for (const QString &locale : renderLanguages)
+            {
+                QString text = Translate(locale, "OInfoBlockPreview",
+                                         QT_TRANSLATE_NOOP("OInfoBlockPreview", "Cut %1"))
+                                   .arg(cut->quantity);
+                if (cut->onFold)
+                {
+                    text += Translate(locale, "OInfoBlockPreview",
+                                      QT_TRANSLATE_NOOP("OInfoBlockPreview", " on fold"));
+                }
+                lines.append(OCartouchePainter::TextLine(text, font, lineSpacing));
+            }
+            return lines;
+        }
+
         struct CutTab
         {
             int qty;

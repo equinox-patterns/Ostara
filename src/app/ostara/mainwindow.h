@@ -994,7 +994,7 @@ private:
     /// @p errorOut and the caller reports once. Returns true when the file was written.
     bool ExportGradedRangeTo(const QString &rangeName, const QString &forcedDir,
                              bool showDialogs, QString *writtenFilePath,
-                             QString *errorOut);
+                             QString *errorOut, QString *payloadFilePath = nullptr);
 
     /// Export every stored size range as its own layered SVG (one file per range,
     /// dock order = sorted names) into @p dirPath, with a single recap at the end.

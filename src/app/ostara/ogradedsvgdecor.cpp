@@ -405,6 +405,9 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
         {
             return object;
         }
+        // L'identifiant de la pièce, écrit en `ostara:id` sur le wrapper : c'est la clé qui joint
+        // ce décor à sa `<piece>` du payload, et la seule qui ne puisse pas se tromper.
+        object.ownerId = pieceId;
         // ⚠️ **La VUE du membre, jamais son stack.** Un membre de groupe a deux porteurs sur la
         // couche de référence : son stack, qui garde l'id de la pièce et qui est posé à
         // l'empilement du groupe — c'est le dessin du groupe — et sa vue, une seconde rendue
@@ -542,6 +545,7 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
         }
 
         OGradedSvg::LayoutObject object;
+        object.ownerId = group.id;
         object.name = group.name;
         object.origin = box.topLeft();
         const QPointF unionCenterLocal(box.width() / 2.0, box.height() / 2.0);

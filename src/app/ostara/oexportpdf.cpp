@@ -143,8 +143,8 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     OExportCanvas::Build(&scene, output.layers, output.result,
                          output.hasRange ? &output.range : nullptr, pattern, doc, &content,
                          {}, nullptr, false, nullptr,
-                         {output.cuttingPlan, output.foldedFabric, output.plotterPlan,
-                          output.matWidthMm, output.matHeightMm, output.result.matCount});
+                         {output.format, output.foldedFabric, output.matWidthMm,
+                          output.matHeightMm, output.result.matCount});
 
     // The page is the bin when the generation has no sheets to cut — a roll, the A0 sheet,
     // anything the print model left untuiled — and that is the whole of this export, left
@@ -270,7 +270,42 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
 
     // A range of one size is a single size: there is nothing to switch between, and a
     // layer panel offering one entry offers no choice.
-    const bool layered = output.hasRange && layers.size() > 1;
+    //
+    // ⚠️ **Le projecteur fait exception, et c'est tout l'inverse** : même en taille unique il est
+    // calqué, parce que ses trois calques de fond et de calibration sont trois choses que
+    // l'utilisatrice doit pouvoir éteindre. Un document plat n'en porterait aucun — le magenta
+    // resterait sous les pièces, mais plus rien ne pourrait le retirer.
+    const bool projector = OExportFormat::IsProjector(output.format);
+    const bool layered = projector || (output.hasRange && layers.size() > 1);
+
+    // ── Les calques du projecteur : un fond magenta, deux grilles ────────────────────────────────
+    //
+    // **Calculés ici, jamais dessinés à l'écran** — décision de Sophie : « on ne l'ajoute pas dans le
+    // canvas, mais dans l'export PDF ». Le canvas montre le plan, nu.
+    //
+    // ⚠️ **Pas de fond blanc** : le fond d'un PDF est blanc, un calque blanc ne servirait à rien. Le
+    // fichier de référence en porte un ; c'est un reste d'Illustrator, et il a été relevé comme tel.
+    //
+    // Les noms sont en clair : la traduction attend la validation du format (`Projector.md` §4).
+    OGradedSvg::Overlays projectOverlays;
+    const OGradedSvg::Overlays *overlayData = nullptr;
+    if (projector && layered)
+    {
+        // Les noms se lisent dans le panneau du lecteur PDF : ils sont donc TRADUITS, comme tout ce
+        // que l'utilisatrice voit. Le rôle, lui, ne l'est jamais : `ostara:role` est une clé de
+        // fichier, et c'est lui que Trame et Rabnest lisent, pas le nom.
+        projectOverlays.background = QColor(QLatin1String("#E6007E"));
+        projectOverlays.backgroundName =
+            QCoreApplication::translate("OExportPdf", "Magenta background");
+        projectOverlays.backgroundId = projectOverlays.backgroundName;
+
+        const QString gridCm = QCoreApplication::translate("OExportPdf", "5cm grid");
+        projectOverlays.grids.append({gridCm, gridCm, ToPixel(50.0, Unit::Mm)});
+
+        const QString gridIn = QCoreApplication::translate("OExportPdf", "3in grid");
+        projectOverlays.grids.append({gridIn, gridIn, ToPixel(76.2, Unit::Mm)});
+        overlayData = &projectOverlays;
+    }
 
     // The decor layer's name comes from the range, and from the range as it is NOW: the
     // decor follows the pattern, exactly as the canvas reads it live. A generation carries
@@ -378,7 +413,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // dans SON fichier, et le fichier dessiné n'en porte plus rien du tout.
     if (!OGradedSvg::WriteGradedSvg(svgPath, layers, layoutLayerName, content.decor, imageRect,
                                     QMarginsF(), 1.0, 1.0, QString(), QString(), layered,
-                                    QDomElement()))
+                                    QDomElement(), false, overlayData))
     {
         qWarning() << "OExportPdf: the SVG could not be written";
         return false;
@@ -433,7 +468,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         if (!payloadWritten
             && !OGradedSvg::WriteGradedSvg(payloadSvgPath, layers, layoutLayerName, content.decor,
                                            imageRect, QMarginsF(), 1.0, 1.0, QString(), QString(),
-                                           layered, recipeElement))
+                                           layered, recipeElement, false, overlayData))
         {
             qWarning() << "OExportPdf: the payload SVG could not be written";
             return false;

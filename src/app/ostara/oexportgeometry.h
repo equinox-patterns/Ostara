@@ -41,6 +41,7 @@
 
 #include "../vlayout/vlayoutpiece.h"
 #include "core/oexportcuttingdirection.h"
+#include "core/oexportformat.h"
 #include "core/oexportcuttingguard.h"
 #include "widgets/InfoBlock/oinfoblockexport.h"
 
@@ -325,12 +326,19 @@ public:
     /// whoever calls this has to be able to say what actually happened.
     auto LastDiagnostic() const -> QString;
 
-    /// @brief Whether the run is a cutting plan.
+    /// @brief Ce que cette traversée prépare — impression, plan de coupe, plotter, projecteur.
     ///
-    /// A cutting plan lays pieces on fabric, and fabric has a grain — so the pieces are prepared
-    /// here rather than later: their direction is resolved while the container is still at hand,
-    /// and it is the only thing this flag changes today. A print run is left exactly as it was.
-    void SetCuttingPlan(bool cutting);
+    /// Une pièce posée sur du tissu a un sens de droit-fil : les siennes sont donc résolues **ici**,
+    /// pendant que le conteneur est encore à portée, et c'est ce que la coupe et le projecteur
+    /// demandent tous deux.
+    ///
+    /// ⚠️ **Ce n'est plus un booléen, et c'est le format qui le remplace.** L'ancien `SetCuttingPlan`
+    /// décidait de dix choses sans rapport — le code le disait lui-même — et le projecteur en veut
+    /// certaines sans les autres : il lit les quantités, déplie et retourne comme un plan de coupe,
+    /// mais il garde tout le décor et ne voit aucun groupe. Chaque site demande donc ce qu'il veut
+    /// savoir (@ref OExportFormat::IsCutting, @ref OExportFormat::CarriesDecor,
+    /// @ref OExportFormat::IsProjector) au lieu de réutiliser un drapeau qui voulait déjà dire trop.
+    void SetFormat(OExportFormat::Kind format);
 
     /// @brief La matière du plan de coupe que cette traversée prépare : tissu, ou doublure.
     ///
@@ -400,8 +408,8 @@ private:
     QSet<quint32> m_pieceFilter{};
     /// @brief Pieces to leave out. Empty leaves none out — see SetPieceExclusion.
     QSet<quint32> m_pieceExclusion{};
-    /// @brief Whether this traversal prepares a cutting plan — see SetCuttingPlan.
-    bool m_cuttingPlan{false};
+    /// @brief Ce que cette traversée prépare — voir SetFormat.
+    OExportFormat::Kind m_format{OExportFormat::Kind::Print};
     /// @brief La matière du plan de coupe que cette traversée prépare — voir SetCuttingMaterial.
     OExportCuttingGuard::Material m_cuttingMaterial{OExportCuttingGuard::Material::Fabric};
     /// @brief Whether that cutting plan is laid on folded fabric — see SetFoldedFabric.

@@ -67,6 +67,15 @@ struct GradedMember
 struct GradedObject
 {
     QString name;
+
+    /// L'identifiant de la pièce, écrit en `ostara:id`.
+    ///
+    /// ⚠️ **Sans lui, un lecteur doit APPARIER par nom — et un nom n'est pas une identité.** Le
+    /// dessin suffixe les siens (`Manche` et `Manche_1`) dès qu'un groupe en contient une copie :
+    /// c'est cette ambiguïté qui a fait comparer un décor à la copie du groupe au lieu de la vue du
+    /// membre, et sortir un écart de 1884 px là où il valait 438. Un entier ne s'apparie pas mal.
+    quint32 ownerId = 0;
+
     bool isGroup = false;
     QGraphicsItem *loneItem = nullptr;         // when !isGroup: the piece silhouette root
     QVector<GradedMember> members;             // when isGroup: the member silhouettes
@@ -140,6 +149,47 @@ struct LayoutObject
 };
 
 /**
+ * @brief Une grille de calibration : un pas, et le nom que le lecteur lit.
+ *
+ * Le pas est en pixels du fichier — l'unité du `viewBox` — parce que c'est l'unité dans laquelle le
+ * dessin est écrit : 5 cm y pèsent 188,976 px, et 3 in 288 px. Le convertir ici une fois est ce qui
+ * empêche le lecteur de l'écrire en millimètres sur une page qui n'en parle pas.
+ */
+struct CalibrationLayer
+{
+    QString name{};   ///< ce que le lecteur lit dans son panneau
+    QString id{};     ///< la clé du PDF — un nom, pas une phrase
+    qreal stepPx{0.0}; ///< le pas de la grille
+};
+
+/**
+ * @brief Les calques que le format Projecteur ajoute SOUS les pièces.
+ *
+ * Un fond plein page et des grilles de calibration. **Ils ne viennent pas de la scène** : rien de
+ * tout cela n'existe à l'écran — décision de Sophie, *« on ne l'ajoute pas dans le canvas, mais dans
+ * l'export PDF »* — et ils sont donc écrits ici, depuis les dimensions mêmes de la page.
+ *
+ * ⚠️ **Le fond magenta est SOUS les pièces, et les grilles aussi.** Un rayon lumineux traverse le
+ * trait ; un aplat, non. Une grille posée sur les pièces les cacherait, alors qu'une grille dessous
+ * se lit à travers un contour.
+ *
+ * ⚠️ Ils portent `ostara:role`, et c'est ce qui les distingue d'une TAILLE : sans ce rôle, Trame en
+ * ferait des calques de tailles — ils entreraient dans le panneau du lecteur, Rabnest les listerait
+ * comme des tailles à nidifier, et l'ordre de peinture ne serait plus garanti.
+ *
+ * @see Projector.md §4 et §14
+ */
+struct Overlays
+{
+    /// Le fond, en aplat plein page. **Vide : pas de fond** — et c'est l'état de tous les autres
+    /// formats, qui n'ont rien à écrire ici.
+    QColor background{};
+    QString backgroundName{};
+    QString backgroundId{};
+    QVector<CalibrationLayer> grids{};
+};
+
+/**
  * @brief Write the graded multi-layer SVG.
  *
  * @param sizeLayers  layers grand → petit (smallest last, = reference).
@@ -164,7 +214,8 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
                     const QString &layoutLayerName, const QList<LayoutObject> &layoutObjects,
                     const QRectF &imageRect, const QMarginsF &margins, qreal xScale, qreal yScale,
                     const QString &title, const QString &description, bool layered = true,
-                    const QDomElement &metadata = QDomElement());
+                    const QDomElement &metadata = QDomElement(), bool textAsPaths = false,
+                    const Overlays *overlays = nullptr);
 
 /**
  * @brief One owner's decor as SVG elements, written in the OWNER's own frame.

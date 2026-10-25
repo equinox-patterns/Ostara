@@ -50,10 +50,9 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.coverPageTemplateName = output.coverPageTemplateName;
     request.pinnedAxes = output.pinnedAxes;
     request.groupMemberChoices = output.groupMemberChoices;
-    request.cuttingPlan = output.cuttingPlan;
+    request.format = output.format;
     request.oneWayLayout = output.oneWayLayout;
     request.foldedFabric = output.foldedFabric;
-    request.plotterPlan = output.plotterPlan;
     request.excludedPieces = output.excludedPieces;
     request.matWidthMm = output.matWidthMm;
     request.matHeightMm = output.matHeightMm;

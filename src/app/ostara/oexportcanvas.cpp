@@ -36,6 +36,7 @@
 #include "ogradedsizetrace.h"
 #include "oexportcoverpage.h"
 #include "oexportgeometry.h"
+#include "oexportink.h"
 #include "oexportfootprint.h"
 #include "oexportmatpacking.h"
 #include "oexportnesting.h"
@@ -486,7 +487,7 @@ auto ThumbnailOverrideOf(const OSizerange *range, quint32 ownerId, bool isGroup,
 /// Whether a piece belongs to a group that is nested as one rigid block. Below two
 /// members a group is not a block — the canvas, the export and the container all draw
 /// that line in the same place (OGraded::kMinGroupMembers).
-auto IsGroupedMember(const VContainer *pattern, quint32 groupId, bool cuttingPlan) -> bool
+auto IsGroupedMember(const VContainer *pattern, quint32 groupId, OExportFormat::Kind format) -> bool
 {
     // ⚠️ **Un plan de coupe DÉCOMPOSE les groupes.** Le membre gardé n'est plus un membre, c'est la
     // pièce qu'on taille — mais il conserve son `groupId`, donc sans cette ligne le canvas
@@ -497,7 +498,7 @@ auto IsGroupedMember(const VContainer *pattern, quint32 groupId, bool cuttingPla
     // Le groupe n'est pas touché pour autant : `group.m_glGrainline` reste intact, et le droit-fil
     // du nesting est résolu bien plus tôt, dans OExportGeometry — le repli sur la grainline du
     // groupe continue donc de servir au moteur, simplement il ne se DESSINE plus.
-    if (cuttingPlan)
+    if (OExportFormat::IsCutting(format))
     {
         return false;
     }
@@ -526,11 +527,11 @@ auto IsGroupedMember(const VContainer *pattern, quint32 groupId, bool cuttingPla
 /// own rotation formula still supplies the angle, since a range stores none.
 void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &geometry,
                              const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                             bool cuttingPlan, bool asLonePiece = false)
+                             OExportFormat::Kind format, bool asLonePiece = false)
 {
     VPieceGrainline &grainline = placed.GetGrainline();
 
-    if (!asLonePiece && IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
+    if (!asLonePiece && IsGroupedMember(pattern, geometry.groupId, format))
     {
         // A grouped member carries no grainline of its own: the group hosts one for all
         // of them, exactly as Details and Graded do it.
@@ -579,7 +580,21 @@ void ApplyReferenceGrainline(VLayoutPiece &placed, const OExportPieceGeometry &g
     // on the document origin.
     const QPointF fallback = grainline.GetMainLine().p1();
 
-    const OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, geometry.id, false);
+    OSizerange::GrainlineOverride ov = GrainlineOverrideOf(range, geometry.id, false);
+    // Le repli sur le groupe, pour la même raison qu'à `ApplyReferenceGrainline`.
+    if (!ov.valid && geometry.groupId != 0)
+    {
+        ov = GrainlineOverrideOf(range, geometry.groupId, true);
+    }
+    // ⚠️ **Le membre d'un groupe prend le droit-fil du GROUPE quand il n'a pas le sien.**
+    // En Graded on sélectionne le groupe, et c'est lui qui porte la ligne de ses membres ; la place
+    // posée à la main est donc rangée dans le contenu du groupe, pas dans celui de la pièce. Sans ce
+    // repli, un membre retombait sur la position du MODÈLE — celle d'avant Graded — et le payload
+    // écrivait une ligne que l'écran n'a jamais montrée.
+    if (!ov.valid && geometry.groupId != 0)
+    {
+        ov = GrainlineOverrideOf(range, geometry.groupId, true);
+    }
     const OGraded::GrainlinePlacement placement =
         OGraded::ResolveGrainline(geom, ov, false, pattern, unit, fallback);
     const qreal rotation = OGraded::GrainlineRotation(geom.GetRotation(), false, pattern);
@@ -802,12 +817,12 @@ auto MirrorDecor(const QPointF &topLeft, const QSizeF &size, qreal rotation, qre
 ///              an unplaced frame on, and a miniature without a frame is not one.
 auto ResolveOwnerMiniatures(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                             const OSizerange *range, const QHash<quint32, QRectF> &boxes,
-                            const VContainer *pattern, bool cuttingPlan)
+                            const VContainer *pattern, OExportFormat::Kind format)
     -> QVector<OInfoBlockSvg::Thumbnail>
 {
     QVector<OInfoBlockSvg::Thumbnail> out;
 
-    if (cuttingPlan || pattern == nullptr)
+    if (not OExportFormat::CarriesDecor(format) || pattern == nullptr)
     {
         return out;
     }
@@ -893,15 +908,17 @@ auto ResolveOwnerMiniatures(const IPieceInfo &owner, bool isGroup, quint32 owner
 ///                reflected — see @ref DecorFrame::mirrorX
 /// @param miniatureBoxes the box each piece is measured on when nobody ever placed its miniature's
 ///                frame, by piece id, in that same frame — see @ref ResolveOwnerMiniatures
-/// @param cuttingPlan a cutting plan carries no miniature at all
+/// @param format what the run is — a cutting plan carries no miniature at all, and it is
+///               @ref OExportFormat::CarriesDecor that says so
 /// @param sizeAxes the size this resolution describes — one value per axis, keyed the way the
 ///                 measurement table names its axes. Empty means the table's reference size,
 ///                 which is what every live canvas wants; the export hands over the run's own.
 auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                        const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
                        const VContainer *pattern, VAbstractPattern *doc,
-                       const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan,
-                       const QMap<QString, QString> &sizeAxes)
+                       const QHash<quint32, QRectF> &miniatureBoxes, OExportFormat::Kind format,
+                       const QMap<QString, QString> &sizeAxes,
+                       const OInfoBlockResolver::CutOverride *cut = nullptr)
     -> OExportPieceDecor
 {
     OExportPieceDecor decor;
@@ -916,7 +933,7 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     // the canvases read — see @ref ResolveOwnerMiniatures, which is also where a cutting plan is told
     // it carries none.
     decor.thumbnails = ResolveOwnerMiniatures(owner, isGroup, ownerId, range, miniatureBoxes, pattern,
-                                              cuttingPlan);
+                                              format);
 
     // A cutting plan carries no block and no annotation either (decided), and the rule is
     // posed here, at resolution, exactly like the miniature's just above: both fields stay empty,
@@ -924,7 +941,7 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     // mistake, and there is no guard to forget in a fourth. The fold-line caption obeys the same
     // decision but does not live in this record: @ref OExportCanvas::Build turns it off on the copy
     // of the piece that GetItem is about to draw.
-    if (cuttingPlan)
+    if (not OExportFormat::CarriesDecor(format))
     {
         return decor;
     }
@@ -934,8 +951,10 @@ auto ResolveOwnerDecor(const IPieceInfo &owner, bool isGroup, quint32 ownerId,
     // is no template to resolve, so the blocks are skipped and the annotations are not.
     if (doc != nullptr)
     {
+        // ⚠️ `cut` est le seul endroit où un format impose un contenu : le projecteur montre une
+        // pièce une fois par coupe, donc chaque exemplaire dit « une fois » — voir CutOverride.
         const OInfoBlockEffectiveState state =
-            OInfoBlockResolver::ResolveEffectiveState(owner, doc, pattern, sizeAxes);
+            OInfoBlockResolver::ResolveEffectiveState(owner, doc, pattern, sizeAxes, cut);
         const OInfoBlockData &info = owner.GetInfoBlockData();
 
         for (int block : state.blockContent.keys())
@@ -1163,13 +1182,13 @@ void DrawOwnerDecor(QGraphicsItem *host, const OExportPieceDecor &decor)
 auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup, quint32 ownerId,
                      const QPointF &centerLocal, qreal mirrorX, const OSizerange *range,
                      const VContainer *pattern, VAbstractPattern *doc,
-                     const QHash<quint32, QRectF> &miniatureBoxes, bool cuttingPlan,
+                     const QHash<quint32, QRectF> &miniatureBoxes, OExportFormat::Kind format,
                      const QMap<QString, QString> &sizeAxes = {},
                      OGradedSvg::LayoutObject *decor = nullptr) -> void
 {
     const OExportPieceDecor records = ResolveOwnerDecor(owner, isGroup, ownerId, centerLocal, mirrorX,
                                                         range, pattern, doc, miniatureBoxes,
-                                                        cuttingPlan, sizeAxes);
+                                                        format, sizeAxes);
     DrawOwnerDecor(host, records);
 
     if (decor != nullptr)
@@ -1219,7 +1238,7 @@ auto IsDecorChild(QGraphicsItem *child, bool includeHidden = false) -> bool
 void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry,
                      const QTransform &placement, qreal rotation, int footprintIndex,
                      const OSizerange *range, const VContainer *pattern, VAbstractPattern *doc,
-                     bool cuttingPlan, OGradedSvg::LayoutObject *decor = nullptr,
+                     OExportFormat::Kind format, OGradedSvg::LayoutObject *decor = nullptr,
                      QGraphicsItem **hostOut = nullptr)
 {
     DecorFrame frame;
@@ -1282,7 +1301,7 @@ void BuildPieceDecor(QGraphicsScene *scene, const OExportPieceGeometry &geometry
         // its own that nothing ever measured.
         BuildOwnerDecor(host, pieces->constFind(geometry.id).value(), false, geometry.id,
                         frame.bounds.center() - frame.origin, frame.mirrorX, range, pattern, doc,
-                        {{geometry.id, frame.bounds}}, cuttingPlan, {}, decor);
+                        {{geometry.id, frame.bounds}}, format, {}, decor);
     }
 
     if (host->childItems().isEmpty())
@@ -1315,7 +1334,23 @@ void CollectMemberOwnDecor(QGraphicsScene *scene, const OExportPieceGeometry &ge
     // Sa pièce, avec SA ligne : `asLonePiece` demande celle du membre là où le plan l'éteint.
     VLayoutPiece placed = geometry.piece;
     placed.SetMatrix(geometry.piece.GetMatrix() * placement);
-    ApplyReferenceGrainline(placed, geometry, range, unit, pattern, false, /*asLonePiece=*/true);
+
+    // ⚠️ **Le droit-fil se RALLUME avant d'être posé, pas après.** `ApplyReferenceGrainline` rend la
+    // main sans rien faire quand la ligne est masquée (« rien n'est dessiné pour cette pièce ») —
+    // et un membre de groupe l'a masquée, c'est la règle du groupe. Appelée avant, elle ne posait
+    // donc jamais la ligne GELÉE, et l'item était construit avec celle du MODÈLE : mesuré sur
+    // « Manche » à la taille 32, 0.796 de la pièce au lieu de 0.857 — alors que l'attribut
+    // `grainLine` du même enregistrement, lui, valait bien 0.857.
+    if (placed.GetGrainline().IsEnabled())
+    {
+        placed.GetGrainline().SetVisible(true);
+    }
+    placed.SetShowMirrorLine(true);
+
+    // `Print` : ce bloc montre un membre SEUL, avec TOUT ce qu'il porte — le format n'a rien à y
+    // éteindre, et c'est le sens de « asLonePiece » depuis toujours.
+    ApplyReferenceGrainline(placed, geometry, range, unit, pattern, OExportFormat::Kind::Print,
+                            /*asLonePiece=*/true);
 
     // ── Un membre montré SEUL montre TOUT ce qu'il a ────────────────────────────────────────────
     //
@@ -1390,8 +1425,8 @@ void CollectMemberOwnDecor(QGraphicsScene *scene, const OExportPieceGeometry &ge
     scene->addItem(item);
 
     QGraphicsItem *host = nullptr;
-    BuildPieceDecor(scene, geometry, placement, rotation, footprintIndex, range, pattern, doc, false,
-                    entry, &host);
+    BuildPieceDecor(scene, geometry, placement, rotation, footprintIndex, range, pattern, doc,
+                    OExportFormat::Kind::Print, entry, &host);
     if (host != nullptr)
     {
         host->setVisible(false);
@@ -1407,7 +1442,7 @@ void CollectMemberOwnDecor(QGraphicsScene *scene, const OExportPieceGeometry &ge
 /// which is the frame the group stores all of its children in.
 void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
                      const OExportGroupDecor *frozen, const OSizerange *range, const Unit &unit,
-                     const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
+                     const VContainer *pattern, VAbstractPattern *doc, OExportFormat::Kind format,
                      OGradedSvg::LayoutObject *decor = nullptr)
 {
     const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
@@ -1489,7 +1524,7 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
         }
 
         BuildOwnerDecor(host, group.value(), true, groupId, centerLocal, qQNaN(), range, pattern, doc,
-                        memberBoxes, cuttingPlan, {}, decor);
+                        memberBoxes, format, {}, decor);
     }
 
     if (decor != nullptr)
@@ -1524,7 +1559,7 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *range,
-                       const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
+                       const VContainer *pattern, VAbstractPattern *doc, OExportFormat::Kind format,
                        const QMap<QString, QString> &sizeAxes) -> OExportPieceDecor
 {
     const auto *pieces = pattern != nullptr ? pattern->DataPieces() : nullptr;
@@ -1542,21 +1577,41 @@ auto ResolvePieceDecor(const OExportPieceGeometry &geometry, const OSizerange *r
     // The very centre the live path falls back on for a child that was never placed — measured on the
     // frozen piece, so that the record and a later drawing agree about where "on its owner" is.
     const QPointF centerLocal = UnplacedBounds(geometry.piece).center();
+
+    // ── Le projecteur, et son « Cut 1 » ─────────────────────────────────────────────────────────
+    //
+    // La quantité écrite sur un plan projeté n'est pas celle de la pièce : c'est **toujours une**,
+    // parce que chaque exemplaire est montré séparément — une pièce coupée deux fois apparaît deux
+    // fois, et chacune dit « Couper 1 ». La quantité réelle continue de voyager dans la charge utile.
+    // `on fold` reste, lui : c'est une instruction de placement, pas une quantité, et une pièce au
+    // pli est dépliée puis montrée une fois.
+    //
+    // ⚠️ Le pli se lit sur LA GÉOMÉTRIE, jamais sur la case du cartouche : c'est la foldline qui
+    // décide de la pose, et c'est elle qui doit se lire ici.
+    OInfoBlockResolver::CutOverride cut;
+    const OInfoBlockResolver::CutOverride *cutOverride = nullptr;
+    if (OExportFormat::IsProjector(format))
+    {
+        cut.quantity = 1;
+        cut.onFold = geometry.onFold;
+        cutOverride = &cut;
+    }
+
     return ResolveOwnerDecor(piece.value(), false, geometry.id, centerLocal, geometry.mirrorX, range,
                              pattern, doc, {{geometry.id, UnplacedBounds(geometry.piece)}},
-                             cuttingPlan, sizeAxes);
+                             format, sizeAxes, cutOverride);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerange *range,
-                           const Unit &unit, const VContainer *pattern, bool cuttingPlan,
+                           const Unit &unit, const VContainer *pattern, OExportFormat::Kind format,
                            const QRectF &referenceSeat) -> OExportPieceGrainline
 {
     OExportPieceGrainline frozen;
 
-    // `cuttingPlan` ne décide plus rien ici : toutes les pièces gelent leur ligne, membres compris —
+    // Le format ne décide plus rien ici : toutes les pièces gelent leur ligne, membres compris —
     // c'est le DESSIN qui l'éteint sur une copie posée (voir ApplyReferenceGrainline), pas le record.
-    Q_UNUSED(cuttingPlan)
+    Q_UNUSED(format)
 
     // ── Le membre d'un groupe : sa ligne est gelée ELLE AUSSI ────────────────────────────────────
     //
@@ -1632,7 +1687,7 @@ auto ResolvePieceGrainline(const OExportPieceGeometry &geometry, const OSizerang
 //---------------------------------------------------------------------------------------------------------------------
 auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 groupId,
                        const OSizerange *range, const Unit &unit, const VContainer *pattern,
-                       VAbstractPattern *doc, bool cuttingPlan,
+                       VAbstractPattern *doc, OExportFormat::Kind format,
                        const QMap<QString, QString> &sizeAxes) -> OExportGroupDecor
 {
     OExportGroupDecor frozen;
@@ -1640,7 +1695,7 @@ auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 gro
     // A cutting plan DECOMPOSES the groups — the kept member carries its own decor and the group draws
     // none. The very test the drawing side makes, asked once, here: nothing to freeze where nothing is
     // drawn.
-    if (!IsGroupedMember(pattern, groupId, cuttingPlan))
+    if (!IsGroupedMember(pattern, groupId, format))
     {
         return frozen;
     }
@@ -1700,7 +1755,7 @@ auto ResolveGroupDecor(const QVector<OExportPieceGeometry> &members, quint32 gro
     }
 
     frozen.owner = ResolveOwnerDecor(sized, true, groupId, centerLocal, qQNaN(), range, pattern, doc,
-                                     memberBoxes, cuttingPlan, sizeAxes);
+                                     memberBoxes, format, sizeAxes);
 
     const VGrainlineData &geom = sized.m_glGrainline;
     if (geom.IsEnabled() && geom.IsVisible())
@@ -1740,9 +1795,9 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         return;
     }
 
-    // Lu une fois, sous son ancien nom : le reste de cette fonction demande la même chose à quatre
-    // endroits, et quatre lectures d'un drapeau sont quatre occasions d'en lire un autre.
-    const bool cuttingPlan = run.cuttingPlan;
+    // Lu une fois : le reste de cette fonction demande la même chose à quatre endroits, et quatre
+    // lectures d'un format sont quatre occasions d'en lire un autre.
+    const OExportFormat::Kind format = run.format;
 
     // ── Où ce plan se pose ────────────────────────────────────────────────────────────────────────
     //
@@ -1882,7 +1937,8 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         // où le papier ou le tapis s'arrête, et aucun plan de découpe n'a les deux à la fois.
         //
         // ⚠️ **Affichage seulement** — le fichier est écrit en parcourant le contenu, jamais la scène.
-        if (run.plotterPlan && run.matCount > 0 && run.matWidthMm > 0.0 && run.matHeightMm > 0.0)
+        if (format == OExportFormat::Kind::Plotter && run.matCount > 0 && run.matWidthMm > 0.0
+            && run.matHeightMm > 0.0)
         {
             const qreal matWidthPx = ToPixel(run.matWidthMm, Unit::Mm);
             const qreal matHeightPx = ToPixel(run.matHeightMm, Unit::Mm);
@@ -2037,7 +2093,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // "Cut on fold" is a caption, and a cutting plan shows none: the mark — the line and
                 // its two arrows — stays, the text leaves. Asked of the piece here, on the copy
                 // GetItem is about to draw, so the canvas, the image and the PDF lose it together.
-                if (cuttingPlan)
+                if (format == OExportFormat::Kind::CuttingPlan)
                 {
                     placed.SetShowFoldLineLabel(false);
                 }
@@ -2046,12 +2102,12 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // what builds it — and it is set on the reference layer only.
                 if (isReference)
                 {
-                    ApplyReferenceGrainline(placed, geometry, range, unit, pattern, cuttingPlan);
+                    ApplyReferenceGrainline(placed, geometry, range, unit, pattern, format);
 
                     // Et le pli, qui est le décor du GROUPE : seul le membre qu'il désigne le porte.
                     // Ni un plan de coupe ni un plotter ne sont concernés — ils décomposent les
                     // groupes, donc chacun de leurs membres garde le sien.
-                    if (!cuttingPlan && !run.plotterPlan)
+                    if (format == OExportFormat::Kind::Print)
                     {
                         ApplyGroupFoldLine(placed, geometry, pattern);
                     }
@@ -2071,13 +2127,30 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // Every size of a footprint carries the same index, which is what makes the
                 // follow set whole: moving a piece moves its other sizes with it.
                 item->setData(kExportFootprintRole, i);
-                OGradedSizeTrace::ApplyToSubtree(item, styles, OGradedSizeTrace::Scope::FreshItems);
+                // ── Le tracé : celui du format, ou celui des tailles ──────────────────────────────
+                //
+                // Un projecteur a **une seule encre** : noir, plein, 7 / 5,25 pt, la même pour
+                // toutes les tailles — c'est ce qui rend ses calques interchangeables. Les styles de
+                // taille de Graded s'arrêtent donc ici : ils donneraient à chaque taille sa couleur
+                // et ses tirets, et deux tailles ne se superposeraient plus de la même façon.
+                //
+                // ⚠️ Posée sur les ITEMS, par le canvas : le fichier n'a aucune règle de trait à lui
+                // et écrit ce qu'il voit, comme pour tous les autres formats. L'écran et le papier
+                // ne peuvent donc pas diverger sur l'épaisseur d'un trait.
+                if (format == OExportFormat::Kind::Projector)
+                {
+                    OExportInk::ApplyToSubtree(item);
+                }
+                else
+                {
+                    OGradedSizeTrace::ApplyToSubtree(item, styles, OGradedSizeTrace::Scope::FreshItems);
+                }
 
                 if (!isReference)
                 {
                     HidePerSizeDecor(item);
                 }
-                else if (IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
+                else if (IsGroupedMember(pattern, geometry.groupId, format))
                 {
                     // A grouped member carries nothing of its own: the group hosts the
                     // single set, grainline included. Its frame is measured here, at the
@@ -2103,7 +2176,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     // (`ApplyGroupFoldLine` a déjà éteint celle des autres), et la doubler ici ferait
                     // deux traits.
                     bool carriesFold = false;
-                    if (content != nullptr && !run.plotterPlan)
+                    if (content != nullptr && format != OExportFormat::Kind::Plotter)
                     {
                         const auto *groups = pattern != nullptr ? pattern->DataPieceGroups() : nullptr;
                         if (groups != nullptr)
@@ -2137,7 +2210,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     // éteint, pli retiré au membre qui n'est pas porteur) : lire dedans ne donnerait
                     // rien, et le lire par couche décalait le droit-fil une seconde fois — mesuré sur
                     // « Manche » et « Manche poignet ».
-                    if (content != nullptr && !run.plotterPlan)
+                    if (content != nullptr && format != OExportFormat::Kind::Plotter)
                     {
                         OGradedSvg::LayoutObject member;
                         member.layerIndex = 0;
@@ -2150,7 +2223,14 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                             || !member.annotations.isEmpty() || !member.thumbnails.isEmpty())
                         {
                             content->payloadDecor.append(member);
-                            // ⚠️ **Et dans le DESSIN, qui est le SVG graded lui-même.**
+                            // ⚠️ **Et RIEN dans le DESSIN.** Les enfants d'un membre ne sont pas
+                            // une donnée du document : c'est le groupe qui se dessine, et les
+                            // membres n'en portent une copie que pour que le payload puisse les
+                            // montrer SEULS. Les mettre dans `content.decor` — la liste dont la
+                            // couche visible est écrite — les faisait apparaître PAR-DESSUS le
+                            // groupe sur le PDF : constaté, et c'était faux.
+                            //
+                            // Le commentaire d'origine, conservé pour mémoire :
                             // Les membres existent dans chaque calque de taille, mais vides : un
                             // `<g id="Manche">` avec un seul `path`, son contour. Leurs enfants ne
                             // peuvent pas y venir du dessin, parce que les règles du groupe les y
@@ -2163,10 +2243,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                             //
                             // Sur la couche de référence seulement : c'est celle qui porte les
                             // enfants, comme pour une pièce seule (`isReference`, plus bas).
-                            if (isReference)
-                            {
-                                content->decor.append(member);
-                            }
+                            // (aucun ajout à `content.decor` : voir ci-dessus.)
                         }
                     }
 
@@ -2192,7 +2269,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     geometriesByLayer[l].append(&geometry);
                 }
 
-                if (isReference && !IsGroupedMember(pattern, geometry.groupId, cuttingPlan))
+                if (isReference && !IsGroupedMember(pattern, geometry.groupId, format))
                 {
                     // The decor layer holds the reference size's decor. Its records are
                     // collected here, where the decision to draw it was taken — a second
@@ -2216,7 +2293,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     }
 
                     BuildPieceDecor(scene, geometry, placementMatrix, placement.rotation, i, range,
-                                    pattern, doc, cuttingPlan, content != nullptr ? &entry : nullptr);
+                                    pattern, doc, format, content != nullptr ? &entry : nullptr);
 
                     if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
                                                || !entry.thumbnails.isEmpty()
@@ -2225,7 +2302,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                         content->decor.append(entry);
                     }
                 }
-                else if (content != nullptr && !run.plotterPlan)
+                else if (content != nullptr && format != OExportFormat::Kind::Plotter)
                 {
                     // ── Le décor de CETTE couche, pour le payload seul ─────────────────────────
                     //
@@ -2269,7 +2346,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     // une copie de la pièce, à cette taille, dont les enfants ne sont pas éteints,
                     // ajoutée à la scène masquée pour que ses items vivent jusqu'à l'écriture.
                     QGraphicsItem *source = item;
-                    if (isReference && IsGroupedMember(pattern, geometry.groupId, cuttingPlan)
+                    if (isReference && IsGroupedMember(pattern, geometry.groupId, format)
                         && content != nullptr)
                     {
                         // ⚠️ **Aucune substitution de ligne ici.** `geometry.piece` porte la ligne
@@ -2334,7 +2411,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
 
         OGradedSvg::LayoutObject entry;
         entry.origin = QPointF(0.0, 0.0);
-        BuildGroupDecor(scene, it.key(), frame, frozen, range, unit, pattern, doc, cuttingPlan,
+        BuildGroupDecor(scene, it.key(), frame, frozen, range, unit, pattern, doc, format,
                         content != nullptr ? &entry : nullptr);
 
         if (content != nullptr && (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
@@ -2393,7 +2470,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         for (int k = 0; k < items.size() && k < geometriesByLayer.at(l).size(); ++k)
         {
             const OExportPieceGeometry *geometry = geometriesByLayer.at(l).at(k);
-            const bool grouped = IsGroupedMember(pattern, geometry->groupId, cuttingPlan);
+            const bool grouped = IsGroupedMember(pattern, geometry->groupId, format);
             const QString name = grouped ? geometry->groupName : geometry->name;
 
             int index = objectOfName.value(name, -1);
