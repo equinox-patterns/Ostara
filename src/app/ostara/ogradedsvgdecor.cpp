@@ -30,6 +30,7 @@
  *************************************************************************/
 
 #include "ogradedsvgdecor.h"
+#include "ogradedgeometry.h"
 
 #include "mainwindow_graded_helpers.h"
 #include "osvgutils.h"
@@ -134,6 +135,13 @@ auto OwnerBlocks(const OInfoBlockData &info, const OSizerange::PieceContent &pc,
                  const OInfoBlockEffectiveState &state, const QPointF &centerLocal)
     -> QVector<OInfoBlockSvg::Block>
 {
+    // ⚠️ **La MÊME résolution que le payload PDF, pas une copie.** `OGraded::ResolveInfoBlock`
+    // (ogradedgeometry.cpp) est le seul endroit qui décide où va un bloc : override de plage s'il
+    // existe, géométrie enregistrée sinon, et empilement sous le centre du propriétaire en dernier
+    // recours. L'export SVG en avait sa propre copie, et c'est cette duplication qui faisait
+    // diverger le SVG de ce que le canvas montre — le bloc, l'annotation, la miniature et le
+    // droit-fil partaient du même côté, alors que le trait de pli, écrit depuis l'item, restait
+    // juste. Une fonction, deux sorties : elles ne peuvent plus se contredire.
     QVector<OInfoBlockSvg::Block> out;
     const QList<int> blockIndexes = state.blockContent.keys();
     for (int blockIndex : blockIndexes)
@@ -143,38 +151,19 @@ auto OwnerBlocks(const OInfoBlockData &info, const OSizerange::PieceContent &pc,
         {
             continue;
         }
-        OInfoBlockGeom geom = info.BlockGeom(blockIndex);
+
         const QHash<int, OSizerange::BlockOverride> &ovs = isGroup ? gc.blocks : pc.blocks;
         const auto oit = ovs.constFind(blockIndex);
-        const bool ov = (oit != ovs.cend() && oit->valid);
-        if (ov)
-        {
-            geom.pos = oit->geom.pos;
-            if (oit->geom.fontScale > 0.0)
-            {
-                geom.fontScale = oit->geom.fontScale;
-            }
-        }
-        const qreal fontScale = geom.fontScale > 0.0 ? geom.fontScale : 1.0;
-        const QSizeF natural = OCartouchePainter::NaturalSize(lines);
-        const QSizeF size(natural.width() * fontScale, natural.height() * fontScale);
-        QPointF topLeft;
-        qreal rotation = 0.0;
-        if (ov || info.HasStoredGeometry(blockIndex))
-        {
-            topLeft = geom.pos;
-            rotation = geom.rotation;
-        }
-        else
-        {
-            topLeft = centerLocal + QPointF(0.0, (blockIndex - 1) * (size.height() + 12.0));
-        }
+        const OGraded::InfoBlockPlacement placement =
+            OGraded::ResolveInfoBlock(info, oit == ovs.cend() ? OSizerange::BlockOverride{}
+                                                              : oit.value(),
+                                      lines, blockIndex, centerLocal);
 
         OInfoBlockSvg::Block block;
         block.lines = lines;
-        block.fontScale = fontScale;
-        block.rect = QRectF(topLeft, size);
-        block.rotation = rotation;
+        block.fontScale = placement.fontScale;
+        block.rect = QRectF(placement.topLeft, placement.size);
+        block.rotation = placement.rotation;
         out.append(block);
     }
     return out;
@@ -316,6 +305,30 @@ auto ReferenceItemOf(QGraphicsScene *scene, quint32 pieceId) -> QGraphicsItem *
     }
     return nullptr;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+/// The MEMBER VIEW of a grouped member — the copy Graded stands beside its group, at the place
+/// Details gives it (`kGradedMemberViewRole`, `mainwindow_graded_helpers.h:74`), or nullptr.
+///
+/// ⚠️ **A grouped piece has two carriers on the reference layer, and they are not at the same
+/// place.** Its stack carries the piece id and stands at the group's stacking position — that is
+/// what the group draws and what prints. Its member view is a second render, movable, standing in
+/// the workshop row where Details puts it, and it is the one that carries the member's own
+/// children. Reading the stack for a member (as `ReferenceItemOf` does) builds its decor on the
+/// group and the two drawings land on top of each other: mesuré sur « Manche » et « Manche
+/// poignet », superposés au groupe au lieu d'être à côté de lui.
+auto MemberViewOf(QGraphicsScene *scene, quint32 pieceId) -> QGraphicsItem *
+{
+    const auto items = scene->items();
+    for (auto *item : items)
+    {
+        if (item->data(kGradedMemberViewRole).toUInt() == pieceId)
+        {
+            return item;
+        }
+    }
+    return nullptr;
+}
 }  // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -376,24 +389,40 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
         }
     }
 
-    // --- Lone pieces ---------------------------------------------------------
-    for (quint32 pieceId : lonePieceIds)
+    // --- Le décor d'UNE pièce, seule ou membre d'un groupe -------------------
+    //
+    // ⚠️ **Un membre EST une pièce, et le SVG doit le porter comme telle.** Graded ne dessine
+    // que le décor du groupe sur sa couche de référence : les enfants d'un membre y sont
+    // éteints par les règles du groupe — `ApplyReferenceGrainline` ne crée même pas son
+    // droit-fil, `ApplyGroupFoldLine` lui retire le pli. Le SVG graded sortait donc avec
+    // `<g id="Manche">` réduit à son contour, et Rabnest, qui doit pouvoir poser un membre
+    // SEUL, n'avait rien à lire. On rallume ces enfants le temps de les écrire, puis on les
+    // remasque : le dessin garde son apparence, il cesse seulement d'être muet.
+    const auto buildOwner = [&](quint32 pieceId) -> OGradedSvg::LayoutObject
     {
-        if (piecesMap == nullptr || !piecesMap->contains(pieceId) || pieceGroupOf.contains(pieceId))
+        OGradedSvg::LayoutObject object;
+        if (piecesMap == nullptr || !piecesMap->contains(pieceId))
         {
-            continue;
+            return object;
         }
-        QGraphicsItem *const ref = ReferenceItemOf(scene, pieceId);
+        // ⚠️ **La VUE du membre, jamais son stack.** Un membre de groupe a deux porteurs sur la
+        // couche de référence : son stack, qui garde l'id de la pièce et qui est posé à
+        // l'empilement du groupe — c'est le dessin du groupe — et sa vue, une seconde rendue
+        // mobile, posée là où Details le met. C'est la vue qui porte les enfants du membre, et
+        // c'est sa position que le SVG doit écrire : lire le stack superposait le membre au
+        // groupe.
+        QGraphicsItem *const ref = pieceGroupOf.contains(pieceId)
+                                       ? MemberViewOf(scene, pieceId)
+                                       : ReferenceItemOf(scene, pieceId);
         if (ref == nullptr)
         {
-            continue;
+            return object;
         }
         const VPiece &piece = piecesMap->value(pieceId);
         const auto pit = range.pieceContent.constFind(pieceId);
         const OSizerange::PieceContent &content =
             pit == range.pieceContent.cend() ? OSizerange::PieceContent{} : pit.value();
 
-        OGradedSvg::LayoutObject object;
         object.name = piece.GetName();
         object.origin = ref->mapToScene(QPointF(0.0, 0.0));
 
@@ -404,6 +433,21 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
             if (child->type() == VGraphicsFillItem::Type)
             {
                 child->hide();
+            }
+        }
+
+        // Les enfants qu'un membre ne montre pas sur la couche de référence, rallumés le temps
+        // de les écrire — le pli et sa légende, que le groupe a masqués au membre qui ne porte
+        // pas son axe.
+        QVector<QGraphicsItem *> dimmed;
+        for (QGraphicsItem *child : ref->childItems())
+        {
+            if (!child->isVisible()
+                && (child->type() == VGraphicsFoldLineItem::Type
+                    || child->type() == QGraphicsSimpleTextItem::Type))
+            {
+                child->show();
+                dimmed.append(child);
             }
         }
 
@@ -434,7 +478,7 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
 
         // Info blocks + annotations (range overrides win over the design geometry).
         const OInfoBlockEffectiveState state =
-            OInfoBlockResolver::ResolveEffectiveState(piece, doc, pattern);
+            OInfoBlockResolver::ResolveEffectiveState(piece, doc, pattern, range.ReferenceAxes());
         const QPointF centerLocal = ref->boundingRect().center();
         object.blocks =
             OwnerBlocks(piece.GetInfoBlockData(), content, {}, false, state, centerLocal);
@@ -445,7 +489,27 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
         // the piece's own rectangle, which is what the canvas measures too.
         AppendThumbnail(object.thumbnails, pieceId, piece, piece.GetThumbnailData(), content.thumbnail,
                         ref->boundingRect());
-        out.append(object);
+
+        // L'apparence du dessin est rendue intacte : ce qui a été rallumé est remasqué.
+        for (QGraphicsItem *child : dimmed)
+        {
+            child->hide();
+        }
+        return object;
+    };
+
+    // --- Pièces seules --------------------------------------------------------
+    for (quint32 pieceId : lonePieceIds)
+    {
+        if (pieceGroupOf.contains(pieceId))
+        {
+            continue;
+        }
+        const OGradedSvg::LayoutObject object = buildOwner(pieceId);
+        if (!object.name.isEmpty())
+        {
+            out.append(object);
+        }
     }
 
     // --- Groups --------------------------------------------------------------
@@ -532,7 +596,7 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
 
         // Group info blocks + annotations (union centre, range overrides win).
         const OInfoBlockEffectiveState state =
-            OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern);
+            OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern, range.ReferenceAxes());
         object.blocks =
             OwnerBlocks(group.GetInfoBlockData(), {}, content, true, state, unionCenterLocal);
         object.annotations =
@@ -555,6 +619,19 @@ QList<OGradedSvg::LayoutObject> BuildReferenceDecor(QGraphicsScene *scene, const
                             memberItem->sceneBoundingRect().translated(-box.x(), -box.y()));
         }
         out.append(object);
+
+        // ⚠️ **Et CHAQUE MEMBRE, comme une pièce.** Le groupe porte son dessin commun — un
+        // cartouche, un droit-fil pour ses membres — et c'est ce que l'impression montre. Mais
+        // un membre affiché SEUL porte le sien, et Rabnest ne peut le poser que s'il est dans le
+        // SVG. Sans ces objets, `Manche` et `Manche poignet` sortaient en contours nus.
+        for (quint32 memberId : group.pieceIds)
+        {
+            const OGradedSvg::LayoutObject memberObject = buildOwner(memberId);
+            if (!memberObject.name.isEmpty())
+            {
+                out.append(memberObject);
+            }
+        }
     }
 
     return out;

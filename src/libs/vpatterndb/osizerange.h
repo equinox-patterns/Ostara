@@ -191,6 +191,31 @@ public:
         return !name.isEmpty() && !measurement.isEmpty() && !sizeAxis.isEmpty() && !minValue.isEmpty()
                && !maxValue.isEmpty();
     }
+
+    /**
+     * @brief Ce que vaut CHAQUE axe à la taille de référence de la plage, nommé comme le tableau
+     *        de mesures nomme ses axes.
+     *
+     * ⚠️ **Sans cette table, un cartouche ne peut pas suivre sa plage.** `OInfoBlockResolver`
+     * choisit la valeur affichée de chaque axe — et de là, la colonne du tableau qu'il lit — par
+     * `sizeAxes.value(axis, table->AnchorValue(axis))` (`OInfoBlockResolver.cpp:285`) puis
+     * `table->MeasurementValueAt(name, sizeAxes)` (`:341`). Ce paramètre a une valeur par défaut
+     * vide, et tout retombe alors sur l'ANCRE du tableau, c'est-à-dire la combinaison de
+     * référence : une plage en stature 160 imprimait 168, la stature restée active en Details.
+     * Le conteneur de mesures n'y entre pas du tout — les valeurs viennent du tableau.
+     *
+     * La référence est le PREMIER de la plage : c'est la taille que le payload nomme
+     * (`<pieces reference="…">`) et la seule dont Graded construit les enfants.
+     */
+    auto ReferenceAxes() const -> QMap<QString, QString>
+    {
+        QMap<QString, QString> axes = axisValues;
+        if (!sizeAxis.isEmpty() && !minValue.isEmpty())
+        {
+            axes.insert(sizeAxis, minValue);
+        }
+        return axes;
+    }
 };
 
 #endif // OSIZERANGE_H

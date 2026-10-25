@@ -1193,9 +1193,9 @@ auto BuildOwnerDecor(QGraphicsItem *host, const IPieceInfo &owner, bool isGroup,
 /// size 32's internal paths and place labels were still there, in the common trunk, where they belong
 /// to no size and to no piece. What is decor here is what a piece does not DRAW with: its grain line,
 /// its fold mark and the fold's caption.
-auto IsDecorChild(QGraphicsItem *child) -> bool
+auto IsDecorChild(QGraphicsItem *child, bool includeHidden = false) -> bool
 {
-    if (child == nullptr || !child->isVisible())
+    if (child == nullptr || (!includeHidden && !child->isVisible()))
     {
         return false;
     }
@@ -1401,6 +1401,10 @@ void CollectMemberOwnDecor(QGraphicsScene *scene, const OExportPieceGeometry &ge
 /// A group has no item of its own in this scene: the nesting places its members. Graded
 /// builds the same invisible carrier — its origin is the top-left corner of the members,
 /// which is the frame the group stores all of its children in.
+
+/// A group has no item of its own in this scene: the nesting places its members. Graded
+/// builds the same invisible carrier — its origin is the top-left corner of the members,
+/// which is the frame the group stores all of its children in.
 void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &frame,
                      const OExportGroupDecor *frozen, const OSizerange *range, const Unit &unit,
                      const VContainer *pattern, VAbstractPattern *doc, bool cuttingPlan,
@@ -1515,6 +1519,7 @@ void BuildGroupDecor(QGraphicsScene *scene, quint32 groupId, const DecorFrame &f
         delete host;
     }
 }
+
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1775,6 +1780,21 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // The frame of each group, on the reference layer only: the group's decor is drawn
     // once, above all of its members, once the loop has placed them.
     QHash<quint32, DecorFrame> groupFrames;
+
+    // ⚠️ **L'écart d'alignement de la RÉFÉRENCE, par pièce.** Le bloc (cartouche, annotations,
+    // miniatures) est posé une fois pour la plage, dans le repère de référence ; pour le poser sur
+    // une autre taille il faut l'y ramener, c'est-à-dire l'écarter de `A_ref − A_taille`. Mesuré sur
+    // « Devant x1 pli » : +529,147 ; 76,246 remet la 46 exactement sur le pli de sa propre pièce.
+    // Les traits géométriques (droit-fil, pli, légende), eux, n'ont pas besoin de cet écart : ce sont
+    // les enfants de la pièce de cette taille, ils sont déjà dans son repère.
+    QHash<quint32, QPointF> referenceAlignDelta;
+    if (!layers.isEmpty())
+    {
+        for (const OExportPieceGeometry &geometry : layers.first().pieces)
+        {
+            referenceAlignDelta.insert(geometry.id, geometry.alignDelta);
+        }
+    }
 
     // The per-size trace styles, read on the very key the Graded canvas reads them on.
     // They are authored against a measurements table, and a table outside the library has
@@ -2104,15 +2124,23 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                         }
                     }
 
-                    // ── Et ses enfants À LUI, pour le payload ───────────────────────────────────
+                    // ── Les enfants du membre, pour le payload ──────────────────────────────────
                     //
-                    // Le plan dessine le groupe, et c'est très bien : un cartouche, une grainline pour
-                    // deux pièces. Mais Rabnest peut n'afficher QUE ce membre — il lui faut alors les
-                    // enfants de ce membre, que le payload doit donc porter à côté de ceux du groupe.
-                    // Construits ici et masqués aussitôt : rien de tout cela n'entre dans le dessin.
+                    // ⚠️ **UNE valeur, pas une par taille.** Les enfants d'un membre n'ont pas de clé
+                    // de taille : `pieceContent[pieceId]` porte une position par plage, exprimée dans
+                    // le repère local de la pièce, et c'est le déplacement de la vue à chaque taille
+                    // (`mx/my + layerDelta + dx/dy`) qui la porte. Autrement dit `alignDelta` fait le
+                    // travail côté lecteur.
+                    //
+                    // ⚠️ **Et ils sont construits ici, sur la couche de référence, avec `asLonePiece`.**
+                    // L'item de la couche a été vidé par les règles de dessin du groupe (droit-fil
+                    // éteint, pli retiré au membre qui n'est pas porteur) : lire dedans ne donnerait
+                    // rien, et le lire par couche décalait le droit-fil une seconde fois — mesuré sur
+                    // « Manche » et « Manche poignet ».
                     if (content != nullptr && !run.plotterPlan)
                     {
                         OGradedSvg::LayoutObject member;
+                        member.layerIndex = 0;
                         CollectMemberOwnDecor(scene, geometry, placementMatrix, placement.rotation, i,
                                               range, unit, pattern, doc,
                                               carriesFold ? frame.foldChildren
@@ -2122,8 +2150,38 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                             || !member.annotations.isEmpty() || !member.thumbnails.isEmpty())
                         {
                             content->payloadDecor.append(member);
+                            // ⚠️ **Et dans le DESSIN, qui est le SVG graded lui-même.**
+                            // Les membres existent dans chaque calque de taille, mais vides : un
+                            // `<g id="Manche">` avec un seul `path`, son contour. Leurs enfants ne
+                            // peuvent pas y venir du dessin, parce que les règles du groupe les y
+                            // éteignent — `ApplyReferenceGrainline` ne crée même pas l'item du
+                            // droit-fil d'un membre, et `ApplyGroupFoldLine` retire le pli au membre
+                            // qui n'est pas porteur. `CollectMemberOwnDecor`, juste au-dessus, les
+                            // reconstruit depuis la copie de la pièce à cette taille ; il restait à
+                            // les **écrire**, et c'est ce qui manquait : le SVG graded est ce que
+                            // Rabnest doit lire, pas une seconde description du même dessin.
+                            //
+                            // Sur la couche de référence seulement : c'est celle qui porte les
+                            // enfants, comme pour une pièce seule (`isReference`, plus bas).
+                            if (isReference)
+                            {
+                                content->decor.append(member);
+                            }
                         }
                     }
+
+                    // ── Les enfants du membre viennent du MÊME chemin que ceux d'une pièce ─────
+                    //
+                    // ⚠️ **Ce bloc a été retiré, et c'est le correctif.** Il construisait les enfants
+                    // d'un membre par `CollectMemberOwnDecor`, qui les lit dans le DOCUMENT au moment
+                    // de la génération — donc à la taille où le document a été remis, une seule fois,
+                    // et la même position était recopiée dans les huit tailles. Mesuré sur « Manche »
+                    // et « Manche poignet » : des pas de 16, 22, 101, 30, 31, 110, 39 px entre tailles
+                    // successives, au lieu du pas constant d'une position calculée par taille.
+                    //
+                    // Un membre est une pièce : ses enfants sont `geometry.decor`, résolu par couche
+                    // comme ceux de toutes les autres — c'est la branche `else if`, plus bas. Le
+                    // `<group>` garde les siens, et Rabnest choisit.
                 }
 
                 scene->addItem(item);
@@ -2142,6 +2200,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     OGradedSvg::LayoutObject entry;
                     entry.name = geometry.name;
                     entry.ownerId = geometry.id;
+                    entry.layerIndex = l;
                     // The ink is already placed (the matrix is baked into the piece), so this is
                     // what brings it back into the frame `outline` travels in.
                     entry.ownerPlacement = placementMatrix;
@@ -2164,6 +2223,95 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                                                || !entry.decorChildren.isEmpty()))
                     {
                         content->decor.append(entry);
+                    }
+                }
+                else if (content != nullptr && !run.plotterPlan)
+                {
+                    // ── Le décor de CETTE couche, pour le payload seul ─────────────────────────
+                    //
+                    // ⚠️ **Y compris la couche de référence pour un membre de groupe.** Il n'entre
+                    // pas dans la branche qui précède — le groupe dessine, pas lui — et il restait
+                    // donc sans aucune entrée : sa `<piece>` de référence sortait avec un décor VIDE.
+                    // Mesuré : longueur 0 sur « Dos », « Manche », « Manche poignet » et « Test ».
+                    //
+                    // Graded ne projette pas les enfants d'une taille sur une autre : il construit
+                    // ceux de chaque pièce à la taille de sa couche, puis masque ceux qui ne sont pas
+                    // la référence (`HidePerSizeDecor`, juste avant). Les items sont donc là, à leur
+                    // taille, et il ne reste qu'à les enregistrer — rien n'est dessiné ici : la couche
+                    // de décor visible reste celle de la référence, et c'est ce que l'écran montre.
+                    //
+                    // Les records viennent de `geometry.decor`, gelé pour CETTE taille par
+                    // `freezePieceDecor`. Sans eux un membre seul n'aurait que son droit-fil.
+                    //
+                    // ⚠️ **Et les MEMBRES DE GROUPE passent par ici aussi.** Ils empruntaient
+                    // `CollectMemberOwnDecor`, qui construit les enfants depuis le DOCUMENT : les huit
+                    // tailles en recevaient donc une copie identique (mesuré : « Dos », « Manche » et
+                    // « Manche poignet » à une seule variante, pli dérivant de 282 à 86 px). Un membre
+                    // est une pièce comme une autre pour ses traits — c'est son item de couche qui les
+                    // porte, à sa taille.
+                    OGradedSvg::LayoutObject entry;
+                    entry.name = geometry.name;
+                    entry.ownerId = geometry.id;
+                    entry.layerIndex = l;
+                    entry.ownerPlacement = placementMatrix;
+                    entry.origin = QPointF(0.0, 0.0);
+                    // ⚠️ **Les enfants MASQUÉS comptent, et c'est même le cas courant ici.**
+                    // `HidePerSizeDecor` vient de cacher le droit-fil, le pli et sa légende de cette
+                    // couche : c'est une décision de DESSIN (une seule taille porte le décor visible),
+                    // pas de contenu — et le payload, lui, doit porter les enfants de cette taille.
+                    // Sans ce drapeau, chaque taille non-référence sortait sans pli ni légende.
+                    // ⚠️ **Sur la couche de référence, l'item de la pièce a été vidé de deux de ses
+                    // enfants par des règles de DESSIN** : `ApplyReferenceGrainline` éteint le
+                    // droit-fil d'un membre de groupe (`SetEnabled(false)`, puis `GetItem` ne le crée
+                    // pas), et `ApplyGroupFoldLine` retire le pli à tout membre qui n'est pas le
+                    // porteur désigné. Le payload, lui, doit porter les enfants de la pièce — ce
+                    // qu'elle a, pas ce que le dessin a gardé. On lui donne donc sa propre source :
+                    // une copie de la pièce, à cette taille, dont les enfants ne sont pas éteints,
+                    // ajoutée à la scène masquée pour que ses items vivent jusqu'à l'écriture.
+                    QGraphicsItem *source = item;
+                    if (isReference && IsGroupedMember(pattern, geometry.groupId, cuttingPlan)
+                        && content != nullptr)
+                    {
+                        // ⚠️ **Aucune substitution de ligne ici.** `geometry.piece` porte la ligne
+                        // de la pièce À CETTE TAILLE (matérialisée depuis son ancre à chaque parse) :
+                        // c'est elle qu'il faut, pas l'enregistrement gelé, qui est une autre valeur.
+                        VLayoutPiece lone = geometry.piece;
+                        lone.SetMatrix(placed.GetMatrix());
+                        QGraphicsItem *host = lone.GetItem(false, true, false);
+                        if (host != nullptr)
+                        {
+                            host->setVisible(false);
+                            scene->addItem(host);
+                            source = host;
+                        }
+                    }
+
+                    for (QGraphicsItem *child : source->childItems())
+                    {
+                        if (IsDecorChild(child, true))
+                        {
+                            entry.decorChildren.append(child);
+                        }
+                    }
+                    entry.blocks = geometry.decor.blocks;
+                    entry.annotations = geometry.decor.annotations;
+                    entry.thumbnails = geometry.decor.thumbnails;
+                    // ⚠️ **Aucun décalage ici, et c'est le correctif.** Graded pose le bloc à sa
+                    // position LOCALE ; c'est le déplacement de la vue d'une taille à l'autre qui
+                    // l'emporte. Le décor étant résolu par taille, le bloc de chaque taille est déjà à
+                    // sa place : le décaler de `A_ref − A_taille` le déplaçait de 219 px sur
+                    // « Manche » et de 529 px sur « Devant » à la 46 — c'est le décalage constaté,
+                    // et il n'avait pas lieu d'être.
+
+                    if (!entry.blocks.isEmpty() || !entry.annotations.isEmpty()
+                        || !entry.thumbnails.isEmpty() || !entry.decorChildren.isEmpty())
+                    {
+                        // ⚠️ **`payloadDecor`, jamais `decor`.** `content.decor` est la liste dont la
+                        // couche de décor DESSINÉE est écrite : y mettre les tailles non-référence y
+                        // ferait imprimer un cartouche et des annotations par taille, alors que leur
+                        // encre d'items est masquée deux lignes plus haut. Rabnest lit les deux
+                        // listes fondues, le papier n'en reçoit qu'une.
+                        content->payloadDecor.append(entry);
                     }
                 }
             }

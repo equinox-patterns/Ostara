@@ -244,6 +244,22 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     const bool wasModified = doc->IsModified();
 
     QHash<quint32, QList<QGraphicsItem *>> itemsByPiece;
+    // La VUE d'un membre de groupe — le second porteur, posé là où Details le met. Le canvas en
+    // a une par membre et par taille (`BuildGradedScene`, `kGradedMemberViewRole`) ; l'export, lui,
+    // ne créait que le stack, c'est-à-dire la pièce collée à l'empilement du groupe. C'est la
+    // raison pour laquelle le SVG ne montrait que « Manche (Groupe) » là où le canvas montre le
+    // groupe ET ses deux membres, séparés.
+    struct MemberViewEntry
+    {
+        QGraphicsItem *view = nullptr;   ///< la vue du membre, à sa place d'atelier
+        QGraphicsItem *stack = nullptr;  ///< le stack du groupe pour la même pièce et la même taille
+        QPointF base;                    ///< où le stack a été créé (avant alignement)
+        QPointF live;                    ///< mx/my : là où Details pose le membre
+        quint32 pieceId = 0;             ///< la pièce, pour retrouver ses offsets de plage
+    };
+    QVector<MemberViewEntry> memberViews;
+    QHash<quint32, QList<QGraphicsItem *>> memberViewsByPiece;
+
     QStringList ascLabels;
     // Reuse the canvas frozen bases when exporting the ACTIVE range so the SVG is
     // pixel-identical to what is displayed; otherwise freeze at the reference size.
@@ -375,6 +391,26 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             scene.addItem(item);
             itemsByPiece[pieceId].append(item);
             itemsOfSize.append(item);
+
+            // Et la VUE du membre, quand la pièce appartient à un groupe — exactement ce que
+            // construit le canvas (`mainwindow_graded_build.cpp:437-448`). Deux porteurs, deux
+            // positions : le stack à l'empilement du groupe, la vue à la rangée d'atelier.
+            if (groupId != NULL_ID)
+            {
+                auto *view = pieces.at(k).GetItem(false, false, false, true);
+                RecolorGradedItemPens(view);
+                view->setPos(livePos);
+                view->setData(kGradedMemberViewRole, pieceId);
+                view->setData(kGradedMemberBaseRole, livePos);
+                view->setData(kGradedSizeRole, gradedValues.at(idx));
+                view->setData(kGradedIsRefRole, isReference);
+                view->setZValue(z + 0.25);
+                view->setFlag(QGraphicsItem::ItemIsSelectable, false);
+                view->setFlag(QGraphicsItem::ItemIsMovable, isReference);
+                scene.addItem(view);
+                memberViews.append({view, item, basePos, livePos, pieceId});
+                memberViewsByPiece[pieceId].append(view);
+            }
         }
 
         // The very rule the canvas applies: the members of a group leave their dash pattern from the
@@ -453,7 +489,13 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     // it only overrides what a style covers, and it recolors no text.
     for (auto *item : allItems)
     {
-        if (GradedPieceId(item) == 0)
+        // ⚠️ **La VUE d'un membre est une pièce, même sans id de pièce.** Le stack d'un membre
+        // porte `kGradedPieceIdRole` ; sa vue, elle, ne porte que `kGradedMemberViewRole` — et ce
+        // test la sautait, si bien que les membres sortaient en noir et en trait plein dans le
+        // SVG alors que leur taille, elle, a une couleur et un tireté. `kGradedSizeRole` est posé
+        // sur la vue comme sur le stack, donc `ApplyToSubtree` sait quel style lui appliquer.
+        const bool memberView = !item->data(kGradedMemberViewRole).isNull();
+        if (GradedPieceId(item) == 0 && !memberView)
         {
             continue;
         }
@@ -479,6 +521,47 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
                 item->setPos(item->pos() + delta);
             }
         }
+    }
+
+    // La vue d'un membre suit le même déplacement que son stack — l'alignement de sa taille et
+    // les offsets de plage une fois appliqués — mais posée sur SA base d'atelier, jamais sur
+    // l'empilement du groupe. Sans ça les deux dessins retombent l'un sur l'autre.
+    for (const MemberViewEntry &entry : memberViews)
+    {
+        if (entry.view == nullptr || entry.stack == nullptr)
+        {
+            continue;
+        }
+
+        // ⚠️ **La formule du canvas, en entier** (`PositionGradedMemberViews`,
+        // `mainwindow_graded_layout.cpp:315-338`). L'export n'en avait que la moitié : il gardait
+        // l'offset du groupe dans le déplacement du membre et ne lui ajoutait jamais le sien.
+        // Mesuré : le cartouche d'un membre partait de `groupOffset − memberOffset` — vers la
+        // droite dès que le groupe a été déplacé vers la droite. Le bloc, le droit-fil,
+        // l'annotation et la miniature du membre étaient tous décalés du même vecteur.
+        QPointF groupOffset;
+        const quint32 groupId = pattern->GetPieceGroupId(entry.pieceId);
+        if (groupId != NULL_ID)
+        {
+            const auto groupContent = range.groupContent.constFind(groupId);
+            if (groupContent != range.groupContent.cend())
+            {
+                groupOffset = QPointF(groupContent->dx, groupContent->dy);
+            }
+        }
+
+        // Ce que la couche du groupe a pris de l'alignement — son propre offset retiré, parce que
+        // déplacer le groupe doit laisser les membres où ils sont.
+        const QPointF layerDelta = entry.stack->pos() - entry.base - groupOffset;
+
+        QPointF memberOffset;
+        const auto pieceContent = range.pieceContent.constFind(entry.pieceId);
+        if (pieceContent != range.pieceContent.cend())
+        {
+            memberOffset = QPointF(pieceContent->dx, pieceContent->dy);
+        }
+
+        entry.view->setPos(entry.live + layerDelta + memberOffset);
     }
 
     // --- Assemble the writer inputs (deterministic order by name). ------------
@@ -546,6 +629,9 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             object.name = piecesMap->value(it.key()).GetName();
             object.isGroup = false;
             object.loneItem = it.value().value(si);
+            if (object.loneItem != nullptr)
+            {
+            }
             layer.objects.append(object);
         }
         // Sort lone objects by name (stable, keep order by construction).
@@ -569,6 +655,32 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
             }
             layer.objects.append(object);
         }
+
+        // ⚠️ **Et chaque membre, comme un objet de plein droit.** Le canvas montre le groupe ET
+        // ses membres, chacun posé à sa place ; le SVG, lui, ne montrait que le groupe. Un calque
+        // porte donc trois objets : « Manche (Groupe) », « Manche », « Manche poignet » — ce que
+        // l'écran affiche, écrit tel quel.
+        for (const GroupEntry &group : groups)
+        {
+            for (quint32 mid : group.members)
+            {
+                if (piecesMap == nullptr || !piecesMap->contains(mid))
+                {
+                    continue;
+                }
+                const QList<QGraphicsItem *> &views = memberViewsByPiece.value(mid);
+                if (si >= views.size() || views.at(si) == nullptr)
+                {
+                    continue;
+                }
+                OGradedSvg::GradedObject object;
+                object.name = piecesMap->value(mid).GetName();
+                object.isGroup = false;
+                object.loneItem = views.at(si);
+                layer.objects.append(object);
+            }
+        }
+
         layersAsc.append(layer);
     }
 
@@ -578,6 +690,17 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     {
         layers.append(layersAsc.at(si));
     }
+
+    // ⚠️ **Le document doit être revenu sur la combinaison VIVANTE avant de lire les enfants.**
+    // `VPattern::Parse` re-matérialise les enfants de chaque pièce à la taille où il se trouve
+    // (`vpattern.cpp:320`, `MaterializeChildAnchors`) : grainline, blocs d'information, annotations
+    // et miniature sont recalés sur le rectangle du contour de CETTE taille, le pli n'en fait pas
+    // partie. Le canvas lit donc les siens sur la taille de Details (`mainwindow_graded_build.cpp`
+    // restaure avant `ApplyGradedLayoutOffsets`), tandis que l'export, lui, les lisait sur la
+    // DERNIÈRE taille du range — la restauration n'existait qu'en `QScopeGuard`, donc au retour de
+    // la fonction, après l'écriture. D'où un décalage de `u·(W_max − W_live)` vers la droite, nul
+    // à la taille maximale, et nul pour le pli.
+    restoreState();
 
     // --- Layout layer decor (reference size) ----------------------------------
     // Reproduces the live Graded canvas: group members' own decor is masked in

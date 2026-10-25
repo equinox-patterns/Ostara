@@ -99,6 +99,15 @@ struct LayoutObject
     /// True when the owner is a group: its decor stands for every member that has none of its own.
     bool isGroup = false;
 
+    /// La couche de taille dont ce décor est celui, dans l'ordre où l'export les écrit — la référence
+    /// est la première.
+    ///
+    /// ⚠️ **Un décor appartient à une taille, et le dire est ce qui l'empêche de servir aux autres.**
+    /// Graded construit les enfants de chaque pièce à la taille de sa couche ; c'est la lecture du
+    /// payload qui recopiait un seul jeu dans toutes les `<piece>`. Un lecteur qui demande le décor
+    /// d'une taille reçoit donc celui de cette taille-là, et la référence n'est qu'un repli nommé.
+    int layerIndex = 0;
+
     /// The transform that carries this owner's ink onto the sheet, in the scene — the identity when
     /// its ink is already in the frame a reader places from.
     ///
@@ -168,11 +177,16 @@ bool WriteGradedSvg(const QString &fileName, const QList<SizeLayer> &sizeLayers,
  * its own placement and computes nothing.
  *
  * @param doc        the payload document that will own the returned element
- * @param object     the owner's decor, as generation resolved it (once, on the reference)
- * @param projection the transform that carries the reference's seat onto THIS size's piece — see
- *                   OExportPieces, which derives it from the two pieces' own extents. The default
- *                   writes the drawing where it was authored, which is right for the reference and
- *                   for nothing else: the sizes do not occupy the same place in the document.
+ * @param object     the owner's decor, as the generation resolved it FOR ITS SIZE — one object per
+ *                   (owner, size layer) since payload version 5, and one for the reference only
+ *                   before it
+ * @param projection a projection to fold into the block, for a caller that wants to place a block
+ *                   resolved on ANOTHER size onto this one. Left at its default, and that is what
+ *                   OExportPieces does: each size's block is resolved at that size, so there is
+ *                   nothing to project. The wrapper is only written when it is not the identity.
+ * @param foldProjection the same, for the fold mark alone — it has its own seat because the axis
+ *                   it sits on does not move the way the piece's centre does. See the note in
+ *                   ogradedsvgwriter.cpp on `foldProjection · projection⁻¹`.
  * @return a `<decor>` element, or a null element when the owner carries no decor at all
  */
 auto OwnerDecorFor(QDomDocument &doc, const LayoutObject &object,

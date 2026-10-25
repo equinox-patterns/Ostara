@@ -269,7 +269,7 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
             continue; // targeted rebuild of another piece
         }
         const VPiece &piece = piecesMap->value(pieceId);
-        const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(piece, doc, pattern);
+        const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(piece, doc, pattern, range.ReferenceAxes());
         if (!state.active)
         {
             continue;
@@ -299,7 +299,7 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
             continue; // targeted rebuild of another group
         }
         const OPieceGroup &group = groups->value(groupId);
-        const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern);
+        const OInfoBlockEffectiveState state = OInfoBlockResolver::ResolveEffectiveState(group, doc, pattern, range.ReferenceAxes());
         if (!state.active)
         {
             continue;

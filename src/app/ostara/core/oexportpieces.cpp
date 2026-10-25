@@ -147,26 +147,36 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
                        const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement
 {
     QDomElement pieces = doc.createElement(QStringLiteral("pieces"));
-    // Version 4 — **chaque membre d'un groupe porte ses propres enfants.** Jusqu'ici son `<piece>`
-    // restait sans `<decor>` et le `<group>` portait le seul jeu : un lecteur qui n'affichait qu'un
-    // membre lui donnait le cartouche, les annotations et la droit-fil du groupe, dans le repère du
-    // groupe. Version 3 dit la même chose SANS les enfants des membres, donc un lecteur de 4 qui
-    // recevrait une 3 retomberait sur le groupe — le comportement d'avant, et c'est ce que la version
-    // déclare.
+    // Version 5 — **le décor appartient à UNE taille.** Chaque `<piece>` porte les enfants de SA
+    // taille, tels que Graded les construit pour elle : le droit-fil, le pli et sa légende, le
+    // cartouche et les annotations, tous calculés à cette taille-là. Les versions précédentes
+    // recopiaient un seul jeu — celui de la référence — dans chaque `<piece>` : un lecteur qui
+    // dessinait une autre taille recevait le décor d'une autre pièce, et c'est ce que ce numéro
+    // annonce. `<pieces reference="…">` nomme la taille dont le décor sert de repli, parce qu'un
+    // décor manquant doit se lire dans le fichier et non dans l'ordre des éléments.
     //
-    // Les deux précédentes, pour mémoire : la 3 ajoute le contour DESSINÉ (crans) et l'offset
-    // d'alignement à chaque pièce ; la 2 n'avait ni l'un ni l'autre, donc un lecteur ne pouvait
-    // superposer les tailles qu'en devinant un décalage qu'il n'avait jamais reçu ; la 1 n'avait aucun
-    // décor, et la prendre pour un payload dont les tailles n'ont rien à dessiner donnait dix pièces
-    // et pas une ligne de droit-fil. **Un lecteur qui ne trouve pas ce qu'il demande le dit** — il ne
-    // lit jamais la version la plus proche et ne la dessine.
-    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("4"));
+    // Les précédentes, pour mémoire : la 4 donne à chaque membre d'un groupe ses propres enfants (la
+    // 3 les lui refusait et un membre seul portait le décor du groupe) ; la 3 ajoute le contour DESSINÉ
+    // (crans) et l'offset d'alignement à chaque pièce ; la 2 n'avait ni l'un ni l'autre, donc un lecteur
+    // ne pouvait superposer les tailles qu'en devinant un décalage qu'il n'avait jamais reçu ; la 1
+    // n'avait aucun décor. **Un lecteur qui ne trouve pas ce qu'il demande le dit** — il ne lit jamais
+    // la version la plus proche et ne la dessine.
+    pieces.setAttribute(QStringLiteral("version"), QStringLiteral("5"));
+    if (!layers.isEmpty())
+    {
+        pieces.setAttribute(QStringLiteral("reference"),
+                            !labels.isEmpty() ? labels.first() : layers.first().label);
+    }
 
     // The decor is looked up by the owner's ID, never by its name: two owners may share a name — the
     // visible layer hands out unique ids for exactly that reason — and a name-keyed table would give
     // one piece another's cartouche in silence. Two tables, because a piece and a group are two kinds
     // of owner with two different id spaces, and only the group has members to stand in for.
-    QHash<quint32, const OGradedSvg::LayoutObject *> pieceDecorById;
+    //
+    // ⚠️ **And by LAYER, for a piece.** The decor of a size is that size's, and a table keyed by the
+    // owner alone would hand the reference's to every other size — which is exactly the defect
+    // version 5 exists to end.
+    QHash<QPair<int, quint32>, const OGradedSvg::LayoutObject *> pieceDecorByLayerAndId;
     QHash<quint32, const OGradedSvg::LayoutObject *> groupDecorById;
     for (const OGradedSvg::LayoutObject &object : decor)
     {
@@ -180,7 +190,7 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
         }
         else
         {
-            pieceDecorById.insert(object.ownerId, &object);
+            pieceDecorByLayerAndId.insert({object.layerIndex, object.ownerId}, &object);
         }
     }
 
@@ -347,12 +357,11 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
                         geometry.id, pattern, OExportCuttingGuard::Material::Lining)));
             }
 
-            // ── Le décor, recopié ───────────────────────────────────────────────────────────────
+            // ── Le décor de cette taille ────────────────────────────────────────────────────────
             //
-            // The very ink the visible decor layer draws — same serializer, other frame — copied
-            // into this record. Ten sizes give ten copies of ONE resolved drawing, and that is
-            // deliberate: the copy is what lets a reader find the children of the size it was asked
-            // for and place them without computing anything.
+            // The very ink the visible decor layer draws — same serializer, other frame — in THIS
+            // size's own record. Une taille, un dessin : c'est ce que la version 5 énonce, et c'est
+            // ce qui fait qu'un plan de coupe de la 46 ne porte plus le décor de la 32.
             //
             // **Un membre de groupe porte les SIENS, désormais.**
             //
@@ -360,29 +369,36 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             // et le `<group>` plus bas porte en plus le jeu commun. C'est le LECTEUR qui choisit : le
             // groupe s'il dessine le groupe entier, le membre s'il n'en affiche qu'un. Sans les deux, un
             // membre seul recevait le cartouche et la droit-fil du groupe, dans le repère du groupe.
-            const auto entry = pieceDecorById.constFind(geometry.id);
-            if (entry != pieceDecorById.cend() && entry.value() != nullptr)
+            // Le décor de CETTE taille, et celui de la référence à défaut.
+            const auto entry = pieceDecorByLayerAndId.constFind({index, geometry.id});
+            const auto referenceEntry = pieceDecorByLayerAndId.constFind({0, geometry.id});
+            const OGradedSvg::LayoutObject *pieceDecor = nullptr;
+            if (entry != pieceDecorByLayerAndId.cend() && entry.value() != nullptr)
             {
-                // ── Le bloc est le RENDU DE RÉFÉRENCE, et il ne bouge pas d'une taille à l'autre ──
+                pieceDecor = entry.value();
+            }
+            else if (referenceEntry != pieceDecorByLayerAndId.cend()
+                     && referenceEntry.value() != nullptr)
+            {
+                pieceDecor = referenceEntry.value();
+            }
+            if (pieceDecor != nullptr)
+            {
+                // ── Le décor de CETTE taille ───────────────────────────────────────────────────
                 //
-                // ⚠️ **Aucune projection.** Le décor d'un size range est placé UNE fois, en Graded,
-                // de façon à valoir pour n'importe quelle taille de la plage ; seule la plus petite
-                // l'affiche, et les autres en portent une copie IDENTIQUE. C'est le contrat du
-                // payload (`000_Rabnest.md:131` : « géométrie des pièces, par taille, et rendu de
-                // référence […] tout ce que Rabnest ne recalcule pas sort identique — pas de
-                // dérive »), et c'est ce que Rabnest fait : il pose le bloc avec la transformation
-                // de la pièce, sans rien recalculer.
+                // ⚠️ **Chaque taille porte le sien, et c'est ce que la version 5 déclare.** Graded
+                // ne projette pas un décor d'une taille sur une autre : il construit les enfants de
+                // chaque pièce À la taille de sa couche — droit-fil, pli et sa légende, cartouche,
+                // annotations — puis masque ceux des couches qui ne sont pas la référence. Le payload
+                // recopiait, lui, le jeu de la référence dans tous les `<piece>` : un lecteur qui
+                // dessinait une autre taille posait donc le décor d'une autre pièce. Mesuré côté
+                // Rabnest, l'écart allait jusqu'à 227 px en x et 42 px en y sur les pièces sans pli,
+                // et il suivait la gradation — aucune translation ne pouvait le corriger.
                 //
-                // ⚠️ **Ce qui était là décalait le bloc par la différence des CENTRES** entre la
-                // boîte de la taille de référence et celle de la taille courante (`CentreSeat`), pour
-                // « suivre la pièce ». Cette différence n'est pas la croissance de la pièce : mesuré
-                // sur un vrai run, la plus petite taille était juste et les suivantes glissaient, un
-                // peu plus à chacune, jusqu'à poser le cartouche hors de la pièce. Le pli avait même
-                // son propre rattrapage (`FoldSeatShift`) pour ne pas suivre ce décalage — deux
-                // mécanismes pour compenser une translation qui n'a pas lieu d'être.
-                //
-                // Le bloc est donc écrit tel qu'il a été résolu : mêmes octets pour toutes les tailles.
-                const QDomElement ink = OGradedSvg::OwnerDecorFor(doc, *entry.value());
+                // Le bloc est écrit tel qu'il a été résolu POUR CETTE TAILLE, dans le même repère que
+                // son `outline` : le lecteur applique l'écart d'alignement aux deux, et ne recalcule
+                // rien d'autre.
+                const QDomElement ink = OGradedSvg::OwnerDecorFor(doc, *pieceDecor);
                 if (!ink.isNull())
                 {
                     piece.appendChild(ink);
@@ -399,6 +415,11 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
     // the group hosts the grain line, the fold and the cartouche for all of its members. A reader
     // reads a member's own `<decor>` when it has one and the group's otherwise — the same rule the
     // drawing applies, stated once here so nobody has to re-derive it.
+    //
+    // ⚠️ **UN bloc de groupe, et il appartient à la RÉFÉRENCE** — c'est un dessin, pas une taille :
+    // celui de la sortie qui reproduit le document tel qu'il se lit, où toutes les tailles sont
+    // superposées et où un cartouche suffit. Le lecteur du plan de coupe ne s'en sert d'ailleurs
+    // jamais : là, chaque membre est une pièce à poser, et il porte SON décor.
     if (pattern != nullptr)
     {
         if (const auto *groups = pattern->DataPieceGroups(); groups != nullptr)

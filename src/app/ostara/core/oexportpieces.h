@@ -96,17 +96,18 @@ namespace OExportPieces
  *                not `OExportSizeLayer::label`: the drawing names a layer after the size style and
  *                falls back on the axis value (« Taille 46 » against « 46 »), and a reader finds a
  *                piece through its layer's written name. Empty falls back on the layer's own label.
- * @param decor   the decor the drawing resolved, ONCE, on the reference layer — one object per
- *                owner, matched here by name. Its ink is copied into EVERY size's record, identical
- *                byte for byte: the duplication is a lookup key, not a second drawing. A reader that
- *                asks for one size then finds that size's children and computes nothing.
- *                Empty writes no decor at all, which is what a caller with no drawing wants.
+ * @param decor   the decor the drawing resolved, ONE OBJECT PER OWNER AND PER SIZE — matched here by
+ *                its owner's id and its layer index. Each `<piece>` carries the decor of ITS size
+ *                (`LayoutObject::layerIndex`), which is what Graded built for that size. The
+ *                reference layer's object is the fallback, so a size with no entry of its own still
+ *                says something rather than nothing. Empty writes no decor at all, which is what a
+ *                caller with no drawing wants.
  *
- * ⚠️ **One result, copied — never one result per size.** The decor is resolved while the document
- * is on the reference size; resolving it again per size would give ten nearly-identical drawings
- * whose numbers differ (an anchor re-derived per size, a formula evaluated per size, a cartouche
- * whose text names the size), and the size the user asked for would no longer carry the placement
- * she made in Graded.
+ * ⚠️ **A decor belongs to a size — never one block copied everywhere.** The block used to be
+ * resolved once, on the reference layer, and copied byte for byte into every size's record: a reader
+ * drawing any other size then placed another size's children on it. Measured on Rabnest's side, up
+ * to 227 px of drift in x on the pieces without a fold, and the drift followed the grading, so no
+ * translation could cancel it.
  */
 auto Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layers, const QStringList &labels,
         const VContainer *pattern, const QList<OGradedSvg::LayoutObject> &decor) -> QDomElement;

@@ -569,7 +569,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // Le décor des GROUPES de la couche de référence, résolu au même moment et pour la même raison —
     // voir OExportGroupDecor. Rangé à part parce que le résultat du nesting n'existe pas encore : il
     // naîtra de l'appel au moteur, plus bas. **Une collection PAR PASSE** : chacun des deux plans a
-    // ses groupes, et le décor de l'un ne dit rien de l'autre — voir le paramètre de `freezeDecor`.
+    // ses groupes, et le décor de l'un ne dit rien de l'autre — voir `freezeGroupDecor`.
 
     // **L'unité du droit-fil est celle du PATRON, jamais celle du run.** La longueur d'une ligne de
     // droit-fil est un réglage du DOCUMENT — « 10 cm » — et c'est dans l'unité du patron qu'elle est
@@ -618,29 +618,59 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // telle quelle ; un plan de coupe, lui, n'en nomme aucune et doit pourtant savoir laquelle couvre
     // la taille qu'il coupe — c'est `runOnePlan` qui la trouve, parce que c'est lui qui connaît la
     // taille. Deux plans, deux réponses possibles.
-    const auto freezeDecor = [&](OExportSizeLayer &layer, QHash<quint32, OExportGroupDecor> &decor,
-                                 const QMap<QString, QString> &sizeAxes, const OSizerange *range) {
-        QHash<quint32, QVector<OExportPieceGeometry>> members;
-
+    // ── Le décor d'une PIÈCE, à la taille de sa couche ────────────────────────────────────────────
+    //
+    // ⚠️ **Par couche, et pas seulement sur la référence.** Graded ne projette pas les enfants d'une
+    // taille sur une autre : il construit un item par (pièce × taille), chacun avec SES enfants
+    // recalculés à cette taille, puis il masque le droit-fil et le pli des couches qui ne sont pas la
+    // référence. Le payload, lui, portait un seul jeu recopié dans chaque `<piece>` : un lecteur qui
+    // dessine une taille autre que la référence recevait le décor d'une autre pièce — mesuré côté
+    // Rabnest, jusqu'à 227 px d'écart en x et 42 px en y sur les pièces sans pli.
+    //
+    // Résolu ICI parce que c'est le seul endroit où le document est sur cette taille : le résolveur
+    // lit `pattern->DataPieces()`, donc il ne vaut que pour la taille courante.
+    // ⚠️ **`ownerRange` est la plage de CETTE passe, et elle est un paramètre.** Un plan de coupe ne
+    // nomme aucune plage : c'est `RangeCoveringSize` qui trouve celle qui couvre sa taille, et c'est
+    // d'elle que viennent les positions que l'utilisatrice a posées en Graded (droit-fil, bloc,
+    // annotation, miniature). La lire ici plutôt que dans la variable `range` de la fonction est ce
+    // qui distingue les deux — et l'oublier laissait un plan de coupe sans les placements de sa plage.
+    const auto freezePieceDecor = [&](OExportSizeLayer &layer,
+                                      const QMap<QString, QString> &sizeAxes,
+                                      const OSizerange *ownerRange) {
         for (OExportPieceGeometry &piece : layer.pieces)
         {
-            piece.decor = ResolvePieceDecor(piece, range, pattern, doc, request.cuttingPlan, sizeAxes);
+            piece.decor =
+                ResolvePieceDecor(piece, ownerRange, pattern, doc, request.cuttingPlan, sizeAxes);
 
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
-            // as a single-size run left the document on the run's own size.
-            piece.grainline = ResolvePieceGrainline(piece, range, grainlineUnit, pattern,
+            // as a single-size run left the document on the run's own size. It follows the piece, so
+            // it is frozen per size exactly like the decor.
+            piece.grainline = ResolvePieceGrainline(piece, ownerRange, grainlineUnit, pattern,
                                                     request.cuttingPlan,
                                                     referenceSeats.value(piece.id));
+        }
+    };
 
+    // ── Le décor d'un GROUPE, sur la RÉFÉRENCE seule ──────────────────────────────────────────────
+    //
+    // Un groupe n'est résolu qu'UNE fois, sur l'ensemble de ses membres : c'est leur union qui donne
+    // son cadre, et c'est d'elle que vient le repli d'un enfant jamais placé. Et c'est la référence
+    // qui le porte, parce que le groupe est un DESSIN — celui de la sortie qui reproduit le document
+    // tel qu'il se lit, taille par taille superposées — et que ce dessin n'a qu'un cartouche.
+    const auto freezeGroupDecor = [&](OExportSizeLayer &layer,
+                                      QHash<quint32, OExportGroupDecor> &decor,
+                                      const QMap<QString, QString> &sizeAxes,
+                                      const OSizerange *range) {
+        QHash<quint32, QVector<OExportPieceGeometry>> members;
+        for (const OExportPieceGeometry &piece : layer.pieces)
+        {
             if (piece.groupId != 0)
             {
                 members[piece.groupId].append(piece);
             }
         }
 
-        // Un groupe n'est résolu qu'UNE fois, sur l'ensemble de ses membres : c'est leur union qui
-        // donne son cadre, et c'est d'elle que vient le repli d'un enfant jamais placé.
         for (auto it = members.cbegin(); it != members.cend(); ++it)
         {
             decor.insert(it.key(),
@@ -671,7 +701,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
     // ⚠️ **Le dessin de référence des miniatures est gelé AVANT la marche des tailles** — la même
     // précaution que l'export Graded (`mainwindow_graded_export.cpp`), et au même moment du raisonnement :
-    // `freezeDecor` résout les miniatures de la couche de référence, et `ThumbnailReferenceContent()`
+    // `freezePieceDecor` résout les miniatures de chaque couche, et `ThumbnailReferenceContent()`
     // rend la géométrie **VIVANTE** tant que rien n'a été capturé. La marche commence sur la première
     // taille du range, qui n'est pas forcément l'ancre du patron : la miniature serait alors dessinée à
     // cette taille-là. Gelé, le cache donne aux trois exports — Details, Graded, Export — le même dessin.
@@ -853,7 +883,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 {
                     // Aucun axe à nommer : une table taille unique n'a qu'une taille, et la valeur
                     // de référence du cartouche est déjà la sienne.
-                    freezeDecor(planLayers.last(), planGroupDecor, {}, planRange);
+                    freezePieceDecor(planLayers.last(), {}, planRange);
+                    freezeGroupDecor(planLayers.last(), planGroupDecor, {}, planRange);
                 }
             }
             else
@@ -934,7 +965,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 {
                     const QMap<QString, QString> axes = geometry.AxisLabels(baseOfA, baseOfB, baseOfC);
                     runAxes = axes;
-                    freezeDecor(planLayers.last(), planGroupDecor, axes, planRange);
+                    freezePieceDecor(planLayers.last(), axes, planRange);
+                    freezeGroupDecor(planLayers.last(), planGroupDecor, axes, planRange);
                 }
             }
         }
@@ -977,17 +1009,25 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
                 planLayers += geometry.CollectCurrentSize(size.label);
 
-                // ⚠️ **Le décor est UN SEUL pour tout un size range**, et c'est la décision de Sophie
-                // (24-10-2026) : en Graded, l'utilisatrice place chaque enfant de façon à ce que la
-                // position vaille pour N'IMPORTE QUELLE taille de la plage, puis le run d'impression
-                // s'en sert — et seule la plus petite taille l'affiche. Les enfants ne changent donc
-                // pas de position d'une taille à l'autre : il n'y a rien à résoudre par taille, et
-                // c'est la PROJECTION d'un décor d'une taille sur une autre qui faisait dériver les
-                // blocs, un peu plus à chaque taille.
+                // ── Le décor de CETTE taille, résolu pendant qu'elle est sur le document ────────
+                //
+                // ⚠️ **Le décor suit la pièce, taille par taille.** Graded ne projette pas un décor
+                // d'une taille sur une autre : il construit les enfants de chaque pièce À la taille de
+                // la couche, puis masque ceux des couches qui ne sont pas la référence. Un seul jeu
+                // recopié dans toutes les `<piece>` donnait donc, pour chaque taille, le décor d'une
+                // autre — mesuré côté Rabnest jusqu'à 227 px d'écart en x.
+                //
+                // Le résolveur lit le document (`pattern->DataPieces()`), donc il ne vaut que pour la
+                // taille où le document est : c'est ICI, entre `applyPassSize` et la couche suivante,
+                // et nulle part ailleurs.
+                freezePieceDecor(planLayers.last(),
+                                 geometry.AxisLabels(appliedA, appliedB, appliedC), planRange);
+
+                // Le GROUPE, lui, reste un dessin unique : il n'est gelé que sur la référence.
                 if (planLayers.size() == 1)
                 {
-                    freezeDecor(planLayers.last(), planGroupDecor,
-                                geometry.AxisLabels(appliedA, appliedB, appliedC), planRange);
+                    freezeGroupDecor(planLayers.last(), planGroupDecor,
+                                     geometry.AxisLabels(appliedA, appliedB, appliedC), planRange);
 
                     // **La page, elle, ne nomme que les axes qui ne défilent pas.** L'axe gradué
                     // n'a pas UNE valeur dans une plage : c'est la liste des tailles qui le dit. On

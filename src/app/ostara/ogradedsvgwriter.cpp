@@ -142,10 +142,10 @@ struct InkSpace
 
 /** @brief Serialize one visible trace (path item) — mirrors the flat writer. */
 void WriteTrace(QXmlStreamWriter &writer, const InkSpace &space, const QPen &defaultPen,
-                QGraphicsItem *gitem)
+                QGraphicsItem *gitem, bool includeHidden = false)
 {
     QGraphicsPathItem *const pathItem = OSvg::AsPathItem(gitem);
-    if (pathItem == nullptr || !pathItem->isVisible())
+    if (pathItem == nullptr || (!includeHidden && !pathItem->isVisible()))
     {
         return;
     }
@@ -216,9 +216,10 @@ void WriteTrace(QXmlStreamWriter &writer, const InkSpace &space, const QPen &def
  * donnent la même encre.
  */
 void WriteTextAsPath(QXmlStreamWriter &writer, const InkSpace &space,
-                     QGraphicsSimpleTextItem *textItem)
+                     QGraphicsSimpleTextItem *textItem, bool includeHidden = false)
 {
-    if (textItem == nullptr || !textItem->isVisible() || textItem->text().isEmpty())
+    if (textItem == nullptr || (!includeHidden && !textItem->isVisible())
+        || textItem->text().isEmpty())
     {
         return;
     }
@@ -247,9 +248,11 @@ void WriteTextAsPath(QXmlStreamWriter &writer, const InkSpace &space,
 }
 
 /** @brief Serialize one editable simple-text item — mirrors the flat writer. */
-void WriteText(QXmlStreamWriter &writer, const InkSpace &space, QGraphicsSimpleTextItem *textItem)
+void WriteText(QXmlStreamWriter &writer, const InkSpace &space, QGraphicsSimpleTextItem *textItem,
+               bool includeHidden = false)
 {
-    if (textItem == nullptr || !textItem->isVisible() || textItem->text().isEmpty())
+    if (textItem == nullptr || (!includeHidden && !textItem->isVisible())
+        || textItem->text().isEmpty())
     {
         return;
     }
@@ -572,18 +575,22 @@ void WriteAnnotation(QXmlStreamWriter &writer, const QPointF &origin,
         const qreal x = (annotation.rect.width() - fm.horizontalAdvance(line)) / 2.0;
         const qreal y = firstBaseline + li * lineHeight;
 
-        writer.writeStartElement(QStringLiteral("text"));
-        writer.writeAttribute(QStringLiteral("x"), QString::number(x));
-        writer.writeAttribute(QStringLiteral("y"), QString::number(y));
-        writer.writeAttribute(QStringLiteral("font-family"), resolvedFont.family());
-        writer.writeAttribute(QStringLiteral("font-size"),
-                              QString::number(std::max(resolvedFont.pixelSize(), 1)));
-        writer.writeAttribute(QStringLiteral("font-weight"), QString::number(resolvedFont.weight()));
-        // The face's name, as WriteBlock carries it — see the note in WriteText.
-        writer.writeAttribute(QStringLiteral("ostara:font-face"), resolvedFont.styleName());
+        // ⚠️ **En CONTOURS, jamais en texte.** C'est la règle que les légendes de pli suivent déjà
+        // (`textAsPaths`), et la raison est la même : le lecteur du payload n'a pas les polices du
+        // patron. Écrite en `<text>`, l'annotation était rendue par la police de substitution du
+        // lecteur — métriques différentes, texte qui débordait de sa case, taille fausse. Un chemin
+        // ne dépend d'aucune police : il se dessine à l'identique partout.
+        QPainterPath linePath;
+        linePath.addText(QPointF(x, y), font, line);
+        const QString shape = OSvg::PainterPathToSvgD(linePath);
+        if (shape.isEmpty())
+        {
+            continue;
+        }
+        writer.writeStartElement(QStringLiteral("path"));
+        writer.writeAttribute(QStringLiteral("d"), shape);
         writer.writeAttribute(QStringLiteral("fill"), fill);
-        writer.writeCharacters(line);
-        writer.writeEndElement();  // text
+        writer.writeEndElement();  // path (the line, as outlines)
     }
     writer.writeEndElement();  // g (annotation)
 }
@@ -688,7 +695,7 @@ void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
  */
 void WriteOwnerBody(QXmlStreamWriter &writer, const LayoutObject &object, const InkSpace &space,
                     const QPen &defaultPen, const QTransform &foldProjection = QTransform(),
-                    bool textAsPaths = false)
+                    bool textAsPaths = false, bool includeHidden = false)
 {
         // Two wrappers, because the two halves of the decor do not live in the same
         // frame. The items were placed in the scene and already carry their owner's
@@ -724,16 +731,16 @@ void WriteOwnerBody(QXmlStreamWriter &writer, const LayoutObject &object, const 
                 // of the payload has none of the pattern's fonts.
                 if (textAsPaths)
                 {
-                    WriteTextAsPath(writer, space, text);
+                    WriteTextAsPath(writer, space, text, includeHidden);
                 }
                 else
                 {
-                    WriteText(writer, space, text);
+                    WriteText(writer, space, text, includeHidden);
                 }
             }
             else
             {
-                WriteTrace(writer, space, defaultPen, child);
+                WriteTrace(writer, space, defaultPen, child, includeHidden);
             }
 
             if (shifted)
@@ -1037,6 +1044,12 @@ auto OwnerDecorFor(QDomDocument &doc, const LayoutObject &object, const QTransfo
                    foldSeat,
                    // Le payload écrit les légendes en CONTOURS : son lecteur n'a pas les polices du
                    // patron. La couche visible, elle, garde son texte éditable.
+                   true,
+                   // ⚠️ **Et il écrit les enfants MASQUÉS.** Cacher le droit-fil et le pli des
+                   // tailles autres que la référence est une décision de DESSIN — un seul décor sur
+                   // la feuille — et non de contenu : le payload porte le décor de chaque taille, et
+                   // celui de la 46 est précisément composé d'enfants que la couche visible cache.
+                   // Sans ce drapeau, ils arrivaient vides et le plan perdait ses plis.
                    true);
     if (projected)
     {
