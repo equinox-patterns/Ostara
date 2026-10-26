@@ -56,7 +56,6 @@ public:
      *        geometry is locked and only the attribute fields are editable
      *        (used by the Details dock, where a path is edited in place).
      */
-    void EnbleShowMode(bool disable, bool attachNodeList = true);
     void HideVisibilityTrigger();
 
     auto GetPiecePath() const -> VPiecePath;
@@ -125,8 +124,6 @@ private slots:
     void DeployPassmarkAngle();
     void DeployPassmarkVisible();
 
-    void SetMoveControls();
-    void SetOptionControls();
 
 private:
     Q_DISABLE_COPY_MOVE(DialogPiecePath) // NOLINT
@@ -180,9 +177,7 @@ private:
     void InitNodesList();
     void InitPassmarksList();
 
-    void SetNodeZoneVisible(bool visible);
     void DetachHiddenCreationWidgets();
-    void AttachNodeListForEdit();
     void UpdatePieceComboStyle();
     void NodeAngleChanged(int index);
 

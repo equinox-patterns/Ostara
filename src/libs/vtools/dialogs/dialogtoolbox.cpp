@@ -413,18 +413,12 @@ void ApplyToolButtonIcons(QWidget *root)
         {QStringLiteral("toolButtonAddPoint"), QStringLiteral("plus")},
         {QStringLiteral("toolButtonRemove"), QStringLiteral("trash")},
         {QStringLiteral("toolButtonRemovePoint"), QStringLiteral("trash")},
-        {QStringLiteral("toolButtonDelete"), QStringLiteral("trash")},
         {QStringLiteral("toolButtonUp"), QStringLiteral("caret-up")},
         {QStringLiteral("toolButtonUpPC"), QStringLiteral("caret-up")},
         {QStringLiteral("toolButtonDown"), QStringLiteral("caret-down")},
         {QStringLiteral("toolButtonDownPC"), QStringLiteral("caret-down")},
         {QStringLiteral("toolButtonTop"), QStringLiteral("caret-line-up")},
         {QStringLiteral("toolButtonBottom"), QStringLiteral("caret-line-down")},
-        {QStringLiteral("toolButtonReverse"), QStringLiteral("minus")},
-        {QStringLiteral("toolButtonExcluded"), QStringLiteral("text-strikethrough")},
-        {QStringLiteral("toolButtonTurnPoint"), QStringLiteral("arrows-clockwise")},
-        {QStringLiteral("toolButtonCheckUniqness"), QStringLiteral("star")},
-        {QStringLiteral("toolButtonPassmark"), QStringLiteral("flag")},
     };
 
     if (root == nullptr)

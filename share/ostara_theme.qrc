@@ -78,7 +78,6 @@
         <file alias="file-image_light.svg">themes/icons/light/file-image_light.svg</file>
         <file alias="file-plus_light.svg">themes/icons/light/file-plus_light.svg</file>
         <file alias="file-svg_light.svg">themes/icons/light/file-svg_light.svg</file>
-        <file alias="flag_light.svg">themes/icons/light/flag_light.svg</file>
         <file alias="floppy-disk-fill_light.svg">themes/icons/light/floppy-disk-fill_light.svg</file>
         <file alias="floppy-disk_light.svg">themes/icons/light/floppy-disk_light.svg</file>
         <file alias="folder-open_light.svg">themes/icons/light/folder-open_light.svg</file>
@@ -208,7 +207,6 @@
         <file alias="file-image_dark.svg">themes/icons/dark/file-image_dark.svg</file>
         <file alias="file-plus_dark.svg">themes/icons/dark/file-plus_dark.svg</file>
         <file alias="file-svg_dark.svg">themes/icons/dark/file-svg_dark.svg</file>
-        <file alias="flag_dark.svg">themes/icons/dark/flag_dark.svg</file>
         <file alias="floppy-disk-fill_dark.svg">themes/icons/dark/floppy-disk-fill_dark.svg</file>
         <file alias="floppy-disk_dark.svg">themes/icons/dark/floppy-disk_dark.svg</file>
         <file alias="folder-open_dark.svg">themes/icons/dark/folder-open_dark.svg</file>

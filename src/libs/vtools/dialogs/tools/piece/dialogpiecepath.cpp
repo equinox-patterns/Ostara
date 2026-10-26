@@ -195,20 +195,6 @@ DialogPiecePath::~DialogPiecePath()
     delete ui;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPiecePath::EnbleShowMode(bool disable, bool attachNodeList)
-{
-    m_showMode = disable;
-    ui->comboBoxType->setDisabled(m_showMode);
-    ui->comboBoxPiece->setDisabled(m_showMode);
-    if (m_showMode && attachNodeList)
-    {
-        AttachNodeListForEdit();
-    }
-    RefreshPathList(GetPiecePath());
-    ValidObjects(PathIsValid());
-    UpdatePieceComboStyle();
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::HideVisibilityTrigger()
@@ -216,34 +202,16 @@ void DialogPiecePath::HideVisibilityTrigger()
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabControl));
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPiecePath::SetNodeZoneVisible(bool visible)
-{
-    ui->toolButtonReverse->setVisible(visible);
-    ui->toolButtonExcluded->setVisible(visible);
-    ui->toolButtonTurnPoint->setVisible(visible);
-    ui->toolButtonCheckUniqness->setVisible(visible);
-    ui->toolButtonPassmark->setVisible(visible);
-    ui->toolButtonDelete->setVisible(visible);
-    ui->listWidget->setVisible(visible);
-    ui->toolButtonTop->setVisible(visible);
-    ui->toolButtonUp->setVisible(visible);
-    ui->toolButtonDown->setVisible(visible);
-    ui->toolButtonBottom->setVisible(visible);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::DetachHiddenCreationWidgets()
 {
-    // The "Type" row and the node editing zone belong to the legacy editor layout. In the
-    // single-page creation window they are detached so no blank space remains; the node list
-    // is re-attached when editing an existing path (see AttachNodeListForEdit). The whole form
-    // row is removed (RemoveFormRow) — no blank slot stays behind.
+    // La ligne "Type" appartient à l'ancienne disposition d'édition : la fenêtre de création est
+    // une page unique, on la retire plutôt que de laisser une case vide (RemoveFormRow).
     RemoveFormRow(ui->formLayout, ui->labelType, ui->comboBoxType);
 
-    // No status/warning messages in this dialog.
-    ui->helpLabel->hide();
-
+    // La liste des nœuds n'est plus montrée : c'est le modèle que CreatePath() relit, pas un
+    // widget d'édition. On la retire de la disposition pour ne pas laisser de case vide.
     for (int i = ui->verticalLayout->count() - 1; i >= 0; --i)
     {
         if (QLayoutItem *item = ui->verticalLayout->itemAt(i);
@@ -252,32 +220,11 @@ void DialogPiecePath::DetachHiddenCreationWidgets()
             ui->verticalLayout->takeAt(i);
         }
     }
-    for (int i = ui->verticalLayout->count() - 1; i >= 0; --i)
-    {
-        if (QLayoutItem *item = ui->verticalLayout->itemAt(i);
-            item != nullptr && item->layout() != nullptr &&
-            (item->layout()->objectName() == QStringLiteral("horizontalLayout_8") ||
-             item->layout()->objectName() == QStringLiteral("horizontalLayout_3")))
-        {
-            ui->verticalLayout->takeAt(i);
-        }
-    }
 
-    SetNodeZoneVisible(false);
+    // No status/warning messages in this dialog.
+    ui->helpLabel->hide();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPiecePath::AttachNodeListForEdit()
-{
-    if (m_nodeListAttached)
-    {
-        return;
-    }
-    const int cut = IndexOfWidget(ui->verticalLayout, ui->checkBoxCut);
-    ui->verticalLayout->insertWidget(cut >= 0 ? cut : ui->verticalLayout->count(), ui->listWidget);
-    ui->listWidget->setVisible(true);
-    m_nodeListAttached = true;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::UpdatePieceComboStyle()
@@ -639,8 +586,6 @@ void DialogPiecePath::ListChanged()
 
     InitPassmarksList();
     InitNodesList();
-    SetMoveControls();
-    SetOptionControls();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1367,91 +1312,7 @@ void DialogPiecePath::DeployPassmarkVisible()
                   m_formulaBasePassmarkVisible);
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPiecePath::SetMoveControls()
-{
-    ui->toolButtonTop->setEnabled(false);
-    ui->toolButtonUp->setEnabled(false);
-    ui->toolButtonDown->setEnabled(false);
-    ui->toolButtonBottom->setEnabled(false);
 
-    if (ui->listWidget->count() >= 2)
-    {
-        if (ui->listWidget->currentRow() == 0)
-        {
-            ui->toolButtonDown->setEnabled(true);
-            ui->toolButtonBottom->setEnabled(true);
-        }
-        else if (ui->listWidget->currentRow() == ui->listWidget->count() - 1)
-        {
-            ui->toolButtonTop->setEnabled(true);
-            ui->toolButtonUp->setEnabled(true);
-        }
-        else
-        {
-            ui->toolButtonTop->setEnabled(true);
-            ui->toolButtonUp->setEnabled(true);
-            ui->toolButtonDown->setEnabled(true);
-            ui->toolButtonBottom->setEnabled(true);
-        }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void DialogPiecePath::SetOptionControls()
-{
-    ui->toolButtonReverse->setEnabled(false);
-    ui->toolButtonExcluded->setEnabled(false);
-    ui->toolButtonTurnPoint->setEnabled(false);
-    ui->toolButtonCheckUniqness->setEnabled(false);
-    ui->toolButtonPassmark->setEnabled(false);
-    ui->toolButtonDelete->setEnabled(false);
-
-    auto SetChecked = [](QToolButton *toolButton, bool checked = false) -> void
-    {
-        const QSignalBlocker blocker(toolButton);
-        toolButton->setChecked(checked);
-    };
-
-    SetChecked(ui->toolButtonReverse);
-    SetChecked(ui->toolButtonExcluded);
-    SetChecked(ui->toolButtonTurnPoint);
-    SetChecked(ui->toolButtonCheckUniqness);
-    SetChecked(ui->toolButtonPassmark);
-    SetChecked(ui->toolButtonDelete);
-
-    const int row = ui->listWidget->currentRow();
-    if (row < 0)
-    {
-        return;
-    }
-
-    const QListWidgetItem *rowItem = ui->listWidget->item(row);
-    SCASSERT(rowItem != nullptr)
-    auto rowNode = qvariant_cast<VPieceNode>(rowItem->data(Qt::UserRole));
-
-    if (rowNode.GetTypeTool() != Tool::NodePoint)
-    {
-        ui->toolButtonReverse->setEnabled(true);
-        SetChecked(ui->toolButtonReverse, rowNode.GetReverse());
-    }
-    else
-    {
-        ui->toolButtonPassmark->setEnabled(true);
-        SetChecked(ui->toolButtonPassmark, rowNode.IsPassmark());
-
-        ui->toolButtonCheckUniqness->setEnabled(true);
-        SetChecked(ui->toolButtonCheckUniqness, rowNode.IsCheckUniqueness());
-
-        ui->toolButtonTurnPoint->setEnabled(true);
-        SetChecked(ui->toolButtonTurnPoint, rowNode.IsTurnPoint());
-    }
-
-    ui->toolButtonExcluded->setEnabled(true);
-    SetChecked(ui->toolButtonExcluded, rowNode.IsExcluded());
-
-    ui->toolButtonDelete->setEnabled(true);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::InitPathTab()
@@ -1481,182 +1342,15 @@ void DialogPiecePath::InitPathTab()
     ui->listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->listWidget, &QListWidget::customContextMenuRequested, this, &DialogPiecePath::ShowContextMenu);
     connect(ui->listWidget->model(), &QAbstractItemModel::rowsMoved, this, &DialogPiecePath::ListChanged);
-    connect(ui->listWidget, &QListWidget::itemSelectionChanged, this, &DialogPiecePath::SetMoveControls);
-    connect(ui->listWidget, &QListWidget::itemSelectionChanged, this, &DialogPiecePath::SetOptionControls);
 
     connect(ui->listWidget->model(), &QAbstractItemModel::rowsMoved, this, [this]() { ValidObjects(PathIsValid()); });
 
-    connect(ui->toolButtonTop,
-            &QToolButton::clicked,
-            this,
-            [this]() -> void
-            {
-                MoveListRowTop(ui->listWidget);
-                ValidObjects(PathIsValid());
-            });
-    connect(ui->toolButtonUp,
-            &QToolButton::clicked,
-            this,
-            [this]() -> void
-            {
-                MoveListRowUp(ui->listWidget);
-                ValidObjects(PathIsValid());
-            });
-    connect(ui->toolButtonDown,
-            &QToolButton::clicked,
-            this,
-            [this]() -> void
-            {
-                MoveListRowDown(ui->listWidget);
-                ValidObjects(PathIsValid());
-            });
-    connect(ui->toolButtonBottom,
-            &QToolButton::clicked,
-            this,
-            [this]() -> void
-            {
-                MoveListRowBottom(ui->listWidget);
-                ValidObjects(PathIsValid());
-            });
 
-    connect(ui->toolButtonReverse,
-            &QToolButton::toggled,
-            this,
-            [this]() -> void
-            {
-                const int row = ui->listWidget->currentRow();
-                if (row < 0)
-                {
-                    ui->toolButtonReverse->setEnabled(false);
-                    return;
-                }
 
-                QListWidgetItem *rowItem = ui->listWidget->item(row);
-                SCASSERT(rowItem != nullptr)
-                auto rowNode = qvariant_cast<VPieceNode>(rowItem->data(Qt::UserRole));
 
-                rowNode.SetReverse(not rowNode.GetReverse());
-                rowItem->setData(Qt::UserRole, QVariant::fromValue(rowNode));
-                rowItem->setText(GetNodeName(&data, rowNode, true));
 
-                ValidObjects(PathIsValid());
-                ListChanged();
-            });
 
-    connect(ui->toolButtonExcluded,
-            &QToolButton::toggled,
-            this,
-            [this]() -> void
-            {
-                const int row = ui->listWidget->currentRow();
-                if (row < 0)
-                {
-                    ui->toolButtonExcluded->setEnabled(false);
-                    return;
-                }
 
-                QListWidgetItem *rowItem = ui->listWidget->item(row);
-                SCASSERT(rowItem != nullptr)
-                auto rowNode = qvariant_cast<VPieceNode>(rowItem->data(Qt::UserRole));
-
-                rowNode.SetExcluded(not rowNode.IsExcluded());
-                rowItem->setData(Qt::UserRole, QVariant::fromValue(rowNode));
-                rowItem->setText(GetNodeName(&data, rowNode, true));
-                rowItem->setFont(NodeFont(rowItem->font(), rowNode.IsExcluded()));
-
-                ValidObjects(PathIsValid());
-                ListChanged();
-            });
-
-    connect(ui->toolButtonTurnPoint,
-            &QToolButton::toggled,
-            this,
-            [this]() -> void
-            {
-                const int row = ui->listWidget->currentRow();
-                if (row < 0)
-                {
-                    ui->toolButtonTurnPoint->setEnabled(false);
-                    return;
-                }
-
-                QListWidgetItem *rowItem = ui->listWidget->item(row);
-                SCASSERT(rowItem != nullptr)
-                auto rowNode = qvariant_cast<VPieceNode>(rowItem->data(Qt::UserRole));
-
-                rowNode.SetTurnPoint(not rowNode.IsTurnPoint());
-                rowItem->setData(Qt::UserRole, QVariant::fromValue(rowNode));
-                rowItem->setText(GetNodeName(&data, rowNode, true));
-
-                ValidObjects(PathIsValid());
-                ListChanged();
-            });
-
-    connect(ui->toolButtonCheckUniqness,
-            &QToolButton::toggled,
-            this,
-            [this]() -> void
-            {
-                const int row = ui->listWidget->currentRow();
-                if (row < 0)
-                {
-                    ui->toolButtonCheckUniqness->setEnabled(false);
-                    return;
-                }
-
-                QListWidgetItem *rowItem = ui->listWidget->item(row);
-                SCASSERT(rowItem != nullptr)
-                auto rowNode = qvariant_cast<VPieceNode>(rowItem->data(Qt::UserRole));
-
-                rowNode.SetCheckUniqueness(not rowNode.IsCheckUniqueness());
-                rowItem->setData(Qt::UserRole, QVariant::fromValue(rowNode));
-                rowItem->setText(GetNodeName(&data, rowNode, true));
-
-                ValidObjects(PathIsValid());
-                ListChanged();
-            });
-
-    connect(ui->toolButtonPassmark,
-            &QToolButton::toggled,
-            this,
-            [this](bool checked) -> void
-            {
-                const int row = ui->listWidget->currentRow();
-                if (row < 0)
-                {
-                    ui->toolButtonPassmark->setEnabled(false);
-                    return;
-                }
-
-                QListWidgetItem *rowItem = ui->listWidget->item(row);
-                SCASSERT(rowItem != nullptr)
-                auto rowNode = qvariant_cast<VPieceNode>(rowItem->data(Qt::UserRole));
-
-                rowNode.SetPassmark(checked);
-                rowItem->setData(Qt::UserRole, QVariant::fromValue(rowNode));
-                rowItem->setText(GetNodeName(&data, rowNode, true));
-
-                ValidObjects(PathIsValid());
-                ListChanged();
-            });
-
-    connect(ui->toolButtonDelete,
-            &QToolButton::clicked,
-            this,
-            [this]() -> void
-            {
-                const int row = ui->listWidget->currentRow();
-                if (row < 0)
-                {
-                    ui->toolButtonDelete->setEnabled(false);
-                    return;
-                }
-
-                delete ui->listWidget->item(row);
-
-                ValidObjects(PathIsValid());
-                ListChanged();
-            });
 
     ui->listWidget->installEventFilter(this);
 }
