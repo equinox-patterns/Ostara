@@ -46,15 +46,6 @@ private slots:
 
     void LabelStaysCloseToFoldLine_data() const;
     void LabelStaysCloseToFoldLine() const;
-
-    void LabelPathStaysCloseToFoldLine_data() const;
-    void LabelPathStaysCloseToFoldLine() const;
-
-    void SVGLabelPathStaysCloseToFoldLine_data() const;
-    void SVGLabelPathStaysCloseToFoldLine() const;
-
-    void LabelPathOrientationMatchesNonFlipped_data() const;
-    void LabelPathOrientationMatchesNonFlipped() const;
 };
 
 #endif // TST_VFOLDLINE_H

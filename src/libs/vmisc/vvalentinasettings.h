@@ -38,12 +38,6 @@
 
 #include "vcommonsettings.h"
 
-enum class VToolPointerMode
-{
-    ToolIcon = 0,
-    Arrow = 1
-};
-
 class VValentinaSettings : public VCommonSettings
 {
     Q_OBJECT // NOLINT
@@ -52,9 +46,6 @@ public:
     VValentinaSettings(Format format, Scope scope, const QString &organization, const QString &application = QString(),
                        QObject *parent = nullptr);
     VValentinaSettings(const QString &fileName, Format format, QObject *parent = nullptr);
-
-    auto GetLabelLanguage() const -> QString;
-    void SetLabelLanguage(const QString &value);
 
     // Layout settings
 
@@ -91,12 +82,6 @@ public:
     static auto GetDefMultiplier() -> quint8;
 
     static auto GetDefTextAsPaths() -> bool;
-
-    auto GetKnownMaterials() const -> QStringList;
-    void SetKnownMaterials(const QStringList &list);
-
-    auto IsRememberPatternMaterials() const -> bool;
-    void SetRememberPatternMaterials(bool value);
 
     // settings for the tiled PDFs
     auto GetTiledPDFPaperHeight(const Unit &unit) const -> qreal;
@@ -210,12 +195,6 @@ public:
     void SetBackgroundImageDefOpacity(int value);
 
 
-    auto GetPointerMode() const -> VToolPointerMode;
-    void SetPointerMode(VToolPointerMode mode);
-
-    auto IsUseToolGroups() const -> bool;
-    void SetUseToolGroups(bool value);
-
     auto IsBoundaryTogetherWithNotches() const -> bool;
     void SetBoundaryTogetherWithNotches(bool value);
 
@@ -227,9 +206,6 @@ public:
 
     auto GetGlobalToolColor() const -> QString;
     void SetGlobalToolColor(const QString &value);
-
-    auto IsCollectGarbage() const -> bool;
-    void SetCollectGarbage(bool value);
 
     auto IsAutoGoToObject() const -> bool;
     void SetAutoGoToObject(bool value);

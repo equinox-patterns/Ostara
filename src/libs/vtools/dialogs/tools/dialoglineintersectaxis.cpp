@@ -374,12 +374,6 @@ void DialogLineIntersectAxis::ChosenObject(quint32 id, const SceneObject &type)
                     line->RefreshGeometry();
                     prepare = true;
 
-                    if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-                    {
-                        vis->SetMode(Mode::Show);
-                        emit ToolTip(QString());
-                        show();
-                    }
                 }
             }
             break;

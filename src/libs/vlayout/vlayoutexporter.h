@@ -121,12 +121,6 @@ public:
     auto offset() const -> QPointF;
     void SetOffset(const QPointF &newOffset);
 
-    auto GetSingleLineFont() const -> bool;
-    void SetSingleLineFont(bool newSingleLineFont);
-
-    auto GetSingleStrokeOutlineFont() const -> bool;
-    void SetSingleStrokeOutlineFont(bool newSingleStrokeOutlineFont);
-
     auto GetPenWidth() const -> int;
     void SetPenWidth(int newPenWidth);
 
@@ -144,8 +138,6 @@ private:
     bool m_showGrainline{true};
     int m_dxfVersion{0};
     QPointF m_offset{};
-    bool m_singleLineFont{false};
-    bool m_singleStrokeOutlineFont{false};
     int m_penWidth{1};
     bool m_togetherWithNotches{false};
     DXFApparelCompatibility m_dxfCompatibility{DXFApparelCompatibility::STANDARD};
@@ -308,30 +300,6 @@ inline auto VLayoutExporter::offset() const -> QPointF
 inline void VLayoutExporter::SetOffset(const QPointF &newOffset)
 {
     m_offset = newOffset;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto VLayoutExporter::GetSingleLineFont() const -> bool
-{
-    return m_singleLineFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline void VLayoutExporter::SetSingleLineFont(bool newSingleLineFont)
-{
-    m_singleLineFont = newSingleLineFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto VLayoutExporter::GetSingleStrokeOutlineFont() const -> bool
-{
-    return m_singleStrokeOutlineFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline void VLayoutExporter::SetSingleStrokeOutlineFont(bool newSingleStrokeOutlineFont)
-{
-    m_singleStrokeOutlineFont = newSingleStrokeOutlineFont;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

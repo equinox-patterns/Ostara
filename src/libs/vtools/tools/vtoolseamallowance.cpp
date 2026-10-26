@@ -2350,15 +2350,7 @@ void VToolSeamAllowance::RefreshScale()
         m_foldLineLabelTexts.at(i)->setBrush(foldLineBrush);
     }
 
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-    if (settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts())
-    {
-        m_foldLineLabel->setBrush(Qt::NoBrush);
-    }
-    else
-    {
-        m_foldLineLabel->setBrush(foldLineBrush);
-    }
+    m_foldLineLabel->setBrush(foldLineBrush);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4117,33 +4109,13 @@ void VToolSeamAllowance::UpdateFoldLine(const VFoldLine &foldLine)
         return;
     }
 
-    VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    // The caption is drawn as text when neither outline setting is on, and as glyph outlines
-    // otherwise — in which case the text items are hidden rather than left over.
-    const bool labelAsText = !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts();
-    ApplyFoldLineLabel(foldLine, labelAsText);
+    // The caption is drawn as text items; the glyph-outline path is not produced any more.
+    ApplyFoldLineLabel(foldLine, true);
 
     QVector<QPainterPath> const shape = foldLine.FoldLinePath();
 
-    if (detail.GetFoldLineType() == FoldLineType::TwoArrows)
-    {
-        m_foldLineMark->setPath(!shape.isEmpty() ? shape.constFirst() : QPainterPath());
-        m_foldLineLabel->setPath(QPainterPath());
-    }
-    else
-    {
-        m_foldLineMark->setPath(!shape.isEmpty() ? shape.constFirst() : QPainterPath());
-
-        if (shape.size() > 1 && (settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts()))
-        {
-            m_foldLineLabel->setPath(shape.constLast());
-        }
-        else
-        {
-            m_foldLineLabel->setPath(QPainterPath());
-        }
-    }
+    m_foldLineMark->setPath(!shape.isEmpty() ? shape.constFirst() : QPainterPath());
+    m_foldLineLabel->setPath(QPainterPath());
 
     if (m_geometryIsReady && not IsFoldLinePositionValid(shape, detail.GetFoldLineType()))
     {

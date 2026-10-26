@@ -807,11 +807,6 @@ void MainWindow::RetranslateAll()
 
     UpdateMeasurementState();
 
-    if (VApplication::VApp()->ValentinaSettings()->IsUseToolGroups())
-    {
-        m_drawToolBar->SetMode(VApplication::VApp()->GetDrawMode());
-    }
-
     // Le dock manager est un QObject, pas un widget : il ne reçoit jamais `LanguageChange`, c'est son
     // appelant qui doit le reprendre — d'où `retranslate()` juste au-dessus.
     m_drawToolBar->RetranslateGroups();

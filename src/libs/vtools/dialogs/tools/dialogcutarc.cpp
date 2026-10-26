@@ -192,10 +192,6 @@ void DialogCutArc::ChosenObject(quint32 id, const SceneObject &type)
             return;
         }
 
-        if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-        {
-            FinishCreating();
-        }
     }
 }
 

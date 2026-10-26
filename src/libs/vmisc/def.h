@@ -71,7 +71,11 @@ class QGraphicsItem;
 
 constexpr qreal maxSceneSize = ((20.0 * 1000.0) / 25.4) * PrintDPI; // 20 meters in pixels
 
+// The scale a curve carries when it carries none, or one out of range. Valentina's 0.5 (60°) is too coarse for
+// the exports; 3.0 (30°) is the middle ground the curve approximation preference used to offer, and it is now the
+// only value. Curves keep their own aScale attribute, written in the file, which takes precedence.
 constexpr qreal defCurveApproximationScale = 0.5;
+constexpr qreal defGlobalCurveApproximationScale = 3.0;
 constexpr qreal minCurveApproximationScale = 0.2;
 constexpr qreal maxCurveApproximationScale = 10.0;
 
@@ -187,7 +191,6 @@ enum class PiecePathIncludeType : quint8
     AsCustomSA = 1
 };
 
-constexpr unsigned int defFoldLineFontSize{12};
 
 // The ordinals are frozen: the type is streamed raw into the RLD layout blob, so a removed value
 // leaves its slot free instead of shifting the values that remain.
@@ -874,7 +877,6 @@ constexpr auto UnitConvertor(const QMarginsF &margins, const Unit &from, const U
 }
 
 void InitLanguages(QComboBox *combobox);
-void InitPieceLabelLanguages(QComboBox *combobox);
 Q_REQUIRED_RESULT auto SupportedLocales() -> QStringList;
 
 /// The locales offered in the Settings language combo (incl. the internal

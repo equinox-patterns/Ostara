@@ -136,6 +136,14 @@ void MainWindow::ActionInfoBlock_triggered(int page)
                 doc->CheckLayout();
             }
         });
+        // The fold line caption is built by the tools from the preferences, so a typography change
+        // needs a full rebuild — the same refresh the preferences dialog asks for when it writes them.
+        connect(window, &OInfoBlockWindow::FoldLineTextChanged, this, []() {
+            if (VAbstractPattern *doc = VAbstractValApplication::VApp()->getCurrentDocument())
+            {
+                emit doc->FullUpdateFromFile();
+            }
+        });
         window->OpenOnPage(page);
         window->show();
     }
@@ -224,8 +232,6 @@ void MainWindow::Preferences()
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, [this]() { emit doc->CheckLayout(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, ui->view,
                 &VMainGraphicsView::ResetScrollingAnimation);
-        connect(dlg.data(), &DialogPreferences::RequestFullParse, this, &MainWindow::FullParseFile,
-                Qt::QueuedConnection); // Queued: the reparse tears the tool tree down in the middle of Apply().
         QGuiApplication::restoreOverrideCursor();
 
         if (guard->exec() == QDialog::Accepted)

@@ -51,6 +51,7 @@ OInfoBlockWindow::OInfoBlockWindow(QWidget *parent) : QMainWindow(parent)
         setWindowModified(m_editor->IsModified());
     });
     connect(m_editor, &OInfoBlockEditor::TemplateSaved, this, &OInfoBlockWindow::TemplateSaved);
+    connect(m_editor, &OInfoBlockEditor::FoldLineTextChanged, this, &OInfoBlockWindow::FoldLineTextChanged);
     connect(m_editor, &OInfoBlockEditor::StatusMessage, this, [this](const QString &message) {
         statusBar()->showMessage(message, 3000);
     });

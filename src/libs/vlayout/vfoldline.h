@@ -42,7 +42,6 @@
 #include "../vmisc/def.h"
 
 class QPainterPath;
-class VSvgFontEngine;
 class QGraphicsSimpleTextItem;
 class VPiece;
 class VContainer;
@@ -139,7 +138,6 @@ public:
     void SetWidth(qreal newWidth);
     void SetCenterPosition(qreal newCenter);
     void SetLabel(const QString &newLabel);
-    void SetLabelSvgFontSize(unsigned int newFontSize);
     void SetLabelFontItalic(bool newItalic);
     void SetLabelFontBold(bool newBold);
     void SetLabelAlignment(int alignment);
@@ -147,13 +145,10 @@ public:
     void SetVerticallyFlipped(bool value);
     void SetHorizontallyFlipped(bool value);
     void SetOutlineFont(const QFont &font);
-    void SetSvgFont(const QString &font);
 
     auto Type() const -> FoldLineType;
     auto Label() const -> QString;
     auto OutlineFont() const -> QFont;
-    auto SvgFont() const -> QString;
-    auto LabelSvgFontSize() const -> unsigned int;
 
     /// Whether @a type draws a text at all. Only TwoArrowsTextAbove does: TwoArrows draws the
     /// arrows alone and None draws nothing. Single source of the predicate, shared by the
@@ -215,6 +210,10 @@ public:
 
     static auto DefaultFoldLineLabel() -> QString;
 
+    /// The font the caption is drawn with, built from the application settings. One place only: the
+    /// Details canvas, the layout and the preview of the setting all call it, so neither can drift.
+    static auto DefaultLabelFont() -> QFont;
+
 private:
     /// Le résolveur installé par l'application, s'il y en a un. Statique parce qu'il dit ce que
     /// l'application sait, et non ce qu'une foldline particulière est.
@@ -226,7 +225,6 @@ private:
     qreal m_width{0};
     qreal m_center{0.5};
     QString m_label{};
-    unsigned int m_svgFontSize{defFoldLineFontSize};
     bool m_italic{false};
     bool m_bold{false};
     int m_alignment{Qt::AlignHCenter};
@@ -234,7 +232,6 @@ private:
     bool m_verticallyFlipped{false};
     bool m_horizontallyFlipped{false};
     QFont m_outlineFont{};
-    QString m_svgFont{};
 
     auto FoldLineTwoArrowsPath() const -> QVector<QPainterPath>;
     auto FoldLineTwoArrowsTextAbovePath() const -> QVector<QPainterPath>;
@@ -243,11 +240,9 @@ private:
 
     auto FoldLineLabel() const -> QString;
 
-    auto OutlineFontLabel(const QLineF &base, qreal width, qreal textHeight) const -> QPainterPath;
-    auto SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) const -> QPainterPath;
+    auto OutlineFontLabel(const QLineF &base, qreal width) const -> QPainterPath;
 
     auto LabelTextHeight() const -> qreal;
-    auto LabelSVGFontEngine(VSvgFontEngine &engine) const -> bool;
     auto LabelOutlineFont() const -> QFont;
 
     auto TwoArrowsPath(qreal width, qreal height) const -> QPainterPath;

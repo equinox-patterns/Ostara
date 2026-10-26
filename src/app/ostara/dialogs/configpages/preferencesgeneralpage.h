@@ -1,6 +1,6 @@
 /************************************************************************
  **
- **  @file   preferencespathpage.h
+ **  @file   preferencesgeneralpage.h
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
  **  @date   12 4, 2017
  **
@@ -26,39 +26,45 @@
  **
  *************************************************************************/
 
-#ifndef PREFERENCESPATHPAGE_H
-#define PREFERENCESPATHPAGE_H
+#ifndef PREFERENCESGENERALPAGE_H
+#define PREFERENCESGENERALPAGE_H
 
 #include <QWidget>
 
 namespace Ui
 {
-class PreferencesPathPage;
+class PreferencesGeneralPage;
 }
 
-class PreferencesPathPage : public QWidget
+/**
+ * @brief The first preferences page: language, units, theme and the application's own behaviour.
+ *
+ * It was one tab of the old « Configuration » page, beside Shortcuts; the two are now pages of their
+ * own, so each can be reached in one click from the left column.
+ */
+class PreferencesGeneralPage : public QWidget
 {
     Q_OBJECT // NOLINT
 
 public:
-    explicit PreferencesPathPage(QWidget *parent = nullptr);
-    ~PreferencesPathPage() override;
+    explicit PreferencesGeneralPage(QWidget *parent = nullptr);
+    ~PreferencesGeneralPage() override;
 
     auto Apply() -> QStringList;
 
 protected:
     void changeEvent(QEvent *event) override;
 
-private slots:
-    void DefaultPath();
-    void EditPath();
-
 private:
     // cppcheck-suppress unknownMacro
-    Q_DISABLE_COPY_MOVE(PreferencesPathPage) // NOLINT
-    Ui::PreferencesPathPage *ui;
+    Q_DISABLE_COPY_MOVE(PreferencesGeneralPage) // NOLINT
+    Ui::PreferencesGeneralPage *ui;
+    bool m_langChanged{false};
+    bool m_unitChanged{false};
 
-    void InitTable();
+    void SetThemeModeComboBox();
+    void InitUnits();
+    void RetranslateUi();
 };
 
-#endif // PREFERENCESPATHPAGE_H
+#endif // PREFERENCESGENERALPAGE_H

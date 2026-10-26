@@ -1,8 +1,8 @@
 /************************************************************************
  **
- **  @file   dialogknownmaterials.h
+ **  @file   preferencesshortcutspage.h
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
- **  @date   28 8, 2017
+ **  @date   12 4, 2017
  **
  **  @brief
  **  @copyright
@@ -26,39 +26,47 @@
  **
  *************************************************************************/
 
-#ifndef DIALOGKNOWNMATERIALS_H
-#define DIALOGKNOWNMATERIALS_H
+#ifndef PREFERENCESSHORTCUTSPAGE_H
+#define PREFERENCESSHORTCUTSPAGE_H
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui
 {
-class DialogKnownMaterials;
+class PreferencesShortcutsPage;
 }
 
-class DialogKnownMaterials : public QDialog
+/**
+ * @brief The keyboard shortcuts page.
+ *
+ * It was one tab of the old « Configuration » page; it is a page of its own now, so the list can be
+ * reached in one click and does not have to share the room with the general settings.
+ */
+class PreferencesShortcutsPage : public QWidget
 {
     Q_OBJECT // NOLINT
 
 public:
-    explicit DialogKnownMaterials(QWidget *parent = nullptr);
-    ~DialogKnownMaterials() override;
+    explicit PreferencesShortcutsPage(QWidget *parent = nullptr);
+    ~PreferencesShortcutsPage() override;
 
-    void SetList(const QStringList &list);
-    auto GetList() const -> QStringList;
+    auto Apply() -> QStringList;
+
+protected:
+    void changeEvent(QEvent *event) override;
 
 private slots:
-    void ShowDetails();
-    void Add();
-    void Remove();
-    void SaveText(const QString &text);
+    void ShortcutCellDoubleClicked(int row, int column);
 
 private:
     // cppcheck-suppress unknownMacro
-    Q_DISABLE_COPY_MOVE(DialogKnownMaterials) // NOLINT
-    Ui::DialogKnownMaterials *ui;
+    Q_DISABLE_COPY_MOVE(PreferencesShortcutsPage) // NOLINT
+    Ui::PreferencesShortcutsPage *ui;
+    QList<QStringList> m_transientShortcuts{};
 
-    void SetupControls();
+    void InitShortcuts(bool defaults = false);
+    void UpdateShortcutsTable();
+    void RetranslateShortcutsTable();
 };
 
-#endif // DIALOGKNOWNMATERIALS_H
+#endif // PREFERENCESSHORTCUTSPAGE_H

@@ -219,16 +219,6 @@ void OExportCuttingFileOptions::ShowOptionsForFormat()
     m_compatibilityLabel->setVisible(apparel);
     m_compatibilityCombo->setVisible(apparel);
 
-    // « Text as paths » est FORCÉ quand la police simple ligne est active : elle n'a pas de contour à
-    // écrire. Même règle, même raison que dans la dialogue du mode Details.
-    VValentinaSettings const *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    const bool forcedPaths = settings->GetSingleLineFonts() || settings->GetSingleStrokeOutlineFont();
-
-    m_textAsPathsCheck->setEnabled(!forcedPaths);
-    if (forcedPaths)
-    {
-        m_textAsPathsCheck->setChecked(true);
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

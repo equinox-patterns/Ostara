@@ -102,7 +102,6 @@ public:
     qreal m_foldLineCenter{0.5}; // NOLINT(misc-non-private-member-variables-in-classes)
 
     QFont m_foldLineOutlineFont{};     // NOLINT (misc-non-private-member-variables-in-classes)
-    QString m_foldLineSvgFontFamily{}; // NOLINT (misc-non-private-member-variables-in-classes)
 
     /** @brief m_showFoldLineLabel whether this drawing shows the fold-line caption ("Cut on fold").
      * Deliberately out of the data stream: it is a decision of ONE drawing (a cutting plan asks it

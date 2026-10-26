@@ -275,26 +275,7 @@ void InitFoldLine(VLayoutPiece &det, const VPiece &piece, const VContainer *patt
     }
 
     det.SetFoldLineLabel(piece.GetFoldLineLabel());
-
-    {
-        const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        det.SetFoldLineSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
-        QFont font(settings->GetFoldLineLabelFontFamily());
-        // **A face NAME, never a number** — same rule and same fallback as VFoldLine::Create
-        // (vfoldline.cpp): a settings file written before the face was named holds a weight.
-        const QString face = settings->GetFoldLineLabelFontFace();
-        if (!face.isEmpty())
-        {
-            font.setStyleName(face);
-        }
-        else
-        {
-            font.setWeight(settings->GetFoldLineLabelFontWeight());
-        }
-        font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
-        det.SetFoldLineOutlineFont(font);
-        det.SetFoldLineSVGFontFamily(settings->GetLabelSVGFont());
-    }
+    det.SetFoldLineOutlineFont(VFoldLine::DefaultLabelFont());
 
     // The three manual formulas come from the shared evaluator — the same code the canvas runs, so
     // the two paths can no longer drift. Only the values are needed here: building the mirror axis
@@ -856,18 +837,6 @@ void VLayoutPiece::SetFoldLineOutlineFont(const QFont &font)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VLayoutPiece::GetFoldLineSVGFontFamily() const -> QString
-{
-    return d->m_foldLineSvgFontFamily;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VLayoutPiece::SetFoldLineSVGFontFamily(const QString &font)
-{
-    d->m_foldLineSvgFontFamily = font;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::IsShowFoldLineLabel() const -> bool
 {
     return d->m_showFoldLineLabel;
@@ -1143,7 +1112,6 @@ auto VLayoutPiece::FoldLine() const -> VFoldLine
 {
     QLineF const foldLine = IsHideMainPath() ? GetSeamAllowanceMirrorLine() : GetSeamMirrorLine();
     VFoldLine fLine(foldLine, GetFoldLineType());
-    fLine.SetLabelSvgFontSize(GetFoldLineSvgFontSize());
 
     // Le texte résolu à la construction du morceau ; un morceau venu d'un fichier de mise en page
     // n'en a pas et retombe sur son propre texte, comme avant que la légende n'existe.
@@ -1156,7 +1124,6 @@ auto VLayoutPiece::FoldLine() const -> VFoldLine
     fLine.SetHorizontallyFlipped(IsHorizontallyFlipped());
     fLine.SetVerticallyFlipped(IsVerticallyFlipped());
     fLine.SetOutlineFont(GetFoldLineOutlineFont());
-    fLine.SetSvgFont(GetFoldLineSVGFontFamily());
 
     return fLine;
 }
@@ -1624,8 +1591,7 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
     // can forget the rule. The mark below is never concerned.
     const bool withLabel = IsShowFoldLineLabel();
 
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-    if (withLabel && !textAsPaths && !settings->GetSingleStrokeOutlineFont() && !settings->GetSingleLineFonts())
+    if (withLabel && !textAsPaths)
     {
         // One item per line: a QGraphicsSimpleTextItem draws a single line, and the caption may
         // take several once it carries more than one language.
@@ -1661,8 +1627,7 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
         itemPen.setJoinStyle(Qt::RoundJoin);
         itemPen.setWidthF(settings->WidthHairLine());
         item->setPen(itemPen);
-        item->setBrush(settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts() ? QBrush(Qt::NoBrush)
-                                                                                                : QBrush(Qt::black));
+        item->setBrush(QBrush(Qt::black));
     };
 
     if (GetFoldLineType() == FoldLineType::TwoArrows)
@@ -1673,8 +1638,7 @@ void VLayoutPiece::CreateFoldLineItem(QGraphicsItem *parent, bool textAsPaths) c
     {
         FoldLineMark(shape.constFirst());
 
-        if (withLabel && shape.size() > 1 &&
-            (textAsPaths || settings->GetSingleStrokeOutlineFont() || settings->GetSingleLineFonts()))
+        if (withLabel && shape.size() > 1 && textAsPaths)
         {
             FoldLineLabel(shape.constLast());
         }

@@ -670,21 +670,6 @@ void InitLanguages(QComboBox *combobox)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void InitPieceLabelLanguages(QComboBox *combobox)
-{
-    InitLanguageList(combobox);
-
-    combobox->addItem(QApplication::translate("InitPieceLabelLanguages", "Default"),
-                      VCommonSettings::defaultPieceLabelLocale);
-
-    qint32 const index = combobox->findData(VAbstractApplication::VApp()->Settings()->GetPieceLabelLocale());
-    if (index != -1)
-    {
-        combobox->setCurrentIndex(index);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto IncrementTypeToString(IncrementType type) -> QString
 {
     switch (type)

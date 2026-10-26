@@ -508,10 +508,6 @@ void DialogEllipticalArcWithLength::ChosenObject(quint32 id, const SceneObject &
         }
         prepare = true;
 
-        if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-        {
-            FinishCreating();
-        }
     }
 }
 

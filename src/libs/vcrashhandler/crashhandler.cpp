@@ -187,11 +187,6 @@ auto InitializeCrashpad([[maybe_unused]] const QString &productName, const QStri
 {
     QScopedPointer<VCommonSettings> const appSettings(AppSettings(appName));
 
-    if (!appSettings->IsSendCrashReport())
-    {
-        return true;
-    }
-
 // Get directory where the exe lives so we can pass a full path to handler, reportsDir and metricsDir
 #if defined(APPIMAGE) && defined(Q_OS_LINUX)
     QString const exeDir = AppImageRoot(GetExecutableDir(), QString(BINDIR)) + QString(BINDIR);
@@ -264,12 +259,6 @@ auto InitializeCrashpad([[maybe_unused]] const QString &productName, const QStri
         appSettings->SetClientID(clientID);
     }
     annotations["key"] = clientID.toStdString(); // Optional: BugSplat key field
-
-    QString const userEmail = appSettings->GetCrashEmail();
-    if (!userEmail.isEmpty())
-    {
-        annotations["user"] = userEmail.toStdString(); // Optional: BugSplat user email
-    }
 
     // Disable crashpad rate limiting so that all crashes have dmp files
     std::vector<std::string> arguments;

@@ -783,12 +783,5 @@ void WatermarkWindow::ValidatePath()
 void WatermarkWindow::ToolBarStyle(QToolBar *bar)
 {
     SCASSERT(bar != nullptr)
-    if (VAbstractApplication::VApp()->Settings()->GetToolBarStyle())
-    {
-        bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    }
-    else
-    {
-        bar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    }
+    bar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }

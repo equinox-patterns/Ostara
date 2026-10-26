@@ -189,8 +189,10 @@ public:
     auto GetShowActiveLayerOnCanvas() const -> bool;
     void SetShowActiveLayerOnCanvas(const bool &value) const;
 
+    // The decimal separator is the OS one, and only that one: ',' and '.' are both accepted on input, so a
+    // setting would only have had the power to lock the app to one of them. The accessor stays, because the number
+    // formatting helpers read it — LocaleToString, the formula dialogs, the numeric keypad filter.
     auto GetOsSeparator() const -> bool;
-    void SetOsSeparator(const bool &value);
 
     auto GetAutosaveState() const -> bool;
     void SetAutosaveState(const bool &value);
@@ -201,10 +203,6 @@ public:
     auto IsLocaleSelected() const -> bool;
     auto GetLocale() const -> QString;
     void SetLocale(const QString &value);
-
-    static const QString defaultPieceLabelLocale;
-    auto GetPieceLabelLocale() const -> QString;
-    void SetPieceLabelLocale(const QString &value);
 
     auto GetKnownMeasurementsId() const -> QUuid;
     void SetKnownMeasurementsId(const QUuid &value);
@@ -225,26 +223,11 @@ public:
     auto GetAskRegenerateOutputs() const -> bool;
     void SetAskRegenerateOutputs(const bool &value);
 
-    auto GetToolBarStyle() const -> bool;
-    void SetToolBarStyle(const bool &value);
-
-    auto GetToolboxIconSizeSmall() const -> bool;
-    void SetToolboxIconSizeSmall(bool value);
-
     auto GetThemeMode() const -> VThemeMode;
     void SetThemeMode(VThemeMode mode) const;
 
     auto IsFreeCurveMode() const -> bool;
     void SetFreeCurveMode(bool value);
-
-    auto IsDoubleClickZoomFitBestCurrentPP() const -> bool;
-    void SetDoubleClickZoomFitBestCurrentPP(bool value);
-
-    auto IsInteractiveTools() const -> bool;
-    void SetInteractiveTools(bool value);
-
-    auto GetUndoCount() const -> int;
-    void SetUndoCount(const int &value);
 
     auto GetRecentFileList() const -> QStringList;
     void SetRecentFileList(const QStringList &value);
@@ -321,12 +304,6 @@ public:
     void SetDefaultSeamAllowance(double value);
     auto GetDefaultSeamAllowance() -> double;
 
-    auto GetLabelFont() const -> QFont;
-    void SetLabelFont(const QFont &f);
-
-    auto GetLabelSVGFont() const -> QString;
-    void SetLabelSVGFont(const QString &family);
-
     auto GetDefaultCartoucheTemplate() const -> QString;
     void SetDefaultCartoucheTemplate(const QString &name);
 
@@ -335,12 +312,6 @@ public:
 
     auto GetDefaultCoverPageTemplate() const -> QString;
     void SetDefaultCoverPageTemplate(const QString &name);
-
-    auto GetSingleStrokeOutlineFont() const -> bool;
-    void SetSingleStrokeOutlineFont(bool value);
-
-    auto GetSingleLineFonts() const -> bool;
-    void SetSingleLineFonts(bool value);
 
     static auto MinPieceLabelFontPointSize() -> int;
 
@@ -357,9 +328,6 @@ public:
 #if !defined(Q_OS_WIN)
     static const QString unixStandardSharePath;
 #endif
-
-    auto GetCurveApproximationScale() const -> qreal;
-    void SetCurveApproximationScale(qreal value);
 
     auto IsShowCurveDetails() const -> bool;
     void SetShowCurveDetails(bool value);
@@ -393,53 +361,11 @@ public:
     auto GetTiledPDFOrientation() const -> PageOrientation;
     void SetTiledPDFOrientation(PageOrientation value);
 
-    static const int defaultScrollingDuration;
-    static const int scrollingDurationMin;
-    static const int scrollingDurationMax;
-    auto GetScrollingDuration() const -> int;
-    void SetScrollingDuration(int duration) const;
-
-    static const int defaultScrollingUpdateInterval;
-    static const int scrollingUpdateIntervalMin;
-    static const int scrollingUpdateIntervalMax;
-    auto GetScrollingUpdateInterval() const -> int;
-    void SetScrollingUpdateInterval(int updateInterval) const;
-
-    static const qreal defaultSensorMouseScale;
-    static const qreal sensorMouseScaleMin;
-    static const qreal sensorMouseScaleMax;
-    auto GetSensorMouseScale() const -> qreal;
-    void SetSensorMouseScale(qreal scale) const;
-
-    static const qreal defaultWheelMouseScale;
-    static const qreal wheelMouseScaleMin;
-    static const qreal wheelMouseScaleMax;
-    auto GetWheelMouseScale() const -> qreal;
-    void SetWheelMouseScale(qreal scale) const;
-
-    static const qreal defaultScrollingAcceleration;
-    static const qreal scrollingAccelerationMin;
-    static const qreal scrollingAccelerationMax;
-    auto GetScrollingAcceleration() const -> qreal;
-    void SetScrollingAcceleration(qreal acceleration) const;
-
-    auto IsOpenGLRender() const -> bool;
-    void SetOpenGLRender(bool value) const;
-
-    auto GetGraphicalOutput() const -> bool;
-    void SetGraphicalOutput(const bool &value) const;
-
     auto GetWatermarkEditorSize() const -> QSize;
     void SetWatermarkEditorSize(const QSize &sz);
 
     auto GetWatermarkCustomColors() const -> QVector<QColor>;
     void SetWatermarkCustomColors(QVector<QColor> colors) const;
-
-    auto IsAskCollectStatistic() const -> bool;
-    void SetAskCollectStatistic(bool value) const;
-
-    auto IsCollectStatistic() const -> bool;
-    void SetCollectStatistic(bool value) const;
 
     auto GetClientID() const -> QString;
     void SetClientID(const QString &clientID) const;
@@ -450,15 +376,6 @@ public:
     auto GetActionShortcuts(const QString &name, const QStringList &defaultShortcuts) -> QStringList;
     void SetActionShortcuts(const QString &name, const QStringList &shortcuts) const;
     void RemoveActionShortcuts(const QString &name) const;
-
-    auto GetCrashEmail() const -> QString;
-    void SetCrashEmail(const QString &value) const;
-
-    auto IsSendCrashReport() const -> bool;
-    void SeSendCrashReport(bool value) const;
-
-    auto IsAskSendCrashReport() const -> bool;
-    void SetAskSendCrashReport(bool value) const;
 
 signals:
     void SVGFontsPathChanged(const QString &oldPath, const QString &newPath);

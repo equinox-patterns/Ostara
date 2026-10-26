@@ -122,8 +122,6 @@ public:
     auto GetFoldLineType() const -> FoldLineType;
     void SetFoldLineType(FoldLineType lineType);
 
-    auto GetFoldLineSvgFontSize() const -> unsigned int;
-    void SetFoldLineSvgFontSize(unsigned int size);
 
     auto IsFoldLineLabelFontItalic() const -> bool;
     void SetFoldLineLabelFontItalic(bool value);

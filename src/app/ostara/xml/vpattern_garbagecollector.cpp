@@ -45,12 +45,6 @@ using namespace VPatternHelpers;
 //---------------------------------------------------------------------------------------------------------------------
 void VPattern::CollectGarbage()
 {
-    if (!VAbstractValApplication::VApp()->ValentinaSettings()->IsCollectGarbage())
-    {
-        m_garbageCollected = true;
-        return;
-    }
-
     if (!m_garbageCollected)
     {
         GarbageCollector();

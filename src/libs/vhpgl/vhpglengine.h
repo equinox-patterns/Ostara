@@ -56,12 +56,6 @@ public:
     auto GetFileName() const -> QString;
     void SetFileName(const QString &filename);
 
-    auto GetSingleLineFont() const -> bool;
-    void SetSingleLineFont(bool singleLineFont);
-
-    auto GetSingleStrokeOutlineFont() const -> bool;
-    void SetSingleStrokeOutlineFont(bool singleStrokeOutlineFont);
-
     auto GetPenWidth() const -> int;
     void SetPenWidth(int newPenWidth);
 
@@ -89,8 +83,6 @@ private:
     QString m_fileName{};
     bool m_inserNewLine{true};
     QPoint m_currentPos{-1, -1};
-    bool m_singleLineFont{false};
-    bool m_singleStrokeOutlineFont{false};
     int m_penWidthPx;
     qreal m_xscale{1};
     qreal m_yscale{1};
@@ -176,32 +168,6 @@ inline void VHPGLEngine::SetIsertNewLine(bool insert)
 {
     Q_ASSERT(not isActive());
     m_inserNewLine = insert;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto VHPGLEngine::GetSingleLineFont() const -> bool
-{
-    return m_singleLineFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline void VHPGLEngine::SetSingleLineFont(bool singleLineFont)
-{
-    Q_ASSERT(not isActive());
-    m_singleLineFont = singleLineFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline auto VHPGLEngine::GetSingleStrokeOutlineFont() const -> bool
-{
-    return m_singleStrokeOutlineFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-inline void VHPGLEngine::SetSingleStrokeOutlineFont(bool singleStrokeOutlineFont)
-{
-    Q_ASSERT(not isActive());
-    m_singleStrokeOutlineFont = singleStrokeOutlineFont;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

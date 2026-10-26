@@ -49,7 +49,6 @@
 #include <QMimeData>
 #include <QMimeDatabase>
 #include <QMouseEvent>
-#include <QOpenGLWidget>
 #include <QPainter>
 #include <QPoint>
 #include <QRubberBand>
@@ -87,6 +86,14 @@
 
 namespace
 {
+// Scrolling tuning, once the Scrolling preferences tab was removed: these were its spin boxes' defaults, and a
+// number that cannot be changed anywhere does not need to be a setting.
+constexpr int kScrollingDuration = 300;
+constexpr int kScrollingUpdateInterval = 30;
+constexpr qreal kSensorMouseScale = 2.0;
+constexpr qreal kWheelMouseScale = 45.0;
+constexpr qreal kScrollingAcceleration = 1.3;
+
 auto ScrollingSteps(QWheelEvent *wheel_event) -> qreal
 {
     SCASSERT(wheel_event != nullptr)
@@ -94,17 +101,14 @@ auto ScrollingSteps(QWheelEvent *wheel_event) -> qreal
     const QPoint numPixels = wheel_event->pixelDelta();
     const QPoint numDegrees = wheel_event->angleDelta() / 8;
     qreal numSteps = 0;
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
 
     if (not numPixels.isNull())
     {
-        const qreal mouseScale = settings->GetSensorMouseScale();
-        numSteps = (numPixels.x() == 0 ? numPixels.y() : numPixels.x()) / mouseScale;
+        numSteps = (numPixels.x() == 0 ? numPixels.y() : numPixels.x()) / kSensorMouseScale;
     }
     else if (not numDegrees.isNull())
     {
-        const qreal mouseScale = settings->GetWheelMouseScale();
-        numSteps = (numPixels.x() == 0 ? numDegrees.y() : numDegrees.x()) / 15. * mouseScale;
+        numSteps = (numPixels.x() == 0 ? numDegrees.y() : numDegrees.x()) / 15. * kWheelMouseScale;
     }
 
     return numSteps;
@@ -129,7 +133,7 @@ auto PrepareScrolling(qreal scheduledScrollings, QWheelEvent *wheel_event) -> qr
         scheduledScrollings += numSteps;
     }
 
-    scheduledScrollings *= VAbstractApplication::VApp()->Settings()->GetScrollingAcceleration();
+    scheduledScrollings *= kScrollingAcceleration;
 
     return scheduledScrollings;
 }
@@ -266,18 +270,16 @@ void GraphicsViewZoom::InitScrollingAnimation()
 {
     delete verticalScrollAnim.data();
 
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-
-    verticalScrollAnim = new QTimeLine(settings->GetScrollingDuration(), this);
-    verticalScrollAnim->setUpdateInterval(settings->GetScrollingUpdateInterval());
+    verticalScrollAnim = new QTimeLine(kScrollingDuration, this);
+    verticalScrollAnim->setUpdateInterval(kScrollingUpdateInterval);
 
     connect(verticalScrollAnim.data(), &QTimeLine::valueChanged, this, &GraphicsViewZoom::VerticalScrollingTime);
     connect(verticalScrollAnim.data(), &QTimeLine::finished, this, &GraphicsViewZoom::animFinished);
 
     delete horizontalScrollAnim.data();
 
-    horizontalScrollAnim = new QTimeLine(settings->GetScrollingDuration(), this);
-    horizontalScrollAnim->setUpdateInterval(settings->GetScrollingUpdateInterval());
+    horizontalScrollAnim = new QTimeLine(kScrollingDuration, this);
+    horizontalScrollAnim->setUpdateInterval(kScrollingUpdateInterval);
 
     connect(horizontalScrollAnim.data(), &QTimeLine::valueChanged, this, &GraphicsViewZoom::HorizontalScrollingTime);
     connect(horizontalScrollAnim.data(), &QTimeLine::finished, this, &GraphicsViewZoom::animFinished);
@@ -486,18 +488,6 @@ VMainGraphicsView::VMainGraphicsView(QWidget *parent)
 {
     setAcceptDrops(true);
     setFocusPolicy(Qt::StrongFocus);
-
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-    if (settings && settings->IsOpenGLRender())
-    {
-        auto *viewport = new QOpenGLWidget();
-        QSurfaceFormat fmt;
-        fmt.setSamples(settings->GetGraphicalOutput() ? 10 : 0);
-        fmt.setStencilBufferSize(8);
-        viewport->setFormat(fmt);
-
-        setViewport(viewport);
-    }
 
     zoom = new GraphicsViewZoom(this);
 
@@ -926,8 +916,7 @@ void VMainGraphicsView::mouseDoubleClickEvent(QMouseEvent *event)
         }
     }
 
-    if (not claimed && event->button() == Qt::LeftButton &&
-        VAbstractApplication::VApp()->Settings()->IsDoubleClickZoomFitBestCurrentPP())
+    if (not claimed && event->button() == Qt::LeftButton)
     {
         emit ZoomFitBestCurrent();
     }
@@ -1150,13 +1139,6 @@ void VMainGraphicsView::SetAntialiasing(bool value)
 {
     setRenderHint(QPainter::Antialiasing, value);
     setRenderHint(QPainter::SmoothPixmapTransform, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VMainGraphicsView::IsOpenGLRender() const -> bool
-{
-    auto *viewport = qobject_cast<QOpenGLWidget *>(this->viewport());
-    return viewport != nullptr;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

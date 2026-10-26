@@ -355,7 +355,7 @@ auto VAbstractApplication::IsPedantic() const -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractApplication::GlobalCurveApproximationScale() -> qreal
 {
-    return Settings()->GetCurveApproximationScale();
+    return defGlobalCurveApproximationScale;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -516,33 +516,6 @@ auto VAbstractApplication::AppUptime() const -> qint64
 auto VAbstractApplication::GetShortcutManager() const -> VAbstractShortcutManager *
 {
     return m_shortcutManager;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VAbstractApplication::GetPlaceholderTranslator() -> QSharedPointer<VTranslator>
-{
-    VCommonSettings const *settings = Settings();
-
-    QString pieceLabelLocale = settings->GetPieceLabelLocale();
-    if (pieceLabelLocale == VCommonSettings::defaultPieceLabelLocale)
-    {
-        pieceLabelLocale = settings->GetLocale();
-    }
-
-    if (pieceLabelLocale.startsWith("ru"_L1) || pieceLabelLocale.startsWith("ir"_L1))
-    {
-        return QSharedPointer<VTranslator>(new VTranslator);
-    }
-
-    auto translator = QSharedPointer<VTranslator>(new VTranslator);
-    // The .qm files are embedded in the binary (qt_add_translations resource), not
-    // deployed as loose files — load from the resource like the main translator.
-    if (translator->load(QStringLiteral(":/i18n/ostara_") + pieceLabelLocale + QStringLiteral(".qm")))
-    {
-        return translator;
-    }
-
-    return QSharedPointer<VTranslator>(new VTranslator);
 }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0) && !defined(WITH_TEXTCODEC)

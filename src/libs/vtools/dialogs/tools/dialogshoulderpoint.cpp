@@ -267,10 +267,6 @@ void DialogShoulderPoint::ChosenThirdPoint(quint32 id)
         line->RefreshGeometry();
         prepare = true;
 
-        if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-        {
-            FinishCreating();
-        }
     }
 }
 

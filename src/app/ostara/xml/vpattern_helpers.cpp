@@ -57,12 +57,9 @@ void GatherCount(int &count, const int nodes)
 //---------------------------------------------------------------------------------------------------------------------
 auto DefLabelLanguage() -> QString
 {
-    QString def = VAbstractValApplication::VApp()->ValentinaSettings()->GetLabelLanguage();
-    if (not ConvertToSet<QString>(VApplication::LabelLanguages()).contains(def))
-    {
-        def = QStringLiteral("en");
-    }
-    return def;
+    // A, B, C, always: the alphabet was a preference, and a pattern that wants another one already carries its
+    // own labelPrefix attribute, which this default never overrides.
+    return QStringLiteral("en");
 }
 
 //---------------------------------------------------------------------------------------------------------------------

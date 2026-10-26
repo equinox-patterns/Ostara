@@ -201,10 +201,6 @@ void DialogNormal::ChosenObject(quint32 id, const SceneObject &type)
                     SCASSERT(window != nullptr)
                     connect(line, &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
 
-                    if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-                    {
-                        FinishCreating();
-                    }
                 }
                 break;
             default:

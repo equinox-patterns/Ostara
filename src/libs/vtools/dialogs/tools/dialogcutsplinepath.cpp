@@ -287,10 +287,6 @@ void DialogCutSplinePath::ChosenObject(quint32 id, const SceneObject &type)
         SCASSERT(window != nullptr)
         connect(vis.data(), &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
 
-        if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-        {
-            FinishCreating();
-        }
     }
 }
 

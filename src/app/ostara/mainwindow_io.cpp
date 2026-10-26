@@ -106,12 +106,6 @@ void MainWindow::ReadSettings()
         // correctly after ShowWelcomeScreen() hides everything.
         m_dockManager->syncVisibilityFromDocks();
 
-        // Scene antialiasing
-        ui->view->SetAntialiasing(settings->GetGraphicalOutput());
-
-        // Stack limit
-        VAbstractApplication::VApp()->getUndoStack()->setUndoLimit(settings->GetUndoCount());
-
         // Text under tool buton icon
         ToolBarStyles();
 

@@ -455,13 +455,6 @@ void MainWindow::UpdateMeasurementSeparatorIcon()
 void MainWindow::ToolBarStyle(QToolBar *bar) const
 {
     MainWindowsNoGUI::ToolBarStyle(bar);
-
-    // Temporary fix issue with toolbar black background on mac with OpenGL render
-    if (VAbstractValApplication::VApp()->getSceneView() &&
-        VAbstractValApplication::VApp()->getSceneView()->IsOpenGLRender())
-    {
-        bar->setStyle(QStyleFactory::create("fusion"));
-    }
 }
 #endif
 //---------------------------------------------------------------------------------------------------------------------
@@ -481,12 +474,7 @@ void MainWindow::ToolBarStyles()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolboxIconSize()
 {
-    auto SetIconSize = [](QToolBar *bar)
-    {
-        VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-        QSize const size = settings->GetToolboxIconSizeSmall() ? QSize(24, 24) : QSize(32, 32);
-        bar->setIconSize(size);
-    };
+    auto SetIconSize = [](QToolBar *bar) { bar->setIconSize(QSize(24, 24)); };
 
     SetIconSize(ui->topBar);
 }

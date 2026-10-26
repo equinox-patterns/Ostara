@@ -771,15 +771,11 @@ void MainWindowsNoGUI::ExportApparelLayout(const QVector<VLayoutPiece> &details,
             break;
         case LayoutExportFormats::HPGL:
         case LayoutExportFormats::HPGL_PLT:
-            exporter.SetSingleLineFont(settings->GetSingleLineFonts());
-            exporter.SetSingleStrokeOutlineFont(settings->GetSingleStrokeOutlineFont());
             exporter.SetPenWidth(qCeil(settings->WidthHairLine()));
             exporter.ExportToHPGL(details);
             break;
         case LayoutExportFormats::HPGL2:
         case LayoutExportFormats::HPGL2_PLT:
-            exporter.SetSingleLineFont(settings->GetSingleLineFonts());
-            exporter.SetSingleStrokeOutlineFont(settings->GetSingleStrokeOutlineFont());
             exporter.SetPenWidth(qCeil(settings->WidthHairLine()));
             exporter.ExportToHPGL2(details);
             break;

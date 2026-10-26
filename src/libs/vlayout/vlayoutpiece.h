@@ -180,8 +180,6 @@ public:
     auto GetFoldLineOutlineFont() const -> QFont;
     void SetFoldLineOutlineFont(const QFont &font);
 
-    auto GetFoldLineSVGFontFamily() const -> QString;
-    void SetFoldLineSVGFontFamily(const QString &font);
 
     /// Whether this drawing draws the fold-line caption. The mark — the line and its two arrows —
     /// is untouched: only the text leaves, and at the drawing rather than by hiding an item.

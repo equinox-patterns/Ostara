@@ -58,6 +58,7 @@ class OTemplateLanguageRow;
 class OTemplateSectionEditor;
 class OInfoBlockTemplatesPage;
 class OAnnotationStylesPage;
+class OFoldLineTextPage;
 class OThumbnailStylesPage;
 
 /**
@@ -86,7 +87,7 @@ public:
 
     /** @brief Open the editor directly on the given page.
      *  0 = Existing templates, 1 = Create new, 2 = Logo, 3 = Clients, 4 = Collections,
-     *  5 = Annotations. */
+     *  5 = Annotations, 6 = Thumbnail, 7 = Foldline text. */
     void OpenOnPage(int page);
 
 public slots:
@@ -98,6 +99,8 @@ signals:
     void StatusMessage(const QString &message);
     /** @brief Emitted after a template has been written to disk (refresh the canvas blocks). */
     void TemplateSaved();
+    /** @brief Emitted when the fold line text page wrote its preferences (refresh the canvas). */
+    void FoldLineTextChanged();
 
 private:
     void SetupUI();
@@ -111,6 +114,7 @@ private:
     void SetupClientsPage();
     void SetupAnnotationsPage();
     void SetupThumbnailPage();
+    void SetupFoldLineTextPage();
     void NewTemplate();
 
     /** @brief Asks before throwing away changes that were never saved. True = carry on. */
@@ -136,6 +140,7 @@ private:
     void ShowClientsPage();
     void ShowAnnotationsPage();
     void ShowThumbnailPage();
+    void ShowFoldLineTextPage();
     void LoadFile(const QString &filePath);
     void OnAddSection(const QString &typeId);
     void OnAddClient();
@@ -215,6 +220,10 @@ private:
     // settings and not the template's: the page writes the preferences, and every miniature obeys them
     // (see OThumbnailStylesPage).
     OThumbnailStylesPage *m_thumbnailStylesPage{nullptr};
+
+    // Foldline text page — the typography of the fold line caption. Like the Miniature page, these are
+    // the application's settings and not the template's (see OFoldLineTextPage).
+    OFoldLineTextPage *m_foldLineTextPage{nullptr};
 
     // Clients page
     QGroupBox *m_clientEditGroup{nullptr};

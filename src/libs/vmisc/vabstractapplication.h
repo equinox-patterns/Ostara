@@ -117,7 +117,6 @@ public:
 
     auto GetShortcutManager() const -> VAbstractShortcutManager *;
 
-    auto GetPlaceholderTranslator() -> QSharedPointer<VTranslator>;
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays, hicpp-avoid-c-arrays, modernize-avoid-c-arrays)

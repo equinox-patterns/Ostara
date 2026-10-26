@@ -189,10 +189,6 @@ void DialogEndLine::ChosenObject(quint32 id, const SceneObject &type)
         connect(vis.data(), &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
         prepare = true;
 
-        if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-        {
-            FinishCreating();
-        }
     }
 }
 

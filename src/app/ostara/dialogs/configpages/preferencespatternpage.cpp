@@ -27,32 +27,11 @@
  *************************************************************************/
 
 #include "preferencespatternpage.h"
-#include "../../core/vapplication.h"
-#include "../dialogdatetimeformats.h"
-#include "../dialogknownmaterials.h"
 #include "../ifc/xml/vabstractpattern.h"
-#include "../vformat/vsinglelineoutlinechar.h"
-#include "../vmisc/svgfont/vsvgfontdatabase.h"
-#include "themeDef.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
-#include "../vwidgets/vmaingraphicsview.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
-#include "svgfont/svgdef.h"
-#include "svgfont/vsvgfont.h"
-#include "svgfont/vsvgfontengine.h"
 #include "ui_preferencespatternpage.h"
-
-#include <QCompleter>
-#include <QDate>
-#include <QFontMetrics>
-#include <QMessageBox>
-#include <QScreen>
-#include <QStyledItemDelegate>
-#include <QTime>
-
-namespace
-{
-} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 PreferencesPatternPage::PreferencesPatternPage(QWidget *parent)
@@ -63,35 +42,12 @@ PreferencesPatternPage::PreferencesPatternPage(QWidget *parent)
     RetranslateUi();
 
     // Prevent stealing focus when scrolling
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->doubleSpinBoxCurveApproximation);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->doubleSpinBoxLineWidth);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxLineWidthUnit);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->defaultSeamAllowance);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->fontComboBoxLabelFont);
-    VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->comboBoxSingleLineFont);
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->spinBoxOpacity);
 
     VValentinaSettings  const*settings = VAbstractValApplication::VApp()->ValentinaSettings();
-
-    ui->graphOutputCheck->setChecked(settings->GetGraphicalOutput());
-    ui->checkBoxOpenGLRender->setChecked(settings->IsOpenGLRender());
-    ui->doubleSpinBoxCurveApproximation->setValue(settings->GetCurveApproximationScale());
-    ui->doubleSpinBoxCurveApproximation->setMinimum(minCurveApproximationScale);
-    ui->doubleSpinBoxCurveApproximation->setMaximum(maxCurveApproximationScale);
-    ui->undoCount->setValue(settings->GetUndoCount());
-
-    {
-        const QIcon warningIcon = FromTheme(VThemeIcon::DialogWarning);
-        const int size = qRound(16. * ui->labelCurveApproximationScaleWarning->devicePixelRatio());
-        ui->labelCurveApproximationScaleWarning->setPixmap(warningIcon.pixmap(size, size));
-
-        bool warningVisible = false;
-        if (VCommandLinePtr const commandLine = VApplication::CommandLine(); commandLine != nullptr && !qFuzzyIsNull(commandLine->CurveApproximationScale()))
-        {
-            warningVisible = true;
-        }
-        ui->labelCurveApproximationScaleWarning->setVisible(warningVisible);
-    }
 
     //----------------------- Unit setup
     // set default unit
@@ -127,23 +83,7 @@ PreferencesPatternPage::PreferencesPatternPage(QWidget *parent)
     ui->doublePassmarkCheck->setChecked(settings->IsDoublePassmark());
     ui->checkBoxHideMainPath->setChecked(settings->IsHideMainPath());
 
-    ui->fontComboBoxLabelFont->setCurrentFont(settings->GetLabelFont());
-
-    InitSingleLineFonts();
-    if (const qint32 indexFont = ui->comboBoxSingleLineFont->findData(settings->GetLabelSVGFont()); indexFont != -1)
-    {
-        ui->comboBoxSingleLineFont->setCurrentIndex(indexFont);
-    }
-
-    ui->checkBoxSingleStrokeOutlineFont->setChecked(settings->GetSingleStrokeOutlineFont());
-    ui->checkBoxSingleLineFonts->setChecked(settings->GetSingleLineFonts());
-
-    ui->checkBoxRemeberPatternMaterials->setChecked(settings->IsRememberPatternMaterials());
-    m_knownMaterials = settings->GetKnownMaterials();
-
     ui->spinBoxOpacity->setValue(settings->GetBackgroundImageDefOpacity());
-
-    connect(ui->pushButtonKnownMaterials, &QPushButton::clicked, this, &PreferencesPatternPage::ManageKnownMaterials);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -159,65 +99,17 @@ auto PreferencesPatternPage::Apply() -> QStringList
 
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
 
-    // Scene antialiasing
-    if (settings->GetGraphicalOutput() != ui->graphOutputCheck->isChecked())
-    {
-        if (VAbstractValApplication::VApp()->getSceneView()->IsOpenGLRender())
-        {
-            preferences.append(tr("antialiasing"));
-        }
-
-        settings->SetGraphicalOutput(ui->graphOutputCheck->isChecked());
-    }
-
-    if (settings->IsOpenGLRender() != ui->checkBoxOpenGLRender->isChecked())
-    {
-        preferences.append(tr("scene render"));
-        settings->SetOpenGLRender(ui->checkBoxOpenGLRender->isChecked());
-    }
-
-    m_curveApproximationScaleChanged =
-        not qFuzzyCompare(settings->GetCurveApproximationScale(), ui->doubleSpinBoxCurveApproximation->value());
-    settings->SetCurveApproximationScale(ui->doubleSpinBoxCurveApproximation->value());
     settings->SetLineWidth(UnitConvertor(ui->doubleSpinBoxLineWidth->value(), m_oldLineUnit, Unit::Mm));
-    VAbstractValApplication::VApp()->getSceneView()->SetAntialiasing(ui->graphOutputCheck->isChecked());
-
-    /* Maximum number of commands in undo stack may only be set when the undo stack is empty, since setting it on a
-     * non-empty stack might delete the command at the current index. Calling setUndoLimit() on a non-empty stack
-     * prints a warning and does nothing.*/
-    settings->SetUndoCount(ui->undoCount->value());
 
     settings->SetDefaultSeamAllowance(ui->defaultSeamAllowance->value());
 
     settings->SetSewLineOnDrawing(ui->checkBoxSewLineOnDrawing->isChecked());
     settings->SetHideMainPath(ui->checkBoxHideMainPath->isChecked());
-    settings->SetLabelFont(ui->fontComboBoxLabelFont->currentFont());
-    settings->SetLabelSVGFont(ui->comboBoxSingleLineFont->currentData().toString());
-
-    if (settings->GetSingleStrokeOutlineFont() != ui->checkBoxSingleStrokeOutlineFont->isChecked())
-    {
-        settings->SetSingleStrokeOutlineFont(ui->checkBoxSingleStrokeOutlineFont->isChecked());
-
-        VSingleLineOutlineChar corrector(settings->GetLabelFont());
-        if (ui->checkBoxSingleStrokeOutlineFont->isChecked())
-        {
-            corrector.LoadCorrections(settings->GetPathFontCorrections());
-        }
-        else
-        {
-            corrector.ClearCorrectionsCache();
-        }
-    }
-    settings->SetSingleLineFonts(ui->checkBoxSingleLineFonts->isChecked());
-
     if (settings->IsDoublePassmark() != ui->doublePassmarkCheck->isChecked())
     {
         settings->SetDoublePassmark(ui->doublePassmarkCheck->isChecked());
         VAbstractValApplication::VApp()->getCurrentDocument()->LiteParseTree(Document::LiteParse);
     }
-
-    settings->SetKnownMaterials(m_knownMaterials);
-    settings->SetRememberPatternMaterials(ui->checkBoxRemeberPatternMaterials->isChecked());
 
     settings->SetBackgroundImageDefOpacity(ui->spinBoxOpacity->value());
 
@@ -242,116 +134,8 @@ void PreferencesPatternPage::changeEvent(QEvent *event)
         ui->retranslateUi(this);
     }
 
-    if (event->type() == QEvent::PaletteChange)
-    {
-        QString const currentSingleLineFont = ui->comboBoxSingleLineFont->currentData().toString();
-        InitSingleLineFonts();
-        const qint32 indexFont = ui->comboBoxSingleLineFont->findData(currentSingleLineFont);
-        if (indexFont != -1)
-        {
-            ui->comboBoxSingleLineFont->setCurrentIndex(indexFont);
-        }
-    }
-
     // remember to call base class implementation
     QWidget::changeEvent(event);
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-void PreferencesPatternPage::ManageKnownMaterials()
-{
-    DialogKnownMaterials editor;
-    editor.SetList(m_knownMaterials);
-
-    if (QDialog::Accepted == editor.exec())
-    {
-        m_knownMaterials = editor.GetList();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void PreferencesPatternPage::InitSingleLineFonts()
-{
-    QScreen const*primaryScreen = QGuiApplication::primaryScreen();
-    if (primaryScreen == nullptr)
-    {
-        qDebug() << "InitSingleLineFonts: no primary screen, skipping single line font previews.";
-        return;
-    }
-
-    // Retrieve the screen's physical DPI values and scale factor. On Windows these can be
-    // transiently bogus (e.g. during display reconfiguration) if the monitor reports an invalid
-    // physical size, so fall back to sane defaults and log the anomaly instead of feeding garbage
-    // into setMinimumSize()/QPixmap below. A -1 mm physical width on a 3440 px screen gives
-    // dpiX = -87376 and a minimum width of -227542; a 0 mm width gives infinity, which passes any
-    // plain `> 0` test, hence the upper bounds.
-    qreal dpiX = primaryScreen->physicalDotsPerInchX();
-    qreal dpiY = primaryScreen->physicalDotsPerInchY();
-    qreal scale = primaryScreen->devicePixelRatio();
-
-    if (!(dpiX > 0 && dpiX <= 10000.) || !(dpiY > 0 && dpiY <= 10000.) || !(scale > 0 && scale <= 100.))
-    {
-        // qDebug, not qWarning: in GUI mode the noisy message handler turns warnings into a message
-        // box, and this is a condition we recover from silently.
-        qDebug() << "InitSingleLineFonts: screen" << primaryScreen->name()
-                 << "reported invalid DPI/scale (dpiX=" << dpiX << ", dpiY=" << dpiY << ", scale=" << scale
-                 << "), using fallback values.";
-        dpiX = dpiX > 0 && dpiX <= 10000. ? dpiX : 96.0;
-        dpiY = dpiY > 0 && dpiY <= 10000. ? dpiY : 96.0;
-        scale = scale > 0 && scale <= 100. ? scale : 1.0;
-    }
-
-    int const previewWidth = qRound(250. / scale);
-    int const previewHeight = qRound(QFontMetrics(QGuiApplication::font()).height() / scale);
-
-    // Calculate the desired image size in physical pixels
-    const int desiredWidthInPixels = qRound(previewWidth * dpiX / 96.0);
-    const int desiredHeightInPixels = qRound(previewHeight * dpiY / 96.0);
-
-    // Adjust the image size based on the screen's scale factor
-    const int previewScaledWidthPixels = qMax(1, qRound(desiredWidthInPixels * scale));
-    const int previewScaledHeightPixels = qMax(1, qRound(desiredHeightInPixels * scale));
-
-    ui->comboBoxSingleLineFont->clear();
-    ui->comboBoxSingleLineFont->setMinimumSize(QSize(previewScaledWidthPixels, 0));
-    ui->comboBoxSingleLineFont->setIconSize(QSize(previewScaledWidthPixels, previewScaledHeightPixels));
-
-    QPen pen(Qt::SolidPattern, 1 * scale, Qt::SolidLine, Qt::RoundCap, Qt::SvgMiterJoin);
-    pen.setColor(ui->comboBoxSingleLineFont->palette().color(QPalette::Text));
-
-    VSvgFontDatabase  const*db = VAbstractApplication::VApp()->SVGFontDatabase();
-    QStringList families = db->Families();
-    families.sort();
-
-    for (const auto &family : families)
-    {
-        VSvgFontEngine engine = db->FontEngine(family, SVGFontStyle::Normal, SVGFontWeight::Normal);
-
-        VSvgFont const svgFont = engine.Font();
-        if (!svgFont.IsValid())
-        {
-            continue;
-        }
-
-        engine.SetFontPixelSize(previewScaledHeightPixels);
-
-        QPixmap pixmap(previewScaledWidthPixels, previewScaledHeightPixels);
-        pixmap.fill(ui->comboBoxSingleLineFont->palette().color(QPalette::Base));
-        QPainter painter(&pixmap);
-        painter.setRenderHint(QPainter::Antialiasing);
-        painter.setPen(pen);
-
-        engine.Draw(&painter, QPointF(0, 0), engine.FontSample());
-
-        ui->comboBoxSingleLineFont->addItem(pixmap, svgFont.FamilyName(), svgFont.FamilyName());
-    }
-
-    ui->comboBoxSingleLineFont->setInsertPolicy(QComboBox::NoInsert);
-    if (ui->comboBoxSingleLineFont->count() > 0)
-    {
-        ui->comboBoxSingleLineFont->completer()->setCompletionMode(QCompleter::QCompleter::UnfilteredPopupCompletion);
-    }
 }
 
 

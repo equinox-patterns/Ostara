@@ -64,7 +64,6 @@ public:
     QUuid m_uuid{QUuid::createUuid()};                       // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_onDrawing{false};                                 // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_showFullPiece{true};                              // NOLINT (misc-non-private-member-variables-in-classes)
-    unsigned int m_foldLineSvgFontSize{defFoldLineFontSize}; // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_foldLineLabelFontItalic{false};                   // NOLINT (misc-non-private-member-variables-in-classes)
     bool m_foldLineLabelFontBold{false};                     // NOLINT (misc-non-private-member-variables-in-classes)
     QString m_foldLineLabel{};                               // NOLINT (misc-non-private-member-variables-in-classes)

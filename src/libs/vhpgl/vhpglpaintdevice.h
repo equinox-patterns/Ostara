@@ -46,12 +46,6 @@ public:
     auto GetFileName() const -> QString;
     void SetFileName(const QString &filename);
 
-    auto GetSingleLineFont() const -> bool;
-    void SetSingleLineFont(bool singleLineFont);
-
-    auto GetSingleStrokeOutlineFont() const -> bool;
-    void SetSingleStrokeOutlineFont(bool singleStrokeOutlineFont);
-
     auto GetPenWidth() const -> int;
     void SetPenWidth(int newPenWidth);
 

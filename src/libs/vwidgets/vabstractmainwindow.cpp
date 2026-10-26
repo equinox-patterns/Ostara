@@ -193,8 +193,9 @@ auto VAbstractMainWindow::ContinueFormatRewrite(const QString &currentFormatVers
 void VAbstractMainWindow::ToolBarStyle(QToolBar *bar) const
 {
     SCASSERT(bar != nullptr)
-    VAbstractApplication::VApp()->Settings()->GetToolBarStyle() ? bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon)
-                                                                : bar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    // Icons only, always: it was a preference, and the toolbars are drawn with fixed icon sizes, so the text line
+    // never brought anything but a taller bar.
+    bar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -160,18 +160,8 @@ auto OExportHolderItem::HitTestHandle(const QPointF &localPos) const -> Handle
 auto OExportHolderItem::BodyCursor() const -> QCursor
 {
     // The project's own gesture for moving something: the same pair VToolSeamAllowance shows
-    // while a piece is dragged. The Draw tools let the user refuse the glyph and keep a plain
-    // shape (VToolPointerMode::ToolIcon), and that preference is honoured here — a cursor is a
-    // promise, and the mode should not make one the rest of the application already withdrew.
-    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    const bool withGlyph =
-        settings != nullptr && settings->GetPointerMode() == VToolPointerMode::ToolIcon;
-
-    if (not withGlyph)
-    {
-        return QCursor(m_dragging ? Qt::ClosedHandCursor : Qt::OpenHandCursor);
-    }
-
+    // while a piece is dragged. It used to be gated on the pointer mode, which no longer exists.
+    //
     // Through the cache, which is also what strips an ICC profile macOS refuses — the reason
     // QPixmapFromCache exists at all.
     return QCursor(QPixmapFromCache(m_dragging ? cursorArrowCloseHand : cursorArrowOpenHand), 1, 1);

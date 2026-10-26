@@ -984,7 +984,7 @@ auto VApplication::GlobalCurveApproximationScale() -> qreal
             return scale;
         }
     }
-    return Settings()->GetCurveApproximationScale();
+    return defGlobalCurveApproximationScale;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

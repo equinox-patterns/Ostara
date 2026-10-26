@@ -24,47 +24,36 @@
       <widget class="QListWidget" name="contentsWidget">
        <property name="minimumSize">
         <size>
-         <width>128</width>
+         <width>180</width>
          <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>128</width>
+         <width>180</width>
          <height>16777215</height>
         </size>
        </property>
-       <property name="iconSize">
-        <size>
-         <width>96</width>
-         <height>84</height>
-        </size>
-       </property>
        <property name="textElideMode">
-        <enum>Qt::ElideMiddle</enum>
+        <enum>Qt::ElideNone</enum>
        </property>
        <property name="movement">
         <enum>QListView::Static</enum>
-       </property>
-       <property name="spacing">
-        <number>12</number>
-       </property>
-       <property name="viewMode">
-        <enum>QListView::IconMode</enum>
        </property>
        <property name="currentRow">
         <number>0</number>
        </property>
        <item>
         <property name="text">
-         <string>Configuration</string>
+         <string>General</string>
         </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
+        <property name="flags">
+         <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
         </property>
-        <property name="icon">
-         <iconset resource="../../../libs/vmisc/share/resources/icon.qrc">
-          <normaloff>:/icon/config.png</normaloff>:/icon/config.png</iconset>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shortcuts</string>
         </property>
         <property name="flags">
          <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
@@ -73,43 +62,6 @@
        <item>
         <property name="text">
          <string>Pattern</string>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../libs/vmisc/share/resources/icon.qrc">
-          <normaloff>:/icon/pattern_config.png</normaloff>:/icon/pattern_config.png</iconset>
-        </property>
-        <property name="flags">
-         <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Paths</string>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../libs/vmisc/share/resources/icon.qrc">
-          <normaloff>:/icon/path_config.png</normaloff>:/icon/path_config.png</iconset>
-        </property>
-        <property name="flags">
-         <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Label Appearance</string>
-        </property>
-        <property name="textAlignment">
-         <set>AlignCenter</set>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../libs/vmisc/share/resources/icon.qrc">
-          <normaloff>:/icon/pattern_config.png</normaloff>:/icon/pattern_config.png</iconset>
         </property>
         <property name="flags">
          <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>

@@ -60,28 +60,6 @@ using QTextCodec = VTextCodec;
 
 using namespace Qt::Literals::StringLiterals;
 
-const int VCommonSettings::defaultScrollingDuration = 300;
-const int VCommonSettings::scrollingDurationMin = 100;
-const int VCommonSettings::scrollingDurationMax = 1000;
-
-const int VCommonSettings::defaultScrollingUpdateInterval = 30;
-const int VCommonSettings::scrollingUpdateIntervalMin = 10;
-const int VCommonSettings::scrollingUpdateIntervalMax = 100;
-
-const qreal VCommonSettings::defaultSensorMouseScale = 2.0;
-const qreal VCommonSettings::sensorMouseScaleMin = 1.0;
-const qreal VCommonSettings::sensorMouseScaleMax = 10.0;
-
-const qreal VCommonSettings::defaultWheelMouseScale = 45.0;
-const qreal VCommonSettings::wheelMouseScaleMin = 1.0;
-const qreal VCommonSettings::wheelMouseScaleMax = 100.0;
-
-const qreal VCommonSettings::defaultScrollingAcceleration = 1.3;
-const qreal VCommonSettings::scrollingAccelerationMin = 1.0;
-const qreal VCommonSettings::scrollingAccelerationMax = 10.0;
-
-const QString VCommonSettings::defaultPieceLabelLocale = QStringLiteral("default");
-
 #ifndef QPRINTENGINE_H
 Q_DECLARE_METATYPE(QMarginsF) // NOLINT
 #endif
@@ -123,13 +101,11 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGradedSizeStylesShowInCanvas,
                           ("graded/showSizeStylesInCanvas"_L1))                                                // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingShowActiveLayerOnCanvas,
                           ("draw/showActiveLayerOnCanvas"_L1))                                                 // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationOsSeparator, ("configuration/osSeparator"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveState, ("configuration/autosave/state"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAutosaveTime, ("configuration/autosave/time"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationLocale, ("configuration/locale"_L1))              // NOLINT
 // NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationPieceLabelLocale, ("configuration/pieceLabelLocale"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingKnownMeasurementsId, ("configuration/knownMeasurementsId"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationUnit, ("configuration/unit"_L1)) // NOLINT
@@ -143,54 +119,28 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationConfirmFormatRewrit
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationAskRegenerateOutputs,
                           ("configuration/askRegenerateOutputs"_L1))
 // NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationToolBarStyle, ("configuration/tool_bar_style"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationToolboxIconSizeSmall,
-                          ("configuration/toolboxIconSizeSmall"_L1))
-// NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationFreeCurveMode, ("configuration/freeCurveMode"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationDoubleClickZoomFitBestCurrentPP,
-                          ("configuration/doubleClickZoomFitBestCurrentPP"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationInteractiveTools, ("configuration/interactiveTools"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationDontUseNativeDialog,
                           ("configuration/dontUseNativeDialog"_L1))
 
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsConfigurationCrashEmail, ("configuration/crashEmail"_L1)) // NOLINT
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsConfigurationSendCrashReport, ("configuration/sendCrashReport"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsConfigurationAskSendCrashReport,
-                          ("configuration/askSendCrashReport"_L1))
 
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternUndo, ("pattern/undo"_L1))                         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternForceFlipping, ("pattern/forceFlipping"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSewLineOnDrawing, ("pattern/sewLineOnDrawing"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternHideMainPath, ("pattern/hideMainPath"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDoublePassmark, ("pattern/doublePassmark"_L1))            // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternDefaultSeamAllowance, ("pattern/defaultSeamAllowance"_L1))
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFont, ("pattern/labelFont"_L1))       // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelSVGFont, ("pattern/labelSVGFont"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCartoucheDefaultTemplate, ("cartouche/defaultTemplate"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPdfDefaultTemplate, ("pdfTemplate/defaultTemplate"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCoverPageDefaultTemplate, ("coverPage/defaultTemplate"_L1)) // NOLINT
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleStrokeOutlineFont, ("pattern/singleStrokeOutlineFont"_L1))
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternSingleLineFonts, ("pattern/singleLineFonts"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLineWidth, ("pattern/lineWidth"_L1))             // NOLINT
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternCurveApproximationScale, ("pattern/curveApproximationScale"_L1))
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowCurveDetails, ("pattern/showCurveDetails"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowSegmentLabels, ("pattern/showSegmentLabels"_L1)) // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternPieceShowMainPath, ("pattern/pieceShowMainPath"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternLabelFontSize, ("pattern/labelFontSize"_L1))           // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowAllLabels, ("pattern/showAllLabels"_L1))                 // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternShowAccuracyRadius, ("pattern/showAccuracyRadius"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternUseOpenGLRender, ("pattern/useOpenGLRender"_L1))       // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternGraphicalOutput, ("pattern/graphicalOutput"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsPatternTranslateFormula, ("pattern/translateFormula"_L1))    // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralRecentFileList, ("recentFileList"_L1))                 // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingGeneralRecentMeasurementFileList, ("recentMeasurementFileList"_L1)) // NOLINT
@@ -216,11 +166,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVWithHeader, ("csv/withHeader"
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVCodec, ("csv/withCodec"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVSeparator, ("csv/withSeparator"_L1)) // NOLINT
 
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingDuration, ("scrolling/duration"_L1))                 // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingUpdateInterval, ("scrolling/updateInterval"_L1))     // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingSensorMouseScale, ("scrolling/sensorMouseScale"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingWheelMouseScale, ("scrolling/wheelMouseScale"_L1))   // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingScrollingAcceleration, ("scrolling/acceleration"_L1))         // NOLINT
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingTiledPDFMargins, ("tiledPDF/margins"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingTiledPDFOrientation, ("tiledPDF/orientation"_L1)) // NOLINT
@@ -228,12 +173,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingTiledPDFOrientation, ("tiledPDF/
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingWatermarkEditorSize, ("watermarkEditorSize"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingWatermarkCustomColors, ("watermarkCustomColors"_L1)) // NOLINT
 
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsStatistictAskCollect, ("askCollect"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsStatistictCollect, ("collect"_L1))       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingsStatistictClientID, ("clientID"_L1))     // NOLINT
 
-// Reading settings file is very expensive, cache curve approximation to speed up getting value
-qreal curveApproximationCached = -1;        // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 Q_GLOBAL_STATIC(QString, localeCached)      // NOLINT
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -266,11 +207,6 @@ auto SystemPreferredLocale() -> QString
 qreal lineWidthCached = 0;                  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int labelFontSizeCached = 0;                // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int pieceShowMainPath = -1;                 // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-int scrollingDurationCached = -1;           // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-int scrollingUpdateIntervalCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-qreal scrollingSensorMouseScaleCached = -1; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-qreal scrollingWheelMouseScaleCached = -1;  // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
-qreal scrollingAccelerationCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int patternTranslateFormulaCached = -1;     // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 int themeModeCached = -1;                   // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
@@ -985,13 +921,8 @@ void VCommonSettings::SetShowActiveLayerOnCanvas(const bool &value) const
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetOsSeparator() const -> bool
 {
-    return value(*settingConfigurationOsSeparator, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetOsSeparator(const bool &value)
-{
-    setValue(*settingConfigurationOsSeparator, value);
+    // Frozen with the preferences page: the OS separator is the only behaviour kept.
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1053,17 +984,6 @@ void VCommonSettings::SetLocale(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetPieceLabelLocale() const -> QString
-{
-    return value(*settingConfigurationPieceLabelLocale, VCommonSettings::defaultPieceLabelLocale).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPieceLabelLocale(const QString &value)
-{
-    setValue(*settingConfigurationPieceLabelLocale, value);
-}
-
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetKnownMeasurementsId() const -> QUuid
 {
@@ -1130,30 +1050,6 @@ void VCommonSettings::SetAskRegenerateOutputs(const bool &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetToolBarStyle() const -> bool
-{
-    return value(*settingConfigurationToolBarStyle, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetToolBarStyle(const bool &value)
-{
-    setValue(*settingConfigurationToolBarStyle, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetToolboxIconSizeSmall() const -> bool
-{
-    return value(*settingConfigurationToolboxIconSizeSmall, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetToolboxIconSizeSmall(bool value)
-{
-    setValue(*settingConfigurationToolboxIconSizeSmall, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetThemeMode() const -> VThemeMode
 {
     if (themeModeCached < 0)
@@ -1185,50 +1081,6 @@ auto VCommonSettings::IsFreeCurveMode() const -> bool
 void VCommonSettings::SetFreeCurveMode(bool value)
 {
     setValue(*settingConfigurationFreeCurveMode, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsDoubleClickZoomFitBestCurrentPP() const -> bool
-{
-    return value(*settingConfigurationDoubleClickZoomFitBestCurrentPP, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetDoubleClickZoomFitBestCurrentPP(bool value)
-{
-    setValue(*settingConfigurationDoubleClickZoomFitBestCurrentPP, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsInteractiveTools() const -> bool
-{
-    return value(*settingConfigurationInteractiveTools, true).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetInteractiveTools(bool value)
-{
-    setValue(*settingConfigurationInteractiveTools, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetUndoCount() const -> int
-{
-    bool ok = false;
-    int val = value(*settingPatternUndo, 0).toInt(&ok);
-    if (not ok)
-    {
-        qDebug() << "Could not convert value" << value(*settingPatternUndo, 0)
-                 << "to int. Return default value for undo counts 0 (no limit).";
-        val = 0;
-    }
-    return val;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetUndoCount(const int &value)
-{
-    setValue(*settingPatternUndo, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1645,30 +1497,6 @@ auto VCommonSettings::GetDefaultSeamAllowance() -> double
     return val;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLabelFont() const -> QFont
-{
-    return FontFromString(value(*settingPatternLabelFont, QApplication::font().toString()).toString());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLabelFont(const QFont &f)
-{
-    setValue(*settingPatternLabelFont, f.toString());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLabelSVGFont() const -> QString
-{
-    return value(*settingPatternLabelSVGFont, QString()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLabelSVGFont(const QString &family)
-{
-    setValue(*settingPatternLabelSVGFont, family);
-}
-
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetDefaultCartoucheTemplate() const -> QString
@@ -1709,30 +1537,6 @@ auto VCommonSettings::GetDefaultCoverPageTemplate() const -> QString
 void VCommonSettings::SetDefaultCoverPageTemplate(const QString &name)
 {
     setValue(*settingCoverPageDefaultTemplate, name);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetSingleStrokeOutlineFont() const -> bool
-{
-    return value(*settingPatternSingleStrokeOutlineFont, false).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetSingleStrokeOutlineFont(bool value)
-{
-    setValue(*settingPatternSingleStrokeOutlineFont, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetSingleLineFonts() const -> bool
-{
-    return value(*settingPatternSingleLineFonts, false).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetSingleLineFonts(bool value)
-{
-    setValue(*settingPatternSingleLineFonts, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1796,36 +1600,6 @@ void VCommonSettings::SetShowAccuracyRadius(bool value)
     setValue(*settingPatternShowAccuracyRadius, value);
 }
 
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetCurveApproximationScale() const -> qreal
-{
-    if (curveApproximationCached < 0)
-    {
-        bool ok = false;
-        const qreal scale = value(*settingPatternCurveApproximationScale, defCurveApproximationScale).toDouble(&ok);
-        if (ok && scale >= minCurveApproximationScale && scale <= maxCurveApproximationScale)
-        {
-            curveApproximationCached = scale;
-        }
-        else
-        {
-            curveApproximationCached = defCurveApproximationScale;
-        }
-    }
-
-    return curveApproximationCached;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetCurveApproximationScale(qreal value)
-{
-    if (value >= minCurveApproximationScale && value <= maxCurveApproximationScale)
-    {
-        setValue(*settingPatternCurveApproximationScale, value);
-        curveApproximationCached = value;
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::IsShowCurveDetails() const -> bool
@@ -1924,121 +1698,6 @@ auto VCommonSettings::WidthBoldLine() const -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetScrollingDuration() const -> int
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return GetCachedValue(settings, scrollingDurationCached, *settingScrollingDuration, defaultScrollingDuration,
-                          scrollingDurationMin, scrollingDurationMax);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetScrollingDuration(int duration) const
-{
-    scrollingDurationCached = qBound(scrollingDurationMin, duration, scrollingDurationMax);
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingScrollingDuration, scrollingDurationCached);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetScrollingUpdateInterval() const -> int
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return GetCachedValue(settings, scrollingUpdateIntervalCached, *settingScrollingUpdateInterval,
-                          defaultScrollingUpdateInterval, scrollingUpdateIntervalMin, scrollingUpdateIntervalMax);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetScrollingUpdateInterval(int updateInterval) const
-{
-    scrollingUpdateIntervalCached = qBound(scrollingUpdateIntervalMin, updateInterval, scrollingUpdateIntervalMax);
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingScrollingUpdateInterval, scrollingUpdateIntervalCached);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetSensorMouseScale() const -> qreal
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return GetCachedValue(settings, scrollingSensorMouseScaleCached, *settingScrollingSensorMouseScale,
-                          defaultSensorMouseScale, sensorMouseScaleMin, sensorMouseScaleMax);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetSensorMouseScale(qreal scale) const
-{
-    scrollingSensorMouseScaleCached = qBound(sensorMouseScaleMin, scale, sensorMouseScaleMax);
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingScrollingSensorMouseScale, scrollingSensorMouseScaleCached);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetWheelMouseScale() const -> qreal
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return GetCachedValue(settings, scrollingWheelMouseScaleCached, *settingScrollingWheelMouseScale,
-                          defaultWheelMouseScale, wheelMouseScaleMin, wheelMouseScaleMax);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetWheelMouseScale(qreal scale) const
-{
-    scrollingWheelMouseScaleCached = qBound(wheelMouseScaleMin, scale, wheelMouseScaleMax);
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingScrollingWheelMouseScale, scrollingWheelMouseScaleCached);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetScrollingAcceleration() const -> qreal
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return GetCachedValue(settings, scrollingAccelerationCached, *settingScrollingAcceleration,
-                          defaultScrollingAcceleration, scrollingAccelerationMin, scrollingAccelerationMax);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetScrollingAcceleration(qreal acceleration) const
-{
-    scrollingAccelerationCached = qBound(scrollingAccelerationMin, acceleration, scrollingAccelerationMax);
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingScrollingAcceleration, scrollingAccelerationCached);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsOpenGLRender() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingPatternUseOpenGLRender, 0).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetOpenGLRender(bool value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPatternUseOpenGLRender, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetGraphicalOutput() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingPatternGraphicalOutput, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetGraphicalOutput(const bool &value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPatternGraphicalOutput, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief GetTiledPDFMargins returns the tiled pdf margins in the given unit. When the setting is
  * called for the first time, the 4 default margins are 10mm.
@@ -2095,7 +1754,7 @@ void VCommonSettings::SetWatermarkEditorSize(const QSize &sz)
 auto VCommonSettings::GetWatermarkCustomColors() const -> QVector<QColor>
 {
     QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    QStringList const colors = settings.value(*settingPatternGraphicalOutput, 1).toStringList();
+    QStringList const colors = settings.value(*settingWatermarkCustomColors).toStringList();
 
     QVector<QColor> customColors;
     customColors.reserve(colors.size());
@@ -2136,36 +1795,6 @@ void VCommonSettings::SetWatermarkCustomColors(QVector<QColor> colors) const
     }
 
     settings.setValue(*settingWatermarkCustomColors, customColors);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsAskCollectStatistic() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingsStatistictAskCollect, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetAskCollectStatistic(bool value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingsStatistictAskCollect, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsCollectStatistic() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingsStatistictCollect, 0).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetCollectStatistic(bool value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingsStatistictCollect, value);
     settings.sync();
 }
 
@@ -2231,47 +1860,3 @@ void VCommonSettings::RemoveActionShortcuts(const QString &name) const
     settings.sync();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetCrashEmail() const -> QString
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingsConfigurationCrashEmail, QString()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetCrashEmail(const QString &value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingsConfigurationCrashEmail, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsSendCrashReport() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingsConfigurationSendCrashReport, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SeSendCrashReport(bool value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingsConfigurationSendCrashReport, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsAskSendCrashReport() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingsConfigurationAskSendCrashReport, 1).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetAskSendCrashReport(bool value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingsConfigurationAskSendCrashReport, value);
-    settings.sync();
-}

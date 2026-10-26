@@ -153,8 +153,6 @@ public:
 
     void SetAntialiasing(bool value);
 
-    auto IsOpenGLRender() const -> bool;
-
 signals:
     /**
      * @brief MouseRelease help catch mouse release event.
@@ -181,9 +179,8 @@ public slots:
 
     /// Show @p text in the top-left corner of the view, over the drawing. An empty string clears it.
     ///
-    /// Drawn by drawForeground in screen coordinates rather than put in a child widget: the view replaces its
-    /// own viewport with a QOpenGLWidget when OpenGL rendering is on, and a widget parented to the old one is
-    /// destroyed with it.
+    /// Drawn by drawForeground in screen coordinates rather than put in a child widget: a widget parented to the
+    /// viewport would be destroyed whenever the viewport is replaced.
     void SetCornerLabel(const QString &text);
 
     /// @brief ZoomFitBest, framed with @p marginRatio of the content left clear on each side.

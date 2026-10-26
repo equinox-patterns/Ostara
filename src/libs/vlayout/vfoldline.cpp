@@ -27,14 +27,10 @@
  *************************************************************************/
 #include "vfoldline.h"
 #include "otextwrap.h"
-#include "../vformat/vsinglelineoutlinechar.h"
 #include "../vgeometry/vgeometrydef.h"
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
 #include "vexception.h"
-#include "../vmisc/svgfont/svgdef.h"
-#include "../vmisc/svgfont/vsvgfont.h"
-#include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -104,29 +100,8 @@ auto VFoldLine::Create(const VPiece &piece, const VContainer *data, VAbstractPat
                                                    : piece.SeamMirrorLine(data);
     VFoldLine fLine(foldLine, piece.GetFoldLineType());
 
-    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    fLine.SetLabelSvgFontSize(static_cast<unsigned int>(settings->GetFoldLineLabelFontPixelSize()));
     fLine.SetLabel(ResolvedLabel(piece, doc));
-
-    {
-        QFont font(settings->GetFoldLineLabelFontFamily());
-        // **A face NAME, never a number** (decided on 22-09-2026). A settings file written
-        // before the face was named holds the weight instead, and that is what the fallback reads —
-        // the two cannot disagree, because a number is resolved exactly as the editor's Weight control
-        // resolves it.
-        const QString face = settings->GetFoldLineLabelFontFace();
-        if (!face.isEmpty())
-        {
-            font.setStyleName(face);
-        }
-        else
-        {
-            font.setWeight(settings->GetFoldLineLabelFontWeight());
-        }
-        font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
-        fLine.SetOutlineFont(font);
-        fLine.SetSvgFont(settings->GetLabelSVGFont());
-    }
+    fLine.SetOutlineFont(DefaultLabelFont());
 
     fLine.ApplyManualFoldValues(piece, data);
 
@@ -220,18 +195,6 @@ auto VFoldLine::OutlineFont() const -> QFont
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::SvgFont() const -> QString
-{
-    return m_svgFont;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::LabelSvgFontSize() const -> unsigned int
-{
-    return m_svgFontSize;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VFoldLine::TypeHasLabel(FoldLineType type) -> bool
 {
     return type == FoldLineType::TwoArrowsTextAbove;
@@ -316,12 +279,6 @@ void VFoldLine::SetLabel(const QString &newLabel)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VFoldLine::SetLabelSvgFontSize(unsigned int newFontSize)
-{
-    m_svgFontSize = qMax(newFontSize, static_cast<unsigned int>(VCommonSettings::MinPieceLabelFontPointSize()));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VFoldLine::SetLabelFontItalic(bool newItalic)
 {
     m_italic = newItalic;
@@ -361,12 +318,6 @@ void VFoldLine::SetHorizontallyFlipped(bool value)
 void VFoldLine::SetOutlineFont(const QFont &font)
 {
     m_outlineFont = font;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VFoldLine::SetSvgFont(const QString &font)
-{
-    m_svgFont = font;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -618,10 +569,34 @@ auto VFoldLine::LabelLineCount() const -> vsizetype
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VFoldLine::DefaultLabelFont() -> QFont
+{
+    const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+
+    QFont font(settings->GetFoldLineLabelFontFamily());
+    // **A face NAME, never a number** (decided on 22-09-2026). A settings file written before the face
+    // was named holds the weight instead, and that is what the fallback reads — the two cannot
+    // disagree, because a number is resolved exactly as the editor's Weight control resolves it.
+    const QString face = settings->GetFoldLineLabelFontFace();
+    if (!face.isEmpty())
+    {
+        font.setStyleName(face);
+    }
+    else
+    {
+        font.setWeight(settings->GetFoldLineLabelFontWeight());
+    }
+    font.setPixelSize(settings->GetFoldLineLabelFontPixelSize());
+    return font;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VFoldLine::DefaultFoldLineLabel() -> QString
 {
-    QSharedPointer<VTranslator> const phTr = VAbstractApplication::VApp()->GetPlaceholderTranslator();
-    return phTr->translate("FoldLine", QT_TRANSLATE_NOOP("FoldLine", "Cut On Fold"));
+    // The UI language, like every other string. This one used to follow a "piece label language" of its own,
+    // which translated nothing but this line, while OFoldLineLabelBuilder translated the same sentence with the
+    // application translator — the same caption could come out in two languages depending on who drew it.
+    return QCoreApplication::translate("FoldLine", QT_TRANSLATE_NOOP("FoldLine", "Cut On Fold"));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -649,14 +624,7 @@ auto VFoldLine::FoldLineTwoArrowsTextAbovePath() const -> QVector<QPainterPath>
     QVector<QPainterPath> shape;
     shape.append(TwoArrowsPath(data.arrowsWidth, data.arrowsHeight));
 
-    if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings(); settings->GetSingleLineFonts())
-    {
-        shape.append(SVGFontLabel(data.base, data.labelWidth, data.labelHeight));
-    }
-    else
-    {
-        shape.append(OutlineFontLabel(data.base, data.labelWidth, data.labelHeight));
-    }
+    shape.append(OutlineFontLabel(data.base, data.labelWidth));
 
     return shape;
 }
@@ -711,7 +679,7 @@ auto VFoldLine::FoldLineLabel() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width, qreal textHeight) const -> QPainterPath
+auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width) const -> QPainterPath
 {
     if (base.isNull())
     {
@@ -767,185 +735,22 @@ auto VFoldLine::OutlineFontLabel(const QLineF &base, qreal width, qreal textHeig
     const qreal lineHeight = fm.height();
     const auto count = static_cast<vsizetype>(lines.size());
 
-    if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings();
-        settings->GetSingleStrokeOutlineFont())
-    {
-        VSingleLineOutlineChar const corrector(font);
-        if (!corrector.IsPopulated())
-        {
-            corrector.LoadCorrections(settings->GetPathFontCorrections());
-        }
-
-        for (vsizetype i = 0; i < count; ++i)
-        {
-            const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
-            int w = 0;
-            for (auto c : std::as_const(lines.at(i)))
-            {
-                labelPath.addPath(corrector.DrawChar(w, static_cast<qreal>(fm.ascent()) + dy, c));
-                w += fm.horizontalAdvance(c);
-            }
-        }
-
-        QTransform matrix;
-
-        if (m_verticallyFlipped != m_horizontallyFlipped)
-        {
-            // Vertical-only and horizontal-only flips need DIFFERENT rotation offsets here, not
-            // a shared one -- see UpdateFoldLineLabel() for the full reasoning (confirmed via
-            // real side-by-side renders, not assumed) and why the scale must be outermost.
-            qreal const extraRotationDeg = m_verticallyFlipped ? 180. : 0.;
-
-            QPointF const rectCenter = labelPath.boundingRect().center();
-
-            QTransform refTransform;
-            refTransform.translate(rotationCenter.x(), rotationCenter.y());
-            refTransform.rotate(-QLineF(center, base.p1()).angle());
-            refTransform.translate(-rotationCenter.x(), -rotationCenter.y());
-            refTransform.translate(baseLine.p2().x(), baseLine.p2().y() - textHeight);
-            QPointF const refRectCenter = refTransform.map(rectCenter);
-
-            matrix.translate(refRectCenter.x(), refRectCenter.y());
-            matrix.scale(m_verticallyFlipped ? -1 : 1, m_horizontallyFlipped ? -1 : 1);
-            matrix.rotate(-QLineF(center, base.p1()).angle() + extraRotationDeg);
-            matrix.translate(-rectCenter.x(), -rectCenter.y());
-        }
-        else
-        {
-            matrix.translate(rotationCenter.x(), rotationCenter.y());
-            matrix.rotate(-QLineF(center, base.p1()).angle());
-            matrix.translate(-rotationCenter.x(), -rotationCenter.y());
-            matrix.translate(baseLine.p2().x(), baseLine.p2().y() - textHeight);
-        }
-
-        matrix *= m_matrix;
-        labelPath = matrix.map(labelPath);
-    }
-    else
-    {
-        Swap(baseLine);
-        baseLine.setAngle(baseLine.angle() + 90);
-        baseLine.setLength(fm.descent() + CmToPixel(0.2));
-
-        for (vsizetype i = 0; i < count; ++i)
-        {
-            const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
-            labelPath.addText(QPointF(0, dy), font, lines.at(i));
-        }
-
-        QTransform matrix;
-
-        if (m_verticallyFlipped != m_horizontallyFlipped)
-        {
-            // See the single-stroke branch above for why the scale must be outermost, the
-            // rotation offset differs by flip axis, and the anchor must be the glyph's own
-            // bounding-rect center mapped through the non-flipped transform.
-            qreal const extraRotationDeg = m_verticallyFlipped ? 180. : 0.;
-
-            QPointF const rectCenter = labelPath.boundingRect().center();
-
-            QTransform refTransform;
-            refTransform.translate(rotationCenter.x(), rotationCenter.y());
-            refTransform.rotate(-QLineF(center, base.p1()).angle());
-            refTransform.translate(-rotationCenter.x(), -rotationCenter.y());
-            refTransform.translate(baseLine.p2().x(), baseLine.p2().y());
-            QPointF const refRectCenter = refTransform.map(rectCenter);
-
-            matrix.translate(refRectCenter.x(), refRectCenter.y());
-            matrix.scale(m_verticallyFlipped ? -1 : 1, m_horizontallyFlipped ? -1 : 1);
-            matrix.rotate(-QLineF(center, base.p1()).angle() + extraRotationDeg);
-            matrix.translate(-rectCenter.x(), -rectCenter.y());
-        }
-        else
-        {
-            matrix.translate(rotationCenter.x(), rotationCenter.y());
-            matrix.rotate(-QLineF(center, base.p1()).angle());
-            matrix.translate(-rotationCenter.x(), -rotationCenter.y());
-            matrix.translate(baseLine.p2().x(), baseLine.p2().y());
-        }
-
-        matrix *= m_matrix;
-        labelPath = matrix.map(labelPath);
-    }
-
-    return labelPath;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) const -> QPainterPath
-{
-    if (base.isNull())
-    {
-        return {};
-    }
-
-    VSvgFontEngine engine;
-    if (!LabelSVGFontEngine(engine))
-    {
-        return OutlineFontLabel(base, width, textHeight);
-    }
-
-    // Same rule as LabelPosition: the arrow height does not move the text.
-    qreal const margin = defLabelMargin;
-
-    QPointF const center = TrueCenter(base, width);
-
-    QLineF baseLine(center, base.p1());
+    Swap(baseLine);
     baseLine.setAngle(baseLine.angle() + 90);
-    baseLine.setLength(margin);
-    Swap(baseLine);
-    baseLine.setAngle(baseLine.angle() - 90 - QLineF(base.p2(), base.p1()).angle());
-    baseLine.setLength(width / 2);
-    QPointF const rotationCenter = baseLine.p1();
-    Swap(baseLine);
-    baseLine.setLength(width);
-    Swap(baseLine);
+    baseLine.setLength(fm.descent() + CmToPixel(0.2));
 
-    // Same measuring and same wrapping rule as the outline path — this one just draws with the
-    // plotter font instead of the outline font.
-    OTextWrap::Measure const measure = OTextWrap::EngineMeasure(engine, 0);
-    QStringList const lines = OTextWrap::Lines(FoldLineLabel(), width, measure);
-
-    qreal blockWidth = 0;
-    for (const QString &line : lines)
-    {
-        blockWidth = qMax(blockWidth, measure.word(line));
-    }
-
-    if (m_alignment & Qt::AlignHCenter) // NOLINT(readability-implicit-bool-conversion)
-    {
-        qreal const shift = (width - blockWidth) / 2;
-        baseLine.setLength(baseLine.length() - shift);
-    }
-    else if (m_alignment & Qt::AlignRight) // NOLINT(readability-implicit-bool-conversion)
-    {
-        qreal const shift = width - blockWidth;
-        baseLine.setLength(baseLine.length() - shift);
-    }
-
-    QPainterPath labelPath;
-
-    // Same stacking rule as the outline path: the last line keeps the one-line placement.
-    const qreal lineHeight = engine.FontHeight();
-    const auto count = static_cast<vsizetype>(lines.size());
     for (vsizetype i = 0; i < count; ++i)
     {
         const qreal dy = static_cast<qreal>(i - (count - 1)) * lineHeight;
-        labelPath.addPath(engine.DrawPath(QPointF(0, dy), lines.at(i)));
+        labelPath.addText(QPointF(0, dy), font, lines.at(i));
     }
 
     QTransform matrix;
 
     if (m_verticallyFlipped != m_horizontallyFlipped)
     {
-        // See OutlineFontLabel's single-stroke branch for the full reasoning: vertical-only and
-        // horizontal-only flips need DIFFERENT rotation offsets (confirmed via real side-by-side
-        // renders, not assumed), and the correction's scale has to be applied AFTER the rotation
-        // (outermost) -- scale-before-rotate cancels m_matrix's mirror but composes to an
-        // uncontrolled, angle-dependent extra rotation instead of a fixed offset. With scale
-        // outermost, the anchor is the glyph's own bounding-rect center mapped through the
-        // non-flipped transform, which keeps the footprint exactly where the non-flipped
-        // footprint mirrors to.
+        // The scale must be outermost, the rotation offset differs by flip axis, and the anchor must be the
+        // glyph's own bounding-rect center mapped through the non-flipped transform.
         qreal const extraRotationDeg = m_verticallyFlipped ? 180. : 0.;
 
         QPointF const rectCenter = labelPath.boundingRect().center();
@@ -954,7 +759,7 @@ auto VFoldLine::SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) 
         refTransform.translate(rotationCenter.x(), rotationCenter.y());
         refTransform.rotate(-QLineF(center, base.p1()).angle());
         refTransform.translate(-rotationCenter.x(), -rotationCenter.y());
-        refTransform.translate(baseLine.p2().x(), baseLine.p2().y() - textHeight);
+        refTransform.translate(baseLine.p2().x(), baseLine.p2().y());
         QPointF const refRectCenter = refTransform.map(rectCenter);
 
         matrix.translate(refRectCenter.x(), refRectCenter.y());
@@ -967,11 +772,13 @@ auto VFoldLine::SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) 
         matrix.translate(rotationCenter.x(), rotationCenter.y());
         matrix.rotate(-QLineF(center, base.p1()).angle());
         matrix.translate(-rotationCenter.x(), -rotationCenter.y());
-        matrix.translate(baseLine.p2().x(), baseLine.p2().y() - textHeight);
+        matrix.translate(baseLine.p2().x(), baseLine.p2().y());
     }
 
     matrix *= m_matrix;
     labelPath = matrix.map(labelPath);
+
+
 
     return labelPath;
 }
@@ -979,38 +786,7 @@ auto VFoldLine::SVGFontLabel(const QLineF &base, qreal width, qreal textHeight) 
 //---------------------------------------------------------------------------------------------------------------------
 auto VFoldLine::LabelTextHeight() const -> qreal
 {
-    if (const VCommonSettings *settings = VAbstractApplication::VApp()->Settings(); settings->GetSingleLineFonts())
-    {
-        if (VSvgFontEngine engine; LabelSVGFontEngine(engine))
-        {
-            return engine.FontHeight();
-        }
-    }
-
     return QFontMetrics(LabelOutlineFont()).height();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VFoldLine::LabelSVGFontEngine(VSvgFontEngine &engine) const -> bool
-{
-    VSvgFontDatabase  const*db = VAbstractApplication::VApp()->SVGFontDatabase();
-    VSvgFontEngine const svgEngine =
-        db->FontEngine(m_svgFont, SVGFontStyle::Normal, SVGFontWeight::Normal, static_cast<int>(m_svgFontSize));
-    VSvgFont svgFont = svgEngine.Font();
-    if (!svgFont.IsValid())
-    {
-        QString const errorMsg = tr("Invalid SVG font '%1'. Fallback to outline font.").arg(svgFont.Name());
-        VAbstractApplication::VApp()->IsPedantic()
-            ? throw VException(errorMsg)
-            : qWarning() << VAbstractApplication::warningMessageSignature + errorMsg;
-        return false;
-    }
-
-    svgFont.SetBold(m_bold);
-    svgFont.SetItalic(m_italic);
-
-    engine = db->FontEngine(svgFont);
-    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

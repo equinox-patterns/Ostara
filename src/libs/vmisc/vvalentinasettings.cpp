@@ -60,19 +60,9 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Wunused-member-function")
 
 // NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationLabelLanguage, ("configuration/label_language"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationToolPointerMode, ("configuration/toolPointerMode"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingConfigurationUseToolGroups, ("configuration/useToolGroups"_L1))
-// NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingAutoRefreshPatternMessage,
                           ("configuration/autoRefreshPatternMessage"_L1))
 
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternKnownMaterials, ("pattern/knownMaterials"_L1))
-// NOLINTNEXTLINE
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternRememberMaterials, ("pattern/rememberMaterials"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternBackgroundImageDefOpacity,
                           ("pattern/backgroundImageDefOpacity"_L1))
@@ -82,7 +72,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternBoundaryTogetherWithNotch
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternUserToolColors, ("pattern/userToolColors"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternGlobalPenStyle, ("pattern/globalPenStyle"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternGlobalToolColor, ("pattern/globalToolColor"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternCollectGarbage, ("pattern/collectGarbage"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPatternAutoGoToObject, ("pattern/autoGoToObject"_L1))   // NOLINT
 
 // Dock layouts per mode (Draw / Details / Layout / Graded) — Ostara: each mode has
@@ -226,18 +215,6 @@ VValentinaSettings::VValentinaSettings(const QString &fileName, QSettings::Forma
   : VCommonSettings(fileName, format, parent)
 {
     REGISTER_META_TYPE_STREAM_OPERATORS(QMarginsF);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::GetLabelLanguage() const -> QString
-{
-    return value(*settingConfigurationLabelLanguage, QLocale().bcp47Name()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetLabelLanguage(const QString &value)
-{
-    setValue(*settingConfigurationLabelLanguage, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -396,30 +373,6 @@ auto VValentinaSettings::GetDefTextAsPaths() -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::GetKnownMaterials() const -> QStringList
-{
-    return value(*settingPatternKnownMaterials, QStringList()).toStringList();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetKnownMaterials(const QStringList &list)
-{
-    setValue(*settingPatternKnownMaterials, list);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::IsRememberPatternMaterials() const -> bool
-{
-    return value(*settingPatternRememberMaterials, true).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetRememberPatternMaterials(bool value)
-{
-    setValue(*settingPatternRememberMaterials, value);
-}
 
 // settings for the tiled PDFs
 //---------------------------------------------------------------------------------------------------------------------
@@ -902,37 +855,6 @@ void VValentinaSettings::SetBackgroundImageDefOpacity(int value)
 //---------------------------------------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::GetPointerMode() const -> VToolPointerMode
-{
-    int val = value(*settingConfigurationToolPointerMode, static_cast<int>(VToolPointerMode::ToolIcon)).toInt();
-
-    if (val < 0 || val > 2)
-    {
-        val = 0;
-    }
-
-    return static_cast<VToolPointerMode>(val);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetPointerMode(VToolPointerMode mode)
-{
-    setValue(*settingConfigurationToolPointerMode, static_cast<int>(mode));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::IsUseToolGroups() const -> bool
-{
-    return value(*settingConfigurationUseToolGroups, true).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetUseToolGroups(bool value)
-{
-    setValue(*settingConfigurationUseToolGroups, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VValentinaSettings::IsBoundaryTogetherWithNotches() const -> bool
 {
     return value(*settingPatternBoundaryTogetherWithNotches, false).toBool();
@@ -996,18 +918,6 @@ auto VValentinaSettings::GetGlobalToolColor() const -> QString
 void VValentinaSettings::SetGlobalToolColor(const QString &value)
 {
     setValue(*settingPatternGlobalToolColor, value);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VValentinaSettings::IsCollectGarbage() const -> bool
-{
-    return value(*settingPatternCollectGarbage, true).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VValentinaSettings::SetCollectGarbage(bool value)
-{
-    setValue(*settingPatternCollectGarbage, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

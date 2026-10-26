@@ -1076,24 +1076,12 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
     emit EnableItemMove(false);
     m_currentTool = m_lastUsedTool = t;
 
-    if (const VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        settings->GetPointerMode() == VToolPointerMode::ToolIcon)
-    {
-        if (cursor.isEmpty())
-        {
-            // The tool asks for the ordinary pointer: no artwork goes with it, and a cursor built from a null
-            // pixmap would be invisible rather than an arrow.
-            ui->view->viewport()->setCursor(Qt::ArrowCursor);
-        }
-        else
-        {
-            const auto resource = QStringLiteral("toolcursor");
-            QPixmap const pixmap(ResolveToolCursorResource(resource, cursor));
-            QCursor const cur(pixmap, 2, 2);
-            ui->view->viewport()->setCursor(cur);
-        }
-        ui->view->setCurrentCursorShape(); // Hack to fix problem with a cursor
-    }
+    // The pointer stays the arrow, whichever tool is active. It used to wear the tool's own artwork, behind a
+    // preference; the preference is gone, and an arrow that never changes is what it left behind. @p cursor is
+    // kept in the signature only because every caller still names its artwork — to be dropped with them.
+    Q_UNUSED(cursor)
+    ui->view->viewport()->setCursor(Qt::ArrowCursor);
+    ui->view->setCurrentCursorShape(); // Hack to fix problem with a cursor
 
     m_statusLabel->setText(toolTip);
     ui->view->setShowToolOptions(false);
@@ -1253,6 +1241,7 @@ template <typename Dialog, typename Func, typename Func2>
 void MainWindow::SetToolButtonWithApply(bool checked, Tool t, const QString &cursor, const QString &toolTip,
                                         Func closeDialogSlot, Func2 applyDialogSlot)
 {
+    Q_UNUSED(cursor)
     if (checked)
     {
         SetToolButton<Dialog>(checked, t, cursor, toolTip, closeDialogSlot);

@@ -275,10 +275,6 @@ void DialogPointFromCircleAndTangent::ChosenObject(quint32 id, const SceneObject
                     point->RefreshGeometry();
                     prepare = true;
 
-                    if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-                    {
-                        FinishCreating();
-                    }
                 }
                 break;
             default:

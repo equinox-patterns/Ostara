@@ -322,19 +322,11 @@ void DialogPointOfIntersectionCircles::ChosenObject(quint32 id, const SceneObjec
                 {
                     point->VisualMode(id);
 
-                    if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-                    {
-                        m_stage = 2;
-                        emit ToolTip(tr("Select second circle center"));
-                    }
-                    else
-                    {
-                        ++m_stage;
-                        auto *window =
-                            qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
-                        SCASSERT(window != nullptr)
-                        connect(vis.data(), &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
-                    }
+                    ++m_stage;
+                    auto *window =
+                        qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
+                    SCASSERT(window != nullptr)
+                    connect(vis.data(), &Visualization::ToolTip, window, &VAbstractMainWindow::ShowToolTip);
                 }
                 break;
             case 2:
@@ -346,11 +338,6 @@ void DialogPointOfIntersectionCircles::ChosenObject(quint32 id, const SceneObjec
                     ++m_stage;
                     prepare = true;
 
-                    if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-                    {
-                        FinishCreating();
-                        return;
-                    }
                 }
                 break;
             default:

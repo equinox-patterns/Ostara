@@ -525,8 +525,6 @@ void VLayoutExporter::ExportToHPGL(const QVector<VLayoutPiece> &details) const
     generator.SetXScale(m_xScale);
     generator.SetYScale(m_yScale);
     generator.SetShowGrainline(m_showGrainline);
-    generator.SetSingleLineFont(m_singleLineFont);
-    generator.SetSingleStrokeOutlineFont(m_singleStrokeOutlineFont);
     generator.SetPenWidth(m_penWidth);
     generator.SetBoundaryTogetherWithNotches(m_togetherWithNotches);
     if (not generator.ExportToHPGL(details))
@@ -546,8 +544,6 @@ void VLayoutExporter::ExportToHPGL2(const QVector<VLayoutPiece> &details) const
     generator.SetXScale(m_xScale);
     generator.SetYScale(m_yScale);
     generator.SetShowGrainline(m_showGrainline);
-    generator.SetSingleLineFont(m_singleLineFont);
-    generator.SetSingleStrokeOutlineFont(m_singleStrokeOutlineFont);
     generator.SetPenWidth(m_penWidth);
     generator.SetBoundaryTogetherWithNotches(m_togetherWithNotches);
     if (not generator.ExportToHPGL2(details))

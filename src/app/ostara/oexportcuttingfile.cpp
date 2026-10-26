@@ -384,15 +384,11 @@ auto OExportCuttingFile::Write(const QString &path, const OExportOutput &output,
             break;
         case LayoutExportFormats::HPGL:
         case LayoutExportFormats::HPGL_PLT:
-            exporter.SetSingleLineFont(settings->GetSingleLineFonts());
-            exporter.SetSingleStrokeOutlineFont(settings->GetSingleStrokeOutlineFont());
             exporter.SetPenWidth(qCeil(settings->WidthHairLine()));
             exporter.ExportToHPGL(pieces);
             break;
         case LayoutExportFormats::HPGL2:
         case LayoutExportFormats::HPGL2_PLT:
-            exporter.SetSingleLineFont(settings->GetSingleLineFonts());
-            exporter.SetSingleStrokeOutlineFont(settings->GetSingleStrokeOutlineFont());
             exporter.SetPenWidth(qCeil(settings->WidthHairLine()));
             exporter.ExportToHPGL2(pieces);
             break;

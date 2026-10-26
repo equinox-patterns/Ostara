@@ -339,7 +339,7 @@ void DialogAlongLine::ChosenSecondPoint(quint32 id, const QString &toolTip)
 
         prepare = true;
 
-        if (m_buildMidpoint || not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
+        if (m_buildMidpoint)
         {
             FinishCreating();
         }

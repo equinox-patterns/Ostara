@@ -46,12 +46,14 @@ class OInfoBlockWindow : public QMainWindow
 public:
     explicit OInfoBlockWindow(QWidget *parent = nullptr);
 
-    /** @brief Open the editor on the given page (0..4), see OInfoBlockEditor::OpenOnPage. */
+    /** @brief Open the editor on the given page (0..7), see OInfoBlockEditor::OpenOnPage. */
     void OpenOnPage(int page);
 
 signals:
     /** @brief Relayed from the editor when a template is saved (refresh the canvas blocks). */
     void TemplateSaved();
+    /** @brief Relayed from the editor when the fold line text page wrote its preferences. */
+    void FoldLineTextChanged();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

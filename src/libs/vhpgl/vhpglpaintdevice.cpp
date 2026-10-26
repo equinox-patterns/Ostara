@@ -54,42 +54,6 @@ void VHPGLPaintDevice::SetFileName(const QString &filename)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VHPGLPaintDevice::GetSingleLineFont() const -> bool
-{
-    return m_engine->GetSingleLineFont();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLPaintDevice::SetSingleLineFont(bool singleLineFont)
-{
-    if (m_engine->isActive())
-    {
-        qWarning(
-            "VHPGLPaintDevice::SetSingleLineFont(), cannot set single line font mode while HPGL is being generated");
-        return;
-    }
-    m_engine->SetSingleLineFont(singleLineFont);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VHPGLPaintDevice::GetSingleStrokeOutlineFont() const -> bool
-{
-    return m_engine->GetSingleStrokeOutlineFont();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VHPGLPaintDevice::SetSingleStrokeOutlineFont(bool singleStrokeOutlineFont)
-{
-    if (m_engine->isActive())
-    {
-        qWarning("VHPGLPaintDevice::SetSingleLineFont(), cannot set single stroke outline font mode while HPGL is "
-                 "being generated");
-        return;
-    }
-    m_engine->SetSingleStrokeOutlineFont(singleStrokeOutlineFont);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VHPGLPaintDevice::GetPenWidth() const -> int
 {
     return m_engine->GetPenWidth();

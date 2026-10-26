@@ -30,15 +30,16 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
-#include "configpages/preferencesappearancepage.h"
-#include "configpages/preferencesconfigurationpage.h"
-#include "configpages/preferencespathpage.h"
+#include "configpages/preferencesgeneralpage.h"
 #include "configpages/preferencespatternpage.h"
+#include "configpages/preferencesshortcutspage.h"
 #include "ui_dialogpreferences.h"
 
 #include <QApplication>
+#include <QGuiApplication>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QScreen>
 #include <QShowEvent>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -50,10 +51,9 @@ DialogPreferences::DialogPreferences(QWidget *parent)
     // changeEvent() would dereference ui->buttonBox while it is still indeterminate (upstream 4703e19e6).
     ui->setupUi(this);
 
-    m_configurePage = new PreferencesConfigurationPage;
+    m_generalPage = new PreferencesGeneralPage;
+    m_shortcutsPage = new PreferencesShortcutsPage;
     m_patternPage = new PreferencesPatternPage;
-    m_pathPage = new PreferencesPathPage;
-    m_appearancePage = new PreferencesAppearancePage;
 
 #if defined(Q_OS_MAC)
     setWindowFlags(Qt::Window);
@@ -69,10 +69,9 @@ DialogPreferences::DialogPreferences(QWidget *parent)
     SCASSERT(bApply != nullptr)
     connect(bApply, &QPushButton::clicked, this, &DialogPreferences::Apply);
 
-    ui->pagesWidget->insertWidget(0, m_configurePage);
-    ui->pagesWidget->insertWidget(1, m_patternPage);
-    ui->pagesWidget->insertWidget(2, m_pathPage);
-    ui->pagesWidget->insertWidget(3, m_appearancePage);
+    ui->pagesWidget->insertWidget(0, m_generalPage);
+    ui->pagesWidget->insertWidget(1, m_shortcutsPage);
+    ui->pagesWidget->insertWidget(2, m_patternPage);
 
     connect(ui->contentsWidget, &QListWidget::currentItemChanged, this, &DialogPreferences::PageChanged);
     ui->pagesWidget->setCurrentIndex(0);
@@ -102,6 +101,27 @@ void DialogPreferences::showEvent(QShowEvent *event)
     if (QSize const sz = VAbstractApplication::VApp()->Settings()->GetPreferenceDialogSize(); not sz.isEmpty())
     {
         resize(sz);
+    }
+
+    // **Centred on the window that opened it.** Only the size is remembered (resizeEvent), never the
+    // position: a dialog reopened where it was last left can land over nothing, or on another screen,
+    // and the pattern being worked on is always under the main window.
+    if (QWidget *const owner = parentWidget() != nullptr ? parentWidget()->window() : nullptr)
+    {
+        QRect target(QPoint(), size());
+        target.moveCenter(owner->frameGeometry().center());
+
+        // Kept on the screen that holds the owner: a dialog taller than the screen would otherwise be
+        // pushed off the top, and its buttons with it.
+        if (QScreen const *const screen = QGuiApplication::screenAt(owner->frameGeometry().center());
+            screen != nullptr)
+        {
+            const QRect available = screen->availableGeometry();
+            target.moveLeft(qMax(available.left(), qMin(target.left(), available.right() - target.width())));
+            target.moveTop(qMax(available.top(), qMin(target.top(), available.bottom() - target.height())));
+        }
+
+        move(target.topLeft());
     }
 
     m_isInitialized = true; // first show windows are held
@@ -153,10 +173,9 @@ void DialogPreferences::Apply()
 {
     QStringList preferences;
 
-    preferences += m_configurePage->Apply();
+    preferences += m_generalPage->Apply();
+    preferences += m_shortcutsPage->Apply();
     preferences += m_patternPage->Apply();
-    preferences += m_pathPage->Apply();
-    preferences += m_appearancePage->Apply();
 
     if (not preferences.isEmpty())
     {
@@ -167,13 +186,6 @@ void DialogPreferences::Apply()
     }
 
     m_patternPage->InitDefaultSeamAllowance();
-
-    // A change of curve approximation scale requires a full reparse of the pattern so curves (and everything
-    // derived from them: lengths, cut points, exports) pick up the new value (upstream dc0d27fdc).
-    if (m_patternPage->IsCurveApproximationScaleChanged())
-    {
-        emit RequestFullParse();
-    }
 
     VAbstractValApplication::VApp()->ValentinaSettings()->GetOsSeparator() ? setLocale(QLocale())
                                                                            : setLocale(QLocale::c());

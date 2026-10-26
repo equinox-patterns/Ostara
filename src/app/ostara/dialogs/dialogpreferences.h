@@ -36,10 +36,9 @@ namespace Ui
 class DialogPreferences;
 }
 
-class PreferencesAppearancePage;
-class PreferencesConfigurationPage;
+class PreferencesGeneralPage;
 class PreferencesPatternPage;
-class PreferencesPathPage;
+class PreferencesShortcutsPage;
 class QListWidgetItem;
 class VPattern;
 
@@ -52,7 +51,6 @@ public:
     ~DialogPreferences() override;
 signals:
     void UpdateProperties();
-    void RequestFullParse();
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -66,10 +64,9 @@ private:
     Q_DISABLE_COPY_MOVE(DialogPreferences) // NOLINT
     Ui::DialogPreferences *ui;
     bool m_isInitialized{false};
-    PreferencesConfigurationPage *m_configurePage{nullptr};
+    PreferencesGeneralPage *m_generalPage{nullptr};
+    PreferencesShortcutsPage *m_shortcutsPage{nullptr};
     PreferencesPatternPage *m_patternPage{nullptr};
-    PreferencesPathPage *m_pathPage{nullptr};
-    PreferencesAppearancePage *m_appearancePage{nullptr};
 
     void Apply();
     void Ok();

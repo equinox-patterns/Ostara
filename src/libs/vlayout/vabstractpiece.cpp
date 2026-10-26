@@ -1822,18 +1822,6 @@ void VAbstractPiece::SetFoldLineType(FoldLineType lineType)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPiece::GetFoldLineSvgFontSize() const -> unsigned int
-{
-    return d->m_foldLineSvgFontSize;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractPiece::SetFoldLineSvgFontSize(unsigned int size)
-{
-    d->m_foldLineSvgFontSize = size;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPiece::IsFoldLineLabelFontItalic() const -> bool
 {
     return d->m_foldLineLabelFontItalic;

@@ -34,6 +34,7 @@
 #include "OPieceCartoucheCatalogue.h"
 #include "OPieceCartoucheStorage.h"
 #include "oannotationstylespage.h"
+#include "ofoldlinetextpage.h"
 #include "othumbnailstylespage.h"
 
 #include "core/ologolibrary.h"
@@ -135,6 +136,10 @@ void OInfoBlockEditor::SetupUI()
         {
             ShowThumbnailPage();
         }
+        else if (row == 7)
+        {
+            ShowFoldLineTextPage();
+        }
 
         // Last, and whatever happened. An action that ran has just moved the page this reads; one
         // that was cancelled by the unsaved-changes prompt has left it alone — and in that case the
@@ -150,6 +155,7 @@ void OInfoBlockEditor::SetupUI()
     SetupCollectionsPage();   // index 4
     SetupAnnotationsPage();   // index 5
     SetupThumbnailPage();     // index 6
+    SetupFoldLineTextPage();  // index 7
 
     // Named here as well as on a language change: this editor is retranslated when the language
     // changes and not when it is shown, and rows without names are a column of nothing.
@@ -161,7 +167,7 @@ void OInfoBlockEditor::SetupUI()
 
 void OInfoBlockEditor::NameMenuRows()
 {
-    // Seven fixed entries — and **the rows are not the pages**. The library is the first row and the
+    // Eight fixed entries — and **the rows are not the pages**. The library is the first row and the
     // editor's own page the second, where the pages themselves are stacked the other way round:
     // which row opens which page is decided in SetupUI, and everything else here counts rows.
     m_menu->SetRowLabel(0, tr("Existing templates"));
@@ -171,6 +177,7 @@ void OInfoBlockEditor::NameMenuRows()
     m_menu->SetRowLabel(4, tr("Collections"));
     m_menu->SetRowLabel(5, tr("Annotations"));
     m_menu->SetRowLabel(6, tr("Thumbnail"));
+    m_menu->SetRowLabel(7, tr("Foldline text"));
 }
 
 void OInfoBlockEditor::RetranslateUI()
@@ -301,6 +308,12 @@ void OInfoBlockEditor::RetranslateUI()
     if (m_thumbnailStylesPage != nullptr)
     {
         m_thumbnailStylesPage->RetranslateUI();
+    }
+
+    // Foldline text page — same rule.
+    if (m_foldLineTextPage != nullptr)
+    {
+        m_foldLineTextPage->RetranslateUI();
     }
 
     // ⚠️ **Les deux arbres, pour la seule chaîne qu'ils portent eux-mêmes.** Le repli
@@ -518,6 +531,17 @@ void OInfoBlockEditor::SetupThumbnailPage()
     m_menu->AddPage(m_thumbnailStylesPage);  // index 6
 }
 
+void OInfoBlockEditor::SetupFoldLineTextPage()
+{
+    m_foldLineTextPage = new OFoldLineTextPage();
+    m_menu->AddPage(m_foldLineTextPage);  // index 7
+
+    // The caption is drawn by the tools on the canvas, and they read the preferences when they build
+    // it: without this relay, a font change would wait for the next unrelated redraw.
+    connect(m_foldLineTextPage, &OFoldLineTextPage::StylesChanged, this,
+            &OInfoBlockEditor::FoldLineTextChanged);
+}
+
 void OInfoBlockEditor::ShowThumbnailPage()
 {
     // `Show()` reloads the controls from the preferences, so coming back to the page never shows a
@@ -525,6 +549,14 @@ void OInfoBlockEditor::ShowThumbnailPage()
     m_thumbnailStylesPage->SetLanguages(m_template.Languages());
     m_thumbnailStylesPage->Show();
     m_menu->ShowPage(6);
+}
+
+void OInfoBlockEditor::ShowFoldLineTextPage()
+{
+    // Reload on entry, like the Miniature page: the setting is the application's, and it may have
+    // been changed from another window since the last visit.
+    m_foldLineTextPage->Show();
+    m_menu->ShowPage(7);
 }
 
 
@@ -1441,6 +1473,10 @@ void OInfoBlockEditor::OpenOnPage(int page)
         case 6:
             m_menu->HighlightRow(6);
             ShowThumbnailPage();
+            break;
+        case 7:
+            m_menu->HighlightRow(7);
+            ShowFoldLineTextPage();
             break;
         default:
             break;

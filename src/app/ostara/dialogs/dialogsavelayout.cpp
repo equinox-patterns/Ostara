@@ -560,8 +560,6 @@ void DialogSaveLayout::ShowExample()
     ui->comboBoxDxfCompatibility->setVisible(false);
     ui->checkBoxShowMainPath->setVisible(false);
 
-    VCommonSettings  const*settings = VAbstractApplication::VApp()->Settings();
-
     switch (currentFormat)
     {
         case LayoutExportFormats::DXF_AAMA:
@@ -577,11 +575,6 @@ void DialogSaveLayout::ShowExample()
             // from the command line: the page format, the margins and the orientation then come from the
             // settings, exactly like they used to come from the fields the dialog no longer carries.
             ui->checkBoxTextAsPaths->setVisible(true);
-            if (settings->GetSingleLineFonts() || settings->GetSingleStrokeOutlineFont())
-            {
-                ui->checkBoxTextAsPaths->setDisabled(true);
-                ui->checkBoxTextAsPaths->setChecked(true);
-            }
             ui->checkBoxShowGrainline->setVisible(true);
             ui->checkBoxTogetherWithNotches->setVisible(true);
             break;
@@ -599,11 +592,6 @@ void DialogSaveLayout::ShowExample()
         case LayoutExportFormats::PNG:
         case LayoutExportFormats::TIF:
             ui->checkBoxTextAsPaths->setVisible(true);
-            if (settings->GetSingleLineFonts() || settings->GetSingleStrokeOutlineFont())
-            {
-                ui->checkBoxTextAsPaths->setDisabled(true);
-                ui->checkBoxTextAsPaths->setChecked(true);
-            }
             ui->checkBoxShowGrainline->setVisible(true);
             ui->checkBoxTogetherWithNotches->setVisible(true);
             break;
@@ -618,11 +606,6 @@ void DialogSaveLayout::ShowExample()
         case LayoutExportFormats::DXF_AC1027_Flat:
             ui->checkBoxBinaryDXF->setVisible(true);
             ui->checkBoxTextAsPaths->setVisible(true);
-            if (settings->GetSingleLineFonts() || settings->GetSingleStrokeOutlineFont())
-            {
-                ui->checkBoxTextAsPaths->setDisabled(true);
-                ui->checkBoxTextAsPaths->setChecked(true);
-            }
             ui->checkBoxShowGrainline->setVisible(true);
             ui->checkBoxTogetherWithNotches->setVisible(true);
             break;

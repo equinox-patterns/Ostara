@@ -423,10 +423,6 @@ void DialogArcWithLength::ChosenObject(quint32 id, const SceneObject &type)
 
         prepare = true;
 
-        if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-        {
-            FinishCreating();
-        }
     }
 }
 

@@ -349,13 +349,6 @@ void DialogCurveIntersectAxis::ChosenObject(quint32 id, const SceneObject &type)
                     SetName1(GenerateDefLeftSubName());
                     SetName2(GenerateDefRightSubName());
 
-                    if (not VAbstractValApplication::VApp()->Settings()->IsInteractiveTools())
-                    {
-                        emit ToolTip(QString());
-
-                        setModal(true);
-                        show();
-                    }
                 }
                 break;
             default:
