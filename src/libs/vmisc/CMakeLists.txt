@@ -52,9 +52,6 @@ set(VMISC_DIALOGS
     dialogs/dialogaskcollectstatistic.cpp
     dialogs/dialogaskcollectstatistic.h
     dialogs/dialogaskcollectstatistic.ui
-    dialogs/dialogcredits.cpp
-    dialogs/dialogcredits.h
-    dialogs/dialogcredits.ui
     dialogs/dialogexporttocsv.cpp
     dialogs/dialogselectlanguage.cpp
     dialogs/dialogexporttocsv.h

@@ -12,8 +12,6 @@ set(VWIDGETS_SOURCES
     vmaingraphicsview.cpp
     vmousewheelwidgetadjustmentguard.cpp
     vmousewheelwidgetadjustmentguard.h
-    vsponsorcredits.cpp
-    vsponsorcredits.h
     vtoolbuttonpopup.cpp
     vtoolbuttonpopup.h
     vwidgetpopup.cpp

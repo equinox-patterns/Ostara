@@ -36,7 +36,7 @@
 #include "widgets/DrawToolBar.h"
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
-#include "dialogs/dialogaboutapp.h"
+#include "dialogs/oaboutdialog.h"
 #include "dialogs/dialogpatternproperties.h"
 #include "vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -405,10 +405,10 @@ void MainWindow::CreateActions()
 
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 
-    connect(ui->actionAbout_Valentina, &QAction::triggered, this,
+    connect(ui->actionAbout_Ostara, &QAction::triggered, this,
             [this]()
             {
-                auto *aboutDialog = new DialogAboutApp(this);
+                auto *aboutDialog = new OAboutDialog(this);
                 aboutDialog->setAttribute(Qt::WA_DeleteOnClose, true);
                 aboutDialog->show();
             });

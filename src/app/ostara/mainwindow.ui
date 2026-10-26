@@ -682,7 +682,7 @@
     <enum>QAction::MenuRole::AboutQtRole</enum>
    </property>
   </action>
-  <action name="actionAbout_Valentina">
+  <action name="actionAbout_Ostara">
    <property name="icon">
     <iconset theme="help-about"/>
    </property>

@@ -1546,3 +1546,30 @@ QPushButton#coverPageBandTrashBtn:hover {
 QPushButton#coverPageBandTrashBtn:disabled {
     image: url(:/icons/dark/trash_disabled.svg);
 }
+
+/* =========================================================================
+   About Ostara — #id selectors (see oaboutdialog.cpp for objectNames)
+   The wordmark takes the WelcomeScreen's title scale: it is the same word,
+   said at the same size, so the two screens read as the same house.
+   ========================================================================= */
+
+QLabel#aboutWordmark {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e5e5e5;
+}
+
+QLabel#aboutVersion {
+    font-size: 13px;
+    color: #7f7f7f;
+}
+
+QLabel#aboutLegal {
+    font-size: 12px;
+    color: #7f7f7f;
+}
+
+QTextBrowser#aboutBody {
+    background: transparent;
+    border: none;
+}

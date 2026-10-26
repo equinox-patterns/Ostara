@@ -39,6 +39,7 @@
 #include <QAction>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QMenu>
 #include <QPointer>
 #include <QDesktopServices>
 #include <QDoubleSpinBox>
@@ -383,8 +384,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     // macOS: set MenuRoles so the app menu (About, Preferences, Quit) works
     ui->actionExit->setMenuRole(QAction::QuitRole);
-    ui->actionAbout_Valentina->setMenuRole(QAction::AboutRole);
+    ui->actionAbout_Ostara->setMenuRole(QAction::AboutRole);
     ui->actionPreferences->setMenuRole(QAction::PreferencesRole);
+
+#if defined(Q_OS_MACOS)
+    // **Le rôle fait le travail, mais il lui faut un menu pour s'appliquer.** Sur macOS le menu qui
+    // porte le nom de l'application appartient au système : Qt y déplace l'action qui porte
+    // `AboutRole` — et seulement si elle est d'abord dans un menu de la barre. Une action qui n'est
+    // dans aucun menu n'existe nulle part, ce qu'elle faisait jusqu'ici. Le menu Fenêtre est le
+    // dernier de la barre ; l'action en sort, et rien n'y reste.
+    ui->menuWindow->addSeparator();
+    ui->menuWindow->addAction(ui->actionAbout_Ostara);
+#else
+    // Ailleurs il n'existe pas de menu d'application : l'action a un menu à elle.
+    QMenu *helpMenu = menuBar()->addMenu(tr("Help"));
+    helpMenu->addAction(ui->actionAbout_Ostara);
+#endif
 
     InitAutoSave();
 
