@@ -218,6 +218,53 @@ auto SideOfRegion(const QVector<SourceItem> &region, const QVector<SourceItem> &
 
     return AnswerOf(SidesOf(source, departure.first.pointId, departure.second.pointId, data));
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The line from @a position to the neighbour of @a pointId in the ordered selection, the way the sense goes.
+ *
+ *  The selection describes the contour: the two points that come before and after a point of it always make a line
+ *  with it, and that line is the edge there whether the pattern drew it or not. @a way is the side the sense
+ *  follows — the point after the given one when it is positive — and the other side is tried when that one has no
+ *  neighbour, because the edge of a piece may end there: one side is enough, and it is no refusal.
+ *
+ *  An empty vector means the selection does not hold the point, or holds nothing beside it.
+ */
+auto SelectedLine(const OPleatPlan &plan, quint32 pointId, const QPointF &position, int way,
+                  const VContainer *data) -> QPointF
+{
+    int at = -1;
+    for (int index = 0; index < plan.sources.size(); ++index)
+    {
+        if (plan.sources.at(index) == pointId)
+        {
+            at = index;
+            break;
+        }
+    }
+
+    if (at < 0)
+    {
+        return {};
+    }
+
+    for (const int step : {way, -way})
+    {
+        const int neighbour = at + step;
+        if (neighbour < 0 || neighbour >= plan.sources.size())
+        {
+            continue; // nothing on that side: the piece's edge, which is no refusal
+        }
+
+        const QPointF other = OEdgeReader::Position(plan.sources.at(neighbour), data);
+        const QPointF line = other - position;
+        if (QLineF(QPointF(), line).length() > kDirectionTolerance)
+        {
+            return line;
+        }
+    }
+
+    return {};
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -528,32 +575,11 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     if (lengthHere <= kDirectionTolerance
                         || qAbs(Dot(directionHere / lengthHere, u)) > kPleatParallelCosine)
                     {
-                        int at = -1;
-                        for (int index = 0; index < plan.sources.size(); ++index)
-                        {
-                            if (plan.sources.at(index) == edge.pointId)
-                            {
-                                at = index;
-                                break;
-                            }
-                        }
-
                         const int way = sense ? 1 : -1; // the sense the cap follows: the point before it, or after
-                        for (const int side_ : {way, -way})
+                        const QPointF selected = SelectedLine(plan, edge.pointId, edge.position, way, data);
+                        if (not selected.isNull())
                         {
-                            const int neighbour = at + side_;
-                            if (at < 0 || neighbour < 0 || neighbour >= plan.sources.size())
-                            {
-                                continue; // nothing on that side: the piece's edge, which is no refusal
-                            }
-
-                            const QPointF other = OEdgeReader::Position(plan.sources.at(neighbour), data);
-                            const QPointF line = other - edge.position;
-                            if (QLineF(QPointF(), line).length() > kDirectionTolerance)
-                            {
-                                directionHere = line;
-                                break;
-                            }
+                            directionHere = selected;
                         }
                     }
                 }
@@ -691,12 +717,16 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     continue; // no cap, no edge to mark; and the end asks for no notch
                 }
 
-                // The sense decides which line the value is counted from — and the notch reads it **the other way
-                // round** than the cap does: a cran stands beyond the arm the cap lays down, that is **after the
+                // The sense decides **which line the value is counted from** — and the notch reads it the other way
+                // round than the cap does: a cran stands beyond the arm the cap lays down, that is **after the
                 // second arm** when the cap follows the edge as drawn, and **before the first one** when it follows
                 // the edge the move carries. The value is counted from the copy in the first case, and from the
                 // departure line in the second — the second pleat of a double being the first one reversed is the
                 // whole difference between the two senses.
+                //
+                // **That place is a point of the fold's own grid, and not the edge**: the value is walked from it
+                // **along the edge**, which is what makes the mark readable on the piece (see the two branches
+                // below). Reading the edge is a question of its own, and the point's own tool does not answer it.
                 const bool secondSense = edge.secondSense != (rank == 1);
                 const QPointF from = plan.Place(edge, departure, secondSense ? rank : rank + 1);
 
@@ -733,26 +763,53 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
 
                     notch.edgeId = carrier.objectId;
                     notch.length = placement.length;
-                    notch.point = from + (placement.point - edge.position);
+
+                    // **A notch marks the edge where it is carried**, never where the pattern drew it. The pleat
+                    // taken on its first arm has the fabric arriving on the copy, and the pleat laid on the middle
+                    // has its two halves travelling: in both, the seamstress reads the mark on the edge the fold has
+                    // brought there. The figure cuts that very carried curve, at that very length, so the point and
+                    // the cut are one and the same place (PleatMid.md).
+                    notch.point = placement.point + plan.Move(carrier.objectId);
                 }
                 else
                 {
                     QPointF inward = carrier.inward;
+
+                    // **A notch is never read off the line of the point's own tool**, and never off a construction
+                    // line at all: where the point stands on the fold itself, that tool draws the fold, and walking
+                    // it runs the notch down the pleat instead of along the edge — the very mark meant for the edge.
+                    // The ordered selection answers instead, the point just before or just after making a line
+                    // with it, which is the cascade the caps already follow (PleatMid.md). Only a reading that is
+                    // no edge is replaced: what the contour of a piece answers is better than a neighbour and is
+                    // kept.
+                    const qreal readLength = QLineF(QPointF(), inward).length();
+                    const QPointF u = DirectionOf(line);
+                    if (readLength <= kDirectionTolerance
+                        || qAbs(Dot(inward / readLength, u)) > kPleatParallelCosine)
+                    {
+                        const QPointF selected
+                            = SelectedLine(plan, edge.pointId, edge.position, secondSense ? 1 : -1, data);
+                        if (not selected.isNull())
+                        {
+                            inward = selected;
+                        }
+                    }
+
                     if (inward.isNull())
                     {
-                        const qreal length = QLineF(QPointF(), edge.edgeDirection).length();
-                        if (length <= kDirectionTolerance)
-                        {
-                            plan.failure = OPleatFailure::UnresolvedEdge;
-                            return plan;
-                        }
+                        inward = edge.edgeDirection; // the direction read at the point, when nothing else answers
+                    }
 
-                        const QPointF unit = edge.edgeDirection / length;
-                        inward = (Dot(unit, side) > 0.) ? unit : -unit;
+                    const qreal inwardLength = QLineF(QPointF(), inward).length();
+                    if (inwardLength <= kDirectionTolerance)
+                    {
+                        plan.failure = OPleatFailure::UnresolvedEdge;
+                        return plan;
                     }
 
                     // A line carries it: the notch is a point on that line, and there is nothing to cut.
-                    notch.point = from + inward * values.at(departure);
+                    const QPointF unit = inward / inwardLength;
+                    notch.point = from + ((Dot(unit, side) > 0.) ? unit : -unit) * values.at(departure);
                 }
 
                 plan.notches.append(notch);
