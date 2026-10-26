@@ -138,7 +138,6 @@ VLib {
         files: [
             "icon.qrc",
             "flags.qrc",
-            "breezethemes/breeze.qrc",
             "scenestyle.qrc",
             "cursor.qrc",
         ]

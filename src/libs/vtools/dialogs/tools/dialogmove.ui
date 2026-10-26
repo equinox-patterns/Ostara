@@ -104,10 +104,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset resource="../../../vmisc/share/resources/icon.qrc">
-             <normaloff>:/icon/light/24x24/fx.png</normaloff>:/icon/light/24x24/fx.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
              <width>24</width>
@@ -119,10 +115,7 @@
          <item alignment="Qt::AlignmentFlag::AlignRight">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../../vmisc/share/resources/icon.qrc">:/icon/light/24x24/equal.png</pixmap>
+            <string notr="true">=</string>
            </property>
           </widget>
          </item>
@@ -283,10 +276,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset resource="../../../vmisc/share/resources/icon.qrc">
-             <normaloff>:/icon/light/24x24/fx.png</normaloff>:/icon/light/24x24/fx.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
              <width>24</width>
@@ -298,10 +287,7 @@
          <item alignment="Qt::AlignmentFlag::AlignRight">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../../vmisc/share/resources/icon.qrc">:/icon/light/24x24/equal.png</pixmap>
+            <string notr="true">=</string>
            </property>
           </widget>
          </item>
@@ -462,10 +448,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset resource="../../../vmisc/share/resources/icon.qrc">
-             <normaloff>:/icon/light/24x24/fx.png</normaloff>:/icon/light/24x24/fx.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
              <width>24</width>
@@ -477,10 +459,7 @@
          <item alignment="Qt::AlignmentFlag::AlignRight">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../../../vmisc/share/resources/icon.qrc">:/icon/light/24x24/equal.png</pixmap>
+            <string notr="true">=</string>
            </property>
           </widget>
          </item>

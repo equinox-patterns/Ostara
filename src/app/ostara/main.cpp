@@ -85,7 +85,6 @@ auto main(int argc, char *argv[]) -> int
     Q_INIT_RESOURCE(flags);      // NOLINT
     Q_INIT_RESOURCE(icons);      // NOLINT
     Q_INIT_RESOURCE(toolicon);   // NOLINT
-    Q_INIT_RESOURCE(breeze);     // NOLINT
     Q_INIT_RESOURCE(scenestyle); // NOLINT
     Q_INIT_RESOURCE(win_light_theme); // NOLINT
     Q_INIT_RESOURCE(win_dark_theme);  // NOLINT

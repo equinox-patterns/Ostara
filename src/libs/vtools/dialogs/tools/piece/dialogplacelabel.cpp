@@ -599,12 +599,10 @@ void DialogPlaceLabel::RetranslateUi()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPlaceLabel::SetFxIcons()
 {
-    const QString resource = QStringLiteral("icon");
-    const QString fxIcon = QStringLiteral("24x24/fx.png");
-    m_widthFx->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    m_heightFx->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    m_angleFx->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    m_visibleFx->setIcon(VTheme::GetIconResource(resource, fxIcon));
+    m_widthFx->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    m_heightFx->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    m_angleFx->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    m_visibleFx->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

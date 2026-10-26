@@ -122,26 +122,15 @@ void ApplyOstaraPalette(bool dark)
 //---------------------------------------------------------------------------------------------------------------------
 void ActivateCustomLightTheme()
 {
-    if (QFile f(QStringLiteral(":/ostara/light.qss")); !f.exists())
+    QFile f(QStringLiteral(":/ostara/light.qss"));
+    if (f.open(QFile::ReadOnly | QFile::Text))
     {
-        qWarning() << "Ostara light theme not found, falling back to Eleven\n";
-        if (QFile fallback(QStringLiteral(":/light/stylesheet.qss")); fallback.open(QFile::ReadOnly | QFile::Text))
-        {
-            QTextStream ts(&fallback);
-            qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-        }
+        QTextStream ts(&f);
+        qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     }
     else
     {
-        if (f.open(QFile::ReadOnly | QFile::Text))
-        {
-            QTextStream ts(&f);
-            qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-        }
-        else
-        {
-            qWarning() << "Unable to open Ostara light theme\n";
-        }
+        qWarning() << "Unable to open Ostara light theme\n";
     }
 
     ApplyOstaraPalette(false);
@@ -150,26 +139,15 @@ void ActivateCustomLightTheme()
 //---------------------------------------------------------------------------------------------------------------------
 void ActivateCustomDarkTheme()
 {
-    if (QFile f(QStringLiteral(":/ostara/dark.qss")); !f.exists())
+    QFile f(QStringLiteral(":/ostara/dark.qss"));
+    if (f.open(QFile::ReadOnly | QFile::Text))
     {
-        qWarning() << "Ostara dark theme not found, falling back to Eleven\n";
-        if (QFile fallback(QStringLiteral(":/dark/stylesheet.qss")); fallback.open(QFile::ReadOnly | QFile::Text))
-        {
-            QTextStream ts(&fallback);
-            qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-        }
+        QTextStream ts(&f);
+        qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     }
     else
     {
-        if (f.open(QFile::ReadOnly | QFile::Text))
-        {
-            QTextStream ts(&f);
-            qApp->setStyleSheet(ts.readAll()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-        }
-        else
-        {
-            qWarning() << "Unable to open Ostara dark theme\n";
-        }
+        qWarning() << "Unable to open Ostara dark theme\n";
     }
 
     ApplyOstaraPalette(true);

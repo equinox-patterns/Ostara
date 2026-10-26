@@ -100,7 +100,6 @@
 #include "../vtools/dialogs/tools/piece/dialogduplicatedetail.h"
 #include "../vtools/dialogs/tools/piece/dialoginsertnode.h"
 #include "../vtools/dialogs/tools/piece/dialogpiecepath.h"
-#include "../vtools/dialogs/tools/piece/dialogseamallowance.h"
 #include "opiecedialog.h"
 
 // VTool headers (one per tool)

@@ -1123,10 +1123,8 @@ void DialogGraduatedCurve::FinishCreating()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogGraduatedCurve::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
 
-    const auto fxIcon = QStringLiteral("24x24/fx.png");
-    ui->toolButtonExpr->setIcon(VTheme::GetIconResource(resource, fxIcon));
+    ui->toolButtonExpr->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

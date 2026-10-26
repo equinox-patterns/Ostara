@@ -581,17 +581,11 @@ void DialogMove::EvalLength()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogMove::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
 
-    const auto fxIcon = QStringLiteral("24x24/fx.png");
-    ui->toolButtonExprAngle->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprRotationAngle->setIcon(VTheme::GetIconResource(resource, fxIcon));
+    ui->toolButtonExprAngle->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprLength->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprRotationAngle->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 
-    const auto equalIcon = QStringLiteral("24x24/equal.png");
-    ui->label_2->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_3->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_4->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -765,7 +765,6 @@ void DialogFinalMeasurements::InitSearch()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogFinalMeasurements::InitIcons()
 {
-    auto const resource = QStringLiteral("icon");
 
-    ui->toolButtonExpr->setIcon(VTheme::GetIconResource(resource, QStringLiteral("24x24/fx.png")));
+    ui->toolButtonExpr->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 }

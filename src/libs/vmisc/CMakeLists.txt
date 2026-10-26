@@ -99,7 +99,6 @@ set(VMISC_CODECS
 set(VMISC_QRC
     share/resources/icon.qrc
     share/resources/flags.qrc
-    share/resources/breezethemes/breeze.qrc
     share/resources/scenestyle.qrc
     share/resources/cursor.qrc
     share/resources/ostara_theme.qrc

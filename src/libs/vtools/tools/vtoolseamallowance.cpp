@@ -34,7 +34,6 @@
 #include "othumbnailcache.h"
 #include "othumbnailitem.h"
 #include "../dialogs/tools/piece/dialogduplicatedetail.h"
-#include "../dialogs/tools/piece/dialogseamallowance.h"
 #include "../ifc/exception/vexceptionwrongid.h"
 #include "../vexception/vexception.h"
 #include "../ifc/xml/vpatternblockmapper.h"
@@ -391,35 +390,6 @@ void UpdatePathExcludeState(const VPiecePath &path)
 
 //---------------------------------------------------------------------------------------------------------------------
 VToolSeamAllowance::~VToolSeamAllowance() = default;
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VToolSeamAllowance::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                                VContainer *data) -> VToolSeamAllowance *
-{
-    SCASSERT(not dialog.isNull());
-    const QPointer<DialogSeamAllowance> dialogTool = qobject_cast<DialogSeamAllowance *>(dialog);
-    SCASSERT(not dialogTool.isNull())
-
-    VToolSeamAllowanceInitData initData;
-    initData.detail = dialogTool->GetPiece();
-    initData.width = initData.detail.GetFormulaSAWidth();
-    initData.scene = scene;
-    initData.doc = doc;
-    initData.data = data;
-    initData.parse = Document::FullParse;
-    initData.typeCreation = Source::FromGui;
-
-    initData.detail.GetPath().SetNodes(PrepareNodes(initData.detail.GetPath(), scene, doc, data));
-
-    VToolSeamAllowance *piece = Create(initData);
-
-    if (piece != nullptr)
-    {
-        piece->m_dialog = dialog;
-        piece->RefreshGeometry(true); // Refresh internal paths
-    }
-    return piece;
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolSeamAllowance::Create(VToolSeamAllowanceInitData &initData) -> VToolSeamAllowance *
@@ -2879,11 +2849,9 @@ void VToolSeamAllowance::keyReleaseEvent(QKeyEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::SetDialog()
 {
-    SCASSERT(not m_dialog.isNull());
-    const QPointer<DialogSeamAllowance> dialogTool = qobject_cast<DialogSeamAllowance *>(m_dialog);
-    SCASSERT(not dialogTool.isNull())
-    dialogTool->SetPiece(VAbstractTool::data.GetPiece(m_id));
-    dialogTool->EnableApply(true);
+    // Rien à pousser : la boîte de dialogue d'une pièce est OPieceDialog, une classe de l'application, que
+    // VToolsLib ne peut pas voir. C'est MainWindow qui la possède et qui la réalimente après une réanalyse —
+    // le tool, lui, n'a aucun dialogue à lui à remettre à jour.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3346,55 +3314,11 @@ void VToolSeamAllowance::ApplyPieceGeometry(const VToolSeamAllowanceGeometry &ge
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSeamAllowance::SaveDialogChange(const QString &undoText)
 {
-    SCASSERT(not m_dialog.isNull());
-    auto *dialogTool = qobject_cast<DialogSeamAllowance *>(m_dialog.data());
-    SCASSERT(dialogTool != nullptr);
-    const VPiece newDet = dialogTool->GetPiece();
-    const VPiece oldDet = VAbstractTool::data.GetPiece(m_id);
-
-    QVector<QPointer<VUndoCommand>> &undocommands = dialogTool->UndoStack();
-    const bool groupChange = not undocommands.isEmpty();
-
-    auto *saveCommand = new SavePieceOptions(oldDet, newDet, doc, m_id);
-    if (auto *window = qobject_cast<VAbstractMainWindow *>(VAbstractValApplication::VApp()->getMainWindow()))
-    { // Better not to crash here, just silently do not update list.
-        connect(saveCommand, &SavePieceOptions::UpdateGroups, window, &VAbstractMainWindow::UpdateDetailsList);
-    }
-
-    if (groupChange)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->beginMacro(undoText.isEmpty() ? saveCommand->text() : undoText);
-
-        for (auto command : undocommands)
-        {
-            VAbstractApplication::VApp()->getUndoStack()->push(command);
-            command.clear(); // To prevent double free memory
-        }
-        undocommands.clear();
-    }
-
-    VAbstractApplication::VApp()->getUndoStack()->push(saveCommand);
-
-    if (groupChange)
-    {
-        VAbstractApplication::VApp()->getUndoStack()->endMacro();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolSeamAllowance::ShowOptions()
-{
-    qCDebug(vTool, "Show options for tool id=%u (%s).", m_id, qUtf8Printable(getTagName()));
-    QPointer<DialogSeamAllowance> const dialog =
-        new DialogSeamAllowance(getData(), doc, m_id, VAbstractValApplication::VApp()->getMainWindow());
-    dialog->EnableApply(true);
-    m_dialog = dialog;
-    m_dialog->setModal(true);
-    connect(m_dialog.data(), &DialogTool::DialogClosed, this, &VToolSeamAllowance::FullUpdateFromGuiOk);
-    connect(m_dialog.data(), &DialogTool::DialogApplied, this, &VToolSeamAllowance::FullUpdateFromGuiApply);
-    BlockUndoRedoWhileDialogOpen();
-    SetDialog();
-    m_dialog->show();
+    // La pièce ne se modifie plus par un dialogue que ce tool posséderait : OPieceDialog appartient à
+    // l'application, et c'est MainWindow::ApplyPieceDialog qui construit ou met à jour la pièce à partir de lui
+    // (Create(initData), puis les commandes d'annulation de l'application). Il n'y a donc rien à relire ici, et
+    // m_dialog reste toujours nul pour une pièce.
+    Q_UNUSED(undoText)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3649,7 +3573,6 @@ void VToolSeamAllowance::InitNode(const VPieceNode &node, VMainGraphicsScene *sc
 
             if (tool->parent() != parent)
             {
-                connect(tool, &VNodePoint::ShowOptions, parent, &VToolSeamAllowance::ShowOptions, Qt::UniqueConnection);
                 connect(tool, &VNodePoint::ToggleInLayout, parent, &VToolSeamAllowance::ToggleInLayout,
                         Qt::UniqueConnection);
                 connect(tool, &VNodePoint::ToggleForceFlipping, parent, &VToolSeamAllowance::ToggleForceFlipping,
@@ -3703,7 +3626,6 @@ void VToolSeamAllowance::InitInternalNode(const VPieceNode &node, VToolSeamAllow
 
             if (tool->parent() != parent)
             {
-                connect(tool, &VNodePoint::ShowOptions, parent, &VToolSeamAllowance::ShowOptions, Qt::UniqueConnection);
                 connect(tool,
                         &VNodePoint::ToggleInLayout,
                         parent,

@@ -1854,7 +1854,7 @@ void DialogPiecePath::InitControlTab()
     m_visibleLabel->setText(tr("Visibility"));
     hint->setText(tr("1 = visible, 0 = invisible, formulas allowed"));
     m_visibleFx->setToolTip(tr("Edit expression"));
-    m_visibleFx->setIcon(VTheme::GetIconResource(QStringLiteral("icon"), QStringLiteral("24x24/fx.png")));
+    m_visibleFx->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 
     m_timerVisible->setSingleShot(true);
 
@@ -2857,27 +2857,16 @@ void DialogPiecePath::InitPassmarkAngleType(const VPieceNode &node)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePath::InitIcons()
 {
-    const auto resource = QStringLiteral("icon");
 
-    const auto fxIcon = QStringLiteral("24x24/fx.png");
-    ui->toolButtonExprWidth->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprBefore->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprAfter->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprLength->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprWidth_2->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprAngle->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprVisible->setIcon(VTheme::GetIconResource(resource, fxIcon));
-    ui->toolButtonExprPassmarkVisible->setIcon(VTheme::GetIconResource(resource, fxIcon));
+    ui->toolButtonExprWidth->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprBefore->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprAfter->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprLength->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprWidth_2->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprAngle->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprVisible->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
+    ui->toolButtonExprPassmarkVisible->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 
-    const auto equalIcon = QStringLiteral("24x24/equal.png");
-    ui->label_2->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_6->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_10->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_5->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_8->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_4->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_7->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
-    ui->label_9->setPixmap(VTheme::GetPixmapResource(resource, equalIcon));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

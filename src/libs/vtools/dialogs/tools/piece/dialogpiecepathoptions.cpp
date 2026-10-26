@@ -201,7 +201,7 @@ void DialogPiecePathOptions::RetranslateUi()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPiecePathOptions::SetFxIcons()
 {
-    m_visibleFx->setIcon(VTheme::GetIconResource(QStringLiteral("icon"), QStringLiteral("24x24/fx.png")));
+    m_visibleFx->setIcon(VTheme::ThemedIcon(QStringLiteral("function")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

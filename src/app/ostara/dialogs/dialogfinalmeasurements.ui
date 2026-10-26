@@ -319,10 +319,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset resource="../../../libs/vmisc/share/resources/icon.qrc">
-             <normaloff>:/icon/light/24x24/fx.png</normaloff>:/icon/light/24x24/fx.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
              <width>24</width>

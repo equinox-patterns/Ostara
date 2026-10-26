@@ -44,10 +44,18 @@ namespace
 {
 /// Les icônes standard que notre bibliothèque fournit elle-même, par nom de base.
 ///
-/// **Ce sont les quatre icônes de boîte de message, et seulement elles.** Le jeu Breeze les
-/// dessinait en couleur — bleu, jaune, rouge, violet — alors que tout le reste de l'application est
-/// monochrome : un avertissement n'a pas à crier plus fort que le bouton qui l'accompagne. Les
-/// variantes `fill` sont celles qui tiennent à la taille où la boîte les affiche.
+/// **Ce sont les quatre icônes de boîte de message, et les quatre que Qt demande réellement dans
+/// Ostara.** Le jeu Breeze les dessinait en couleur — bleu, jaune, rouge, violet — alors que tout le
+/// reste de l'application est monochrome : un avertissement n'a pas à crier plus fort que le bouton
+/// qui l'accompagne. Les variantes `fill` sont celles qui tiennent à la taille où la boîte les
+/// affiche.
+///
+/// Les quatre autres sont les seules icônes standard que l'interface affiche vraiment : le bouton
+/// flotter et le bouton fermer d'un dock (`QDockWidgetPrivate::updateButtons`), la croix d'un champ
+/// de texte (`QLineEditIconButton`) et le chevron de débordement d'une barre d'outils ou de menus
+/// (`QToolBarExtension`). Les soixante restantes du catalogue Qt ne sont jamais demandées — boutons
+/// de dialogue sans icône sur macOS, navigateur de fichiers natif, aucun lecteur média, aucun MDI —
+/// et retombent sur Fusion si elles le devenaient un jour.
 auto LibraryGlyph(QStyle::StandardPixmap icon) -> QString
 {
     static const QHash<QStyle::StandardPixmap, QString> glyphs{
@@ -55,6 +63,10 @@ auto LibraryGlyph(QStyle::StandardPixmap icon) -> QString
         {QStyle::SP_MessageBoxWarning, QStringLiteral("warning-fill")},
         {QStyle::SP_MessageBoxCritical, QStringLiteral("x-circle-fill")},
         {QStyle::SP_MessageBoxQuestion, QStringLiteral("question-fill")},
+        {QStyle::SP_TitleBarNormalButton, QStringLiteral("arrows-out-simple")},
+        {QStyle::SP_TitleBarCloseButton, QStringLiteral("x")},
+        {QStyle::SP_LineEditClearButton, QStringLiteral("x-circle-fill")},
+        {QStyle::SP_ToolBarHorizontalExtensionButton, QStringLiteral("caret-right")},
     };
 
     return glyphs.value(icon);

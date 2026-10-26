@@ -90,8 +90,6 @@ class VToolSeamAllowance final : public VInteractiveTool, public QGraphicsPathIt
 public:
     ~VToolSeamAllowance() override;
 
-    static auto Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                       VContainer *data) -> VToolSeamAllowance *;
     static auto Create(VToolSeamAllowanceInitData &initData) -> VToolSeamAllowance *;
     static auto Duplicate(const QPointer<DialogTool> &dialog, VMainGraphicsScene *scene, VAbstractPattern *doc)
         -> VToolSeamAllowance *;
@@ -326,7 +324,6 @@ public slots:
     void retranslateUi();
     void Highlight(quint32 id);
     void UpdatePassmarks();
-    void ShowOptions();
     void DeleteFromMenu();
     /** @brief Re-render this piece's information blocks (e.g. when the effective piece
      *  count changes because a group is created/removed). Public so the main window can
