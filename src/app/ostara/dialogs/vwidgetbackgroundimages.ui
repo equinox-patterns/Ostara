@@ -190,9 +190,6 @@
                    <property name="text">
                     <string notr="true"/>
                    </property>
-                   <property name="icon">
-                    <iconset theme="object-rotate-right"/>
-                   </property>
                    <property name="checkable">
                     <bool>true</bool>
                    </property>
@@ -237,9 +234,6 @@
                   <widget class="QToolButton" name="toolButtonImageRotationAnticlockwise">
                    <property name="text">
                     <string notr="true"/>
-                   </property>
-                   <property name="icon">
-                    <iconset theme="object-rotate-left"/>
                    </property>
                    <property name="checkable">
                     <bool>true</bool>
@@ -306,9 +300,6 @@
             <property name="text">
              <string notr="true"></string>
             </property>
-            <property name="icon">
-             <iconset theme="go-bottom"/>
-            </property>
             <property name="iconSize">
              <size>
               <width>24</width>
@@ -321,9 +312,6 @@
            <widget class="QToolButton" name="toolButtonDown">
             <property name="text">
              <string notr="true"></string>
-            </property>
-            <property name="icon">
-             <iconset theme="go-down"/>
             </property>
             <property name="iconSize">
              <size>
@@ -338,9 +326,6 @@
             <property name="text">
              <string notr="true"></string>
             </property>
-            <property name="icon">
-             <iconset theme="go-up"/>
-            </property>
             <property name="iconSize">
              <size>
               <width>24</width>
@@ -353,9 +338,6 @@
            <widget class="QToolButton" name="toolButtonTop">
             <property name="text">
              <string notr="true"></string>
-            </property>
-            <property name="icon">
-             <iconset theme="go-top"/>
             </property>
             <property name="iconSize">
              <size>

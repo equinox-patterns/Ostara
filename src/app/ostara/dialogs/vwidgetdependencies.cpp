@@ -35,6 +35,7 @@
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatterngraph.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "vtheme.h"
 #include "../vtools/tools/vabstracttool.h"
 #include "../vtools/tools/vinteractivetool.h"
 #include "../vtools/undocommands/movetool.h"
@@ -42,9 +43,11 @@
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/vsimplecurve.h"
 #include "../vwidgets/vsimplepoint.h"
+#include "../widgets/omenuglyph.h"
 
 #include <QClipboard>
 #include <QGraphicsItem>
+#include <QIcon>
 #include <QMenu>
 
 #include <../vwidgets/vmaingraphicsview.h>
@@ -114,11 +117,6 @@ VWidgetDependencies::VWidgetDependencies(VAbstractPattern *doc, QWidget *parent)
     ui->treeView->header()->hide();
     ui->treeView->setModel(m_proxyModel);
 
-    ui->toolButtonTop->setIcon(FromTheme(VThemeIcon::ObjectOrderFront));
-    ui->toolButtonUp->setIcon(FromTheme(VThemeIcon::ObjectOrderRaise));
-    ui->toolButtonDown->setIcon(FromTheme(VThemeIcon::ObjectOrderLower));
-    ui->toolButtonBottom->setIcon(FromTheme(VThemeIcon::ObjectOrderBack));
-
     ui->toolButtonAutoGoToObject->setChecked(VAbstractValApplication::VApp()->ValentinaSettings()->IsAutoGoToObject());
 
     connect(ui->toolButtonTop, &QToolButton::clicked, this, &VWidgetDependencies::MoveTop);
@@ -146,6 +144,42 @@ VWidgetDependencies::VWidgetDependencies(VAbstractPattern *doc, QWidget *parent)
 
     ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->treeView, &QTreeView::customContextMenuRequested, this, &VWidgetDependencies::OnContextMenuRequested);
+
+    ApplyIcons();
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &VWidgetDependencies::ApplyIcons);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetDependencies::ApplyIcons()
+{
+    // Les quatre boutons portaient `object-order-*` résolu par le thème d'icônes : ce sont les mêmes
+    // carets que le dock Images en arrière-plan — un cran (à barre) et tout au bout (double).
+    ui->toolButtonTop->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-double-up")));
+    ui->toolButtonUp->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-line-up")));
+    ui->toolButtonDown->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-line-down")));
+    ui->toolButtonBottom->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-double-down")));
+
+    // Le bouton est cochable : contour au repos, plein une fois actif — même convention que les
+    // boutons de rotation du dock Images en arrière-plan. La loupe, et non une cible : c'est
+    // l'icône que le bouton portait déjà, et elle dit « aller chercher l'objet ».
+    QIcon autoIcon;
+    const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
+                                                                   : QStringLiteral("light");
+    autoIcon.addFile(QStringLiteral(":/icons/%1/magnifying-glass_%1.svg").arg(theme), QSize(), QIcon::Normal,
+                     QIcon::Off);
+    autoIcon.addFile(QStringLiteral(":/icons/%1/magnifying-glass-fill_%1.svg").arg(theme), QSize(), QIcon::Normal,
+                     QIcon::On);
+    ui->toolButtonAutoGoToObject->setIcon(autoIcon);
+
+    // La loupe est dans le champ, pas à côté : `addAction` en position `LeadingPosition`, comme les
+    // six autres champs de recherche de l'application. Elle se repose au changement de thème, donc
+    // l'ancienne est retirée d'abord.
+    if (m_filterIcon != nullptr)
+    {
+        ui->lineEditFilter->removeAction(m_filterIcon);
+    }
+    m_filterIcon = ui->lineEditFilter->addAction(VTheme::ThemedIcon(QStringLiteral("magnifying-glass")),
+                                                 QLineEdit::LeadingPosition);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -673,15 +707,23 @@ void VWidgetDependencies::OnContextMenuRequested(const QPoint &pos)
     // Create context menu
     QMenu contextMenu(this);
 
-    QAction const *actionExpand = contextMenu.addAction(tr("Expand All"));
-    QAction const *actionCollapse = contextMenu.addAction(tr("Collapse All"));
+    QAction *actionExpand = contextMenu.addAction(tr("Expand All"));
+    QAction *actionCollapse = contextMenu.addAction(tr("Collapse All"));
     contextMenu.addSeparator();
-    QAction const *actionCopyId = contextMenu.addAction(tr("Copy ID"));
+    QAction *actionCopyId = contextMenu.addAction(tr("Copy ID"));
     contextMenu.addSeparator();
-    QAction *actionGoToObject = contextMenu.addAction(FromTheme(VThemeIcon::SystemSearch), tr("Go to Object"));
+    QAction *actionGoToObject = contextMenu.addAction(tr("Go to Object"));
     actionGoToObject->setEnabled(CanGoToObject(node->objectId));
-    QAction *actionDeleteObject = contextMenu.addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
+    QAction *actionDeleteObject = contextMenu.addAction(tr("Delete"));
     actionDeleteObject->setEnabled(CanDeleteObject(node->objectId));
+
+    // Mêmes glyphes que partout, avec la variante de survol : la ligne du menu passe en fond accent.
+    OMenuGlyph::SetGlyph(actionExpand, QStringLiteral("arrows-out-simple"));
+    OMenuGlyph::SetGlyph(actionCollapse, QStringLiteral("arrows-in-simple"));
+    OMenuGlyph::SetGlyph(actionCopyId, QStringLiteral("copy"));
+    OMenuGlyph::SetGlyph(actionGoToObject, QStringLiteral("magnifying-glass"));
+    OMenuGlyph::SetGlyph(actionDeleteObject, QStringLiteral("trash"));
+    OMenuGlyph::InstallHover(&contextMenu, &contextMenu);
 
     // Show menu and get selected action
     QAction const *selectedAction = contextMenu.exec(ui->treeView->viewport()->mapToGlobal(pos));

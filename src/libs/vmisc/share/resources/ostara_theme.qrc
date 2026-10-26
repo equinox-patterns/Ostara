@@ -104,6 +104,24 @@
         <file alias="minus_light.svg">../../../../../share/themes/icons/light/minus_light.svg</file>
         <file alias="arrow-bend-up-right_light.svg">../../../../../share/themes/icons/light/arrow-bend-up-right_light.svg</file>
         <file alias="floppy-disk-fill_light.svg">../../../../../share/themes/icons/light/floppy-disk-fill_light.svg</file>
+        <file alias="arrow-bend-up-left_light.svg">../../../../../share/themes/icons/light/arrow-bend-up-left_light.svg</file>
+        <file alias="scissors_light.svg">../../../../../share/themes/icons/light/scissors_light.svg</file>
+        <file alias="selection-all_light.svg">../../../../../share/themes/icons/light/selection-all_light.svg</file>
+        <file alias="arrow-clockwise_light.svg">../../../../../share/themes/icons/light/arrow-clockwise_light.svg</file>
+        <file alias="arrow-counter-clockwise_light.svg">../../../../../share/themes/icons/light/arrow-counter-clockwise_light.svg</file>
+        <file alias="arrow-clockwise-fill_light.svg">../../../../../share/themes/icons/light/arrow-clockwise-fill_light.svg</file>
+        <file alias="arrow-counter-clockwise-fill_light.svg">../../../../../share/themes/icons/light/arrow-counter-clockwise-fill_light.svg</file>
+        <file alias="caret-double-up_light.svg">../../../../../share/themes/icons/light/caret-double-up_light.svg</file>
+        <file alias="caret-double-down_light.svg">../../../../../share/themes/icons/light/caret-double-down_light.svg</file>
+        <file alias="lock-simple_light.svg">../../../../../share/themes/icons/light/lock-simple_light.svg</file>
+        <file alias="lock-simple-open_light.svg">../../../../../share/themes/icons/light/lock-simple-open_light.svg</file>
+        <file alias="arrow-u-down-left_light.svg">../../../../../share/themes/icons/light/arrow-u-down-left_light.svg</file>
+        <file alias="arrows-out-simple_light.svg">../../../../../share/themes/icons/light/arrows-out-simple_light.svg</file>
+        <file alias="arrows-in-simple_light.svg">../../../../../share/themes/icons/light/arrows-in-simple_light.svg</file>
+        <file alias="magnifying-glass-fill_light.svg">../../../../../share/themes/icons/light/magnifying-glass-fill_light.svg</file>
+        <file alias="info-fill_light.svg">../../../../../share/themes/icons/light/info-fill_light.svg</file>
+        <file alias="warning-fill_light.svg">../../../../../share/themes/icons/light/warning-fill_light.svg</file>
+        <file alias="question-fill_light.svg">../../../../../share/themes/icons/light/question-fill_light.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -206,5 +224,23 @@
         <file alias="minus_dark.svg">../../../../../share/themes/icons/dark/minus_dark.svg</file>
         <file alias="arrow-bend-up-right_dark.svg">../../../../../share/themes/icons/dark/arrow-bend-up-right_dark.svg</file>
         <file alias="floppy-disk-fill_dark.svg">../../../../../share/themes/icons/dark/floppy-disk-fill_dark.svg</file>
+        <file alias="arrow-bend-up-left_dark.svg">../../../../../share/themes/icons/dark/arrow-bend-up-left_dark.svg</file>
+        <file alias="scissors_dark.svg">../../../../../share/themes/icons/dark/scissors_dark.svg</file>
+        <file alias="selection-all_dark.svg">../../../../../share/themes/icons/dark/selection-all_dark.svg</file>
+        <file alias="arrow-clockwise_dark.svg">../../../../../share/themes/icons/dark/arrow-clockwise_dark.svg</file>
+        <file alias="arrow-counter-clockwise_dark.svg">../../../../../share/themes/icons/dark/arrow-counter-clockwise_dark.svg</file>
+        <file alias="arrow-clockwise-fill_dark.svg">../../../../../share/themes/icons/dark/arrow-clockwise-fill_dark.svg</file>
+        <file alias="arrow-counter-clockwise-fill_dark.svg">../../../../../share/themes/icons/dark/arrow-counter-clockwise-fill_dark.svg</file>
+        <file alias="caret-double-up_dark.svg">../../../../../share/themes/icons/dark/caret-double-up_dark.svg</file>
+        <file alias="caret-double-down_dark.svg">../../../../../share/themes/icons/dark/caret-double-down_dark.svg</file>
+        <file alias="lock-simple_dark.svg">../../../../../share/themes/icons/dark/lock-simple_dark.svg</file>
+        <file alias="lock-simple-open_dark.svg">../../../../../share/themes/icons/dark/lock-simple-open_dark.svg</file>
+        <file alias="arrow-u-down-left_dark.svg">../../../../../share/themes/icons/dark/arrow-u-down-left_dark.svg</file>
+        <file alias="arrows-out-simple_dark.svg">../../../../../share/themes/icons/dark/arrows-out-simple_dark.svg</file>
+        <file alias="arrows-in-simple_dark.svg">../../../../../share/themes/icons/dark/arrows-in-simple_dark.svg</file>
+        <file alias="magnifying-glass-fill_dark.svg">../../../../../share/themes/icons/dark/magnifying-glass-fill_dark.svg</file>
+        <file alias="info-fill_dark.svg">../../../../../share/themes/icons/dark/info-fill_dark.svg</file>
+        <file alias="warning-fill_dark.svg">../../../../../share/themes/icons/dark/warning-fill_dark.svg</file>
+        <file alias="question-fill_dark.svg">../../../../../share/themes/icons/dark/question-fill_dark.svg</file>
     </qresource>
 </RCC>

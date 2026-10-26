@@ -42,6 +42,23 @@ using namespace Qt::Literals::StringLiterals;
 
 namespace
 {
+/// Les icônes standard que notre bibliothèque fournit elle-même, par nom de base.
+///
+/// **Ce sont les quatre icônes de boîte de message, et seulement elles.** Le jeu Breeze les
+/// dessinait en couleur — bleu, jaune, rouge, violet — alors que tout le reste de l'application est
+/// monochrome : un avertissement n'a pas à crier plus fort que le bouton qui l'accompagne. Les
+/// variantes `fill` sont celles qui tiennent à la taille où la boîte les affiche.
+auto LibraryGlyph(QStyle::StandardPixmap icon) -> QString
+{
+    static const QHash<QStyle::StandardPixmap, QString> glyphs{
+        {QStyle::SP_MessageBoxInformation, QStringLiteral("info-fill")},
+        {QStyle::SP_MessageBoxWarning, QStringLiteral("warning-fill")},
+        {QStyle::SP_MessageBoxCritical, QStringLiteral("x-circle-fill")},
+        {QStyle::SP_MessageBoxQuestion, QStringLiteral("question-fill")},
+    };
+
+    return glyphs.value(icon);
+}
 auto StandardIconPaths() -> QHash<QStyle::StandardPixmap, QString>
 {
     QHash<QStyle::StandardPixmap, QString> icons{
@@ -53,10 +70,6 @@ auto StandardIconPaths() -> QHash<QStyle::StandardPixmap, QString>
         {QStyle::SP_TitleBarShadeButton, "shade.svg"},
         {QStyle::SP_TitleBarUnshadeButton, "unshade.svg"},
         {QStyle::SP_TitleBarContextHelpButton, "help.svg"},
-        {QStyle::SP_MessageBoxInformation, "message_information.svg"},
-        {QStyle::SP_MessageBoxWarning, "message_warning.svg"},
-        {QStyle::SP_MessageBoxCritical, "message_critical.svg"},
-        {QStyle::SP_MessageBoxQuestion, "message_question.svg"},
         {QStyle::SP_DesktopIcon, "desktop.svg"},
         {QStyle::SP_TrashIcon, "trash.svg"},
         {QStyle::SP_ComputerIcon, "computer.svg"},
@@ -256,6 +269,12 @@ auto VApplicationStyle::StyleIcon(StandardPixmap standardIcon, const QStyleOptio
 auto VApplicationStyle::StylesheetIcon(StandardPixmap standardIcon, const QStyleOption *option,
                                        const QWidget *widget) const -> QIcon
 {
+    // Notre bibliothèque d'abord : elle suit le thème actif et se refait avec lui.
+    if (const QString glyph = LibraryGlyph(standardIcon); !glyph.isEmpty())
+    {
+        return VTheme::ThemedIcon(glyph);
+    }
+
     static QHash<QStyle::StandardPixmap, QString> const icons = StandardIconPaths();
     auto const resource = QStringLiteral("://%1/%2").arg(VTheme::ThemeStylesheet(), icons.value(standardIcon));
     if (QFileInfo::exists(resource))

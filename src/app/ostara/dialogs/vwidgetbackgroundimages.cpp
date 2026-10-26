@@ -30,7 +30,6 @@
 #include "../ifc/xml/vbackgroundpatternimage.h"
 #include "../vmisc/def.h"
 #include "../vmisc/lambdaconstants.h"
-#include "themeDef.h"
 #include "vtheme.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vtools/undocommands/image/hideallbackgroundimages.h"
@@ -45,6 +44,7 @@
 #include "../vtools/undocommands/image/zvaluemovebackgroundimage.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
 #include "ui_vwidgetbackgroundimages.h"
+#include "../widgets/omenuglyph.h"
 
 #include <QMenu>
 #include <QPushButton>
@@ -59,13 +59,41 @@ enum ImageData
 };
 
 //---------------------------------------------------------------------------------------------------------------------
+/// L'icône d'une cellule de la liste : la variante du thème au repos, et celle du jeu sombre sur
+/// une ligne choisie — une ligne choisie est foncée dans les deux thèmes (Icons.md §2, « règle
+/// ligne foncée »). Les deux états voyagent dans le même `QIcon` : c'est Qt qui choisit `Selected`,
+/// donc aucun délégué n'est nécessaire.
+auto CellIcon(const QString &baseName) -> QIcon
+{
+    const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
+                                                                  : QStringLiteral("light");
+    QIcon icon;
+    icon.addFile(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName));
+    icon.addFile(QStringLiteral(":/icons/dark/%1_dark.svg").arg(baseName), QSize(), QIcon::Selected);
+    return icon;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// L'icône d'un bouton à deux états : le contour au repos, la version pleine une fois coché —
+/// convention déjà suivie par Graded alignment et les cases à cocher.
+auto ToggleIcon(const QString &baseName) -> QIcon
+{
+    const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
+                                                                  : QStringLiteral("light");
+    QIcon icon;
+    icon.addFile(QStringLiteral(":/icons/%1/%2_%1.svg").arg(theme, baseName), QSize(), QIcon::Normal, QIcon::Off);
+    icon.addFile(QStringLiteral(":/icons/%1/%2-fill_%1.svg").arg(theme, baseName), QSize(), QIcon::Normal,
+                 QIcon::On);
+    return icon;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void SetImageHold(QTableWidgetItem *item, const VBackgroundPatternImage &image)
 {
     if (item)
     {
-        const auto resource = QStringLiteral("icon");
-        (image.Hold()) ? item->setIcon(VTheme::GetIconResource(resource, QStringLiteral("16x16/hold_image.png")))
-                       : item->setIcon(VTheme::GetIconResource(resource, QStringLiteral("16x16/not_hold_image.png")));
+        item->setIcon(CellIcon(image.Hold() ? QStringLiteral("lock-simple")
+                                            : QStringLiteral("lock-simple-open")));
     }
 }
 
@@ -74,9 +102,7 @@ void SetImageVisibility(QTableWidgetItem *item, const VBackgroundPatternImage &i
 {
     if (item)
     {
-        const auto resource = QStringLiteral("icon");
-        item->setIcon(image.Visible() ? VTheme::GetIconResource(resource, QStringLiteral("16x16/open_eye.png"))
-                                      : VTheme::GetIconResource(resource, QStringLiteral("16x16/closed_eye.png")));
+        item->setIcon(CellIcon(image.Visible() ? QStringLiteral("eye") : QStringLiteral("eye-closed")));
     }
 }
 
@@ -192,6 +218,25 @@ VWidgetBackgroundImages::VWidgetBackgroundImages(VAbstractPattern *doc, QWidget 
     connect(ui->toolButtonBottom, &QToolButton::clicked, this, &VWidgetBackgroundImages::MoveImageBottom);
 
     InitImageTranslation();
+
+    ApplyIcons();
+    connect(VTheme::Instance(), &VTheme::ThemeSettingsChanged, this, &VWidgetBackgroundImages::ApplyIcons);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VWidgetBackgroundImages::ApplyIcons()
+{
+    // Les six boutons portaient des noms freedesktop résolus par le thème d'icônes : ils viennent
+    // maintenant de notre bibliothèque, donc du thème actif, et se refont quand il change.
+    ui->toolButtonImageRotationClockwise->setIcon(ToggleIcon(QStringLiteral("arrow-clockwise")));
+    ui->toolButtonImageRotationAnticlockwise->setIcon(ToggleIcon(QStringLiteral("arrow-counter-clockwise")));
+    ui->toolButtonTop->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-double-up")));
+    ui->toolButtonUp->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-line-up")));
+    ui->toolButtonDown->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-line-down")));
+    ui->toolButtonBottom->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-double-down")));
+
+    // Les deux colonnes portent une icône par ligne : elles se refont avec la liste.
+    UpdateImages();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -355,7 +400,7 @@ void VWidgetBackgroundImages::ContextMenu(const QPoint &pos)
     QAction *actionReset = menu.addAction(tr("Reset transformation"));
     actionReset->setEnabled(not image.Hold());
 
-    const QAction *actionDelete = menu.addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
+    QAction *actionDelete = menu.addAction(tr("Delete"));
 
     menu.addSeparator();
     QAction *actionHoldAll = menu.addAction(tr("Hold All"));
@@ -368,6 +413,20 @@ void VWidgetBackgroundImages::ContextMenu(const QPoint &pos)
     actionHideAll->setEnabled(MultipleChangeVisibilityTo(false));
     QAction *actionShowAll = menu.addAction(tr("Show All"));
     actionShowAll->setEnabled(MultipleChangeVisibilityTo(true));
+
+    // Les glyphes disent l'état de l'entrée cochable : un cadenas fermé pour une image ancrée, un
+    // œil barré pour une image cachée. `SetGlyph` pose aussi la variante de survol, la ligne du menu
+    // passant en fond accent.
+    OMenuGlyph::SetGlyph(holdOption, image.Hold() ? QStringLiteral("lock-simple")
+                                                  : QStringLiteral("lock-simple-open"));
+    OMenuGlyph::SetGlyph(actionVisible, image.Visible() ? QStringLiteral("eye") : QStringLiteral("eye-closed"));
+    OMenuGlyph::SetGlyph(actionReset, QStringLiteral("arrow-u-down-left"));
+    OMenuGlyph::SetGlyph(actionDelete, QStringLiteral("trash"));
+    OMenuGlyph::SetGlyph(actionHoldAll, QStringLiteral("lock-simple"));
+    OMenuGlyph::SetGlyph(actionUnholdAll, QStringLiteral("lock-simple-open"));
+    OMenuGlyph::SetGlyph(actionHideAll, QStringLiteral("eye-closed"));
+    OMenuGlyph::SetGlyph(actionShowAll, QStringLiteral("eye"));
+    OMenuGlyph::InstallHover(&menu, &menu);
 
     QAction  const*selectedAction = menu.exec(ui->tableWidget->viewport()->mapToGlobal(pos));
 

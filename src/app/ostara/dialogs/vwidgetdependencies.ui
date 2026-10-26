@@ -31,9 +31,6 @@
        <property name="text">
         <string notr="true">...</string>
        </property>
-       <property name="icon">
-        <iconset theme="system-search"/>
-       </property>
        <property name="checkable">
         <bool>true</bool>
        </property>

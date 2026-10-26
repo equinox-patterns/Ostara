@@ -41,6 +41,7 @@
 #include "../vdispatch/qt_dispatch.h"
 #include "otranslation.h"
 #include "vtheme.h"
+#include "../widgets/omenuglyph.h"
 #include "../vmisc/commandoptions.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -58,6 +59,7 @@
 #include <QFuture>
 #include <QIcon>
 #include <QLoggingCategory>
+#include <QMenu>
 #include <QMessageBox>
 #include <QObject>
 #include <QProcess>
@@ -596,6 +598,17 @@ void VApplication::NewValentina(const QString &fileName)
 // reimplemented from QApplication so we can throw exceptions in slots
 auto VApplication::notify(QObject *receiver, QEvent *event) -> bool
 {
+    // Un menu paraît : ses entrées reçoivent nos glyphes et la variante de survol. Les menus
+    // contextuels des champs texte sont construits par Qt lui-même, sans qu'on puisse les
+    // recevoir autrement — on ne les remplace pas, on les habille au moment où ils s'ouvrent.
+    if (event->type() == QEvent::Show)
+    {
+        if (auto *menu = qobject_cast<QMenu *>(receiver); menu != nullptr)
+        {
+            OMenuGlyph::StyleStandardMenu(menu);
+        }
+    }
+
     // Every catch below must terminate via TerminateOnFatalException(), not a bare exit() call. Inside a
     // QCoreApplication-derived member function, unqualified exit() resolves to the inherited static slot
     // QCoreApplication::exit(int), which does not terminate the process: it just flags the nearest event

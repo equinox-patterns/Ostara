@@ -457,18 +457,6 @@ auto VTheme::eventFilter(QObject *obj, QEvent *event) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VTheme::GetFallbackThemeIcon(const QString &iconName, QSize iconSize) -> QIcon
-{
-    const auto filePath = QStringLiteral(":/icons/%1/%2.svg").arg(DefaultThemeName(), iconName);
-
-    QIcon icon;
-    icon.addFile(filePath, iconSize, QIcon::Normal, QIcon::On);
-    iconSize *= 2;
-    icon.addFile(filePath, iconSize, QIcon::Normal, QIcon::On);
-    return icon;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VTheme::GetIconResource(const QString &root, const QString &iconName) -> QIcon
 {
     QIcon icon;

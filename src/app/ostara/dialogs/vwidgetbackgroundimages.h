@@ -104,6 +104,10 @@ private:
 
     void FillTable(const QVector<VBackgroundPatternImage> &images);
 
+    /// Pose les icônes du panneau — les six boutons et les deux colonnes de la liste — et les
+    /// refait au changement de thème.
+    void ApplyIcons();
+
     void ToggleImageHold(const QUuid &id) const;
     void ToggleImageVisibility(const QUuid &id) const;
 

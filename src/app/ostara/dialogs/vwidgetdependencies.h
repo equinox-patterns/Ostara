@@ -83,6 +83,10 @@ private slots:
     void MoveDown();
     void MoveBottom();
 
+    /// Pose les icônes du panneau — les cinq boutons et la loupe du champ de filtre — et les refait
+    /// au changement de thème.
+    void ApplyIcons();
+
 private:
     Q_DISABLE_COPY_MOVE(VWidgetDependencies)
     Ui::VWidgetDependencies *ui;
@@ -90,6 +94,9 @@ private:
     VDependencyTreeModel *m_dependencyModel;
     VDependencyFilterProxyModel *m_proxyModel;
     VTreeStateManager *m_stateManager{nullptr};
+
+    /// La loupe du champ de filtre, retirée avant d'être reposée au changement de thème.
+    QAction *m_filterIcon{nullptr};
     int m_indexPatternBlock{-1};
     vidtype m_activeTool{NULL_ID};
     bool m_toolCreationActive{false};
