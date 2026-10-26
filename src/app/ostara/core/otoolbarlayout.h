@@ -74,7 +74,7 @@ struct Layout
     auto IsDefault() const -> bool;
 };
 
-/// The organisation Ostara ships with: the eight groups of the Draw mode.
+/// The organisation Ostara ships with: the seven groups of the Draw mode.
 auto Default() -> Layout;
 
 /// The stored organisation. Anything unreadable — an old format, a hand-edited file, a tool that

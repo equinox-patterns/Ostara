@@ -414,7 +414,7 @@ void DrawToolBar::InitializeGroups()
 
     m_groups.clear();
 
-    // The Draw mode: what the user arranged in the preferences, or the eight groups Ostara ships
+    // The Draw mode: what the user arranged in the preferences, or the seven groups Ostara ships
     // with. A tool the user left out of every group is simply not here — and not drawn.
     for (const OToolBarLayout::Group &group : layout.groups)
     {

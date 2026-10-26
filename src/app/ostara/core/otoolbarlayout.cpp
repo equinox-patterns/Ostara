@@ -116,10 +116,25 @@ auto OToolBarLayout::Layout::IsDefault() const -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolBarLayout::Default() -> Layout
 {
+    // The tools Ostara hides by default are dropped from the groups here, and only here: the
+    // catalogue keeps them in its table, which is what keeps them in the dispatch list of the
+    // preferences page. A group whose whole content is hidden is dropped too — a header over
+    // nothing would be a hole in the palette.
+    const QStringList hidden = OToolBarCatalogue::HiddenByDefault();
+
     Layout layout;
     for (const OToolBarCatalogue::Group &group : OToolBarCatalogue::DrawGroups())
     {
-        layout.groups.append(Group{group.key, group.name, group.tools});
+        QStringList tools = group.tools;
+        for (const QString &id : hidden)
+        {
+            tools.removeAll(id);
+        }
+        if (tools.isEmpty())
+        {
+            continue;
+        }
+        layout.groups.append(Group{group.key, group.name, tools});
     }
     return layout;
 }

@@ -123,23 +123,6 @@ auto IsWindowButton(const QString &id) -> bool
            || id == QStringLiteral("export_image");
 }
 
-/// The artwork the tools that wait for their own borrow, from the tool they come from. Looking
-/// for a `<id>.svg` that does not exist would blank them on every theme switch.
-auto BorrowedToolIcons() -> const QHash<QString, QString> &
-{
-    static const QHash<QString, QString> borrowed{{QStringLiteral("close_dart"), QStringLiteral("rotation.png")},
-                                                  {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
-                                                  {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
-                                                  {QStringLiteral("transfert"), QStringLiteral("move.png")},
-                                                  {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")},
-                                                  {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")},
-                                                  {QStringLiteral("move_batch"), QStringLiteral("el_arc.png")},
-                                                  {QStringLiteral("pleat"), QStringLiteral("triangle.png")},
-                                                  {QStringLiteral("pleat_mid"), QStringLiteral("height.png")},
-                                                  {QStringLiteral("flounce_spiral"),
-                                                   QStringLiteral("point_of_intersection_circles.png")}};
-    return borrowed;
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -181,12 +164,7 @@ auto OToolBarCatalogue::IconFor(const QString &id) -> QIcon
         return QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg").arg(theme));
     }
 
-    const QString borrowed = BorrowedToolIcons().value(id);
-    if (not borrowed.isEmpty())
-    {
-        return VTheme::GetIconResource(QStringLiteral("toolicon"), borrowed);
-    }
-
+    // Every tool has its own artwork now, in both themes: `<id>.svg` under :/tools/.
     return QIcon(QStringLiteral(":/tools/%1/%2.svg").arg(theme, id));
 }
 
@@ -202,13 +180,15 @@ auto OToolBarCatalogue::DrawGroups() -> QVector<Group>
           QStringLiteral("normal"), QStringLiteral("bisector"), QStringLiteral("height"),
           QStringLiteral("point_of_intersection"), QStringLiteral("intersect"),
           QStringLiteral("shoulder"), QStringLiteral("triangle"),
-          QStringLiteral("line_intersect_axis")}, ModeDraw},
+          QStringLiteral("line_intersect_axis"), QStringLiteral("rectangle")}, ModeDraw},
         {QStringLiteral("line"),       GroupName(QStringLiteral("line")),
          {QStringLiteral("line")}, ModeDraw},
         {QStringLiteral("curves"),     GroupName(QStringLiteral("curves")),
          {QStringLiteral("cubic_bezier"), QStringLiteral("cubic_bezier_path"),
           QStringLiteral("curve_intersect_axis"), QStringLiteral("intersection_curves"),
-          QStringLiteral("parallel_curve"), QStringLiteral("graduated_curve_offseting")}, ModeDraw},
+          QStringLiteral("parallel_curve"), QStringLiteral("graduated_curve_offseting"),
+          QStringLiteral("curve"), QStringLiteral("curve_cut_point"), QStringLiteral("armhole_curve"),
+          QStringLiteral("spiral"), QStringLiteral("flounce_spiral")}, ModeDraw},
         {QStringLiteral("arcs"),       GroupName(QStringLiteral("arcs")),
          {QStringLiteral("arc"), QStringLiteral("arc_with_length"), QStringLiteral("el_arc"),
           QStringLiteral("el_arc_with_length"), QStringLiteral("arc_cut"), QStringLiteral("arc_start"),
@@ -218,18 +198,23 @@ auto OToolBarCatalogue::DrawGroups() -> QVector<Group>
           QStringLiteral("point_of_contact")}, ModeDraw},
         {QStringLiteral("operations"), GroupName(QStringLiteral("operations")),
          {QStringLiteral("flipping_axis"), QStringLiteral("flipping_line"), QStringLiteral("rotation"),
-          QStringLiteral("move"), QStringLiteral("true_darts")}, ModeDraw},
+          QStringLiteral("move"), QStringLiteral("true_darts"), QStringLiteral("close_dart"),
+          QStringLiteral("dart_cap"), QStringLiteral("transfert"), QStringLiteral("spread"),
+          QStringLiteral("move_batch"), QStringLiteral("pleat"), QStringLiteral("pleat_mid")}, ModeDraw},
         {QStringLiteral("pieces"),     GroupName(QStringLiteral("pieces")),
          {QStringLiteral("new_detail"), QStringLiteral("path"), QStringLiteral("insert_node"),
           QStringLiteral("place_label")}, ModeDraw},
-        {QStringLiteral("new"),        GroupName(QStringLiteral("new")),
-         {QStringLiteral("curve"), QStringLiteral("curve_cut_point"), QStringLiteral("armhole_curve"),
-          QStringLiteral("close_dart"), QStringLiteral("dart_cap"), QStringLiteral("rectangle"),
-          QStringLiteral("transfert"), QStringLiteral("spiral"), QStringLiteral("spread"),
-          QStringLiteral("move_batch"), QStringLiteral("pleat"), QStringLiteral("pleat_mid"),
-          QStringLiteral("flounce_spiral")}, ModeDraw},
     };
     // clang-format on
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolBarCatalogue::HiddenByDefault() -> QStringList
+{
+    // Arc start and Arc end are redundant with the "create start/end point" boxes of Arc and Arc
+    // with given length; True darts is superseded by Close dart. Hidden, not removed: the three
+    // stay in their group's table above, which is what keeps them present in the dispatch list.
+    return {QStringLiteral("arc_start"), QStringLiteral("arc_end"), QStringLiteral("true_darts")};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -282,10 +267,6 @@ auto OToolBarCatalogue::GroupName(const QString &key) -> QString
     if (key == QStringLiteral("pieces"))
     {
         return QCoreApplication::translate("DrawToolBar", "Pieces");
-    }
-    if (key == QStringLiteral("new"))
-    {
-        return QCoreApplication::translate("DrawToolBar", "New");
     }
     if (key == QStringLiteral("exportTemplates"))
     {

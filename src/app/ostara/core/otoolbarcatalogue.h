@@ -86,11 +86,17 @@ auto ToolName(const QString &id) -> QString;
 /// Whether the button arms a tool (true) or opens a window (false).
 auto IsCheckable(const QString &id) -> bool;
 
-/// The icon of a tool in the current theme, borrowed artwork included.
+/// The icon of a tool in the current theme.
 auto IconFor(const QString &id) -> QIcon;
 
-/// The eight groups of the Draw mode, in their shipped order and content.
+/// The seven groups of the Draw mode, in their shipped order and content.
 auto DrawGroups() -> QVector<Group>;
+
+/// The tools Ostara leaves out of the shipped organisation. They are real tools, still listed by
+/// `DrawTools()` — the preferences page offers them in the list of tools to dispatch — but a
+/// `Default()` layout does not show them until the user puts them back. This is the "hidden by
+/// absence" of the toolbar spec: nothing is stored for them, the default simply does not name them.
+auto HiddenByDefault() -> QStringList;
 
 /// The groups of the other modes. They are not user-configurable and the palette builds them
 /// as they are.
