@@ -32,6 +32,7 @@
 #include "../vlayout/vlayoutexporter.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "vmisc/FactoryWidgets.h"
+#include "vtheme.h"
 #include "ui_dialogsavelayout.h"
 
 #include <QDir>
@@ -157,6 +158,7 @@ DialogSaveLayout::DialogSaveLayout(int count, const QString &fileName, QWidget *
     ui->lineEditPath->setText(VAbstractValApplication::VApp()->ValentinaSettings()->GetPathLayoutExport());
 
     connect(ui->toolButtonScaleConnected, &QToolButton::clicked, this, &DialogSaveLayout::ToggleScaleConnection);
+    UpdateScaleConnectionIcon();
 
     connect(ui->doubleSpinBoxHorizontalScale, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this,
             &DialogSaveLayout::HorizontalScaleChanged);
@@ -621,11 +623,15 @@ void DialogSaveLayout::ShowExample()
 void DialogSaveLayout::ToggleScaleConnection()
 {
     m_scaleConnected = not m_scaleConnected;
+    UpdateScaleConnectionIcon();
+}
 
-    QIcon icon;
-    icon.addFile(m_scaleConnected ? QStringLiteral(":/icon/32x32/link.png")
-                                  : QStringLiteral(":/icon/32x32/broken_link.png"));
-    ui->toolButtonScaleConnected->setIcon(icon);
+//---------------------------------------------------------------------------------------------------------------------
+/// The proportions lock: a whole chain when the two scales are bound, a broken one when they are not.
+void DialogSaveLayout::UpdateScaleConnectionIcon()
+{
+    ui->toolButtonScaleConnected->setIcon(
+        VTheme::ThemedIcon(m_scaleConnected ? QStringLiteral("link-simple") : QStringLiteral("link-break")));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

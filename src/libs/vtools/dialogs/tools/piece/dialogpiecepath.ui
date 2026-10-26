@@ -122,9 +122,6 @@
            <property name="text">
             <string notr="true">...</string>
            </property>
-           <property name="icon">
-            <iconset theme="list-remove"/>
-           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
@@ -140,9 +137,6 @@
            </property>
            <property name="text">
             <string notr="true">...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="format-text-strikethrough"/>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -160,9 +154,6 @@
            <property name="text">
             <string notr="true">...</string>
            </property>
-           <property name="icon">
-            <iconset theme="snap-nodes-rotation-center"/>
-           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
@@ -178,9 +169,6 @@
            </property>
            <property name="text">
             <string notr="true">...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="draw-star"/>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -198,9 +186,6 @@
            <property name="text">
             <string notr="true">...</string>
            </property>
-           <property name="icon">
-            <iconset theme="add-placemark"/>
-           </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
@@ -216,9 +201,6 @@
            </property>
            <property name="text">
             <string notr="true">...</string>
-           </property>
-           <property name="icon">
-            <iconset theme="edit-delete"/>
            </property>
           </widget>
          </item>
@@ -244,10 +226,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset theme="go-top">
-             <normaloff>../../../../../app/tape</normaloff>../../../../../app/tape</iconset>
-           </property>
           </widget>
          </item>
          <item>
@@ -260,10 +238,6 @@
            </property>
            <property name="text">
             <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="go-up">
-             <normaloff>../../../../../app/tape</normaloff>../../../../../app/tape</iconset>
            </property>
           </widget>
          </item>
@@ -278,10 +252,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset theme="go-down">
-             <normaloff>../../../../../app/tape</normaloff>../../../../../app/tape</iconset>
-           </property>
           </widget>
          </item>
          <item>
@@ -294,10 +264,6 @@
            </property>
            <property name="text">
             <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="go-bottom">
-             <normaloff>../../../../../app/tape</normaloff>../../../../../app/tape</iconset>
            </property>
           </widget>
          </item>
@@ -517,9 +483,6 @@
            </property>
            <property name="text">
             <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="go-down"/>
            </property>
            <property name="iconSize">
             <size>
@@ -746,9 +709,6 @@
               <property name="text">
                <string notr="true"/>
               </property>
-              <property name="icon">
-               <iconset theme="go-down"/>
-              </property>
               <property name="iconSize">
                <size>
                 <width>16</width>
@@ -936,9 +896,6 @@
               </property>
               <property name="text">
                <string notr="true"/>
-              </property>
-              <property name="icon">
-               <iconset theme="go-down"/>
               </property>
               <property name="iconSize">
                <size>
@@ -1526,10 +1483,6 @@
                   <property name="text">
                    <string notr="true"/>
                   </property>
-                  <property name="icon">
-                   <iconset theme="go-down">
-                    <normaloff>../</normaloff>../</iconset>
-                  </property>
                   <property name="iconSize">
                    <size>
                     <width>16</width>
@@ -1746,10 +1699,6 @@
                   </property>
                   <property name="text">
                    <string notr="true"/>
-                  </property>
-                  <property name="icon">
-                   <iconset theme="go-down">
-                    <normaloff>../</normaloff>../</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -1968,10 +1917,6 @@
                   <property name="text">
                    <string notr="true"/>
                   </property>
-                  <property name="icon">
-                   <iconset theme="go-down">
-                    <normaloff>../</normaloff>../</iconset>
-                  </property>
                   <property name="iconSize">
                    <size>
                     <width>16</width>
@@ -2171,9 +2116,6 @@
                </property>
                <property name="text">
                 <string notr="true"/>
-               </property>
-               <property name="icon">
-                <iconset theme="go-down"/>
                </property>
                <property name="iconSize">
                 <size>
@@ -2402,9 +2344,6 @@
            </property>
            <property name="text">
             <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="go-down"/>
            </property>
            <property name="iconSize">
             <size>

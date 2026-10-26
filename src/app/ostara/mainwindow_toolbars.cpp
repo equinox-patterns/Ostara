@@ -384,8 +384,20 @@ void MainWindow::UpdateMenuIcons()
         QIcon(QStringLiteral(":/icons/%1/floppy-disk_%1.svg").arg(themeDir)));
     ui->actionSaveAs->setIcon(
         QIcon(QStringLiteral(":/icons/%1/file-arrow-up_%1.svg").arg(themeDir)));
-    ui->actionPattern_properties->setIcon(
-        QIcon(QStringLiteral(":/icons/%1/info_%1.svg").arg(themeDir)));
+
+    // Les entrées de menu qui empruntaient encore une icône au thème d'icônes : elles viennent maintenant
+    // de notre bibliothèque, comme le reste, et suivent le thème clair/sombre.
+    ui->actionAbout_Ostara->setIcon(QIcon(QStringLiteral(":/icons/%1/info_%1.svg").arg(themeDir)));
+    ui->actionExit->setIcon(QIcon(QStringLiteral(":/icons/%1/arrow-square-out_%1.svg").arg(themeDir)));
+    ui->actionZoomOriginal->setIcon(QIcon(QStringLiteral(":/icons/%1/magnifying-glass_%1.svg").arg(themeDir)));
+    ui->actionZoomFitBest->setIcon(QIcon(QStringLiteral(":/icons/%1/arrows-out-simple_%1.svg").arg(themeDir)));
+    ui->actionIncreaseLabelFont->setIcon(QIcon(QStringLiteral(":/icons/%1/plus-circle_%1.svg").arg(themeDir)));
+    ui->actionDecreaseLabelFont->setIcon(QIcon(QStringLiteral(":/icons/%1/minus-circle_%1.svg").arg(themeDir)));
+    ui->actionOriginalLabelFont->setIcon(QIcon(QStringLiteral(":/icons/%1/text-aa_%1.svg").arg(themeDir)));
+    ui->actionLoadWatermark->setIcon(QIcon(QStringLiteral(":/icons/%1/image_%1.svg").arg(themeDir)));
+    ui->actionRemoveWatermark->setIcon(QIcon(QStringLiteral(":/icons/%1/trash_%1.svg").arg(themeDir)));
+    ui->actionWatermarkEditor->setIcon(QIcon(QStringLiteral(":/icons/%1/images_%1.svg").arg(themeDir)));
+    ui->actionAutoArrangeLabels->setIcon(QIcon(QStringLiteral(":/icons/%1/text-align-center_%1.svg").arg(themeDir)));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

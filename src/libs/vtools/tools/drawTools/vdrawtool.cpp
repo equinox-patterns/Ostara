@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "vdrawtool.h"
+#include "../vtheme/vtheme.h"
 
 #include <QDialog>
 #include <QDomNode>
@@ -275,7 +276,7 @@ void VDrawTool::RunContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 it
     QAction const *actionOption = nullptr;
     if (withOptions)
     {
-        actionOption = menu.addAction(FromTheme(VThemeIcon::PreferencesOther), VDrawTool::tr("Options"));
+        actionOption = menu.addAction(VTheme::ThemedIcon(QStringLiteral("gear-six")), VDrawTool::tr("Options"));
     }
 
     // add the menu "add to group" to the context menu
@@ -368,7 +369,7 @@ auto VDrawTool::CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGrou
         return actionsAddToGroup;
     }
 
-    QMenu *menuAddToGroup = menu.addMenu(FromTheme(VThemeIcon::ListAdd), tr("Add to layer"));
+    QMenu *menuAddToGroup = menu.addMenu(VTheme::ThemedIcon(QStringLiteral("plus")), tr("Add to layer"));
 
     auto list = QStringList(groupsNotContainingItem.values());
     list.sort(Qt::CaseInsensitive);
@@ -400,7 +401,7 @@ auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActio
         return actionsRemoveFromGroup;
     }
 
-    QMenu *menuRemoveFromGroup = menu.addMenu(FromTheme(VThemeIcon::ListRemove), tr("Remove from layer"));
+    QMenu *menuRemoveFromGroup = menu.addMenu(VTheme::ThemedIcon(QStringLiteral("minus")), tr("Remove from layer"));
 
     auto list = QStringList(groupsContainingItem.values());
     list.sort(Qt::CaseInsensitive);
@@ -481,7 +482,7 @@ auto VDrawTool::CreateRemoveAction(QMenu &menu) -> QAction *
 {
     using namespace Qt::Literals::StringLiterals;
 
-    QAction *actionRemove = menu.addAction(FromTheme(VThemeIcon::EditDelete), VDrawTool::tr("Delete"));
+    QAction *actionRemove = menu.addAction(VTheme::ThemedIcon(QStringLiteral("trash")), VDrawTool::tr("Delete"));
     RemoveStatus const status = IsRemovable();
     actionRemove->setEnabled(status == RemoveStatus::Removable || status == RemoveStatus::Blocked);
 

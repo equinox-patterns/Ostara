@@ -68,8 +68,10 @@
 #include <QDebug>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QToolButton>
 #include <QUndoStack>
 #include <QEvent>
+#include <QHash>
 #include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
@@ -261,13 +263,13 @@ void DeployFormula(QDialog *dialog, QPlainTextEdit *formula, QPushButton *button
     {
         formula->setFixedHeight(dialogMaxFormulaHeight);
         // Set icon from theme (internal for Windows system)
-        buttonGrowLength->setIcon(FromTheme(VThemeIcon::GoNext));
+        buttonGrowLength->setIcon(VTheme::ThemedIcon(QStringLiteral("arrow-right")));
     }
     else
     {
         formula->setFixedHeight(formulaBaseHeight);
         // Set icon from theme (internal for Windows system)
-        buttonGrowLength->setIcon(FromTheme(VThemeIcon::GoDown));
+        buttonGrowLength->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-down")));
     }
 
     // I found that after change size of formula field, it was filed for angle formula, field for formula became black.
@@ -397,6 +399,58 @@ private:
     QIcon m_darkIcon;
 };
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Les icônes de rangement des listes et des chemins : Monter, Descendre, Début, Fin, Ajouter, Supprimer…
+///
+/// Elles venaient du thème Eleven par l'attribut `theme=` des `.ui`, c'est-à-dire des icônes freedesktop
+/// héritées de Valentina. Ostara n'a qu'une bibliothèque, et elle suit le thème clair/sombre : on les pose ici
+/// par le nom que le `.ui` donne à chaque bouton, une fois, à l'ouverture du dialogue.
+void ApplyToolButtonIcons(QWidget *root)
+{
+    static const QHash<QString, QString> glyphs{
+        {QStringLiteral("toolButtonAdd"), QStringLiteral("plus")},
+        {QStringLiteral("toolButtonAddPoint"), QStringLiteral("plus")},
+        {QStringLiteral("toolButtonRemove"), QStringLiteral("trash")},
+        {QStringLiteral("toolButtonRemovePoint"), QStringLiteral("trash")},
+        {QStringLiteral("toolButtonDelete"), QStringLiteral("trash")},
+        {QStringLiteral("toolButtonUp"), QStringLiteral("caret-up")},
+        {QStringLiteral("toolButtonUpPC"), QStringLiteral("caret-up")},
+        {QStringLiteral("toolButtonDown"), QStringLiteral("caret-down")},
+        {QStringLiteral("toolButtonDownPC"), QStringLiteral("caret-down")},
+        {QStringLiteral("toolButtonTop"), QStringLiteral("caret-line-up")},
+        {QStringLiteral("toolButtonBottom"), QStringLiteral("caret-line-down")},
+        {QStringLiteral("toolButtonReverse"), QStringLiteral("minus")},
+        {QStringLiteral("toolButtonExcluded"), QStringLiteral("text-strikethrough")},
+        {QStringLiteral("toolButtonTurnPoint"), QStringLiteral("arrows-clockwise")},
+        {QStringLiteral("toolButtonCheckUniqness"), QStringLiteral("star")},
+        {QStringLiteral("toolButtonPassmark"), QStringLiteral("flag")},
+    };
+
+    if (root == nullptr)
+    {
+        return;
+    }
+
+    for (QToolButton *button : root->findChildren<QToolButton *>())
+    {
+        const QString glyph = glyphs.value(button->objectName());
+        if (!glyph.isEmpty())
+        {
+            button->setIcon(VTheme::ThemedIcon(glyph));
+        }
+    }
+
+    // Les chevrons des champs de formule : le .ui les déclarait en `go-down`, c'est un caret.
+    for (QPushButton *button : root->findChildren<QPushButton *>())
+    {
+        if (button->objectName().startsWith(QLatin1String("pushButtonGrow"))
+            || button->objectName().startsWith(QLatin1String("pushButtonShow")))
+        {
+            button->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-down")));
+        }
+    }
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 void InitFormulaGrowButton(QPushButton *button)
@@ -1153,7 +1207,7 @@ auto EachPointLabelIsUnique(QListWidget *listWidget) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto DialogWarningIcon(const QWidget *w) -> QString
 {
-    const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
+    const QIcon icon = VTheme::ThemedIcon(QStringLiteral("warning-fill"));
 
     qreal scaleFactor = 1;
     if (w != nullptr)

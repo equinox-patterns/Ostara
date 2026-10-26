@@ -39,6 +39,7 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../toolsdef.h"
 #include "themeDef.h"
+#include "../vtheme/vtheme.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
@@ -430,11 +431,11 @@ void VBackgroundImageItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *even
 #else
     const QString actionShowTitle = tr("Show in Explorer");
 #endif
-    QAction *actionShow = menu.addAction(FromTheme(VThemeIcon::SystemSearch), actionShowTitle);
+    QAction *actionShow = menu.addAction(VTheme::ThemedIcon(QStringLiteral("magnifying-glass")), actionShowTitle);
     actionShow->setVisible(false);
     actionShow->setEnabled(QFileInfo::exists(m_image.FilePath()));
 
-    QAction *actionSaveAs = menu.addAction(FromTheme(VThemeIcon::DocumentSaveAs), tr("Save as …"));
+    QAction *actionSaveAs = menu.addAction(VTheme::ThemedIcon(QStringLiteral("file-arrow-up")), tr("Save as …"));
     actionSaveAs->setVisible(false);
 
     if (not m_image.FilePath().isEmpty())
@@ -449,7 +450,7 @@ void VBackgroundImageItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *even
     QAction *actionReset = menu.addAction(tr("Reset transformation"));
     actionReset->setEnabled(not m_image.Hold());
 
-    const QAction *actionRemove = menu.addAction(FromTheme(VThemeIcon::EditDelete), tr("Delete"));
+    const QAction *actionRemove = menu.addAction(VTheme::ThemedIcon(QStringLiteral("trash")), tr("Delete"));
 
     QAction  const*selectedAction = menu.exec(event->screenPos());
     if (selectedAction == holdOption)

@@ -91,8 +91,6 @@ auto main(int argc, char **argv) -> int
 {
     Q_INIT_RESOURCE(schema); // NOLINT
 
-    Q_INIT_RESOURCE(win_light_theme); // NOLINT
-    Q_INIT_RESOURCE(win_dark_theme);  // NOLINT
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     XERCES_CPP_NAMESPACE::XMLPlatformUtils::Initialize();

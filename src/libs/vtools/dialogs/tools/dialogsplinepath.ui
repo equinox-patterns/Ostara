@@ -89,9 +89,6 @@
                <property name="text">
                 <string notr="true">...</string>
                </property>
-               <property name="icon">
-                <iconset theme="list-add"/>
-               </property>
               </widget>
              </item>
              <item>
@@ -104,9 +101,6 @@
                </property>
                <property name="text">
                 <string notr="true">...</string>
-               </property>
-               <property name="icon">
-                <iconset theme="edit-delete"/>
                </property>
               </widget>
              </item>
@@ -236,10 +230,6 @@
                    <property name="text">
                     <string notr="true"/>
                    </property>
-                   <property name="icon">
-                    <iconset theme="go-top">
-                     <normaloff>../../../../app/tape</normaloff>../../../../app/tape</iconset>
-                   </property>
                   </widget>
                  </item>
                  <item alignment="Qt::AlignmentFlag::AlignLeft">
@@ -252,10 +242,6 @@
                    </property>
                    <property name="text">
                     <string notr="true"/>
-                   </property>
-                   <property name="icon">
-                    <iconset theme="go-up">
-                     <normaloff>../../../../app/tape</normaloff>../../../../app/tape</iconset>
                    </property>
                   </widget>
                  </item>
@@ -270,10 +256,6 @@
                    <property name="text">
                     <string notr="true"/>
                    </property>
-                   <property name="icon">
-                    <iconset theme="go-down">
-                     <normaloff>../../../../app/tape</normaloff>../../../../app/tape</iconset>
-                   </property>
                   </widget>
                  </item>
                  <item alignment="Qt::AlignmentFlag::AlignLeft">
@@ -286,10 +268,6 @@
                    </property>
                    <property name="text">
                     <string notr="true"/>
-                   </property>
-                   <property name="icon">
-                    <iconset theme="go-bottom">
-                     <normaloff>../../../../app/tape</normaloff>../../../../app/tape</iconset>
                    </property>
                   </widget>
                  </item>

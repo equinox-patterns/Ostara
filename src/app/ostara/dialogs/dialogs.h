@@ -31,7 +31,6 @@
 
 #include "dialoghistory.h"
 #include "dialogincrements.h"
-#include "dialogpatternproperties.h"
 #include "dialognewpattern.h"
 #include "oaboutdialog.h"
 #include "dialogpreferences.h"

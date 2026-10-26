@@ -104,6 +104,7 @@ private slots:
     void PathChanged(const QString &text);
     void ShowExample();
     void ToggleScaleConnection();
+    void UpdateScaleConnectionIcon();
     void HorizontalScaleChanged(double d);
     void VerticalScaleChanged(double d);
 

@@ -51,9 +51,6 @@
        <property name="text">
         <string notr="true">Add</string>
        </property>
-       <property name="icon">
-        <iconset theme="list-add"/>
-       </property>
       </widget>
      </item>
      <item>
@@ -63,9 +60,6 @@
        </property>
        <property name="text">
         <string notr="true">Remove</string>
-       </property>
-       <property name="icon">
-        <iconset theme="edit-delete"/>
        </property>
       </widget>
      </item>

@@ -38,6 +38,7 @@
 #include <QtConcurrent>
 #include <memory>
 
+#include "vtheme.h"
 #include "../ifc/xml/vwatermarkconverter.h"
 #include "../vformat/vwatermark.h"
 #include "../vmisc/compatibility.h"
@@ -60,6 +61,16 @@ WatermarkWindow::WatermarkWindow(const QString &patternPath, QWidget *parent)
     m_patternPath(patternPath)
 {
     ui->setupUi(this);
+
+    ui->toolButtonFont->setIcon(VTheme::ThemedIcon(QStringLiteral("text-aa")));
+
+    // La fenêtre a ses propres menus : ses entrées prennent les icônes de la bibliothèque, pas celles
+    // d'un thème d'icônes externe.
+    ui->actionNew->setIcon(VTheme::ThemedIcon(QStringLiteral("file-plus")));
+    ui->actionOpen->setIcon(VTheme::ThemedIcon(QStringLiteral("folder-open")));
+    ui->actionSave->setIcon(VTheme::ThemedIcon(QStringLiteral("floppy-disk")));
+    ui->actionSaveAs->setIcon(VTheme::ThemedIcon(QStringLiteral("file-arrow-up")));
+    ui->actionExit->setIcon(VTheme::ThemedIcon(QStringLiteral("arrow-square-out")));
 
     // Prevent stealing focus when scrolling
     VMouseWheelWidgetAdjustmentGuard::InstallEventFilter(ui->spinBoxOpacity);

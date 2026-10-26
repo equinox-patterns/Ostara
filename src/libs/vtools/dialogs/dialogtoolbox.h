@@ -103,6 +103,9 @@ void DeployFormula(QDialog *dialog, QPlainTextEdit *formula, QPushButton *button
  * button, whatever icon the dialog set (Icons.md §2, "règle fond accent"). Safe to call more than once.
  */
 void InitFormulaGrowButton(QPushButton *button);
+
+/** @brief Pose les icônes de rangement (monter, descendre, ajouter, supprimer…) sur les boutons d'un dialogue à outils. */
+void ApplyToolButtonIcons(QWidget *root);
 auto FilterObject(QObject *object, QEvent *event) -> bool;
 auto ToInternalNotation(const QString &formula) -> QString;
 

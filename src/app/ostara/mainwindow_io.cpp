@@ -620,7 +620,6 @@ void MainWindow::Clear()
     ui->actionOptionDraw->setEnabled(false);
     ui->actionSave->setEnabled(false);
     ui->actionSaveAs->setEnabled(false);
-    ui->actionPattern_properties->setEnabled(false);
     ui->actionZoomIn->setEnabled(false);
     ui->actionZoomOut->setEnabled(false);
     ui->actionZoomFitBest->setEnabled(false);

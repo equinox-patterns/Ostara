@@ -414,7 +414,7 @@ void DialogPiecePath::CheckState()
     }
     else
     {
-        const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
+        const QIcon icon = VTheme::ThemedIcon(QStringLiteral("warning-fill"));
         ui->tabWidget->setTabIcon(tabSeamAllowanceIndex, icon);
     }
 
@@ -427,7 +427,7 @@ void DialogPiecePath::CheckState()
     }
     else
     {
-        const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
+        const QIcon icon = VTheme::ThemedIcon(QStringLiteral("warning-fill"));
         ui->tabWidget->setTabIcon(tabControlIndex, icon);
     }
 
@@ -442,7 +442,7 @@ void DialogPiecePath::CheckState()
     const bool allFormulasValid = m_flagFormulaPassmarkLength && m_flagFormulaPassmarkWidth
                                   && m_flagFormulaPassmarkAngle && m_flagFormulaPassmarkVisible;
 
-    const QIcon icon = FromTheme(VThemeIcon::DialogWarning);
+    const QIcon icon = VTheme::ThemedIcon(QStringLiteral("warning-fill"));
 
     ui->tabWidget->setTabIcon(ui->tabWidget->indexOf(ui->tabPassmarks), allFormulasValid ? QIcon() : icon);
 
@@ -2955,7 +2955,7 @@ auto DialogPiecePath::InitContextMenu(QMenu *menu, const VPieceNode &rowNode) ->
     contextMenu.insert(static_cast<int>(ContextMenuOption::Excluded), actionExcluded);
 
     QAction *actionDelete =
-        menu->addAction(FromTheme(VThemeIcon::EditDelete), QApplication::translate("DialogSeamAllowance", "Delete"));
+        menu->addAction(VTheme::ThemedIcon(QStringLiteral("trash")), QApplication::translate("DialogSeamAllowance", "Delete"));
     actionDelete->setShortcut(QKeySequence::Delete);
     contextMenu.insert(static_cast<int>(ContextMenuOption::Delete), actionDelete);
 

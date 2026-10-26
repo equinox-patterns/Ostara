@@ -267,7 +267,6 @@ void MainWindow::FullParseFile()
             }
         }
     }
-    ui->actionPattern_properties->setEnabled(true);
 
     GlobalChangePP(patternPiece);
 

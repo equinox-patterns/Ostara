@@ -166,11 +166,11 @@ auto OToolBarCatalogue::IconFor(const QString &id) -> QIcon
     const QString theme = VTheme::ColorSheme() == VColorSheme::Dark ? QStringLiteral("dark")
                                                                     : QStringLiteral("light");
 
-    // Three tools carry an icon the application sets: a PNG with no theme, or an SVG of :/icons/
-    // that has two. There is no <id>.svg for them under :/tools/.
+    // Three tools carry an icon our library sets, because there is no <id>.svg for them under
+    // :/tools/. They take the theme variant, so they follow Light and Dark like the rest.
     if (id == QStringLiteral("detail_export"))
     {
-        return QIcon(QStringLiteral(":/icon/32x32/export_to_picture_document.png"));
+        return QIcon(QStringLiteral(":/icons/%1/file-image_%1.svg").arg(theme));
     }
     if (id == QStringLiteral("export_templates"))
     {

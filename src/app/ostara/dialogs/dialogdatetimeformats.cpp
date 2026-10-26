@@ -28,6 +28,7 @@
 
 #include "dialogdatetimeformats.h"
 #include "ui_dialogdatetimeformats.h"
+#include "vtheme.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogDateTimeFormats::DialogDateTimeFormats(const QDate &date, const QStringList &predefinedFormats,
@@ -139,6 +140,9 @@ void DialogDateTimeFormats::ShowFormatDetails()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogDateTimeFormats::Init(const QStringList &predefined, const QStringList &userDefined)
 {
+    ui->toolButtonAdd->setIcon(VTheme::ThemedIcon(QStringLiteral("plus")));
+    ui->toolButtonRemove->setIcon(VTheme::ThemedIcon(QStringLiteral("trash")));
+
     SetFormatLines(predefined, userDefined);
 
 

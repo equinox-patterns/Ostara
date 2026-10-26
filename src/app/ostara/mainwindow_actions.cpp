@@ -28,6 +28,7 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+#include "vtheme.h"
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "themeDef.h"
@@ -37,7 +38,6 @@
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
 #include "dialogs/oaboutdialog.h"
-#include "dialogs/dialogpatternproperties.h"
 #include "vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
@@ -118,7 +118,6 @@ void MainWindow::SetEnableWidgets(bool enable)
     ui->actionOptionDraw->setEnabled(enableOnDrawStage);
     ui->actionSave->setEnabled(isWindowModified() && enable && not m_patternReadOnly);
     ui->actionSaveAs->setEnabled(enable);
-    ui->actionPattern_properties->setEnabled(enableOnDesignStage);
     ui->actionZoomIn->setEnabled(enable);
     ui->actionZoomOut->setEnabled(enable);
     ui->actionArrowTool->setEnabled(enableOnDesignStage);
@@ -314,14 +313,14 @@ void MainWindow::CreateMenus()
     connect(undoAction, &QAction::triggered, m_undoGroup, &QUndoGroup::undo);
     connect(undoAction, &QAction::triggered, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RefreshOptions);
     m_shortcutActions.insert(VShortcutAction::Undo, undoAction);
-    undoAction->setIcon(FromTheme(VThemeIcon::EditUndo));
+    undoAction->setIcon(VTheme::ThemedIcon(QStringLiteral("arrow-counter-clockwise")));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, undoAction);
 
     redoAction = new QAction(tr("&Redo"), this);
     connect(redoAction, &QAction::triggered, m_undoGroup, &QUndoGroup::redo);
     connect(redoAction, &QAction::triggered, m_dockManager->toolOptions(), &VToolOptionsPropertyBrowser::RefreshOptions);
     m_shortcutActions.insert(VShortcutAction::Redo, redoAction);
-    redoAction->setIcon(FromTheme(VThemeIcon::EditRedo));
+    redoAction->setIcon(VTheme::ThemedIcon(QStringLiteral("arrow-clockwise")));
     ui->menuPatternPiece->insertAction(ui->actionLast_tool, redoAction);
 
     // With the group no longer building these actions, nothing writes their enabled state behind
@@ -340,7 +339,7 @@ void MainWindow::CreateMenus()
 
     m_separatorAct = new QAction(this);
     m_separatorAct->setSeparator(true);
-    ui->menuFile->insertAction(ui->actionPattern_properties, m_separatorAct);
+    ui->menuFile->insertAction(ui->actionClosePattern, m_separatorAct);
 
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 }
@@ -437,16 +436,6 @@ void MainWindow::CreateActions()
 
     connect(ui->actionLast_tool, &QAction::triggered, this, &MainWindow::LastUsedTool);
 
-    connect(ui->actionPattern_properties, &QAction::triggered, this,
-            [this]()
-            {
-                DialogPatternProperties proper(doc, pattern, this);
-                connect(&proper, &DialogPatternProperties::UpddatePieces, m_sceneDetails,
-                        &VMainGraphicsScene::UpdatePiecePassmarks);
-                proper.exec();
-            });
-
-    ui->actionPattern_properties->setEnabled(false);
     connect(ui->actionClosePattern, &QAction::triggered, this,
             [this]()
             {

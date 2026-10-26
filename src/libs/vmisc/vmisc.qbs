@@ -136,19 +136,9 @@ VLib {
         name: "Resources"
         prefix: "share/resources/"
         files: [
-            "icon.qrc",
             "flags.qrc",
             "scenestyle.qrc",
             "cursor.qrc",
-        ]
-    }
-
-    Group {
-        name: "Win icon themes"
-        prefix: "share/resources/"
-        files: [
-            "win_light_theme.qrc",
-            "win_dark_theme.qrc"
         ]
     }
 

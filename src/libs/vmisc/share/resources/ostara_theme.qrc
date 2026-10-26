@@ -1,7 +1,19 @@
 <RCC>
+    <qresource prefix="/">
+        <!-- Les deux ressources qui gardent leur ancien chemin :/icon/... alors que les fichiers vivent dans share/. -->
+        <file alias="icon/64x64/icon64x64.png">../../../../../share/icons/app/Ostara-64.png</file>
+        <file alias="icon/svg/broken_path.svg">../../../../../share/icons/ui/broken_path.svg</file>
+    </qresource>
     <qresource prefix="/ostara">
         <file alias="light.qss">../../../../../share/themes/generated/light.qss</file>
         <file alias="dark.qss">../../../../../share/themes/generated/dark.qss</file>
+            <file alias="flag_light.svg">../../../../../share/themes/icons/light/flag_light.svg</file>
+            <file alias="arrow-square-out_light.svg">../../../../../share/themes/icons/light/arrow-square-out_light.svg</file>
+            <file alias="plus-circle_light.svg">../../../../../share/themes/icons/light/plus-circle_light.svg</file>
+            <file alias="minus-circle_light.svg">../../../../../share/themes/icons/light/minus-circle_light.svg</file>
+            <file alias="image_light.svg">../../../../../share/themes/icons/light/image_light.svg</file>
+            <file alias="images_light.svg">../../../../../share/themes/icons/light/images_light.svg</file>
+            <file alias="text-align-center_light.svg">../../../../../share/themes/icons/light/text-align-center_light.svg</file>
     </qresource>
     <qresource prefix="/icons/light">
         <file alias="square_accent.svg">../../../../../share/themes/icons/light/square_accent.svg</file>
@@ -27,6 +39,7 @@
         <file alias="x_light.svg">../../../../../share/themes/icons/light/x_light.svg</file>
         <file alias="check_light.svg">../../../../../share/themes/icons/light/check_light.svg</file>
         <file alias="link-break_light.svg">../../../../../share/themes/icons/light/link-break_light.svg</file>
+        <file alias="link-simple_light.svg">../../../../../share/themes/icons/light/link-simple_light.svg</file>
         <file alias="text-strikethrough_light.svg">../../../../../share/themes/icons/light/text-strikethrough_light.svg</file>
         <file alias="brackets-square_light.svg">../../../../../share/themes/icons/light/brackets-square_light.svg</file>
         <file alias="caret-line-up_light.svg">../../../../../share/themes/icons/light/caret-line-up_light.svg</file>
@@ -99,6 +112,7 @@
         <file alias="plus_light.svg">../../../../../share/themes/icons/light/plus_light.svg</file>
         <file alias="grid-four-fill_light.svg">../../../../../share/themes/icons/light/grid-four-fill_light.svg</file>
         <file alias="file-image-fill_light.svg">../../../../../share/themes/icons/light/file-image-fill_light.svg</file>
+        <file alias="file-image_light.svg">../../../../../share/themes/icons/light/file-image_light.svg</file>
         <file alias="eye_light.svg">../../../../../share/themes/icons/light/eye_light.svg</file>
         <file alias="eye-closed_light.svg">../../../../../share/themes/icons/light/eye-closed_light.svg</file>
         <file alias="minus_light.svg">../../../../../share/themes/icons/light/minus_light.svg</file>
@@ -122,6 +136,14 @@
         <file alias="info-fill_light.svg">../../../../../share/themes/icons/light/info-fill_light.svg</file>
         <file alias="warning-fill_light.svg">../../../../../share/themes/icons/light/warning-fill_light.svg</file>
         <file alias="question-fill_light.svg">../../../../../share/themes/icons/light/question-fill_light.svg</file>
+        <file alias="text-aa_light.svg">../../../../../share/themes/icons/light/text-aa_light.svg</file>
+            <file alias="flag_dark.svg">../../../../../share/themes/icons/dark/flag_dark.svg</file>
+            <file alias="arrow-square-out_dark.svg">../../../../../share/themes/icons/dark/arrow-square-out_dark.svg</file>
+            <file alias="plus-circle_dark.svg">../../../../../share/themes/icons/dark/plus-circle_dark.svg</file>
+            <file alias="minus-circle_dark.svg">../../../../../share/themes/icons/dark/minus-circle_dark.svg</file>
+            <file alias="image_dark.svg">../../../../../share/themes/icons/dark/image_dark.svg</file>
+            <file alias="images_dark.svg">../../../../../share/themes/icons/dark/images_dark.svg</file>
+            <file alias="text-align-center_dark.svg">../../../../../share/themes/icons/dark/text-align-center_dark.svg</file>
     </qresource>
     <qresource prefix="/icons/dark">
         <file alias="square_accent.svg">../../../../../share/themes/icons/dark/square_accent.svg</file>
@@ -147,6 +169,7 @@
         <file alias="x_dark.svg">../../../../../share/themes/icons/dark/x_dark.svg</file>
         <file alias="check_dark.svg">../../../../../share/themes/icons/dark/check_dark.svg</file>
         <file alias="link-break_dark.svg">../../../../../share/themes/icons/dark/link-break_dark.svg</file>
+        <file alias="link-simple_dark.svg">../../../../../share/themes/icons/dark/link-simple_dark.svg</file>
         <file alias="text-strikethrough_dark.svg">../../../../../share/themes/icons/dark/text-strikethrough_dark.svg</file>
         <file alias="brackets-square_dark.svg">../../../../../share/themes/icons/dark/brackets-square_dark.svg</file>
         <file alias="caret-line-up_dark.svg">../../../../../share/themes/icons/dark/caret-line-up_dark.svg</file>
@@ -219,6 +242,7 @@
         <file alias="plus_dark.svg">../../../../../share/themes/icons/dark/plus_dark.svg</file>
         <file alias="grid-four-fill_dark.svg">../../../../../share/themes/icons/dark/grid-four-fill_dark.svg</file>
         <file alias="file-image-fill_dark.svg">../../../../../share/themes/icons/dark/file-image-fill_dark.svg</file>
+        <file alias="file-image_dark.svg">../../../../../share/themes/icons/dark/file-image_dark.svg</file>
         <file alias="eye_dark.svg">../../../../../share/themes/icons/dark/eye_dark.svg</file>
         <file alias="eye-closed_dark.svg">../../../../../share/themes/icons/dark/eye-closed_dark.svg</file>
         <file alias="minus_dark.svg">../../../../../share/themes/icons/dark/minus_dark.svg</file>
@@ -242,5 +266,6 @@
         <file alias="info-fill_dark.svg">../../../../../share/themes/icons/dark/info-fill_dark.svg</file>
         <file alias="warning-fill_dark.svg">../../../../../share/themes/icons/dark/warning-fill_dark.svg</file>
         <file alias="question-fill_dark.svg">../../../../../share/themes/icons/dark/question-fill_dark.svg</file>
+        <file alias="text-aa_dark.svg">../../../../../share/themes/icons/dark/text-aa_dark.svg</file>
     </qresource>
 </RCC>

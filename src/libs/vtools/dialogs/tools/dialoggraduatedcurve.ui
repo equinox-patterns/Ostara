@@ -116,10 +116,6 @@
                   <property name="text">
                    <string notr="true"/>
                   </property>
-                  <property name="icon">
-                   <iconset theme="go-up">
-                    <normaloff>../../../../app/tape</normaloff>../../../../app/tape</iconset>
-                  </property>
                  </widget>
                 </item>
                 <item alignment="Qt::AlignmentFlag::AlignLeft">
@@ -132,10 +128,6 @@
                   </property>
                   <property name="text">
                    <string notr="true"/>
-                  </property>
-                  <property name="icon">
-                   <iconset theme="go-down">
-                    <normaloff>../../../../app/tape</normaloff>../../../../app/tape</iconset>
                   </property>
                  </widget>
                 </item>
@@ -177,9 +169,6 @@
                   <property name="text">
                    <string notr="true"/>
                   </property>
-                  <property name="icon">
-                   <iconset theme="list-add"/>
-                  </property>
                   <property name="popupMode">
                    <enum>QToolButton::ToolButtonPopupMode::DelayedPopup</enum>
                   </property>
@@ -192,9 +181,6 @@
                   </property>
                   <property name="text">
                    <string notr="true"/>
-                  </property>
-                  <property name="icon">
-                   <iconset theme="edit-delete"/>
                   </property>
                  </widget>
                 </item>
@@ -283,10 +269,6 @@
                   </property>
                   <property name="text">
                    <string notr="true"/>
-                  </property>
-                  <property name="icon">
-                   <iconset theme="go-down">
-                    <normaloff>../support</normaloff>../support</iconset>
                   </property>
                   <property name="iconSize">
                    <size>

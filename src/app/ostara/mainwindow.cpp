@@ -469,7 +469,7 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer::singleShot(1s, this, &MainWindow::AskDefaultSettings);
     }
 
-    ui->actionExportFinalMeasurementsToCSV->setIcon(FromTheme(VThemeIcon::DocumentExport));
+    ui->actionExportFinalMeasurementsToCSV->setIcon(VTheme::ThemedIcon(QStringLiteral("file-arrow-down")));
 
     if (VAbstractShortcutManager  const*manager = VAbstractValApplication::VApp()->GetShortcutManager())
     {

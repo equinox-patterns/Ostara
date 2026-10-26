@@ -63,8 +63,6 @@ public:
     static auto GetTemplateSize(PaperSizeTemplate tmpl, Unit unit) -> QSizeF;
     static auto RoundTemplateSize(qreal width, qreal height, Unit unit) -> QSizeF;
 
-    static void InitTemplates(QComboBox *comboBoxTemplates);
-    static void InitTileTemplates(QComboBox *comboBoxTemplates, bool keepCustom = false);
 
 protected:
     using FormatsVector = QStringList;

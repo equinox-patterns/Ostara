@@ -856,13 +856,13 @@ void DialogGraduatedCurve::DeployFormula()
     {
         ui->plainTextEditFormula->setFixedHeight(DIALOG_MAX_FORMULA_HEIGHT);
         // Set icon from theme (internal for Windows system)
-        ui->pushButtonGrow->setIcon(FromTheme(VThemeIcon::GoNext));
+        ui->pushButtonGrow->setIcon(VTheme::ThemedIcon(QStringLiteral("arrow-right")));
     }
     else
     {
         ui->plainTextEditFormula->setFixedHeight(m_formulaBaseHeight);
         // Set icon from theme (internal for Windows system)
-        ui->pushButtonGrow->setIcon(FromTheme(VThemeIcon::GoDown));
+        ui->pushButtonGrow->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-down")));
     }
 
     // I found that after change size of formula field, it was filed for angle formula, field for formula became black.

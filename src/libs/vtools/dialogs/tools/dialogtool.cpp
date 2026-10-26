@@ -156,6 +156,10 @@ void DialogTool::showEvent(QShowEvent *event)
         notes->setMaximumHeight(QWIDGETSIZE_MAX);
     }
 
+    // Les icônes de rangement viennent de notre bibliothèque, pas d'un thème d'icônes : le .ui ne les
+    // déclare plus, ce dialogue les pose lui-même une fois, avant tout survol.
+    ApplyToolButtonIcons(this);
+
     // The caret of every formula field keeps the icon of the active theme until the field is first deployed,
     // and that icon is unreadable on the accent hover background. Install the hover swap on the whole dialog,
     // by the name the .ui give these buttons, so it holds from the very first hover.

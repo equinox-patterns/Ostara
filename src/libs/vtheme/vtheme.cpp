@@ -189,14 +189,6 @@ auto VTheme::ColorSheme() -> VColorSheme
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VTheme::DefaultThemeName() -> QString
-{
-    VColorSheme const colorScheme = ColorSheme();
-    QString const themePrefix = (colorScheme == VColorSheme::Light ? QStringLiteral("Light") : QStringLiteral("Dark"));
-    return QStringLiteral("Eleven-%1").arg(themePrefix);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VTheme::InitFonts()
 {
     // ── Inter — UI font (variable weight 100-900) ──
@@ -247,13 +239,6 @@ void VTheme::InitApplicationStyle()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VTheme::SetIconTheme()
-{
-    QIcon::setThemeSearchPaths({u":/icons"_s});
-    QIcon::setThemeName(DefaultThemeName());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void VTheme::SetToAutoTheme() const
 {
     qApp->setStyleSheet(QString()); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
@@ -296,7 +281,6 @@ void VTheme::ResetColorScheme()
 void VTheme::ResetThemeSettings()
 {
     InitFonts();
-    SetIconTheme();
     InitThemeMode(); // qApp->setStyleSheet() + ApplyOstaraPalette()
     VSceneStylesheet::ResetStyles();
 

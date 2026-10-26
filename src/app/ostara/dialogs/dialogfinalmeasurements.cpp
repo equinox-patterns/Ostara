@@ -52,6 +52,12 @@ DialogFinalMeasurements::DialogFinalMeasurements(VPattern *doc, QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->toolButtonAdd->setIcon(VTheme::ThemedIcon(QStringLiteral("plus")));
+    ui->toolButtonRemove->setIcon(VTheme::ThemedIcon(QStringLiteral("trash")));
+    ui->toolButtonUp->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-up")));
+    ui->toolButtonDown->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-down")));
+    ui->pushButtonGrow->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-down")));
+
 #if defined(Q_OS_MAC)
     setWindowFlags(Qt::Window);
 #endif
@@ -418,13 +424,13 @@ void DialogFinalMeasurements::DeployFormula()
     {
         ui->plainTextEditFormula->setFixedHeight(DIALOG_MAX_FORMULA_HEIGHT);
         // Set icon from theme (internal for Windows system)
-        ui->pushButtonGrow->setIcon(FromTheme(VThemeIcon::GoNext));
+        ui->pushButtonGrow->setIcon(VTheme::ThemedIcon(QStringLiteral("arrow-right")));
     }
     else
     {
         ui->plainTextEditFormula->setFixedHeight(formulaBaseHeight);
         // Set icon from theme (internal for Windows system)
-        ui->pushButtonGrow->setIcon(FromTheme(VThemeIcon::GoDown));
+        ui->pushButtonGrow->setIcon(VTheme::ThemedIcon(QStringLiteral("caret-down")));
     }
 
     // I found that after change size of formula field, it was filed for angle formula, field for formula became black.

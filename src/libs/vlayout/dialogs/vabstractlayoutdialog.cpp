@@ -45,51 +45,6 @@ VAbstractLayoutDialog::VAbstractLayoutDialog(QWidget *parent)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractLayoutDialog::InitTemplates(QComboBox *comboBoxTemplates)
-{
-    SCASSERT(comboBoxTemplates != nullptr)
-    const QIcon icoPaper("://icon/16x16/template.png"_L1);
-    const QIcon icoRoll("://icon/16x16/roll.png"_L1);
-    const auto pdi = QStringLiteral("(%1ppi)").arg(PrintDPI);
-
-    auto cntr = static_cast<VIndexType>(PaperSizeTemplate::A0);
-    for (const auto &v : PageFormatNames())
-    {
-        if (cntr <= static_cast<int>(PaperSizeTemplate::Tabloid))
-        {
-            comboBoxTemplates->addItem(icoPaper, v + QChar(QChar::Space) + pdi, QVariant(cntr++));
-        }
-        else if (cntr <= static_cast<int>(PaperSizeTemplate::Roll72in))
-        {
-            comboBoxTemplates->addItem(icoRoll, v + QChar(QChar::Space) + pdi, QVariant(cntr++));
-        }
-        else
-        {
-            comboBoxTemplates->addItem(v + QChar(QChar::Space) + pdi, QVariant(cntr++));
-        }
-    }
-    comboBoxTemplates->setCurrentIndex(-1);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractLayoutDialog::InitTileTemplates(QComboBox *comboBoxTemplates, bool keepCustom)
-{
-    // cppcheck-suppress unknownMacro
-    SCASSERT(comboBoxTemplates != nullptr)
-    InitTemplates(comboBoxTemplates);
-
-    // remove unused formats
-    for (auto i = static_cast<int>(PaperSizeTemplate::Roll24in); i <= static_cast<int>(PaperSizeTemplate::Custom); ++i)
-    {
-        if (keepCustom && i == static_cast<int>(PaperSizeTemplate::Custom))
-        {
-            continue;
-        }
-        comboBoxTemplates->removeItem(comboBoxTemplates->findData(i));
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 auto VAbstractLayoutDialog::PageFormatNames() -> const VAbstractLayoutDialog::FormatsVector &
 {
     // must be the same order as PaperSizeTemplate constants

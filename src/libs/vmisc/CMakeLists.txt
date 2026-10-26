@@ -97,21 +97,11 @@ set(VMISC_CODECS
 
 # QRC resources
 set(VMISC_QRC
-    share/resources/icon.qrc
     share/resources/flags.qrc
     share/resources/scenestyle.qrc
     share/resources/cursor.qrc
     share/resources/ostara_theme.qrc
 )
-
-# Windows-only icon themes — malgré le nom, toujours inclus (pas de condition dans le QBS)
-list(APPEND VMISC_QRC
-    share/resources/win_light_theme.qrc
-    share/resources/win_dark_theme.qrc
-)
-
-# Note: mac_light_theme.qrc, mac_dark_theme.qrc and theme.qrc exist on disk
-# but are NOT listed in vmisc.qbs — they may be used by vtheme or the app target.
 
 # macOS native window theme (Objective-C++)
 if(APPLE)

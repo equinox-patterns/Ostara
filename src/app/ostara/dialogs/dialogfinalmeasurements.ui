@@ -177,9 +177,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset theme="list-add"/>
-           </property>
           </widget>
          </item>
          <item alignment="Qt::AlignmentFlag::AlignLeft">
@@ -189,9 +186,6 @@
            </property>
            <property name="text">
             <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="edit-delete"/>
            </property>
           </widget>
          </item>
@@ -285,9 +279,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset theme="go-down"/>
-           </property>
            <property name="iconSize">
             <size>
              <width>16</width>
@@ -368,9 +359,6 @@
            <property name="text">
             <string notr="true"/>
            </property>
-           <property name="icon">
-            <iconset theme="go-up"/>
-           </property>
           </widget>
          </item>
          <item alignment="Qt::AlignmentFlag::AlignLeft">
@@ -383,9 +371,6 @@
            </property>
            <property name="text">
             <string notr="true"/>
-           </property>
-           <property name="icon">
-            <iconset theme="go-down"/>
            </property>
           </widget>
          </item>
