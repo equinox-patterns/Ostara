@@ -14453,32 +14453,40 @@ Une pièce plus grande que lui est découpée en morceaux aux bords du tapis, à
 <context>
     <name>OExportProjector</name>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="140"/>
         <source>The plan does not fit in %1 × %1 cm</source>
-        <translation type="vanished">Le plan ne tient pas dans %1 × %1 cm</translation>
+        <translation>Le plan ne tient pas dans %1 × %1 cm</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="151"/>
         <source>The pieces take %1 m². With an edge margin of %2 cm, only %3 m² remain in a %4 × %4 cm plan.</source>
-        <translation type="vanished">Les pièces occupent %1 m². Avec un écart au bord de %2 cm, il ne reste que %3 m² dans un plan de %4 × %4 cm.</translation>
+        <translation>Les pièces occupent %1 m². Avec un écart au bord de %2 cm, il ne reste que %3 m² dans un plan de %4 × %4 cm.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="164"/>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="198"/>
         <source>Reducing the edge margin to %1 cm would be enough.</source>
-        <translation type="vanished">Réduire l&apos;écart au bord à %1 cm suffirait.</translation>
+        <translation>Réduire l&apos;écart au bord à %1 cm suffirait.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="170"/>
         <source>No edge margin can make it fit: the pieces themselves fill the largest plan this format can hold.</source>
-        <translation type="vanished">Aucun écart au bord ne peut le faire tenir : les pièces elles-mêmes remplissent le plus grand plan que ce format sache publier.</translation>
+        <translation>Aucun écart au bord ne peut le faire tenir : les pièces elles-mêmes remplissent le plus grand plan que ce format sache publier.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="189"/>
         <source>The most compact plan obtained is %1 × %2 cm, with an edge margin of %3 cm and a space between pieces of %4 cm.</source>
-        <translation type="vanished">Le plan le plus compact obtenu fait %1 × %2 cm, avec un écart au bord de %3 cm et un espace entre les pièces de %4 cm.</translation>
+        <translation>Le plan le plus compact obtenu fait %1 × %2 cm, avec un écart au bord de %3 cm et un espace entre les pièces de %4 cm.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="203"/>
         <source>Reduce the space between pieces, or split the plan.</source>
-        <translation type="vanished">Réduisez l&apos;espace entre les pièces, ou coupez le plan.</translation>
+        <translation>Réduisez l&apos;espace entre les pièces, ou coupez le plan.</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/oexportprojector.cpp" line="368"/>
         <source>The pieces are wider than the largest plan this format can hold, with the edge margin asked for. Reduce the edge margin.</source>
-        <translation type="vanished">Les pièces sont plus larges que le plus grand plan que ce format sache publier, avec l&apos;écart au bord demandé. Réduisez l&apos;écart au bord.</translation>
+        <translation>Les pièces sont plus larges que le plus grand plan que ce format sache publier, avec l&apos;écart au bord demandé. Réduisez l&apos;écart au bord.</translation>
     </message>
 </context>
 <context>

@@ -109,11 +109,6 @@ auto TightBox(const QVector<OExportPlacement> &placements) -> QRectF
     return box;
 }
 
-auto Tr(const char *text) -> QString
-{
-    return QCoreApplication::translate("OExportProjector", text);
-}
-
 /// Un nombre de centimètres : **entier quand il l'est**, sinon à un dixième.
 ///
 /// Un refus se lit, et « 500.0 × 500.0 cm » se lit moins bien que « 500 × 500 cm » — c'est la
@@ -135,10 +130,14 @@ auto SquareMetres(double millimetresSquared) -> QString
     return QString::number(millimetresSquared / 1000000.0, 'f', 1);
 }
 
+// **Pas d'aide `Tr()` ici.** Un raccourci maison — `Tr(text)` appelant `QCoreApplication::translate` —
+// rend les littéraux invisibles à `lupdate` : le message sort du `.ts`, donc du `.qm`, et s'affiche en
+// anglais. Chaque littéral s'écrit donc en clair, à son appel.
+
 /// « The plan does not fit in 500 × 500 cm » — la première ligne, la même dans les deux refus.
 auto Headline(double pageMaxMm) -> QString
 {
-    return Tr("The plan does not fit in %1 × %1 cm").arg(Cm(pageMaxMm));
+    return QCoreApplication::translate("OExportProjector", "The plan does not fit in %1 × %1 cm").arg(Cm(pageMaxMm));
 }
 
 /// Le refus d'avant toute nidification : la surface des pièces ne tient dans aucun bac.
@@ -149,10 +148,10 @@ auto AreaRefusal(const OExportProjector::Limits &limits, const Pieces &pieces, d
 
     QStringList lines;
     lines << Headline(limits.pageMaxMm);
-    lines << Tr("The pieces take %1 m². With an edge margin of %2 cm, only %3 m² remain in a "
-                "%4 × %4 cm plan.")
-                 .arg(SquareMetres(aMinMm2), Cm(marginMm), SquareMetres(capacityMm * capacityMm),
-                      Cm(limits.pageMaxMm));
+    lines << QCoreApplication::translate("OExportProjector",
+                                         "The pieces take %1 m². With an edge margin of %2 cm, only %3 m² "
+                                         "remain in a %4 × %4 cm plan.")
+                 .arg(SquareMetres(aMinMm2), Cm(marginMm), SquareMetres(capacityMm * capacityMm), Cm(limits.pageMaxMm));
 
     // **La marge qui suffirait, et elle se calcule.** La surface utilisable d'un plan carré de côté
     // maximal est `(C − 2m)²` : elle doit couvrir l'aire des pièces, donc `m ≤ (C − √A) / 2`. C'est
@@ -162,13 +161,15 @@ auto AreaRefusal(const OExportProjector::Limits &limits, const Pieces &pieces, d
 
     if (needed > 0.0 && rounded < marginMm)
     {
-        lines << Tr("Reducing the edge margin to %1 cm would be enough.").arg(Cm(rounded));
+        lines << QCoreApplication::translate("OExportProjector", "Reducing the edge margin to %1 cm would be enough.")
+                     .arg(Cm(rounded));
     }
     else
     {
         // Aucune marge n'y suffit : les pièces elles-mêmes remplissent le plus grand plan possible.
-        lines << Tr("No edge margin can make it fit: the pieces themselves fill the largest plan this "
-                    "format can hold.");
+        lines << QCoreApplication::translate("OExportProjector",
+                                             "No edge margin can make it fit: the pieces themselves fill the "
+                                             "largest plan this format can hold.");
     }
 
     return lines.join(QStringLiteral("\n\n"));
@@ -185,19 +186,21 @@ auto ShapeRefusal(const OExportProjector::Limits &limits, const QRectF &pagePx, 
 
     QStringList lines;
     lines << Headline(limits.pageMaxMm);
-    lines << Tr("The most compact plan obtained is %1 × %2 cm, with an edge margin of %3 cm and a "
-                "space between pieces of %4 cm.")
+    lines << QCoreApplication::translate("OExportProjector",
+                                         "The most compact plan obtained is %1 × %2 cm, with an edge margin of "
+                                         "%3 cm and a space between pieces of %4 cm.")
                  .arg(Cm(widthMm), Cm(heightMm), Cm(marginMm), Cm(gapMm));
 
     const double needed = marginMm - overflow / 2.0;
     const double rounded = std::max(0.0, std::floor(needed / 5.0) * 5.0);
     if (needed >= 0.0 && rounded < marginMm)
     {
-        lines << Tr("Reducing the edge margin to %1 cm would be enough.").arg(Cm(rounded));
+        lines << QCoreApplication::translate("OExportProjector", "Reducing the edge margin to %1 cm would be enough.")
+                     .arg(Cm(rounded));
     }
     else
     {
-        lines << Tr("Reduce the space between pieces, or split the plan.");
+        lines << QCoreApplication::translate("OExportProjector", "Reduce the space between pieces, or split the plan.");
     }
 
     return lines.join(QStringLiteral("\n\n"));
@@ -362,7 +365,8 @@ auto OExportProjector::Nest(const QVector<OExportSizeLayer> &layers, const OExpo
     }
 
     outcome.error = Headline(limits.pageMaxMm) + QStringLiteral("\n\n")
-                    + Tr("The pieces are wider than the largest plan this format can hold, with the "
-                         "edge margin asked for. Reduce the edge margin.");
+                    + QCoreApplication::translate("OExportProjector",
+                                                  "The pieces are wider than the largest plan this format can hold, "
+                                                  "with the edge margin asked for. Reduce the edge margin.");
     return outcome;
 }
