@@ -33,7 +33,6 @@
 #include <functional>
 
 class QFont;
-class VSvgFontEngine;
 
 /**
  * @brief Le repli du texte, écrit une fois.
@@ -81,7 +80,6 @@ auto Lines(const QString &text, qreal maxWidth, const Measure &measure) -> QStri
 auto FontMeasure(const QFont &font) -> Measure;
 
 /// @brief La mesure d'un texte dessiné par un moteur de police de tracé, à l'épaisseur @a penWidth.
-auto EngineMeasure(const VSvgFontEngine &engine, qreal penWidth) -> Measure;
 
 /**
  * @brief SplitByWidth coupe en au plus deux fragments un mot que @a maxWidth ne peut pas tenir.

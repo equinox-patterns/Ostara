@@ -49,7 +49,6 @@
 class QUndoStack;
 class VAbstractApplication; // use in define
 class VCommonSettings;
-class VSvgFontDatabase;
 class QFileSystemWatcher;
 class VAbstractShortcutManager;
 class VKnownMeasurementsDatabase;
@@ -109,7 +108,6 @@ public:
 
     static auto VApp() -> VAbstractApplication *;
 
-    auto SVGFontDatabase() -> VSvgFontDatabase *;
 
     virtual auto KnownMeasurementsDatabase() -> VKnownMeasurementsDatabase *;
 
@@ -151,10 +149,8 @@ protected:
 
 protected slots:
     virtual void AboutToQuit() = 0;
-    void SVGFontsPathChanged(const QString &oldPath, const QString &newPath);
 
 private slots:
-    void RepopulateFontDatabase(const QString &path);
 
 private:
     Q_DISABLE_COPY_MOVE(VAbstractApplication) // NOLINT
@@ -163,12 +159,9 @@ private:
     QHash<QStringConverter::Encoding, VTextCodec *> m_codecs{};
 #endif
 
-    VSvgFontDatabase *m_svgFontDatabase{nullptr};
-    QFileSystemWatcher *m_svgFontDatabaseWatcher{nullptr};
 
     void ClearTranslation();
 
-    void RestartSVGFontDatabaseWatcher();
 };
 
 QT_WARNING_POP

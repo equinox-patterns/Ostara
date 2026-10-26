@@ -56,8 +56,6 @@
 #include "../vmisc/compatibility.h"
 #include "../vmisc/def.h"
 #include "../vmisc/literals.h"
-#include "../vmisc/svgfont/vsvgfontdatabase.h"
-#include "../vmisc/svgfont/vsvgfontengine.h"
 #include "../vmisc/testpath.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"

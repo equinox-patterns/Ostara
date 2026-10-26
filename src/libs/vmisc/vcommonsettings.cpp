@@ -76,7 +76,6 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMultisizeMeasurements, ("pa
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsPattern, ("paths/pattern"_L1))                         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsLayoutExport, ("paths/layoutExport"_L1))               // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsCustomImage, ("paths/customImage"_L1))                 // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsSVGFonts, ("paths/svgFonts"_L1))                       // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsFontCorrections, ("paths/fontCorrections"_L1))         // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsKnownMeasurements, ("paths/knownMeasurements"_L1))     // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingPathsMeasurementLibrary, ("paths/measurementLibrary"_L1))   // NOLINT
@@ -368,45 +367,8 @@ void VCommonSettings::SetPathCustomImage(const QString &value) const
     settings.sync();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetDefPathSVGFonts() -> QString
-{
-    auto const defPath = QStringList{QDir::homePath(), "Ostara"_L1, "Svg fonts"_L1}.join(QDir::separator());
 
-#if defined(Q_OS_WIN)
-    QString const docPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    if (docPath.isEmpty())
-    {
-        return defPath;
-    }
 
-    return QStringList{docPath, "Ostara"_L1, "Svg fonts"_L1}.join(QDir::separator());
-#else
-    return defPath;
-#endif
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetPathSVGFonts() const -> QString
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingPathsSVGFonts, GetDefPathSVGFonts()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathSVGFonts(const QString &value)
-{
-    const QString oldPath = GetPathSVGFonts();
-
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsSVGFonts, value);
-    settings.sync();
-
-    if (oldPath != value)
-    {
-        emit SVGFontsPathChanged(oldPath, value);
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VCommonSettings::GetDefPathFontCorrections() -> QString

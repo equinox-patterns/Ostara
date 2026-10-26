@@ -30,7 +30,6 @@
 #include <QFontMetrics>
 #include <QMutableListIterator>
 
-#include "../vmisc/svgfont/vsvgfontengine.h"
 
 namespace
 {
@@ -170,12 +169,6 @@ auto OTextWrap::FontMeasure(const QFont &font) -> Measure
     return Measure{advance, advance};
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-auto OTextWrap::EngineMeasure(const VSvgFontEngine &engine, qreal penWidth) -> Measure
-{
-    auto advance = [engine, penWidth](const QString &text) -> qreal { return engine.TextWidth(text, penWidth); };
-    return Measure{advance, advance};
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto OTextWrap::SplitByWidth(const QString &text, qreal maxWidth, const Measure &measure) -> QStringList

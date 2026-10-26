@@ -277,17 +277,6 @@ VToolApp {
         }
     }
 
-    Group {
-        name: "SVG Fonts"
-        prefix: project.sourceDirectory + "/src/app/share/svgfonts/"
-        files: [
-            "**/*.svg"
-        ]
-        qbs.install: true
-        qbs.installDir: product.buildconfig.installDataPath + "/svgfonts"
-        qbs.installSourceBase: project.sourceDirectory + "/src/app/share/svgfonts/"
-    }
-
     Properties {
         condition: qbs.targetOS.contains("macos")
         macdeployqt.targetApps: {

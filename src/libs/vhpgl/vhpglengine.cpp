@@ -35,9 +35,6 @@
 #include "../vlayout/vlayoutpoint.h"
 #include "../vmisc/def.h"
 #include "../vmisc/defglobal.h"
-#include "../vmisc/svgfont/vsvgfont.h"
-#include "../vmisc/svgfont/vsvgfontdatabase.h"
-#include "../vmisc/svgfont/vsvgfontengine.h"
 #include "../vmisc/vabstractapplication.h"
 
 #include <QFile>

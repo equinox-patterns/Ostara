@@ -70,7 +70,6 @@ public:
     {
         settings = new VTestSettings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(),
                                      QCoreApplication::applicationName(), this);
-        connect(settings, &VTestSettings::SVGFontsPathChanged, this, &TestVApplication::SVGFontsPathChanged);
     }
 
     virtual auto IsAppInGUIMode() const -> bool override { return false; }

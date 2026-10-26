@@ -29,7 +29,6 @@
 #include "tst_vfoldline.h"
 #include "../vformat/vsinglelineoutlinechar.h"
 #include "../vlayout/vfoldline.h"
-#include "../vmisc/svgfont/vsvgfontdatabase.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
 

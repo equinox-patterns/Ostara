@@ -42,7 +42,6 @@
 #include "tst_qmutokenparser.h"
 #include "tst_readval.h"
 #include "tst_renametoken.h"
-#include "tst_svgfontwritingsystem.h"
 #include "tst_vabstractcurve.h"
 #include "tst_vabstractpiece.h"
 #include "tst_varc.h"
@@ -60,7 +59,6 @@
 #include "tst_vpointf.h"
 #include "tst_vspline.h"
 #include "tst_vsplinepath.h"
-#include "tst_vsvgpathtokenizer.h"
 #include "tst_vmaingraphicsscene.h"
 #include "tst_vtheme.h"
 #include "tst_vabstractpattern.h"
@@ -145,10 +143,8 @@ auto main(int argc, char **argv) -> int
     ASSERT_TEST(new TST_VAbstractPattern());
     ASSERT_TEST(new TST_VToolUnionDetails());
     ASSERT_TEST(new TST_XSDShema());
-    ASSERT_TEST(new TST_VSVGPathTokenizer());
     ASSERT_TEST(new TST_VBoundary());
     ASSERT_TEST(new TST_DXF());
-    ASSERT_TEST(new TST_SVGFontWritingSystem());
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #ifdef WITH_TEXTCODEC
     ASSERT_TEST(new TST_Utf8());

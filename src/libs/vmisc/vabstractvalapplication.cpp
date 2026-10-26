@@ -80,7 +80,6 @@ void VAbstractValApplication::OpenSettings()
     settings = new VValentinaSettings(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::organizationName(),
                                       QCoreApplication::applicationName(), this);
     settings->RemoveOversizedValues();
-    connect(settings, &VValentinaSettings::SVGFontsPathChanged, this, &VAbstractValApplication::SVGFontsPathChanged);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

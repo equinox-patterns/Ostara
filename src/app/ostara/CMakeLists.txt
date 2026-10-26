@@ -161,11 +161,6 @@ qt_add_translations(Ostara
 # macOS bundle resources
 # ═══════════════════════════════════════════════════════════
 if(APPLE)
-    # SVG fonts
-    install(DIRECTORY "${CMAKE_SOURCE_DIR}/src/app/share/svgfonts/"
-        DESTINATION "Ostara.app/Contents/Resources/svgfonts"
-    )
-
     # L'icône de l'application. Elle a été longtemps absente : CFBundleIconFile partait vide et le
     # paquet n'avait aucun .icns, donc le Finder affichait l'icône générique et LaunchServices
     # n'avait rien à dessiner. Le .icns est engendré depuis share/icons/app/Ostara.svg.

@@ -91,9 +91,6 @@ public:
     auto GetPathCustomImage() const -> QString;
     void SetPathCustomImage(const QString &value) const;
 
-    static auto GetDefPathSVGFonts() -> QString;
-    auto GetPathSVGFonts() const -> QString;
-    void SetPathSVGFonts(const QString &value);
 
     static auto GetDefPathFontCorrections() -> QString;
     auto GetPathFontCorrections() const -> QString;
@@ -378,7 +375,6 @@ public:
     void RemoveActionShortcuts(const QString &name) const;
 
 signals:
-    void SVGFontsPathChanged(const QString &oldPath, const QString &newPath);
     void KnownMeasurementsPathChanged(const QString &oldPath, const QString &newPath);
     void PatternLabelFontSizeChanged(int size);
 

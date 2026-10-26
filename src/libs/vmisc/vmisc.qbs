@@ -18,8 +18,6 @@ VLib {
         "vabstractapplication.cpp",
         "projectversion.cpp",
         "vcommonsettings.cpp",
-        "vfontinstaller.cpp",
-        "vfontinstaller.h",
         "vvalentinasettings.cpp",
         "commandoptions.cpp",
         "qxtcsvmodel.cpp",
@@ -83,32 +81,6 @@ VLib {
             "vshortcutdialog.cpp",
             "vshortcutdialog.h",
             "vshortcutdialog.ui",
-        ]
-    }
-
-    Group {
-        name: "svgfont"
-        prefix: "svgfont/"
-        files: [
-            "svgdef.cpp",
-            "svgdef.h",
-            "vsvgfont.cpp",
-            "vsvgfont.h",
-            "vsvgfont_p.h",
-            "vsvgfontdatabase.cpp",
-            "vsvgfontdatabase.h",
-            "vsvgfontengine.cpp",
-            "vsvgfontengine.h",
-            "vsvgfontengine_p.h",
-            "vsvgfontreader.cpp",
-            "vsvgfontreader.h",
-            "vsvgglyph.cpp",
-            "vsvgglyph.h",
-            "vsvgglyph_p.h",
-            "vsvghandler.cpp",
-            "vsvghandler.h",
-            "vsvgpathtokenizer.cpp",
-            "vsvgpathtokenizer.h",
         ]
     }
 

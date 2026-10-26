@@ -8,8 +8,6 @@ set(VMISC_SOURCES
     vabstractapplication.cpp
     projectversion.cpp
     vcommonsettings.cpp
-    vfontinstaller.cpp
-    vfontinstaller.h
     vvalentinasettings.cpp
     commandoptions.cpp
     qxtcsvmodel.cpp
@@ -67,28 +65,6 @@ set(VMISC_DIALOGS
 )
 
 # SVG font engine
-set(VMISC_SVGFONT
-    svgfont/svgdef.cpp
-    svgfont/svgdef.h
-    svgfont/vsvgfont.cpp
-    svgfont/vsvgfont.h
-    svgfont/vsvgfont_p.h
-    svgfont/vsvgfontdatabase.cpp
-    svgfont/vsvgfontdatabase.h
-    svgfont/vsvgfontengine.cpp
-    svgfont/vsvgfontengine.h
-    svgfont/vsvgfontengine_p.h
-    svgfont/vsvgfontreader.cpp
-    svgfont/vsvgfontreader.h
-    svgfont/vsvgglyph.cpp
-    svgfont/vsvgglyph.h
-    svgfont/vsvgglyph_p.h
-    svgfont/vsvghandler.cpp
-    svgfont/vsvghandler.h
-    svgfont/vsvgpathtokenizer.cpp
-    svgfont/vsvgpathtokenizer.h
-)
-
 # Internal text codec (Qt 6, withTextCodec=false)
 set(VMISC_CODECS
     vtextcodec.cpp
@@ -119,7 +95,6 @@ endif()
 add_library(VMiscLib STATIC
     ${VMISC_SOURCES}
     ${VMISC_DIALOGS}
-    ${VMISC_SVGFONT}
     ${VMISC_CODECS}
     ${VMISC_QRC}
 )
