@@ -109,6 +109,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDockWidgetBackgroundImagesActive
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDockWidgetDependenciesActive, ("dockWidget/dependenciesActive"_L1))
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingSavedSeamAllowances, ("seamAllowance/saved"_L1))
+// NOLINTNEXTLINE
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingToolBarGroups, ("toolBar/groups"_L1))
 
 // Fold line label appearance — global settings
 // NOLINTNEXTLINE
@@ -548,6 +550,18 @@ auto VValentinaSettings::GetAutoRefreshPatternMessage() const -> bool
 void VValentinaSettings::SetAutoRefreshPatternMessage(bool value)
 {
     setValue(*settingAutoRefreshPatternMessage, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VValentinaSettings::GetToolBarGroups() const -> QString
+{
+    return value(*settingToolBarGroups).toString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VValentinaSettings::SetToolBarGroups(const QString &value)
+{
+    setValue(*settingToolBarGroups, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

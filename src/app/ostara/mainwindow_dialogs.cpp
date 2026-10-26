@@ -29,6 +29,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "widgets/DrawToolBar.h"
 #include "widgets/ODockManager.h"
 #include "core/vapplication.h"
 #include "core/vtooloptionspropertybrowser.h"
@@ -228,6 +229,10 @@ void MainWindow::Preferences()
                 &VToolOptionsPropertyBrowser::RefreshOptions);
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, &MainWindow::ToolBarStyles);
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, &MainWindow::ToolboxIconSize);
+        // The palette groups are a preference like any other: they take effect on the spot, without
+        // a restart — the dock is rebuilt from the stored arrangement.
+        connect(dlg.data(), &DialogPreferences::UpdateProperties, this,
+                [this]() { m_drawToolBar->ReloadLayout(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, [this]() { emit doc->FullUpdateFromFile(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, this, [this]() { emit doc->CheckLayout(); });
         connect(dlg.data(), &DialogPreferences::UpdateProperties, ui->view,

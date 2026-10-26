@@ -813,4 +813,9 @@ void EnsureDefaultTemplate()
         qWarning() << "Cannot create default cartouche template:" << error;
     }
 }
+
+void InvalidateAnnotationStyles()
+{
+    ++g_annotationStylesVersion;
+}
 }  // namespace OPieceCartoucheStorage

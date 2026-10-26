@@ -50,6 +50,10 @@ public:
     void RestoreSavedWidth();
     void RetranslateGroups();
 
+    /// Rebuild the palette from the organisation stored in the settings — called after the
+    /// preferences page writes it, so the user sees the new arrangement without a restart.
+    void ReloadLayout();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void changeEvent(QEvent *event) override;

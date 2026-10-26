@@ -36,9 +36,11 @@ namespace Ui
 class DialogPreferences;
 }
 
+class PreferencesFoldersPage;
 class PreferencesGeneralPage;
 class PreferencesPatternPage;
 class PreferencesShortcutsPage;
+class PreferencesToolBarPage;
 class QListWidgetItem;
 class VPattern;
 
@@ -66,6 +68,8 @@ private:
     bool m_isInitialized{false};
     PreferencesGeneralPage *m_generalPage{nullptr};
     PreferencesShortcutsPage *m_shortcutsPage{nullptr};
+    PreferencesFoldersPage *m_foldersPage{nullptr};
+    PreferencesToolBarPage *m_toolBarPage{nullptr};
     PreferencesPatternPage *m_patternPage{nullptr};
 
     void Apply();

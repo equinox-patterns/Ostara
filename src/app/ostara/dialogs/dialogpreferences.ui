@@ -61,6 +61,22 @@
        </item>
        <item>
         <property name="text">
+         <string>Folders</string>
+        </property>
+        <property name="flags">
+         <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tool bar</string>
+        </property>
+        <property name="flags">
+         <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Pattern</string>
         </property>
         <property name="flags">

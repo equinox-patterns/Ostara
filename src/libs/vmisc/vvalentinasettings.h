@@ -118,6 +118,14 @@ public:
     auto GetAutoRefreshPatternMessage() const -> bool;
     void SetAutoRefreshPatternMessage(bool value);
 
+    /// @brief The Draw-mode palette as the user arranged it — a compact JSON document.
+    ///
+    /// Empty means "nothing stored": the palette falls back to the organisation Ostara ships with.
+    /// The schema belongs to the application (OToolBarLayout), not to this class, which only
+    /// carries the string.
+    auto GetToolBarGroups() const -> QString;
+    void SetToolBarGroups(const QString &value);
+
 
     auto GetDetailExportFormat() const -> qint8;
     void SetDetailExportFormat(qint8 format);

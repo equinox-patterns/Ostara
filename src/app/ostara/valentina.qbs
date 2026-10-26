@@ -155,6 +155,8 @@ VToolApp {
             "dialogpreferences.h",
             "configpages/preferencesgeneralpage.h",
             "configpages/preferencesshortcutspage.h",
+            "configpages/preferencesfolderspage.h",
+            "configpages/preferencestoolbarpage.h",
             "configpages/preferencespatternpage.h",
             "dialogdatetimeformats.h",
             "dialogfinalmeasurements.h",
@@ -170,6 +172,8 @@ VToolApp {
             "dialogpreferences.cpp",
             "configpages/preferencesgeneralpage.cpp",
             "configpages/preferencesshortcutspage.cpp",
+            "configpages/preferencesfolderspage.cpp",
+            "configpages/preferencestoolbarpage.cpp",
             "configpages/preferencespatternpage.cpp",
             "dialogdatetimeformats.cpp",
             "dialogfinalmeasurements.cpp",
@@ -215,6 +219,10 @@ VToolApp {
         name: "core"
         prefix: "core/"
         files: [
+            "otoolbarcatalogue.cpp",
+            "otoolbarcatalogue.h",
+            "otoolbarlayout.cpp",
+            "otoolbarlayout.h",
             "vapplication.h",
             "vdependencytreemodel.cpp",
             "vdependencytreemodel.h",

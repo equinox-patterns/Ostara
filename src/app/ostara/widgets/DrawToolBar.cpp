@@ -39,6 +39,8 @@
 #include <QVBoxLayout>
 
 #include "def.h"
+#include "../core/otoolbarcatalogue.h"
+#include "../core/otoolbarlayout.h"
 #include "../vmisc/vmodifierkey.h"
 #include "vtheme.h"
 
@@ -59,11 +61,12 @@ constexpr int kCaretH     = 16;
 // three-column threshold of ComputeColumns(), so the palette could be widened but never narrowed again.
 constexpr int kMinPaletteWidth = kButtonSize + kMargins;
 
-// Mode bitmask for group visibility filtering
-constexpr int kModeDraw   = 1 << 0; // Draw::Calculation
-constexpr int kModeDetail = 1 << 1; // Draw::Modeling
-constexpr int kModeGraded = 1 << 3; // Draw::Graded
-constexpr int kModeExport = 1 << 4; // Draw::Export
+// Mode bitmask for group visibility filtering. The values live in the catalogue, which writes a
+// group's mask: a second copy here could drift from it.
+constexpr int kModeDraw   = OToolBarCatalogue::ModeDraw;   // Draw::Calculation
+constexpr int kModeDetail = OToolBarCatalogue::ModeDetail; // Draw::Modeling
+constexpr int kModeGraded = OToolBarCatalogue::ModeGraded; // Draw::Graded
+constexpr int kModeExport = OToolBarCatalogue::ModeExport; // Draw::Export
 
 int ModeToMask(Draw mode)
 {
@@ -80,45 +83,6 @@ int ModeToMask(Draw mode)
 auto IsDarkTheme() -> bool
 {
     return VTheme::ColorSheme() == VColorSheme::Dark;
-}
-
-/// Whether @p id is one of the export buttons: they read their icon from :/icons/ or from a PNG, never from
-/// :/tools/ — there is no <id>.svg for them.
-auto IsExportIconTool(const QString &id) -> bool
-{
-    return id == QStringLiteral("detail_export") || id == QStringLiteral("export_templates")
-           || id == QStringLiteral("export_image");
-}
-
-/// The icons the tools that wait for artwork of their own borrow, from the tool they come from: looking for a
-/// <id>.svg that does not exist would blank them on every theme switch. Read by IsAppIconTool, and kept in step
-/// with the install blocks by hand — a borrowed icon has to be added here too.
-auto BorrowedToolIcons() -> const QHash<QString, QString> &
-{
-    static const QHash<QString, QString> borrowed{{QStringLiteral("close_dart"), QStringLiteral("rotation.png")},
-                                                  {QStringLiteral("dart_cap"), QStringLiteral("true_darts.png")},
-                                                  {QStringLiteral("rectangle"), QStringLiteral("shoulder.png")},
-                                                  {QStringLiteral("transfert"), QStringLiteral("move.png")},
-                                                  {QStringLiteral("spiral"), QStringLiteral("parallel_curve.png")},
-                                                  {QStringLiteral("spread"), QStringLiteral("arc_with_length.png")},
-                                                  {QStringLiteral("move_batch"), QStringLiteral("el_arc.png")},
-                                                  {QStringLiteral("pleat"), QStringLiteral("triangle.png")},
-                                                  {QStringLiteral("pleat_mid"), QStringLiteral("height.png")},
-                                                  {QStringLiteral("flounce_spiral"), QStringLiteral("point_of_intersection_circles.png")}};
-    return borrowed;
-}
-
-/// Whether @p id carries an icon the APPLICATION sets, rather than one of the tool icons of
-/// :/tools/ — a PNG that has no theme, or an SVG of :/icons/ that has two.
-///
-/// Three places ask this same question and must not answer it differently: makeBtn would look for a file that
-/// does not exist, ReloadIcons must not overwrite what was set, and the flyout must not either. The two helpers
-/// below are the agreed list — but the install blocks and the ReloadIcons branches are written by hand and do
-/// not read them, so an id added there has to be added here too, or the button keeps a blank icon and nothing
-/// says so.
-auto IsAppIconTool(const QString &id) -> bool
-{
-    return IsExportIconTool(id) || BorrowedToolIcons().contains(id);
 }
 
 auto FormatTooltip(const QString &toolName, const QAction *action) -> QString
@@ -293,47 +257,17 @@ void DrawToolBar::SetMode(const Draw mode)
 //---------------------------------------------------------------------------------------------------------------------
 void DrawToolBar::ReloadIcons()
 {
-    const bool dark = IsDarkTheme();
-    const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
-
+    // Every button takes its icon from the catalogue: the tools that borrow another tool's artwork,
+    // and the three the application sets, are decided there once instead of in a branch per id.
     for (auto it = m_buttonMap.cbegin(); it != m_buttonMap.cend(); ++it)
     {
-        // Export tool uses a theme-independent PNG — skip it
-        if (it.key() == QStringLiteral("detail_export"))
-        {
-            continue;
-        }
-        // Export templates uses an application-set icon, not a tool icon
-        if (it.key() == QStringLiteral("export_templates"))
-        {
-            it.value()->setIcon(
-                QIcon(QStringLiteral(":/icons/%1/grid-four-fill_%1.svg").arg(theme)));
-            continue;
-        }
-        // Export as image, likewise
-        if (it.key() == QStringLiteral("export_image"))
-        {
-            it.value()->setIcon(
-                QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg").arg(theme)));
-            continue;
-        }
-        // Tools that wait for artwork of their own borrow the icon of the tool they come from: looking for a
-        // <id>.svg that does not exist would blank them on every theme switch.
-        const QHash<QString, QString> &borrowed = BorrowedToolIcons();
-        if (const auto icon = borrowed.constFind(it.key()); icon != borrowed.cend())
-        {
-            it.value()->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), icon.value()));
-            continue;
-        }
-
-        const auto path = QStringLiteral(":/tools/%1/%2.svg").arg(theme, it.key());
-        it.value()->setIcon(QIcon(path));
+        it.value()->setIcon(OToolBarCatalogue::IconFor(it.key()));
     }
 
+    const QString theme = IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light");
     for (auto *caret : m_caretButtons)
     {
-        const auto path = QStringLiteral(":/icons/%1/caret-down_%2.svg").arg(theme, theme);
-        caret->setIcon(QIcon(path));
+        caret->setIcon(QIcon(QStringLiteral(":/icons/%1/caret-down_%2.svg").arg(theme, theme)));
     }
 }
 
@@ -458,10 +392,8 @@ int DrawToolBar::ComputeDefaultWidth() const
 //---------------------------------------------------------------------------------------------------------------------
 void DrawToolBar::InitializeGroups()
 {
-    const bool dark = IsDarkTheme();
-
-    auto makeBtn = [&](const QString &id) -> QToolButton * {
-        // Idempotent: on a re-translate pass the buttons already exist — reuse them.
+    const auto makeBtn = [this](const QString &id) -> QToolButton * {
+        // Idempotent: on a rebuild the buttons already exist — reuse them.
         if (auto *existing = m_buttonMap.value(id, nullptr))
         {
             return existing;
@@ -469,317 +401,54 @@ void DrawToolBar::InitializeGroups()
         auto *btn = new QToolButton(m_root);
         btn->setObjectName(QStringLiteral("drawToolBtn"));
         btn->setAutoRaise(true);
-        btn->setCheckable(true);
+        btn->setCheckable(OToolBarCatalogue::IsCheckable(id));
         btn->setFixedSize(kButtonSize, kButtonSize);
         btn->setIconSize(QSize(24, 24));
-
-        const auto iconPath =
-            QStringLiteral(":/tools/%1/%2.svg").arg(dark ? QStringLiteral("dark") : QStringLiteral("light"), id);
-        btn->setIcon(QIcon(iconPath));
+        btn->setIcon(OToolBarCatalogue::IconFor(id));
 
         m_buttonMap.insert(id, btn);
         return btn;
     };
 
-    // clang-format off
-    m_groups = {
-        {tr("Selection"), {
-            {QStringLiteral("arrow_cursor"),            tr("Select"), nullptr, makeBtn("arrow_cursor")},
-        }, kModeDraw | kModeDetail | kModeExport},
-        {tr("Export templates"), {
-            {QStringLiteral("export_templates"),        tr("Export templates"), nullptr, nullptr},
-        }, kModeExport},
-        // A group of its own for one tool, and that is structural rather than tidy: outside
-        // Draw::Calculation there is no caret (hasCaret is false in a compact mode), so a second
-        // tool of a group that the row budget cannot fit is hidden with NOWHERE to find it —
-        // setVisible(i < visTools), and no flyout to hold it. A group of one cannot overflow.
-        {tr("Export image"), {
-            {QStringLiteral("export_image"),            tr("Export as image..."), nullptr, nullptr},
-        }, kModeExport},
-        {tr("Points"), {
-            {QStringLiteral("segment"),                 tr("Point at distance and angle"),                nullptr, makeBtn("segment")},
-            {QStringLiteral("along_line"),              tr("Point at distance along line"),               nullptr, makeBtn("along_line")},
-            {QStringLiteral("midpoint"),                tr("Midpoint between two points"),                nullptr, makeBtn("midpoint")},
-            {QStringLiteral("normal"),                  tr("Point along perpendicular"),                  nullptr, makeBtn("normal")},
-            {QStringLiteral("bisector"),                tr("Point along bisector"),                       nullptr, makeBtn("bisector")},
-            {QStringLiteral("height"),                  tr("Perpendicular point along line"),             nullptr, makeBtn("height")},
-            {QStringLiteral("point_of_intersection"),   tr("Point from X and Y of two other points"),    nullptr, makeBtn("point_of_intersection")},
-            {QStringLiteral("intersect"),               tr("Point at line intersection"),                 nullptr, makeBtn("intersect")},
-            {QStringLiteral("shoulder"),                tr("Special point on shoulder"),                  nullptr, makeBtn("shoulder")},
-            {QStringLiteral("triangle"),                tr("Triangle tool"),                              nullptr, makeBtn("triangle")},
-            {QStringLiteral("line_intersect_axis"),     tr("Point intersect line and axis"),              nullptr, makeBtn("line_intersect_axis")},
-        }, kModeDraw},
-        {tr("Line"), {
-            {QStringLiteral("line"), tr("Line between points"), nullptr, makeBtn("line")},
-        }, kModeDraw},
-        {tr("Curves"), {
-            {QStringLiteral("cubic_bezier"),             tr("Curve tool which uses point as control handle"),    nullptr, makeBtn("cubic_bezier")},
-            {QStringLiteral("cubic_bezier_path"),        tr("Curved path tool which uses point as control handle"), nullptr, makeBtn("cubic_bezier_path")},
-            {QStringLiteral("curve_intersect_axis"),     tr("Point intersect curve and axis"),                  nullptr, makeBtn("curve_intersect_axis")},
-            {QStringLiteral("intersection_curves"),      tr("Point intersection curves"),                       nullptr, makeBtn("intersection_curves")},
-            {QStringLiteral("parallel_curve"),           tr("Parallel curve tool"),                             nullptr, makeBtn("parallel_curve")},
-            {QStringLiteral("graduated_curve_offseting"), tr("Graduated curve tool"),                           nullptr, makeBtn("graduated_curve_offseting")},
-        }, kModeDraw},
-        {tr("Arcs"), {
-            {QStringLiteral("arc"),                           tr("Arc"),                                      nullptr, makeBtn("arc")},
-            {QStringLiteral("arc_with_length"),               tr("Arc with given length"),                    nullptr, makeBtn("arc_with_length")},
-            {QStringLiteral("el_arc"),                        tr("Elliptical Arc"),                           nullptr, makeBtn("el_arc")},
-            {QStringLiteral("el_arc_with_length"),            tr("Elliptical arc with given length"),         nullptr, makeBtn("el_arc_with_length")},
-            {QStringLiteral("arc_cut"),                       tr("Segment an arc"),                           nullptr, makeBtn("arc_cut")},
-            {QStringLiteral("arc_start"),                     tr("Arc start point"),                          nullptr, makeBtn("arc_start")},
-            {QStringLiteral("arc_end"),                       tr("Arc end point"),                            nullptr, makeBtn("arc_end")},
-            {QStringLiteral("point_of_intersection_arcs"),    tr("Point of intersection arcs"),               nullptr, makeBtn("point_of_intersection_arcs")},
-            {QStringLiteral("arc_intersect_axis"),            tr("Point of intersection arc and axis"),       nullptr, makeBtn("arc_intersect_axis")},
-            {QStringLiteral("point_of_intersection_circles"), tr("Point of intersection circles"),            nullptr, makeBtn("point_of_intersection_circles")},
-            {QStringLiteral("point_from_arc_and_tangent"),    tr("Point from arc and tangent"),               nullptr, makeBtn("point_from_arc_and_tangent")},
-            {QStringLiteral("point_from_circle_and_tangent"), tr("Point from circle and tangent"),            nullptr, makeBtn("point_from_circle_and_tangent")},
-            {QStringLiteral("point_of_contact"),              tr("Point of intersection circle and segment"), nullptr, makeBtn("point_of_contact")},
-        }, kModeDraw},
-        {tr("Operations"), {
-            {QStringLiteral("flipping_axis"),            tr("Flipping objects by axis"),          nullptr, makeBtn("flipping_axis")},
-            {QStringLiteral("flipping_line"),            tr("Flipping objects by line"),          nullptr, makeBtn("flipping_line")},
-            {QStringLiteral("rotation"),                 tr("Rotate objects"),                    nullptr, makeBtn("rotation")},
-            {QStringLiteral("move"),                     tr("Move objects"),                      nullptr, makeBtn("move")},
-            {QStringLiteral("true_darts"),               tr("True darts"),                        nullptr, makeBtn("true_darts")},
-        }, kModeDraw},
-        {tr("Pieces"), {
-            {QStringLiteral("new_detail"),               tr("Workpiece tool"),                   nullptr, makeBtn("new_detail")},
-            {QStringLiteral("path"),                     tr("Internal path tool"),                nullptr, makeBtn("path")},
-            {QStringLiteral("insert_node"),              tr("Insert node tool"),                  nullptr, makeBtn("insert_node")},
-            {QStringLiteral("place_label"),              tr("Internal mark"),                      nullptr, makeBtn("place_label")},
-        }, kModeDraw},
-        {tr("Pieces"), {
-            {QStringLiteral("union"),                    tr("Union tool"),                        nullptr, makeBtn("union")},
-            {QStringLiteral("duplicate_detail"),         tr("Duplicate detail tool"),             nullptr, makeBtn("duplicate_detail")},
-        }, kModeDetail},
-        {tr("Pieces"), {
-            {QStringLiteral("detail_export"),            tr("Export"),                            nullptr, nullptr},
-        }, kModeDetail},
-        {tr("New"), {
-            {QStringLiteral("curve"),                    tr("Curve"),                                            nullptr, makeBtn("curve")},
-            {QStringLiteral("curve_cut_point"),          tr("Segment a curve"),                                 nullptr, makeBtn("curve_cut_point")},
-            {QStringLiteral("armhole_curve"),            tr("Armhole curve passing through 4 points"),          nullptr, makeBtn("armhole_curve")},
-            // No close_dart.svg exists yet, so this button is built by hand further down and borrows the icon
-            // of the rotation it comes from. The tool waits here until it has artwork of its own.
-            {QStringLiteral("close_dart"),               tr("Close dart tool"),                                 nullptr, nullptr},
-            // Same as close_dart: no dart_cap.svg exists yet, so the button is built by hand further down
-            // and borrows the icon of true darts.
-            {QStringLiteral("dart_cap"),                 tr("Dart cap tool"),                                   nullptr, nullptr},
-            // Same again: the rectangle waits for artwork of its own and borrows the icon of the shoulder
-            // point, which is where its dialog takes its cursor from too.
-            {QStringLiteral("rectangle"),                tr("Rectangle tool"),                                  nullptr, nullptr},
-            // Same again: no transfert.svg yet, so the button is built by hand below and borrows the icon of
-            // the move it translates — the one its action uses too.
-            {QStringLiteral("transfert"),                tr("Transfer tool"),                                   nullptr, nullptr},
-            // Same again: the spiral waits for artwork of its own and borrows the icon of the parallel curve,
-            // which is where its action takes it from too.
-            {QStringLiteral("spiral"),                   tr("Spiral tool"),                                     nullptr, nullptr},
-            // Same again: the slash-and-spread borrows the icon of the arc of given length.
-            {QStringLiteral("spread"),                   tr("Slash and spread tool"),                           nullptr, nullptr},
-            // Same again: the move-by-batch borrows the icon of the elliptical arc.
-            {QStringLiteral("move_batch"),               tr("Move by batch tool"),                              nullptr, nullptr},
-            // Same again: the pleat borrows the icon of the triangle.
-            {QStringLiteral("pleat"),                    tr("Pleat tool"),                                      nullptr, nullptr},
-            // Same again: the middle pleat borrows the icon of the perpendicular point on a segment.
-            {QStringLiteral("pleat_mid"),                tr("Middle pleat tool"),                               nullptr, nullptr},
-            // Same again: the flounce spiral waits for artwork of its own and borrows the icon of the point at
-            // the intersection of two circles, which is the construction it draws.
-            {QStringLiteral("flounce_spiral"),           tr("Flounce spiral tool"),                             nullptr, nullptr},
-        }, kModeDraw},
-    };
-    // clang-format on
+    const OToolBarLayout::Layout layout = OToolBarLayout::Load();
 
-    // The export tool uses a PNG icon (no SVG theme variants exist yet).
-    // Create its button manually — don't go through makeBtn which would try
-    // to load a non-existent SVG and spam the console.
-    if (!m_buttonMap.contains(QStringLiteral("detail_export")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(QIcon(QStringLiteral(":/icon/32x32/export_to_picture_document.png")));
-        m_buttonMap.insert(QStringLiteral("detail_export"), btn);
-    }
-    // The Export templates button carries an application-set themed icon (:/icons/…), not a
-    // tool icon from :/tools/ — created manually for the same reason as the export tool.
-    if (!m_buttonMap.contains(QStringLiteral("export_templates")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        // Not checkable: it opens a window, it does not arm a tool.
-        btn->setCheckable(false);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(QIcon(QStringLiteral(":/icons/%1/grid-four-fill_%1.svg")
-                               .arg(IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light"))));
-        m_buttonMap.insert(QStringLiteral("export_templates"), btn);
-    }
-    // The image export button carries an application-set themed icon (:/icons/…), exactly like
-    // Export templates above — same reason, same shape.
-    if (!m_buttonMap.contains(QStringLiteral("export_image")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        // Not checkable: it opens a dialog, it does not arm a tool.
-        btn->setCheckable(false);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(QIcon(QStringLiteral(":/icons/%1/file-image-fill_%1.svg")
-                               .arg(IsDarkTheme() ? QStringLiteral("dark") : QStringLiteral("light"))));
-        m_buttonMap.insert(QStringLiteral("export_image"), btn);
-    }
+    m_groups.clear();
 
-    // The tool that closes a dart waits for its own artwork: with no close_dart.svg to load — and makeBtn()
-    // would complain about it — its button borrows the icon of the rotation it comes from, from the
-    // application rather than from :/tools/. Built by hand for the same reason as the export tool.
-    if (!m_buttonMap.contains(QStringLiteral("dart_cap")))
+    // The Draw mode: what the user arranged in the preferences, or the eight groups Ostara ships
+    // with. A tool the user left out of every group is simply not here — and not drawn.
+    for (const OToolBarLayout::Group &group : layout.groups)
     {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("true_darts.png")));
-        m_buttonMap.insert(QStringLiteral("dart_cap"), btn);
-    }
-
-    if (!m_buttonMap.contains(QStringLiteral("close_dart")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("rotation.png")));
-        m_buttonMap.insert(QStringLiteral("close_dart"), btn);
-    }
-
-    // The rectangle waits for artwork of its own: with no rectangle.svg to load, its button borrows the icon
-    // of the shoulder point — the same one its action and its cursor come from. By hand, like the two above.
-    if (!m_buttonMap.contains(QStringLiteral("rectangle")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("shoulder.png")));
-        m_buttonMap.insert(QStringLiteral("rectangle"), btn);
-    }
-
-    // The transfer waits for artwork of its own too, and borrows the icon of the move — same one its action
-    // carries. By hand, like the three above.
-    if (!m_buttonMap.contains(QStringLiteral("transfert")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("move.png")));
-        m_buttonMap.insert(QStringLiteral("transfert"), btn);
-    }
-
-    // The spiral waits for artwork of its own too, and borrows the icon of the parallel curve — the same one
-    // its action carries. By hand, like the four above.
-    if (!m_buttonMap.contains(QStringLiteral("spiral")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("parallel_curve.png")));
-        m_buttonMap.insert(QStringLiteral("spiral"), btn);
-    }
-
-    // The flounce spiral waits for artwork of its own too, and borrows the icon of the point at the
-    // intersection of two circles — the same one its action carries.
-    if (!m_buttonMap.contains(QStringLiteral("flounce_spiral")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"),
-                                             QStringLiteral("point_of_intersection_circles.png")));
-        m_buttonMap.insert(QStringLiteral("flounce_spiral"), btn);
-    }
-
-    // The slash-and-spread borrows the icon of the arc of given length — the same one its action carries.
-    if (!m_buttonMap.contains(QStringLiteral("spread")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("arc_with_length.png")));
-        m_buttonMap.insert(QStringLiteral("spread"), btn);
-    }
-
-    // The move-by-batch borrows the icon of the elliptical arc — the same one its action carries.
-    if (!m_buttonMap.contains(QStringLiteral("move_batch")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("el_arc.png")));
-        m_buttonMap.insert(QStringLiteral("move_batch"), btn);
-    }
-
-    // The pleat borrows the icon of the triangle — the same one its action carries.
-    if (!m_buttonMap.contains(QStringLiteral("pleat")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("triangle.png")));
-        m_buttonMap.insert(QStringLiteral("pleat"), btn);
-    }
-
-    // The middle pleat borrows the icon of the perpendicular point on a segment — the same one its action carries.
-    if (!m_buttonMap.contains(QStringLiteral("pleat_mid")))
-    {
-        auto *btn = new QToolButton(m_root);
-        btn->setObjectName(QStringLiteral("drawToolBtn"));
-        btn->setAutoRaise(true);
-        btn->setCheckable(true);
-        btn->setFixedSize(kButtonSize, kButtonSize);
-        btn->setIconSize(QSize(24, 24));
-        btn->setIcon(VTheme::GetIconResource(QStringLiteral("toolicon"), QStringLiteral("height.png")));
-        m_buttonMap.insert(QStringLiteral("pleat_mid"), btn);
-    }
-
-    // Update the button pointer in the ToolItem
-    for (auto &group : m_groups)
-    {
-        for (auto &tool : group.tools)
+        ToolGroup built;
+        built.name = group.DisplayName();
+        built.modeMask = kModeDraw;
+        for (const QString &id : group.tools)
         {
-            if (IsAppIconTool(tool.id))
-            {
-                tool.button = m_buttonMap.value(tool.id);
-            }
+            built.tools.append(ToolItem{id, OToolBarCatalogue::ToolName(id), nullptr, makeBtn(id)});
         }
+        m_groups.append(built);
+    }
+
+    // The other modes are not user-configurable: outside Draw::Calculation there is no caret, so a
+    // group the row budget cannot fit would have nowhere to put its overflow.
+    for (const OToolBarCatalogue::Group &group : OToolBarCatalogue::OtherGroups())
+    {
+        ToolGroup built;
+        built.name = group.name;
+        built.modeMask = group.modeMask;
+        for (const QString &id : group.tools)
+        {
+            built.tools.append(ToolItem{id, OToolBarCatalogue::ToolName(id), nullptr, makeBtn(id)});
+        }
+        m_groups.append(built);
+    }
+
+    // A button whose tool left every group survives in the map — it is a child of the root widget,
+    // and an orphan child sits at the top-left corner. Hide it explicitly; BuildLayout() only ever
+    // visits the tools that are in a group.
+    const QStringList shown = layout.Assigned();
+    for (auto it = m_buttonMap.cbegin(); it != m_buttonMap.cend(); ++it)
+    {
+        it.value()->setVisible(shown.contains(it.key()));
     }
 
     // And put the actions back: the table above cannot carry them.
@@ -792,6 +461,13 @@ void DrawToolBar::RetranslateGroups()
     InitializeGroups();          // re-evaluates tr() names, reuses existing buttons
     setWindowTitle(tr("Tools"));
     BuildLayout();               // re-renders group headers + tooltips with the new names
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DrawToolBar::ReloadLayout()
+{
+    InitializeGroups();          // the groups, their names and their tools come from the layout
+    BuildLayout();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -927,8 +603,6 @@ void DrawToolBar::BuildLayout()
         const int visTools = visRows * cols;
         const int totalTools = static_cast<int>(group.tools.size());
         const bool hasCaret = !compactMode && (totalTools > visTools);
-        const bool dark = IsDarkTheme();
-        const QString theme = dark ? QStringLiteral("dark") : QStringLiteral("light");
 
         if (group.tools.isEmpty())
         {
@@ -1001,11 +675,7 @@ void DrawToolBar::BuildLayout()
                     // adapt to light/dark). Skip tools that use PNG icons.
                     if (flyoutMenu != nullptr && i >= visTools)
                     {
-                        if (!IsAppIconTool(tool.id))
-                        {
-                            const auto iconPath = QStringLiteral(":/tools/%1/%2.svg").arg(theme, tool.id);
-                            tool.action->setIcon(QIcon(iconPath));
-                        }
+                        tool.action->setIcon(OToolBarCatalogue::IconFor(tool.id));
                         flyoutMenu->addAction(tool.action);
                     }
                 }

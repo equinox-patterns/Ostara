@@ -171,6 +171,12 @@ auto Save(const OPieceCartoucheTemplate &tpl, const QString &filePath, QString *
 /// Ensure the default template exists — created on first use when the folder is
 /// empty, so the cartouche dropdown is never empty (spec §4.1).
 void EnsureDefaultTemplate();
+
+/// Forget the annotation styles already loaded: the folder changed, so the styles
+/// it holds are not the same ones. The resolver in main.cpp caches the library by
+/// version, and a path change is not a save — the version has to move for it to
+/// let go.
+void InvalidateAnnotationStyles();
 }  // namespace OPieceCartoucheStorage
 
 #endif // OPIECECARTOUCHESTORAGE_H

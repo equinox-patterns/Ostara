@@ -30,9 +30,11 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vtools/dialogs/dialogtoolbox.h"
+#include "configpages/preferencesfolderspage.h"
 #include "configpages/preferencesgeneralpage.h"
 #include "configpages/preferencespatternpage.h"
 #include "configpages/preferencesshortcutspage.h"
+#include "configpages/preferencestoolbarpage.h"
 #include "ui_dialogpreferences.h"
 
 #include <QApplication>
@@ -53,6 +55,8 @@ DialogPreferences::DialogPreferences(QWidget *parent)
 
     m_generalPage = new PreferencesGeneralPage;
     m_shortcutsPage = new PreferencesShortcutsPage;
+    m_foldersPage = new PreferencesFoldersPage;
+    m_toolBarPage = new PreferencesToolBarPage;
     m_patternPage = new PreferencesPatternPage;
 
 #if defined(Q_OS_MAC)
@@ -71,7 +75,9 @@ DialogPreferences::DialogPreferences(QWidget *parent)
 
     ui->pagesWidget->insertWidget(0, m_generalPage);
     ui->pagesWidget->insertWidget(1, m_shortcutsPage);
-    ui->pagesWidget->insertWidget(2, m_patternPage);
+    ui->pagesWidget->insertWidget(2, m_foldersPage);
+    ui->pagesWidget->insertWidget(3, m_toolBarPage);
+    ui->pagesWidget->insertWidget(4, m_patternPage);
 
     connect(ui->contentsWidget, &QListWidget::currentItemChanged, this, &DialogPreferences::PageChanged);
     ui->pagesWidget->setCurrentIndex(0);
@@ -175,6 +181,8 @@ void DialogPreferences::Apply()
 
     preferences += m_generalPage->Apply();
     preferences += m_shortcutsPage->Apply();
+    preferences += m_foldersPage->Apply();
+    preferences += m_toolBarPage->Apply();
     preferences += m_patternPage->Apply();
 
     if (not preferences.isEmpty())
