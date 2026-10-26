@@ -1221,6 +1221,14 @@ QLabel {
     border: none;
 }
 
+/* Note — texte secondaire qu'un widget déclare lui-même : `setProperty("ostaraNote", true)`.
+   La taille est ICI et nulle part ailleurs. Le QSS s'applique au polish et écrase tout `setFont`,
+   donc une note plus petite ne peut pas venir du C++ (design-system.md : les polices sont dans le QSS). */
+
+QLabel[ostaraNote="true"] {
+    font-size: 11px;
+}
+
 /* =========================================================================
    QDialogButtonBox
    ========================================================================= */

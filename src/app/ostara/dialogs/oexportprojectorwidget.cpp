@@ -36,7 +36,6 @@
 
 #include <QComboBox>
 #include <QEvent>
-#include <QFont>
 #include <QFormLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -150,9 +149,10 @@ void OExportProjectorWidget::BuildUi()
     m_calibrationLabel = new QLabel(this);
     m_calibrationLabel->setWordWrap(true);
     m_calibrationLabel->setTextFormat(Qt::PlainText);
-    QFont noteFont = m_calibrationLabel->font();
-    noteFont.setPointSizeF(noteFont.pointSizeF() * 0.9);
-    m_calibrationLabel->setFont(noteFont);
+    // The smaller size is a theme rule (`template.qss.in`, `QLabel[ostaraNote="true"]`): the QSS is
+    // reapplied at polish and overrides whatever `setFont` did, so the widget only declares what it
+    // is. Scaling the point size here used to compute -1 × 0.9 — Qt refuses it and warns.
+    m_calibrationLabel->setProperty("ostaraNote", true);
     layout->addRow(m_calibrationLabel);
 }
 
