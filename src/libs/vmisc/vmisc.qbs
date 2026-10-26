@@ -134,11 +134,12 @@ VLib {
 
     Group {
         name: "Resources"
-        prefix: "share/resources/"
+        prefix: "../../share/"
         files: [
             "flags.qrc",
             "scenestyle.qrc",
             "cursor.qrc",
+            "ostara_theme.qrc",
         ]
     }
 

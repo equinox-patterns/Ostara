@@ -96,11 +96,13 @@ set(VMISC_CODECS
 )
 
 # QRC resources
+# Les ressources de VMisc vivent dans share/, à la racine du dépôt, avec les autres données de
+# l'application. Les .qrc y sont rangés à côté d'elles.
 set(VMISC_QRC
-    share/resources/flags.qrc
-    share/resources/scenestyle.qrc
-    share/resources/cursor.qrc
-    share/resources/ostara_theme.qrc
+    ${CMAKE_SOURCE_DIR}/share/flags.qrc
+    ${CMAKE_SOURCE_DIR}/share/scenestyle.qrc
+    ${CMAKE_SOURCE_DIR}/share/cursor.qrc
+    ${CMAKE_SOURCE_DIR}/share/ostara_theme.qrc
 )
 
 # macOS native window theme (Objective-C++)
