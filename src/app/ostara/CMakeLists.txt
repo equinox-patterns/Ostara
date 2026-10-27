@@ -173,6 +173,14 @@ if(APPLE)
         DESTINATION "Ostara.app/Contents/Resources"
     )
 
+    # Les textes de licence, en vrais fichiers à côté de leur copie embarquée. La GPL exige qu'une
+    # copie de la licence accompagne le programme ; la ressource Qt les rend lisibles dans
+    # l'application, ce dossier les rend lisibles sans l'ouvrir — un `grep` sur le paquet suffit.
+    install(DIRECTORY "${CMAKE_SOURCE_DIR}/share/licenses/"
+        DESTINATION "Ostara.app/Contents/Resources/licenses"
+        FILES_MATCHING PATTERN "*.txt"
+    )
+
     # Install internal dylibs into Frameworks (before macdeployqt)
     install(FILES
         $<TARGET_FILE:VPropertyExplorerLib>

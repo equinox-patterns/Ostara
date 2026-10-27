@@ -11,6 +11,8 @@
         <file alias="clipper2-BSL-1.0.txt">../../../../../share/licenses/clipper2-BSL-1.0.txt</file>
         <file alias="muparser-MIT.txt">../../../../../share/licenses/muparser-MIT.txt</file>
         <file alias="xerces-Apache-2.0.txt">../../../../../share/licenses/xerces-Apache-2.0.txt</file>
+        <file alias="LGPL-3.0.txt">../../../../../share/licenses/LGPL-3.0.txt</file>
+        <file alias="zlib.txt">../../../../../share/licenses/zlib.txt</file>
         <file alias="xerces-NOTICE.txt">../../../../../share/licenses/xerces-NOTICE.txt</file>
     </qresource>
 </RCC>

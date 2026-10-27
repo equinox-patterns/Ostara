@@ -113,6 +113,9 @@ OLicenceDialog::OLicenceDialog(QWidget *parent)
         {QStringLiteral("Xerces-C++ — NOTICE"), QStringLiteral("xerces-NOTICE.txt")},
         {QStringLiteral("libdxfrw — GNU General Public License 2"), QStringLiteral("GPL-2.0.txt")},
         {QStringLiteral("muParser — MIT"), QStringLiteral("muparser-MIT.txt")},
+        {QStringLiteral("zlib — zlib License"), QStringLiteral("zlib.txt")},
+        {QStringLiteral("Qt — GNU Lesser General Public License 3"),
+         QStringLiteral("LGPL-3.0.txt")},
     };
 
     // Un filet entre deux textes : sans lui, un titre d'ouverture se lit comme la dernière ligne du
