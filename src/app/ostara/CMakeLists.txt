@@ -41,8 +41,45 @@ get_property(_ostaraDirDefinitions DIRECTORY PROPERTY COMPILE_DEFINITIONS)
 set_property(DIRECTORY PROPERTY COMPILE_OPTIONS "")
 set_property(DIRECTORY PROPERTY COMPILE_DEFINITIONS "")
 
+# ─── Où est Trame ? ──────────────────────────────────────────────────────────
+# Trame est un dépôt séparé. Trois cas, dans l'ordre :
+#   1. un dossier voisin, ce qui est l'usage courant en développement ;
+#   2. -DOSTARA_TRAME_REPOSITORY=<url> [-DOSTARA_TRAME_TAG=<branche ou étiquette>]
+#      pour une machine neuve ou une CI, qui le télécharge ;
+#   3. sinon on s'arrête net, avec un message qui dit quoi faire — plutôt qu'une
+#      erreur de compilation incompréhensible trois cents lignes plus loin.
+set(_ostaraTrameDir "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Trame")
+if(NOT EXISTS "${_ostaraTrameDir}/CMakeLists.txt")
+    if(NOT OSTARA_TRAME_REPOSITORY)
+        message(FATAL_ERROR
+            "Trame est introuvable : ni le dossier voisin "
+            "'${_ostaraTrameDir}', ni -DOSTARA_TRAME_REPOSITORY. "
+            "Clonez Trame à côté d'Ostara, ou passez "
+            "-DOSTARA_TRAME_REPOSITORY=<url du dépôt Trame>.")
+    endif()
+    if(NOT OSTARA_TRAME_TAG)
+        set(OSTARA_TRAME_TAG "")
+    endif()
+    include(FetchContent)
+    if(POLICY CMP0169)
+        cmake_policy(SET CMP0169 OLD)   # FetchContent_Populate reste utilisé ici
+    endif()
+    # Sans GIT_TAG, git prend la branche par défaut du dépôt : rien à deviner, et
+    # ça marche que Trame soit sur « main » ou sur « master ».
+    set(_ostaraTrameFetchArgs GIT_REPOSITORY "${OSTARA_TRAME_REPOSITORY}")
+    if(OSTARA_TRAME_TAG)
+        list(APPEND _ostaraTrameFetchArgs GIT_TAG "${OSTARA_TRAME_TAG}")
+    endif()
+    FetchContent_Declare(Trame ${_ostaraTrameFetchArgs})
+    FetchContent_GetProperties(Trame)
+    if(NOT Trame_POPULATED)
+        FetchContent_Populate(Trame)
+    endif()
+    set(_ostaraTrameDir "${trame_SOURCE_DIR}")
+endif()
+
 add_subdirectory(
-    "${CMAKE_CURRENT_SOURCE_DIR}/../../../../Trame"
+    "${_ostaraTrameDir}"
     "${CMAKE_BINARY_DIR}/Trame"
     EXCLUDE_FROM_ALL
 )
