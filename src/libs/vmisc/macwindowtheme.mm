@@ -38,10 +38,7 @@ void SetMacWindowAppearance(WId /*winId*/, bool dark)
     }
 }
 
-#else  // !Q_OS_MACOS
-
-void SetMacWindowAppearance(WId /*winId*/, bool /*dark*/)
-{
-}
+// Les autres plateformes ont leur propre définition, dans macwindowtheme_stub.cpp.
+// Ce fichier-ci n'est compilé que sur Apple : l'Objective-C++ ne se compile pas ailleurs.
 
 #endif // Q_OS_MACOS

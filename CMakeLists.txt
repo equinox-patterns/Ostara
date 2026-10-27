@@ -34,7 +34,21 @@ set(CMAKE_AUTOUIC ON)
 # ═══════════════════════════════════════════════════════════════════════════════
 # Qt 6.11
 # ═══════════════════════════════════════════════════════════════════════════════
-set(CMAKE_PREFIX_PATH "/Users/sophie/Qt/6.11.1/macos")
+# Aucun chemin n'est imposé : le projet doit se configurer sur n'importe quelle machine.
+# Trois façons de désigner Qt, dans cet ordre :
+#   1. -DCMAKE_PREFIX_PATH=/chemin/vers/Qt/6.11.1/<kit>   (prioritaire, écrase tout)
+#   2. la variable d'environnement QT_DIR
+#   3. les emplacements habituels de l'installeur Qt, pour les trois plateformes
+if(NOT CMAKE_PREFIX_PATH AND DEFINED ENV{QT_DIR})
+    set(CMAKE_PREFIX_PATH "$ENV{QT_DIR}")
+endif()
+if(NOT CMAKE_PREFIX_PATH AND DEFINED ENV{HOME})
+    list(APPEND CMAKE_PREFIX_PATH
+        "$ENV{HOME}/Qt/6.11.1/macos"        # macOS, universel
+        "$ENV{HOME}/Qt/6.11.1/gcc_64"       # Linux
+        "$ENV{HOME}/Qt/6.11.1/msvc2022_64"  # Windows
+    )
+endif()
 find_package(Qt6 REQUIRED COMPONENTS
     Core
     Gui
@@ -52,10 +66,10 @@ find_package(Qt6 REQUIRED COMPONENTS
 # Dépendances externes
 # ═══════════════════════════════════════════════════════════════════════════════
 find_package(XercesC REQUIRED)
-
-if(APPLE)
-    find_package(OpenSSL COMPONENTS SSL Crypto)
-endif()
+# OpenSSL n'est pas une dépendance du projet : aucun fichier source ne l'utilise
+# (vérifié sur les symboles importés du binaire déployé — zéro). Les deux lignes de
+# liaison ont été retirées le 27-10-2026 ; elles empêchaient toute compilation hors
+# de macOS, où find_package n'était même pas appelé.
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # Définitions globales (équivalent buildconfig.qbs)

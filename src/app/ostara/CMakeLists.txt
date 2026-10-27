@@ -90,8 +90,6 @@ target_link_libraries(Ostara PRIVATE
     VThemeLib
     VGAnalyticsLib
     XercesC::XercesC
-    OpenSSL::SSL
-    OpenSSL::Crypto
     Trame
 )
 
@@ -191,7 +189,7 @@ if(APPLE)
     # Install the bundle
     install(TARGETS Ostara BUNDLE DESTINATION .)
 
-    # macdeployqt — bundles Qt + Xerces + OpenSSL
+    # macdeployqt — bundles Qt + Xerces
     qt_generate_deploy_app_script(
         TARGET Ostara
         OUTPUT_SCRIPT deploy_script

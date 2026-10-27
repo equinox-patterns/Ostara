@@ -78,7 +78,7 @@ set(VMISC_QRC
     ${CMAKE_SOURCE_DIR}/share/ostara_theme.qrc
 )
 
-# macOS native window theme (Objective-C++)
+# macOS native window theme (Objective-C++ on Apple, plain stub elsewhere)
 if(APPLE)
     list(APPEND VMISC_SOURCES
         macwindowtheme.h
@@ -86,6 +86,13 @@ if(APPLE)
     )
     set_source_files_properties(macwindowtheme.mm PROPERTIES
         SKIP_PRECOMPILE_HEADERS ON
+    )
+else()
+    # L'Objective-C++ ne se compile pas hors d'Apple : la définition neutre vient
+    # d'un fichier C++ ordinaire, sinon VThemeLib ne se lie pas.
+    list(APPEND VMISC_SOURCES
+        macwindowtheme.h
+        macwindowtheme_stub.cpp
     )
 endif()
 
