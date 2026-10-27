@@ -470,16 +470,35 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // ⚠️ En mode console il n'y a personne pour cliquer la croix, et une fenêtre qui s'ouvrirait 252
     // fois n'annoncerait rien à personne. Le drapeau reste faux : l'abandon n'existe alors que par
     // le processus — et le CSV écrit au fur et à mesure fait qu'on n'y perd rien.
+    // **Une seule fenêtre pour tout le run, et elle montre qu'elle est vivante.**
+    //
+    // Le texte ne bouge pas — c'est celui du mode, et il dit déjà ce qui se passe. Ce qui s'ajoute
+    // est ce qui manquait : la barre qui tourne et les secondes qui défilent. Un plan de coupe paie
+    // deux imbrications, et une fenêtre immobile pendant la seconde est une fenêtre qu'on croit
+    // plantée ; les secondes, elles, ne mentent pas sur ce que le run prend.
+    //
+    // ⚠️ **Tenu jusqu'à la fin des deux passes** — voir le `reset()` après elles. La fenêtre se
+    // ferme une fois, jamais entre le tissu et la doublure : c'est le même run.
     std::unique_ptr<OWaitDialog> waitDialog;
     if (VApplication::IsGUIMode())
     {
-        waitDialog = std::unique_ptr<OWaitDialog>(new OWaitDialog(tr("Nesting. Please, wait."), this));
+        waitDialog = std::unique_ptr<OWaitDialog>(
+            new OWaitDialog(tr("Nesting. Please, wait."), this, OWaitDialog::Presentation::Timed));
 
         // The cross on the dialog is the request; what the engine reads is the flag it was handed.
         connect(waitDialog.get(), &QDialog::rejected, this, [abandoned]() { abandoned->store(true); });
 
         waitDialog->show();
-        QCoreApplication::processEvents();
+
+        // ⚠️ **La fenêtre doit être PEINTE avant que le run ne prenne le fil.** La marche des tailles
+        // se fait ici, sur ce fil, sans boucle d'événements : elle ne rendra la main qu'à la première
+        // imbrication. Un seul `processEvents()` peut laisser la peinture en attente, et la fenêtre
+        // resterait invisible — ou vide — pendant toute la géométrie. Quelques tours suffisent, et
+        // les entrées sont écartées : la croix ne doit pas être lue avant que le run n'ait commencé.
+        for (int i = 0; i < 4; ++i)
+        {
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+        }
     }
 
     // ── Ce que la marche des tailles abîme, et qu'il faut remettre ─────────────────────────────
@@ -648,18 +667,34 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // d'elle que viennent les positions que l'utilisatrice a posées en Graded (droit-fil, bloc,
     // annotation, miniature). La lire ici plutôt que dans la variable `range` de la fonction est ce
     // qui distingue les deux — et l'oublier laissait un plan de coupe sans les placements de sa plage.
+    // **Deux destins dans cette closure, et les séparer est le point.**
+    //
+    // Le DROIT-FIL suit la taille : il est écrit par `<piece>`, chaque pièce appartenant à sa
+    // couche, et le payload le relit par taille (`oexportpieces.cpp:295`). Il se résout donc à
+    // chaque taille, et c'est une vraie lecture du document.
+    //
+    // Le DÉCOR, lui, n'a qu'UN porteur : la **couche 0**, la plus petite taille de la plage.
+    // Le payload ne lit que celle-là (`oexportpieces.cpp:423`, `constFind({0, geometry.id})`), le
+    // canvas ne dessine que celle-là (`oexportcanvas.cpp:2061-2063`, `HidePerSizeDecor` masque les
+    // autres), et Rabnest ne dessine que la taille qu'il nomme `reference` (`printplan.cpp:556`).
+    // Le résoudre pour les autres tailles était donc du travail dont personne ne lit le résultat —
+    // et c'est loin d'être gratuit : un seul appel refait un scan du dossier des cartouches, un
+    // parse complet du `.oct` et, s'il y en a, de la table de mesures.
     const auto freezePieceDecor = [&](OExportSizeLayer &layer,
                                       const QMap<QString, QString> &sizeAxes,
-                                      const OSizerange *ownerRange) {
+                                      const OSizerange *ownerRange, bool withDecor) {
         for (OExportPieceGeometry &piece : layer.pieces)
         {
-            piece.decor =
-                ResolvePieceDecor(piece, ownerRange, pattern, doc, request.format, sizeAxes);
+            if (withDecor)
+            {
+                piece.decor =
+                    ResolvePieceDecor(piece, ownerRange, pattern, doc, request.format, sizeAxes);
+            }
 
             // The grainline is the same story read from the same document — and it is frozen HERE,
             // in the same breath, because it is the same defect: it stayed invisible only for as long
             // as a single-size run left the document on the run's own size. It follows the piece, so
-            // it is frozen per size exactly like the decor.
+            // it is frozen per size — the decor does not.
             piece.grainline = ResolvePieceGrainline(piece, ownerRange, grainlineUnit, pattern,
                                                     request.format, referenceSeats.value(piece.id));
         }
@@ -908,7 +943,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 {
                     // Aucun axe à nommer : une table taille unique n'a qu'une taille, et la valeur
                     // de référence du cartouche est déjà la sienne.
-                    freezePieceDecor(planLayers.last(), {}, planRange);
+                    freezePieceDecor(planLayers.last(), {}, planRange, /*withDecor*/ true);
                     freezeGroupDecor(planLayers.last(), planGroupDecor, {}, planRange);
                 }
             }
@@ -990,7 +1025,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
                 {
                     const QMap<QString, QString> axes = geometry.AxisLabels(baseOfA, baseOfB, baseOfC);
                     runAxes = axes;
-                    freezePieceDecor(planLayers.last(), axes, planRange);
+                    freezePieceDecor(planLayers.last(), axes, planRange, /*withDecor*/ true);
                     freezeGroupDecor(planLayers.last(), planGroupDecor, axes, planRange);
                 }
             }
@@ -1034,19 +1069,19 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
                 planLayers += geometry.CollectCurrentSize(size.label);
 
-                // ── Le décor de CETTE taille, résolu pendant qu'elle est sur le document ────────
+                // ── Le droit-fil de CETTE taille, et le décor de la seule référence ─────────────
                 //
-                // ⚠️ **Le décor suit la pièce, taille par taille.** Graded ne projette pas un décor
-                // d'une taille sur une autre : il construit les enfants de chaque pièce À la taille de
-                // la couche, puis masque ceux des couches qui ne sont pas la référence. Un seul jeu
-                // recopié dans toutes les `<piece>` donnait donc, pour chaque taille, le décor d'une
-                // autre — mesuré côté Rabnest jusqu'à 227 px d'écart en x.
+                // Le droit-fil se résout à chaque taille : il part avec chaque `<piece>`, et c'est
+                // une lecture du document qui ne vaut que pour la taille où il est. Le résolveur lit
+                // `pattern->DataPieces()`, donc c'est ICI, entre `applyPassSize` et la couche
+                // suivante, et nulle part ailleurs.
                 //
-                // Le résolveur lit le document (`pattern->DataPieces()`), donc il ne vaut que pour la
-                // taille où le document est : c'est ICI, entre `applyPassSize` et la couche suivante,
-                // et nulle part ailleurs.
+                // Le DÉCOR, non : un seul porteur, la couche 0 — voir le commentaire de la closure,
+                // qui donne les trois lecteurs. `planLayers.size() == 1` est exactement « on est sur
+                // la première taille », la plus petite, celle que le payload nomme comme référence.
                 freezePieceDecor(planLayers.last(),
-                                 geometry.AxisLabels(appliedA, appliedB, appliedC), planRange);
+                                 geometry.AxisLabels(appliedA, appliedB, appliedC), planRange,
+                                 planLayers.size() == 1);
 
                 // Le GROUPE, lui, reste un dessin unique : il n'est gelé que sur la référence.
                 if (planLayers.size() == 1)
@@ -1110,7 +1145,6 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             // du run, et rien ne le rattraperait plus.
             pass.stop = PassResult::Stop::Empty;
             pass.diagnostic = geometry.LastDiagnostic();
-            waitDialog.reset();
             return pass;
         }
 
@@ -1138,7 +1172,6 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             fitLoop.exec();
 
             const OExportProjector::Outcome outcome = watcher.result();
-            waitDialog.reset();
 
             if (outcome.abandoned)
             {
@@ -1182,7 +1215,6 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         loop.exec();
 
         const OExportNestingResult result = future.result();
-        waitDialog.reset();
 
         if (result.abandoned)
         {
@@ -1219,6 +1251,13 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     {
         lining = runOnePlan(OExportCuttingGuard::Material::Lining, request.documentLiningWidthMm);
     }
+
+    // **La fenêtre d'attente se ferme ici, une seule fois pour les deux passes** — et surtout AVANT
+    // tout message : une boîte ouverte sous une modale applicative s'ouvrirait derrière elle, sur un
+    // écran où personne ne peut la cliquer. Le `unique_ptr` la tient d'un bout à l'autre du run, y
+    // compris quand une passe s'arrête tôt ; c'est cette ligne qui la referme, quel que soit le sort
+    // des deux.
+    waitDialog.reset();
 
     // Le document est rendu avant tout message : les signaux comme on les a trouvés, puis les trois
     // drapeaux que la traversée a pu salir. Le faire ICI, une fois, couvre les deux passes et tous les

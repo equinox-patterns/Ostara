@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   05/09/2026
  **
- **  @brief  Minimal modal "please wait" dialog without a progress bar.
+ **  @brief  Modal "please wait" dialog: the message, and — when asked — a bar and the seconds.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -28,19 +28,40 @@
 #define OWAITDIALOG_H
 
 #include <QDialog>
+#include <QElapsedTimer>
+#include <QTimer>
 
 class QLabel;
 
 /**
- * @brief Application-modal wait dialog without a progress bar: a single static message.
- *        No buttons — the caller closes/destroys it once the blocking work is done.
+ * @brief Application-modal wait dialog: a message, and — on request — a progress bar and the
+ *        seconds going by.
+ *
+ *        No buttons — the caller closes/destroys it once the blocking work is done, and the cross
+ *        is the one way out: closing it is how a run is given up.
+ *
+ * ⚠️ **The seconds only move while an event loop runs.** The clock is a `QTimer` on this thread, so
+ * the work it counts has to be somewhere else — a worker thread — with the waiting done in a nested
+ * loop over here. A caller that blocks this thread gives a frozen "0.0 s", not a live one.
  */
 class OWaitDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit OWaitDialog(const QString &text, QWidget *parent = nullptr);
+    /// What the dialog shows besides the message.
+    enum class Presentation
+    {
+        Message, ///< the message alone — a wait short enough that nothing has to move
+        Timed,   ///< a bar and the seconds — what a run that takes minutes shows
+    };
+
+    explicit OWaitDialog(const QString &text, QWidget *parent = nullptr,
+                         Presentation presentation = Presentation::Message);
+
+private:
+    QLabel *m_elapsed = nullptr;
+    QElapsedTimer m_clock;
 };
 
 #endif // OWAITDIALOG_H

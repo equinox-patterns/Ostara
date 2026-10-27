@@ -399,10 +399,6 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
 
             // ── Le décor de cette taille ────────────────────────────────────────────────────────
             //
-            // The very ink the visible decor layer draws — same serializer, other frame — in THIS
-            // size's own record. Une taille, un dessin : c'est ce que la version 5 énonce, et c'est
-            // ce qui fait qu'un plan de coupe de la 46 ne porte plus le décor de la 32.
-            //
             // **Un membre de groupe porte les SIENS, désormais.**
             //
             // Le canvas les construit pour lui sans les dessiner (`OExportCanvasContent::payloadDecor`),
@@ -418,6 +414,13 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             // suivait la fraction de la pièce : mesuré contre le SVG graded, « Manche » passait de
             // 0.796 à 0.805 là où le canvas est à 0.957, et l'écart atteignait 5 cm à la taille 46.
             //
+            // ⚠️ **`layerIndex` est FORCÉ à 0, et c'est toute la version 6.** La table est encore
+            // clée `(layerIndex, ownerId)` — le canvas y range le décor de chaque couche — mais un
+            // seul est lu, à l'écriture comme au dessin : celui de la première couche, la plus petite
+            // taille, celle que `<pieces reference="…">` nomme. C'est pourquoi `RunExportNesting` ne
+            // résout plus le décor que sur cette couche (closure `freezePieceDecor`) : le reste était
+            // calculé, rangé, et jamais lu.
+            //
             // Ce que le lecteur reçoit est donc le dessin de la référence, écrit dans le repère des
             // `outline` : il applique l'écart d'alignement aux deux, et ne recalcule plus rien.
             const auto referenceEntry = pieceDecorByLayerAndId.constFind({0, geometry.id});
@@ -429,20 +432,9 @@ auto OExportPieces::Of(QDomDocument &doc, const QVector<OExportSizeLayer> &layer
             }
             if (pieceDecor != nullptr)
             {
-                // ── Le décor de CETTE taille ───────────────────────────────────────────────────
-                //
-                // ⚠️ **Chaque taille porte le sien, et c'est ce que la version 5 déclare.** Graded
-                // ne projette pas un décor d'une taille sur une autre : il construit les enfants de
-                // chaque pièce À la taille de sa couche — droit-fil, pli et sa légende, cartouche,
-                // annotations — puis masque ceux des couches qui ne sont pas la référence. Le payload
-                // recopiait, lui, le jeu de la référence dans tous les `<piece>` : un lecteur qui
-                // dessinait une autre taille posait donc le décor d'une autre pièce. Mesuré côté
-                // Rabnest, l'écart allait jusqu'à 227 px en x et 42 px en y sur les pièces sans pli,
-                // et il suivait la gradation — aucune translation ne pouvait le corriger.
-                //
-                // Le bloc est écrit tel qu'il a été résolu POUR CETTE TAILLE, dans le même repère que
-                // son `outline` : le lecteur applique l'écart d'alignement aux deux, et ne recalcule
-                // rien d'autre.
+                // Le bloc a été choisi sur la couche 0, et il est écrit tel quel, dans le même repère
+                // que son `outline` : le lecteur applique l'écart d'alignement aux deux, et ne
+                // recalcule rien d'autre.
                 const QDomElement ink = OGradedSvg::OwnerDecorFor(doc, *pieceDecor);
                 if (!ink.isNull())
                 {
