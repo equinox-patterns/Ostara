@@ -28,10 +28,255 @@
 	-->
 
 	<key>NSHumanReadableCopyright</key>
-	<string>${MACOSX_BUNDLE_COPYRIGHT}</string>
+	<string>Copyright © 2026 Sophie Denys</string>
+	<!--
+	  La clé était branchée sur ${MACOSX_BUNDLE_COPYRIGHT}, jamais défini par le CMake : elle partait donc
+	  avec une valeur VIDE. Une mention de copyright vide n'est pas une absence de mention, c'est une
+	  métadonnée fausse — corrigé le 27-10-2026 avec la déclaration des types de documents ci-dessous.
+	-->
 
 	<key>CFBundleIconFile</key>
 	<string>${MACOSX_BUNDLE_ICON_FILE}</string>
+
+	<!--
+	  Les types de documents d'Ostara.
+
+	  Sans ces deux tables, macOS ne sait pas qu'un `.ostara` appartient à Ostara : il lui invente un type
+	  dynamique (`dyn.ah62d4…`), le classe « Document » et ne propose jamais l'application dans « Ouvrir
+	  avec ». Constaté le 27-10-2026 — le bundle ne déclarait aucun type, là où Valentina déclare les siens.
+
+	  Les identifiants sont sous `com.ostara.ostara.`, cohérents avec l'identifiant du bundle. Chaque
+	  extension écrite par Ostara a le sien ; `.val`, `.vit` et `.vst` sont volontairement absents : ce sont
+	  les formats de Valentina, Ostara les lit mais ne les écrit pas.
+
+	  Chaque type porte `CFBundleTypeIconFile` = `Ostara.icns`, l'icône déjà engendrée depuis
+	  `share/icons/app/Ostara.svg`. Décision de Sophie le 27-10-2026 : **une seule icône pour les sept
+	  formats**, pas une par famille — le logo Ostara, rien de plus.
+	-->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.pattern</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara pattern</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ostara</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.measurements.multisize</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara multisize measurements</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>omt</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.measurements.individual</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara individual measurements</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>otu</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.cartouche</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara cartouche template</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>oct</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.piece</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara piece</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>opiece</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.watermark</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara watermark</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>vwm</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.ostara.ostara.recipe</string>
+			<key>UTTypeDescription</key>
+			<string>Ostara pattern recipe</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>vpr</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara pattern</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.pattern</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara multisize measurements</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.measurements.multisize</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara individual measurements</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.measurements.individual</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara cartouche template</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.cartouche</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara piece</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.piece</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara watermark</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.watermark</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Ostara pattern recipe</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>Ostara.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.ostara.ostara.recipe</string>
+			</array>
+		</dict>
+	</array>
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
