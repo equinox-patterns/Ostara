@@ -254,7 +254,6 @@ auto SupportedLocales() -> QStringList
                        "fr_FR",
                        "it_IT",
                        "nl_NL",
-                       "id_ID",
                        "es_ES",
                        "fi_FI",
                        "ro_RO",
@@ -263,8 +262,7 @@ auto SupportedLocales() -> QStringList
                        "el_GR",
                        "pl_PL",
                        "hr_HR",
-                       "hu_HU",
-                       "ja_JP"};
+                       "hu_HU"};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -189,4 +189,10 @@ include_directories(${CMAKE_BINARY_DIR}/generated)
 # ═══════════════════════════════════════════════════════════════════════════════
 # Sous-projets
 # ═══════════════════════════════════════════════════════════════════════════════
+
+# Le grec et le roumain n'ont pas de catalogue Qt : qt_add_translations avertit à chaque
+# configuration. Le drapeau doit être posé ici, dans la portée racine — posé dans
+# src/app/ostara/CMakeLists.txt, il n'est pas visible de l'appel différé qui émet l'alerte.
+set(QT_NO_MISSING_CATALOG_LANGUAGE_WARNING ON)
+
 add_subdirectory(src)

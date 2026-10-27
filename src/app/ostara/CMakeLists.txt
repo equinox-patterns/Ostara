@@ -132,7 +132,7 @@ set(OSTARA_TS_DIR "${CMAKE_SOURCE_DIR}/share/translations")
 
 set(OSTARA_LOCALES
     cs_CZ de_DE el_GR es_ES fi_FI fr_FR hr_HR hu_HU
-    id_ID it_IT ja_JP nl_NL pl_PL pt_BR ro_RO uk_UA zh_CN
+    it_IT nl_NL pl_PL pt_BR ro_RO uk_UA zh_CN
 )
 
 set(OSTARA_TS_FILES)
@@ -147,9 +147,6 @@ foreach(locale ${OSTARA_LOCALES})
         PROPERTIES QT_I18N_TRANSLATED_LANGUAGES ${locale}
     )
 endforeach()
-
-# Supprimer les warnings pour les locales sans traduction Qt (id_ID, ro_RO, el_GR)
-set(QT_NO_MISSING_CATALOG_LANGUAGE_WARNING ON)
 
 qt_add_translations(Ostara
     TS_FILES ${OSTARA_TS_FILES}

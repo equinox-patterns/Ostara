@@ -79,9 +79,6 @@ auto LocaleMap() -> QMap<QString, QString>
         {"sp", "ISO8859-5"},
         {"sp_YU", "ISO8859-5"},
 
-        {"id", "ISO8859-1"},
-        {"id_ID", "ISO8859-1"},
-
         {"ar_AA", "ISO8859-6"},
         {"ar_SA", "ISO8859-6"},
         {"arabic", "ISO8859-6"},
