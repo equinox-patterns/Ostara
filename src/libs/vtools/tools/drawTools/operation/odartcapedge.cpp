@@ -30,6 +30,7 @@
 #include <utility>
 
 #include <QLineF>
+#include <QList>
 #include <QMap>
 #include <QSharedPointer>
 #include <QVector>
@@ -116,10 +117,11 @@ auto ODartCapEdge::Direction(quint32 pointId, quint32 apexId, quint32 otherPoint
         lines.append(direction);
     };
 
-    // 1. What the container records as a line of the pattern: every `<line>`, every side of a rectangle, the pair a
-    //    point of intersection registers. Such a segment names its two ends, which is all this question needs — and
-    //    it is exactly what the pattern DRAWING a line means: the tool of a `<line>` carries no drawn segment, which
-    //    is why the edge of a dart whose mouth is a `<line>` is invisible to every other reader.
+    // 1. What the container records as a line of the pattern: every `<line>`, every side of a rectangle. Such a
+    //    segment names its two ends, which is all this question needs — and it is exactly what the pattern DRAWING a
+    //    line means: the tool of a `<line>` carries no drawn segment, which is why the edge of a dart whose mouth is
+    //    a `<line>` is invisible to every other reader. The halves a construction registers (an intersection, a point
+    //    of contact, a bisector) come through the same table and are dropped just below — they are not edges.
     const QMap<QString, QSharedPointer<VLengthLine>> recorded = data->DataLengthLines();
     for (const QSharedPointer<VLengthLine> &line : recorded)
     {
@@ -134,6 +136,18 @@ auto ODartCapEdge::Direction(quint32 pointId, quint32 apexId, quint32 otherPoint
         if (other == NULL_ID || other == pointId || not data->HasObject(other))
         {
             continue; // that segment does not hold the point
+        }
+
+        // The halves an intersection, a point of contact or a bisector register are NOT edges. Each of those tools
+        // records the segments that join ITS OWN point to the points of the lines it was built on — so the tool that
+        // owns the segment is one of its two ends. Such a segment says only that a construction runs through the
+        // point; it never says the pattern draws an edge there. Without this, P3 — a `lineIntersectAxis` cut on the
+        // line P3-P2 — gave the dart a second candidate at P2, the reader refused ("two edges hold the point"), and
+        // the cap went flat with its crank on its own cap point.
+        const QList<quint32> references = line->GetReferences();
+        if (references.contains(first) || references.contains(second))
+        {
+            continue;
         }
 
         // The figure of the tool being built is a line like any other — the sides of a cap join its two opening
