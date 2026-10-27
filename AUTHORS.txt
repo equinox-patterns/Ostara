@@ -1,3 +1,23 @@
+This file lists the people who have contributed to the Ostara project, and
+then, kept for the record, those who built the legacy Valentina project that
+Ostara is forked from.
+
+================================================================================
+OSTARA
+================================================================================
+
+Author and maintainer:
+	Sophie Denys <contact@sophiedenys.com>
+		* Design.
+		* Development.
+		* Documentation.
+
+Ostara is a fork of Valentina, a pattern making program.
+
+================================================================================
+VALENTINA — the project this one is forked from
+================================================================================
+
 This file contains a list of people who have made contributions
 to the Valentina project.
 

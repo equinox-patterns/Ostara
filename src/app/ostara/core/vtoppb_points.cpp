@@ -101,7 +101,7 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
                         QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
                         if (n != t->name()) {
                             if (QRegularExpression const rx(NameRegExp());
-                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                                n.isEmpty() || !VContainer::IsUnique(n, ostaraNamespace) || !rx.match(n).hasMatch())
                                 children[0]->setValue(t->name());
                             else t->setName(n);
                         }
@@ -158,7 +158,7 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
                         QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
                         if (n != t->name()) {
                             if (QRegularExpression const rx(NameRegExp());
-                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                                n.isEmpty() || !VContainer::IsUnique(n, ostaraNamespace) || !rx.match(n).hasMatch())
                                 children[0]->setValue(t->name());
                             else t->setName(n);
                         }
@@ -481,7 +481,7 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
                  QString const n = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
                  if (n == t->nameP1()) return;
                  if (QRegularExpression const rx(NameRegExp());
-                     n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                     n.isEmpty() || !VContainer::IsUnique(n, ostaraNamespace) || !rx.match(n).hasMatch())
                      prop->setValue(t->nameP1());
                  else t->setNameP1(n);
              }
@@ -500,7 +500,7 @@ auto TrueDartsProperties() -> std::vector<PropertyDesc>
                  QString const n = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
                  if (n == t->nameP2()) return;
                  if (QRegularExpression const rx(NameRegExp());
-                     n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                     n.isEmpty() || !VContainer::IsUnique(n, ostaraNamespace) || !rx.match(n).hasMatch())
                      prop->setValue(t->nameP2());
                  else t->setNameP2(n);
              }
@@ -837,7 +837,7 @@ auto RectanglePointsGroup() -> PropertyDesc
                     }
                     if (QRegularExpression const rx(NameRegExp());
                         name.isEmpty() || not rx.match(name).hasMatch()
-                        || not VContainer::IsUnique(name, valentinaNamespace))
+                        || not VContainer::IsUnique(name, ostaraNamespace))
                     {
                         children[index]->setValue(current);
                     }

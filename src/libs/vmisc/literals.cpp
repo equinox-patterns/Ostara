@@ -172,4 +172,4 @@ const QString unitCM = QStringLiteral("cm");
 const QString unitINCH = QStringLiteral("inch");
 const QString unitPX = QStringLiteral("px");
 
-const QString valentinaNamespace = QStringLiteral("valentina");
+const QString ostaraNamespace = QStringLiteral("ostara");

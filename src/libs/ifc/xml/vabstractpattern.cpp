@@ -487,7 +487,7 @@ void VAbstractPattern::ParseGroups(const QDomElement &domElement)
             if (const QDomElement groupElement = domNode.toElement();
                 not groupElement.isNull() && groupElement.tagName() == TagGroup)
             {
-                VContainer::UpdateId(GetParametrUInt(groupElement, AttrId, NULL_ID_STR), valentinaNamespace);
+                VContainer::UpdateId(GetParametrUInt(groupElement, AttrId, NULL_ID_STR), ostaraNamespace);
 
                 const auto [groupDataFirst, groupDataSecond] = ParseItemElement(groupElement);
                 const QMap<quint32, quint32> group = groupDataSecond;

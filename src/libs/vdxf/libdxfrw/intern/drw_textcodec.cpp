@@ -184,7 +184,6 @@ auto DRW_TextCodec::DXFCodePageMap() -> QMap<QString, QStringList>
           "IBM 850"}},                                                                   // Western Europe
         {"ANSI_1253", {"ANSI_1253", "CP1253", "ISO8859-7"}},                             // Greek
         {"ANSI_1254", {"ANSI_1254", "CP1254", "ISO8859-9", "iso8859-3"}},                // Turkish
-        {"ANSI_1255", {"ANSI_1255", "CP1255", "ISO8859-8"}},                             // Hebrew
         {"ANSI_1256", {"ANSI_1256", "CP1256", "ISO8859-6"}},                             // Arabic
         {"ANSI_1257", {"ANSI_1257", "CP1257", "ISO8859-4", "ISO8859-10", "ISO8859-13"}}, // Baltic
         {"ANSI_1258", {"ANSI_1258", "CP1258"}},                                          // Vietnamese

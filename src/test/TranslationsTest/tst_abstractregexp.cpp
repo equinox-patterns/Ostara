@@ -177,7 +177,7 @@ void TST_AbstractRegExp::CallTestForValidCharacters()
 
     static const QString validNameChars = PrepareValidNameChars();
 
-    if (QLocale() == QLocale(QStringLiteral("zh_CN")) || QLocale() == QLocale(QStringLiteral("he_IL"))
+    if (QLocale() == QLocale(QStringLiteral("zh_CN"))
         || QLocale() == QLocale(QStringLiteral("ja_JP")))
     {
         const QString message =

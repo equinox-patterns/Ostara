@@ -334,11 +334,11 @@ void VTranslateVars::InitConstants()
  *
  * Names are parser identifiers, so a translated name must consist of characters from
  * QmuFormulaBase::InitCharSets(). That alphabet covers Latin, Cyrillic, Greek, Armenian and Arabic scripts, but not
- * CJK or Hebrew. Locales written in an uncovered script cannot have translated names at all.
+ * CJK. Locales written in an uncovered script cannot have translated names at all.
  */
 auto VTranslateVars::SupportVariableTranslation() -> bool
 {
-    static const QStringList unsupported{QStringLiteral("zh_CN"), QStringLiteral("he_IL"), QStringLiteral("ja_JP")};
+    static const QStringList unsupported{QStringLiteral("zh_CN"), QStringLiteral("ja_JP")};
     return not unsupported.contains(VAbstractApplication::VApp()->Settings()->GetLocale());
 }
 

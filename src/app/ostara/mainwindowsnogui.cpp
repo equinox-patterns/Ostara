@@ -137,7 +137,7 @@ MainWindowsNoGUI::MainWindowsNoGUI(QWidget *parent)
     m_watcher(new QFileSystemWatcher(this)),
     pattern(new VContainer(VAbstractApplication::VApp()->TrVars(),
                            VAbstractValApplication::VApp()->patternUnitsP(),
-                           valentinaNamespace))
+                           ostaraNamespace))
 #if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     ,
     m_taskbarButton(new QWinTaskbarButton(this))

@@ -1562,7 +1562,7 @@ auto SpiralProperties() -> std::vector<PropertyDesc>
                      QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
                      if (n != t->EndPointName()) {
                          if (QRegularExpression const rx(NameRegExp());
-                             n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                             n.isEmpty() || !VContainer::IsUnique(n, ostaraNamespace) || !rx.match(n).hasMatch())
                              children[0]->setValue(t->EndPointName());
                          else
                              t->SetEndPointName(n);

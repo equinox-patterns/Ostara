@@ -176,6 +176,6 @@ extern const QString unitCM;
 extern const QString unitINCH;
 extern const QString unitPX;
 
-extern const QString valentinaNamespace;
+extern const QString ostaraNamespace;
 
 #endif // LITERALS_H

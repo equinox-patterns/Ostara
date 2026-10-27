@@ -84,7 +84,7 @@ auto MakePointGroup(const QString &title, const QString &nameLabel, const QStrin
                         QString const n = children[0]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString();
                         if (n != t->name()) {
                             if (QRegularExpression const rx(NameRegExp());
-                                n.isEmpty() || !VContainer::IsUnique(n, valentinaNamespace) || !rx.match(n).hasMatch())
+                                n.isEmpty() || !VContainer::IsUnique(n, ostaraNamespace) || !rx.match(n).hasMatch())
                                 children[0]->setValue(t->name());
                             else t->setName(n);
                         }

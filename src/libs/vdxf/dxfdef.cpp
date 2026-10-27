@@ -90,12 +90,6 @@ auto LocaleMap() -> QMap<QString, QString>
         {"el_GR", "ISO8859-7"},
         {"greek", "ISO8859-7"},
 
-        {"hebrew", "ISO8859-8"},
-        {"he", "ISO8859-8"},
-        {"he_IL", "ISO8859-8"},
-        {"iw", "ISO8859-8"},
-        {"iw_IL", "ISO8859-8"},
-
         {"tr", "ISO8859-9"},
         {"tr_TR", "ISO8859-9"},
         {"turkish", "ISO8859-9"},

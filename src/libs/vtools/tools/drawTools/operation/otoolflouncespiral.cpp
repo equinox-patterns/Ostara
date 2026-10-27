@@ -841,7 +841,7 @@ void OToolFlounceSpiral::SetPointName(OFlounceSpiralPoint::Role role, const QStr
     {
         return;
     }
-    if (not VContainer::IsUnique(name, valentinaNamespace))
+    if (not VContainer::IsUnique(name, ostaraNamespace))
     {
         return;
     }

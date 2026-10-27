@@ -4,10 +4,11 @@
 # n'est construite que pour les essais (`-DBUILD_TESTING=ON`), et ne dépend d'aucune application — seulement
 # de VGeometryLib, VLayoutLib, VPatternDBLib, VMiscLib et VExceptionLib.
 #
-# `VALENTINA_PATH`, `TAPE_PATH` et `TRANSLATIONS_DIR` venaient des chemins d'installation fournis par qbs :
-# ils désignaient les binaires et les traductions compilés, pour les essais qui lancent l'application en
-# sous-processus. Aucun essai du modèle ne s'en sert — les valeurs sont vides, et un essai qui les
-# demanderait un jour devra les recevoir à la construction, pas par une constante muette.
+# `TRANSLATIONS_DIR` venait des chemins d'installation fournis par qbs : il désignait les traductions
+# compilées, pour un essai qui lance l'application en sous-processus. Il ne sert plus qu'à
+# `AbstractTest::TranslationsPath()`, et sa valeur est vide depuis que qbs est parti.
+# `VALENTINA_PATH` et `TAPE_PATH` sont partis avec leurs fonctions : `ValentinaPath()` et `TapePath()`
+# n'avaient plus aucun appelant, et la seconde nommait une application qui n'existe plus.
 
 set(VTEST_SOURCES
     abstracttest.cpp
@@ -30,8 +31,6 @@ target_include_directories(VTestLib
 
 target_compile_definitions(VTestLib
     PRIVATE
-        VALENTINA_PATH=""
-        TAPE_PATH=""
         TRANSLATIONS_DIR=""
 )
 
