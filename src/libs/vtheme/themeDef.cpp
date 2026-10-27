@@ -359,22 +359,8 @@ Q_GLOBAL_STATIC_WITH_ARGS(const ThemeIconStringHash,
                             // {VThemeIcon::WeatherSnow, "weather-snow"_L1},
                             // {VThemeIcon::WeatherStorm, "weather-storm"_L1},
 
-                            {VThemeIcon::DocumentImport, "document-import"_L1},
                             {VThemeIcon::DocumentExport, "document-export"_L1},
-                            {VThemeIcon::PreferencesOther, "preferences-other"_L1},
-                            {VThemeIcon::GtkOk, "gtk-ok"_L1},
-                            {VThemeIcon::GtkNo, "gtk-no"_L1},
-                            {VThemeIcon::GtkConvert, "gtk-convert"_L1},
-                            {VThemeIcon::SnapNodesRotationCenter, "snap-nodes-rotation-center"_L1},
-                            {VThemeIcon::DrawStar, "draw-star"_L1},
-                            {VThemeIcon::AddPlacemark, "add-placemark"_L1},
-                            {VThemeIcon::DuplicateNode, "duplicate-node"_L1},
-                            {VThemeIcon::ListAddFont, "list-add-font"_L1},
-                            {VThemeIcon::ObjectOrderFront, "object-order-front"_L1},
-                            {VThemeIcon::ObjectOrderRaise, "object-order-raise"_L1},
-                            {VThemeIcon::ObjectOrderLower, "object-order-lower"_L1},
-                            {VThemeIcon::ObjectOrderBack, "object-order-back"_L1},
-                            {VThemeIcon::EditRename, "edit-rename"_L1}}))
+                            {VThemeIcon::PreferencesOther, "preferences-other"_L1}}))
 QT_WARNING_POP
 } // namespace
 

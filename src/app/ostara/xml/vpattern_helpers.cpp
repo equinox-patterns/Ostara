@@ -45,7 +45,7 @@ namespace VPatternHelpers
 //---------------------------------------------------------------------------------------------------------------------
 auto FileComment() -> QString
 {
-    return QStringLiteral("Pattern created with Valentina v%1 (https://smart-pattern.com.ua/).").arg(AppVersionStr());
+    return QStringLiteral("Pattern created with Ostara v%1.").arg(AppVersionStr());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

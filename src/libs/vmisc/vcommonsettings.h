@@ -265,15 +265,6 @@ public:
     auto GetDialogSplinePathSize() const -> QSize;
     void SetDialogSplinePathSize(const QSize &sz);
 
-    auto IsAutomaticallyCheckUpdates() const -> bool;
-    void SetAutomaticallyCheckUpdates(bool value) const;
-
-    auto GetLatestSkippedVersion() const -> unsigned;
-    void SetLatestSkippedVersion(unsigned value) const;
-
-    auto GetDateOfLastRemind() const -> QDate;
-    void SetDateOfLastRemind(const QDate &date) const;
-
     auto GetForceWorkpieceFlipping() const -> bool;
     void SetForceWorkpieceFlipping(bool value);
 

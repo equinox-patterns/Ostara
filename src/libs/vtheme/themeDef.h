@@ -229,23 +229,11 @@ enum class VThemeIcon : quint8
     // WeatherSnow,
     // WeatherStorm,
 
-    // Not supported by Qt
-    DocumentImport,
+    // Pas d'équivalent dans Qt : Ostara fournit elle-même le nom et le fichier. Les quatorze entrées
+    // mortes qui suivaient (gtk-ok, object-order-*, add-placemark, draw-star, edit-rename, etc.) n'avaient
+    // ni fichier dans le thème ni appelant nulle part : supprimées le 27-10-2026, avec leur correspondance.
     DocumentExport,
-    PreferencesOther,
-    GtkOk,
-    GtkNo,
-    GtkConvert,
-    SnapNodesRotationCenter,
-    DrawStar,
-    AddPlacemark,
-    DuplicateNode,
-    ListAddFont,
-    ObjectOrderFront,
-    ObjectOrderRaise,
-    ObjectOrderLower,
-    ObjectOrderBack,
-    EditRename
+    PreferencesOther
 };
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

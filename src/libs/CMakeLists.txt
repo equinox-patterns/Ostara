@@ -26,11 +26,13 @@ add_subdirectory(vpatterndb)
 add_subdirectory(vpropertyexplorer)
 add_subdirectory(vwidgets)
 
-# Couche 4 — Layout + Tools + Fervor + Sanctions
+# Couche 4 — Layout + Tools + Sanctions
 add_subdirectory(vlayout)
 add_subdirectory(vtools)
-add_subdirectory(fervor)
 add_subdirectory(vganalytics)
 
-# Couche 5 — VTestLib (dépend des apps)
-# add_subdirectory(vtest)
+# Couche 5 — VTestLib : les outils des bancs d'essai. Construite seulement quand les essais sont demandés,
+# sinon elle n'aurait aucun client. Elle ne dépend d'aucune application.
+if(BUILD_TESTING)
+    add_subdirectory(vtest)
+endif()

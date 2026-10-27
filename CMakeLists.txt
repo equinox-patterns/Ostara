@@ -10,6 +10,12 @@ option(ENABLE_CCACHE "Enable ccache wrapper" OFF)
 option(ENABLE_APPIMAGE "Build in AppImage mode" OFF)
 option(OSTARA_STATIC_BUILD "Build libs as static (matches QBS buildconfig.staticBuild)" ON)
 
+# `enable_testing()` doit être appelé dans le dossier racine : sinon `ctest` ne trouve aucun essai, même
+# quand les `add_test()` des sous-dossiers sont bien écrits. Il ne fait rien tant que les essais sont OFF.
+if(BUILD_TESTING)
+    enable_testing()
+endif()
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # C++20 — obligatoire
 # ═══════════════════════════════════════════════════════════════════════════════

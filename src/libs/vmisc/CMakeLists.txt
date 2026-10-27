@@ -47,9 +47,6 @@ set(VMISC_SOURCES
 
 # Dialogs
 set(VMISC_DIALOGS
-    dialogs/dialogaskcollectstatistic.cpp
-    dialogs/dialogaskcollectstatistic.h
-    dialogs/dialogaskcollectstatistic.ui
     dialogs/dialogexporttocsv.cpp
     dialogs/dialogselectlanguage.cpp
     dialogs/dialogexporttocsv.h

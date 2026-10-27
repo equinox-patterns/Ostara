@@ -609,7 +609,7 @@ void VCommandLine::InitCommandLineOptions()
         {LONG_OPTION_PENDANTIC,
          translate("VCommandLine",
                    "Make all parsing warnings into errors. Have effect only in console mode. Use to "
-                   "force Valentina to immediately terminate if a pattern contains a parsing warning.")},
+                   "force Ostara to immediately terminate if a pattern contains a parsing warning.")},
         {LONG_OPTION_NO_HDPI_SCALING,
          translate("VCommandLine",
                    "Disable high dpi scaling. Call this option if has problem with scaling (by default "

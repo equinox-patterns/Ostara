@@ -104,9 +104,6 @@ PreferencesGeneralPage::PreferencesGeneralPage(QWidget *parent)
 
     // Native dialogs
     ui->checkBoxDontUseNativeDialog->setChecked(settings->IsDontUseNativeDialog());
-
-    //----------------------- Update
-    ui->checkBoxAutomaticallyCheckUpdates->setChecked(settings->IsAutomaticallyCheckUpdates());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -171,11 +168,6 @@ auto PreferencesGeneralPage::Apply() -> QStringList
         settings->SetUnit(unit);
         m_unitChanged = false;
         preferences.append(tr("default unit"));
-    }
-
-    if (settings->IsAutomaticallyCheckUpdates() != ui->checkBoxAutomaticallyCheckUpdates->isChecked())
-    {
-        settings->SetAutomaticallyCheckUpdates(ui->checkBoxAutomaticallyCheckUpdates->isChecked());
     }
 
     return preferences;

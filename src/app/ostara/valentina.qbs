@@ -8,7 +8,6 @@ VToolApp {
     Depends { name: "Qt"; submodules: ["core", "widgets", "svg", "concurrent"] }
     Depends { name: "VPatternDBLib"; }
     Depends { name: "VWidgetsLib"; }
-    Depends { name: "FervorLib"; }
     Depends { name: "IFCLib"; }
     Depends { name: "VLayoutLib"; }
     Depends { name: "VToolsLib"; }

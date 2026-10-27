@@ -403,9 +403,9 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
     }
 
     // Qt's network stack reports transport hiccups (HTTP/2 GOAWAY, aborted streams, TLS chatter) as
-    // warnings, and the message handler turns a warning into a modal error box. The only network traffic
-    // here is the update check and usage statistics, which the user never asked for and cannot act on, so
-    // the box is pure noise - and popping it from a network callback has crashed before. Valentina's own
+    // warnings, and the message handler turns a warning into a modal error box. The only traffic here is
+    // the sanctions check and the crash reporter, which the user never asked for and cannot act on, so the
+    // box is pure noise - and popping it from a network callback has crashed before. Valentina's own
     // network code reports its failures itself.
     if ((type == QtWarningMsg) && context.category != nullptr &&
         QLatin1String(context.category).startsWith("qt.network"_L1))
@@ -694,8 +694,9 @@ auto VApplication::notify(QObject *receiver, QEvent *event) -> bool
 //---------------------------------------------------------------------------------------------------------------------
 auto VApplication::LogPath() -> QString
 {
-    // Keep in sync with VCrashPaths::GetAttachmentPath
-    return QStringLiteral("%1/valentina-pid%2.log").arg(LogDirPath()).arg(applicationPid());
+    // Keep in sync with VCrashPaths::GetAttachmentPath, which builds the name from the application name
+    // ("ostara"): while this said "valentina-pid", the crash report's attached log never existed.
+    return QStringLiteral("%1/ostara-pid%2.log").arg(LogDirPath()).arg(applicationPid());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

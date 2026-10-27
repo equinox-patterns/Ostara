@@ -122,7 +122,7 @@ namespace
 //---------------------------------------------------------------------------------------------------------------------
 inline auto FileComment() -> QString
 {
-    return QStringLiteral("Recipe created with Valentina v%1 (https://smart-pattern.com.ua/).").arg(AppVersionStr());
+    return QStringLiteral("Recipe created with Ostara v%1.").arg(AppVersionStr());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

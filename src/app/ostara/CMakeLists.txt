@@ -81,7 +81,6 @@ target_link_libraries(Ostara PRIVATE
     Qt6::Concurrent
     VPatternDBLib
     VWidgetsLib
-    FervorLib
     IFCLib
     VLayoutLib
     VToolsLib

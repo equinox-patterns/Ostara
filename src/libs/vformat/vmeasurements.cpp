@@ -129,7 +129,7 @@ QT_WARNING_POP
 //---------------------------------------------------------------------------------------------------------------------
 auto FileComment() -> QString
 {
-    return u"Measurements created with Valentina v%1 (https://smart-pattern.com.ua/)."_s.arg(AppVersionStr());
+    return u"Measurements created with Ostara v%1."_s.arg(AppVersionStr());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

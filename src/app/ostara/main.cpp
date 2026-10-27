@@ -26,7 +26,6 @@
  **
  *************************************************************************/
 
-#include "../fervor/fvupdater.h"
 #include "../vpatterndb/oannotationdata.h"
 #include "../vpatterndb/vpiecenode.h"
 #include "../vtools/tools/vtoolseamallowance.h"
@@ -221,14 +220,6 @@ auto main(int argc, char *argv[]) -> int
         OPatternLibrary::EnsureDirectory();
 
         mw->show();
-
-        // Auto-updater
-        if (VAbstractApplication::VApp()->Settings()->IsAutomaticallyCheckUpdates())
-        {
-            FvUpdater::sharedUpdater()->SetFeedURL(FvUpdater::CurrentFeedURL());
-            FvUpdater::sharedUpdater()->SetMainWindow(mw);
-            FvUpdater::sharedUpdater()->CheckForUpdatesSilent();
-        }
 
         // Process command-line args (crash restore, file opens)
         QTimer::singleShot(0, mw, &MainWindow::ProcessCMD);

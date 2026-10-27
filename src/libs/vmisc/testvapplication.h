@@ -31,17 +31,22 @@
 
 #include "../vmisc/compatibility.h"
 #include "../vmisc/vcommonsettings.h"
+#include "../vmisc/vvalentinasettings.h"
 #include "projectversion.h"
 #include "vabstractvalapplication.h"
 
-class VTestSettings : public VCommonSettings
+// Les essais doivent recevoir ce que l'application reçoit. Le code d'Ostara lit ses préférences par
+// `VApp()->ValentinaSettings()`, qui fait un `qobject_cast` sur l'objet de réglages : dérivé de
+// `VCommonSettings` seulement, cet objet rendait un pointeur nul, et le premier `VPiece` construit tuait
+// le processus (`OThumbnailData`, segfault trouvé au portage du 27-10-2026).
+class VTestSettings : public VValentinaSettings
 {
     Q_OBJECT // NOLINT
 
 public:
     VTestSettings(Format format, Scope scope, const QString &organization, const QString &application = QString(),
                   QObject *parent = nullptr)
-      : VCommonSettings(format, scope, organization, application, parent)
+      : VValentinaSettings(format, scope, organization, application, parent)
     {
         REGISTER_META_TYPE_STREAM_OPERATORS(QMarginsF);
     }
@@ -56,7 +61,7 @@ public:
       : VAbstractValApplication(argc, argv),
         m_trVars(nullptr)
     {
-        setApplicationName("ValentinaTest");
+        setApplicationName("OstaraModelTest");
         setOrganizationName(VER_COMPANYNAME_STR);
 
         TestVApplication::OpenSettings();

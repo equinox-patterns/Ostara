@@ -1,6 +1,5 @@
 Project {
     references: [
-        "fervor/fervor.qbs",
         "ifc/ifc.qbs",
         "qmuparser/qmuparser.qbs",
         "vbackport/vbackport.qbs",

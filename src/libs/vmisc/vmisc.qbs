@@ -66,9 +66,6 @@ VLib {
         name: "dialogs"
         prefix: "dialogs/"
         files: [
-            "dialogaskcollectstatistic.cpp",
-            "dialogaskcollectstatistic.h",
-            "dialogaskcollectstatistic.ui",
             "dialogexporttocsv.cpp",
             "dialogselectlanguage.cpp",
             "dialogexporttocsv.h",

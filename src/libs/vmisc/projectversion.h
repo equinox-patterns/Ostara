@@ -74,7 +74,7 @@ constexpr int kToolbarStateVersion = 1;
 #define VER_LEGALCOPYRIGHT_STR "Copyright © 2013-2026 Ostara"
 #define VER_LEGALTRADEMARKS1_STR "All Rights Reserved"
 #define VER_LEGALTRADEMARKS2_STR VER_LEGALTRADEMARKS1_STR
-#define VER_COMPANYDOMAIN_STR "smart-pattern.com.ua"
+#define VER_COMPANYDOMAIN_STR "com.ostara.ostara"
 
 auto compilerString() -> QString;
 auto buildCompatibilityString() -> QString;

@@ -1,7 +1,11 @@
 # Les essais unitaires du produit.
 #
-# Le banc historique — `ValentinaTest`, une quarantaine de fichiers — est encore une **cible qbs**
-# (`ValentinaTest/ValentinaTest.qbs`) : il n'est pas reconstruit ici. Ce dossier ne porte que les essais écrits
-# pour le CMake, qui ne se construisent **que** par `-DBUILD_TESTING=ON`, dans un dossier de construction à part —
-# jamais celui de l'application, qui reste sans essais.
+# Deux bancs, tous deux construits **seulement** par `-DBUILD_TESTING=ON`, et dans un dossier de
+# construction à part — jamais celui de l'application, qui reste sans essais :
+#
+#   OstaraTest       — les essais écrits pour le CMake.
+#   OstaraModelTest  — le banc historique du modèle, porté du qbs au CMake le 27-10-2026 : les
+#                      trente-quatre `tst_*.cpp` qui ne tournaient nulle part jusque-là, tous les
+#                      trente-quatre lancés par `ctest`.
 add_subdirectory(OstaraTest)
+add_subdirectory(OstaraModelTest)

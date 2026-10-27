@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Valentina</string>
+   <string>Ostara</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../libs/vmisc/share/resources/icon.qrc">
@@ -754,20 +754,6 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
-  <action name="actionReportBug">
-   <property name="text">
-    <string>Report Bug…</string>
-   </property>
-   <property name="toolTip">
-    <string>Report bug</string>
-   </property>
-   <property name="shortcut">
-    <string notr="true"/>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
   <action name="actionClosePattern">
    <property name="text">
     <string>Close pattern</string>
@@ -1170,14 +1156,6 @@
    </property>
    <property name="toolTip">
     <string>Create or edit a watermark</string>
-   </property>
-   <property name="menuRole">
-    <enum>QAction::MenuRole::NoRole</enum>
-   </property>
-  </action>
-  <action name="actionShop">
-   <property name="text">
-    <string>Shop</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

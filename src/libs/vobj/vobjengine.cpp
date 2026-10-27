@@ -127,8 +127,7 @@ auto VObjEngine::begin(QPaintDevice *pdev) -> bool
     }
 
     stream = QSharedPointer<QTextStream>(new QTextStream(outputDevice.data()));
-    *stream << "# Valentina OBJ File" << Qt::endl;
-    *stream << "# smart-pattern.com.ua/" << Qt::endl;
+    *stream << "# Ostara OBJ File" << Qt::endl;
     return true;
 }
 

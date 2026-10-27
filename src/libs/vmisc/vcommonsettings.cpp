@@ -156,10 +156,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingIncrementsDialogSize, ("toolIncr
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFormulaWizardDialogSize, ("formulaWizardDialogSize"_L1)) // NOLINT
 // NOLINTNEXTLINE
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingFinalMeasurementsDialogSize, ("finalMeasurementsDialogSize"_L1))
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDialogSplinePathSize, ("splinePathDialogSize"_L1))           // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingAutomaticallyCheckUpdates, ("automaticallyCheckUpdates"_L1)) // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingLatestSkippedVersion, ("lastestSkippedVersion"_L1))          // NOLINT
-Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDateOfLastRemind, ("dateOfLastRemind"_L1))                   // NOLINT
+Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingDialogSplinePathSize, ("splinePathDialogSize"_L1)) // NOLINT
 
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVWithHeader, ("csv/withHeader"_L1))   // NOLINT
 Q_GLOBAL_STATIC_WITH_ARGS(const QString, settingCSVCodec, ("csv/withCodec"_L1))         // NOLINT
@@ -1225,51 +1222,6 @@ auto VCommonSettings::GetDialogSplinePathSize() const -> QSize
 void VCommonSettings::SetDialogSplinePathSize(const QSize &sz)
 {
     setValue(*settingDialogSplinePathSize, sz);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::IsAutomaticallyCheckUpdates() const -> bool
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingAutomaticallyCheckUpdates, true).toBool();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetAutomaticallyCheckUpdates(bool value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingAutomaticallyCheckUpdates, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetLatestSkippedVersion() const -> unsigned
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingLatestSkippedVersion, 0x0).toUInt();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetLatestSkippedVersion(unsigned value) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingLatestSkippedVersion, value);
-    settings.sync();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetDateOfLastRemind() const -> QDate
-{
-    QSettings const settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    return settings.value(*settingDateOfLastRemind, QDate(1900, 1, 1)).toDate();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetDateOfLastRemind(const QDate &date) const
-{
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingDateOfLastRemind, date);
-    settings.sync();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

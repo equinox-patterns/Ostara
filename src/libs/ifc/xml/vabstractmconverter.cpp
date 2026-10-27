@@ -55,7 +55,7 @@ auto VAbstractMConverter::Units() const -> Unit
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractMConverter::AddRootComment()
 {
-    const auto rootComment = QStringLiteral("Measurements created with Valentina (https://smart-pattern.com.ua/).");
+    const auto rootComment = QStringLiteral("Measurements created with Ostara.");
 
     QDomElement rootElement = this->documentElement();
     rootElement.insertBefore(createComment(rootComment), rootElement.firstChild());

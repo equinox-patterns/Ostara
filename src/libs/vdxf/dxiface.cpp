@@ -195,7 +195,7 @@ void dx_iface::writeAppId()
 
 void dx_iface::InitHeader(VarMeasurement varMeasurement, VarInsunits varInsunits)
 {
-    cData.headerC.addComment("Valentina DXF File");
+    cData.headerC.addComment("Ostara DXF File");
 
     // 1 = Clockwise angles, 0 = Counterclockwise
     cData.headerC.addInt("$ANGDIR", 0, 70); // Qt use counterclockwise
@@ -470,7 +470,7 @@ void dx_iface::InitVPorts()
 void dx_iface::InitAppId()
 {
     DRW_AppId ai;
-    ai.name = "Valentina";
+    ai.name = "Ostara";
     cData.appIds.push_back(ai);
 }
 

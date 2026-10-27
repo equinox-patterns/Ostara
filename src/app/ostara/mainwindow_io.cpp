@@ -969,12 +969,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 m_curFileFormatVersionStr = VPatternConverter::PatternMaxVerStr;
             }
 
-            // Strip Valentina label elements from the DOM (Ostara does not use labels)
+            // Strip legacy label elements from the DOM (Ostara does not use labels)
             const bool hadLabels = StripLabelElements(doc);
             if (hadLabels)
             {
                 QMessageBox::information(this, tr("Labels not supported"),
-                    tr("This pattern contains Valentina labels. Ostara does not use them - they have been "
+                    tr("This pattern contains legacy labels. Ostara does not use them - they have been "
                        "replaced by the Information block. Conversion is not automatic, your labels have not been "
                        "preserved. The original .val file remains intact."));
             }
@@ -1317,7 +1317,7 @@ void MainWindow::ReopenFilesAfterCrash(QStringList &args)
     }
 
     QMessageBox::StandardButton reply;
-    const QString mes = tr("Valentina didn't shut down correctly. Do you want reopen files (%1) you had open?")
+    const QString mes = tr("Ostara didn't shut down correctly. Do you want to reopen the files (%1) you had open?")
                             .arg(restoreFiles.size());
     reply = QMessageBox::question(this, tr("Reopen files."), mes, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     if (reply != QMessageBox::Yes)
@@ -1479,7 +1479,7 @@ void MainWindow::UpdateWindowTitle()
     setWindowFilePath(VAbstractValApplication::VApp()->GetPatternPath());
 
 #if defined(Q_OS_MAC)
-    static auto fileIcon = QIcon(QCoreApplication::applicationDirPath() + "/../Resources/Valentina.icns"_L1);
+    static auto fileIcon = QIcon(QCoreApplication::applicationDirPath() + "/../Resources/Ostara.icns"_L1);
     QIcon icon;
     if (not VAbstractValApplication::VApp()->GetPatternPath().isEmpty())
     {

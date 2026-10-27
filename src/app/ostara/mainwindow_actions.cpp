@@ -47,13 +47,10 @@
 
 #include <QAction>
 #include <QComboBox>
-#include <QDesktopServices>
 #include <QGuiApplication>
 #include <QMessageBox>
 #include <QTabWidget>
 #include <QUndoStack>
-#include <QUrl>
-#include <QtDebug>
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::InitActionShortcuts()
@@ -415,19 +412,6 @@ void MainWindow::CreateActions()
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
 
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::Preferences);
-    connect(ui->actionReportBug, &QAction::triggered, this,
-            []()
-            {
-                qCDebug(vMainWindow, "Reporting bug");
-                QDesktopServices::openUrl(
-                    QUrl(QStringLiteral("https://gitlab.com/smart-pattern/valentina/issues/new")));
-            });
-    connect(ui->actionShop, &QAction::triggered, this,
-            []()
-            {
-                qCDebug(vMainWindow, "Open shop");
-                QDesktopServices::openUrl(QUrl(QStringLiteral("https://smart-pattern.com.ua/catalogue/")));
-            });
     connect(ui->actionSettingsDirectory, &QAction::triggered, this,
             []()
             {

@@ -49,7 +49,7 @@ namespace
 //---------------------------------------------------------------------------------------------------------------------
 auto FileComment() -> QString
 {
-    return u"Watermark created with Valentina v%1 (https://smart-pattern.com.ua/)."_s.arg(AppVersionStr());
+    return u"Watermark created with Ostara v%1."_s.arg(AppVersionStr());
 }
 } // namespace
 
