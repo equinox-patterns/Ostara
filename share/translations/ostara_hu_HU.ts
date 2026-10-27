@@ -30,7 +30,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="39"/>
         <source>add a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek csoportjának hozzáadása</translation>
     </message>
 </context>
 <context>
@@ -63,22 +63,22 @@
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="42"/>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="50"/>
         <source>Angle of the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal szöge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="44"/>
         <source>Reverse angle of the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal fordított szöge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="46"/>
         <source>Perpendicular to the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalra merőleges</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="48"/>
         <source>Reverse perpendicular to the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalra merőleges, fordított</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="750"/>
         <source>change active layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktív réteg váltása</translation>
     </message>
 </context>
 <context>
@@ -94,7 +94,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="162"/>
         <source>edit layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg szerkesztése</translation>
     </message>
 </context>
 <context>
@@ -102,7 +102,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="198"/>
         <source>change the layer of the tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eszköz rétegének váltása</translation>
     </message>
 </context>
 <context>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="243"/>
         <source>fold a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek csoportjának összecsukása</translation>
     </message>
 </context>
 <context>
@@ -126,7 +126,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="188"/>
         <source>edit a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek csoportjának szerkesztése</translation>
     </message>
 </context>
 <context>
@@ -134,7 +134,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="281"/>
         <source>change the group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegcsoport váltása</translation>
     </message>
 </context>
 <context>
@@ -166,7 +166,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="113"/>
         <source>delete a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek csoportjának törlése</translation>
     </message>
 </context>
 <context>
@@ -230,7 +230,7 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="128"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="155"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="228"/>
@@ -265,17 +265,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="152"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="160"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="169"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="176"/>
@@ -333,17 +333,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="37"/>
         <source>Radius = perimeter / (2 * _pi), e.g. 25 / (2 * _pi) for a 25 cm perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sugár = kerület / (2 * _pi), pl. 25 / (2 * _pi) 25 cm-es kerület esetén.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="56"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="63"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="110"/>
@@ -363,27 +363,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="163"/>
         <source>Arc:</source>
-        <translation type="unfinished">Ív:</translation>
+        <translation>Ív:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="209"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="223"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="234"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="252"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="127"/>
@@ -431,17 +431,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="34"/>
         <source>Radius = perimeter / (2 * _pi), e.g. 25 / (2 * _pi) for a 25 cm perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sugár = kerület / (2 * _pi), pl. 25 / (2 * _pi) 25 cm-es kerület esetén.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="53"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="60"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="107"/>
@@ -461,27 +461,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="157"/>
         <source>Arc:</source>
-        <translation type="unfinished">Ív:</translation>
+        <translation>Ív:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="203"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="217"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="228"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="246"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="28"/>
@@ -499,7 +499,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="118"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="187"/>
@@ -529,17 +529,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="137"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="145"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="160"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="167"/>
@@ -572,53 +572,53 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="113"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="68"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgáspont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="106"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítő forgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="84"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg létrehozása az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="87"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="99"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="123"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="139"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="172"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
 </context>
 <context>
@@ -651,12 +651,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.ui" line="148"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.ui" line="187"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="136"/>
@@ -744,12 +744,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="264"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="303"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="28"/>
@@ -762,7 +762,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="136"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="332"/>
@@ -837,17 +837,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="236"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="244"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="259"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="28"/>
@@ -927,17 +927,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="211"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="219"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="234"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
 </context>
 <context>
@@ -977,17 +977,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="209"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="217"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="232"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="242"/>
@@ -1072,17 +1072,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="211"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="219"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="234"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="178"/>
@@ -1166,12 +1166,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="215"/>
         <source>Arc</source>
-        <translation type="unfinished">Ív</translation>
+        <translation>Ív</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="268"/>
         <source>Constants</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstansok</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="301"/>
@@ -1221,7 +1221,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="311"/>
         <source>Hide unnamed objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Névtelen objektumok elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="334"/>
@@ -1241,7 +1241,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="38"/>
         <source>Calculated value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulált érték:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="235"/>
@@ -1274,34 +1274,34 @@
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1104"/>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1126"/>
         <source>Name it</source>
-        <translation type="unfinished"></translation>
+        <translation>Elnevezés</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1168"/>
         <source>Name the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbe elnevezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1168"/>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="322"/>
         <source>Name the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal elnevezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1171"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1189"/>
         <source>The name %1 cannot be used in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 név nem használható képletben.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1221"/>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="319"/>
         <source>The name %1 is already used by another line.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 nevet már használja egy másik vonal.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1532"/>
@@ -1384,12 +1384,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="49"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="56"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="127"/>
@@ -1399,27 +1399,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="156"/>
         <source>ElArc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptikus ív:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="201"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="215"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="226"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="244"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="28"/>
@@ -1467,12 +1467,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="49"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="56"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="103"/>
@@ -1492,27 +1492,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="153"/>
         <source>ElArc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptikus ív:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="199"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="213"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="224"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="242"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="77"/>
@@ -1565,7 +1565,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="139"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="97"/>
@@ -1575,17 +1575,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="163"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="177"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="192"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="199"/>
@@ -1849,22 +1849,22 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Bekapcsolva réteget hoz létre az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="68"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="94"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="104"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="117"/>
@@ -1875,7 +1875,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="150"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="318"/>
@@ -1934,22 +1934,22 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="72"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Bekapcsolva réteget hoz létre az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="75"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="101"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="111"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="124"/>
@@ -1960,7 +1960,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="157"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="353"/>
@@ -2070,12 +2070,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="360"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="367"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="388"/>
@@ -2096,22 +2096,22 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="501"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="515"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="526"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="544"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="274"/>
@@ -2122,7 +2122,7 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="462"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="464"/>
         <source>The point exists already: rename it on the point itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>A pont már létezik: nevezze át magán a ponton.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="711"/>
@@ -2144,17 +2144,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="921"/>
         <source>An offset must carry a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>A távolságnak nevet kell kapnia.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="926"/>
         <source>This name cannot be used as the name of a variable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a név nem használható változónévként.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="937"/>
         <source>Another variable of the pattern already carries this name.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta egy másik változója már ezt a nevet viseli.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1087"/>
@@ -2167,37 +2167,37 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="14"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="26"/>
         <source>Layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="36"/>
         <source>Choose layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegnév kiválasztása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="43"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="53"/>
         <source>Pen style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ceruza stílusa:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="85"/>
         <source>Color:</source>
-        <translation type="unfinished">Szín:</translation>
+        <translation>Szín:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.cpp" line="172"/>
         <source>New layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Új réteg</translation>
     </message>
 </context>
 <context>
@@ -2205,7 +2205,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="97"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="234"/>
@@ -2250,17 +2250,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="142"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="152"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="167"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="31"/>
@@ -2273,23 +2273,24 @@
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="41"/>
         <source>Import structure</source>
-        <translation type="unfinished"></translation>
+        <translation>Struktúra importálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="63"/>
         <source>Choose a measurement table whose structure you want to import (names, descriptions, groups).
 Values and intervals will not be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válasszon egy méréstáblázatot, amelynek a struktúráját importálni szeretné (nevek, leírások, csoportok).
+Az értékek és az intervallumok nem kerülnek importálásra.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="77"/>
         <source>⭐ Add/Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>⭐ Kedvencekhez adás/eltávolítás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="85"/>
         <source>Import</source>
-        <translation type="unfinished">Importálás</translation>
+        <translation>Importálás</translation>
     </message>
 </context>
 <context>
@@ -2436,7 +2437,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="497"/>
         <source>Group: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="634"/>
@@ -2527,7 +2528,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1395"/>
         <source>Increment &apos;%1&apos; already exists in the other table.</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” növekmény már létezik a másik táblázatban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1423"/>
@@ -2686,12 +2687,12 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="76"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="86"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="96"/>
@@ -2773,7 +2774,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="72"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="184"/>
@@ -2798,7 +2799,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.ui" line="135"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.ui" line="37"/>
@@ -2821,7 +2822,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="104"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="151"/>
@@ -2841,17 +2842,17 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="196"/>
         <source>Line intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalak metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="197"/>
         <source>These two lines are parallel, no intersection possible. Please choose 2 non-parallel lines.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a két vonal párhuzamos, metszéspont nem hozható létre. Kérjük, válasszon 2 nem párhuzamos vonalat.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="218"/>
         <source>Select first point of first line</source>
-        <translation type="unfinished">Válassza ki az első vonal első pontját</translation>
+        <translation>Válassza ki az első vonal első pontját</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="14"/>
@@ -2861,17 +2862,17 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="173"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="181"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="196"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="203"/>
@@ -2921,7 +2922,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="126"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="345"/>
@@ -2991,17 +2992,17 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="361"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="369"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="384"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="397"/>
@@ -3034,194 +3035,194 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="163"/>
         <source>Manage Main Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Fő kontúr kezelése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="178"/>
         <source>Reverse node direction</source>
-        <translation type="unfinished">Csomópont irányának megfordítása</translation>
+        <translation>Csomópont irányának megfordítása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="185"/>
         <source>Excluded node</source>
-        <translation type="unfinished">Kizárt csomópont</translation>
+        <translation>Kizárt csomópont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="192"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="596"/>
         <source>Turn point</source>
-        <translation type="unfinished">Fordulópont</translation>
+        <translation>Fordulópont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="199"/>
         <source>Check node uniqueness</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektumok egyediségének ellenőrzése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="206"/>
         <source>Notch</source>
-        <translation type="unfinished">Bevágás</translation>
+        <translation>Bevágás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="213"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="552"/>
         <source>Duplicate</source>
-        <translation type="unfinished">Duplikálás</translation>
+        <translation>Duplikálás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="219"/>
         <source>Delete node</source>
-        <translation type="unfinished">Csomópont törlése</translation>
+        <translation>Csomópont törlése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="236"/>
         <source>Move on top</source>
-        <translation type="unfinished">Mozgatás tetejére</translation>
+        <translation>Mozgatás tetejére</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="242"/>
         <source>Move up</source>
-        <translation type="unfinished">Mozgatás fel</translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="248"/>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás le</translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="254"/>
         <source>Move on bottom</source>
-        <translation type="unfinished">Mozgatás aljára</translation>
+        <translation>Mozgatás aljára</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="306"/>
         <source>Invalid Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen kontúr</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="307"/>
         <source>The main path is not valid. Please fix the errors before saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fő kontúr érvénytelen. Kérjük, javítsa ki a hibákat mentés előtt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="546"/>
         <source>Reverse</source>
-        <translation type="unfinished">Megfordítás</translation>
+        <translation>Megfordítás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="558"/>
         <source>Passmark</source>
-        <translation type="unfinished">Bevágásjel</translation>
+        <translation>Bevágásjel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="562"/>
         <source>None</source>
-        <translation type="unfinished">Nincs</translation>
+        <translation>Nincs</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="572"/>
         <source>One line</source>
-        <translation type="unfinished">Egy vonal</translation>
+        <translation>Egy vonal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="574"/>
         <source>Two lines</source>
-        <translation type="unfinished">Két vonal</translation>
+        <translation>Két vonal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="576"/>
         <source>Three lines</source>
-        <translation type="unfinished">Három vonal</translation>
+        <translation>Három vonal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="578"/>
         <source>T mark</source>
-        <translation type="unfinished">T jel</translation>
+        <translation>T jel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="580"/>
         <source>External V mark</source>
-        <translation type="unfinished">Külső V jel</translation>
+        <translation>Külső V jel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="582"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Belső V jel</translation>
+        <translation>Belső V jel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="584"/>
         <source>U mark</source>
-        <translation type="unfinished">U jel</translation>
+        <translation>U jel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="586"/>
         <source>Box mark</source>
-        <translation type="unfinished">Doboz jel</translation>
+        <translation>Doboz jel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="588"/>
         <source>Check mark</source>
-        <translation type="unfinished">Pipa jel</translation>
+        <translation>Pipa jel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="590"/>
         <source>Check uniqueness</source>
-        <translation type="unfinished">Egyediség ellenőrzése</translation>
+        <translation>Egyediség ellenőrzése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="603"/>
         <source>Excluded</source>
-        <translation type="unfinished">Kizárt</translation>
+        <translation>Kizárt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="609"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="817"/>
         <source>Cannot calculate curve %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 görbe nem számítható ki.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="827"/>
         <source>You need more points!</source>
-        <translation type="unfinished">Több pontra van szükség!</translation>
+        <translation>Több pontra van szükség!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="834"/>
         <source>You have to choose points in a clockwise direction!</source>
-        <translation type="unfinished">A pontokat az óramutató járásával megegyező irányban kell kiválasztania!</translation>
+        <translation>A pontokat az óramutató járásával megegyező irányban kell kiválasztania!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="842"/>
         <source>First point cannot be equal to the last point!</source>
-        <translation type="unfinished">Az első pont nem lehet azonos az utolsó ponttal!</translation>
+        <translation>Az első pont nem lehet azonos az utolsó ponttal!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="850"/>
         <source>You have double points!</source>
-        <translation type="unfinished">Ismétlődő pontok vannak!</translation>
+        <translation>Ismétlődő pontok vannak!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="858"/>
         <source>The same curve repeats twice!</source>
-        <translation type="unfinished">Ugyanaz a görbe kétszer ismétlődik!</translation>
+        <translation>Ugyanaz a görbe kétszer ismétlődik!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="865"/>
         <source>Each point in the path must be unique!</source>
-        <translation type="unfinished">Az útvonal minden pontja egyedi kell legyen!</translation>
+        <translation>Az útvonal minden pontja egyedi kell legyen!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="873"/>
         <source>Invalid segment!</source>
-        <translation type="unfinished">Érvénytelen szakasz!</translation>
+        <translation>Érvénytelen szakasz!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="877"/>
         <source>Ready!</source>
-        <translation type="unfinished">Kész!</translation>
+        <translation>Kész!</translation>
     </message>
 </context>
 <context>
@@ -3229,120 +3230,123 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="142"/>
         <source>Measurement tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázatok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="173"/>
         <source>Search tables…</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázatok keresése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="188"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="189"/>
         <source>Grading axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradációs tengely</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="190"/>
         <source>Created</source>
-        <translation type="unfinished"></translation>
+        <translation>Létrehozva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="191"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Módosítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="251"/>
         <source>Export &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="253"/>
         <source>Ostara files (*.%1);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara-fájlok (*.%1);;Minden fájl (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="257"/>
         <source>Export successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Sikeres exportálás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="258"/>
         <source>File exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl exportálva ide:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="260"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálási hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="261"/>
         <source>Could not copy file to the selected destination.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl nem másolható a kiválasztott célhelyre.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="267"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="268"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törli a következőt: „%1“?
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="284"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="284"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl nem törölhető.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="299"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="367"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítás a kedvencek közül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="367"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás a kedvencekhez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="390"/>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs megadva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="426"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="438"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="450"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
 </context>
 <context>
@@ -3350,19 +3354,21 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="41"/>
         <source>Measurements table</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="41"/>
         <source>Legacy measurement file</source>
-        <translation type="unfinished"></translation>
+        <translation>Örökölt mérésfájl</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="49"/>
         <source>This pattern reads measurements and no table is linked to it.
 
 Ostara uses the .omt/.otu format. Choose how to proceed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a szabásminta méréseket olvas be, és nincs hozzá társítva táblázat.
+
+Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan folytatja:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="54"/>
@@ -3371,17 +3377,21 @@ Ostara uses the .omt/.otu format. Choose how to proceed:</source>
 %1
 
 but it could not be found. Ostara uses the .omt/.otu format. Choose how to proceed:</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta egy örökölt Tape-fájlhoz van társítva:
+
+%1
+
+de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan folytatja:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="65"/>
         <source>Search for the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájl keresése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="66"/>
         <source>Replace with an existing .omt/.otu</source>
-        <translation type="unfinished"></translation>
+        <translation>Csere meglévő .omt/.otu fájlra</translation>
     </message>
 </context>
 <context>
@@ -3468,27 +3478,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="552"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgáspont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="568"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelölje be, hogy réteget hozzon létre az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="571"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="597"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="607"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="620"/>
@@ -3499,7 +3509,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="653"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="545"/>
@@ -3523,78 +3533,78 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="137"/>
         <source>Move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="62"/>
         <source>Length</source>
-        <translation type="unfinished">Hossz</translation>
+        <translation>Hossz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="67"/>
         <source>Angle</source>
-        <translation type="unfinished">Szög</translation>
+        <translation>Szög</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="72"/>
         <source>Rotation angle</source>
-        <translation type="unfinished">Forgatási szög</translation>
+        <translation>Forgatási szög</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="78"/>
         <source>Move</source>
-        <translation type="unfinished">Mozgatás</translation>
+        <translation>Mozgatás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="86"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="144"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="93"/>
         <source>Move name</source>
-        <translation type="unfinished"></translation>
+        <translation>A mozgatás neve</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="115"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelölje be, hogy réteget hozzon létre az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="118"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="130"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="154"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="170"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="203"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
 </context>
 <context>
@@ -3620,37 +3630,37 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="48"/>
         <source>Name the object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektum elnevezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="53"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a képlet egy név nélküli objektumot használ. Adjon neki nevet, hogy képletben használhassa.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="60"/>
         <source>Object:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektum:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="70"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="109"/>
         <source>Object %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. objektum a %2-ból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="128"/>
         <source>The name %1 cannot be used in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 név nem használható képletben.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="134"/>
         <source>The name %1 is already used. Choose another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 név már használatban van. Válasszon másikat.</translation>
     </message>
 </context>
 <context>
@@ -3658,92 +3668,92 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="47"/>
         <source>New measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Új méréstáblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="54"/>
         <source>Table name</source>
-        <translation type="unfinished"></translation>
+        <translation>A táblázat neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="58"/>
         <source>e.g., Standard measurements T38-60</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. Szabványos mérések T38-60</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="64"/>
         <source>Table type</source>
-        <translation type="unfinished"></translation>
+        <translation>A táblázat típusa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="69"/>
         <source>Multi-size</source>
-        <translation type="unfinished"></translation>
+        <translation>Többméretes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="74"/>
         <source>Table with size groups (e.g., 32-58, 3 heights). Values are calculated automatically by increments.</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázat méretcsoportokkal (pl. 32-58, 3 magasság). Az értékeket a program lépésközök alapján automatikusan számítja ki.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="80"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyméretes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="84"/>
         <source>Single size, no calculation. You enter each measurement value directly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyméretes, számítás nélkül. Minden mérési értéket közvetlenül ad meg.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="93"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Mértékegység</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="98"/>
         <source>Centimeters (cm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Centiméter (cm)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="103"/>
         <source>Millimeters (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Milliméter (mm)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="107"/>
         <source>Inches (inch)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hüvelyk (in)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="114"/>
         <source>Template (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon (opcionális)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="117"/>
         <source>Start from an existing table. Only measurement names will be reused, without values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdés egy meglévő táblázatból. Csak a mérések nevei lesznek átvéve, az értékek nem.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="125"/>
         <source>No template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="142"/>
         <source>Create</source>
-        <translation type="unfinished">Létrehozás</translation>
+        <translation>Létrehozás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="146"/>
         <source>Name required</source>
-        <translation type="unfinished"></translation>
+        <translation>Név megadása kötelező</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="147"/>
         <source>Please name your table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon nevet a táblázatnak.</translation>
     </message>
 </context>
 <context>
@@ -3756,64 +3766,62 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="98"/>
         <source>New pattern piece</source>
-        <translation type="unfinished">Új szabásminta rész</translation>
+        <translation>Új szabásminta rész</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="162"/>
         <source>Construction</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstrukció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="183"/>
         <source>First layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Az első réteg neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="184"/>
         <source>Pen style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ceruza stílusa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="185"/>
         <source>Color:</source>
-        <translation type="unfinished">Szín:</translation>
+        <translation>Szín:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="307"/>
         <source>%1 - needs %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - %2 szükséges</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="365"/>
         <source>No piece in the library is in %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtárban egyetlen darab sincs %1 mértékegységben.</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="321"/>
         <source>%n piece(s) not shown: another unit, or unreadable.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n darab nincs megjelenítve: más mértékegységben van, vagy olvashatatlan.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="219"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="364"/>
         <source>This folder holds no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem tartalmaz darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="380"/>
         <source>No piece matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyetlen darab sem felel meg a keresésnek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="439"/>
         <source>Insert the piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab beszúrása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="503"/>
@@ -3833,7 +3841,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="30"/>
         <source>Create a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="41"/>
@@ -3853,28 +3861,28 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="73"/>
         <source>Import a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab importálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="81"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="95"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="105"/>
         <source>Search this folder&apos;s pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés ebben a mappában</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="130"/>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="381"/>
         <source>Double-click a piece to insert it, or select one and accept.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson duplán egy darabra a beszúráshoz, vagy jelölje ki, és erősítse meg.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="17"/>
@@ -3887,7 +3895,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="121"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="187"/>
@@ -3937,17 +3945,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="182"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="190"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="205"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>A pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="31"/>
@@ -3960,48 +3968,48 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="45"/>
         <source>Open a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázat megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="57"/>
         <source>Multi-size - Library (.omt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Többméretes - Könyvtár (.omt)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="69"/>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="88"/>
         <source>Double-click a table to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson duplán egy táblázatra a megnyitásához.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="76"/>
         <source>Single size - Library (.otu)</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyméretes - Könyvtár (.otu)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="95"/>
         <source>Other location</source>
-        <translation type="unfinished"></translation>
+        <translation>Más hely</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="98"/>
         <source>Browse folders…</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappák tallózása…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="104"/>
         <source>Open a .omt, .otu, .vst, or .vit file from any folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyisson meg egy .omt, .otu, .vst vagy .vit fájlt bármely mappából.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="143"/>
         <source>Measurement tables (*.omt *.otu *.vst *.vit);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázatok (*.omt *.otu *.vst *.vit);;Minden fájl (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="149"/>
         <source>Open measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázat megnyitása</translation>
     </message>
 </context>
 <context>
@@ -4009,12 +4017,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="242"/>
         <source>Take both points of this line first</source>
-        <translation type="unfinished"></translation>
+        <translation>Először jelölje ki ennek a vonalnak a két pontját</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="364"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="516"/>
@@ -4042,12 +4050,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="37"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="44"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="91"/>
@@ -4068,22 +4076,22 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="204"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="218"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="229"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>A kezdőpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="247"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>A végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="162"/>
@@ -4141,7 +4149,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="125"/>
         <source>Cut on fabric (DXF export only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás szöveten (csak DXF-export esetén)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="139"/>
@@ -4573,27 +4581,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1548"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Láthatóság</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1549"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1550"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1563"/>
         <source>Internal outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső körvonal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2106"/>
         <source>Cannot calculate curve %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 görbe nem számítható ki.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2157"/>
@@ -4606,77 +4614,77 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="189"/>
         <source>Internal outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső körvonal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="190"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="191"/>
         <source>Type of pen</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonaltípus</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="192"/>
         <source>Continue the first point to the cutting contour</source>
-        <translation type="unfinished">Az első pont folytatása a vágási kontúrig</translation>
+        <translation>Az első pont folytatása a vágási kontúrig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="193"/>
         <source>Continue the last point to the cutting contour</source>
-        <translation type="unfinished">Az utolsó pont folytatása a vágási kontúrig</translation>
+        <translation>Az utolsó pont folytatása a vágási kontúrig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="194"/>
         <source>Cut on fabric (DXF export only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás szöveten (csak DXF-export esetén)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="195"/>
         <source>Not mirrored</source>
-        <translation type="unfinished">Nem tükrözött</translation>
+        <translation>Nem tükrözött</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="196"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Láthatóság</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="197"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="198"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="236"/>
         <source>Empty formula</source>
-        <translation type="unfinished">Üres képlet</translation>
+        <translation>Üres képlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="249"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
-        <translation type="unfinished">Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
+        <translation>Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="253"/>
         <source>Value can&apos;t be less than 0</source>
-        <translation type="unfinished">Az érték nem lehet kisebb 0-nál</translation>
+        <translation>Az érték nem lehet kisebb 0-nál</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="262"/>
         <source>Parser error: %1</source>
-        <translation type="unfinished">Elemzési hiba: %1</translation>
+        <translation>Elemzési hiba: %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="287"/>
         <source>Control visibility</source>
-        <translation type="unfinished">Láthatóság vezérlése</translation>
+        <translation>Láthatóság vezérlése</translation>
     </message>
 </context>
 <context>
@@ -4710,67 +4718,67 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="367"/>
         <source>Empty formula</source>
-        <translation type="unfinished">Üres képlet</translation>
+        <translation>Üres képlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="381"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
-        <translation type="unfinished">Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
+        <translation>Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="385"/>
         <source>Value can&apos;t be less than 0</source>
-        <translation type="unfinished">Az érték nem lehet kisebb 0-nál</translation>
+        <translation>Az érték nem lehet kisebb 0-nál</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="394"/>
         <source>Parser error: %1</source>
-        <translation type="unfinished">Elemzési hiba: %1</translation>
+        <translation>Elemzési hiba: %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="583"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső jelölés</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="584"/>
         <source>Piece</source>
-        <translation type="unfinished">Darab</translation>
+        <translation>Darab</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="585"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="586"/>
         <source>Height</source>
-        <translation type="unfinished">Magasság</translation>
+        <translation>Magasság</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="587"/>
         <source>Angle</source>
-        <translation type="unfinished">Szög</translation>
+        <translation>Szög</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="588"/>
         <source>Type</source>
-        <translation type="unfinished">Típus</translation>
+        <translation>Típus</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="589"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Láthatóság</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="590"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="592"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="614"/>
@@ -4830,101 +4838,101 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="34"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="204"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Ránc</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="45"/>
         <source>Cap 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vég 1:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="72"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="138"/>
         <source>Draw</source>
-        <translation type="unfinished">Rajz</translation>
+        <translation>Rajz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="79"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="145"/>
         <source>Reverse the sense</source>
-        <translation type="unfinished"></translation>
+        <translation>Irány megfordítása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="86"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="152"/>
         <source>Mark the notch of this end on the piece&apos;s edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelölje meg ennek a végnek a bevágását a darab szélén</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="89"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="155"/>
         <source>Notch</source>
-        <translation type="unfinished">Bevágás</translation>
+        <translation>Bevágás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="111"/>
         <source>Cap 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vég 2:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="182"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg létrehozása az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="185"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="197"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="211"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="221"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="234"/>
         <source>Draw the fold line that joins the two caps, and the pen it is drawn with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajzolja meg a két véget összekötő hajtásvonalat, és válassza ki a rajzoláshoz használt tollat.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="237"/>
         <source>Fold line</source>
-        <translation type="unfinished">Hajtásvonal</translation>
+        <translation>Hajtásvonal</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="243"/>
         <source>Draw the fold line, from one cap to the other.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajzolja meg a hajtásvonalat, az egyik végtől a másikig.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="249"/>
         <source>Draw the fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal rajzolása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="265"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="298"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
 </context>
 <context>
@@ -4967,17 +4975,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="130"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="140"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="155"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>A pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="28"/>
@@ -5035,17 +5043,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="174"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="182"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="197"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>A pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="28"/>
@@ -5058,7 +5066,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="122"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="270"/>
@@ -5113,17 +5121,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="214"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="222"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="237"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>A pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="31"/>
@@ -5146,17 +5154,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="50"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="60"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="75"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="88"/>
@@ -5214,17 +5222,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="223"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="231"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="246"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="256"/>
@@ -5333,17 +5341,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="177"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="185"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="200"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="14"/>
@@ -5430,17 +5438,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="236"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="244"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="259"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="107"/>
@@ -5475,22 +5483,22 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="48"/>
         <source>General</source>
-        <translation type="unfinished">Általános</translation>
+        <translation>Általános</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="56"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Gyorsbillentyűk</translation>
+        <translation>Gyorsbillentyűk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="64"/>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappák</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="72"/>
         <source>Tool bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszköztár</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
@@ -5500,9 +5508,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
         <source>Followed %n option(s) require restart to take effect: %1.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n követett beállítás érvénybe lépéséhez újraindítás szükséges: %1.</numerusform></translation>
     </message>
 </context>
 <context>
@@ -5510,98 +5516,98 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="101"/>
         <source>Range groups for &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” tartománycsoportjai</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="112"/>
         <source>Define range groups for &lt;b&gt;&quot;%1&quot;&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Határozza meg a(z) &lt;b&gt;„%1”&lt;/b&gt; tartománycsoportjait.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="120"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="120"/>
         <source>Ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartományok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="141"/>
         <source>+ Create group</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Csoport létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="146"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="241"/>
         <source>New group</source>
-        <translation type="unfinished">Új csoport</translation>
+        <translation>Új csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="151"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="153"/>
         <source>e.g., Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. Standard</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="160"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Tól</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="160"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Ig</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="170"/>
         <source>+ Add range</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Tartomány hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="175"/>
         <source>Validate</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvényesítés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="179"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="189"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="224"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="233"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="253"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="283"/>
         <source>Confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Megerősítés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="284"/>
         <source>Delete group &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a(z) „%1” csoportot?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="335"/>
@@ -5611,37 +5617,37 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="428"/>
         <source>Validation</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvényesítés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="335"/>
         <source>Define at least one range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Határozzon meg legalább egy tartományt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="349"/>
         <source>Invalid range: %1 → %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen tartomány: %1 → %2.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="367"/>
         <source>All values must be covered. Missing values: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden értéket le kell fedni. Hiányzó értékek: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="387"/>
         <source>Ranges overlap. Each value must belong to a single range.</source>
-        <translation type="unfinished"></translation>
+        <translation>A tartományok átfedik egymást. Minden érték csak egyetlen tartományhoz tartozhat.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
         <source>Group name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport neve nem lehet üres.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="429"/>
         <source>A group named &quot;%1&quot; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik „%1” nevű csoport.</translation>
     </message>
 </context>
 <context>
@@ -5662,37 +5668,37 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="107"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="557"/>
         <source>Length:</source>
-        <translation type="unfinished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="109"/>
         <source>Edit length</source>
-        <translation type="unfinished">Hossz szerkesztése</translation>
+        <translation>Hossz szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="258"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>A hossz nem haladhatja meg a kör átmérőjét (%1%2).</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="329"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">Érvénytelen hosszképlet</translation>
+        <translation>Érvénytelen hosszképlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="387"/>
         <source>Select the pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a forgáspontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="479"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a pont nem lehet a forgáspont. Válasszon egy másik pontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="618"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="101"/>
@@ -5712,27 +5718,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="71"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgáspont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="87"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg létrehozása az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="90"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="102"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="126"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="142"/>
@@ -5743,7 +5749,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="175"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="577"/>
@@ -5823,12 +5829,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="162"/>
         <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabokat úgy exportálja, mintha a fő útvonaluk látható lenne: így minden darabnak megvan a szabásvonala és a varrásvonala is. A mintában semmi nem változik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="165"/>
         <source>Show the main path, even when the pieces hide it</source>
-        <translation type="unfinished"></translation>
+        <translation>A fő útvonal megjelenítése akkor is, amikor a darabok elrejtik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="174"/>
@@ -5927,27 +5933,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="46"/>
         <source>Save table</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázat mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="77"/>
         <source>Save your table to the Ostara library to easily find it in the My Tables list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentse táblázatát az Ostara könyvtárába, hogy könnyen megtalálja a Saját táblázatok listában.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="85"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="111"/>
         <source>→ Find this table in the My Tables list, without searching your disk. Folder managed from Preferences.</source>
-        <translation type="unfinished"></translation>
+        <translation>→ Találja meg ezt a táblázatot a Saját táblázatok listában anélkül, hogy a lemezén kellene keresnie. A mappa a Beállításokból kezelhető.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="122"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
 </context>
 <context>
@@ -6087,7 +6093,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="118"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="189"/>
@@ -6117,17 +6123,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="152"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="160"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="175"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="182"/>
@@ -6186,12 +6192,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.ui" line="195"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.ui" line="234"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="91"/>
@@ -6308,7 +6314,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="997"/>
         <source>Point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="134"/>
@@ -6328,27 +6334,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="195"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="200"/>
         <source>Length 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Hossz 1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="205"/>
         <source>Angle 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Szög 1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="210"/>
         <source>Length 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Hossz 2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="215"/>
         <source>Angle 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Szög 2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="228"/>
@@ -6378,12 +6384,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="344"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="382"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="46"/>
@@ -6397,83 +6403,83 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="129"/>
         <source>Slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és forgatás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="62"/>
         <source>Angle</source>
-        <translation type="unfinished">Szög</translation>
+        <translation>Szög</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="67"/>
         <source>Length</source>
-        <translation type="unfinished">Hossz</translation>
+        <translation>Hossz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="73"/>
         <source>Rotation</source>
-        <translation type="unfinished">Forgatás</translation>
+        <translation>Forgatás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="81"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="136"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="88"/>
         <source>Rotation name</source>
-        <translation type="unfinished"></translation>
+        <translation>A forgatás neve</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="107"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg létrehozása az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="110"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="122"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="146"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="159"/>
         <source>Draw the mark of every rotation: the pivot, the two positions of the start point, and the two lines between them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajzolja meg minden forgatás jelölését: a forgáspontot, a kezdőpont két helyzetét és az őket összekötő két vonalat.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="162"/>
         <source>Rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>A forgatások megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="179"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="212"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
 </context>
 <context>
@@ -6511,22 +6517,22 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="458"/>
         <source>Show the two segments instead of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>A két szakasz megjelenítése a görbe helyett</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="510"/>
         <source>The curve will be prolonged by %1%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>A görbe %1%2-vel meghosszabbodik.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="585"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Vonaltípus:</translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="586"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="622"/>
@@ -6561,7 +6567,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="973"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont nevének megjelenítése</translation>
     </message>
 </context>
 <context>
@@ -6570,62 +6576,62 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="87"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="94"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="36"/>
         <source>Host part:</source>
-        <translation type="unfinished"></translation>
+        <translation>Befogadó darab:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="46"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="53"/>
         <source>Pick a layer of the host part, or type the name of a new one</source>
-        <translation type="unfinished"></translation>
+        <translation>Válasszon réteget a befogadó darabból, vagy írja be egy új réteg nevét</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg létrehozása az eredeti objektumokból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="68"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="80"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="104"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eredeti objektumok ebbe a rétegbe kerülnek, és elhagyják a többi rétegüket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="120"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="153"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
 </context>
 <context>
@@ -6683,17 +6689,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="145"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="155"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="170"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="31"/>
@@ -6758,7 +6764,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="180"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="28"/>
@@ -6853,348 +6859,348 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="138"/>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="462"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszközök</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="245"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="47"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="109"/>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="273"/>
         <source>Export templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálási sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="277"/>
         <source>Export image</source>
-        <translation type="unfinished"></translation>
+        <translation>Kép exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="110"/>
         <source>Export as image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálás képként…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="249"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="49"/>
         <source>Point at distance and angle</source>
-        <translation type="unfinished">Pont adott távolsággal és szöggel</translation>
+        <translation>Pont adott távolsággal és szöggel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="50"/>
         <source>Point at distance along line</source>
-        <translation type="unfinished">Pont adott távolságra a vonalon</translation>
+        <translation>Pont adott távolságra a vonalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="51"/>
         <source>Midpoint between two points</source>
-        <translation type="unfinished">Két pont középpontja</translation>
+        <translation>Két pont középpontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="52"/>
         <source>Point along perpendicular</source>
-        <translation type="unfinished">Pont a merőleges mentén</translation>
+        <translation>Pont a merőleges mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="53"/>
         <source>Point along bisector</source>
-        <translation type="unfinished">Pont a szögfelező mentén</translation>
+        <translation>Pont a szögfelező mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="54"/>
         <source>Perpendicular point along line</source>
-        <translation type="unfinished">Merőleges pont a vonalon</translation>
+        <translation>Merőleges pont a vonalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="55"/>
         <source>Point from X and Y of two other points</source>
-        <translation type="unfinished">Pont két másik pont X és Y koordinátájából</translation>
+        <translation>Pont két másik pont X és Y koordinátájából</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="56"/>
         <source>Point at line intersection</source>
-        <translation type="unfinished">Vonalak metszéspontja</translation>
+        <translation>Vonalak metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="57"/>
         <source>Special point on shoulder</source>
-        <translation type="unfinished">Speciális vállpont</translation>
+        <translation>Speciális vállpont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="58"/>
         <source>Triangle tool</source>
-        <translation type="unfinished">Háromszög eszköz</translation>
+        <translation>Háromszög eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="59"/>
         <source>Point intersect line and axis</source>
-        <translation type="unfinished">Vonal és tengely metszéspontja</translation>
+        <translation>Vonal és tengely metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="253"/>
         <source>Line</source>
-        <translation type="unfinished">Vonal</translation>
+        <translation>Vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="61"/>
         <source>Line between points</source>
-        <translation type="unfinished">Vonal két pont között</translation>
+        <translation>Vonal két pont között</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="257"/>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbék</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="63"/>
         <source>Curve tool which uses point as control handle</source>
-        <translation type="unfinished">Görbe pontvezérléssel</translation>
+        <translation>Görbe pontvezérléssel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="64"/>
         <source>Curved path tool which uses point as control handle</source>
-        <translation type="unfinished">Görbeútvonal pontvezérléssel</translation>
+        <translation>Görbeútvonal pontvezérléssel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="65"/>
         <source>Point intersect curve and axis</source>
-        <translation type="unfinished">Görbe és tengely metszéspontja</translation>
+        <translation>Görbe és tengely metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="66"/>
         <source>Point intersection curves</source>
-        <translation type="unfinished">Görbék metszéspontja</translation>
+        <translation>Görbék metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="67"/>
         <source>Parallel curve tool</source>
-        <translation type="unfinished">Párhuzamos görbe eszköz</translation>
+        <translation>Párhuzamos görbe eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="68"/>
         <source>Graduated curve tool</source>
-        <translation type="unfinished">Fokozatos görbe eszköz</translation>
+        <translation>Fokozatos görbe eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="261"/>
         <source>Arcs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ívek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="70"/>
         <source>Arc</source>
-        <translation type="unfinished">Ív</translation>
+        <translation>Ív</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="71"/>
         <source>Arc with given length</source>
-        <translation type="unfinished">Ív adott ívhosszal</translation>
+        <translation>Ív adott ívhosszal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="72"/>
         <source>Elliptical Arc</source>
-        <translation type="unfinished">Elliptikus ív</translation>
+        <translation>Elliptikus ív</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="73"/>
         <source>Elliptical arc with given length</source>
-        <translation type="unfinished">Elliptikus ív adott ívhosszal</translation>
+        <translation>Elliptikus ív adott ívhosszal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="74"/>
         <source>Segment an arc</source>
-        <translation type="unfinished">Ív felosztása</translation>
+        <translation>Ív felosztása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="75"/>
         <source>Arc start point</source>
-        <translation type="unfinished">Ív kezdőpontja</translation>
+        <translation>Ív kezdőpontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="76"/>
         <source>Arc end point</source>
-        <translation type="unfinished">Ív végpontja</translation>
+        <translation>Ív végpontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="77"/>
         <source>Point of intersection arcs</source>
-        <translation type="unfinished">Ívek metszéspontja</translation>
+        <translation>Ívek metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="78"/>
         <source>Point of intersection arc and axis</source>
-        <translation type="unfinished">Ív és tengely metszéspontja</translation>
+        <translation>Ív és tengely metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="79"/>
         <source>Point of intersection circles</source>
-        <translation type="unfinished">Körök metszéspontja</translation>
+        <translation>Körök metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="80"/>
         <source>Point from arc and tangent</source>
-        <translation type="unfinished">Ív és érintő metszéspontja</translation>
+        <translation>Ív és érintő metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="81"/>
         <source>Point from circle and tangent</source>
-        <translation type="unfinished">Kör és érintő metszéspontja</translation>
+        <translation>Kör és érintő metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="82"/>
         <source>Point of intersection circle and segment</source>
-        <translation type="unfinished">Kör és szakasz metszéspontja</translation>
+        <translation>Kör és szakasz metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="97"/>
         <source>Armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Karöltő görbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="98"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítő forgatása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="265"/>
         <source>Operations</source>
-        <translation type="unfinished">Műveletek</translation>
+        <translation>Műveletek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="84"/>
         <source>Flipping objects by axis</source>
-        <translation type="unfinished">Objektumok tükrözése tengely mentén</translation>
+        <translation>Objektumok tükrözése tengely mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="85"/>
         <source>Flipping objects by line</source>
-        <translation type="unfinished">Objektumok tükrözése vonal mentén</translation>
+        <translation>Objektumok tükrözése vonal mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="86"/>
         <source>Rotate objects</source>
-        <translation type="unfinished">Objektumok elforgatása</translation>
+        <translation>Objektumok elforgatása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="87"/>
         <source>Move objects</source>
-        <translation type="unfinished">Objektumok mozgatása</translation>
+        <translation>Objektumok mozgatása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="88"/>
         <source>True darts</source>
-        <translation type="unfinished">Szűkítők kiegyenlítése</translation>
+        <translation>Szűkítők kiegyenlítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="269"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="90"/>
         <source>Workpiece tool</source>
-        <translation type="unfinished">Munkadarab eszköz</translation>
+        <translation>Munkadarab eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="91"/>
         <source>Internal path tool</source>
-        <translation type="unfinished">Belső útvonal eszköz</translation>
+        <translation>Belső útvonal eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="92"/>
         <source>Insert node tool</source>
-        <translation type="unfinished">Csomópont beszúrása eszköz</translation>
+        <translation>Csomópont beszúrása eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="93"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső jelölés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="111"/>
         <source>Union tool</source>
-        <translation type="unfinished">Darabok egyesítése eszköz</translation>
+        <translation>Darabok egyesítése eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="112"/>
         <source>Duplicate detail tool</source>
-        <translation type="unfinished">Alkatrész másolata eszköz</translation>
+        <translation>Alkatrész másolata eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="113"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
-        <translation type="unfinished">Görbe</translation>
+        <translation>Görbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="96"/>
         <source>Segment a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbe felosztása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="99"/>
         <source>Dart cap tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítősapka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="100"/>
         <source>Rectangle tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Téglalap eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="101"/>
         <source>Transfer tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="102"/>
         <source>Spiral tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirál eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="103"/>
         <source>Slash and spread tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és forgatás eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="104"/>
         <source>Move by batch tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="105"/>
         <source>Pleat tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtás eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="106"/>
         <source>Middle pleat tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Középső hajtás eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="107"/>
         <source>Flounce spiral tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Volánspirál eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="704"/>
         <source>%1 more tools</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 további eszköz</translation>
     </message>
 </context>
 <context>
@@ -7202,7 +7208,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
         <source>Cut On Fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabás hajtásra</translation>
     </message>
 </context>
 <context>
@@ -7210,27 +7216,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="84"/>
         <source>Formula:</source>
-        <translation type="unfinished">Képlet:</translation>
+        <translation>Képlet:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="95"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="266"/>
         <source>Edit formula</source>
-        <translation type="unfinished">Képlet szerkesztés</translation>
+        <translation>Képlet szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="307"/>
         <source>Collapse</source>
-        <translation type="unfinished"></translation>
+        <translation>Összecsukás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="307"/>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Kibontás</translation>
     </message>
 </context>
 <context>
@@ -7290,7 +7296,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
         <source>link pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>darabok összekapcsolása</translation>
     </message>
 </context>
 <context>
@@ -7399,7 +7405,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="963"/>
         <source>Export Final Measurements to CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Végső mérések exportálása CSV-be</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="971"/>
@@ -7555,12 +7561,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="350"/>
         <source>Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point that carries the edge when no curve does - then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a szűkítő csúcsát (a darab belsejében lévő pontot), majd nyílásának két pontját, és azt a pontot, amely a szegélyt hordozza, ha egyetlen görbe sem teszi - majd &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="364"/>
         <source>Select the base point of the rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a téglalap kezdőpontját</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="378"/>
@@ -7585,7 +7591,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="455"/>
         <source>Select the first point of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a görbe első pontját</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="479"/>
@@ -7595,17 +7601,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="493"/>
         <source>Select a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Válasszon ki egy görbét</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="530"/>
         <source>Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed automatically; hold &lt;b&gt;%1&lt;/b&gt; to reverse a curve, &lt;b&gt;%2&lt;/b&gt; to finish.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki az útvonal objektumait sorrendben - az irány szabad, nincs kötelező óramutató járás szerinti irány. A teljes görbe automatikusan megfordul; tartsa nyomva a(z) &lt;b&gt;%1&lt;/b&gt; billentyűt egy görbe megfordításához, a(z) &lt;b&gt;%2&lt;/b&gt; billentyűt a befejezéshez.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="541"/>
         <source>Select all the points of the internal marks to place, &lt;b&gt;%1&lt;/b&gt; - confirm selection. Every mark will be attached to the piece you choose in the dialog, so select only points lying on that piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki az elhelyezendő belső jelölések összes pontját, &lt;b&gt;%1&lt;/b&gt; - a kijelölés megerősítése. Minden jelölés ahhoz a darabhoz kapcsolódik, amelyet a párbeszédablakban kiválaszt, ezért csak azon a darabon lévő pontokat jelölje ki.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="559"/>
@@ -7635,43 +7641,43 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="661"/>
         <source>Select the &lt;b&gt;objects to turn&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a &lt;b&gt;elforgatandó objektumokat&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - a kijelölés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="713"/>
         <source>Select the objects of the portion, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a szakasz objektumait, &lt;b&gt;%1&lt;/b&gt; - a kijelölés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="728"/>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="742"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a kontúr objektumait &lt;b&gt;sorrendben&lt;/b&gt;: mindet az óramutató járásával megegyezően vagy mindet azzal ellentétesen, soha nem keverve a kettőt. Ezután &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="758"/>
         <source>Select the point the inner spiral starts at, then fill in the width and the length of the flounce</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a belső spirál kezdőpontját, majd adja meg a volán szélességét és hosszát</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="769"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a kontúr objektumait &lt;b&gt;sorrendben&lt;/b&gt;: mindet az óramutató járásával megegyezően vagy mindet azzal ellentétesen, soha nem keverve a kettőt - a kiindulási vonalak pontjait is beleértve. Ezután &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="782"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the two points of the middle line included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a kontúr objektumait &lt;b&gt;sorrendben&lt;/b&gt;: mindet az óramutató járásával megegyezően vagy mindet azzal ellentétesen, soha nem keverve a kettőt - a középső vonal két pontját is beleértve. Ezután &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="838"/>
         <source>Insert node</source>
-        <translation type="unfinished"></translation>
+        <translation>Csomópont beszúrása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="839"/>
         <source>None of the selected nodes could be placed in the piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>A kijelölt csomópontok egyike sem helyezhető el a darabban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="856"/>
@@ -7691,12 +7697,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1044"/>
         <source>Select the armhole point. Optional: create a perpendicular point beforehand to end the curve perpendicular to the shoulder line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a karöltőpontot. Opcionális: előzetesen hozzon létre egy merőleges pontot, hogy a görbe a vállvonalra merőlegesen végződjön.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1056"/>
         <source>Select the point the spiral starts at</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a spirál kezdőpontját</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="402"/>
@@ -7716,12 +7722,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="977"/>
         <source>This pattern contains legacy labels. Ostara does not use them - they have been replaced by the Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a minta örökölt címkéket tartalmaz. Az Ostara nem használja őket - helyüket az Információs blokk vette át. Az átalakítás nem automatikus, az Ön címkéi nem maradtak meg. Az eredeti .val fájl sértetlen marad.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1320"/>
         <source>Ostara didn&apos;t shut down correctly. Do you want to reopen the files (%1) you had open?</source>
-        <translation type="unfinished"></translation>
+        <translation>Az Ostara nem állt le megfelelően. Szeretné újra megnyitni a korábban megnyitott fájlokat (%1)?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1363"/>
@@ -7889,53 +7895,53 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="60"/>
         <source>&amp;Pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Minta</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="72"/>
         <source>&amp;Piece</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Darab</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="83"/>
         <source>&amp;Display</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nézet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="115"/>
         <source>&amp;Libraries</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Könyvtárak</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="173"/>
         <source>Top bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Felső sáv</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="190"/>
         <source>Options</source>
-        <translation type="unfinished">Beállítások</translation>
+        <translation>Beállítások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="205"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="571"/>
         <source>Change the name of pattern piece</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásmintadarab nevének módosítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="658"/>
         <source>&amp;About Ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ostara névjegye</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="731"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="734"/>
         <source>Zoom 100%</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás 100%</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="799"/>
@@ -7950,174 +7956,174 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
         <source>Show segment point names</source>
-        <translation type="unfinished"></translation>
+        <translation>A szakaszpontok neveinek megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="825"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Engedélyezze a szakaszpontok neveinek megjelenítését. A jelölőnégyzet törlésével minden esetben elrejtheti őket.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="123"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információs blokk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="136"/>
         <source>PDF editor</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-szerkesztő</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="214"/>
         <source>Size Ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartományok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="223"/>
         <source>Size Styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretstílusok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="232"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimenetek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="241"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="864"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítólap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="554"/>
         <source>Save piece to library</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab mentése a könyvtárba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="557"/>
         <source>Save the active pattern piece to the piece library</source>
-        <translation type="unfinished"></translation>
+        <translation>Az aktív szabásmintadarab mentése a darabkönyvtárba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="612"/>
         <source>Graded</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokozás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="615"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fokozási fázis: a darabok méretek szerinti fokozása. A „Fokozás mód” bekapcsolásához legalább egy darabot ki kell emelni „Alkatrészek módban”, és be kell tölteni egy többméretes méréstáblázatot.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="636"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="639"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A darabok elrendezésének és a nyomtatható PDF előállításának módja, az Ostara elhagyása nélkül.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="853"/>
         <source>Final Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Végső mérések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
         <source>Assembly marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Illesztési bevágások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
         <source>Export templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportsablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="888"/>
         <source>Export as image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálás képként…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="896"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="904"/>
         <source>Create new</source>
-        <translation type="unfinished"></translation>
+        <translation>Új létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="912"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="920"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfelek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="928"/>
         <source>Collections</source>
-        <translation type="unfinished"></translation>
+        <translation>Gyűjtemények</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Jegyzetek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="944"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélyegkép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="952"/>
         <source>Foldline text</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="974"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázat (.omt/.otu) betöltése és összekapcsolása a mintával</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="991"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>A mintában jelenleg betöltött méréstáblázat szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1002"/>
         <source>Create New</source>
-        <translation type="unfinished"></translation>
+        <translation>Új létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1005"/>
         <source>Create a new measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Új méréstáblázat létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1047"/>
         <source>Increase point name font</source>
-        <translation type="unfinished"></translation>
+        <translation>A pontnevek betűméretének növelése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1058"/>
         <source>Decrease point name font</source>
-        <translation type="unfinished"></translation>
+        <translation>A pontnevek betűméretének csökkentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1069"/>
         <source>Original point name font</source>
-        <translation type="unfinished"></translation>
+        <translation>A pontnevek eredeti betűmérete</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1083"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="99"/>
         <source>Hide point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1240"/>
@@ -8127,17 +8133,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1600"/>
         <source>Curve</source>
-        <translation type="unfinished">Görbe</translation>
+        <translation>Görbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
         <source>Segment a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbe felosztása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
         <source>Armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Karkivágásgörbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1744"/>
@@ -8152,147 +8158,147 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
         <source>Dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítősapka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1894"/>
         <source>Dart cap: draw the cap of a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítősapka: a sapka megrajzolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Téglalap</translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1915"/>
         <source>Rectangle: a base point, a width and a height</source>
-        <translation type="unfinished"></translation>
+        <translation>Téglalap: egy alappont, egy szélesség és egy magasság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1936"/>
         <source>Transfer: graft a portion of one part onto another</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel: egy darab egy részének átültetése egy másikra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1957"/>
         <source>Spiral: a golden spiral of the length you ask for, drawn from an existing point</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirál: aranyspirál a megadott hosszal, egy meglévő pontból rajzolva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2118"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2201"/>
         <source>Reload point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek újratöltése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2204"/>
         <source>Reload piece point names</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab pontneveinek újratöltése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2215"/>
         <source>Auto-arrange point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek automatikus átrendezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2218"/>
         <source>Auto-arrange point names to reduce overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek automatikus átrendezése az átfedések csökkentésére</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2283"/>
         <source>Measurement Tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázatok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2286"/>
         <source>Browse, open, and manage measurement tables in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázatok böngészése, megnyitása és kezelése a könyvtárban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2294"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2297"/>
         <source>Browse the pieces saved in the library, and see what each of them needs</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtárban mentett darabok böngészése, és annak megtekintése, mire van szüksége mindegyiknek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2305"/>
         <source>Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Minták</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2308"/>
         <source>Browse the patterns saved in the library, and manage what each folder holds</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtárban mentett minták böngészése, és az egyes mappák tartalmának kezelése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2326"/>
         <source>Slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és forgatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2329"/>
         <source>Slash and spread: open a piece along cut lines by rotating its parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és forgatás: egy darab szétnyitása vágásvonalak mentén, részeinek elforgatásával</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2347"/>
         <source>Flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Fodorspirál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2350"/>
         <source>Flounce spiral: a band of constant width wound as a snail</source>
-        <translation type="unfinished"></translation>
+        <translation>Fodorspirál: állandó szélességű szalag csigavonalban feltekerve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2368"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2371"/>
         <source>Pleat: fold the fabric back on itself along a departure line</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé: a szövet visszahajtása önmagára a pliszé indulóvonala mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2389"/>
         <source>Middle pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Középső pliszé</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2392"/>
         <source>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Középső pliszé: pliszé elhelyezése egy darab közepén, a középvonalán</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2410"/>
         <source>Move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2413"/>
         <source>Move by batch: move the parts of a piece along cut lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás: egy darab részeinek mozgatása vágásvonalak mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
@@ -8344,24 +8350,25 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="126"/>
         <source>No measurement table loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs betöltött méréstáblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="135"/>
         <source>File not found</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl nem található</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="136"/>
         <source>The measurement file could not be found at:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérésfájl nem található ezen a címen:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="166"/>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="251"/>
         <source>Measurements reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérések újratöltve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="328"/>
@@ -8415,12 +8422,13 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="262"/>
         <source>The files were successfully exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlok sikeresen exportálva ide:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="316"/>
         <source>The console layout export is gone with the Layout mode. Use --exportOnlyDetails, or the Export mode, to export a cutting plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>A parancssori elrendezés-export megszűnt az Elrendezés móddal együtt. A szabási terv exportálásához használja a --exportOnlyDetails kapcsolót vagy az Export módot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="470"/>
@@ -8430,12 +8438,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="471"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A szabásmintadarabok rajzolásának és szerkesztésének fázisa. Ezek a darabok szükségesek a következő lépéshez: a darabok kiemelése és formázása az „Alkatrészek módban”. Az „Alkatrészek mód” bekapcsolása előtt legalább egy darab fő kontúrját ki kell emelnie a Rajz módból.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="495"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A minta darabjainak formázási fázisa. Az „Alkatrészek mód” bekapcsolása előtt legalább egy fő kontúrt ki kell emelnie a Rajz módból. Az ebben a lépésben formázott darabok ezután beépíthetők a szabási tervbe. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1993"/>
@@ -8460,12 +8468,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="400"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Súgó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="502"/>
         <source>add a pattern piece</source>
-        <translation type="unfinished"></translation>
+        <translation>szabásmintadarab hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="791"/>
@@ -8563,7 +8571,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1435"/>
         <source>untitled.ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>névtelen.ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1477"/>
@@ -8694,12 +8702,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítő forgatása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1873"/>
         <source>Rotate a dart: turn one leg onto the other</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítő forgatása: az egyik szár átfordítása a másikra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2115"/>
@@ -8725,7 +8733,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="14"/>
         <location filename="../../src/app/ostara/mainwindow_welcome.cpp" line="180"/>
         <source>Ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_events.cpp" line="799"/>
@@ -8837,7 +8845,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="717"/>
         <source>name the objects of a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>egy darab objektumainak elnevezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="762"/>
@@ -8845,12 +8853,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="788"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="798"/>
         <source>Save piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="806"/>
         <source>Piece saved: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab mentve: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="836"/>
@@ -8859,27 +8867,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="875"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="962"/>
         <source>Piece library</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabkönyvtár</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="848"/>
         <source>Load a measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázat betöltése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="933"/>
         <source>Loading the piece. Please, wait.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab betöltése folyamatban. Kérjük, várjon.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="962"/>
         <source>This piece holds no block to insert.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab nem tartalmaz beszúrható blokkot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="988"/>
         <source>Piece inserted: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab beszúrva: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="275"/>
@@ -8929,27 +8937,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="976"/>
         <source>Labels not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>A címkék nem támogatottak</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="986"/>
         <source>Grainlines anchored to pins</source>
-        <translation type="unfinished"></translation>
+        <translation>Szálirányok újra elhelyezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="987"/>
         <source>This pattern contains grainlines anchored to pins. Ostara no longer uses them - these grainlines have been disabled. Please place them again in the Details mode. Conversion is not automatic. The original .val file remains intact.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a minta olyan szálirányokat tartalmaz, amelyek helyzete tűktől függött – ez a Valentina egy régi funkciója. Az Ostara már nem használja: ezek a szálirányok letiltásra kerültek. Kérjük, helyezze el újra őket Darab módban. Az átalakítás nem automatikus. Az eredeti .val fájl sértetlen marad.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1074"/>
         <source>The pattern reads measurements and no table was chosen.</source>
-        <translation type="unfinished"></translation>
+        <translation>A minta méréseket olvas, de nem lett táblázat kiválasztva.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1100"/>
         <source>Legacy measurement file</source>
-        <translation type="unfinished"></translation>
+        <translation>Örökölt mérésfájl</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1101"/>
@@ -8958,22 +8966,26 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 %1
 
 Ostara uses .omt/.otu format. Choose how to proceed:</source>
-        <translation type="unfinished"></translation>
+        <translation>A minta egy örökölt Tape-fájlhoz kapcsolódik:
+
+%1
+
+Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan szeretne továbblépni:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1104"/>
         <source>Convert this file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájl konvertálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1105"/>
         <source>Replace with existing .%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Csere a meglévő .%1 fájlra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="486"/>
         <source>Find the measurements file</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérésfájl megkeresése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="832"/>
@@ -9115,17 +9127,17 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <location filename="../../src/app/ostara/mainwindow_events.cpp" line="800"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="141"/>
         <source>Piece:</source>
-        <translation type="unfinished">Darab:</translation>
+        <translation>Darab:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="98"/>
         <source>Show all point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Az összes pontnév megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="433"/>
         <source>Load measurements table</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázat betöltése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="219"/>
@@ -9147,149 +9159,151 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="891"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="895"/>
         <source>Graded mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokozás mód</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="220"/>
         <source>You can&apos;t use Graded mode yet. Please, create at least one workpiece and load a measurements table.</source>
-        <translation type="unfinished"></translation>
+        <translation>A Fokozás mód még nem használható. Kérjük, hozzon létre legalább egy munkadarabot, és töltsön be egy méréstáblázatot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="291"/>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="585"/>
         <source>Graded mode needs a multi-size measurements table (.omt).</source>
-        <translation type="unfinished"></translation>
+        <translation>A Fokozás mód többméretes méréstáblázatot (.omt) igényel.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="370"/>
         <source>The stored size range no longer matches the loaded measurements table. It was removed - please, create a new one.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mentett mérettartomány már nem felel meg a betöltött méréstáblázatnak. Töröltük – kérjük, hozzon létre újat.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="467"/>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="734"/>
         <source>A size range with this name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik ilyen nevű mérettartomány.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="484"/>
         <source>Add size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="484"/>
         <source>Add size ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartományok hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="653"/>
         <source>Duplicate size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány duplikálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="678"/>
         <source>This size range belongs to another measurements table. Load its table to edit it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mérettartomány egy másik méréstáblázathoz tartozik. A szerkesztéshez töltse be az adott táblázatot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="746"/>
         <source>Edit size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="789"/>
         <source>Delete size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="816"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1516"/>
         <source>A favorite already has this name. Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy kedvenc már ezt a nevet viseli. Válasszon másik nevet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="910"/>
         <source>Rename size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány átnevezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="214"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Vízszintes igazítás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="215"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Függőleges igazítás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_build.cpp" line="237"/>
         <source>Preparing the graded scene…</source>
-        <translation type="unfinished"></translation>
+        <translation>A gradációs jelenet előkészítése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="133"/>
         <source>This size range needs its measurements table loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ehhez a mérettartományhoz be kell tölteni a méréstáblázatát.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="173"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="177"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="811"/>
         <source>Cannot create the export folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az exportmappa nem hozható létre.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="213"/>
         <source>The file &quot;%1&quot; already exists in the export folder.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” fájl már létezik az exportmappában.
+Lecseréli?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="226"/>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="120"/>
         <source>Layout</source>
         <comment>Decor layout layer default name in a graded SVG export</comment>
-        <translation type="unfinished">Elrendezés</translation>
+        <translation>Elrendezés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="471"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="476"/>
         <source>The graded export failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>A gradációs export nem sikerült.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="769"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="773"/>
         <source>The SVG file could not be written.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az SVG fájlt nem sikerült kiírni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="255"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="786"/>
         <source>The file &quot;%1&quot; was successfully exported to:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” fájl sikeresen exportálva ide:
+%2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="835"/>
         <source>No size range to export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs exportálható mérettartomány.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="868"/>
         <source>The following files were exported to:</source>
-        <translation type="unfinished"></translation>
+        <translation>A következő fájlok exportálási helye:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="876"/>
         <source>%1 file(s) were not exported (replace declined).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fájl nem lett exportálva (a lecserélés elutasítva).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="880"/>
         <source>The following size ranges could not be exported: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A következő mérettartományok exportálása nem sikerült: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportmode.cpp" line="74"/>
@@ -9308,57 +9322,53 @@ Do you want to replace it?</source>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="236"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="248"/>
         <source>Export mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálási mód</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportmode.cpp" line="75"/>
         <source>You can&apos;t use Export mode yet. Please, open a pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az exportálási mód még nem használható: nyisson meg egy szabásmintát.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="148"/>
         <source>hour</source>
-        <translation type="unfinished"></translation>
+        <translation>óra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="152"/>
         <source>minute</source>
-        <translation type="unfinished"></translation>
+        <translation>perc</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="156"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="163"/>
         <source>second</source>
-        <translation type="unfinished"></translation>
+        <translation>másodperc</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="169"/>
         <source>%1 and %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 és %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="217"/>
         <source>Mat %1 × %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágószőnyeg %1 × %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="221"/>
         <source> · %n piece(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n darab</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="226"/>
         <source> · %n mat(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n vágószőnyeg</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="229"/>
         <source>Canvas %1 × %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Vászon %1 × %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="233"/>
@@ -9366,173 +9376,171 @@ Do you want to replace it?</source>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="314"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="341"/>
         <source> · %1</source>
-        <translation type="unfinished"></translation>
+        <translation> · %1</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="264"/>
         <source> · %n pages (cover page included)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n oldal (a borítólapot is beleértve)</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="266"/>
         <source> · %n pages</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n oldal</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="293"/>
         <source>Canvas: half fabric width %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vászon: fél szövetszélesség %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="298"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="303"/>
         <source>Fabric width %1 · length %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetszélesség %1 · anyagszükséglet %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="329"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="336"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="486"/>
         <source>Nesting. Please, wait.</source>
-        <translation type="unfinished">Elrendezés folyamatban. Kérjük, várjon.</translation>
+        <translation>Elrendezés folyamatban. Kérjük, várjon.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="936"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Egységes méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1294"/>
         <source>This size range carries no piece to nest.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mérettartomány nem tartalmaz elrendezhető darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1302"/>
         <source>A cutting plan only takes the pieces whose %1 cut quantity is filled in (Details mode, Dock Options, Piece, Information).</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy szabászati terv csak azokat a darabokat veszi figyelembe, amelyeknél a %1 vágási mennyiség ki van töltve (Details mód, Dock Options, Darab, Információ).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="124"/>
         <source>No measurements table is loaded. The metrage mode needs one with size axes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs betöltött méréstáblázat: az anyagszükséglet-mód olyat kér, amelyben mérettengelyek vannak.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="141"/>
         <source>The measurements table declares an axis of hip (%1) that a cutting plan cannot address. The three axes a run carries are height, size and waist.</source>
-        <translation type="unfinished"></translation>
+        <translation>A méréstáblázat olyan csípőbőség-tengelyt (%1) jelöl meg, amelyet egy szabászati terv nem tud kezelni. Egy futás három tengelye: magasság, méret és derékbőség.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="152"/>
         <source>The measurements table declares no size axis: there is no complete size to walk.</source>
-        <translation type="unfinished"></translation>
+        <translation>A méréstáblázat nem jelöl meg mérettengelyt: nincs végigjárható teljes méret.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="201"/>
         <source>The measurements table offers no combination: every axis came back empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>A méréstáblázat egyetlen kombinációt sem kínál: minden tengely üresen tért vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="243"/>
         <source>The metrage mode needs at least one --fabricWidth, in centimetres.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az anyagszükséglet-mód legalább egy --fabricWidth megadását kéri, centiméterben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="278"/>
         <source>The pattern carries no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta nem tartalmaz darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="292"/>
         <source>This pattern declares no piece group, so --group names nothing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a szabásminta nem jelöl meg darabcsoportot, így a --group semmire nem hivatkozik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="301"/>
         <source>A --group must read &quot;Group name=Member name&quot;; this one reads:</source>
-        <translation type="unfinished"></translation>
+        <translation>A --group formája „Csoport neve=Tag neve” kell legyen; ez így szól:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="328"/>
         <source>No group of this pattern is called &quot;%1&quot;. The groups are: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebben a szabásmintában egyetlen csoport sem viseli a(z) „%1” nevet. A csoportok: %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="336"/>
         <source>The group &quot;%1&quot; is out of the layout in this pattern: switch it on, or leave it out of the model.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” csoport nincs benne az elrendezésben ebben a szabásmintában: kapcsolja be, vagy hagyja ki a modellből.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="361"/>
         <source>&quot;%1&quot; is not a member of the group &quot;%2&quot;. Its members are: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” nem tagja a(z) „%2” csoportnak. Tagjai: %3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="392"/>
         <source>A cutting plan needs a direction — an enabled grainline, or a fold line — for every piece it cuts. These have none: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy szabászati tervhez minden vágott darabnak kell egy irány — bekapcsolt szálirány vagy hajtásvonal. Ezeknek nincs: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="412"/>
         <source>Careful: &quot;%1&quot; has no %2 cut — neither its own nor its group&apos;s — so it is not cut at all: the run will measure the plan WITHOUT it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Figyelem: a(z) „%1” esetében nincs %2 vágási mennyiség — sem saját, sem a csoportjáé —, így egyáltalán nem lesz vágva: a futás a tervet NÉLKÜLE méri fel.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="415"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1305"/>
         <source>lining</source>
-        <translation type="unfinished"></translation>
+        <translation>bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="416"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1306"/>
         <source>fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="426"/>
         <source>No size to cut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs vágható méret:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="437"/>
         <source>No --destination was given: the table goes to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs megadva --destination, a táblázat ide kerül: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="473"/>
         <source>The metrage batch could not start: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Az anyagszükséglet-köteg nem indult el: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="478"/>
         <source>Metrage: %1 run(s) done, %2 failed, %3 already there — %4 s. Table: %5</source>
-        <translation type="unfinished"></translation>
+        <translation>Anyagszükséglet: %1 futás kész, %2 sikertelen, %3 már megvolt — %4 s. Táblázat: %5</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1706"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törölni szeretné a(z) „%1” elemet?
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1838"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1879"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1946"/>
         <source>&quot;%1&quot; could not be exported.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” exportálása nem sikerült.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1846"/>
@@ -9540,35 +9548,30 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1953"/>
         <source>&quot;%1&quot; was exported to
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” exportálva ide:
+%2</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="2079"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="214"/>
         <source>%n file(s) written to %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n fájl kiírva ide: %1</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="2095"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="245"/>
         <source>%n file(s) could not be written:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n fájl kiírása nem sikerült:</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="252"/>
         <source>%1 × %2 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 × %2 %3</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="228"/>
         <source>%n file(s) left untouched:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n fájl érintetlen maradt:</numerusform></translation>
     </message>
 </context>
 <context>
@@ -9699,97 +9702,97 @@ Szeretne másik fájlt választani?</translation>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="517"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="647"/>
         <source>Measurement details</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérés részletei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="83"/>
         <source>Name used in formulas (@ auto)</source>
-        <translation type="unfinished"></translation>
+        <translation>A képletekben használt név (@ auto)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="86"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="91"/>
         <source>e.g., Chest circumference</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. mellbőség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="94"/>
         <source>Full name:</source>
-        <translation type="unfinished">Teljes név:</translation>
+        <translation>Teljes név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="100"/>
         <source>Measurement description</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérés leírása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="119"/>
         <source>Description:</source>
-        <translation type="unfinished">Leírás:</translation>
+        <translation>Leírás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="126"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="200"/>
         <source>Value at reference size</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték a referencia méretnél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="130"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="197"/>
         <source>Base value:</source>
-        <translation type="unfinished">Alapérték:</translation>
+        <translation>Alapérték:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="155"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="182"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="340"/>
         <source>Select or create a measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérés kiválasztása vagy létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="197"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="199"/>
         <source>Measurement value</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérés értéke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="268"/>
         <source>Interval &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallum &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="273"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineáris</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="276"/>
         <source>Non-linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem lineáris</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="284"/>
         <source>Configure ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartományok beállítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="321"/>
         <source>No range groups defined. Click Configure ranges.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs meghatározott tartománycsoport. Kattintson a Tartományok beállítása elemre.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="177"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="608"/>
         <source>Group properties</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport tulajdonságai</translation>
     </message>
 </context>
 <context>
@@ -9797,17 +9800,17 @@ Szeretne másik fájlt választani?</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="82"/>
         <source>New measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Új méréstáblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="196"/>
         <source>Conversion error</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvertálási hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="197"/>
         <source>Unable to convert .vst file.</source>
-        <translation type="unfinished"></translation>
+        <translation>A .vst fájl nem konvertálható.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="206"/>
@@ -9816,38 +9819,42 @@ Szeretne másik fájlt választani?</translation>
 Ostara calculates measurements differently from Tape, so the converted values may differ from the original file.
 
 Please verify the measurement values and adjust if needed before saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a régi .vst fájl .omt formátumra lett átalakítva.
+
+Az Ostara másként számolja a méréseket, mint a Tape, ezért az átalakított értékek eltérhetnek az eredeti fájltól.
+
+Mentés előtt ellenőrizze a mérési értékeket, és ha kell, igazítsa ki őket.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="213"/>
         <source>Unresolved measurements: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem feloldott mérések: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="216"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="275"/>
         <source>Conversion complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvertálás kész</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="226"/>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>Olvasási hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="227"/>
         <source>Unable to open file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 fájl nem nyitható meg.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="235"/>
         <source>XML error</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="236"/>
         <source>Invalid .vit file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen .vit fájl: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="276"/>
@@ -9856,39 +9863,45 @@ Please verify the measurement values and adjust if needed before saving.</source
 Ostara calculates measurements differently from Tape, so the converted values may differ from the original file.
 
 Please verify the measurement values and adjust if needed before saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a régi .vit fájl .otu formátumra lett átalakítva.
+
+Az Ostara másként számolja a méréseket, mint a Tape, ezért az átalakított értékek eltérhetnek az eredeti fájltól.
+
+Mentés előtt ellenőrizze a mérési értékeket, és ha kell, igazítsa ki őket.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="283"/>
         <source>Unsupported format</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem támogatott formátum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="284"/>
         <source>File %1 is not a recognized format.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 fájl nem felismerhető formátumú.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="331"/>
         <source>Unsaved table</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem mentett táblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="332"/>
         <source>The measurement table was not saved.
 If you close without saving, data will be lost.</source>
-        <translation type="unfinished"></translation>
+        <translation>A méréstáblázat nem lett elmentve.
+Ha mentés nélkül zárja be, az adatok elvesznek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="358"/>
         <source>Unsaved changes</source>
-        <translation type="unfinished">Módosítások nem lettek elmentve</translation>
+        <translation>Módosítások nem lettek elmentve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="359"/>
         <source>The measurement table has been modified.
 Do you want to save changes before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>A méréstáblázat módosult.
+Szeretné elmenteni a módosításokat bezárás előtt?</translation>
     </message>
 </context>
 <context>
@@ -9896,72 +9909,75 @@ Do you want to save changes before closing?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="246"/>
         <source>New measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Új méréstáblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="145"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="146"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="155"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="391"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőlap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="181"/>
         <source>&lt; Back</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; Vissza</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="189"/>
         <source>Next &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tovább &gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="222"/>
         <source>Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="228"/>
         <source>Step %1: %2 Sizes  %3 Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. lépés: %2 méret  %3 mérés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="358"/>
         <source>table</source>
-        <translation type="unfinished"></translation>
+        <translation>táblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="396"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="426"/>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentési hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="427"/>
         <source>Unable to save file.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl mentése nem sikerült.
+
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="445"/>
         <source>File already exists</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl már létezik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="446"/>
         <source>A file named &quot;%1&quot; already exists at this location.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezen a helyen már létezik „%1” nevű fájl.
+Lecseréli?</translation>
     </message>
 </context>
 <context>
@@ -10017,142 +10033,142 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="62"/>
         <source>About Ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>Az Ostaráról</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="104"/>
         <source>Copy the technical details</source>
-        <translation type="unfinished"></translation>
+        <translation>Technikai adatok másolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="109"/>
         <source>Licence texts</source>
-        <translation type="unfinished"></translation>
+        <translation>Licencszövegek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="115"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="141"/>
         <source>Ostara %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="142"/>
         <source>Qt: built with %1, running %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt: %1 verzióval fordítva, %2 verzióval fut</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="149"/>
         <source>Version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 verzió</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="150"/>
         <source>A free program, published under the GNU General Public License, version 3 or later. It comes with no warranty of any kind.</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabad program, a GNU General Public License 3. vagy későbbi verziója alatt kiadva. Semmilyen garanciát nem nyújt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="157"/>
         <source>Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Eredet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="158"/>
         <source>Ostara is a fork of Valentina, © 2013-2026 the Valentina project — Roman Telezhynskyi and its contributors — published under the GNU General Public License, version 3. Ostara © 2026 Sophie Denys, under the same licence.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az Ostara a Valentina forkja, © 2013-2026 Valentina projekt — Roman Telezhynskyi és közreműködői —, a GNU General Public License 3. verziója alatt kiadva. Ostara © 2026 Sophie Denys, ugyanezen licenc alatt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="167"/>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Összetevők</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="168"/>
         <source>Interface icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>A felület ikonjai:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="168"/>
         <source>Phosphor Icons — Tobias Fried and Helena Zhang, MIT</source>
-        <translation type="unfinished"></translation>
+        <translation>Phosphor Icons — Tobias Fried és Helena Zhang, MIT</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="169"/>
         <source>Tool icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Az eszközök ikonjai:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="169"/>
         <source>Valentina project — Roman Telezhynskyi and contributors, HiDPI redraw by Benjamin Nauck, 2016</source>
-        <translation type="unfinished"></translation>
+        <translation>Valentina projekt — Roman Telezhynskyi és közreműködői, HiDPI újrarajzolás: Benjamin Nauck, 2016</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="171"/>
         <source>Typeface:</source>
-        <translation type="unfinished"></translation>
+        <translation>Betűtípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="171"/>
         <source>Inter — Rasmus Andersson (The Inter Project Authors), SIL Open Font License 1.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter — Rasmus Andersson (The Inter Project Authors), SIL Open Font License 1.1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="173"/>
         <source>Nesting:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elrendezés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="173"/>
         <source>Clipper2 — Angus Johnson, Boost Software License 1.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Clipper2 — Angus Johnson, Boost Software License 1.0</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
         <source>XML:</source>
-        <translation type="unfinished"></translation>
+        <translation>XML:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
         <source>Xerces-C++ — The Apache Software Foundation, Apache License 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Xerces-C++ — The Apache Software Foundation, Apache License 2.0</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
         <source>DXF:</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
         <source>libdxfrw — Rallaz and contributors, GNU GPL v2 or later</source>
-        <translation type="unfinished"></translation>
+        <translation>libdxfrw — Rallaz és közreműködői, GNU GPL v2 vagy újabb</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
         <source>Expression parser:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezéselemző:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
         <source>muParser — Ingo Berg, MIT</source>
-        <translation type="unfinished"></translation>
+        <translation>muParser — Ingo Berg, MIT</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="177"/>
         <source>Framework:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keretrendszer:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="178"/>
         <source>Qt %1 — The Qt Company, LGPLv3</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt %1 — The Qt Company, LGPLv3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="181"/>
         <source>Technical details</source>
-        <translation type="unfinished"></translation>
+        <translation>Technikai részletek</translation>
     </message>
 </context>
 <context>
@@ -10161,40 +10177,40 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="48"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="223"/>
         <source>Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="71"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="86"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="224"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="90"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="226"/>
         <source>Annotation text</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="91"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="225"/>
         <source>Content:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartalom:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="101"/>
         <source>Angle:</source>
-        <translation type="unfinished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="103"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Szög szerkesztése</translation>
+        <translation>Szög szerkesztése</translation>
     </message>
 </context>
 <context>
@@ -10202,7 +10218,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationpreview.cpp" line="74"/>
         <source>No annotation selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kijelölt megjegyzés</translation>
     </message>
 </context>
 <context>
@@ -10211,157 +10227,157 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="87"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="658"/>
         <source>Add annotation style</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzésstílus hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="90"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="558"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="659"/>
         <source>Remove style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stílus törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Font</source>
-        <translation type="unfinished">Betűtípus</translation>
+        <translation>Betűtípus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastagság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Size</source>
-        <translation type="unfinished">Méret</translation>
+        <translation>Méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Háttér</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="108"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="661"/>
         <source>Annotation style</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzésstílus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="118"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="662"/>
         <source>Style name</source>
-        <translation type="unfinished"></translation>
+        <translation>Stílus neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="121"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="126"/>
         <source>Font:</source>
-        <translation type="unfinished">Betűtípus:</translation>
+        <translation>Betűtípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="139"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastagság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="265"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="266"/>
         <source>Default</source>
-        <translation type="unfinished">Alapértelmezett</translation>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="150"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="159"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="663"/>
         <source>#RRGGBB, empty = transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>#RRGGBB, üres = átlátszó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="168"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Háttér:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="175"/>
         <source>Presets:</source>
-        <translation type="unfinished"></translation>
+        <translation>Előbeállítások:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="178"/>
         <source>White</source>
-        <translation type="unfinished">Fehér</translation>
+        <translation>Fehér</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="184"/>
         <source>Black</source>
-        <translation type="unfinished">Fekete</translation>
+        <translation>Fekete</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="192"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="664"/>
         <source>White text for dark backgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehér szöveg sötét háttérhez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="204"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="665"/>
         <source>Annotation text</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="206"/>
         <source>This is an annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez egy megjegyzés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="245"/>
         <source>No styles yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs stílus. Adjon hozzá egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="269"/>
         <source>Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Átlátszó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="534"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="566"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="579"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="541"/>
         <source>Annotation style added</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzésstílus hozzáadva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="558"/>
         <source>Remove the style &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a „%1” stílust a könyvtárból?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="570"/>
         <source>Annotation style removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzésstílus törölve</translation>
     </message>
 </context>
 <context>
@@ -10370,35 +10386,35 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="54"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="372"/>
         <source>Add annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="62"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="373"/>
         <source>Active annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktív megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="73"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="374"/>
         <source>No annotations yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs megjegyzés. Adjon hozzá egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="206"/>
         <source>Edit annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="210"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="351"/>
         <source>Delete annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzés törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="352"/>
         <source>Delete the annotation &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a „%1” megjegyzést?</translation>
     </message>
 </context>
 <context>
@@ -10406,12 +10422,12 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oaxisrenameeditor.cpp" line="61"/>
         <source>Write each language on its own line</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden nyelvet külön sorba írjon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oaxisrenameeditor.cpp" line="191"/>
         <source>This axis is the one the size range grades along.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az a tengely, amely mentén a mérettartomány fokozása történik.</translation>
     </message>
 </context>
 <context>
@@ -10419,37 +10435,37 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="73"/>
         <source>Click the first point of the axis (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a tengely első pontjára (Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="92"/>
         <source>Click a point of the pattern (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a szabásminta egy pontjára (Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="99"/>
         <source>Click another point than the first one (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson az elsőtől eltérő pontra (Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="108"/>
         <source>Click the second point of the axis (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a tengely második pontjára (Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="158"/>
         <source>Apply</source>
-        <translation type="unfinished">Alkalmaz</translation>
+        <translation>Alkalmaz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="212"/>
         <source>The angle follows the axis.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szög követi a tengelyt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="215"/>
         <source>%1 — the angle follows the axis.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — a szög követi a tengelyt.</translation>
     </message>
 </context>
 <context>
@@ -10458,29 +10474,29 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="75"/>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="202"/>
         <source>Activate information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információs blokk aktiválása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="82"/>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="203"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="96"/>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="204"/>
         <source>Split into multiple blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Felosztás több blokkra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="259"/>
         <source>Don&apos;t show</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne jelenjen meg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="262"/>
         <source>Block %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. blokk</translation>
     </message>
 </context>
 <context>
@@ -10489,17 +10505,18 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/dialogs/ocheckablerowlistwidget.cpp" line="192"/>
         <source>No favorite yet.
 Star a size range in the Size Ranges dock to keep its definition here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs kedvenc.
+Jelöljön meg csillaggal egy mérettartományt a Mérettartományok panelen, hogy a meghatározása itt maradjon.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocheckablerowlistwidget.cpp" line="193"/>
         <source>Select all</source>
-        <translation type="unfinished">Összes kijelölése</translation>
+        <translation>Összes kijelölése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocheckablerowlistwidget.cpp" line="194"/>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Összes kijelölés törlése</translation>
     </message>
 </context>
 <context>
@@ -10507,12 +10524,12 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="59"/>
         <source>Direction of the axis</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely iránya</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="101"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -10520,12 +10537,12 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooselayerdialog.cpp" line="49"/>
         <source>Choose a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Válasszon réteget</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooselayerdialog.cpp" line="86"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -10533,17 +10550,17 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/ocovergradedaxiseditor.cpp" line="75"/>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation> cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocovergradedaxiseditor.cpp" line="79"/>
         <source>Trace length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal hossza:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocovergradedaxiseditor.cpp" line="133"/>
         <source>Size names:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretnevek:</translation>
     </message>
 </context>
 <context>
@@ -10551,42 +10568,42 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="137"/>
         <source>+ Add information</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Információ hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="138"/>
         <source>Move up</source>
-        <translation type="unfinished">Mozgatás fel</translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="139"/>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás le</translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="140"/>
         <source>Remove information</source>
-        <translation type="unfinished"></translation>
+        <translation>Információ eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="168"/>
         <source>Top</source>
-        <translation type="unfinished">Felül</translation>
+        <translation>Felül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="170"/>
         <source>Middle left</source>
-        <translation type="unfinished"></translation>
+        <translation>Középen balra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="172"/>
         <source>Middle right</source>
-        <translation type="unfinished"></translation>
+        <translation>Középen jobbra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="174"/>
         <source>Bottom</source>
-        <translation type="unfinished">Alul</translation>
+        <translation>Alul</translation>
     </message>
 </context>
 <context>
@@ -10594,95 +10611,101 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="209"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="210"/>
         <source>Template name</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="214"/>
         <source>Create a template</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
         <source>Seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="221"/>
         <source>Cover page language</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítóoldal nyelve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="222"/>
         <source>You can choose several for a multilingual page</source>
-        <translation type="unfinished"></translation>
+        <translation>Többet is választhat egy többnyelvű oldalhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="531"/>
         <source>Unsaved template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem mentett sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="610"/>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="627"/>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="634"/>
         <source>Save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="611"/>
         <source>Give the template a name before saving it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon nevet a sablonnak mentés előtt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="628"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik „%1” nevű sablon.
+
+Válasszon másik nevet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="635"/>
         <source>Could not save the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A sablont nem sikerült menteni.
+
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="674"/>
         <source>Open template</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="675"/>
         <source>Could not open the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A sablont nem sikerült megnyitni.
+
+%1</translation>
     </message>
 </context>
 <context>
@@ -10691,69 +10714,71 @@ Choose another name.</source>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="155"/>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="157"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="200"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="201"/>
         <source>Search templates…</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablonok keresése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="202"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="244"/>
         <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs sablon. Hozzon létre egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="271"/>
         <source>This is the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az alapértelmezett sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="272"/>
         <source>Make this the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Beállítás alapértelmezett sablonként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="280"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="284"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="340"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="341"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törli a „%1” sablont?
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="360"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="360"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült törölni.</translation>
     </message>
 </context>
 <context>
@@ -10761,27 +10786,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="47"/>
         <source>No size range chosen</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kiválasztott mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="49"/>
         <source>%1 - from %2 to %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - %2-tól %3-ig</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="74"/>
         <source>Choose a size range…</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány választása…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="84"/>
         <source>For the preview only. When printing, the page takes the size range the export is run with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Csak az előnézethez. Nyomtatáskor az oldal azt a mérettartományt veszi fel, amellyel az export elindul.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="90"/>
         <source>Load a multi-size measurements table (.omt) to list sizes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Töltsön be egy többméretes méréstáblázatot (.omt) a méretek listázásához.</translation>
     </message>
 </context>
 <context>
@@ -10789,27 +10814,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="42"/>
         <source>Cover page - size range for the preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítóoldal - mérettartomány az előnézethez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="50"/>
         <source>The page will list these sizes while you design it. Which sizes the printed page holds is decided when the export is run.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az oldal ezeket a méreteket listázza, miközben Ön szerkeszti. Hogy a nyomtatott oldal mely méreteket tartalmazza, az export indításakor dől el.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="61"/>
         <source>Graded axis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokozási tengely:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="66"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="68"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum:</translation>
     </message>
 </context>
 <context>
@@ -10818,27 +10843,27 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="105"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="163"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="152"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="153"/>
         <source>Height</source>
-        <translation type="unfinished">Magasság</translation>
+        <translation>Magasság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="154"/>
         <source>Center</source>
-        <translation type="unfinished">Közép</translation>
+        <translation>Közép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="155"/>
         <source>0 = automatic value, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>0 = automatikus érték, képletek engedélyezettek</translation>
     </message>
 </context>
 <context>
@@ -10846,23 +10871,23 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinetypes.cpp" line="35"/>
         <source>No text</source>
-        <translation type="unfinished"></translation>
+        <translation>Szöveg nélkül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinetypes.cpp" line="36"/>
         <source>With text</source>
-        <translation type="unfinished"></translation>
+        <translation>Szöveggel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinetypes.cpp" line="37"/>
         <source>Invisible fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Láthatatlan hajtásvonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="52"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="102"/>
         <source>Foldline</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="55"/>
@@ -10874,68 +10899,68 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="386"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="418"/>
         <source>Define foldline</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal meghatározása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="58"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="104"/>
         <source>Deactivate foldline</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal kikapcsolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="65"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="105"/>
         <source>Show unfolded piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Kihajtott darab megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="68"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="106"/>
         <source>Show symmetry line</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimmetriavonal megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="91"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="107"/>
         <source>Cut on fold</source>
-        <translation type="unfinished">Szabás hajtásra</translation>
+        <translation>Szabás hajtásra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="103"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="134"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="135"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="148"/>
         <source>Select the first point of the foldline - respect clockwise direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelölje ki a hajtásvonal első pontját - tartsa az óramutató járásával megegyező irányt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="352"/>
         <source>Error - wrong piece. Start over.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba - rossz darab. Kezdje újra.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="362"/>
         <source>Select the second point of the foldline - respect clockwise direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelölje ki a hajtásvonal második pontját - tartsa az óramutató járásával megegyező irányt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="377"/>
         <source>Error - invalid points. Start over.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba - érvénytelen pontok. Kezdje újra.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="427"/>
         <source>Foldline defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal meghatározva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="431"/>
         <source>Foldline not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal nincs meghatározva</translation>
     </message>
 </context>
 <context>
@@ -10943,64 +10968,64 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="54"/>
         <source>5 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>5 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="55"/>
         <source>10 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>10 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="56"/>
         <source>20 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>20 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="57"/>
         <source>40 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>40 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="58"/>
         <source>80 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>80 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="76"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="147"/>
         <source>Grainline</source>
-        <translation type="unfinished">Szálirány</translation>
+        <translation>Szálirány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="80"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="148"/>
         <source>Activate grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>Szálirány aktiválása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="85"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="149"/>
         <source>Length</source>
-        <translation type="unfinished">Hossz</translation>
+        <translation>Hossz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="108"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="114"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="152"/>
         <source>Rotation</source>
-        <translation type="unfinished">Forgatás</translation>
+        <translation>Forgatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="124"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="154"/>
         <source>Simple</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszerű</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="131"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="155"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupla</translation>
     </message>
 </context>
 <context>
@@ -11010,109 +11035,109 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="491"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="516"/>
         <source>Align on the common point</source>
-        <translation type="unfinished"></translation>
+        <translation>Igazítás a közös pontra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="161"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="492"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="517"/>
         <source>Show alignment point</source>
-        <translation type="unfinished"></translation>
+        <translation>Igazítási pont megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="175"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="494"/>
         <source>Force flipping</source>
-        <translation type="unfinished">Tükrözés kényszerítése</translation>
+        <translation>Tükrözés kényszerítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="176"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="495"/>
         <source>Force piece to be always flipped in a layout.</source>
-        <translation type="unfinished">A darab mindig tükrözve legyen az elrendezésben.</translation>
+        <translation>A darab mindig tükrözve legyen az elrendezésben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="179"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="496"/>
         <source>Symmetrical copy</source>
-        <translation type="unfinished">Szimmetrikus másolat</translation>
+        <translation>Szimmetrikus másolat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="180"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="498"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha a másolatok száma 1-nél nagyobb, és a „Tükrözés kényszerítése” be van jelölve, a darab minden páros sorszámú másolata függőlegesen tükröződik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="225"/>
         <source>General</source>
-        <translation type="unfinished">Általános</translation>
+        <translation>Általános</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="244"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="501"/>
         <source>Fold line</source>
-        <translation type="unfinished">Hajtásvonal</translation>
+        <translation>Hajtásvonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="247"/>
         <source>Use the fold line of</source>
-        <translation type="unfinished"></translation>
+        <translation>A tag hajtásvonalának használata</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="260"/>
         <source>Grainline</source>
-        <translation type="unfinished">Szálirány</translation>
+        <translation>Szálirány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="287"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="299"/>
         <source>Group</source>
-        <translation type="unfinished">Csoport</translation>
+        <translation>Csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="301"/>
         <source>Blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Blokkok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="303"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="305"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélyegkép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="308"/>
         <source>Information</source>
-        <translation type="unfinished">Információ</translation>
+        <translation>Információ</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="654"/>
         <source>None</source>
-        <translation type="unfinished">Nincs</translation>
+        <translation>Nincs</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="676"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Névtelen</translation>
+        <translation>Névtelen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="689"/>
         <source>The group uses that member&apos;s fold line. It is edited on the piece, in its Grainline tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport e tag hajtásvonalát használja. A darabon, a Szálirány lapján szerkeszthető.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyik tagnak sincs még hajtásvonala. Állítson be egyet egy darabon, a Szálirány lapján.</translation>
     </message>
 </context>
 <context>
@@ -11120,12 +11145,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailsinternalpathwidget.cpp" line="288"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsinternalpathwidget.cpp" line="293"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
 </context>
 <context>
@@ -11133,134 +11158,134 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="55"/>
         <source>One line</source>
-        <translation type="unfinished">Egy vonal</translation>
+        <translation>Egy vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="56"/>
         <source>Two lines</source>
-        <translation type="unfinished">Két vonal</translation>
+        <translation>Két vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="57"/>
         <source>Three lines</source>
-        <translation type="unfinished">Három vonal</translation>
+        <translation>Három vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="58"/>
         <source>T mark</source>
-        <translation type="unfinished">T jel</translation>
+        <translation>T jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="59"/>
         <source>External V mark</source>
-        <translation type="unfinished">Külső V jel</translation>
+        <translation>Külső V jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="60"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Belső V jel</translation>
+        <translation>Belső V jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="61"/>
         <source>U mark</source>
-        <translation type="unfinished">U jel</translation>
+        <translation>U jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="62"/>
         <source>Box mark</source>
-        <translation type="unfinished">Doboz jel</translation>
+        <translation>Doboz jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="63"/>
         <source>Check mark</source>
-        <translation type="unfinished">Pipa jel</translation>
+        <translation>Pipa jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="64"/>
         <source>Check mark clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Pipa jel, az óramutató járásával megegyező irányban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="78"/>
         <source>Straightforward</source>
-        <translation type="unfinished">Egyenes</translation>
+        <translation>Egyenes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="79"/>
         <source>Bisector</source>
-        <translation type="unfinished">Szögfelező</translation>
+        <translation>Szögfelező</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="80"/>
         <source>Intersection</source>
-        <translation type="unfinished">Metszéspont</translation>
+        <translation>Metszéspont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="82"/>
         <source>Intersection (only left)</source>
-        <translation type="unfinished">Metszéspont (csak bal)</translation>
+        <translation>Metszéspont (csak bal)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="84"/>
         <source>Intersection (only right)</source>
-        <translation type="unfinished">Metszéspont (csak jobb)</translation>
+        <translation>Metszéspont (csak jobb)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="85"/>
         <source>Intersection 2</source>
-        <translation type="unfinished">Metszéspont 2</translation>
+        <translation>Metszéspont 2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="87"/>
         <source>Intersection 2 (only left)</source>
-        <translation type="unfinished">Metszéspont 2 (csak bal)</translation>
+        <translation>Metszéspont 2 (csak bal)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="89"/>
         <source>Intersection 2 (only right)</source>
-        <translation type="unfinished">Metszéspont 2 (csak jobb)</translation>
+        <translation>Metszéspont 2 (csak jobb)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="99"/>
         <source>By length</source>
-        <translation type="unfinished"></translation>
+        <translation>Hossz szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="100"/>
         <source>By points intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontok metszéspontja szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="101"/>
         <source>By first edge symmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Első oldal szimmetriája szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="102"/>
         <source>By second edge symmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Második oldal szimmetriája szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="103"/>
         <source>By first edge right angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Első oldal derékszöge szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="104"/>
         <source>By second edge right angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Második oldal derékszöge szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="119"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="576"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="125"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="558"/>
         <source>Passmark</source>
-        <translation type="unfinished">Bevágásjel</translation>
+        <translation>Bevágásjel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="133"/>
@@ -11268,7 +11293,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="560"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="570"/>
         <source>Type</source>
-        <translation type="unfinished">Típus</translation>
+        <translation>Típus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="142"/>
@@ -11276,60 +11301,60 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="561"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="566"/>
         <source>Angle</source>
-        <translation type="unfinished">Szög</translation>
+        <translation>Szög</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="151"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="562"/>
         <source>Show the second passmark on seam line</source>
-        <translation type="unfinished">A második bevágásjel megjelenítése a varrásvonalon</translation>
+        <translation>A második bevágásjel megjelenítése a varrásvonalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="157"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="563"/>
         <source>Not Mirrored</source>
-        <translation type="unfinished">Nem tükrözött</translation>
+        <translation>Nem tükrözött</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="177"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="564"/>
         <source>Length</source>
-        <translation type="unfinished">Hossz</translation>
+        <translation>Hossz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="178"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="565"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="181"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="567"/>
         <source>Leave a field empty for the automatic value, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>Hagyja üresen a mezőt az automatikus értékhez, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="188"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="568"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Láthatóság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="200"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="569"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="206"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="559"/>
         <source>Seam allowance angle</source>
-        <translation type="unfinished">Varrásráhagyás szöge</translation>
+        <translation>Varrásráhagyás szöge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="240"/>
         <source>None</source>
-        <translation type="unfinished">Nincs</translation>
+        <translation>Nincs</translation>
     </message>
 </context>
 <context>
@@ -11338,77 +11363,77 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="438"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="473"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="230"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="478"/>
         <source>Graded alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretek igazítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="234"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="482"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vízszintes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="138"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Balra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="139"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="145"/>
         <source>Center</source>
-        <translation type="unfinished">Közép</translation>
+        <translation>Közép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="140"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Jobbra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="265"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="486"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Függőleges</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="144"/>
         <source>Top</source>
-        <translation type="unfinished">Felül</translation>
+        <translation>Felül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="146"/>
         <source>Bottom</source>
-        <translation type="unfinished">Alul</translation>
+        <translation>Alul</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="326"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="519"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha a másolatok száma 1-nél nagyobb, és a „Tükrözés kényszerítése” be van jelölve, a darab minden páros sorszámú másolata függőlegesen tükröződik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="340"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="506"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1207"/>
         <source>- Remove marks</source>
-        <translation type="unfinished"></translation>
+        <translation>- Jelek eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="446"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="526"/>
         <source>Piece</source>
-        <translation type="unfinished">Darab</translation>
+        <translation>Darab</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="336"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="503"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1206"/>
         <source>+ Add passmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Bevágásjelek hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="302"/>
@@ -11416,90 +11441,90 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1298"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1483"/>
         <source>Align on a point</source>
-        <translation type="unfinished"></translation>
+        <translation>Igazítás egy pontra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="305"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
         <source>Remove point</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="309"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="499"/>
         <source>Show alignment point</source>
-        <translation type="unfinished"></translation>
+        <translation>Igazítási pont megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="321"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="509"/>
         <source>Force flipping</source>
-        <translation type="unfinished">Tükrözés kényszerítése</translation>
+        <translation>Tükrözés kényszerítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="513"/>
         <source>Force piece to be always flipped in a layout.</source>
-        <translation type="unfinished">A darab mindig tükrözve legyen az elrendezésben.</translation>
+        <translation>A darab mindig tükrözve legyen az elrendezésben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="325"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="517"/>
         <source>Symmetrical copy</source>
-        <translation type="unfinished">Szimmetrikus másolat</translation>
+        <translation>Szimmetrikus másolat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="345"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="501"/>
         <source>Manage main path</source>
-        <translation type="unfinished"></translation>
+        <translation>Fő kontúr kezelése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="350"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="522"/>
         <source>General</source>
-        <translation type="unfinished">Általános</translation>
+        <translation>Általános</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="374"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="523"/>
         <source>Grainline</source>
-        <translation type="unfinished">Szálirány</translation>
+        <translation>Szálirány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="399"/>
         <source>Internal outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső körvonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="408"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="524"/>
         <source>Seam Allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="449"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="527"/>
         <source>Blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Blokkok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="452"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="528"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="455"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="529"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélyegkép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="457"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="525"/>
         <source>Information</source>
-        <translation type="unfinished">Információ</translation>
+        <translation>Információ</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="496"/>
@@ -11510,54 +11535,54 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1334"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1482"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1006"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1022"/>
         <source>Delete internal path</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső útvonal törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1007"/>
         <source>Delete internal path &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a(z) „%1” belső útvonalat?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1098"/>
         <source>Set the fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal meghatározása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1157"/>
         <source>Click points to add passmarks - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a pontokra bevágásjelek hozzáadásához - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1197"/>
         <source>Click passmark points and internal marks to remove - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson az eltávolítandó bevágásjel-pontokra és belső jelekre - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1239"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1559"/>
         <source>%1 mark(s) selected - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kijelölt jel - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1335"/>
         <source>Click the point to align on, on the piece outline (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson az igazítási pontra a darab körvonalán (Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1350"/>
         <source>This point is not on the piece outline - click a point of the piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a pont nincs a darab körvonalán - kattintson a darab egy pontjára</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1580"/>
         <source>Choose Passmark Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Bevágásjel típusának kiválasztása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1593"/>
@@ -11610,111 +11635,111 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="73"/>
         <source>Cross</source>
-        <translation type="unfinished">Kereszt</translation>
+        <translation>Kereszt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="74"/>
         <source>Segment</source>
-        <translation type="unfinished">Szakasz</translation>
+        <translation>Szakasz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="75"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Téglalap</translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="76"/>
         <source>T-shaped</source>
-        <translation type="unfinished">T alakú</translation>
+        <translation>T alakú</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="77"/>
         <source>Doubletree</source>
-        <translation type="unfinished">Kettős fa</translation>
+        <translation>Kettős fa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="78"/>
         <source>Corner</source>
-        <translation type="unfinished">Sarok</translation>
+        <translation>Sarok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="79"/>
         <source>Triangle</source>
-        <translation type="unfinished">Háromszög</translation>
+        <translation>Háromszög</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="80"/>
         <source>H-shaped</source>
-        <translation type="unfinished">H alakú</translation>
+        <translation>H alakú</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="81"/>
         <source>Button</source>
-        <translation type="unfinished">Gomb</translation>
+        <translation>Gomb</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="82"/>
         <source>Circle</source>
-        <translation type="unfinished">Kör</translation>
+        <translation>Kör</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="66"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="394"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső jel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="78"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="407"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="86"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="395"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="97"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="396"/>
         <source>Height</source>
-        <translation type="unfinished">Magasság</translation>
+        <translation>Magasság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="108"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="397"/>
         <source>Angle</source>
-        <translation type="unfinished">Szög</translation>
+        <translation>Szög</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="119"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="398"/>
         <source>Type</source>
-        <translation type="unfinished">Típus</translation>
+        <translation>Típus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="143"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="399"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Láthatóság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="153"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="400"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="160"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="401"/>
         <source>Not mirrored</source>
-        <translation type="unfinished">Nem tükrözött</translation>
+        <translation>Nem tükrözött</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/onodeplacelabel.cpp" line="159"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
 </context>
 <context>
@@ -11722,12 +11747,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailssavedmarginsdialog.cpp" line="64"/>
         <source>Saved custom seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentett egyéni varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailssavedmarginsdialog.cpp" line="98"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
 </context>
 <context>
@@ -11736,20 +11761,20 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="216"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="259"/>
         <source>Activate seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás aktiválása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="219"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="260"/>
         <source>Hide main path</source>
-        <translation type="unfinished">Fő útvonal elrejtése</translation>
+        <translation>Fő útvonal elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="237"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="267"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="960"/>
         <source>Apply</source>
-        <translation type="unfinished">Alkalmaz</translation>
+        <translation>Alkalmaz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="241"/>
@@ -11758,89 +11783,89 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="870"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="997"/>
         <source>+ Add custom seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Egyéni varrásráhagyás hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="250"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="269"/>
         <source>Manage saved custom seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentett egyéni varrásráhagyások kezelése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="268"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="384"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="385"/>
         <source>Select the first and last point of the seam allowance segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a varrásráhagyás-szakasz első és utolsó pontját</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="276"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="516"/>
         <source>Custom seam allowance %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéni varrásráhagyás %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="222"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="261"/>
         <source>Show the second passmark on seam line</source>
-        <translation type="unfinished">A második bevágásjel megjelenítése a varrásvonalon</translation>
+        <translation>A második bevágásjel megjelenítése a varrásvonalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="223"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="262"/>
         <source>Draws a second notch on the seam line, in addition to the one on the cutting line. Seeded from the pattern when the piece is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy második bevágást rajzol a varrásvonalra, a vágásvonalon lévőn felül. A darab létrehozásakor a mintából öröklődik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="227"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="264"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásvonal exportálása a rajzokkal együtt (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="228"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="265"/>
         <source>Places the sew line on the Draw line (8) instead of the dedicated sew-line layer (14). DXF-AAMA export only.</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásvonalat a vonalak rétegére (8) teszi a varrásvonal saját rétege (14) helyett. Csak DXF-AAMA export esetén.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="918"/>
         <source>Apply custom seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéni varrásráhagyás alkalmazása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="921"/>
         <source>Select a saved custom seam allowance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentett egyéni varrásráhagyás kiválasztása:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="944"/>
         <source>Create a new custom seam allowance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Új egyéni varrásráhagyás létrehozása:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="949"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="952"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="954"/>
         <source>Color</source>
-        <translation type="unfinished">Sziín</translation>
+        <translation>Sziín</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="957"/>
         <source>Save to saved custom seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés a mentett egyéni varrásráhagyások közé</translation>
     </message>
 </context>
 <context>
@@ -11849,72 +11874,72 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="81"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="488"/>
         <source>Closing divisor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zárási osztó:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="82"/>
         <source>Edit the closing divisor</source>
-        <translation type="unfinished"></translation>
+        <translation>A zárási osztó szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="241"/>
         <source>Select the pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a forgáspontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="344"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a pont nem lehet a forgáspont. Válasszon egy másik pontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="367"/>
         <source>Select the Moving point: the one that will close onto the other one</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a mozgatandó pontot: azt, amelyik a másikra záródik</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="375"/>
         <source>The Moving point must be another point than the pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>A mozgatandó pontnak másnak kell lennie, mint a forgáspont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="388"/>
         <source>Select the Target point: the one the Moving point lands on</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a célpontot: azt, amelyre a mozgatandó pont rákerül</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="396"/>
         <source>The Target point must be a third point, different from the pivot and the Moving point</source>
-        <translation type="unfinished"></translation>
+        <translation>A célpontnak harmadik pontnak kell lennie, különböznie kell a forgásponttól és a mozgatandó ponttól</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="404"/>
         <source>The Target point does not move, so it cannot be one of the objects to rotate either. Remove it from the selection, or choose another point</source>
-        <translation type="unfinished"></translation>
+        <translation>A célpont nem mozdul, ezért nem lehet a forgatandó objektumok egyike sem. Távolítsa el a kijelölésből, vagy válasszon másik pontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="428"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítő forgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="526"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="536"/>
         <source>The pivot, the Moving point and the Target point must be three different points</source>
-        <translation type="unfinished"></translation>
+        <translation>A forgáspontnak, a mozgatandó pontnak és a célpontnak három különböző pontnak kell lennie</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="540"/>
         <source>The closing divisor cannot be zero</source>
-        <translation type="unfinished"></translation>
+        <translation>A zárási osztó nem lehet nulla</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="544"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen rétegnév</translation>
     </message>
 </context>
 <context>
@@ -11923,93 +11948,93 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="469"/>
         <source>Dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítősapka</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="24"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="30"/>
         <source>Draw the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>A sapka megrajzolása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="62"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Vonaltípus:</translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="79"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="118"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="40"/>
         <source>Cut the piece&apos;s edge at the cap point, so that the crank is a point of it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágja el a darab szélét a sapka pontjánál, hogy a bevágásjel ennek a szélnek a pontja legyen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="43"/>
         <source>Notch</source>
-        <translation type="unfinished">Bevágás</translation>
+        <translation>Bevágás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="50"/>
         <source>Build the cap on the edge the piece carries at the other point of the opening.</source>
-        <translation type="unfinished"></translation>
+        <translation>A sapkát arra a szélre építse, amely a darabon a nyílás másik pontjánál van.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="53"/>
         <source>Reverse the sense</source>
-        <translation type="unfinished"></translation>
+        <translation>Irány megfordítása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="126"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="132"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="377"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="398"/>
         <source>The two points of the opening are two different points, and neither of them is the point of the dart.</source>
-        <translation type="unfinished"></translation>
+        <translation>A nyílás két pontja két különböző pont, és egyik sem a szűkítő pontja.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="355"/>
         <source>Select the tip of the dart (the point inside the piece)</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a szűkítő csúcsát (a darab belsejében lévő pontot)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="382"/>
         <source>Select the first point of the opening (a point of the piece&apos;s edge)</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a nyílás első pontját (a darab szélének egy pontját)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="403"/>
         <source>Select the second point of the opening (the other end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a nyílás második pontját (a másik végét)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="423"/>
         <source>Select a point of the line to extend</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a meghosszabbítandó vonal egy pontját</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="448"/>
         <source>The cap of this dart cannot be built from this point: the line it carries does not meet the axis of the dart. Choose another point of the line to extend.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebből a pontból nem építhető fel a szűkítő sapkája: az általa hordozott vonal nem találkozik a szűkítő tengelyével. Válasszon egy másik pontot a meghosszabbítandó vonalon.</translation>
     </message>
 </context>
 <context>
@@ -12017,97 +12042,97 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="14"/>
         <source>Flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Fodorspirál</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="31"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="95"/>
         <source>Width = height of the flounce, seam and hem allowances included. Length = the length of the inner edge, the one that is sewn on, allowances included.</source>
-        <translation type="unfinished"></translation>
+        <translation>Szélesség = a fodor magassága, a varrás- és a szegésráhagyással együtt. Hossz = a belső él hossza, azé, amelyet felvarrnak, a ráhagyásokkal együtt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="148"/>
         <source>Start point:</source>
-        <translation type="unfinished">Kezdőpont:</translation>
+        <translation>Kezdőpont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="158"/>
         <source>Select the point the inner spiral starts at</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a belső spirál kezdőpontját</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="165"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Vonaltípus:</translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="194"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="57"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="236"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="250"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontok</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="261"/>
         <source>Outer edge start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Külső él kezdete:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="279"/>
         <source>Inner edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső él vége:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="297"/>
         <source>Outer edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Külső él vége:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="67"/>
         <source>Width:</source>
-        <translation type="unfinished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="69"/>
         <source>Edit width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szélesség szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="76"/>
         <source>Length:</source>
-        <translation type="unfinished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="78"/>
         <source>Edit length</source>
-        <translation type="unfinished">Hossz szerkesztése</translation>
+        <translation>Hossz szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="85"/>
         <source>Angle:</source>
-        <translation type="unfinished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="87"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Szög szerkesztése</translation>
+        <translation>Szög szerkesztése</translation>
     </message>
 </context>
 <context>
@@ -12116,81 +12141,81 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="90"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="373"/>
         <source>Length:</source>
-        <translation type="unfinished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="92"/>
         <source>Edit length</source>
-        <translation type="unfinished">Hossz szerkesztése</translation>
+        <translation>Hossz szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="98"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="374"/>
         <source>Angle:</source>
-        <translation type="unfinished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="100"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Szög szerkesztése</translation>
+        <translation>Szög szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="106"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="375"/>
         <source>Rotation angle:</source>
-        <translation type="unfinished">Forgatási szög:</translation>
+        <translation>Forgatási szög:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="108"/>
         <source>Edit rotation angle</source>
-        <translation type="unfinished">Forgatási szög szerkesztése</translation>
+        <translation>Forgatási szög szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="205"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="319"/>
         <source>Move %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. mozgatás: kattintson a vágás &lt;b&gt;kezdőpontjára&lt;/b&gt; (az aljára), vagy &lt;b&gt;%2&lt;/b&gt; a befejezéshez</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="217"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="235"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Először válasszon ki legalább egy vágást: egy kezdőpontot, majd egy forgáspontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="288"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a pont nem része a kijelölt objektumoknak, válasszon egy pontot a kontúrból</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="301"/>
         <source>Move %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the point the part turns around)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. mozgatás: kattintson a &lt;b&gt;forgáspontjára&lt;/b&gt; (arra a pontra, amely körül a rész elfordul)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="392"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="397"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="463"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">Érvénytelen hosszképlet</translation>
+        <translation>Érvénytelen hosszképlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="477"/>
         <source>Invalid angle formula</source>
-        <translation type="unfinished">Érvénytelen szögképlet</translation>
+        <translation>Érvénytelen szögképlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="491"/>
         <source>Invalid rotation angle formula</source>
-        <translation type="unfinished">Érvénytelen forgatásiszög-képlet</translation>
+        <translation>Érvénytelen forgatásiszög-képlet</translation>
     </message>
 </context>
 <context>
@@ -12199,173 +12224,173 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Kind</source>
-        <translation type="unfinished"></translation>
+        <translation>Típus</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="108"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1271"/>
         <source>Add a pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="109"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1272"/>
         <source>Remove the pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>A pliszé eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="126"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1265"/>
         <source>Value of the finished pleat:</source>
-        <translation type="unfinished"></translation>
+        <translation>A kész pliszé értéke:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="128"/>
         <source>Value of the finished pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>A kész pliszé értéke</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="139"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="881"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1273"/>
         <source>Simple</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyszerű</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="140"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="881"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1274"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Dupla</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="141"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1287"/>
         <source>Pleat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="174"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1288"/>
         <source>Line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="175"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1289"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="176"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1290"/>
         <source>Fold line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal típusa:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="177"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1291"/>
         <source>Fold line color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="378"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1269"/>
         <source>Middle pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Középső pliszé</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="654"/>
         <source>Click the two points of the first departure line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson az első indulóvonal két pontjára.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="663"/>
         <source>Put a pleat value greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon meg nullánál nagyobb pliszéértéket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="677"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="681"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="696"/>
         <source>The edge is not recognized at the cap of point 1 (green): click a point of the piece&apos;s outline, right next to it</source>
-        <translation type="unfinished"></translation>
+        <translation>A szél nem ismerhető fel az 1. pont végénél (a zöldnél): kattintson a darab körvonalának egy pontjára, közvetlenül mellette.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="698"/>
         <source>The edge is not recognized at the cap of point 2 (red): click a point of the piece&apos;s outline, right next to it</source>
-        <translation type="unfinished"></translation>
+        <translation>A szél nem ismerhető fel a 2. pont végénél (a pirosnál): kattintson a darab körvonalának egy pontjára, közvetlenül mellette.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="793"/>
         <source>Cap 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vég 1:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="794"/>
         <source>Cap 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vég 2:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="808"/>
         <source>Click point 1 of the departure line of pleat 1 (it turns green)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson az 1. pliszé indulóvonalának 1. pontjára (zöldre vált)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="809"/>
         <source>Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a(z) %1 ránc kiindulási vonalának 1. pontjára (zöldre vált), vagy %2 a befejezéshez</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="814"/>
         <source>Click point 2 of the departure line of pleat %1 (it turns red)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a(z) %1 ránc kiindulási vonalának 2. pontjára (pirosra vált)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="879"/>
         <source>Pleat %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ránc</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1034"/>
         <source>Select the objects of the contour, then %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a kontúr objektumait, majd %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1098"/>
         <source>A departure line is made of two points</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy kiindulási vonal két pontból áll.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1109"/>
         <source>This point is not one of the objects you selected: click a point of the contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a pont nem tartozik a kijelölt objektumokhoz: kattintson a kontúr egy pontjára</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1171"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1203"/>
         <source>Click a point of the outline, right next to it</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a darab kontúrjának egy pontjára, közvetlenül mellette</translation>
     </message>
 </context>
 <context>
@@ -12373,85 +12398,85 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="20"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Téglalap</translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="37"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="111"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="149"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="162"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Vonaltípus:</translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="191"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="239"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="266"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontok</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="277"/>
         <source>Point B:</source>
-        <translation type="unfinished"></translation>
+        <translation>B pont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="287"/>
         <source>Point C:</source>
-        <translation type="unfinished"></translation>
+        <translation>C pont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="297"/>
         <source>Point D:</source>
-        <translation type="unfinished"></translation>
+        <translation>D pont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="309"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="316"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="323"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont nevének megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="72"/>
         <source>Width:</source>
-        <translation type="unfinished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="74"/>
         <source>Edit width</source>
-        <translation type="unfinished"></translation>
+        <translation>Szélesség szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="84"/>
         <source>Height:</source>
-        <translation type="unfinished">Magasság:</translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="86"/>
         <source>Edit height</source>
-        <translation type="unfinished"></translation>
+        <translation>Magasság szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="458"/>
         <source>Set the width and the height, then click OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Adja meg a szélességet és a magasságot, majd kattintson az OK gombra</translation>
     </message>
 </context>
 <context>
@@ -12459,87 +12484,87 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="14"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirál</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="31"/>
         <source>Tool</source>
-        <translation type="unfinished">Eszköz</translation>
+        <translation>Eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="37"/>
         <source>Radius = distance from the start point to the centre of the spiral, e.g. 5.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sugár = a kezdőpont és a spirál közepe közötti távolság, például 5.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="90"/>
         <source>Start point:</source>
-        <translation type="unfinished">Kezdőpont:</translation>
+        <translation>Kezdőpont:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="100"/>
         <source>Select start point of the spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a spirál kezdőpontját</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="107"/>
         <source>Pen style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ceruza stílusa:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="136"/>
         <source>Color:</source>
-        <translation type="unfinished">Szín:</translation>
+        <translation>Szín:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="150"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="189"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="203"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="214"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont neve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="72"/>
         <source>Radius:</source>
-        <translation type="unfinished">Sugár:</translation>
+        <translation>Sugár:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="74"/>
         <source>Edit radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Sugár szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="81"/>
         <source>Length:</source>
-        <translation type="unfinished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="83"/>
         <source>Edit length</source>
-        <translation type="unfinished">Hossz szerkesztése</translation>
+        <translation>Hossz szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="90"/>
         <source>Angle:</source>
-        <translation type="unfinished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="92"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Szög szerkesztése</translation>
+        <translation>Szög szerkesztése</translation>
     </message>
 </context>
 <context>
@@ -12548,80 +12573,80 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="101"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="421"/>
         <source>Angle:</source>
-        <translation type="unfinished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="103"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Szög szerkesztése</translation>
+        <translation>Szög szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="109"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="422"/>
         <source>Length:</source>
-        <translation type="unfinished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="111"/>
         <source>Edit length</source>
-        <translation type="unfinished">Hossz szerkesztése</translation>
+        <translation>Hossz szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="144"/>
         <source>Line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="145"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="244"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="355"/>
         <source>Rotation %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgatás %1: kattintson a vágás &lt;b&gt;kezdőpontjára&lt;/b&gt; (az aljra), vagy &lt;b&gt;%2&lt;/b&gt; a befejezéshez</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="256"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="274"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Először válasszon legalább egy vágást: egy kezdőpontot, majd egy forgáspontot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="326"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a pont nem tartozik a kijelölt objektumokhoz, válasszon egy pontot a kontúron</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="337"/>
         <source>Rotation %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the apex the part turns around)</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgatás %1: kattintson a &lt;b&gt;forgáspontjára&lt;/b&gt; (arra a csúcsra, amely körül a darab elfordul)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="437"/>
         <source>Ready</source>
-        <translation type="unfinished">Kész</translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="442"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="509"/>
         <source>Invalid angle formula</source>
-        <translation type="unfinished">Érvénytelen szögképlet</translation>
+        <translation>Érvénytelen szögképlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="524"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">Érvénytelen hosszképlet</translation>
+        <translation>Érvénytelen hosszképlet</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="692"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>A hossz nem haladhatja meg a kör átmérőjét (%1%2).</translation>
     </message>
 </context>
 <context>
@@ -12629,28 +12654,28 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="297"/>
         <source>Select the objects to transfer first</source>
-        <translation type="unfinished"></translation>
+        <translation>Először jelölje ki az átviendő objektumokat</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="314"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="315"/>
         <source>Click the merge point of the part to transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson az átviendő darab egyesítési pontjára</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="345"/>
         <source>Click a point of the part: it is the point the portion is anchored on</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a darab egy pontjára: ez a rész horgonypontja</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="356"/>
         <source>This pattern has no part that could receive the portion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebben a szabásmintában nincs olyan darab, amely fogadhatná a részt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="361"/>
         <source>Choose the part that receives the portion, and its layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a részt fogadó darabot és annak rétegét</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="375"/>
@@ -12658,22 +12683,22 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="439"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="440"/>
         <source>Click the point of the host part that receives the merge point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a fogadó darab azon pontjára, amely az egyesítési pontot fogadja</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="409"/>
         <source>Choose the part that receives the portion</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a részt fogadó darabot</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="419"/>
         <source>The part %1 could not be activated</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 darabot nem sikerült aktiválni</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="527"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel</translation>
     </message>
 </context>
 <context>
@@ -12683,28 +12708,28 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="454"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="577"/>
         <source>Size Ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartományok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="109"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="456"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="578"/>
         <source>Size Styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretstílusok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="114"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="477"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="573"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimenetek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="120"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="479"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="574"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítólap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="409"/>
@@ -12712,31 +12737,31 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="565"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="570"/>
         <source>Options</source>
-        <translation type="unfinished">Beállítások</translation>
+        <translation>Beállítások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="412"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="563"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="414"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="564"/>
         <source>Contains all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden réteget tartalmaz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="433"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="568"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="435"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="569"/>
         <source>Show which details will go in layout</source>
-        <translation type="unfinished">Az elrendezésbe kerülő alkatrészek megjelenítése</translation>
+        <translation>Az elrendezésbe kerülő alkatrészek megjelenítése</translation>
     </message>
 </context>
 <context>
@@ -12744,12 +12769,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="218"/>
         <source>Export the ticked generations</source>
-        <translation type="unfinished"></translation>
+        <translation>A bejelölt generálások exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="219"/>
         <source>There is no output to export here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Itt nincs exportálható kimenet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="238"/>
@@ -12757,47 +12782,47 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="254"/>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="277"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="238"/>
         <source>That folder does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem létezik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="246"/>
         <source>No generation is ticked.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs bejelölt generálás.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="254"/>
         <source>Every ticked generation needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden bejelölt generálásnak nevet kell adni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="265"/>
         <source>Export several outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Több kimenet exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="267"/>
         <source>Cutting plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabászati terv</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="268"/>
         <source>Print</source>
-        <translation type="unfinished">Nyomtatás</translation>
+        <translation>Nyomtatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="269"/>
         <source>Plotter</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="280"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
 </context>
 <context>
@@ -12805,27 +12830,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="229"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="241"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="246"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallózás…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="253"/>
         <source>Add Layout layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Az „Oldalelrendezés” réteg hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="258"/>
         <source>There is no output to export here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Itt nincs exportálható kimenet.</translation>
     </message>
 </context>
 <context>
@@ -12833,17 +12858,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="67"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Generálás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="118"/>
         <source>Before generating</source>
-        <translation type="unfinished"></translation>
+        <translation>Generálás előtt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="119"/>
         <source>These choices apply to every favorite of this batch.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezek a választások a köteg minden kedvencére érvényesek.</translation>
     </message>
 </context>
 <context>
@@ -12851,27 +12876,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="284"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="285"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="307"/>
         <source>There is no plan to write.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kiírható terv.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="335"/>
         <source>This plan was generated before the seam-allowance-free geometry existed: generate it again, then export it as Clo3D/Style3D.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezt a tervet még a varrásráhagyás nélküli geometria megjelenése előtt generálták: generálja újra, majd exportálja Clo3D/Style3D formátumban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="348"/>
         <source>The plan holds no piece to write.</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv nem tartalmaz kiírható darabot.</translation>
     </message>
 </context>
 <context>
@@ -12879,17 +12904,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="102"/>
         <source>Export the cutting plan</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabászati terv exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="109"/>
         <source>Fabric:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövet:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="110"/>
         <source>Lining:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés:</translation>
     </message>
 </context>
 <context>
@@ -12897,57 +12922,57 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="58"/>
         <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabokat úgy exportálja, mintha a fő útvonaluk látható lenne: így minden darabnak megvan a szabásvonala és a varrásvonala is. A mintában semmi nem változik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="62"/>
         <source>Which CAD reads this file. Clo3D/Style3D assemble edge to edge, with no seam allowances: the pieces are written WITHOUT them, exactly as if every piece of the pattern had its seam allowance switched off. Nothing is changed in the pattern - the plan on screen keeps its own margins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az a CAD-program, amely ezt a fájlt olvassa. A Clo3D és a Style3D szélét a széléhez illeszti, varrásráhagyás nélkül: a darabok ezek NÉLKÜL íródnak ki, pontosan úgy, mintha a szabásminta minden darabján ki lenne kapcsolva a varrásráhagyás. A szabásmintában semmi nem változik — a képernyőn látható terv megtartja a margóit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="229"/>
         <source>By standard</source>
-        <translation type="unfinished">Szabvány szerint</translation>
+        <translation>Szabvány szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="243"/>
         <source>File format:</source>
-        <translation type="unfinished">Fájlformátum:</translation>
+        <translation>Fájlformátum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="244"/>
         <source>Type:</source>
-        <translation type="unfinished">Típus:</translation>
+        <translation>Típus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="245"/>
         <source>Binary form</source>
-        <translation type="unfinished">Bináris formátum</translation>
+        <translation>Bináris formátum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="246"/>
         <source>Text as paths</source>
-        <translation type="unfinished">Szöveg útvonalként</translation>
+        <translation>Szöveg útvonalként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="247"/>
         <source>Show grainline</source>
-        <translation type="unfinished">Szálirány megjelenítése</translation>
+        <translation>Szálirány megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="248"/>
         <source>Boundary together with notches</source>
-        <translation type="unfinished">Határvonal a bevágásokkal együtt</translation>
+        <translation>Határvonal a bevágásokkal együtt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="249"/>
         <source>Show the main path, even when the pieces hide it</source>
-        <translation type="unfinished"></translation>
+        <translation>A fő útvonal megjelenítése akkor is, amikor a darabok elrejtik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="250"/>
         <source>Compatibility:</source>
-        <translation type="unfinished">Kompatibilitás:</translation>
+        <translation>Kompatibilitás:</translation>
     </message>
 </context>
 <context>
@@ -12955,67 +12980,67 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="844"/>
         <source>Fabric width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetszélesség:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="866"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="867"/>
         <source>Lining width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélésszélesség:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="879"/>
         <source>Sizes to cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Kivágandó méretek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="880"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyméretes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="881"/>
         <source>Several sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Több méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="896"/>
         <source>Space between pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok közötti távolság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="900"/>
         <source>Space from the edges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Távolság a szélektől:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="904"/>
         <source>The space kept between the pieces and the fabric&apos;s edges. It is a margin for error - cloth is not always cut straight - so every rectangle of the plan keeps it on THREE sides: all of them except the fold. A piece cut on the fold keeps its fold line on the fold, which is straight by construction.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabok és a szövet szélei között megtartott távolság. Ez egy hibahatár - a szövetet nem mindig vágják egyenesre -, ezért a terv minden téglalapja HÁROM oldalon megtartja: mindegyiken, kivéve a hajtást. A hajtásra vágott darab a hajtásvonalát a hajtáson tartja, amely szerkezetéből adódóan egyenes.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="909"/>
         <source>Folded fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtott szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="911"/>
         <source>The fabric is folded in two along its length, and the halves are traced on the folded cloth - the fold gives the second half. The nesting then runs on HALF the fabric width: 140 entered here means a plan laid out on 70. A piece cut on the fold keeps its fold line on the fold and stays folded; a piece cut twice is laid once, and the fold mirrors it.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szövetet hosszában kettéhajtják, és a feleket a hajtott szövetre rajzolják - a második felét a hajtás adja. Az elrendezés így a szövetszélesség FELÉN dolgozik: az itt megadott 140 azt jelenti, hogy a terv 70-re készül. A hajtásra vágott darab a hajtásvonalát a hajtáson tartja, és hajtva marad; a kétszer vágott darab egyszer kerül fel, és a hajtás tükrözve megismétli.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="917"/>
         <source>One-way layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyirányú elrendezés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="919"/>
         <source>No piece is turned a half-turn: every piece takes the fabric&apos;s direction the same way. Tick it for a cloth that has one - velvet, checks, a print. A piece cut on the cross keeps that freedom; it is simply never laid upside down.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyik darab sincs fél fordulattal elforgatva: mindegyik ugyanúgy veszi fel a szövet irányát. Jelölje be olyan szövethez, amelynek van iránya - bársony, kockás, mintás. A keresztirányban vágott darab megőrzi ezt a szabadságot; egyszerűen soha nem kerül fejjel lefelé.</translation>
     </message>
 </context>
 <context>
@@ -13023,7 +13048,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriterowwidget.cpp" line="95"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítás a kedvencek közül</translation>
     </message>
 </context>
 <context>
@@ -13032,17 +13057,18 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriteswidget.cpp" line="203"/>
         <source>No favorite yet.
 Star a generation in the Outputs dock to keep its recipe here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs kedvenc.
+Jelöljön meg csillaggal egy generálást a Kimenetek panelen, hogy a receptje itt maradjon.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriteswidget.cpp" line="204"/>
         <source>Select all</source>
-        <translation type="unfinished">Összes kijelölése</translation>
+        <translation>Összes kijelölése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriteswidget.cpp" line="205"/>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Összes kijelölés törlése</translation>
     </message>
 </context>
 <context>
@@ -13053,47 +13079,47 @@ Star a generation in the Outputs dock to keep its recipe here.</source>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="302"/>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="311"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="275"/>
         <source>%1 already exists. Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %1 már létezik. Lecseréli?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="284"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="302"/>
         <source>The file needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlnak nevet kell adni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="311"/>
         <source>That folder does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem létezik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="333"/>
         <source>Export the plan</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="334"/>
         <source>File name:</source>
-        <translation type="unfinished">Fájlnév:</translation>
+        <translation>Fájlnév:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="335"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="336"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallózás…</translation>
     </message>
 </context>
 <context>
@@ -13102,7 +13128,8 @@ Star a generation in the Outputs dock to keep its recipe here.</source>
         <location filename="../../src/app/ostara/dialogs/oexportgenerationlistwidget.cpp" line="106"/>
         <source>Nothing to generate yet.
 Add a run from the Print tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs mit generálni.
+Adjon hozzá egy futást a Nyomtatás lapon.</translation>
     </message>
 </context>
 <context>
@@ -13111,7 +13138,7 @@ Add a run from the Print tab.</source>
         <location filename="../../src/app/ostara/dialogs/oexportgenerationrowwidget.cpp" line="55"/>
         <location filename="../../src/app/ostara/dialogs/oexportgenerationrowwidget.cpp" line="78"/>
         <source>Remove this run from the list</source>
-        <translation type="unfinished"></translation>
+        <translation>A futás eltávolítása a listából</translation>
     </message>
 </context>
 <context>
@@ -13119,17 +13146,17 @@ Add a run from the Print tab.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupchoicewidget.cpp" line="117"/>
         <source>Unnamed group</source>
-        <translation type="unfinished"></translation>
+        <translation>Névtelen csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupchoicewidget.cpp" line="124"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Névtelen</translation>
+        <translation>Névtelen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupchoicewidget.cpp" line="147"/>
         <source>One piece per group</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy darab csoportonként</translation>
     </message>
 </context>
 <context>
@@ -13137,24 +13164,26 @@ Add a run from the Print tab.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="103"/>
         <source>Unnamed group</source>
-        <translation type="unfinished"></translation>
+        <translation>Névtelen csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="118"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Névtelen</translation>
+        <translation>Névtelen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="145"/>
         <source>Group members to cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Kivágandó csoporttagok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="147"/>
         <source>A plotter cuts every member of a group, one by one: the group is decomposed, not printed as one shape.
 
 Untick a member to leave it out of this run. All ticked is what a plotter run has always cut.</source>
-        <translation type="unfinished"></translation>
+        <translation>A plotter egy csoport minden tagját egyenként vágja ki: a csoport felbontásra kerül, nem egyetlen alakzatként nyomtatódik.
+
+Törölje egy tag jelölését, hogy kimaradjon ebből a futásból. Ha minden be van jelölve, az pontosan az, amit egy plotteres futás mindig is kivágott.</translation>
     </message>
 </context>
 <context>
@@ -13162,29 +13191,29 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="209"/>
         <source>%1 × %2 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 × %2 %3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="217"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="218"/>
         <source>Width:</source>
-        <translation type="unfinished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="217"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="218"/>
         <source>Height:</source>
-        <translation type="unfinished">Magasság:</translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="222"/>
         <source>%1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="235"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="293"/>
@@ -13192,92 +13221,92 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="315"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="327"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="293"/>
         <source>That folder does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem létezik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="300"/>
         <source>The size must be a number greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretnek nullánál nagyobb számnak kell lennie.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="315"/>
         <source>The plan cannot be written at that size.</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv nem írható ki ebben a méretben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="328"/>
         <source>That image would be too large. Lower the size or the resolution.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a kép túl nagy lenne. Csökkentse a méretet vagy a felbontást.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="341"/>
         <source>Export the plan as an image</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv exportálása képként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="343"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="344"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tallózás…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="346"/>
         <source>Format:</source>
-        <translation type="unfinished">Formátum:</translation>
+        <translation>Formátum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="350"/>
         <source>Plan:</source>
-        <translation type="unfinished"></translation>
+        <translation>Terv:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="352"/>
         <source>Give:</source>
-        <translation type="unfinished"></translation>
+        <translation>Megadás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="353"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="354"/>
         <source>Height</source>
-        <translation type="unfinished">Magasság</translation>
+        <translation>Magasság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="361"/>
         <source>Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Felbontás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="362"/>
         <source> dpi</source>
-        <translation type="unfinished"></translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="371"/>
         <source>Export the active output</source>
-        <translation type="unfinished"></translation>
+        <translation>Az aktív kimenet exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="374"/>
         <source>Export several outputs...</source>
-        <translation type="unfinished"></translation>
+        <translation>Több kimenet exportálása…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="377"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
 </context>
 <context>
@@ -13287,27 +13316,27 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="167"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="186"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="159"/>
         <source>No generation is ticked.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs bejelölt generálás.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="167"/>
         <source>Every ticked generation needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden bejelölt generálásnak nevet kell adni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="178"/>
         <source>Export the plan as an image</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv exportálása képként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="189"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
 </context>
 <context>
@@ -13315,17 +13344,17 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
     <message>
         <location filename="../../src/app/ostara/core/oexportmarksettings.cpp" line="42"/>
         <source>Circle</source>
-        <translation type="unfinished">Kör</translation>
+        <translation>Kör</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportmarksettings.cpp" line="43"/>
         <source>Square</source>
-        <translation type="unfinished"></translation>
+        <translation>Négyzet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportmarksettings.cpp" line="44"/>
         <source>Octagon</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyolcszög</translation>
     </message>
 </context>
 <context>
@@ -13334,24 +13363,25 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="115"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1307"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1309"/>
         <source>List to generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Generálandó lista</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="941"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1310"/>
         <source>Cutting plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabászati terv</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="159"/>
         <source>The runs described in the tabs beside, waiting to be generated.
 They are not kept: closing the pattern takes them with the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mellette lévő lapokon leírt futások, a létrehozásra várva.
+Nem maradnak meg: a szabásminta bezárásakor a munkamenettel együtt eltűnnek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="942"/>
@@ -13360,13 +13390,17 @@ They are not kept: closing the pattern takes them with the session.</source>
 %1
 
 Give each one a grainline or a fold line in the Details mode, then ask for the plan again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az elrendezés nem találhat ki irányt, és ezeknek a daraboknak nincs ilyen:
+
+%1
+
+Adjon mindegyiknek szálirányt vagy hajtásvonalat a Details módban, majd kérje újra a tervet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1078"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1324"/>
         <source>%1 was added to the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 hozzáadva a listához.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1140"/>
@@ -13374,7 +13408,7 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1171"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1184"/>
         <source>Add to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás a listához</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1146"/>
@@ -13382,74 +13416,74 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1175"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1188"/>
         <source>Generate this output</source>
-        <translation type="unfinished"></translation>
+        <translation>A kimenet létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1111"/>
         <source>Generate the whole list</source>
-        <translation type="unfinished"></translation>
+        <translation>A teljes lista létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="609"/>
         <source>Cut-%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás-%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="627"/>
         <source>Plot-%1x%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter-%1x%2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="637"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1313"/>
         <source>Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1112"/>
         <source>Generate the checked favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>A bejelölt kedvencek létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1198"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1204"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1311"/>
         <source>Print</source>
-        <translation type="unfinished">Nyomtatás</translation>
+        <translation>Nyomtatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1312"/>
         <source>Plotter</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1318"/>
         <source>Working list</source>
-        <translation type="unfinished"></translation>
+        <translation>Munkalista</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1319"/>
         <source>Cutting plan favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágási terv kedvencei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1320"/>
         <source>Print favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyomtatási kedvencek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1321"/>
         <source>Plotter favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter kedvencek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1322"/>
         <source>Projector favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektor kedvencek</translation>
     </message>
 </context>
 <context>
@@ -13457,12 +13491,12 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
     <message>
         <location filename="../../src/app/ostara/core/oexportpaginationsettings.cpp" line="41"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportpaginationsettings.cpp" line="42"/>
         <source>Number + letter</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám + betű</translation>
     </message>
 </context>
 <context>
@@ -13470,17 +13504,17 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
     <message>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="304"/>
         <source>Magenta background</source>
-        <translation type="unfinished"></translation>
+        <translation>Magenta háttér</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="307"/>
         <source>5cm grid</source>
-        <translation type="unfinished"></translation>
+        <translation>5 cm-es rács</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="310"/>
         <source>3in grid</source>
-        <translation type="unfinished"></translation>
+        <translation>3 hüvelykes rács</translation>
     </message>
 </context>
 <context>
@@ -13488,12 +13522,12 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="77"/>
         <source>Export the plan as PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv exportálása PDF-be</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="78"/>
         <source>Add Layout layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Az „Oldalelrendezés“ réteg hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="80"/>
@@ -13501,12 +13535,15 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
 Left unchecked, the layout is printed with the plan and cannot be switched off -
 which is the safer setting: a plan printed without its information block, its
 folds and its annotations looks perfectly normal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az oldalelrendezést a PDF egyik rétegeként írja be, amelyet így egy nyomda ki tud kapcsolni.
+Bejelöletlenül hagyva az oldalelrendezés a tervvel együtt nyomtatódik, és nem kapcsolható ki -
+ez a legbiztonságosabb beállítás: az információs blokkja, hajtásai és megjegyzései nélkül
+nyomtatott terv teljesen normálisnak látszik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="85"/>
         <source>Compatible with Rabnest</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompatibilis a Rabnesttel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="87"/>
@@ -13514,7 +13551,10 @@ folds and its annotations looks perfectly normal.</source>
 Rabnest and delivered again in another format. Nothing in the PDF looks different
 and no reader shows it; the file is only heavier.
 Left unchecked, the PDF prints and nothing reopens it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Beleírja a fájlba, amiből a terv készült, hogy újra megnyitható legyen a
+Rabnestben, és más formátumban ismét kiadható. A PDF-ben semmi nem változik, és egyetlen olvasó sem mutatja;
+a fájl csak nehezebb lesz.
+Bejelöletlenül hagyva a PDF kinyomtatódik, és semmi nem nyitja meg újra.</translation>
     </message>
 </context>
 <context>
@@ -13522,14 +13562,16 @@ Left unchecked, the PDF prints and nothing reopens it.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportplotterwidget.cpp" line="339"/>
         <source>Cutting mat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágószőnyeg:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportplotterwidget.cpp" line="340"/>
         <source>The area your plotter can really cut - what its own software shows you, not the size of the mat itself.
 
 A piece larger than it is cut into pieces at the mat borders, to be put back together like a puzzle. A smaller mat means more, smaller, pieces: that is how you keep a safety margin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az a felület, amelyet a plotter valóban el tud vágni - amit a saját szoftvere mutat, nem magának a szőnyegnek a mérete.
+
+A nála nagyobb darab a szőnyeg széleinél darabokra vágódik, amelyeket kirakóként kell összeilleszteni. A kisebb szőnyeg több, kisebb darabot jelent: így marad meg a biztonsági ráhagyás.</translation>
     </message>
 </context>
 <context>
@@ -13537,42 +13579,42 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="51"/>
         <source>A0 Roll</source>
-        <translation type="unfinished"></translation>
+        <translation>A0 tekercs</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="52"/>
         <source>A0</source>
-        <translation type="unfinished"></translation>
+        <translation>A0</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="53"/>
         <source>A3</source>
-        <translation type="unfinished"></translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="54"/>
         <source>Tabloid</source>
-        <translation type="unfinished">Tabloid</translation>
+        <translation>Tabloid</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="55"/>
         <source>A4</source>
-        <translation type="unfinished"></translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="56"/>
         <source>Letter</source>
-        <translation type="unfinished">Letter</translation>
+        <translation>Letter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="61"/>
         <source>A4/Letter framed</source>
-        <translation type="unfinished"></translation>
+        <translation>A4/Letter kerettel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="62"/>
         <source>A3/Tabloid framed</source>
-        <translation type="unfinished"></translation>
+        <translation>A3/Tabloid kerettel</translation>
     </message>
 </context>
 <context>
@@ -13580,62 +13622,62 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="743"/>
         <source>Unit:</source>
-        <translation type="unfinished">Egység:</translation>
+        <translation>Egység:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="381"/>
         <source>No cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs borítóoldal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="748"/>
         <source>Generate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Létrehozás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="749"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="750"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Egységes méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="751"/>
         <source>Size range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="752"/>
         <source>Print model:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyomtatási sablon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
         <source>Assembly marks:</source>
-        <translation type="unfinished"></translation>
+        <translation>Illesztési bevágások:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
         <source>Cover page:</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítóoldal:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="755"/>
         <source>Document margin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentummargó:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="756"/>
         <source>Space between pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok közötti tér:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="757"/>
         <source>Document width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentum szélessége:</translation>
     </message>
 </context>
 <context>
@@ -13643,38 +13685,38 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="140"/>
         <source>The plan does not fit in %1 × %1 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv nem fér el %1 × %1 cm-ben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="151"/>
         <source>The pieces take %1 m². With an edge margin of %2 cm, only %3 m² remain in a %4 × %4 cm plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabok %1 m²-t foglalnak el. %2 cm-es szélráhagyással már csak %3 m² marad egy %4 × %4 cm-es tervben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="164"/>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="198"/>
         <source>Reducing the edge margin to %1 cm would be enough.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szélráhagyás %1 cm-re csökkentése elég lenne.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="170"/>
         <source>No edge margin can make it fit: the pieces themselves fill the largest plan this format can hold.</source>
-        <translation type="unfinished"></translation>
+        <translation>Semmilyen szélráhagyással nem fér el: maguk a darabok töltik ki a legnagyobb tervet, amelyet ez a formátum kezelni tud.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="189"/>
         <source>The most compact plan obtained is %1 × %2 cm, with an edge margin of %3 cm and a space between pieces of %4 cm.</source>
-        <translation type="unfinished"></translation>
+        <translation>A legtömörebb elért terv %1 × %2 cm, %3 cm-es szélráhagyással és %4 cm-es darabok közötti térrel.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="203"/>
         <source>Reduce the space between pieces, or split the plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>Csökkentse a darabok közötti teret, vagy ossza fel a tervet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="368"/>
         <source>The pieces are wider than the largest plan this format can hold, with the edge margin asked for. Reduce the edge margin.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabok szélesebbek annál a legnagyobb tervnél, amelyet ez a formátum a kért szélráhagyással kezelni tud. Csökkentse a szélráhagyást.</translation>
     </message>
 </context>
 <context>
@@ -13682,66 +13724,70 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="425"/>
         <source>Unit:</source>
-        <translation type="unfinished">Egység:</translation>
+        <translation>Egység:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="426"/>
         <source>cm</source>
-        <translation type="unfinished">cm</translation>
+        <translation>cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="427"/>
         <source>inch</source>
-        <translation type="unfinished">hüvelyk</translation>
+        <translation>hüvelyk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="429"/>
         <source>What to nest:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit rendezzen el:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="430"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="431"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Egységes méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="432"/>
         <source>Size range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="434"/>
         <source>Space between pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok közötti tér:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="435"/>
         <source>Room left between two pieces, to be able to lift one without dragging its neighbour.
 
 Never less than 5 cm: below that a projected plan is a cutting plan, and it is no longer what this format is for.</source>
-        <translation type="unfinished"></translation>
+        <translation>A két darab között hagyott hely, hogy az egyiket fel lehessen emelni anélkül, hogy elhúzná a szomszédját.
+
+Soha nem kevesebb 5 cm-nél: ez alatt a vetített terv szabászati tervvé válik, és ez a formátum már nem erről szól.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="440"/>
         <source>Space from the edge:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tér a szélektől:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="441"/>
         <source>Room kept around the whole plan - a safety margin, and a place to put a hand.
 
 It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the pieces themselves rarely are the problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az egész terv körül megtartott hely - biztonsági ráhagyás, és hely a kéznek.
+
+Ezt kell először csökkenteni, amikor a terv nem fér el 500 x 500 cm-ben: ritkán maguk a darabok a probléma.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="449"/>
         <source>The PDF also carries three calibration layers, which the Ostara canvas does not show: a 5 cm grid, a 3 in grid and a magenta background.</source>
-        <translation type="unfinished"></translation>
+        <translation>A PDF három kalibrációs réteget is tartalmaz, amelyeket az Ostara vászna nem mutat: egy 5 cm-es rácsot, egy 3 hüvelykes rácsot és egy magenta hátteret.</translation>
     </message>
 </context>
 <context>
@@ -13749,7 +13795,7 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportrollformatwidget.cpp" line="78"/>
         <source>Width:</source>
-        <translation type="unfinished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
 </context>
 <context>
@@ -13757,22 +13803,22 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="39"/>
         <source>Running</source>
-        <translation type="unfinished"></translation>
+        <translation>Folyamatban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="41"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Kész</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="43"/>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Sikertelen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="46"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>Várakozik</translation>
     </message>
 </context>
 <context>
@@ -13780,236 +13826,244 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítóoldal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="217"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="242"/>
         <source>Assembly marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Illesztési bevágások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="219"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="220"/>
         <source>Template name</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="221"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="223"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="224"/>
         <source>Create a template</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="225"/>
         <source>Custom marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyéni jelölések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="229"/>
         <source>Preview format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Előnézet formátuma:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="231"/>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Keret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="232"/>
         <source>Used by the framed formats only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Csak a keretes formátumok használják.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="233"/>
         <source>Thickness:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastagság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="234"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="235"/>
         <source>Dash:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalka:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="236"/>
         <source>Space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szünet:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="237"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="245"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="500"/>
         <source>Opacity:</source>
-        <translation type="unfinished">Átlátszatlanság:</translation>
+        <translation>Átlátszatlanság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="238"/>
         <source>Scissors horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vízszintes olló</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="239"/>
         <source>Scissors vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Függőleges olló</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Scissors opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Olló átlátszósága:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="243"/>
         <source>Shape:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="244"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="499"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="246"/>
         <source>Corner</source>
-        <translation type="unfinished">Sarok</translation>
+        <translation>Sarok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="247"/>
         <source>Vertical center</source>
-        <translation type="unfinished"></translation>
+        <translation>Függőleges közép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="248"/>
         <source>Horizontal center</source>
-        <translation type="unfinished"></translation>
+        <translation>Vízszintes közép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="250"/>
         <source>Pagination</source>
-        <translation type="unfinished"></translation>
+        <translation>Oldalszámozás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="251"/>
         <source>Numbering:</source>
-        <translation type="unfinished"></translation>
+        <translation>Számozás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="252"/>
         <source>Show the number at the center of the page</source>
-        <translation type="unfinished"></translation>
+        <translation>A szám megjelenítése az oldal közepén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="253"/>
         <source>Show the number at the corners of the sheets</source>
-        <translation type="unfinished"></translation>
+        <translation>A szám megjelenítése a lapok sarkain</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="254"/>
         <source>Show the number at the vertical center of the sheets</source>
-        <translation type="unfinished"></translation>
+        <translation>A szám megjelenítése a lapok függőleges közepén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="255"/>
         <source>Show the number at the horizontal center of the sheets</source>
-        <translation type="unfinished"></translation>
+        <translation>A szám megjelenítése a lapok vízszintes közepén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="285"/>
         <source>Coming soon</source>
-        <translation type="unfinished"></translation>
+        <translation>Hamarosan</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="329"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Folytonos</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="330"/>
         <source>Dashed</source>
-        <translation type="unfinished"></translation>
+        <translation>Szaggatott</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="497"/>
         <source>Font:</source>
-        <translation type="unfinished">Betűtípus:</translation>
+        <translation>Betűtípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="498"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastagság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="586"/>
         <source>Zoom: %1 %</source>
-        <translation type="unfinished"></translation>
+        <translation>Nagyítás: %1%</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1351"/>
         <source>Unsaved template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem mentett sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1352"/>
         <source>This template has been changed and not saved.
 
 Save it before leaving it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a sablon módosult, és nincs elmentve.
+
+Elmenti, mielőtt kilép?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1503"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1516"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1531"/>
         <source>Save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1504"/>
         <source>Give the template a name before saving it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon nevet a sablonnak mentés előtt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1517"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik „%1“ nevű sablon.
+
+Válasszon másik nevet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1532"/>
         <source>Could not save the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A sablont nem sikerült menteni.
+
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1574"/>
         <source>Open template</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1575"/>
         <source>Could not open the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A sablont nem sikerült megnyitni.
+
+%1</translation>
     </message>
 </context>
 <context>
@@ -14018,19 +14072,21 @@ Choose another name.</source>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="55"/>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="140"/>
         <source>Export templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálási sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="161"/>
         <source>Unsaved template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem mentett sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="162"/>
         <source>This template has been changed and not saved.
 
 Save it before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a sablon módosult, és nincs elmentve.
+
+Elmenti, mielőtt bezárja?</translation>
     </message>
 </context>
 <context>
@@ -14039,69 +14095,71 @@ Save it before closing?</source>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="157"/>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="162"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="202"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="203"/>
         <source>Search templates…</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablonok keresése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="204"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="245"/>
         <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs sablon. Hozzon létre egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="272"/>
         <source>This is the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az alapértelmezett sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="273"/>
         <source>Make this the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Beállítás alapértelmezett sablonként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="281"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="285"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="341"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="342"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törli a „%1“ sablont?
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült törölni.</translation>
     </message>
 </context>
 <context>
@@ -14109,17 +14167,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="140"/>
         <source>Width:</source>
-        <translation type="unfinished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="141"/>
         <source>Height:</source>
-        <translation type="unfinished">Magasság:</translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="149"/>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszlopok:</translation>
     </message>
 </context>
 <context>
@@ -14127,22 +14185,22 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="143"/>
         <source>Foldline text</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="151"/>
         <source>Font:</source>
-        <translation type="unfinished">Betűtípus:</translation>
+        <translation>Betűtípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="152"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastagság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="153"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret:</translation>
     </message>
 </context>
 <context>
@@ -14151,7 +14209,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="78"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="54"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Balra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="79"/>
@@ -14159,43 +14217,43 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="55"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="61"/>
         <source>Center</source>
-        <translation type="unfinished">Közép</translation>
+        <translation>Közép</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="80"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="56"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Jobbra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="84"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="60"/>
         <source>Top</source>
-        <translation type="unfinished">Felül</translation>
+        <translation>Felül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="86"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="62"/>
         <source>Bottom</source>
-        <translation type="unfinished">Alul</translation>
+        <translation>Alul</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="117"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="231"/>
         <source>Graded alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretek igazítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="122"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="232"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Vízszintes</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="159"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="233"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Függőleges</translation>
     </message>
 </context>
 <context>
@@ -14203,133 +14261,133 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="58"/>
         <source>Graded mode - size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokozás mód - mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="84"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="85"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Következő</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="86"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="125"/>
         <source>Which axis of the table is the grading axis?</source>
-        <translation type="unfinished"></translation>
+        <translation>A táblázat melyik tengelye a fokozási tengely?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="144"/>
         <source>Create a new size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Új mérettartomány létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="145"/>
         <source>Load existing from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő betöltése a kedvencek közül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="148"/>
         <source>Favorites:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kedvencek:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="197"/>
         <source>already in this pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>már ebben a szabásmintában</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="296"/>
         <source>Size range name</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="301"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="306"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="318"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="321"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="342"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="351"/>
         <source>Browse…</source>
-        <translation type="unfinished">Tallózás…</translation>
+        <translation>Tallózás…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="353"/>
         <source>Path:</source>
-        <translation type="unfinished">Útvonal:</translation>
+        <translation>Útvonal:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="357"/>
         <source>File name:</source>
-        <translation type="unfinished">Fájlnév:</translation>
+        <translation>Fájlnév:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="361"/>
         <source>Scale</source>
-        <translation type="unfinished">Méretarány</translation>
+        <translation>Méretarány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="367"/>
         <source>100%</source>
-        <translation type="unfinished"></translation>
+        <translation>100%</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="376"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>vagy</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="384"/>
         <source>Horizontal:</source>
-        <translation type="unfinished">Vízszintes:</translation>
+        <translation>Vízszintes:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="385"/>
         <source>Vertical:</source>
-        <translation type="unfinished">Függőleges:</translation>
+        <translation>Függőleges:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="389"/>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="624"/>
         <source>Layout</source>
-        <translation type="unfinished">Elrendezés</translation>
+        <translation>Elrendezés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="390"/>
         <source>Layout layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elrendezési réteg:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="570"/>
         <source>Select folder</source>
-        <translation type="unfinished">Válasszon mappát</translation>
+        <translation>Válasszon mappát</translation>
     </message>
 </context>
 <context>
@@ -14338,38 +14396,38 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="113"/>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="220"/>
         <source>Edit size styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretstílusok szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="148"/>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="152"/>
         <source>Layer name for SVG export</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegnév az SVG-exporthoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="182"/>
         <source>Dash</source>
-        <translation type="unfinished"></translation>
+        <translation>Szaggatott</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="182"/>
         <source>Space</source>
-        <translation type="unfinished">szóköz</translation>
+        <translation>szóköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="257"/>
         <source>Size %1: “%2” is not a valid hex color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret %1: a(z) „%2” nem érvényes hexadecimális szín.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="271"/>
         <source>Size %1: a dash pair needs both a Dash and a Space value (or leave both empty).</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret %1: a szaggatott vonal párjához Szaggatott és Térköz érték is szükséges (vagy hagyja mindkettőt üresen).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="283"/>
         <source>Size %1: dash value “%2” must be a positive number in points (pt).</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret %1: a(z) „%2” szaggatott értéknek pozitív számnak kell lennie pontban (pt).</translation>
     </message>
 </context>
 <context>
@@ -14379,7 +14437,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/ogroupthumbnailsconfigwidget.cpp" line="189"/>
         <location filename="../../src/app/ostara/core/ogroupthumbnailsconfigwidget.cpp" line="192"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Névtelen</translation>
+        <translation>Névtelen</translation>
     </message>
 </context>
 <context>
@@ -14387,53 +14445,53 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="173"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="174"/>
         <source>Create new</source>
-        <translation type="unfinished"></translation>
+        <translation>Új létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="175"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="193"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="339"/>
         <source>Template name</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="194"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="346"/>
         <source>+ Add information</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Információ hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="197"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="358"/>
         <source>Move up</source>
-        <translation type="unfinished">Mozgatás fel</translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="198"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="373"/>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás le</translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="195"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="388"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="196"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="392"/>
         <source>Save As…</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés másként…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="232"/>
@@ -14443,38 +14501,38 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="698"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1065"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="176"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfelek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="177"/>
         <source>Collections</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekciók</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="178"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="199"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="429"/>
         <source>Remove information</source>
-        <translation type="unfinished"></translation>
+        <translation>Információ eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="202"/>
         <source>Block display language</source>
-        <translation type="unfinished"></translation>
+        <translation>A blokk megjelenítési nyelve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="203"/>
         <source>You can choose several for a multilingual block</source>
-        <translation type="unfinished"></translation>
+        <translation>Többet is választhat egy többnyelvű blokkhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="224"/>
@@ -14482,7 +14540,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="601"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1080"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="223"/>
@@ -14492,63 +14550,63 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="925"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="977"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="225"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="606"/>
         <source>Email:</source>
-        <translation type="unfinished">E-mail:</translation>
+        <translation>E-mail:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="226"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="611"/>
         <source>Phone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="227"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="617"/>
         <source>Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Információ:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="228"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="599"/>
         <source>Client name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="229"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="604"/>
         <source>Email</source>
-        <translation type="unfinished"></translation>
+        <translation>E-mail</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="230"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="609"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="231"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="614"/>
         <source>Information</source>
-        <translation type="unfinished">Információ</translation>
+        <translation>Információ</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="233"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="575"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="935"/>
         <source>Add Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="234"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="578"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="968"/>
         <source>Remove Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="235"/>
@@ -14556,7 +14614,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="631"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1109"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Előzmények</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="236"/>
@@ -14564,7 +14622,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="639"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1117"/>
         <source>No associated patterns yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs társított szabásminta.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="252"/>
@@ -14572,19 +14630,19 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="624"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1102"/>
         <source>Create the folder in the pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>A mappa létrehozása a szabásmintakönyvtárban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="253"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="625"/>
         <source>Makes a folder of the client&apos;s name in the library of patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappát hoz létre az ügyfél nevével a szabásmintakönyvtárban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="256"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="673"/>
         <source>No clients yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs ügyfél. Adjon hozzá egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="243"/>
@@ -14594,42 +14652,42 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1308"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1361"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="180"/>
         <source>Foldline text</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásvonal szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="243"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="698"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Módosítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="262"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1085"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Év:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="263"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1090"/>
         <source>Period:</source>
-        <translation type="unfinished"></translation>
+        <translation>Időszak:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="264"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1097"/>
         <source>Description:</source>
-        <translation type="unfinished">Leírás:</translation>
+        <translation>Leírás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="265"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1078"/>
         <source>Collection name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="266"/>
@@ -14637,68 +14695,68 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1065"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1088"/>
         <source>Period</source>
-        <translation type="unfinished"></translation>
+        <translation>Időszak</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="267"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1093"/>
         <source>Description</source>
-        <translation type="unfinished">Leírás</translation>
+        <translation>Leírás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="268"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1065"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Év</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="269"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1047"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1318"/>
         <source>Add Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="270"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1050"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1351"/>
         <source>Remove Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="271"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1054"/>
         <source>Sort by year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendezés év szerint:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="272"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1057"/>
         <source>Newest first</source>
-        <translation type="unfinished"></translation>
+        <translation>Legújabb elöl</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="273"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1058"/>
         <source>Oldest first</source>
-        <translation type="unfinished"></translation>
+        <translation>Legrégebbi elöl</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="277"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1103"/>
         <source>Makes a folder of the collection&apos;s name in the library of patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappát hoz létre a kollekció nevével a szabásmintakönyvtárban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="280"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1150"/>
         <source>No collections yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs kollekció. Adjon hozzá egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="765"/>
         <source>Show the folder that holds this pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásmintát tartalmazó mappa megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="998"/>
@@ -14710,62 +14768,66 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1400"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1409"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásmintakönyvtár</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="998"/>
         <source>Name the client first: the folder takes its name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Először nevezze el az ügyfelet: a mappa az ő nevét veszi fel.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1009"/>
         <source>The folder &quot;%1&quot; already exists in the pattern library.
 
 Link the client to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” mappa már létezik a szabásmintakönyvtárban.
+
+Hozzákapcsolja az ügyfelet?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1015"/>
         <source>The client is linked to the folder &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Az ügyfél a(z) „%1” mappához kapcsolódik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1020"/>
         <source>Rename the client or the folder, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevezze át az ügyfelet vagy a mappát, hogy a kettő megkülönböztethető legyen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1032"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1413"/>
         <source>The folder &quot;%1&quot; was created in the pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” mappa létrejött a szabásmintakönyvtárban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1381"/>
         <source>Name the collection first: the folder takes its name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Először nevezze el a kollekciót: a mappa az ő nevét veszi fel.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1390"/>
         <source>The folder &quot;%1&quot; already exists in the pattern library.
 
 Link the collection to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” mappa már létezik a szabásmintakönyvtárban.
+
+Hozzákapcsolja a kollekciót?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1396"/>
         <source>The collection is linked to the folder &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>A kollekció a(z) „%1” mappához kapcsolódik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1401"/>
         <source>Rename the collection or the folder, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevezze át a kollekciót vagy a mappát, hogy a kettő megkülönböztethető legyen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1691"/>
         <source>Unsaved information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem mentett információs blokk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="681"/>
@@ -14773,81 +14835,83 @@ Link the collection to it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1158"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1214"/>
         <source>(unnamed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(névtelen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="179"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatűr</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="951"/>
         <source>Client added</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél hozzáadva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="968"/>
         <source>Remove the client &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítja a(z) „%1” ügyfelet a könyvtárból?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="981"/>
         <source>Client removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél eltávolítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1334"/>
         <source>Collection added</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció hozzáadva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1352"/>
         <source>Remove the collection &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítja a(z) „%1” kollekciót a könyvtárból?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1365"/>
         <source>Collection removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció eltávolítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1427"/>
         <source>Template 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon 1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1500"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1564"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1607"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információs blokk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1565"/>
         <source>Save failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés sikertelen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1570"/>
         <source>Template saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablon mentve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1608"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik „%1” nevű sablon.
+
+Válasszon másik nevet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1640"/>
         <source>Save cartouche template</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartussablon mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1641"/>
         <source>Cartouche template (*.oct)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartussablon (*.oct)</translation>
     </message>
 </context>
 <context>
@@ -14855,51 +14919,51 @@ Choose another name.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="95"/>
         <source>No sections yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs szakasz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="280"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="427"/>
         <source>fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="282"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="429"/>
         <source>interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>kötőanyag</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="284"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="431"/>
         <source>lining</source>
-        <translation type="unfinished"></translation>
+        <translation>bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="303"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="407"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="445"/>
         <source>Cut %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="308"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="412"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="450"/>
         <source> on fold</source>
-        <translation type="unfinished"></translation>
+        <translation> hajtásban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="310"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="452"/>
         <source> (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="85"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="86"/>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>azaz</translation>
     </message>
 </context>
 <context>
@@ -14908,77 +14972,79 @@ Choose another name.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="196"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="220"/>
         <source>Search templates…</source>
-        <translation type="unfinished"></translation>
+        <translation>Sablonok keresése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="197"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="267"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="211"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Meglévő sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="231"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="235"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="232"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="236"/>
         <source>Languages</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyelvek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="280"/>
         <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs sablon. Hozzon létre egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="306"/>
         <source>This is the default cartouche</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az alapértelmezett sablon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="306"/>
         <source>Make this the default cartouche</source>
-        <translation type="unfinished"></translation>
+        <translation>Beállítás alapértelmezett sablonként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="324"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="332"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="375"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="376"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törli a(z) „%1” sablont?
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült törölni.</translation>
     </message>
 </context>
 <context>
@@ -14987,17 +15053,17 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="48"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="113"/>
         <source>Information block[*]</source>
-        <translation type="unfinished"></translation>
+        <translation>Információs blokk[*]</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információs blokk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
         <source>The template has unsaved changes. Do you want to save them?</source>
-        <translation type="unfinished"></translation>
+        <translation>A sablon nem mentett módosításokat tartalmaz. Menteni szeretné őket?</translation>
     </message>
 </context>
 <context>
@@ -15005,17 +15071,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/olayergroupchooser.cpp" line="55"/>
         <source>Group name</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport neve</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/olayergroupchooser.cpp" line="154"/>
         <source>No group</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs csoport</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/olayergroupchooser.cpp" line="175"/>
         <source>New group…</source>
-        <translation type="unfinished"></translation>
+        <translation>Új csoport…</translation>
     </message>
 </context>
 <context>
@@ -15023,37 +15089,37 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="59"/>
         <source>Group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek csoportja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="65"/>
         <source>Group name:</source>
-        <translation type="unfinished">Csoport neve:</translation>
+        <translation>Csoport neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="68"/>
         <source>Choose group name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiválasztott csoport neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="78"/>
         <source>Layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="93"/>
         <source>Add another layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Újabb réteg hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="188"/>
         <source>Remove the layer from the group</source>
-        <translation type="unfinished"></translation>
+        <translation>A réteg eltávolítása a csoportból</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="364"/>
         <source>Another group already wears this name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy másik csoport már viseli ezt a nevet.</translation>
     </message>
 </context>
 <context>
@@ -15062,22 +15128,22 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="81"/>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="111"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Új mappa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="83"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="84"/>
         <source>Folder name</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="88"/>
         <source>Create</source>
-        <translation type="unfinished">Létrehozás</translation>
+        <translation>Létrehozás</translation>
     </message>
 </context>
 <context>
@@ -15085,53 +15151,53 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="42"/>
         <source>A folder&apos;s name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mappa neve nem lehet üres.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="46"/>
         <source>A folder&apos;s name cannot hold a slash.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mappa neve nem tartalmazhat perjelet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="50"/>
         <source>&quot;%1&quot; already exists here.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” már létezik itt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="78"/>
         <source>The folder could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mappa létrehozása nem sikerült.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="108"/>
         <source>&quot;%1&quot; already exists there.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” már létezik ezen a helyen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="119"/>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="160"/>
         <source>The file it replaces could not be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>A felülírt fájl eltávolítása nem sikerült.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="139"/>
         <source>The file could not be moved there.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült oda áthelyezni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="151"/>
         <source>The chosen destination is the file itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>A kiválasztott cél maga a fájl.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="169"/>
         <source>Could not copy the file to the selected destination.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült a kiválasztott célhelyre másolni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="185"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl nem törölhető.</translation>
     </message>
 </context>
 <context>
@@ -15139,17 +15205,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/olicencedialog.cpp" line="58"/>
         <source>The licence text is missing from this build.</source>
-        <translation type="unfinished"></translation>
+        <translation>A licencszöveg hiányzik ebből a verzióból.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olicencedialog.cpp" line="76"/>
         <source>Licence texts</source>
-        <translation type="unfinished"></translation>
+        <translation>Licencszövegek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olicencedialog.cpp" line="94"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezárás</translation>
     </message>
 </context>
 <context>
@@ -15158,29 +15224,29 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="120"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="298"/>
         <source>Add Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="121"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="334"/>
         <source>Remove Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="122"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="122"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="127"/>
         <source>Notes</source>
-        <translation type="unfinished">Megjegyzések</translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="122"/>
         <source>Path</source>
-        <translation type="unfinished">Útvonal</translation>
+        <translation>Útvonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="123"/>
@@ -15188,47 +15254,47 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="307"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="343"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="124"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="125"/>
         <source>Logo name</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="126"/>
         <source>Notes:</source>
-        <translation type="unfinished">Megjegyzések:</translation>
+        <translation>Megjegyzések:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="152"/>
         <source>No logos yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs logó. Adjon hozzá egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="298"/>
         <source>SVG files (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-fájlok (*.svg)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="314"/>
         <source>Logo added</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó hozzáadva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="334"/>
         <source>Remove the logo &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a „%1” logót a könyvtárból?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="348"/>
         <source>Logo removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó törölve</translation>
     </message>
 </context>
 <context>
@@ -15236,12 +15302,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="54"/>
         <source>No logo selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kiválasztott logó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="62"/>
         <source>Invalid SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvénytelen SVG</translation>
     </message>
 </context>
 <context>
@@ -15249,42 +15315,42 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="260"/>
         <source>Ranges (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tartományok (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="271"/>
         <source>Group: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="305"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="306"/>
         <source>Full name</source>
-        <translation type="unfinished">Teljes név</translation>
+        <translation>Teljes név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="310"/>
         <source>Calculated value (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Számított érték (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="316"/>
         <source>Value (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Érték (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="317"/>
         <source>Base value (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alapérték (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="324"/>
         <source>Interval &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” intervallum</translation>
     </message>
 </context>
 <context>
@@ -15292,7 +15358,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/ifc/xml/oomtdocument.cpp" line="138"/>
         <source>File is not a valid Ostara measurement table. Expected root: &lt;%1&gt;, got: &lt;%2&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl nem érvényes Ostara-méréstáblázat. Várt gyökér: &lt;%1&gt;, kapott: &lt;%2&gt;.</translation>
     </message>
 </context>
 <context>
@@ -15300,7 +15366,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/ifc/xml/ootudocument.cpp" line="106"/>
         <source>File is not a valid Ostara measurement table. Expected root: &lt;%1&gt;, got: &lt;%2&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl nem érvényes Ostara-méréstáblázat. Várt gyökér: &lt;%1&gt;, kapott: &lt;%2&gt;.</translation>
     </message>
 </context>
 <context>
@@ -15308,17 +15374,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="53"/>
         <source>Export mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Export mód</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="54"/>
         <source>You have made changes. Your outputs must be regenerated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Módosításokat végzett. A kimeneteket újra kell generálni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="59"/>
         <source>Do not show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Az üzenet ne jelenjen meg újra</translation>
     </message>
 </context>
 <context>
@@ -15334,131 +15400,135 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="298"/>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="312"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Új mappa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="132"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="133"/>
         <source>Folder name</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="135"/>
         <source>Create the client of the same name</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonos nevű ügyfél létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="136"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="137"/>
         <source>Email:</source>
-        <translation type="unfinished">E-mail:</translation>
+        <translation>E-mail:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="138"/>
         <source>Email</source>
-        <translation type="unfinished"></translation>
+        <translation>E-mail</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="139"/>
         <source>Phone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="140"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="141"/>
         <source>Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Információk:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="142"/>
         <source>Information</source>
-        <translation type="unfinished">Információ</translation>
+        <translation>Információ</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="144"/>
         <source>Create the collection of the same name</source>
-        <translation type="unfinished"></translation>
+        <translation>Azonos nevű kollekció létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="145"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="146"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Év:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="147"/>
         <source>Period:</source>
-        <translation type="unfinished"></translation>
+        <translation>Időszak:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="148"/>
         <source>Period</source>
-        <translation type="unfinished"></translation>
+        <translation>Időszak</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="149"/>
         <source>Description:</source>
-        <translation type="unfinished">Leírás:</translation>
+        <translation>Leírás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="150"/>
         <source>Description</source>
-        <translation type="unfinished">Leírás</translation>
+        <translation>Leírás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="154"/>
         <source>Create</source>
-        <translation type="unfinished">Létrehozás</translation>
+        <translation>Létrehozás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="250"/>
         <source>A client called &quot;%1&quot; already exists in the Information block.
 
 Link the folder to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik „%1” nevű ügyfél az információblokkban.
+
+Összekapcsolja a mappát ezzel az ügyféllel?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="257"/>
         <source>Rename the folder or the client, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevezze át a mappát vagy az ügyfelet, hogy megkülönböztethetők legyenek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="267"/>
         <source>A collection called &quot;%1&quot; already exists in the Information block.
 
 Link the folder to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Már létezik „%1” nevű kollekció az információblokkban.
+
+Összekapcsolja a mappát ezzel a kollekcióval?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="274"/>
         <source>Rename the folder or the collection, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevezze át a mappát vagy a kollekciót, hogy megkülönböztethetők legyenek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="299"/>
         <source>The folder was created, but the client could not be: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A mappa létrejött, de az ügyfelet nem sikerült létrehozni: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="313"/>
         <source>The folder was created, but the collection could not be: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A mappa létrejött, de a kollekciót nem sikerült létrehozni: %1</translation>
     </message>
 </context>
 <context>
@@ -15466,36 +15536,36 @@ Link the folder to it?</source>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="72"/>
         <source>Pattern</source>
-        <translation type="unfinished">Szabásminta</translation>
+        <translation>Szabásminta</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="77"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="348"/>
         <source>Pattern name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minta neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="81"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="352"/>
         <source>Client:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="85"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="356"/>
         <source>Collection:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="89"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="360"/>
         <source>Fabric info:</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetadatok:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="117"/>
         <source>Seam Allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="124"/>
@@ -15503,54 +15573,54 @@ Link the folder to it?</source>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="374"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="395"/>
         <source>Applies to all pieces, including those created afterwards. Not retroactive: existing pieces are left unchanged.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden darabra vonatkozik, a később létrehozottakra is. Nem visszamenőleges: a meglévő darabok változatlanok maradnak.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="131"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="379"/>
         <source>Activate seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások aktiválása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="133"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="383"/>
         <source>Hide main path</source>
-        <translation type="unfinished">Fő útvonal elrejtése</translation>
+        <translation>Fő útvonal elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="387"/>
         <source>Show the second passmark on seam line</source>
-        <translation type="unfinished">A második bevágásjel megjelenítése a varrásvonalon</translation>
+        <translation>A második bevágásjel megjelenítése a varrásvonalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="137"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásvonal exportálása a rajzokkal (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="160"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
         <source>Activate information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információblokk aktiválása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információblokk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="255"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="364"/>
         <source>No client</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="281"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
         <source>No collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kollekció</translation>
     </message>
 </context>
 <context>
@@ -15558,22 +15628,22 @@ Link the folder to it?</source>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="164"/>
         <source>The file could not be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült megnyitni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="172"/>
         <source>The file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájl üres.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="178"/>
         <source>Not a pattern file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez nem szabásmintafájl.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="226"/>
         <source>The file could not be read: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlt nem sikerült beolvasni: %1</translation>
     </message>
 </context>
 <context>
@@ -15581,161 +15651,166 @@ Link the folder to it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="287"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminták könyvtára</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="289"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="290"/>
         <source>Search the patterns of every folder…</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés az összes mappa szabásmintái között…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="292"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>The folders of the library. Choose none to read the library&apos;s own folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár mappái. Ha egyet sem választ, a könyvtár saját mappáját olvassa.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Módosítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="299"/>
         <source>Description</source>
-        <translation type="unfinished">Leírás</translation>
+        <translation>Leírás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="300"/>
         <source>Notes</source>
-        <translation type="unfinished">Megjegyzések</translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="301"/>
         <source>Fabric info</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetadatok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="303"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="443"/>
         <source>Transfer to another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Áthelyezés másik mappába</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="447"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="451"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="679"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="698"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="488"/>
         <source>No pattern matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyetlen szabásminta sem felel meg a keresésnek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="489"/>
         <source>This folder holds no pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem tartalmaz szabásmintát.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="592"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="555"/>
         <source>Transfer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” áthelyezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="560"/>
         <source>Move to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Áthelyezés ide:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="570"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="607"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="621"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Áthelyezés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="608"/>
         <source>&quot;%1&quot; already exists in that folder.
 
 Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” már létezik ebben a mappában.
+
+Lecseréli?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="643"/>
         <source>Export &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="645"/>
         <source>Pattern files (*.%1);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásmintafájlok (*.%1);;Minden fájl (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="662"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálási hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="666"/>
         <source>Export successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Sikeres exportálás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="666"/>
         <source>Pattern exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta exportálva ide:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="680"/>
         <source>&quot;%1&quot; is the pattern that is open in Ostara.
 
 Close it before deleting it.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” az Ostara programban megnyitott szabásminta.
+
+Törlés előtt zárja be.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="686"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="687"/>
@@ -15744,7 +15819,11 @@ Close it before deleting it.</source>
 %2
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a „%1” szabásmintát?
+
+%2
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
 </context>
 <context>
@@ -15753,68 +15832,68 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="141"/>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="295"/>
         <source>Open a pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminta megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="143"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminták könyvtára</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="144"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="145"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="146"/>
         <source>Search this folder&apos;s patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés ebben a mappában</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="149"/>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="184"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="152"/>
         <source>Another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy másik mappa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="153"/>
         <source>Browse files…</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlok tallózása…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="154"/>
         <source>Open a .ostara file from any folder on the computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy .ostara fájl megnyitása a számítógép bármely mappájából.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="266"/>
         <source>This folder holds no pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem tartalmaz szabásmintát.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="270"/>
         <source>No pattern matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyetlen szabásminta sem felel meg a keresésnek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="274"/>
         <source>Double-click a pattern to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson duplán egy szabásmintára a megnyitásához.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="293"/>
         <source>Pattern files</source>
-        <translation type="unfinished">Mintafájlok</translation>
+        <translation>Mintafájlok</translation>
     </message>
 </context>
 <context>
@@ -15823,25 +15902,25 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="49"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="110"/>
         <source>Pattern</source>
-        <translation type="unfinished">Szabásminta</translation>
+        <translation>Szabásminta</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="54"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="111"/>
         <source>Pattern name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minta neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="58"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="112"/>
         <source>Description:</source>
-        <translation type="unfinished">Leírás:</translation>
+        <translation>Leírás:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="62"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="113"/>
         <source>Notes:</source>
-        <translation type="unfinished">Megjegyzések:</translation>
+        <translation>Megjegyzések:</translation>
     </message>
 </context>
 <context>
@@ -15849,7 +15928,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/opieceautomation.cpp" line="518"/>
         <source>Select at least two points of a curve to determine its direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelöljön ki legalább két pontot egy görbén az irányának meghatározásához</translation>
     </message>
 </context>
 <context>
@@ -15857,17 +15936,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp" line="359"/>
         <source>This piece calls %1 by a name the pattern composes. A composed name cannot travel into a library piece: give that object an alias, then call it by its alias.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab a(z) %1 elemet a minta által összeállított néven hívja. Az összeállított név nem vihető át könyvtárdarabba: adjon aliast ehhez az objektumhoz, majd az aliasszal hívja meg.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp" line="364"/>
         <source>%1 calls %2 of this piece by a name the pattern composes. A composed name cannot travel into a library piece: give that object an alias, then call it by its alias.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 a darab %2 elemét a minta által összeállított néven hívja. Az összeállított név nem vihető át könyvtárdarabba: adjon aliast ehhez az objektumhoz, majd az aliasszal hívja meg.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp" line="390"/>
         <source>There is no block named %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs %1 nevű blokk.</translation>
     </message>
 </context>
 <context>
@@ -15875,27 +15954,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="56"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="58"/>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélésanyag</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="60"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="74"/>
         <source>Cut</source>
-        <translation type="unfinished">Kivágás</translation>
+        <translation>Kivágás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="87"/>
         <source>On fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásra</translation>
     </message>
 </context>
 <context>
@@ -15903,37 +15982,37 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="67"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="68"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Tovább</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="69"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="181"/>
         <source>Cannot calculate curve %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A %1 görbe kiszámítása nem sikerült.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="189"/>
         <source>You need more points!</source>
-        <translation type="unfinished">Több pontra van szükség!</translation>
+        <translation>Több pontra van szükség!</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="194"/>
         <source>You have to choose points in a clockwise direction!</source>
-        <translation type="unfinished">A pontokat az óramutató járásával megegyező irányban kell kiválasztania!</translation>
+        <translation>A pontokat az óramutató járásával megegyező irányban kell kiválasztania!</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="255"/>
         <source>Select main path objects clockwise, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
-        <translation type="unfinished"></translation>
+        <translation>A fő kontúr objektumainak kijelölése az óramutató járásával megegyezően, &lt;b&gt;%1&lt;/b&gt; - a létrehozás befejezése</translation>
     </message>
 </context>
 <context>
@@ -15941,7 +16020,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecegroupdialog.cpp" line="40"/>
         <source>Link pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok összekapcsolása</translation>
     </message>
 </context>
 <context>
@@ -15949,17 +16028,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecegroupholderitem.cpp" line="526"/>
         <source>Press Escape to leave the thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyomja meg az Esc billentyűt a miniatűr elhagyásához</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecegroupholderitem.cpp" line="821"/>
         <source>In layout</source>
-        <translation type="unfinished">Az elrendezésben</translation>
+        <translation>Az elrendezésben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecegroupholderitem.cpp" line="829"/>
         <source>Unlink all</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden kapcsolat bontása</translation>
     </message>
 </context>
 <context>
@@ -15967,7 +16046,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecegrouplayoutflags.cpp" line="150"/>
         <source>Layout flags of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport elrendezési beállításai</translation>
     </message>
 </context>
 <context>
@@ -15975,22 +16054,22 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="283"/>
         <source>The piece does not say which unit its lengths are written in, and a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab nem adja meg, milyen mértékegységben szerepelnek a hosszai, pedig a darab milliméterben, centiméterben vagy hüvelykben íródik. Így nem olvasható be.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="287"/>
         <source>The piece says its lengths are written in %1, which is not a unit a piece may carry: a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab azt jelzi, hogy a hosszai %1 mértékegységben íródtak, ami nem olyan egység, amelyet egy darab hordozhat: a darab milliméterben, centiméterben vagy hüvelykben íródik. Így nem olvasható be.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="298"/>
         <source>The piece is in %1 and this pattern is in %2. A pattern holds one unit from end to end, and a piece is never converted: import it into a pattern of its own unit.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab %1, ez a szabásminta pedig %2 egységben van. Egy szabásminta végig egyetlen mértékegységet használ, és a darab soha nem konvertálódik: importálja egy azonos egységű szabásmintába.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="329"/>
         <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ennek a szabásmintának még nincs méréstáblázata, a darabot pedig táblázat alapján olvassa be: a képleteit a táblázat méréseivel értékeli ki. Töltsön be egy méréstáblázatot, majd illessze be a darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="361"/>
@@ -15999,12 +16078,16 @@ This action cannot be undone.</source>
 Missing: %1
 
 Load a measurement table that defines them, then insert the piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta méréstáblája nem definiál minden mérést, amelyet a darab beolvas.
+
+Hiányzik: %1
+
+Töltsön be egy méréstáblát, amely definiálja őket, majd szúrja be a darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="526"/>
         <source>This piece reads %1, and no piece of this pattern declares it. Import the piece it comes from first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab beolvassa a %1 értéket, és a szabásminta egyetlen darabja sem deklarálja. Először importálja azt a darabot, amelyből származik.</translation>
     </message>
 </context>
 <context>
@@ -16012,103 +16095,103 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="17"/>
         <source>Insert a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab beszúrása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="30"/>
         <source>Piece name</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="39"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="46"/>
         <source>Unique pattern piece name</source>
-        <translation type="unfinished">Egyedi mintadarabnév</translation>
+        <translation>Egyedi mintadarabnév</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="66"/>
         <source>Names of the piece&apos;s objects</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab objektumainak nevei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="102"/>
         <source>Insert the piece</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab beszúrása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="178"/>
         <source>Reference pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenciadarabok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="190"/>
         <source>Read %1 from:</source>
         <comment>the piece this one reads values in</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 beolvasása innen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="208"/>
         <source>The piece needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabnak nevet kell adni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="212"/>
         <source>A piece of this pattern already wears this name.</source>
-        <translation type="unfinished"></translation>
+        <translation>E szabásminta egyik darabja már viseli ezt a nevet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="230"/>
         <source>Two names cannot be the same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Két név nem lehet azonos.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="301"/>
         <source>Line</source>
-        <translation type="unfinished">Vonal</translation>
+        <translation>Vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="303"/>
         <source>Arc</source>
-        <translation type="unfinished">Ív</translation>
+        <translation>Ív</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="305"/>
         <source>Elliptical arc</source>
-        <translation type="unfinished">Elliptikus ív</translation>
+        <translation>Elliptikus ív</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="310"/>
         <source>Curve</source>
-        <translation type="unfinished">Görbe</translation>
+        <translation>Görbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="325"/>
         <source>A name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>A név nem lehet üres.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="330"/>
         <source>A name cannot hold a space nor a reserved character.</source>
-        <translation type="unfinished"></translation>
+        <translation>A név nem tartalmazhat szóközt vagy fenntartott karaktert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="335"/>
         <source>The pattern already answers to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta már a %1 nevet viseli.</translation>
     </message>
 </context>
 <context>
@@ -16117,37 +16200,37 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="244"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Szám</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="69"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="260"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="70"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="261"/>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélésanyag</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="71"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="262"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="75"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="258"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabad szöveg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="170"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="250"/>
         <source>Quantity</source>
-        <translation type="unfinished"></translation>
+        <translation>Mennyiség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="175"/>
@@ -16155,7 +16238,7 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="254"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="255"/>
         <source>On fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásra</translation>
     </message>
 </context>
 <context>
@@ -16163,7 +16246,7 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="265"/>
         <source>Insert the piece &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” darab beszúrása</translation>
     </message>
 </context>
 <context>
@@ -16171,65 +16254,63 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="242"/>
         <source>Not a piece file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez nem darabfájl.</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="309"/>
         <source>%n measurement(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n mérés</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="314"/>
         <source>Nothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Semmi</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="323"/>
         <source>This piece could not be read: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabot nem sikerült beolvasni: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="326"/>
         <source>From other pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Más darabokból:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="330"/>
         <source>Nothing: everything it reads, it declares.</source>
-        <translation type="unfinished"></translation>
+        <translation>Semmi: mindent, amit beolvas, deklarál is.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="341"/>
         <source>%1 - no piece declares it</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: egyetlen darab sem deklarálja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="351"/>
         <source>Measurements it reads:</source>
-        <translation type="unfinished"></translation>
+        <translation>Az általa beolvasott mérések:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="354"/>
         <source>None.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy sem.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="390"/>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="404"/>
         <source>This file is not a piece: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a fájl nem darab: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="415"/>
         <source>This piece does not match the piece format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab nem felel meg a darabformátumnak: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="429"/>
         <source>The piece could not be copied to the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabot nem sikerült a könyvtárba másolni.</translation>
     </message>
 </context>
 <context>
@@ -16238,53 +16319,53 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="273"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="642"/>
         <source>Piece library</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabkönyvtár</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="275"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keresés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="276"/>
         <source>Search pieces…</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab keresése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="277"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="285"/>
         <source>Needs</source>
-        <translation type="unfinished"></translation>
+        <translation>Igényel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Egység</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Módosítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="281"/>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Beszúrás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="282"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="283"/>
@@ -16293,133 +16374,140 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="906"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="924"/>
         <source>Import a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab importálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="286"/>
         <source>Notes</source>
-        <translation type="unfinished">Megjegyzések</translation>
+        <translation>Megjegyzések</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="287"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="603"/>
         <source>What you want to remember about this piece…</source>
-        <translation type="unfinished"></translation>
+        <translation>Amit meg szeretne jegyezni erről a darabról…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="497"/>
         <source>Transfer to another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Áthelyezés másik mappába</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="501"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="505"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="576"/>
         <source>No piece is saved in the library yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtárban még nincs mentett darab.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="580"/>
         <source>No piece matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyetlen darab sem felel meg a keresésnek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="584"/>
         <source>This folder holds no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mappa nem tartalmaz darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="701"/>
         <source>Transfer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” áthelyezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="706"/>
         <source>Move to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Áthelyezés ide:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="716"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="757"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="771"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Áthelyezés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="738"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="758"/>
         <source>&quot;%1&quot; already exists in that folder.
 
 Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” már létezik ebben a mappában.
+
+Lecseréli?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="793"/>
         <source>Export &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="795"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="907"/>
         <source>Ostara piece (*.%1);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara darab (*.%1);;Minden fájl (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="816"/>
         <source>Export successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Sikeres exportálás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="816"/>
         <source>Piece exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab exportálva ide:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="812"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálási hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="825"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Törlés megerősítése</translation>
+        <translation>Törlés megerősítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="826"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Biztosan törli a „%1” elemet?
+
+Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="837"/>
         <source>Error</source>
-        <translation type="unfinished">Hiba</translation>
+        <translation>Hiba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="882"/>
         <source>The library already holds a piece named &quot;%1&quot;.
 
 Name the piece entering:</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtárban már van „%1” nevű darab.
+
+Adja meg a belépő darab nevét:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="893"/>
         <source>A piece name cannot be empty nor hold a slash.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab neve nem lehet üres, és nem tartalmazhat perjelet.</translation>
     </message>
 </context>
 <context>
@@ -16427,67 +16515,67 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="59"/>
         <source>Pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminta neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="66"/>
         <source>No client</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="88"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="96"/>
         <source>No collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kollekció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="119"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="134"/>
         <source>Fabric info</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetadatok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="144"/>
         <source>Seam Allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="146"/>
         <source>Activate seam allowances for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások aktiválása minden darabnál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="149"/>
         <source>Hide main path for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>A fő kontúr elrejtése minden darabnál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
         <source>Show the second passmark on seam line for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>A második bevágásjel megjelenítése a varrásvonalon minden darabnál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="155"/>
         <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásvonal exportálása a rajzokkal minden darabnál (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="166"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Információs blokk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="169"/>
         <source>Activate information block for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Az információs blokk aktiválása minden darabnál</translation>
     </message>
 </context>
 <context>
@@ -16495,62 +16583,62 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="61"/>
         <source>Piece name</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="78"/>
         <source>Piece number</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabszám</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="84"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="85"/>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélésanyag</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="86"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="103"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabad szöveg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="131"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha a másolatok száma 1-nél nagyobb, és a „Tükrözés kényszerítése” be van jelölve, a darab minden páros sorszámú másolata függőlegesen tükröződik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="126"/>
         <source>Force flipping</source>
-        <translation type="unfinished">Tükrözés kényszerítése</translation>
+        <translation>Tükrözés kényszerítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="127"/>
         <source>Force piece to be always flipped in a layout.</source>
-        <translation type="unfinished">A darab mindig tükrözve legyen az elrendezésben.</translation>
+        <translation>A darab mindig tükrözve legyen az elrendezésben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
         <source>Symmetrical copy</source>
-        <translation type="unfinished">Szimmetrikus másolat</translation>
+        <translation>Szimmetrikus másolat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="148"/>
         <source>Quantity</source>
-        <translation type="unfinished"></translation>
+        <translation>Mennyiség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="152"/>
         <source>On fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtásra</translation>
     </message>
 </context>
 <context>
@@ -16558,37 +16646,37 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="347"/>
         <source>You clicked the same point twice.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyanarra a pontra kétszer kattintott.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="349"/>
         <source>Put a pleat value greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon meg nullánál nagyobb ráncértéket.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="351"/>
         <source>Every object you selected must be on the same side of the departure lines.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az összes kijelölt objektumnak a kiindulási vonalak ugyanazon oldalán kell lennie.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="354"/>
         <source>The edge was not recognized at one end of a departure line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az élt egy kiindulási vonal végénél nem ismerte fel a program.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="357"/>
         <source>This edge is parallel to the fold line: no cap is possible here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az él párhuzamos a hajtásvonallal: itt nem lehetséges lezárás.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="360"/>
         <source>The notch of a pleat falls past the end of the edge it should mark.</source>
-        <translation type="unfinished"></translation>
+        <translation>A ránc bevágása túl esik azon az élen, amelyet meg kellene jelölnie.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="363"/>
         <source>Two departure lines share a point, and the pleats do not carry them together: no cap can be built there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Két kiindulási vonal osztozik egy ponton, és a ráncok nem viszik át őket együtt: ott nem építhető lezárás.</translation>
     </message>
 </context>
 <context>
@@ -16598,70 +16686,72 @@ Name the piece entering:</source>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="323"/>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="332"/>
         <source>Save the pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="160"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="161"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Fájlnév</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="163"/>
         <source>Add to the pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás a szabásmintakönyvtárhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="165"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásmintakönyvtár</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="166"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="168"/>
         <source>Save to another folder…</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés másik mappába…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="172"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="208"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="266"/>
         <source>The folder will be asked for when you save.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mentéskor kérni fogja a mappát.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="273"/>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="323"/>
         <source>Give the file a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon nevet a fájlnak.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="277"/>
         <source>Will be saved in: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide lesz mentve: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="333"/>
         <source>&quot;%1&quot; already exists in this folder.
 
 Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” már létezik ebben a mappában.
+
+Lecseréli?</translation>
     </message>
 </context>
 <context>
@@ -16669,127 +16759,127 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="17"/>
         <source>Save piece to the library</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab mentése a könyvtárba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="35"/>
         <source>Pattern piece name:</source>
-        <translation type="unfinished">Szabásminta rész neve:</translation>
+        <translation>Szabásminta rész neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="42"/>
         <source>The name the piece will wear in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>A név, amelyet a darab a könyvtárban viselni fog</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="45"/>
         <source>Name the piece in the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevezze el a darabot a könyvtárban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="52"/>
         <source>Notes:</source>
-        <translation type="unfinished">Megjegyzések:</translation>
+        <translation>Megjegyzések:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="74"/>
         <source>What you want to remember about this piece…</source>
-        <translation type="unfinished"></translation>
+        <translation>Amit meg szeretne jegyezni erről a darabról…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="89"/>
         <source>A piece is written as a file in the library, so its name cannot hold a slash.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab fájlként íródik a könyvtárba, ezért a neve nem tartalmazhat perjelet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="96"/>
         <source>Folder in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa a könyvtárban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="124"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="144"/>
         <source>Objects with no name</source>
-        <translation type="unfinished"></translation>
+        <translation>Névtelen objektumok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="150"/>
         <source>This piece shares objects that have no name. Please name them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab névtelen objektumokat oszt meg. Kérjük, nevezze el őket.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="93"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="120"/>
         <source>Give the file a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon nevet a fájlnak.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="121"/>
         <source>Will be saved in: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ide lesz mentve: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
         <source>Called in</source>
-        <translation type="unfinished"></translation>
+        <translation>Használat helye</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="196"/>
         <source>Line</source>
-        <translation type="unfinished">Vonal</translation>
+        <translation>Vonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="198"/>
         <source>Arc</source>
-        <translation type="unfinished">Ív</translation>
+        <translation>Ív</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="200"/>
         <source>Elliptical arc</source>
-        <translation type="unfinished">Elliptikus ív</translation>
+        <translation>Elliptikus ív</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="205"/>
         <source>Curve</source>
-        <translation type="unfinished">Görbe</translation>
+        <translation>Görbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="213"/>
         <source>A name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>A név nem lehet üres.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="218"/>
         <source>A name cannot hold a space nor a reserved character.</source>
-        <translation type="unfinished"></translation>
+        <translation>A név nem tartalmazhat szóközt vagy fenntartott karaktert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="223"/>
         <source>Two names cannot be the same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Két név nem lehet azonos.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="315"/>
         <source>The pattern already answers to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta már a %1 nevet viseli.</translation>
     </message>
 </context>
 <context>
@@ -16797,112 +16887,112 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="204"/>
         <source>Add margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="205"/>
         <source>Remove margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="206"/>
         <source>Move up</source>
-        <translation type="unfinished">Mozgatás fel</translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="207"/>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás le</translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="208"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="208"/>
         <source>Recognised by</source>
-        <translation type="unfinished"></translation>
+        <translation>Felismerés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="209"/>
         <source>Selected margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölt varrásráhagyás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="210"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="211"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="219"/>
         <source>is exactly</source>
-        <translation type="unfinished"></translation>
+        <translation>pontosan</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="223"/>
         <source>is at least</source>
-        <translation type="unfinished"></translation>
+        <translation>legalább</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="228"/>
         <source>This is the default margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az alapértelmezett varrásráhagyás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="229"/>
         <source>The margin a pattern keeps when nothing has been changed on it.</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásráhagyás, amelyet a szabásminta megtart, ha rajta semmit sem változtattak.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="230"/>
         <source>The default margin is the width set in the preferences (Pattern page). Its line appears only on patterns whose pieces really are cut with that width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az alapértelmezett varrásráhagyás a beállításokban (Szabásminta oldal) megadott szélesség. Vonala csak azokon a szabásmintákon jelenik meg, amelyek darabjai valóban ezzel a szélességgel vannak szabva.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="236"/>
         <source>Margin languages</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások nyelvei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="236"/>
         <source>Every margin is named in all of them</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden varrásráhagyás minden nyelven el van nevezve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="288"/>
         <source>default</source>
-        <translation type="unfinished">alapértelmezett</translation>
+        <translation>alapértelmezett</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="290"/>
         <source>from %1 on</source>
-        <translation type="unfinished"></translation>
+        <translation>%1-től</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="291"/>
         <source>exactly %1</source>
-        <translation type="unfinished"></translation>
+        <translation>pontosan %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="491"/>
         <source>New margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Új varrásráhagyás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="505"/>
         <source>Margin added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás hozzáadva.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="524"/>
         <source>Margin removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás törölve.</translation>
     </message>
 </context>
 <context>
@@ -16910,22 +17000,22 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="86"/>
         <source>No margin selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kijelölt varrásráhagyás.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="114"/>
         <source>The application&apos;s default seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Az alkalmazás alapértelmezett varrásráhagyása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="115"/>
         <source>from %1 on</source>
-        <translation type="unfinished"></translation>
+        <translation>%1-től</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="116"/>
         <source>exactly %1</source>
-        <translation type="unfinished"></translation>
+        <translation>pontosan %1</translation>
     </message>
 </context>
 <context>
@@ -16933,104 +17023,104 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="217"/>
         <source>Add symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólum hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="218"/>
         <source>Remove symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólum törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="219"/>
         <source>Move up</source>
-        <translation type="unfinished">Mozgatás fel</translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="220"/>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás le</translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="221"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="221"/>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="225"/>
         <source>Text</source>
-        <translation type="unfinished">Szöveg</translation>
+        <translation>Szöveg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="222"/>
         <source>Selected symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Kijelölt szimbólum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="223"/>
         <source>Marks</source>
-        <translation type="unfinished">Jelek</translation>
+        <translation>Jelek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="224"/>
         <source>Add another mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Újabb jel hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="229"/>
         <source>Permanent</source>
-        <translation type="unfinished"></translation>
+        <translation>Állandó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="230"/>
         <source>Shown on every cover page that uses this template.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden olyan borítóoldalon megjelenik, amely ezt a sablont használja.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="231"/>
         <source>A permanent symbol appears on every cover page that uses this template, without being asked for. The others are added page by page, where they are wanted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy állandó szimbólum minden olyan borítóoldalon megjelenik, amely ezt a sablont használja, anélkül hogy kérni kellene. A többit oldalanként adjuk hozzá, oda, ahol szeretnénk.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="235"/>
         <source>Symbol languages</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumok nyelvei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="235"/>
         <source>Every symbol is written in all of them</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden szimbólum minden nyelven meg van írva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="289"/>
         <source>No symbols yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs szimbólum. Adjon hozzá egyet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="431"/>
         <source>Remove this mark</source>
-        <translation type="unfinished"></translation>
+        <translation>A jel eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="582"/>
         <source>Symbol added</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólum hozzáadva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="596"/>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="722"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="596"/>
         <source>Remove &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Törli a(z) „%1” szimbólumot a könyvtárból?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="611"/>
         <source>Symbol removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólum törölve</translation>
     </message>
 </context>
 <context>
@@ -17038,7 +17128,7 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbolpreview.cpp" line="81"/>
         <source>No symbol selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs kiválasztott szimbólum</translation>
     </message>
 </context>
 <context>
@@ -17048,7 +17138,9 @@ Replace it?</source>
         <source>This template has been changed and not saved.
 
 Save it before leaving it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezt a sablont módosították, és nem mentették el.
+
+Elmenti, mielőtt elhagyja?</translation>
     </message>
 </context>
 <context>
@@ -17057,12 +17149,12 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/Template/otemplatelanguagerow.cpp" line="115"/>
         <location filename="../../src/app/ostara/widgets/Template/otemplatelanguagerow.cpp" line="197"/>
         <source>Add language</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyelv hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatelanguagerow.cpp" line="187"/>
         <source>Remove language</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyelv eltávolítása</translation>
     </message>
 </context>
 <context>
@@ -17071,345 +17163,345 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="66"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="61"/>
         <source>Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Betűcsalád</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="68"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="63"/>
         <source>Font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Betűvastagság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="65"/>
         <source>Font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Betűméret (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="73"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="68"/>
         <source>Line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortávolság (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="98"/>
         <source>Text</source>
-        <translation type="unfinished">Szöveg</translation>
+        <translation>Szöveg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="102"/>
         <source>Your text</source>
-        <translation type="unfinished"></translation>
+        <translation>Az Ön szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="114"/>
         <source>5 cm square</source>
-        <translation type="unfinished"></translation>
+        <translation>5 cm-es négyzet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="117"/>
         <source>3&quot; square</source>
-        <translation type="unfinished"></translation>
+        <translation>3 hüvelykes négyzet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="122"/>
         <source>Square test</source>
-        <translation type="unfinished"></translation>
+        <translation>Négyzetes teszt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="126"/>
         <source>Corner font family</source>
-        <translation type="unfinished"></translation>
+        <translation>A sarok betűcsaládja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="129"/>
         <source>Corner font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>A sarok betűvastagsága</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="132"/>
         <source>Corner font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A sarok betűmérete (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="135"/>
         <source>Corner line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A sarok sortávolsága (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="147"/>
         <source>Center font family</source>
-        <translation type="unfinished"></translation>
+        <translation>A közép betűcsaládja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="150"/>
         <source>Center font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>A közép betűvastagsága</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="153"/>
         <source>Center font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A közép betűmérete (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="156"/>
         <source>Center line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A közép sortávolsága (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="171"/>
         <source>Written for</source>
-        <translation type="unfinished"></translation>
+        <translation>Kinek készült</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="177"/>
         <source>Axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengelyek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="195"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="254"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="450"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Cím</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="204"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="278"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="475"/>
         <source>Title separator</source>
-        <translation type="unfinished"></translation>
+        <translation>A cím elválasztója</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="212"/>
         <source>Axis font family</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely betűcsaládja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="215"/>
         <source>Axis font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely betűvastagsága</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="218"/>
         <source>Axis font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely betűmérete (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="221"/>
         <source>Axis line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely sortávolsága (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="227"/>
         <source>Axis value</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely értéke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="236"/>
         <source>Separator between axe and value</source>
-        <translation type="unfinished"></translation>
+        <translation>Elválasztó a tengely és az érték között</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="266"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="463"/>
         <source>Rename the title</source>
-        <translation type="unfinished"></translation>
+        <translation>A cím átnevezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="288"/>
         <source>Symbol font family</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólumok betűcsaládja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="291"/>
         <source>Symbol font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólumok betűvastagsága</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="294"/>
         <source>Symbol font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólumok betűmérete (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="297"/>
         <source>Symbol line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólumok sortávolsága (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="301"/>
         <source>Symbol text</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólum szövege</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="310"/>
         <source>Symbol separator</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólumok elválasztója</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="321"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="355"/>
         <source>Graded axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokozási tengely</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="369"/>
         <source>Sizes font family</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretek betűcsaládja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="372"/>
         <source>Sizes font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretek betűvastagsága</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="375"/>
         <source>Sizes font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretek betűmérete (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="378"/>
         <source>Sizes line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretek sortávolsága (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="382"/>
         <source>Size value</source>
-        <translation type="unfinished"></translation>
+        <translation>A méret értéke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="437"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="649"/>
         <source>Seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="442"/>
         <source>Included in the drawings</source>
-        <translation type="unfinished"></translation>
+        <translation>Benne van a rajzokban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="443"/>
         <source>Not included</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs benne</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="484"/>
         <source>Margin font family</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásráhagyások betűcsaládja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="487"/>
         <source>Margin font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásráhagyások betűvastagsága</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="490"/>
         <source>Margin font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásráhagyások betűmérete (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="493"/>
         <source>Margin line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásráhagyások sortávolsága (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="497"/>
         <source>Margin lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás-vonalak</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="507"/>
         <source>Name separator</source>
-        <translation type="unfinished"></translation>
+        <translation>A név elválasztója</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="513"/>
         <source>Separator between name and value</source>
-        <translation type="unfinished"></translation>
+        <translation>Elválasztó a név és az érték között</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="520"/>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Mértékegységek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="529"/>
         <source>Separator between units</source>
-        <translation type="unfinished"></translation>
+        <translation>Elválasztó a mértékegységek között</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="573"/>
         <source>Height</source>
-        <translation type="unfinished">Magasság</translation>
+        <translation>Magasság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="598"/>
         <source>A text of your own - written here, so that every cover page made with this template says it, or filled in for each pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy saját szöveg - ide írva, hogy minden ezzel a sablonnal készült borítóoldal viselje, vagy szabásmintánként kitöltve.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="607"/>
         <source>Two squares of a known size, to check that the page is printed at its true size. The wording in the middle is the name of this information, written once per display language.</source>
-        <translation type="unfinished"></translation>
+        <translation>Két ismert méretű négyzet, hogy ellenőrizhesse: az oldal valódi méretében nyomtatódik-e. A középen álló felirat ennek az információnak a neve, megjelenítési nyelvenként egyszer megírva.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="621"/>
         <source>Size(s) - .omt</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret(ek) - .omt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="622"/>
         <source>The sizes the printed sheet holds, so that its reader knows which trace is which. The content adapts by itself: an output generated from a single size states it, an output generated from a size range lists them. For the preview to show anything, the pattern must have a .omt size table loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>A kinyomtatott lapon szereplő méretek, hogy olvasója tudja, melyik rajz melyik. A tartalom magától alkalmazkodik: az egyetlen méretből generált kimenet megnevezi, a mérettartományból generált kimenet felsorolja őket. Ahhoz, hogy az előnézet mutasson valamit, a szabásmintában be kell tölteni egy .omt mérettáblázatot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="636"/>
         <location filename="../../src/app/ostara/core/ocoversymbols.cpp" line="40"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="637"/>
         <source>What the marks on the pattern mean: one line per symbol your library holds as permanent, followed by the ones this pattern chose - in their own order. Symbols themselves are written and ordered in the Symbols page; the ones that wait to be chosen are picked per pattern, in the Cover page dock.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hogy mit jelentenek a szabásminta jelei: egy sor minden olyan szimbólumhoz, amelyet a könyvtára állandóként tart, majd azok, amelyeket ez a szabásminta kiválasztott - a saját sorrendjükben. Magukat a szimbólumokat a Szimbólumok oldalon írja és rendezi; azokat, amelyek a kiválasztásra várnak, szabásmintánként választja ki, a Borítóoldal panelen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="650"/>
         <source>Whether the seam allowances are part of the drawings and, when they are, the name of each margin the pattern is cut with: one line per width the pattern actually carries. The names are written in the Seam allowances page, and a pattern must be open for the preview to show them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hogy a varrásráhagyások részei-e a rajzoknak, és ha igen, minden egyes varrásráhagyás neve, amellyel a szabásminta szabva van: egy sor minden szélességhez, amelyet a szabásminta valóban hordoz. A neveket a Varrásráhagyások oldalon írja meg, és az előnézethez meg kell nyitni egy szabásmintát.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="660"/>
         <source>Space</source>
-        <translation type="unfinished">szóköz</translation>
+        <translation>szóköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="661"/>
         <source>An empty space, to set the page out: give it the height it should take, and nothing is drawn in it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Üres hely az oldal levegősebbé tételéhez: adja meg, mekkora magasságot vegyen fel, és semmi nem rajzolódik bele.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="192"/>
         <source>Measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="72"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="80"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="84"/>
         <source>Separator</source>
-        <translation type="unfinished">Elválasztó</translation>
+        <translation>Elválasztó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="90"/>
         <source>Number format</source>
-        <translation type="unfinished"></translation>
+        <translation>Számformátum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="90"/>
@@ -17417,167 +17509,167 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="93"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="197"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="92"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="95"/>
         <source>Logo size (cm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó mérete (cm)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="102"/>
         <source>Cut</source>
-        <translation type="unfinished">Kivágás</translation>
+        <translation>Kivágás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="132"/>
         <source>Rename the axis and its values</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely és értékeinek átnevezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="149"/>
         <source>Rename the measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérés átnevezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="583"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="161"/>
         <source>Pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminta neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="584"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="162"/>
         <source>The name of the pattern (set in the pattern toolbar).</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta neve (a szabásminta eszköztárában állítható be).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="164"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfél</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="165"/>
         <source>The client&apos;s name, birth date and email from the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az ügyfél neve, születési dátuma és e-mail-címe a dokumentumból.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="167"/>
         <source>Piece name</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="168"/>
         <source>The name of the piece (from the piece options).</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab neve (a darab beállításaiból).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="170"/>
         <source>Piece number</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab száma</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="171"/>
         <source>The piece number and its total, e.g. 1 of 10. The total shown here is an example - it is computed automatically from the number of pieces in the layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab száma és az összes darab, pl. 1 a 10-ből. Az itt látható összes darabszám csak példa - a szabászati terv darabjainak számából automatikusan számítódik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="175"/>
         <source>Cut (Fabric / Interfacing / Lining)</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabás (Szövet / Kötőanyag / Bélés)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="176"/>
         <source>One section covers all three fabrics - no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy szakasz mindhárom anyagot lefedi - nem kell többször hozzáadni a Szabás szakaszt. Az itt látható értékek csak példák, hogy lássa, hogyan jelenik meg a szakasz: a darabokban a vágási mennyiségeket darabonként adják meg, és alapértelmezés szerint üresek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="188"/>
         <source>Requires a multi-size table (.omt). Shows the size axes you tick, each with its value under a name of your own. With a single-size table, this information is simply ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Többméretes táblázatot (.omt) igényel. A bejelölt mérettengelyeket mutatja, mindegyiket az értékével együtt, az Ön által adott név alatt. Egyméretes táblázatnál ez az információ egyszerűen figyelmen kívül marad.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="597"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="182"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabad szöveg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="183"/>
         <source>Free text entered per piece in the information block. It can span several lines.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az információblokkban darabonként megadott szabad szöveg. Több sorra is terjedhet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="187"/>
         <source>Sizes (Height, Commercial size, Group...)</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretek (Magasság, Kereskedelmi méret, Csoport...)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="193"/>
         <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta mérettáblázatából olvasva. A mérés teljes nevét, a referenciamérethez számított értékét és mértékegységét mutatja.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="589"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="198"/>
         <source>A logo from your library (add your SVG logos in the Logo page).</source>
-        <translation type="unfinished"></translation>
+        <translation>Logó a könyvtárából (SVG-logóit a Logó oldalon adhatja hozzá).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="201"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekció</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="202"/>
         <source>The collection name.</source>
-        <translation type="unfinished"></translation>
+        <translation>A kollekció neve.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="204"/>
         <source>Fabric info</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetadatok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="205"/>
         <source>Fabric information (nature, material, weight…).</source>
-        <translation type="unfinished"></translation>
+        <translation>A szövet adatai (jelleg, anyag, súly…).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpageresolver.cpp" line="106"/>
         <source>Size</source>
-        <translation type="unfinished">Méret</translation>
+        <translation>Méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpageresolver.cpp" line="110"/>
         <source>Sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverseamallowances.cpp" line="39"/>
         <source>Seam allowances included</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás benne van</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverseamallowances.cpp" line="41"/>
         <source>Seam allowances not included</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás nincs benne</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="179"/>
         <source>Seam allowances in centimeters (in inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás centiméterben (hüvelykben)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="184"/>
         <source>Seam allowances in centimeters</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás centiméterben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="189"/>
         <source>Seam allowances in inches</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás hüvelykben</translation>
     </message>
 </context>
 <context>
@@ -17585,62 +17677,62 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="137"/>
         <source>Select a section to edit its settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válasszon ki egy szakaszt a beállításainak szerkesztéséhez.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="309"/>
         <source>Extra vertical space below this line. 0 = default spacing, negative = tighter, positive = more space. It counts on the last line of the information as well, which is what moves what stands beneath it.</source>
-        <translation type="unfinished"></translation>
+        <translation>További függőleges hely e sor alatt. 0 = alapértelmezett térköz, negatív = szorosabb, pozitív = több hely. Az információ utolsó során is számít, és ez mozgatja az alatta lévőket.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="388"/>
         <source>No separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Nincs elválasztó</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="393"/>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>értéke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="401"/>
         <source>In brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>Zárójelben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="402"/>
         <source>The first language is written plainly, the others in brackets - Tailles (Sizes).</source>
-        <translation type="unfinished"></translation>
+        <translation>Az első nyelv önmagában áll, a többi zárójelben - Méretek (Sizes).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="470"/>
         <source>No logos yet - add them in the Logo page</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs logó - adja hozzá őket a Logó oldalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="513"/>
         <source>Same on every cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden borítóoldalon ugyanaz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="515"/>
         <source>Filled in for each pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden szabásmintánál kitöltve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="593"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyetlen méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="595"/>
         <source>A range of sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy mérettartomány</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="645"/>
         <source>Choose…</source>
-        <translation type="unfinished"></translation>
+        <translation>Választás…</translation>
     </message>
 </context>
 <context>
@@ -17649,51 +17741,51 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="85"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="222"/>
         <source>Activate thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatűr bekapcsolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="90"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="227"/>
         <source>Piece thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>A darab miniatűrje</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="102"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="224"/>
         <source>Seam allowances to show</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjelenítendő varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="117"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="211"/>
         <source>Centimeters</source>
-        <translation type="unfinished">Centiméter</translation>
+        <translation>Centiméter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="120"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="212"/>
         <source>Inches</source>
-        <translation type="unfinished">Hüvelyk</translation>
+        <translation>Hüvelyk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="206"/>
         <source>The thumbnail draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis - so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>A miniatűr a darabot a varrásráhagyásaival, bevágásaival és belső útvonalaival rajzolja meg, minden tengely referenciaméretében - így ugyanazt a méretet mutatja tovább, amikor az aktív méret megváltozik. Mozgassa és méretezze át közvetlenül a vásznon.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="209"/>
         <source>How many times each value is printed. To place them, click the thumbnail once to select it, then once more to open it: the values and the legend can then be dragged.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hányszor íródik ki minden érték. Az elhelyezésükhöz kattintson egyszer a miniatűrre a kijelöléséhez, majd még egyszer a megnyitásához: ekkor az értékek és a jelmagyarázat mozgatható.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="222"/>
         <source>Activate thumbnail for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatűr bekapcsolása ehhez: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="223"/>
         <source>Seam allowances to show for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjelenítendő varrásráhagyások ehhez: %1</translation>
     </message>
 </context>
 <context>
@@ -17702,57 +17794,57 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="56"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="241"/>
         <source>Seam allowance values</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyás-értékek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="59"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="242"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelmagyarázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="64"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="243"/>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Egységek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="68"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="244"/>
         <source>Centimeters</source>
-        <translation type="unfinished">Centiméter</translation>
+        <translation>Centiméter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="245"/>
         <source>Inches</source>
-        <translation type="unfinished">Hüvelyk</translation>
+        <translation>Hüvelyk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="118"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="253"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="256"/>
         <source>Font:</source>
-        <translation type="unfinished">Betűtípus:</translation>
+        <translation>Betűtípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="123"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="254"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="257"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vastagság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="130"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="255"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="258"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méret:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="238"/>
         <source>What every miniature says: the seam-allowance values a piece is cut with, and the legend that names their unit. The fonts apply to every miniature; the units are the default a miniature starts from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Amit minden miniatűr megmutat: a varrásráhagyás-értékek, amelyekkel egy darabot kiszabnak, és a jelmagyarázat, amely megnevezi az egységüket. A betűtípusok minden miniatűrre érvényesek; az egységek az alapértelmezés, amelyből a miniatűr kiindul.</translation>
     </message>
 </context>
 <context>
@@ -17760,17 +17852,17 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolarmholecurvecollector.cpp" line="95"/>
         <source>Select the chest/back width point</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a mell-/hátszélesség pontját</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolarmholecurvecollector.cpp" line="97"/>
         <source>Select the perpendicular point - or click the shoulder point to skip the perpendicular.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a merőleges pontot - vagy kattintson a vállpontra a merőleges kihagyásához.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolarmholecurvecollector.cpp" line="100"/>
         <source>Select the shoulder point. If you skipped the perpendicular, click the shoulder point again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a vállpontot. Ha kihagyta a merőlegest, kattintson ismét a vállpontra.</translation>
     </message>
 </context>
 <context>
@@ -17778,7 +17870,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarlayout.cpp" line="197"/>
         <source>Group</source>
-        <translation type="unfinished">Csoport</translation>
+        <translation>Csoport</translation>
     </message>
 </context>
 <context>
@@ -17786,27 +17878,27 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="317"/>
         <source>rotate a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>szűkítőpont forgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="366"/>
         <source>Pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgáspont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="372"/>
         <source>Moving point</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozgatandó pont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="378"/>
         <source>Target point</source>
-        <translation type="unfinished"></translation>
+        <translation>Célpont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="478"/>
         <source>Closing divisor</source>
-        <translation type="unfinished"></translation>
+        <translation>Zárási osztó</translation>
     </message>
 </context>
 <context>
@@ -17814,12 +17906,12 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolcurve.cpp" line="112"/>
         <source>Select the second point of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>A görbe második pontjának kiválasztása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolcurve.cpp" line="116"/>
         <source>Select an additional point or press &lt;b&gt;%1&lt;/b&gt; to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>További pont kiválasztása vagy a(z) &lt;b&gt;%1&lt;/b&gt; billentyű megnyomása a befejezéshez</translation>
     </message>
 </context>
 <context>
@@ -17827,37 +17919,37 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1047"/>
         <source>dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>szűkítősapka</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1166"/>
         <source>read the cap on the other edge</source>
-        <translation type="unfinished"></translation>
+        <translation>a sapka beolvasása a másik élről</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1167"/>
         <source>read the cap on this edge</source>
-        <translation type="unfinished"></translation>
+        <translation>a sapka beolvasása erről az élről</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1188"/>
         <source>draw the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>a sapka megrajzolása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1188"/>
         <source>stop drawing the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>a sapka megrajzolásának abbahagyása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1208"/>
         <source>mark the crank</source>
-        <translation type="unfinished"></translation>
+        <translation>a bevágás megjelölése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1208"/>
         <source>take the crank away</source>
-        <translation type="unfinished"></translation>
+        <translation>a bevágás eltávolítása</translation>
     </message>
 </context>
 <context>
@@ -17865,7 +17957,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolflouncespiral.cpp" line="471"/>
         <source>flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>fodorspirál</translation>
     </message>
 </context>
 <context>
@@ -17873,12 +17965,12 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="272"/>
         <source>move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="439"/>
         <source>Moves</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozgatások</translation>
     </message>
 </context>
 <context>
@@ -17886,22 +17978,22 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="637"/>
         <source>pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>hajtás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="652"/>
         <source>show the fold lines</source>
-        <translation type="unfinished"></translation>
+        <translation>a hajtásvonalak megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="652"/>
         <source>hide the fold lines</source>
-        <translation type="unfinished"></translation>
+        <translation>a hajtásvonalak elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="1263"/>
         <source>Pleats</source>
-        <translation type="unfinished"></translation>
+        <translation>Hajtások</translation>
     </message>
 </context>
 <context>
@@ -17909,17 +18001,17 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="830"/>
         <source>save tool options</source>
-        <translation type="unfinished">eszköz beállításainak mentése</translation>
+        <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="880"/>
         <source>Width</source>
-        <translation type="unfinished">Szélesség</translation>
+        <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="881"/>
         <source>Height</source>
-        <translation type="unfinished">Magasság</translation>
+        <translation>Magasság</translation>
     </message>
 </context>
 <context>
@@ -17927,7 +18019,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/otoolspiral.cpp" line="206"/>
         <source>add a spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>spirál hozzáadása</translation>
     </message>
 </context>
 <context>
@@ -17935,22 +18027,22 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="358"/>
         <source>slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és forgatás</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="482"/>
         <source>show the rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>a forgatások ábrázolásának megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="482"/>
         <source>hide the rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>a forgatások ábrázolásának elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="693"/>
         <source>Rotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgatások</translation>
     </message>
 </context>
 <context>
@@ -17958,18 +18050,18 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="242"/>
         <source>The portion could not be read: its objects are not in the pattern any more.</source>
-        <translation type="unfinished"></translation>
+        <translation>A rész nem volt beolvasható: az objektumai már nincsenek a szabásmintában.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="322"/>
         <source>transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>átvitel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="359"/>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="372"/>
         <source>Merge point</source>
-        <translation type="unfinished"></translation>
+        <translation>Egyesítési pont</translation>
     </message>
 </context>
 <context>
@@ -17977,17 +18069,17 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="44"/>
         <source>Transfer layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek átvitele</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="49"/>
         <source>Choose the layers to transfer, and the group they go to.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki az átviendő rétegeket és a fogadó csoportot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="58"/>
         <source>Move to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel ide:</translation>
     </message>
 </context>
 <context>
@@ -17995,7 +18087,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/ovistoolclosedart.cpp" line="76"/>
         <source>Closing angle = %1°, &lt;b&gt;Mouse click&lt;/b&gt; - select the Target point</source>
-        <translation type="unfinished"></translation>
+        <translation>Zárási szög = %1°, &lt;b&gt;Kattintás&lt;/b&gt; - a célpont kiválasztása</translation>
     </message>
 </context>
 <context>
@@ -18003,7 +18095,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/owaitdialog.cpp" line="89"/>
         <source>%1 s</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 s</translation>
     </message>
 </context>
 <context>
@@ -18011,47 +18103,47 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="299"/>
         <source>Pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminta neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="300"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="302"/>
         <source>Symbols this pattern adds to the legend. The permanent ones are already there.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szimbólumok, amelyeket ez a szabásminta hozzáad a jelmagyarázathoz. Az állandók már benne vannak.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="303"/>
         <source>Add a symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólum hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="304"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabad szöveg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="305"/>
         <source>Margins</source>
-        <translation type="unfinished">Margók</translation>
+        <translation>Margók</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="306"/>
         <source>Margins this pattern names differently from the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>A margók, amelyeket ez a szabásminta másképp nevez meg, mint a könyvtár.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="423"/>
         <source>Choose…</source>
-        <translation type="unfinished"></translation>
+        <translation>Választás…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="459"/>
         <source>Remove</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
 </context>
 <context>
@@ -18060,63 +18152,63 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="174"/>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="596"/>
         <source>Add an output</source>
-        <translation type="unfinished"></translation>
+        <translation>Kimenet hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="179"/>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="597"/>
         <source>Export several outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Több kimenet exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="322"/>
         <source>Shown in the canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>A vásznon megjelenítve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="351"/>
         <source>Favorites need a measurements table</source>
-        <translation type="unfinished"></translation>
+        <translation>A kedvencekhez méréstáblázat szükséges</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="355"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítás a kedvencek közül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="359"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás a kedvencekhez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="379"/>
         <source>Export as a cutting file (DXF, PLT, HPGL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportálás vágófájlként (DXF, PLT, HPGL)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="415"/>
         <source>Export several outputs at once</source>
-        <translation type="unfinished"></translation>
+        <translation>Több kimenet exportálása egyszerre</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="416"/>
         <source>There is no output to export yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Még nincs exportálható kimenet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="367"/>
         <source>Refresh</source>
-        <translation type="unfinished">Frissítés</translation>
+        <translation>Frissítés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="383"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="390"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
 </context>
 <context>
@@ -18125,65 +18217,65 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="194"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="571"/>
         <source>Add a size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérettartomány hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="277"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="572"/>
         <source>Export all size ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Az összes mérettartomány exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="285"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="573"/>
         <source>Browse…</source>
-        <translation type="unfinished">Tallózás…</translation>
+        <translation>Tallózás…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="292"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="574"/>
         <source>Export all size ranges (SVG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Az összes mérettartomány exportálása (SVG)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítás a kedvencek közül</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás a kedvencekhez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="445"/>
         <source>Favorites need a measurements table from the library</source>
-        <translation type="unfinished"></translation>
+        <translation>A kedvencekhez a könyvtárból származó méréstáblázat szükséges</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="453"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="458"/>
         <source>Duplicate</source>
-        <translation type="unfinished">Duplikálás</translation>
+        <translation>Duplikálás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="463"/>
         <source>Export SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG exportálása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="468"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="558"/>
         <source>Select the export folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Az exportálási mappa kiválasztása</translation>
     </message>
 </context>
 <context>
@@ -18192,42 +18284,42 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="179"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="334"/>
         <source>Edit size styles</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretstílusok szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="188"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="335"/>
         <source>Show in canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjelenítés a vásznon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Size</source>
-        <translation type="unfinished">Méret</translation>
+        <translation>Méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Color</source>
-        <translation type="unfinished">Sziín</translation>
+        <translation>Sziín</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontúr</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="276"/>
         <source>Size styles need a measurements table from the library</source>
-        <translation type="unfinished"></translation>
+        <translation>A méretstílusokhoz a könyvtárból származó méréstáblázat szükséges</translation>
     </message>
 </context>
 <context>
@@ -18243,187 +18335,184 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
         <source>Files left behind</source>
-        <translation type="unfinished"></translation>
+        <translation>Helyben maradt fájlok</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="206"/>
         <source>%n file(s) could not be moved to « %1 » and stay in the old folder.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n fájlt nem sikerült átmozgatni a(z) „%1” mappába, ezért a régi mappában marad.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="231"/>
         <source>Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="232"/>
         <source>Measurements you build and reuse in your patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>A mérések, amelyeket a szabásmintáiban létrehoz és újrahasznál.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="240"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="241"/>
         <source>Pieces kept to be reused in other patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>A más szabásmintákban való újrahasználatra megtartott darabok.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="248"/>
         <source>Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminták</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="249"/>
         <source>Where Open and Save start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ahol a Megnyitás és a Mentés indul.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="256"/>
         <source>Collections</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollekciók</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="257"/>
         <source>Collections of pieces.</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabkollekciók.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="263"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation>Ügyfelek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="264"/>
         <source>Clients a cartouche can name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az ügyfelek, akiket egy kartussablon megnevezhet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="270"/>
         <source>Seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varrásráhagyások</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="271"/>
         <source>Seam allowance values kept for reuse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az újrahasználatra megtartott varrásráhagyás-értékek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="278"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Szimbólumok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="279"/>
         <source>Symbols to place on a piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabra helyezendő szimbólumok.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="285"/>
         <source>Annotation styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Megjegyzésstílusok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="286"/>
         <source>Styles of the pattern annotations.</source>
-        <translation type="unfinished"></translation>
+        <translation>A szabásminta megjegyzéseinek stílusai.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="294"/>
         <source>Cartouche templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartussablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="295"/>
         <source>Cartouche templates (.oct).</source>
-        <translation type="unfinished"></translation>
+        <translation>A kartussablonok (.oct).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="303"/>
         <source>PDF templates</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="304"/>
         <source>Templates of the exported PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az exportált PDF-ek sablonjai.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="312"/>
         <source>Cover page templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Borítóoldal-sablonok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="313"/>
         <source>Cover pages of the exports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az exportok borítóoldalai.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="320"/>
         <source>Logos</source>
-        <translation type="unfinished"></translation>
+        <translation>Logók</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="321"/>
         <source>Logos to place in the cartouche.</source>
-        <translation type="unfinished"></translation>
+        <translation>A kartussablonba helyezendő logók.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="392"/>
         <source>Choose the « %1 » folder</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” mappa kiválasztása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="423"/>
         <source>Folder inside the other</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa a másikban</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="424"/>
         <source>The two folders are inside one another. Choose a folder that does not contain « %1 », nor is contained by it.</source>
-        <translation type="unfinished"></translation>
+        <translation>A két mappa egymásban van. Válasszon olyan mappát, amely nem tartalmazza a(z) „%1” mappát, és nem is annak része.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="437"/>
         <source>Move the files</source>
-        <translation type="unfinished"></translation>
+        <translation>A fájlok mozgatása</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="438"/>
         <source>The « %1 » folder holds %n file(s). Move them into the new folder?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>A(z) „%1” mappa %n fájlt tartalmaz. Átmozgatja őket az új mappába?</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="441"/>
         <source>From %1
 to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Innen: %1
+Ide: %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="496"/>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappák</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="497"/>
         <source>Restore defaults</source>
-        <translation type="unfinished">Alapértékek visszaállítása</translation>
+        <translation>Alapértékek visszaállítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="503"/>
         <source>Change…</source>
-        <translation type="unfinished"></translation>
+        <translation>Módosítás…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="504"/>
         <source>Choose another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Másik mappa kiválasztása</translation>
     </message>
 </context>
 <context>
@@ -18431,115 +18520,115 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="35"/>
         <source>Save</source>
-        <translation type="unfinished">Mentés</translation>
+        <translation>Mentés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="41"/>
         <source>Auto-save modified pattern</source>
-        <translation type="unfinished">Módosított szabásminta automatikus mentése</translation>
+        <translation>Módosított szabásminta automatikus mentése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="51"/>
         <source>Interval:</source>
-        <translation type="unfinished">Intervallum:</translation>
+        <translation>Intervallum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="64"/>
         <source>min</source>
         <comment>minutes</comment>
-        <translation type="unfinished">perc</translation>
+        <translation>perc</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="80"/>
         <source>Language</source>
-        <translation type="unfinished">Nyelve</translation>
+        <translation>Nyelve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="89"/>
         <source>GUI language:</source>
-        <translation type="unfinished">Felhasználói nyelv:</translation>
+        <translation>Felhasználói nyelv:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="106"/>
         <source>Default unit:</source>
-        <translation type="unfinished">Alapértelmezett mértékegység:</translation>
+        <translation>Alapértelmezett mértékegység:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="119"/>
         <source>Pattern editing</source>
-        <translation type="unfinished">Minta szerkesztése</translation>
+        <translation>Minta szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="131"/>
         <source>Reset warnings</source>
-        <translation type="unfinished">Figyelmeztetések visszaállítása</translation>
+        <translation>Figyelmeztetések visszaállítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="138"/>
         <source>Checked: the curve follows the pointer, and the whole drag is undone in one step when you release it. Unchecked: every mouse movement is written into the pattern and can be undone on its own, one step at a time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bejelölve: a görbe követi a kurzort, és a teljes húzás egyetlen lépésben visszavonódik a felengedéskor. Kijelölés nélkül: minden egérmozgás beíródik a szabásmintába, és külön-külön, lépésenként visszavonható.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="141"/>
         <source>One undo step per curve drag</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy visszavonási lépés görbehúzásonként</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="151"/>
         <source>Enable to translate formula according to locale</source>
-        <translation type="unfinished">Engedélyezze a képlet fordítását a területi beállítás szerint</translation>
+        <translation>Engedélyezze a képlet fordítását a területi beállítás szerint</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="154"/>
         <source>Translate formula</source>
-        <translation type="unfinished">Képlet fordítása</translation>
+        <translation>Képlet fordítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="167"/>
         <source>User Interface</source>
-        <translation type="unfinished">Felhasználói felület</translation>
+        <translation>Felhasználói felület</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="175"/>
         <source>Theme:</source>
-        <translation type="unfinished">Téma:</translation>
+        <translation>Téma:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="197"/>
         <source>Don&apos;t use the native file dialog</source>
-        <translation type="unfinished">Ne használja a natív fájlpárbeszédablakot</translation>
+        <translation>Ne használja a natív fájlablakot</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
         <source>default unit</source>
-        <translation type="unfinished">Alapértelmezett mértékegység</translation>
+        <translation>Alapértelmezett mértékegység</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="193"/>
         <source>Light</source>
         <comment>theme</comment>
-        <translation type="unfinished">Világos</translation>
+        <translation>Világos</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="194"/>
         <source>Dark</source>
         <comment>theme</comment>
-        <translation type="unfinished">Sötét</translation>
+        <translation>Sötét</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="200"/>
         <source>Centimeters</source>
-        <translation type="unfinished">Centiméter</translation>
+        <translation>Centiméter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="201"/>
         <source>Millimiters</source>
-        <translation type="unfinished">Milliméter</translation>
+        <translation>Milliméter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="202"/>
         <source>Inches</source>
-        <translation type="unfinished">Hüvelyk</translation>
+        <translation>Hüvelyk</translation>
     </message>
 </context>
 <context>
@@ -18547,7 +18636,7 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalvastagság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="99"/>
@@ -18577,7 +18666,7 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="108"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>A varrásvonal exportálása a rajzokkal (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="115"/>
@@ -18635,17 +18724,17 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="57"/>
         <source>Action</source>
-        <translation type="unfinished">Művelet</translation>
+        <translation>Művelet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="62"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Gyorsbillentyűk</translation>
+        <translation>Gyorsbillentyűk</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="85"/>
         <source>Restore defaults</source>
-        <translation type="unfinished">Alapértékek visszaállítása</translation>
+        <translation>Alapértékek visszaállítása</translation>
     </message>
 </context>
 <context>
@@ -18653,72 +18742,72 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="283"/>
         <source>Tools of « %1 »</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” eszközei</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="287"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszközök</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="307"/>
         <source>New group</source>
-        <translation type="unfinished">Új csoport</translation>
+        <translation>Új csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="494"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoportok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="495"/>
         <source>Tools not shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem megjelenített eszközök</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="496"/>
         <source>Restore defaults</source>
-        <translation type="unfinished">Alapértékek visszaállítása</translation>
+        <translation>Alapértékek visszaállítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="498"/>
         <source>Add a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="499"/>
         <source>Move the group up</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport mozgatása fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="500"/>
         <source>Move the group down</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport mozgatása le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="501"/>
         <source>Delete the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="502"/>
         <source>Move the tool up</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszköz mozgatása fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="503"/>
         <source>Move the tool down</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszköz mozgatása le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="504"/>
         <source>Take the tool out of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszköz kivétele a csoportból</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="505"/>
         <source>Put the tool into the selected group</source>
-        <translation type="unfinished"></translation>
+        <translation>Eszköz behelyezése a kiválasztott csoportba</translation>
     </message>
 </context>
 <context>
@@ -18946,12 +19035,12 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="1221"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Névtelen</translation>
+        <translation>Névtelen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="126"/>
         <source>Curve has no points.</source>
-        <translation type="unfinished"></translation>
+        <translation>A görbének nincsenek pontjai.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="153"/>
@@ -19065,12 +19154,12 @@ to %2</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="526"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a képlet egy névtelen objektumot használ. Adjon neki nevet, hogy használhassa a képletben.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="756"/>
         <source>name the objects of a formula</source>
-        <translation type="unfinished"></translation>
+        <translation>a képlet objektumainak elnevezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1531"/>
@@ -19188,78 +19277,78 @@ to %2</source>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="200"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="205"/>
         <source>Recent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Legutóbbiak:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/savegradedrangecontent.cpp" line="48"/>
         <source>Edit graded layout</source>
-        <translation type="unfinished"></translation>
+        <translation>A gradáció elrendezésének szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="379"/>
         <source> Usable width: %1 cm, cloth %2 cm, margin %3 cm.</source>
-        <translation type="unfinished"></translation>
+        <translation> Hasznos szélesség: %1 cm, szövet %2 cm, margó %3 cm.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1176"/>
         <source>The size range carries no piece to nest.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mérettartomány nem tartalmaz beágyazható darabot.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1181"/>
         <source>The document width must be greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>A dokumentum szélességének nagyobbnak kell lennie nullánál.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1253"/>
         <source>The piece &quot;%1&quot; (id %2) is cut on the fold, but its fold line is not one of its own edges. Check its fold line in the Details mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” darab (id %2) hajtásra van szabva, de a hajtásvonala nem a saját éle. Ellenőrizze a hajtásvonalát a Details módban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1288"/>
         <source>No piece of this range could be prepared for nesting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebből a mérettartományból egyetlen darabot sem sikerült előkészíteni a beágyazáshoz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1303"/>
         <source>The size range carries no usable contour.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a mérettartomány nem tartalmaz használható kontúrt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="426"/>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1407"/>
         <source>The nesting engine returned an incomplete result.</source>
-        <translation type="unfinished"></translation>
+        <translation>A beágyazó motor hiányos eredményt adott vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="368"/>
         <source> Refused: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation> Elutasítva: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="372"/>
         <source>The document is too narrow: some pieces could not be placed. The space kept from the fabric&apos;s edges may be what leaves too little room.</source>
-        <translation type="unfinished"></translation>
+        <translation>A dokumentum túl keskeny: néhány darabot nem sikerült elhelyezni. Lehet, hogy a szövet széleitől megtartott hely az, ami túl kevés teret hagy.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="378"/>
         <source>The document is too narrow: some pieces could not be placed.</source>
-        <translation type="unfinished"></translation>
+        <translation>A dokumentum túl keskeny: néhány darabot nem sikerült elhelyezni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportsetplacement.cpp" line="45"/>
         <source>Turn a piece on the plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab forgatása a terven</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportsetplacement.cpp" line="46"/>
         <source>Move a piece on the plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Darab mozgatása a terven</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecename.cpp" line="142"/>
         <source>name the curves of a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>egy darab görbéinek elnevezése</translation>
     </message>
 </context>
 <context>
@@ -19559,7 +19648,7 @@ to %2</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/savepiecegroupoptions.cpp" line="39"/>
         <source>save group options</source>
-        <translation type="unfinished"></translation>
+        <translation>csoportbeállítások mentése</translation>
     </message>
 </context>
 <context>
@@ -19607,124 +19696,124 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="55"/>
         <source>Configure size groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Méretcsoportok beállítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="66"/>
         <source>Each group represents an axis (e.g., Height, Size…). Name it and enter its values to activate it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden csoport egy tengelyt jelöl (pl. Magasság, Méret…). Nevezze el, és adja meg az értékeit az aktiválásához.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="77"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="130"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="80"/>
         <source>Table name</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázat neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="93"/>
         <source>Group 1</source>
-        <translation type="unfinished"></translation>
+        <translation>1. csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="94"/>
         <source>Group 2</source>
-        <translation type="unfinished"></translation>
+        <translation>2. csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="95"/>
         <source>Group 3</source>
-        <translation type="unfinished"></translation>
+        <translation>3. csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="124"/>
         <source>e.g., Height</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. Magasság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="125"/>
         <source>e.g., Commercial size</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. Kereskedelmi méret</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="126"/>
         <source>e.g., Cup or Body type</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. Kosárméret vagy testalkat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="137"/>
         <source>e.g., 160 cm, 168 cm, 176 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. 160 cm, 168 cm, 176 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="141"/>
         <source>e.g., 32, 34, 36  or  XS, S, M  or  6 years, 8 years, 10 years</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. 32, 34, 36  vagy  XS, S, M  vagy  6 éves, 8 éves, 10 éves</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="143"/>
         <source>e.g., A, B, C</source>
-        <translation type="unfinished"></translation>
+        <translation>pl. A, B, C</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="150"/>
         <source>Values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Értékek:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="156"/>
         <source>Separate each value with a comma</source>
-        <translation type="unfinished"></translation>
+        <translation>Az értékeket vesszővel válassza el</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="163"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Generálás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="178"/>
         <source>Base:</source>
-        <translation type="unfinished">Alap:</translation>
+        <translation>Alap:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="193"/>
         <source>Reference size for calculating other sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenciaméret a többi méret kiszámításához</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="255"/>
         <source>Group %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1. csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="257"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="317"/>
         <source>Group &quot;%1&quot; · %2 values</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” csoport · %2 érték</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="378"/>
         <source>Name at least one group and generate its values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevezzen el legalább egy csoportot, és generálja az értékeit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="395"/>
         <source>Group &quot;%1&quot; must have at least 2 values.</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” csoportnak legalább 2 értékkel kell rendelkeznie.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="403"/>
         <source>Generate values and select a base for group &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Generálja az értékeket, és válasszon alapot a „%1” csoporthoz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="415"/>
         <source>Group name &quot;%1&quot; is used multiple times.</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” csoportnév többször szerepel.</translation>
     </message>
 </context>
 <context>
@@ -19732,130 +19821,133 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="119"/>
         <source>Edit measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérések szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="128"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="314"/>
         <source>Select a size in the bar below, then edit the measurements in the details panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válasszon méretet az alábbi sávban, majd szerkessze a méréseket a részletek panelen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="136"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="139"/>
         <source>Table name</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázat neve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="158"/>
         <source>Import from table</source>
-        <translation type="unfinished"></translation>
+        <translation>Importálás táblázatból</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="175"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="257"/>
         <source>+ Add measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Mérés hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="180"/>
         <source>+ Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Csoport hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="181"/>
         <source>Add a measurement group</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérési csoport hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="191"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="262"/>
         <source>Delete</source>
-        <translation type="unfinished">Törlés</translation>
+        <translation>Törlés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="206"/>
         <source>↑</source>
-        <translation type="unfinished"></translation>
+        <translation>↑</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="207"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="263"/>
         <source>Move up</source>
-        <translation type="unfinished">Mozgatás fel</translation>
+        <translation>Mozgatás fel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="213"/>
         <source>↓</source>
-        <translation type="unfinished"></translation>
+        <translation>↓</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="214"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="264"/>
         <source>Move down</source>
-        <translation type="unfinished">Mozgatás le</translation>
+        <translation>Mozgatás le</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="238"/>
         <source>Search measurements…</source>
-        <translation type="unfinished"></translation>
+        <translation>Mérések keresése…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="258"/>
         <source>+ Insert group</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Csoport beszúrása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="310"/>
         <source>Add and edit measurements in the details panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adjon hozzá és szerkesszen méréseket a részletek panelen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="532"/>
         <source>New group</source>
-        <translation type="unfinished">Új csoport</translation>
+        <translation>Új csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="635"/>
         <source>Import complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Az importálás befejeződött</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="636"/>
         <source>%1 measurement(s)/group(s) imported.
 %2 measurement(s)/group(s) skipped (name already exists).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 mérés/csoport importálva.
+%2 mérés/csoport kihagyva (a név már létezik).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="683"/>
         <source>Group &quot;%1&quot; contains %2 measurement(s).
 Deleting the group will also delete all its measurements.
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>A „%1” csoport %2 mérést tartalmaz.
+A csoport törlése a méréseit is törli.
+Szeretné folytatni?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="691"/>
         <source>Do you want to delete group &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Szeretné törölni a „%1” csoportot?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="696"/>
         <source>Delete group</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="772"/>
         <source>Delete group and its measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport és méréseinek törlése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
         <source>Delete measurement</source>
-        <translation type="unfinished">Méret törlése</translation>
+        <translation>Méret törlése</translation>
     </message>
 </context>
 <context>
@@ -19863,7 +19955,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglegroupinlayout.cpp" line="48"/>
         <source>group in layout list</source>
-        <translation type="unfinished"></translation>
+        <translation>csoport a szabászati terv listájában</translation>
     </message>
 </context>
 <context>
@@ -19879,7 +19971,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="97"/>
         <source>piece flipping</source>
-        <translation type="unfinished">darab tükrözése</translation>
+        <translation>darab tükrözése</translation>
     </message>
 </context>
 <context>
@@ -19903,7 +19995,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/unlinkpiecegroup.cpp" line="35"/>
         <source>unlink pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>darabok szétkapcsolása</translation>
     </message>
 </context>
 <context>
@@ -20253,7 +20345,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1732"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="773"/>
@@ -20294,13 +20386,13 @@ Do you want to continue?</source>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3583"/>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3650"/>
         <source>New layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Új réteg</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2878"/>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3116"/>
         <source>Group</source>
-        <translation type="unfinished">Csoport</translation>
+        <translation>Csoport</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="804"/>
@@ -20368,25 +20460,25 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Increase point name font size</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek betűméretének növelése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
         <source>Decrease point name font size</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek betűméretének csökkentése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
         <source>Original point name font size</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek eredeti betűmérete</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
         <source>Show all point names</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Összes pontnév megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
@@ -20440,7 +20532,7 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
         <source>Graded mode</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Gradációs mód</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
@@ -20752,73 +20844,73 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
         <source>Tool &apos;Dart cap&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Szűkítőpont” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
         <source>Tool &apos;Rectangle&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Téglalap” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="508"/>
         <source>Auto-arrange point names</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pontnevek automatikus elrendezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="510"/>
         <source>Tool &apos;Select&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Kijelölés” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="512"/>
         <source>Tool &apos;Curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Görbe” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="514"/>
         <source>Tool &apos;Segment a curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Görbe szegmentálása” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="516"/>
         <source>Tool &apos;Spiral&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Spirál” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="518"/>
         <source>Tool &apos;Slash and spread&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Vágás és forgatás” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="520"/>
         <source>Tool &apos;Move by batch&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Kötegelt mozgatás” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="522"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Hajtás” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="524"/>
         <source>Tool &apos;Flounce spiral&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Fodorspirál” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="526"/>
         <source>Tool &apos;Middle pleat&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Középső hajtás” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
@@ -20830,19 +20922,19 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
         <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Karöltőgörbe” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
         <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Szűkítőpont forgatása” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
         <source>Tool &apos;Transfer&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>„Átvitel” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
@@ -20949,17 +21041,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="524"/>
         <source>light blue</source>
-        <translation type="unfinished"></translation>
+        <translation>világoskék</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="530"/>
         <source>pink</source>
-        <translation type="unfinished"></translation>
+        <translation>rózsaszín</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="533"/>
         <source>purple</source>
-        <translation type="unfinished"></translation>
+        <translation>lila</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="536"/>
@@ -20969,12 +21061,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="542"/>
         <source>light green</source>
-        <translation type="unfinished"></translation>
+        <translation>világoszöld</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="548"/>
         <source>brown</source>
-        <translation type="unfinished"></translation>
+        <translation>barna</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="539"/>
@@ -20989,7 +21081,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1666"/>
         <source>White</source>
-        <translation type="unfinished">Fehér</translation>
+        <translation>Fehér</translation>
     </message>
 </context>
 <context>
@@ -21137,7 +21229,7 @@ Do you want to continue?</source>
         <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="192"/>
         <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="220"/>
         <source>The image declares a canvas size that is too large to render safely.</source>
-        <translation type="unfinished"></translation>
+        <translation>A kép olyan nagy vászonméretet ad meg, amelyet nem lehet biztonságosan megjeleníteni.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="200"/>
@@ -21298,7 +21390,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="510"/>
         <source>Print the debug messages to the console too. They always go to the log file; this key only repeats them on the console.</source>
-        <translation type="unfinished"></translation>
+        <translation>A hibakeresési üzenetek kiírása a konzolra is. Ezek mindig a naplófájlba kerülnek; ez a kapcsoló csak megismétli őket a konzolon.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="531"/>
@@ -21348,7 +21440,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="610"/>
         <source>Make all parsing warnings into errors. Have effect only in console mode. Use to force Ostara to immediately terminate if a pattern contains a parsing warning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden beolvasási figyelmeztetés hibává alakítása. Csak konzol módban hat. Arra használható, hogy az Ostara azonnal leálljon, ha a szabásminta beolvasási figyelmeztetést tartalmaz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="619"/>
@@ -21393,89 +21485,89 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="662"/>
         <source>Compute the fabric length of a cutting plan for every complete size of the measurements table, for each fabric width of --fabricWidth, and write the table as a CSV in --destination. Nothing is ever written to the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiszámítja egy szabászati terv szövethosszát a mérettáblázat minden teljes méretére, a --fabricWidth kapcsoló minden szövetszélességére, és a táblázatot CSV formátumban a --destination helyre írja. A szabásmintába soha nem ír semmit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="667"/>
         <source>Name of the model this run measures. Written in the CSV.</source>
-        <translation type="unfinished"></translation>
+        <translation>A futás által mért modell neve. A CSV-be kerül.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="668"/>
         <source>Name</source>
-        <translation type="unfinished">Név</translation>
+        <translation>Név</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="670"/>
         <source>The member a piece group contributes, as &quot;Group name=Member name&quot;. Repeat once per group: a cutting plan takes exactly one member per group.</source>
-        <translation type="unfinished"></translation>
+        <translation>A darabcsoport által adott tag, „Csoportnév=Tag neve” formában. Csoportonként egyszer ismételje: egy szabászati terv csoportonként pontosan egy tagot vesz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="673"/>
         <source>Group=member</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport=tag</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="675"/>
         <source>Fabric width in centimetres. Comma separated to ask for several in one run.</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetszélesség centiméterben. Vesszővel elválasztva több is kérhető egy futásban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="677"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="680"/>
         <source>Width in cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Szövetszélesség cm-ben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="679"/>
         <source>Lining width in centimetres. Defaults to the fabric width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bélésszélesség centiméterben. Alapértelmezésben a szövet szélessége.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="682"/>
         <source>Ask for the lining plan too: one run, two passes, two lengths in the table.</source>
-        <translation type="unfinished"></translation>
+        <translation>A bélés tervét is kérje: egy futás, két menet, két hossz a táblázatban.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="685"/>
         <source>Lay every piece the same way round.</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden darab ugyanabban az irányban fekszik.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="687"/>
         <source>The plan is laid on folded fabric.</source>
-        <translation type="unfinished"></translation>
+        <translation>A terv hajtogatott szövetre kerül.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="689"/>
         <source>Space between two pieces, in centimetres (default 0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Két darab közötti távolság centiméterben (alapértelmezés: 0).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="690"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="694"/>
         <source>Space in cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Távolság cm-ben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="693"/>
         <source>Space kept from the edges, in centimetres (default 0).</source>
-        <translation type="unfinished"></translation>
+        <translation>A szélektől megtartott távolság centiméterben (alapértelmezett 0).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="729"/>
         <source>The metrage options can be used with single input file only.</source>
-        <translation type="unfinished"></translation>
+        <translation>A metrázási beállítások csak egyetlen bemeneti fájllal használhatók.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="779"/>
         <source>Not a fabric width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez nem szövetszélesség:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="799"/>
         <source>Not a lining width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez nem bélésszélesség.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="578"/>
@@ -21633,7 +21725,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="578"/>
         <source>Can&apos;t cast object to the requested type. Name = &apos;%1&apos;, type = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az objektum nem konvertálható a kért típusra. Név = „%1”, típus = %2.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="588"/>
@@ -21645,12 +21737,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="719"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az objektum nem konvertálható. Név = „%1”, típus = %2.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="729"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Az objektum nem található. Típuseltérés. Név = „%1”, létező típus = %2, beérkező típus = %3.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="412"/>
@@ -21704,20 +21796,20 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
         <source>Dart rotation</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítő forgatása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1064"/>
         <source>Dart cap</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítősapka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1000"/>
         <source>Rectangle</source>
         <comment>tool</comment>
-        <translation type="unfinished">Téglalap</translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1002"/>
@@ -21741,39 +21833,39 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1008"/>
         <source>Transfer</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1010"/>
         <source>Slash and spread</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és szétnyitás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1012"/>
         <source>Move by batch</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1014"/>
         <source>Pleat</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1058"/>
         <source>Middle pleat</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Középső pliszé</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1018"/>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1060"/>
         <source>Flounce spiral</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Spirálfodros</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1020"/>
@@ -21814,27 +21906,27 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1048"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Téglalap</translation>
+        <translation>Téglalap</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1050"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1052"/>
         <source>Slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és szétnyitás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
         <source>Move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1056"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1066"/>
@@ -21870,7 +21962,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1080"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1083"/>
@@ -21986,13 +22078,14 @@ Do you want to continue?</source>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="855"/>
         <source>Can&apos;t open schema file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem sikerült megnyitni a(z) %1 sémafájlt: 
+%2.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="912"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="948"/>
         <source>Validation error file %3 in line %1 column %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Érvényesítési hiba: %3 fájl, %1. sor, %2. oszlop</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1144"/>
@@ -22003,7 +22096,7 @@ Do you want to continue?</source>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="878"/>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="924"/>
         <source>Could not load schema file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem sikerült betölteni a(z) „%1” sémafájlt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="412"/>
@@ -22028,17 +22121,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="773"/>
         <source>Refusing to save: the document has no content.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés megtagadva: a dokumentumnak nincs tartalma.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="791"/>
         <source>Refusing to save: serialization produced no data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mentés megtagadva: a szerializálás nem adott adatot.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="885"/>
         <source>Schema file %3 invalid in line %1 column %2</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) %3 sémafájl érvénytelen: %1. sor, %2. oszlop</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="992"/>
@@ -22081,12 +22174,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="537"/>
         <source>add objects to a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>objektumok hozzáadása egy réteghez</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="570"/>
         <source>remove objects from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>objektumok eltávolítása egy rétegből</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="661"/>
@@ -22096,17 +22189,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="372"/>
         <source>Add to layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Hozzáadás a réteghez</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="404"/>
         <source>Remove from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Eltávolítás a rétegből</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="456"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont nevének megjelenítése</translation>
     </message>
 </context>
 <context>
@@ -22162,7 +22255,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpatterndb/vformula.cpp" line="352"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a képlet egy névtelen objektumot használ. Adjon neki nevet, hogy a képletben használhassa.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vformula.cpp" line="363"/>
@@ -22202,17 +22295,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="115"/>
         <source>Cannot Delete Object</source>
-        <translation type="unfinished">Az objektum nem törölhető</translation>
+        <translation>Az objektum nem törölhető</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="116"/>
         <source>This object cannot be deleted because it is being used by other items.</source>
-        <translation type="unfinished">Ez az objektum nem törölhető, mert más elemek használják.</translation>
+        <translation>Ez az objektum nem törölhető, mert más elemek használják.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="117"/>
         <source>Please resolve the dependencies before attempting to delete this object.</source>
-        <translation type="unfinished">Kérjük, oldja fel a függőségeket, mielőtt megpróbálná törölni ezt az objektumot.</translation>
+        <translation>Kérjük, oldja fel a függőségeket, mielőtt megpróbálná törölni ezt az objektumot.</translation>
     </message>
 </context>
 <context>
@@ -22340,7 +22433,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpropertyexplorer/plugins/vlinecolorproperty.cpp" line="118"/>
         <source>White</source>
-        <translation type="unfinished">Fehér</translation>
+        <translation>Fehér</translation>
     </message>
 </context>
 <context>
@@ -22414,7 +22507,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="471"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont nevének megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="606"/>
@@ -22479,12 +22572,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="576"/>
         <source>Check mark clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Pipa alak, óramutató járása szerint</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="578"/>
         <source>Turn point (for DXF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fordulópont (DXF-hez)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="596"/>
@@ -22734,7 +22827,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern.cpp" line="275"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>A képlet olyan nevet használ, amely nincs definiálva a szabásmintában: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern.cpp" line="969"/>
@@ -22781,7 +22874,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="312"/>
         <source>Duplicate line role name &apos;%1&apos; in &lt;lineNames&gt;; second occurrence ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1” vonalszerepnév duplikálva a &lt;lineNames&gt; elemben; a második előfordulás figyelmen kívül marad.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="470"/>
@@ -22880,13 +22973,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1734"/>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1740"/>
         <source>Error creating or updating the cap of a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a szűkítősapka létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1797"/>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1803"/>
         <source>Error creating or updating a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a téglalap létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="280"/>
@@ -22902,7 +22995,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="313"/>
         <source>Error creating or updating armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a karkivágásgörbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="381"/>
@@ -22926,7 +23019,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="708"/>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="714"/>
         <source>Error creating or updating a spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba egy spirál létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="768"/>
@@ -22961,41 +23054,41 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="448"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="454"/>
         <source>Error creating or updating the operation that closes a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a szűkítőt lezáró művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="487"/>
         <source>A transfer without both of its merge points was ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>A két egyesítési pont nélküli átvitel figyelmen kívül maradt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="557"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="563"/>
         <source>Error creating or updating the slash and spread operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a Vágás és szétnyitás művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="597"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="603"/>
         <source>Error creating or updating the move by batch operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a Kötegelt mozgatás művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="640"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="646"/>
         <source>Error creating or updating the flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a spirálfodros létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="681"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="687"/>
         <source>Error creating or updating the pleat operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a pliszéművelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="804"/>
         <source>A transfer refers to objects the pattern does not define, and was ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy átvitel olyan objektumokra hivatkozik, amelyek nincsenek definiálva a szabásmintában: figyelmen kívül maradt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1043"/>
@@ -23025,12 +23118,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1558"/>
         <source>Error creating or updating arc point</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba az ívpont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1588"/>
         <source>Error creating or updating curve point</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiba a görbepont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1639"/>
@@ -23113,7 +23206,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="524"/>
         <source>A transfer could not be rebuilt and was ignored: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Egy átvitelt nem sikerült újraépíteni, ezért figyelmen kívül maradt: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="873"/>
@@ -23455,22 +23548,22 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="292"/>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="306"/>
         <source>Delete piece</source>
-        <translation type="unfinished">Darab törlése</translation>
+        <translation>Darab törlése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="294"/>
         <source>This piece cannot be deleted yet: the pattern is not fully solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab egyelőre nem törölhető: a szabásminta nincs teljesen megoldva.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="295"/>
         <source>This piece cannot be deleted: %1 depends on it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab nem törölhető: %1 függ tőle.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="307"/>
         <source>This action will delete the piece %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a művelet törli a %1 darabot.</translation>
     </message>
 </context>
 <context>
@@ -23873,38 +23966,38 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="288"/>
         <source>Arc point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ívpont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="291"/>
         <source>Curve point</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbepont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="312"/>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="315"/>
         <source>Tool segment a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbe felosztása eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="334"/>
         <source>Point at intersection of two lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Két vonal metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="337"/>
         <source>Point along normal to line</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont a merőleges mentén</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="340"/>
         <source>Point of contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Érintkezési pont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="343"/>
         <source>Point of intersection two lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Két vonal metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="349"/>
@@ -23914,27 +24007,27 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="355"/>
         <source>Shoulder point</source>
-        <translation type="unfinished">Vállpont</translation>
+        <translation>Vállpont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="364"/>
         <source>Armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Karkivágásgörbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="374"/>
         <source>Triangle</source>
-        <translation type="unfinished">Háromszög</translation>
+        <translation>Háromszög</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="396"/>
         <source>Point of intersection line and axis</source>
-        <translation type="unfinished">Vonal és tengely metszéspontja</translation>
+        <translation>Vonal és tengely metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="399"/>
         <source>Point of intersection curve and axis</source>
-        <translation type="unfinished">Görbe és tengely metszéspontja</translation>
+        <translation>Görbe és tengely metszéspontja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="402"/>
@@ -23949,57 +24042,57 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="420"/>
         <source>Tool rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Téglalap eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="432"/>
         <source>Tool transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="435"/>
         <source>Tool slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Vágás és szétnyitás eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="438"/>
         <source>Tool move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Kötegelt mozgatás eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="445"/>
         <source>Tool pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="445"/>
         <source>Tool middle pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Középső pliszé eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="449"/>
         <source>Flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirálfodros</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="461"/>
         <source>Elliptical arc with length</source>
-        <translation type="unfinished">Elliptikus ív adott hosszal</translation>
+        <translation>Elliptikus ív adott hosszal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="464"/>
         <source>Tool parallel curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Párhuzamos görbe eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="467"/>
         <source>Tool graduated curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Fokozatos görbe eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="470"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirál</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="190"/>
@@ -24050,7 +24143,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="801"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Point</source>
-        <translation type="unfinished">Pont</translation>
+        <translation>Pont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="923"/>
@@ -24078,7 +24171,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="683"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="924"/>
@@ -24110,7 +24203,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="814"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont nevének megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
@@ -24127,7 +24220,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="929"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonal:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="426"/>
@@ -24157,7 +24250,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="567"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
         <source>Length:</source>
-        <translation type="unfinished">Hossz:</translation>
+        <translation>Hossz:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="433"/>
@@ -24174,7 +24267,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Angle:</source>
-        <translation type="unfinished">Szög:</translation>
+        <translation>Szög:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="190"/>
@@ -24191,13 +24284,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="957"/>
         <source>Line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="376"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="379"/>
         <source>Pattern piece:</source>
-        <translation type="unfinished">Szabásminta rész:</translation>
+        <translation>Szabásminta rész:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="195"/>
@@ -24215,13 +24308,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="935"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="958"/>
         <source>Line color:</source>
-        <translation type="unfinished">Vonal színe:</translation>
+        <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="428"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="530"/>
         <source>Base point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alappont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="447"/>
@@ -24230,7 +24323,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="652"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="666"/>
         <source>First point:</source>
-        <translation type="unfinished">Első pont:</translation>
+        <translation>Első pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
@@ -24239,150 +24332,150 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="653"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="667"/>
         <source>Second point:</source>
-        <translation type="unfinished">Második pont:</translation>
+        <translation>Második pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="465"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="654"/>
         <source>Third point:</source>
-        <translation type="unfinished">Harmadik pont:</translation>
+        <translation>Harmadik pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="473"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="476"/>
         <source>Point 1 label:</source>
-        <translation type="unfinished"></translation>
+        <translation>1. pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="492"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="495"/>
         <source>Point 2 label:</source>
-        <translation type="unfinished"></translation>
+        <translation>2. pont neve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
         <source>First base point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Első alappont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
         <source>Second base point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Második alappont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="513"/>
         <source>First dart point:</source>
-        <translation type="unfinished">Első szűkítőpont:</translation>
+        <translation>Első szűkítőpont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="514"/>
         <source>Second dart point:</source>
-        <translation type="unfinished">Második szűkítőpont:</translation>
+        <translation>Második szűkítőpont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="515"/>
         <source>Third dart point:</source>
-        <translation type="unfinished">Harmadik szűkítőpont:</translation>
+        <translation>Harmadik szűkítőpont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="703"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="706"/>
         <source>Draw the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>A sapka megrajzolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="766"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="934"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Vonaltípus:</translation>
+        <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="748"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="752"/>
         <source>Reverse the sense</source>
-        <translation type="unfinished"></translation>
+        <translation>Az irány megfordítása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="723"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="726"/>
         <source>Notch</source>
-        <translation type="unfinished">Bevágás</translation>
+        <translation>Bevágás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
         <source>Point B:</source>
-        <translation type="unfinished"></translation>
+        <translation>B pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="806"/>
         <source>Point C:</source>
-        <translation type="unfinished"></translation>
+        <translation>C pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="808"/>
         <source>Point D:</source>
-        <translation type="unfinished"></translation>
+        <translation>D pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="901"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="904"/>
         <source>Height:</source>
-        <translation type="unfinished">Magasság:</translation>
+        <translation>Magasság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="127"/>
         <source>Line style</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonalstílus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="133"/>
         <source>Arc style</source>
-        <translation type="unfinished"></translation>
+        <translation>Ívstílus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="135"/>
         <source>Elliptical arc style</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptikus ív stílusa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="137"/>
         <source>Curve style</source>
-        <translation type="unfinished"></translation>
+        <translation>Görbe stílusa</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="183"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszé</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="248"/>
         <source>Fold line</source>
-        <translation type="unfinished">Hajtásvonal</translation>
+        <translation>Hajtásvonal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="252"/>
         <source>Draw the fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>A hajtásvonal megrajzolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="260"/>
         <source>Fold line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>A hajtásvonal típusa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="265"/>
         <source>Fold line color:</source>
-        <translation type="unfinished"></translation>
+        <translation>A hajtásvonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="413"/>
         <source>Rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgatási nézet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="418"/>
         <source>Show the rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>A forgatási nézet megjelenítése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="483"/>
@@ -24390,13 +24483,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="733"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="737"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgáspont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="591"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="596"/>
         <source>Closing divisor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zárási osztó:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="759"/>
@@ -24404,7 +24497,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="531"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="685"/>
         <source>First line point:</source>
-        <translation type="unfinished">Első vonalpont:</translation>
+        <translation>Első vonalpont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="775"/>
@@ -24412,81 +24505,81 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="532"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="686"/>
         <source>Second line point:</source>
-        <translation type="unfinished">Második vonalpont:</translation>
+        <translation>Második vonalpont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="878"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="882"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="894"/>
         <source>Edit rotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgatások szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="913"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="917"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="929"/>
         <source>Edit pleats</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliszék szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="949"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="953"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="965"/>
         <source>Edit moves</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozgatások szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="991"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="996"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stílus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1055"/>
         <source>Outer edge start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Külső él kezdete:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1057"/>
         <source>Inner edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső él vége:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1059"/>
         <source>Outer edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Külső él vége:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1073"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1077"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pontok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="554"/>
         <source>First line (first point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Első vonal (első pont):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
         <source>First line (second point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Első vonal (második pont):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="556"/>
         <source>Second line (first point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Második vonal (első pont):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="557"/>
         <source>Second line (second point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Második vonal (második pont):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="569"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="572"/>
         <source>Additional angle degrees:</source>
-        <translation type="unfinished">További szög fokban:</translation>
+        <translation>További szög fokban:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="719"/>
@@ -24498,32 +24591,32 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="607"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="610"/>
         <source>Radius:</source>
-        <translation type="unfinished">Sugár:</translation>
+        <translation>Sugár:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="636"/>
         <source>X: vertical point:</source>
-        <translation type="unfinished"></translation>
+        <translation>X: függőleges pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
         <source>Y: horizontal point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y: Vízszintes pont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="664"/>
         <source>First point of axis:</source>
-        <translation type="unfinished">A tengely első pontja:</translation>
+        <translation>A tengely első pontja:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
         <source>Second point of axis:</source>
-        <translation type="unfinished">A tengely második pontja:</translation>
+        <translation>A tengely második pontja:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="684"/>
         <source>Axis point:</source>
-        <translation type="unfinished">Tengelypont:</translation>
+        <translation>Tengelypont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="934"/>
@@ -24546,7 +24639,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
         <source>Curve:</source>
-        <translation type="unfinished">Görbe:</translation>
+        <translation>Görbe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="352"/>
@@ -24591,12 +24684,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="414"/>
         <source>Tool dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>„Szűkítő forgatása” eszköz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="417"/>
         <source>Dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűkítősapka</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="426"/>
@@ -24611,28 +24704,28 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="97"/>
         <source>(Unnamed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Névtelen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxisrows.cpp" line="46"/>
         <source>by hand</source>
-        <translation type="unfinished"></translation>
+        <translation>kézzel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxisrows.cpp" line="55"/>
         <source>Change the axis</source>
-        <translation type="unfinished"></translation>
+        <translation>A tengely cseréje</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxisrows.cpp" line="56"/>
         <source>Set the angle by an axis</source>
-        <translation type="unfinished"></translation>
+        <translation>A szög beállítása tengellyel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="444"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="551"/>
         <source>Axis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengely:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="685"/>
@@ -24648,7 +24741,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1616"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1619"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>A kezdőpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="702"/>
@@ -24664,7 +24757,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1633"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1636"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>A végpont létrehozása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="736"/>
@@ -24676,7 +24769,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1361"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1364"/>
         <source>First angle:</source>
-        <translation type="unfinished">Első szög:</translation>
+        <translation>Első szög:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="753"/>
@@ -24684,7 +24777,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1248"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1251"/>
         <source>Second angle:</source>
-        <translation type="unfinished">Második szög:</translation>
+        <translation>Második szög:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="770"/>
@@ -24700,7 +24793,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1650"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="333"/>
         <source>Pen style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ceruza stílusa:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
@@ -24717,31 +24810,31 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1651"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="338"/>
         <source>Color:</source>
-        <translation type="unfinished">Szín:</translation>
+        <translation>Szín:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="918"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="971"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1024"/>
         <source>Show the two segments instead of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>A két szakasz megjelenítése a görbe helyett</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="919"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="972"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1025"/>
         <source>Type of line</source>
-        <translation type="unfinished"></translation>
+        <translation>Vonaltípus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1041"/>
         <source>First handle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Első fogantyú:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1045"/>
         <source>Second handle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Második fogantyú:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1084"/>
@@ -24751,23 +24844,23 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1597"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1609"/>
         <source>Edit curve</source>
-        <translation type="unfinished"></translation>
+        <translation>A görbe szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1114"/>
         <source>Start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kezdőpont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1135"/>
         <source>End point</source>
-        <translation type="unfinished"></translation>
+        <translation>Végpont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1162"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1292"/>
         <source>ElArc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptikus ív:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1197"/>
@@ -24775,7 +24868,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1327"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1330"/>
         <source>Radius 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sugár 1:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1214"/>
@@ -24783,7 +24876,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1344"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1347"/>
         <source>Radius 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sugár 2:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1457"/>
@@ -24793,7 +24886,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="882"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="885"/>
         <source>Width:</source>
-        <translation type="unfinished">Szélesség:</translation>
+        <translation>Szélesség:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="772"/>
@@ -24849,7 +24942,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1122"/>
         <source>Point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="283"/>
@@ -24857,7 +24950,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="387"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="397"/>
         <source>Take:</source>
-        <translation type="unfinished">Vétel:</translation>
+        <translation>Vétel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="684"/>
@@ -24870,41 +24963,41 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="288"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="290"/>
         <source>Arc:</source>
-        <translation type="unfinished">Ív:</translation>
+        <translation>Ív:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="302"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="305"/>
         <source>First circle radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Első kör sugara:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="321"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="324"/>
         <source>Second circle radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Második kör sugara:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="349"/>
         <source>Vertical correction:</source>
-        <translation type="unfinished">Függőleges korrekció:</translation>
+        <translation>Függőleges korrekció:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="350"/>
         <source>Horizontal correction:</source>
-        <translation type="unfinished">Vízszintes korrekció:</translation>
+        <translation>Vízszintes korrekció:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="369"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="372"/>
         <source>Circle radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kör sugara:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="407"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="469"/>
         <source>Name:</source>
-        <translation type="unfinished">Név:</translation>
+        <translation>Név:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="408"/>
@@ -24912,7 +25005,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="470"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="473"/>
         <source>Hold:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rögzítés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="425"/>
@@ -24920,7 +25013,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="487"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="490"/>
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>Látható:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="442"/>
@@ -24928,13 +25021,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="504"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="509"/>
         <source>Opacity:</source>
-        <translation type="unfinished">Átlátszatlanság:</translation>
+        <translation>Átlátszatlanság:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="839"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="843"/>
         <source>Origin point:</source>
-        <translation type="unfinished">Kiindulópont:</translation>
+        <translation>Kiindulópont:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1265"/>
@@ -24944,13 +25037,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="705"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="709"/>
         <source>Rotation angle:</source>
-        <translation type="unfinished">Forgatási szög:</translation>
+        <translation>Forgatási szög:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="801"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="805"/>
         <source>Axis type:</source>
-        <translation type="unfinished">Tengely típusa:</translation>
+        <translation>Tengely típusa:</translation>
     </message>
 </context>
 <context>
@@ -24958,7 +25051,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vtoolplacelabel.cpp" line="55"/>
         <source>place labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Belső jelölések</translation>
     </message>
 </context>
 <context>
@@ -24982,7 +25075,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
-        <translation type="unfinished">Sugár</translation>
+        <translation>Sugár</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="380"/>
@@ -25059,7 +25152,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="281"/>
         <source>Pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgáspont</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="455"/>
@@ -25098,42 +25191,42 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1713"/>
         <source>move information block</source>
-        <translation type="unfinished"></translation>
+        <translation>az információs blokk mozgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1743"/>
         <source>resize information block</source>
-        <translation type="unfinished"></translation>
+        <translation>az információs blokk átméretezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1941"/>
         <source>move thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>a miniatűr mozgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2096"/>
         <source>Delete place labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Jelölések törlése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2151"/>
         <source>move annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>a megjegyzés mozgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2172"/>
         <source>move seam allowance value</source>
-        <translation type="unfinished"></translation>
+        <translation>a varrásráhagyás értékének mozgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2186"/>
         <source>move seam allowance legend</source>
-        <translation type="unfinished"></translation>
+        <translation>a varrásráhagyás feliratának mozgatása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2235"/>
         <source>resize annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>a megjegyzés átméretezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2716"/>
@@ -25178,7 +25271,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2928"/>
         <source>Press Escape to leave the thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Nyomja meg az Esc billentyűt a miniatűr elhagyásához</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3708"/>
@@ -25188,12 +25281,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vwidgets/ogroupmembershipmark.cpp" line="46"/>
         <source>Member of a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport tagja</translation>
     </message>
     <message>
         <location filename="../../src/libs/vwidgets/ogroupmembershipmark.cpp" line="47"/>
         <source>Member of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 tagja</translation>
     </message>
 </context>
 <context>
@@ -25433,37 +25526,37 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="104"/>
         <source>Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Görbe_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="105"/>
         <source>Angle1Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Angle1Görbe_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="106"/>
         <source>Angle2Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Angle2Görbe_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="107"/>
         <source>Handle1Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fogantyú1Görbe_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="108"/>
         <source>Handle2Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Fogantyú2Görbe_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="109"/>
         <source>Radius_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sugár_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="176"/>
@@ -25631,13 +25724,13 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="181"/>
         <source>atanh</source>
         <comment>hyperbolic arcus tangent function</comment>
-        <translation type="unfinished">atanh</translation>
+        <translation>atanh</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="183"/>
         <source>hyperbolic arcus tangent function</source>
         <comment>function atanh</comment>
-        <translation type="unfinished"></translation>
+        <translation>hiperbolikus arkusztangens függvény</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="249"/>
@@ -25895,19 +25988,19 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="319"/>
         <source>pi = 3.14159... - the ratio of a circle&apos;s circumference to its diameter</source>
         <comment>constant _pi</comment>
-        <translation type="unfinished"></translation>
+        <translation>π = 3,14159… - a kör kerületének és átmérőjének aránya</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="323"/>
         <source>e = 2.71828... - the base of the natural logarithm</source>
         <comment>constant _e</comment>
-        <translation type="unfinished"></translation>
+        <translation>e = 2,71828… - a természetes logaritmus alapja</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="326"/>
         <source>phi = 1.61803... - the golden ratio</source>
         <comment>constant _phi</comment>
-        <translation type="unfinished"></translation>
+        <translation>φ = 1,61803… - az aranymetszés</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="121"/>
@@ -26150,7 +26243,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
         <source>Merge pieces into one</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok egyesítése egyetlen darabbá</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="307"/>
@@ -26161,7 +26254,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="545"/>
         <source>In layout</source>
-        <translation type="unfinished">Az elrendezésben</translation>
+        <translation>Az elrendezésben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="556"/>
@@ -26176,7 +26269,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="588"/>
         <source>Unlink all</source>
-        <translation type="unfinished"></translation>
+        <translation>Minden kapcsolat bontása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="698"/>
@@ -26192,44 +26285,44 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="771"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="799"/>
         <source>Select pieces to link (min 2, Enter to confirm, Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki az összekapcsolandó darabokat (min. 2, Enter a megerősítéshez, Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="785"/>
         <source>This piece is already part of a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a darab már része egy csoportnak</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="805"/>
         <source>%1 piece(s) selected - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kijelölt darab - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="820"/>
         <source>Less than 2 pieces selected - cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Kevesebb mint 2 darab van kijelölve - megszakítva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="833"/>
         <source>Click the common point (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kattintson a közös pontra (Esc a megszakításhoz)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="860"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="928"/>
         <source>Link pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Darabok összekapcsolása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="861"/>
         <source>The selected point is not common to the %1 pieces of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>A kijelölt pont nem közös pontja a csoport mind a %1 darabjának</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
         <source>Cancel</source>
-        <translation type="unfinished">Mégsem</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="26"/>
@@ -26264,176 +26357,166 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="337"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1791"/>
         <source>Add a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="347"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1794"/>
         <source>Add a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="396"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1796"/>
         <source>Show the active layer on the canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Az aktív réteg megjelenítése a vásznon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="604"/>
         <source>add a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>réteg hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="650"/>
         <source>edit layer</source>
-        <translation type="unfinished"></translation>
+        <translation>réteg szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="716"/>
         <source>add a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétegek csoportjának hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="768"/>
         <source>Group not empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem üres csoport</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="769"/>
         <source>The group &quot;%1&quot; still holds %n layer(s). Move them to another group first, (the transfer button), then delete the group.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>A(z) „%1” csoportban még %n réteg van. Először vigye át őket egy másik csoportba (az Átvitel gombbal), majd törölje a csoportot.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="796"/>
         <source>Empty group</source>
-        <translation type="unfinished"></translation>
+        <translation>Üres csoport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="797"/>
         <source>The group &quot;%1&quot; holds no layer - there is nothing to transfer.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” csoport egyetlen réteget sem tartalmaz - nincs mit átvinni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="870"/>
         <source>The group &quot;%1&quot; holds no layer yet - there is nothing to show or hide.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” csoport még egyetlen réteget sem tartalmaz - nincs mit megjeleníteni vagy elrejteni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="928"/>
         <source>Layer not empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Nem üres réteg</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="929"/>
         <source>The layer &quot;%1&quot; still contains %n object(s). Remove them from the layer first, then delete it.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>A(z) „%1” réteg még %n objektumot tartalmaz. Először távolítsa el őket a rétegből, majd törölje a réteget.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="941"/>
         <source>Last layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Utolsó réteg</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="942"/>
         <source>The layer &quot;%1&quot; is the only one of this piece. An object must always belong to a layer, so a piece keeps at least one - add another layer first, then delete this one.</source>
-        <translation type="unfinished"></translation>
+        <translation>A(z) „%1” réteg az egyetlen ebben a szabásmintadarabban. Egy objektumnak mindig réteghez kell tartoznia, ezért egy darab legalább egyet megtart - először adjon hozzá egy másik réteget, majd törölje ezt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1096"/>
         <source>This is the only layer of this piece - there is no other layer to transfer to.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az egyetlen réteg ebben a szabásmintadarabban - nincs másik réteg, ahová át lehetne vinni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1102"/>
         <source>This layer holds no object - there is nothing to transfer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a réteg egyetlen objektumot sem tartalmaz - nincs mit átvinni.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1103"/>
         <source>This layer holds no object - there is nothing to remove.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez a réteg egyetlen objektumot sem tartalmaz - nincs mit eltávolítani.</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1356"/>
         <source>%n object(s) selected - Enter to choose the layer they move to, Escape cancels.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n objektum kijelölve - Enter a célréteg kiválasztásához, Esc megszakít.</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1358"/>
         <source>%n object(s) selected - Enter to confirm, Escape cancels.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n objektum kijelölve - Enter a megerősítéshez, Esc megszakít.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1366"/>
         <source>Select the objects to transfer, then press Enter to choose the layer they move to - Escape cancels. Magenta is this layer&apos;s content, and every object of it can move.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki az átviendő objektumokat, majd nyomja meg az Entert a célréteg kiválasztásához - az Esc megszakítja. A magenta ennek a rétegnek a tartalma, és minden objektuma átvihető.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1376"/>
         <source>No object of this layer is shared with another layer - an object must always belong to at least one layer, so there is nothing to remove here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebben a rétegben nincs olyan objektum, amely egy másik réteghez is tartozna - egy objektumnak mindig legalább egy réteghez kell tartoznia, ezért itt nincs mit eltávolítani.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1381"/>
         <source>Select the objects to remove, then press Enter to confirm - Escape cancels. Magenta is what can be removed: an object must always stay in one layer, so only what another layer holds can go.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki az eltávolítandó objektumokat, majd nyomja meg az Entert a megerősítéshez - az Esc megszakítja. A magenta mutatja, mi távolítható el: egy objektumnak mindig maradnia kell egy rétegben, ezért csak azok távolíthatók el, amelyeket egy másik réteg is tartalmaz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1387"/>
         <source>Select the objects to add, then press Enter to confirm - Escape cancels. Magenta is this layer&apos;s content, so those cannot be added again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Válassza ki a hozzáadandó objektumokat, majd nyomja meg az Entert a megerősítéshez - az Esc megszakítja. A magenta ennek a rétegnek a tartalma, ezért ezek nem adhatók hozzá újra.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1398"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1411"/>
         <source>This object is not in this layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az objektum nincs ebben a rétegben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1406"/>
         <source>This object belongs only to this layer - an object must always belong to at least one layer, so it cannot be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az objektum csak ehhez a réteghez tartozik - egy objektumnak mindig legalább egy réteghez kell tartoznia, ezért nem távolítható el.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1418"/>
         <source>This object is already in this layer - a layer holds an object once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ez az objektum már ebben a rétegben van - egy réteg egy objektumot csak egyszer tartalmaz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1460"/>
         <source>remove objects from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>objektumok eltávolítása egy rétegből</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1460"/>
         <source>add objects to a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>objektumok hozzáadása egy réteghez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1495"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1713"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1498"/>
         <source>%n object(s) will leave &quot;%1&quot;. Choose the layer they move to:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n objektum el fogja hagyni a(z) „%1” réteget. Válassza ki a réteget, ahová átkerül:</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1542"/>
         <source>transfer objects to another layer</source>
-        <translation type="unfinished"></translation>
+        <translation>objektumok átvitele egy másik rétegbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1740"/>
@@ -26443,80 +26526,78 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1948"/>
         <source>Show or hide the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>A réteg megjelenítése vagy elrejtése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1954"/>
         <source>The colour the layer draws with</source>
-        <translation type="unfinished"></translation>
+        <translation>A réteg rajzolási színe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1965"/>
         <source>Group: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Csoport: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1969"/>
         <source>Make this layer the active one</source>
-        <translation type="unfinished"></translation>
+        <translation>A réteg aktívvá tétele</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1982"/>
         <source>Rename the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>A réteg átnevezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1984"/>
         <source>Add objects to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektumok hozzáadása a réteghez</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1988"/>
         <source>Move objects of this layer to another one</source>
-        <translation type="unfinished"></translation>
+        <translation>Átvitel egy másik rétegbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1990"/>
         <source>Remove objects from the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektumok eltávolítása a rétegből</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1994"/>
         <source>Delete the layer - allowed once it holds no object</source>
-        <translation type="unfinished"></translation>
+        <translation>A réteg törlése - akkor lehetséges, ha már nem tartalmaz objektumot</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2010"/>
         <source>Show or hide every layer of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport összes rétegének megjelenítése vagy elrejtése</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2022"/>
         <source>%n layer(s) in this group.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n réteg ebben a csoportban.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2031"/>
         <source>Rename the group and settle the layers it holds</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport átnevezése és a benne lévő rétegek rendezése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2033"/>
         <source>Move layers of this group to another one</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport rétegeinek átvitele egy másikba</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2035"/>
         <source>Delete the group - allowed once it holds no layer</source>
-        <translation type="unfinished"></translation>
+        <translation>A csoport törlése - akkor lehetséges, ha már nem tartalmaz réteget</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1711"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1742"/>
         <source>Edit</source>
-        <translation type="unfinished">Szerkesztés</translation>
+        <translation>Szerkesztés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1745"/>
@@ -26531,12 +26612,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.ui" line="26"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Réteg:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.ui" line="33"/>
         <source>Filter by name</source>
-        <translation type="unfinished"></translation>
+        <translation>Szűrés név szerint</translation>
     </message>
 </context>
 <context>
@@ -26731,7 +26812,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="198"/>
         <source>Length = %1%2, angle = %3°, rotation angle = %4°, &lt;b&gt;%5&lt;/b&gt; - sticking angle, &lt;b&gt;%6&lt;/b&gt; - change the pivot point, &lt;b&gt;Mouse click&lt;/b&gt; - finish creating</source>
-        <translation type="unfinished"></translation>
+        <translation>Hossz = %1%2, szög = %3°, forgatási szög = %4°, &lt;b&gt;%5&lt;/b&gt; - mágneses szög, &lt;b&gt;%6&lt;/b&gt; - a forgáspont módosítása, &lt;b&gt;Egérkattintás&lt;/b&gt; - a létrehozás befejezése</translation>
     </message>
 </context>
 <context>
@@ -26784,7 +26865,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="186"/>
         <source>Rotating angle = %1°, length = %2%3, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Forgatási szög = %1°, hossz = %2%3, &lt;b&gt;%4&lt;/b&gt; - mágneses szög, &lt;b&gt;Egérkattintás&lt;/b&gt; - a létrehozás befejezése</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="196"/>
@@ -26828,7 +26909,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="177"/>
         <source>Point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pont %1</translation>
     </message>
 </context>
 <context>
@@ -27188,43 +27269,43 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="137"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="198"/>
         <source>Sewing pattern design application</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminta-tervező alkalmazás</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="158"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="201"/>
         <source>Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminták</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="159"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="202"/>
         <source>+ New pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Új szabásminta</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="160"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="203"/>
         <source>Open pattern...</source>
-        <translation type="unfinished"></translation>
+        <translation>Szabásminta megnyitása…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="175"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="206"/>
         <source>Measurement tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Méréstáblázatok</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="176"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="207"/>
         <source>+ New table</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Új táblázat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="177"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="208"/>
         <source>Open table...</source>
-        <translation type="unfinished"></translation>
+        <translation>Táblázat megnyitása…</translation>
     </message>
 </context>
 <context>
@@ -27262,7 +27343,9 @@ Do you want to continue?</source>
         <source>%1
 
 (%2 further messages were logged.)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+
+(%2 további üzenet került naplózásra.)</translation>
     </message>
 </context>
 </TS>

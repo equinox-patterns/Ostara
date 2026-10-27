@@ -30,7 +30,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="39"/>
         <source>add a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenengruppe hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -63,22 +63,22 @@
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="42"/>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="50"/>
         <source>Angle of the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel der Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="44"/>
         <source>Reverse angle of the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Umgekehrter Winkel der Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="46"/>
         <source>Perpendicular to the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Senkrecht zur Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="48"/>
         <source>Reverse perpendicular to the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Umgekehrt senkrecht zur Linie</translation>
     </message>
 </context>
 <context>
@@ -86,7 +86,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="750"/>
         <source>change active layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktive Ebene wechseln</translation>
     </message>
 </context>
 <context>
@@ -94,7 +94,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="162"/>
         <source>edit layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -102,7 +102,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="198"/>
         <source>change the layer of the tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene des Werkzeugs ändern</translation>
     </message>
 </context>
 <context>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="243"/>
         <source>fold a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenengruppe einklappen</translation>
     </message>
 </context>
 <context>
@@ -126,7 +126,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="188"/>
         <source>edit a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenengruppe bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -134,7 +134,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="281"/>
         <source>change the group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen der Gruppe ändern</translation>
     </message>
 </context>
 <context>
@@ -166,7 +166,7 @@
     <message>
         <location filename="../../src/libs/vtools/undocommands/olayergroupcommands.cpp" line="113"/>
         <source>delete a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenengruppe löschen</translation>
     </message>
 </context>
 <context>
@@ -230,7 +230,7 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="128"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="155"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="228"/>
@@ -265,17 +265,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="152"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="160"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="169"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.ui" line="176"/>
@@ -333,17 +333,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="37"/>
         <source>Radius = perimeter / (2 * _pi), e.g. 25 / (2 * _pi) for a 25 cm perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius = Umfang / (2 * _pi), z. B. 25 / (2 * _pi) für einen Umfang von 25 cm.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="56"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="63"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="110"/>
@@ -363,27 +363,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="163"/>
         <source>Arc:</source>
-        <translation type="unfinished">Bogen:</translation>
+        <translation>Bogen:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="209"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="223"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="234"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Startpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="252"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.ui" line="127"/>
@@ -431,17 +431,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="34"/>
         <source>Radius = perimeter / (2 * _pi), e.g. 25 / (2 * _pi) for a 25 cm perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius = Umfang / (2 * _pi), z. B. 25 / (2 * _pi) für einen Umfang von 25 cm.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="53"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="60"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="107"/>
@@ -461,27 +461,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="157"/>
         <source>Arc:</source>
-        <translation type="unfinished">Bogen:</translation>
+        <translation>Bogen:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="203"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="217"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="228"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Startpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="246"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="28"/>
@@ -499,7 +499,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="118"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="187"/>
@@ -529,17 +529,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="137"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="145"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="160"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.ui" line="167"/>
@@ -572,53 +572,53 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="113"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="68"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="106"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherdrehung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="84"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene aus den Originalobjekten erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="87"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="99"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="123"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="139"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="172"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
 </context>
 <context>
@@ -651,12 +651,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.ui" line="148"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.ui" line="187"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="136"/>
@@ -744,12 +744,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="264"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="303"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezierpath.ui" line="28"/>
@@ -762,7 +762,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="136"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="332"/>
@@ -837,17 +837,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="236"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="244"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="259"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.ui" line="28"/>
@@ -927,17 +927,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="211"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="219"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.ui" line="234"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
 </context>
 <context>
@@ -977,17 +977,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="209"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="217"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="232"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.ui" line="242"/>
@@ -1072,17 +1072,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="211"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="219"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="234"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.ui" line="178"/>
@@ -1166,12 +1166,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="215"/>
         <source>Arc</source>
-        <translation type="unfinished">Bogen</translation>
+        <translation>Bogen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="268"/>
         <source>Constants</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstanten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="301"/>
@@ -1221,7 +1221,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="311"/>
         <source>Hide unnamed objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbenannte Objekte ausblenden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="334"/>
@@ -1241,7 +1241,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="38"/>
         <source>Calculated value:</source>
-        <translation type="unfinished">Berechneter Wert:</translation>
+        <translation>Berechneter Wert:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.ui" line="235"/>
@@ -1274,34 +1274,34 @@
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1104"/>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1126"/>
         <source>Name it</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1168"/>
         <source>Name the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurve benennen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1168"/>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="322"/>
         <source>Name the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie benennen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1171"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1189"/>
         <source>The name %1 cannot be used in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name %1 kann in einer Formel nicht verwendet werden.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1221"/>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="319"/>
         <source>The name %1 is already used by another line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name %1 wird bereits von einer anderen Linie verwendet.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1532"/>
@@ -1384,12 +1384,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="49"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="56"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="127"/>
@@ -1399,27 +1399,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="156"/>
         <source>ElArc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptischer Bogen:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="201"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="215"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="226"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Startpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="244"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.ui" line="28"/>
@@ -1467,12 +1467,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="49"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="56"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="103"/>
@@ -1492,27 +1492,27 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="153"/>
         <source>ElArc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptischer Bogen:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="199"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="213"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="224"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Startpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.ui" line="242"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="77"/>
@@ -1565,7 +1565,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="139"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="97"/>
@@ -1575,17 +1575,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="163"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="177"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="192"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.ui" line="199"/>
@@ -1849,22 +1849,22 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren, um eine Ebene aus den Originalobjekten zu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="68"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="94"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="104"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="117"/>
@@ -1875,7 +1875,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="150"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="318"/>
@@ -1934,22 +1934,22 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="72"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren, um eine Ebene aus den Originalobjekten zu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="75"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="101"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="111"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="124"/>
@@ -1960,7 +1960,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="157"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="353"/>
@@ -2070,12 +2070,12 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="360"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="367"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="388"/>
@@ -2096,22 +2096,22 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="501"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="515"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="526"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Startpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.ui" line="544"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="274"/>
@@ -2122,7 +2122,7 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="462"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="464"/>
         <source>The point exists already: rename it on the point itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Punkt existiert bereits: Benennen Sie ihn direkt am Punkt um.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="711"/>
@@ -2144,17 +2144,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="921"/>
         <source>An offset must carry a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Abstand muss einen Namen tragen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="926"/>
         <source>This name cannot be used as the name of a variable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Name kann nicht als Variablenname verwendet werden.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="937"/>
         <source>Another variable of the pattern already carries this name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine andere Variable des Schnittmusters trägt bereits diesen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1087"/>
@@ -2167,37 +2167,37 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="14"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="26"/>
         <source>Layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenenname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="36"/>
         <source>Choose layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenennamen wählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="43"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="53"/>
         <source>Pen style:</source>
-        <translation type="unfinished">Zeichenstil:</translation>
+        <translation>Zeichenstil:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.ui" line="85"/>
         <source>Color:</source>
-        <translation type="unfinished">Farbe:</translation>
+        <translation>Farbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.cpp" line="172"/>
         <source>New layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Ebene</translation>
     </message>
 </context>
 <context>
@@ -2205,7 +2205,7 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="97"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="234"/>
@@ -2250,17 +2250,17 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="142"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="152"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="167"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.ui" line="31"/>
@@ -2273,23 +2273,24 @@
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="41"/>
         <source>Import structure</source>
-        <translation type="unfinished"></translation>
+        <translation>Struktur importieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="63"/>
         <source>Choose a measurement table whose structure you want to import (names, descriptions, groups).
 Values and intervals will not be imported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie eine Maßtabelle, deren Struktur Sie importieren möchten (Namen, Beschreibungen, Gruppen).
+Werte und Intervalle werden nicht importiert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="77"/>
         <source>⭐ Add/Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>⭐ Zu Favoriten hinzufügen/aus Favoriten entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogImportStructure.cpp" line="85"/>
         <source>Import</source>
-        <translation type="unfinished">Importieren</translation>
+        <translation>Importieren</translation>
     </message>
 </context>
 <context>
@@ -2436,7 +2437,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="497"/>
         <source>Group: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="634"/>
@@ -2527,7 +2528,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1395"/>
         <source>Increment &apos;%1&apos; already exists in the other table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Inkrement „%1“ existiert bereits in der anderen Tabelle.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1423"/>
@@ -2686,12 +2687,12 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="76"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="86"/>
         <source>Value:</source>
-        <translation type="unfinished">Wert:</translation>
+        <translation>Wert:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="96"/>
@@ -2773,7 +2774,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="72"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="184"/>
@@ -2798,7 +2799,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.ui" line="135"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.ui" line="37"/>
@@ -2821,7 +2822,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="104"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="151"/>
@@ -2841,17 +2842,17 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="196"/>
         <source>Line intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Linienschnittpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="197"/>
         <source>These two lines are parallel, no intersection possible. Please choose 2 non-parallel lines.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese beiden Linien sind parallel, es ist kein Schnittpunkt möglich. Bitte wählen Sie 2 nicht parallele Linien.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="218"/>
         <source>Select first point of first line</source>
-        <translation type="unfinished">Den ersten Punkt der Linie wählen</translation>
+        <translation>Den ersten Punkt der Linie wählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="14"/>
@@ -2861,17 +2862,17 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="173"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="181"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="196"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.ui" line="203"/>
@@ -2921,7 +2922,7 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="126"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="345"/>
@@ -2991,17 +2992,17 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="361"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="369"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="384"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.ui" line="397"/>
@@ -3034,194 +3035,194 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="163"/>
         <source>Manage Main Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptkontur verwalten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="178"/>
         <source>Reverse node direction</source>
-        <translation type="unfinished">Knotenrichtung umkehren</translation>
+        <translation>Knotenrichtung umkehren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="185"/>
         <source>Excluded node</source>
-        <translation type="unfinished">Ausgeschlossener Knoten</translation>
+        <translation>Ausgeschlossener Knoten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="192"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="596"/>
         <source>Turn point</source>
-        <translation type="unfinished">Punkt drehen</translation>
+        <translation>Punkt drehen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="199"/>
         <source>Check node uniqueness</source>
-        <translation type="unfinished"></translation>
+        <translation>Eindeutigkeit der Objekte prüfen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="206"/>
         <source>Notch</source>
-        <translation type="unfinished">Einschnitt</translation>
+        <translation>Einschnitt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="213"/>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="552"/>
         <source>Duplicate</source>
-        <translation type="unfinished">Duplizieren</translation>
+        <translation>Duplizieren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="219"/>
         <source>Delete node</source>
-        <translation type="unfinished">Knoten löschen</translation>
+        <translation>Knoten löschen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="236"/>
         <source>Move on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganz nach oben schieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="242"/>
         <source>Move up</source>
-        <translation type="unfinished">Anheben</translation>
+        <translation>Anheben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="248"/>
         <source>Move down</source>
-        <translation type="unfinished">Absenken</translation>
+        <translation>Absenken</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="254"/>
         <source>Move on bottom</source>
-        <translation type="unfinished">Ganz nach unten schieben</translation>
+        <translation>Ganz nach unten schieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="306"/>
         <source>Invalid Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Kontur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="307"/>
         <source>The main path is not valid. Please fix the errors before saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Hauptkontur ist ungültig. Bitte korrigieren Sie die Fehler vor dem Speichern.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="546"/>
         <source>Reverse</source>
-        <translation type="unfinished">Umkehren</translation>
+        <translation>Umkehren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="558"/>
         <source>Passmark</source>
-        <translation type="unfinished">Passmarke</translation>
+        <translation>Passmarke</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="562"/>
         <source>None</source>
-        <translation type="unfinished">Keine</translation>
+        <translation>Keine</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="572"/>
         <source>One line</source>
-        <translation type="unfinished">Eine Linie</translation>
+        <translation>Eine Linie</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="574"/>
         <source>Two lines</source>
-        <translation type="unfinished">Zwei Linien</translation>
+        <translation>Zwei Linien</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="576"/>
         <source>Three lines</source>
-        <translation type="unfinished">Drei Linien</translation>
+        <translation>Drei Linien</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="578"/>
         <source>T mark</source>
-        <translation type="unfinished">T Markierung</translation>
+        <translation>T Markierung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="580"/>
         <source>External V mark</source>
-        <translation type="unfinished">Externe V-Markierung</translation>
+        <translation>Externe V-Markierung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="582"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Interne V-Markierung</translation>
+        <translation>Interne V-Markierung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="584"/>
         <source>U mark</source>
-        <translation type="unfinished">U Markierung</translation>
+        <translation>U Markierung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="586"/>
         <source>Box mark</source>
-        <translation type="unfinished">Box Markierung</translation>
+        <translation>Box Markierung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="588"/>
         <source>Check mark</source>
-        <translation type="unfinished">Häkchen</translation>
+        <translation>Häkchen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="590"/>
         <source>Check uniqueness</source>
-        <translation type="unfinished">Eindeutigkeit prüfen</translation>
+        <translation>Eindeutigkeit prüfen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="603"/>
         <source>Excluded</source>
-        <translation type="unfinished">Ausgeschlossen</translation>
+        <translation>Ausgeschlossen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="609"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="817"/>
         <source>Cannot calculate curve %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurve %1 kann nicht berechnet werden.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="827"/>
         <source>You need more points!</source>
-        <translation type="unfinished">Sie brauchen mehr Punkte!</translation>
+        <translation>Sie brauchen mehr Punkte!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="834"/>
         <source>You have to choose points in a clockwise direction!</source>
-        <translation type="unfinished">Sie müssen Punkte im Uhrzeigersinn auswählen!</translation>
+        <translation>Sie müssen die Punkte im Uhrzeigersinn auswählen!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="842"/>
         <source>First point cannot be equal to the last point!</source>
-        <translation type="unfinished">Der erste Punkt kann nicht gleich dem letzten Punkt sein!</translation>
+        <translation>Der erste Punkt kann nicht gleich dem letzten Punkt sein!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="850"/>
         <source>You have double points!</source>
-        <translation type="unfinished">Sie haben doppelte Punkte!</translation>
+        <translation>Sie haben doppelte Punkte!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="858"/>
         <source>The same curve repeats twice!</source>
-        <translation type="unfinished">Die selbe Kurve wiederholt sich zweimal!</translation>
+        <translation>Die selbe Kurve wiederholt sich zweimal!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="865"/>
         <source>Each point in the path must be unique!</source>
-        <translation type="unfinished">Jeder Punkt in einem Pfad muss eindeutig sein!</translation>
+        <translation>Jeder Punkt in einem Pfad muss eindeutig sein!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="873"/>
         <source>Invalid segment!</source>
-        <translation type="unfinished">Ungültiges Segment!</translation>
+        <translation>Ungültiges Segment!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogmainpath.cpp" line="877"/>
         <source>Ready!</source>
-        <translation type="unfinished">Fertig!</translation>
+        <translation>Fertig!</translation>
     </message>
 </context>
 <context>
@@ -3229,120 +3230,123 @@ Values and intervals will not be imported.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="142"/>
         <source>Measurement tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="173"/>
         <source>Search tables…</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabellen durchsuchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="188"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="189"/>
         <source>Grading axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradationsachse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="190"/>
         <source>Created</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstellt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="191"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Geändert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="251"/>
         <source>Export &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="253"/>
         <source>Ostara files (*.%1);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara-Dateien (*.%1);;Alle Dateien (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="257"/>
         <source>Export successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Export erfolgreich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="258"/>
         <source>File exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei exportiert nach:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="260"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="261"/>
         <source>Could not copy file to the selected destination.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht an das ausgewählte Ziel kopiert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="267"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Löschvorgang bestätigen</translation>
+        <translation>Löschvorgang bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="268"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soll „%1“ wirklich gelöscht werden?
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="284"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="284"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht gelöscht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="299"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="367"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus Favoriten entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="367"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu Favoriten hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="390"/>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht definiert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="426"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="438"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogManageMeasurements.cpp" line="450"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
 </context>
 <context>
@@ -3350,19 +3354,21 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="41"/>
         <source>Measurements table</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="41"/>
         <source>Legacy measurement file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßdatei im alten Format</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="49"/>
         <source>This pattern reads measurements and no table is linked to it.
 
 Ostara uses the .omt/.otu format. Choose how to proceed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittmuster liest Maße, aber es ist keine Maßtabelle damit verknüpft.
+
+Ostara verwendet das Format .omt/.otu. Wählen Sie, wie vorgegangen werden soll:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="54"/>
@@ -3371,17 +3377,21 @@ Ostara uses the .omt/.otu format. Choose how to proceed:</source>
 %1
 
 but it could not be found. Ostara uses the .omt/.otu format. Choose how to proceed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittmuster ist mit einer Tape-Datei im alten Format verknüpft:
+
+%1
+
+sie wurde jedoch nicht gefunden. Ostara verwendet das Format .omt/.otu. Wählen Sie, wie vorgegangen werden soll:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="65"/>
         <source>Search for the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach der Datei suchen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogMeasurementLink.cpp" line="66"/>
         <source>Replace with an existing .omt/.otu</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch eine vorhandene .omt/.otu ersetzen</translation>
     </message>
 </context>
 <context>
@@ -3468,27 +3478,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="552"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="568"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren, um eine Ebene aus den Originalobjekten zu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="571"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="597"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="607"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="620"/>
@@ -3499,7 +3509,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="653"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="545"/>
@@ -3523,78 +3533,78 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="137"/>
         <source>Move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben im Stapel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="62"/>
         <source>Length</source>
-        <translation type="unfinished">Länge</translation>
+        <translation>Länge</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="67"/>
         <source>Angle</source>
-        <translation type="unfinished">Winkel</translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="72"/>
         <source>Rotation angle</source>
-        <translation type="unfinished">Rotationswinkel</translation>
+        <translation>Rotationswinkel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="78"/>
         <source>Move</source>
-        <translation type="unfinished">Verschieben</translation>
+        <translation>Verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="86"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="144"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="93"/>
         <source>Move name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Verschiebung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="115"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren, um eine Ebene aus den Originalobjekten zu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="118"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="130"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="154"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="170"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.ui" line="203"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
 </context>
 <context>
@@ -3620,37 +3630,37 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="48"/>
         <source>Name the object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt benennen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="53"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Formel verwendet ein Objekt ohne Namen. Geben Sie ihm einen Namen, damit es in einer Formel verwendet werden kann.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="60"/>
         <source>Object:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="70"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="109"/>
         <source>Object %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt %1 von %2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="128"/>
         <source>The name %1 cannot be used in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name %1 kann in einer Formel nicht verwendet werden.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="134"/>
         <source>The name %1 is already used. Choose another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name %1 wird bereits verwendet. Wählen Sie einen anderen.</translation>
     </message>
 </context>
 <context>
@@ -3658,92 +3668,92 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="47"/>
         <source>New measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Maßtabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="54"/>
         <source>Table name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Tabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="58"/>
         <source>e.g., Standard measurements T38-60</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. Standardmaße T38-60</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="64"/>
         <source>Table type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabellentyp</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="69"/>
         <source>Multi-size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrgrößen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="74"/>
         <source>Table with size groups (e.g., 32-58, 3 heights). Values are calculated automatically by increments.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelle mit Größe-Gruppen (z. B. 32-58, 3 Höhen). Die Werte werden automatisch durch Inkremente berechnet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="80"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="84"/>
         <source>Single size, no calculation. You enter each measurement value directly.</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelgröße, ohne Berechnung. Sie geben jeden Maßwert direkt ein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="93"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheit</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="98"/>
         <source>Centimeters (cm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zentimeter (cm)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="103"/>
         <source>Millimeters (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Millimeter (mm)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="107"/>
         <source>Inches (inch)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoll (in)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="114"/>
         <source>Template (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage (optional)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="117"/>
         <source>Start from an existing table. Only measurement names will be reused, without values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit einer vorhandenen Tabelle beginnen. Nur die Maßnamen werden übernommen, ohne Werte.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="125"/>
         <source>No template</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Vorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="142"/>
         <source>Create</source>
-        <translation type="unfinished">Erstellen</translation>
+        <translation>Erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="146"/>
         <source>Name required</source>
-        <translation type="unfinished"></translation>
+        <translation>Name erforderlich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="147"/>
         <source>Please name your table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitte benennen Sie Ihre Tabelle.</translation>
     </message>
 </context>
 <context>
@@ -3756,65 +3766,62 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="98"/>
         <source>New pattern piece</source>
-        <translation type="unfinished">Neues Schnittteil</translation>
+        <translation>Neues Schnittteil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="162"/>
         <source>Construction</source>
-        <translation type="unfinished"></translation>
+        <translation>Konstruktion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="183"/>
         <source>First layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der ersten Ebene:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="184"/>
         <source>Pen style:</source>
-        <translation type="unfinished">Zeichenstil:</translation>
+        <translation>Zeichenstil:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="185"/>
         <source>Color:</source>
-        <translation type="unfinished">Farbe:</translation>
+        <translation>Farbe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="307"/>
         <source>%1 - needs %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - benötigt %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="365"/>
         <source>No piece in the library is in %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittteil der Bibliothek ist in %1.</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="321"/>
         <source>%n piece(s) not shown: another unit, or unreadable.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Schnittteil wird nicht angezeigt: andere Einheit oder unlesbar.</numerusform><numerusform>%n Schnittteile werden nicht angezeigt: andere Einheit oder unlesbar.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="219"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Der eigene Ordner der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="364"/>
         <source>This folder holds no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Ordner enthält kein Schnittteil.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="380"/>
         <source>No piece matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittteil entspricht der Suche.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="439"/>
         <source>Insert the piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil einfügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="503"/>
@@ -3834,7 +3841,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="30"/>
         <source>Create a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="41"/>
@@ -3849,33 +3856,33 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="51"/>
         <source>Choose unique pattern piece name.</source>
-        <translation>Eindeutigen Namen für das Schnitteil eingeben.</translation>
+        <translation>Eindeutigen Namen für das Schnittteil eingeben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="73"/>
         <source>Import a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil importieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="81"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="95"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="105"/>
         <source>Search this folder&apos;s pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile in diesem Ordner suchen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="130"/>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="381"/>
         <source>Double-click a piece to insert it, or select one and accept.</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelklicken Sie ein Schnittteil, um es einzufügen, oder wählen Sie eines und bestätigen Sie.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="17"/>
@@ -3888,7 +3895,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="121"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="187"/>
@@ -3938,17 +3945,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="182"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="190"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="205"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Punktes:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.ui" line="31"/>
@@ -3961,48 +3968,48 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="45"/>
         <source>Open a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelle öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="57"/>
         <source>Multi-size - Library (.omt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrgrößen - Bibliothek (.omt)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="69"/>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="88"/>
         <source>Double-click a table to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelklicken Sie eine Tabelle, um sie zu öffnen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="76"/>
         <source>Single size - Library (.otu)</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelgröße - Bibliothek (.otu)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="95"/>
         <source>Other location</source>
-        <translation type="unfinished"></translation>
+        <translation>Anderer Speicherort</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="98"/>
         <source>Browse folders…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner durchsuchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="104"/>
         <source>Open a .omt, .otu, .vst, or .vit file from any folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Datei .omt, .otu, .vst oder .vit aus einem beliebigen Ordner öffnen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="143"/>
         <source>Measurement tables (*.omt *.otu *.vst *.vit);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabellen (*.omt *.otu *.vst *.vit);;Alle Dateien (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/DialogOpenMeasurements.cpp" line="149"/>
         <source>Open measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabelle öffnen</translation>
     </message>
 </context>
 <context>
@@ -4010,12 +4017,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="242"/>
         <source>Take both points of this line first</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie zuerst beide Punkte dieser Linie</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="364"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Ebenenname</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="516"/>
@@ -4043,12 +4050,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="37"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="44"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="91"/>
@@ -4069,22 +4076,22 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="204"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="218"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="229"/>
         <source>Start point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Startpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="247"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.ui" line="162"/>
@@ -4142,7 +4149,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="125"/>
         <source>Cut on fabric (DXF export only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf dem Stoff zuschneiden (nur DXF-Export)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="139"/>
@@ -4574,27 +4581,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1548"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1549"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = sichtbar, 0 = unsichtbar, Formeln erlaubt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1550"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1563"/>
         <source>Internal outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Kontur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2106"/>
         <source>Cannot calculate curve %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurve %1 kann nicht berechnet werden.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2157"/>
@@ -4607,77 +4614,77 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="189"/>
         <source>Internal outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Kontur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="190"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="191"/>
         <source>Type of pen</source>
-        <translation type="unfinished"></translation>
+        <translation>Linienart</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="192"/>
         <source>Continue the first point to the cutting contour</source>
-        <translation type="unfinished">Den ersten Punkt zur Schnittkontur fortführen</translation>
+        <translation>Den ersten Punkt zur Schnittkontur fortführen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="193"/>
         <source>Continue the last point to the cutting contour</source>
-        <translation type="unfinished">Den letzten Punkt zur Schnittkontur fortführen</translation>
+        <translation>Den letzten Punkt zur Schnittkontur fortführen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="194"/>
         <source>Cut on fabric (DXF export only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf dem Stoff zuschneiden (nur DXF-Export)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="195"/>
         <source>Not mirrored</source>
-        <translation type="unfinished">Nicht gespiegelt</translation>
+        <translation>Nicht gespiegelt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="196"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="197"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = sichtbar, 0 = unsichtbar, Formeln erlaubt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="198"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="236"/>
         <source>Empty formula</source>
-        <translation type="unfinished">Leere Formel</translation>
+        <translation>Leere Formel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="249"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
-        <translation type="unfinished">Ungültiges Ergebnis. Wert ist unendlich oder keine Zahl (NaN). Bitte prüfen Sie Ihre Berechnungen.</translation>
+        <translation>Ungültiges Ergebnis. Wert ist unendlich oder keine Zahl (NaN). Bitte prüfen Sie Ihre Berechnungen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="253"/>
         <source>Value can&apos;t be less than 0</source>
-        <translation type="unfinished">Wert kann nicht kleiner 0 sein</translation>
+        <translation>Wert kann nicht kleiner 0 sein</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="262"/>
         <source>Parser error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Parserfehler: %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepathoptions.cpp" line="287"/>
         <source>Control visibility</source>
-        <translation type="unfinished">Sichtbarkeit einstellen</translation>
+        <translation>Sichtbarkeit einstellen</translation>
     </message>
 </context>
 <context>
@@ -4711,67 +4718,67 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="367"/>
         <source>Empty formula</source>
-        <translation type="unfinished">Leere Formel</translation>
+        <translation>Leere Formel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="381"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
-        <translation type="unfinished">Ungültiges Ergebnis. Wert ist unendlich oder keine Zahl (NaN). Bitte prüfen Sie Ihre Berechnungen.</translation>
+        <translation>Ungültiges Ergebnis. Wert ist unendlich oder keine Zahl (NaN). Bitte prüfen Sie Ihre Berechnungen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="385"/>
         <source>Value can&apos;t be less than 0</source>
-        <translation type="unfinished">Wert kann nicht kleiner 0 sein</translation>
+        <translation>Wert kann nicht kleiner 0 sein</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="394"/>
         <source>Parser error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Parserfehler: %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="583"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Passmarke</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="584"/>
         <source>Piece</source>
-        <translation type="unfinished">Teil</translation>
+        <translation>Teil</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="585"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="586"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="587"/>
         <source>Angle</source>
-        <translation type="unfinished">Winkel</translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="588"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="589"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="590"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = sichtbar, 0 = unsichtbar, Formeln erlaubt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="592"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="614"/>
@@ -4831,101 +4838,101 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="34"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="204"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="45"/>
         <source>Cap 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe 1:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="72"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="138"/>
         <source>Draw</source>
-        <translation type="unfinished">Zeichnen</translation>
+        <translation>Zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="79"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="145"/>
         <source>Reverse the sense</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung umkehren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="86"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="152"/>
         <source>Mark the notch of this end on the piece&apos;s edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kerbe dieses Endes am Rand des Schnittteils markieren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="89"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="155"/>
         <source>Notch</source>
-        <translation type="unfinished">Einschnitt</translation>
+        <translation>Einschnitt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="111"/>
         <source>Cap 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe 2:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="182"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene aus den Originalobjekten erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="185"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="197"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="211"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="221"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="234"/>
         <source>Draw the fold line that joins the two caps, and the pen it is drawn with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Faltenlinie zeichnen, die beide Kappen verbindet, sowie den Stift, mit dem sie gezeichnet wird.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="237"/>
         <source>Fold line</source>
-        <translation type="unfinished">Faltlinie</translation>
+        <translation>Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="243"/>
         <source>Draw the fold line, from one cap to the other.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Faltenlinie von einer Kappe zur anderen zeichnen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="249"/>
         <source>Draw the fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltenlinie zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="265"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.ui" line="298"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
 </context>
 <context>
@@ -4933,7 +4940,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="14"/>
         <source>Point from arc and tangent</source>
-        <translation> Schnittpunkt des Bogens und der Tangente</translation>
+        <translation>Schnittpunkt des Bogens und der Tangente</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.cpp" line="161"/>
@@ -4968,17 +4975,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="130"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="140"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="155"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Punktes:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.ui" line="28"/>
@@ -4991,7 +4998,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="14"/>
         <source>Point from circle and tangent</source>
-        <translation> Schnittpunkt des Bogens und Tangente</translation>
+        <translation>Schnittpunkt des Bogens und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="258"/>
@@ -5036,17 +5043,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="174"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="182"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="197"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Punktes:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.ui" line="28"/>
@@ -5059,7 +5066,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="122"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="270"/>
@@ -5114,17 +5121,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="214"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier kann eine Notiz hinzugefügt werden…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="222"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="237"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.ui" line="31"/>
@@ -5147,17 +5154,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="50"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="60"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="75"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.ui" line="88"/>
@@ -5215,17 +5222,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="223"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="231"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="246"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.ui" line="256"/>
@@ -5334,17 +5341,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="177"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="185"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="200"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.ui" line="14"/>
@@ -5431,17 +5438,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="236"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="244"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="259"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.ui" line="107"/>
@@ -5476,22 +5483,22 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="48"/>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="56"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Tastenkürzel</translation>
+        <translation>Tastenkürzel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="64"/>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="72"/>
         <source>Tool bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeugleiste</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
@@ -5512,98 +5519,98 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="101"/>
         <source>Range groups for &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereichsgruppen für „%1“</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="112"/>
         <source>Define range groups for &lt;b&gt;&quot;%1&quot;&lt;/b&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereichsgruppen für &lt;b&gt;„%1“&lt;/b&gt; festlegen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="120"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="120"/>
         <source>Ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereiche</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="141"/>
         <source>+ Create group</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Gruppe erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="146"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="241"/>
         <source>New group</source>
-        <translation type="unfinished">Neue Gruppe</translation>
+        <translation>Neue Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="151"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="153"/>
         <source>e.g., Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. Standard</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="160"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Von</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="160"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Bis</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="170"/>
         <source>+ Add range</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Bereich hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="175"/>
         <source>Validate</source>
-        <translation type="unfinished"></translation>
+        <translation>Validieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="179"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="189"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="224"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="233"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="253"/>
         <source>Edit &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="283"/>
         <source>Confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="284"/>
         <source>Delete group &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe „%1“ löschen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="335"/>
@@ -5613,37 +5620,37 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="428"/>
         <source>Validation</source>
-        <translation type="unfinished"></translation>
+        <translation>Validierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="335"/>
         <source>Define at least one range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mindestens einen Bereich definieren.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="349"/>
         <source>Invalid range: %1 → %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Bereich: %1 → %2.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="367"/>
         <source>All values must be covered. Missing values: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Werte müssen abgedeckt sein. Fehlende Werte: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="387"/>
         <source>Ranges overlap. Each value must belong to a single range.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bereiche überschneiden sich. Jeder Wert darf nur zu einem Bereich gehören.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
         <source>Group name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Gruppenname darf nicht leer sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="429"/>
         <source>A group named &quot;%1&quot; already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Gruppe namens „%1“ existiert bereits.</translation>
     </message>
 </context>
 <context>
@@ -5664,37 +5671,37 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="107"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="557"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="109"/>
         <source>Edit length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="258"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Länge darf den Kreisdurchmesser (%1%2) nicht überschreiten.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="329"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">Unzulässige Längenformel</translation>
+        <translation>Unzulässige Längenformel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="387"/>
         <source>Select the pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt auswählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="479"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Punkt kann nicht der Drehpunkt sein. Wählen Sie einen anderen Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="618"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Ebenenname</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="101"/>
@@ -5714,27 +5721,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="71"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="87"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren, um eine Ebene aus den Originalobjekten zu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="90"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="102"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="126"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="142"/>
@@ -5745,7 +5752,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="175"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="577"/>
@@ -5825,12 +5832,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="162"/>
         <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportiert die Schnittteile, als wäre ihre Hauptkontur sichtbar: jedes Schnittteil hat dann seine Schnittlinie und seine Nählinie. Am Schnittmuster wird nichts geändert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="165"/>
         <source>Show the main path, even when the pieces hide it</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Hauptkontur anzeigen, auch wenn die Schnittteile sie verdecken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogsavelayout.ui" line="174"/>
@@ -5929,27 +5936,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="46"/>
         <source>Save table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelle speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="77"/>
         <source>Save your table to the Ostara library to easily find it in the My Tables list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern Sie Ihre Tabelle in der Ostara-Bibliothek, um sie in der Liste Meine Tabellen leicht wiederzufinden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="85"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="111"/>
         <source>→ Find this table in the My Tables list, without searching your disk. Folder managed from Preferences.</source>
-        <translation type="unfinished"></translation>
+        <translation>→ Diese Tabelle in der Liste Meine Tabellen wiederfinden, ohne auf Ihrer Festplatte zu suchen. Der Ordner wird in den Einstellungen verwaltet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/dialogues/DialogSaveMeasurements.cpp" line="122"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
 </context>
 <context>
@@ -6089,7 +6096,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="118"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="189"/>
@@ -6119,17 +6126,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="152"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="160"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="175"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.ui" line="182"/>
@@ -6188,12 +6195,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.ui" line="195"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.ui" line="234"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="91"/>
@@ -6310,7 +6317,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="997"/>
         <source>Point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="134"/>
@@ -6330,27 +6337,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="195"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="200"/>
         <source>Length 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge 1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="205"/>
         <source>Angle 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel 1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="210"/>
         <source>Length 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge 2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="215"/>
         <source>Angle 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel 2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="228"/>
@@ -6380,12 +6387,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="344"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="382"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.ui" line="46"/>
@@ -6399,83 +6406,83 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="129"/>
         <source>Slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="57"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="62"/>
         <source>Angle</source>
-        <translation type="unfinished">Winkel</translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="67"/>
         <source>Length</source>
-        <translation type="unfinished">Länge</translation>
+        <translation>Länge</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="73"/>
         <source>Rotation</source>
-        <translation type="unfinished">Drehung</translation>
+        <translation>Drehung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="81"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="136"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="88"/>
         <source>Rotation name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Drehung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="107"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivieren, um eine Ebene aus den Originalobjekten zu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="110"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="122"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="146"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="159"/>
         <source>Draw the mark of every rotation: the pivot, the two positions of the start point, and the two lines between them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichnet die Markierung jeder Drehung: den Drehpunkt, die beiden Positionen des Startpunkts und die beiden Linien dazwischen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="162"/>
         <source>Rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellung der Drehungen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="179"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="212"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
 </context>
 <context>
@@ -6513,22 +6520,22 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="458"/>
         <source>Show the two segments instead of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Die beiden Segmente statt der Kurve anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="510"/>
         <source>The curve will be prolonged by %1%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kurve wird um %1%2 verlängert.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="585"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Linientyp:</translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="586"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="622"/>
@@ -6563,7 +6570,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="973"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen anzeigen</translation>
     </message>
 </context>
 <context>
@@ -6572,62 +6579,62 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="87"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="28"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="94"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="36"/>
         <source>Host part:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ziel-Schnittteil:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="46"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="53"/>
         <source>Pick a layer of the host part, or type the name of a new one</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie eine Ebene des Ziel-Schnittteils oder geben Sie den Namen einer neuen ein</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="65"/>
         <source>Enable to create a layer from original objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Ebene aus den Originalobjekten erstellen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="68"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="80"/>
         <source>Group:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="104"/>
         <source>The original objects move into this layer and leave their other layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Originalobjekte wechseln in diese Ebene und verlassen ihre anderen Ebenen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="120"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.ui" line="153"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
 </context>
 <context>
@@ -6685,17 +6692,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="145"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="155"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="170"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.ui" line="31"/>
@@ -6733,7 +6740,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="98"/>
         <source>Third dart point:</source>
-        <translation> Dritter Abnäherpunkt:</translation>
+        <translation>Dritter Abnäherpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="118"/>
@@ -6760,7 +6767,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="180"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.ui" line="28"/>
@@ -6855,348 +6862,348 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="138"/>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="462"/>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="245"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswahl</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="47"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="109"/>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="273"/>
         <source>Export templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportvorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="277"/>
         <source>Export image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildexport</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="110"/>
         <source>Export as image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Bild exportieren…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="249"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="49"/>
         <source>Point at distance and angle</source>
-        <translation type="unfinished">Punkt mit Abstand und Winkel</translation>
+        <translation>Punkt mit Abstand und Winkel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="50"/>
         <source>Point at distance along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt mit Abstand auf der Achse eines Segments</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="51"/>
         <source>Midpoint between two points</source>
-        <translation type="unfinished">Mittelpunkt zwischen zwei Punkten</translation>
+        <translation>Mittelpunkt zwischen zwei Punkten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="52"/>
         <source>Point along perpendicular</source>
-        <translation type="unfinished">Punkt auf einer Normalen</translation>
+        <translation>Punkt auf einer Normalen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="53"/>
         <source>Point along bisector</source>
-        <translation type="unfinished">Punkt entlang einer Winkelhalbierenden</translation>
+        <translation>Punkt entlang einer Winkelhalbierenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="54"/>
         <source>Perpendicular point along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Lotfußpunkt auf einer Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="55"/>
         <source>Point from X and Y of two other points</source>
-        <translation type="unfinished">Punkt von X und Y zwei anderer Punkte</translation>
+        <translation>Punkt von X und Y zwei anderer Punkte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="56"/>
         <source>Point at line intersection</source>
-        <translation type="unfinished">Linienschnittpunkt</translation>
+        <translation>Linienschnittpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="57"/>
         <source>Special point on shoulder</source>
-        <translation type="unfinished">Spezieller Punkt an der Schulter</translation>
+        <translation>Spezieller Punkt an der Schulter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="58"/>
         <source>Triangle tool</source>
-        <translation type="unfinished">Dreieckswerkzeug</translation>
+        <translation>Dreieckswerkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="59"/>
         <source>Point intersect line and axis</source>
-        <translation type="unfinished">Punkt schneidet Linie und Achse</translation>
+        <translation>Punkt schneidet Linie und Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="253"/>
         <source>Line</source>
-        <translation type="unfinished">Linie</translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="61"/>
         <source>Line between points</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindungslinie zwischen zwei Punkten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="257"/>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurven</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="63"/>
         <source>Curve tool which uses point as control handle</source>
-        <translation type="unfinished">Kurve, die einen Punkt als Kontrollmethode verwendet</translation>
+        <translation>Kurve, die einen Punkt als Kontrollmethode verwendet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="64"/>
         <source>Curved path tool which uses point as control handle</source>
-        <translation type="unfinished">Werkzeug Gekrümmter Pfad verwendet einstellbare Angriffspunkte</translation>
+        <translation>Werkzeug Gekrümmter Pfad verwendet einstellbare Angriffspunkte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="65"/>
         <source>Point intersect curve and axis</source>
-        <translation type="unfinished">Schnittpunkt zwischen Kurve und Achse</translation>
+        <translation>Schnittpunkt zwischen Kurve und Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="66"/>
         <source>Point intersection curves</source>
-        <translation type="unfinished">Schnittpunkt zwischen zwei Kurven</translation>
+        <translation>Schnittpunkt zwischen zwei Kurven</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="67"/>
         <source>Parallel curve tool</source>
-        <translation type="unfinished">Werkzeug Parallele Kurve</translation>
+        <translation>Werkzeug Parallele Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="68"/>
         <source>Graduated curve tool</source>
-        <translation type="unfinished">Werkzeug Abgestufte Kurve</translation>
+        <translation>Werkzeug Abgestufte Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="261"/>
         <source>Arcs</source>
-        <translation type="unfinished"></translation>
+        <translation>Bögen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="70"/>
         <source>Arc</source>
-        <translation type="unfinished">Bogen</translation>
+        <translation>Bogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="71"/>
         <source>Arc with given length</source>
-        <translation type="unfinished"> Bogen mit vorgegebener Länge</translation>
+        <translation>Bogen mit vorgegebener Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="72"/>
         <source>Elliptical Arc</source>
-        <translation type="unfinished">Elliptischer Bogen</translation>
+        <translation>Elliptischer Bogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="73"/>
         <source>Elliptical arc with given length</source>
-        <translation type="unfinished">Elliptischer Bogen mit vorgegebener Länge</translation>
+        <translation>Elliptischer Bogen mit vorgegebener Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="74"/>
         <source>Segment an arc</source>
-        <translation type="unfinished">Einen Bogen unterteilen</translation>
+        <translation>Einen Bogen unterteilen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="75"/>
         <source>Arc start point</source>
-        <translation type="unfinished">Bogenstartpunkt</translation>
+        <translation>Bogenstartpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="76"/>
         <source>Arc end point</source>
-        <translation type="unfinished">Bogenendpunkt</translation>
+        <translation>Bogenendpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="77"/>
         <source>Point of intersection arcs</source>
-        <translation type="unfinished">Schnittpunkt der Bögen</translation>
+        <translation>Schnittpunkt der Bögen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="78"/>
         <source>Point of intersection arc and axis</source>
-        <translation type="unfinished">Punkt am Schnittpunkt von Bogen und Achse</translation>
+        <translation>Punkt am Schnittpunkt von Bogen und Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="79"/>
         <source>Point of intersection circles</source>
-        <translation type="unfinished">Schnittpunkt der Kreise</translation>
+        <translation>Schnittpunkt der Kreise</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="80"/>
         <source>Point from arc and tangent</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt am Schnittpunkt von Bogen und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="81"/>
         <source>Point from circle and tangent</source>
-        <translation type="unfinished"> Schnittpunkt des Bogens und Tangente</translation>
+        <translation>Schnittpunkt des Bogens und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="82"/>
         <source>Point of intersection circle and segment</source>
-        <translation type="unfinished">Punkt am Schnittpunkt von Kreis und Abschnitt</translation>
+        <translation>Punkt am Schnittpunkt von Kreis und Abschnitt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="97"/>
         <source>Armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Armlochkurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="98"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherdrehung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="265"/>
         <source>Operations</source>
-        <translation type="unfinished">Arbeitsabläufe</translation>
+        <translation>Arbeitsabläufe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="84"/>
         <source>Flipping objects by axis</source>
-        <translation type="unfinished">Objekte über Achse spiegeln</translation>
+        <translation>Objekte über Achse spiegeln</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="85"/>
         <source>Flipping objects by line</source>
-        <translation type="unfinished">Objekte über Linie spiegeln</translation>
+        <translation>Objekte über Linie spiegeln</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="86"/>
         <source>Rotate objects</source>
-        <translation type="unfinished">Objekte drehen</translation>
+        <translation>Objekte drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="87"/>
         <source>Move objects</source>
-        <translation type="unfinished">Objekte verschieben</translation>
+        <translation>Objekte verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="88"/>
         <source>True darts</source>
-        <translation type="unfinished">Abnäherlänge ausgleichen</translation>
+        <translation>Abnäherlänge ausgleichen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="269"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="90"/>
         <source>Workpiece tool</source>
-        <translation type="unfinished">Werkstück-Werkzeug</translation>
+        <translation>Werkstück-Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="91"/>
         <source>Internal path tool</source>
-        <translation type="unfinished">Innerer Pfad-Werkzeug</translation>
+        <translation>Innerer Pfad-Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="92"/>
         <source>Insert node tool</source>
-        <translation type="unfinished">Knoten einfügen Werkzeug</translation>
+        <translation>Knoten einfügen Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="93"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Passmarke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="111"/>
         <source>Union tool</source>
-        <translation type="unfinished">Vereinigen-Werkzeug</translation>
+        <translation>Vereinigen-Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="112"/>
         <source>Duplicate detail tool</source>
-        <translation type="unfinished">Detail duplizieren-Werkzeug</translation>
+        <translation>Detail duplizieren-Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="113"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
-        <translation type="unfinished">Kurve</translation>
+        <translation>Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="96"/>
         <source>Segment a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurve segmentieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="99"/>
         <source>Dart cap tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="100"/>
         <source>Rectangle tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechteck-Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="101"/>
         <source>Transfer tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragungswerkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="102"/>
         <source>Spiral tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiralwerkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="103"/>
         <source>Slash and spread tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="104"/>
         <source>Move by batch tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben im Stapel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="105"/>
         <source>Pleat tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="106"/>
         <source>Middle pleat tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittelfalte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="107"/>
         <source>Flounce spiral tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Schneckenvolant-Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/DrawToolBar.cpp" line="704"/>
         <source>%1 more tools</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 weitere Werkzeuge</translation>
     </message>
 </context>
 <context>
@@ -7204,7 +7211,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinelabelbuilder.cpp" line="45"/>
         <source>Cut On Fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf Falte schneiden</translation>
     </message>
 </context>
 <context>
@@ -7212,27 +7219,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="84"/>
         <source>Formula:</source>
-        <translation type="unfinished">Formel:</translation>
+        <translation>Formel:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="95"/>
         <source>Value</source>
-        <translation type="unfinished">Wert</translation>
+        <translation>Wert</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="266"/>
         <source>Edit formula</source>
-        <translation type="unfinished">Formel bearbeiten</translation>
+        <translation>Formel bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="307"/>
         <source>Collapse</source>
-        <translation type="unfinished"></translation>
+        <translation>Einklappen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/formulainputwidget.cpp" line="307"/>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausklappen</translation>
     </message>
 </context>
 <context>
@@ -7292,7 +7299,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
         <source>link pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile verknüpfen</translation>
     </message>
 </context>
 <context>
@@ -7406,7 +7413,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="963"/>
         <source>Export Final Measurements to CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Endgültige Maße nach CSV exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="971"/>
@@ -7416,17 +7423,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1672"/>
         <source>Armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Armlochkurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1870"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherdrehung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1873"/>
         <source>Rotate a dart: turn one leg onto the other</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherdrehung: einen Schenkel auf den anderen drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2150"/>
@@ -7577,12 +7584,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="350"/>
         <source>Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point that carries the edge when no curve does - then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Abnäherspitze auswählen (den Punkt im Inneren des Schnittteils), dann die beiden Punkte seiner Öffnung und den Punkt, der den Rand trägt, wenn keine Kurve dies tut - dann &lt;b&gt;%1&lt;/b&gt; zum Bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="364"/>
         <source>Select the base point of the rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Startpunkt des Rechtecks auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="378"/>
@@ -7607,7 +7614,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="455"/>
         <source>Select the first point of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Den ersten Punkt der Kurve auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="479"/>
@@ -7617,63 +7624,63 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="530"/>
         <source>Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed automatically; hold &lt;b&gt;%1&lt;/b&gt; to reverse a curve, &lt;b&gt;%2&lt;/b&gt; to finish.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Objekte des Pfads der Reihe nach auswählen - die Richtung ist frei, kein Uhrzeigersinn vorgeschrieben. Eine volle Kurve wird automatisch umgekehrt; &lt;b&gt;%1&lt;/b&gt; gedrückt halten, um eine Kurve umzukehren, &lt;b&gt;%2&lt;/b&gt; zum Beenden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="541"/>
         <source>Select all the points of the internal marks to place, &lt;b&gt;%1&lt;/b&gt; - confirm selection. Every mark will be attached to the piece you choose in the dialog, so select only points lying on that piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Punkte der zu platzierenden internen Passmarken auswählen, &lt;b&gt;%1&lt;/b&gt; - Auswahl bestätigen. Jede Passmarke wird dem Schnittteil zugeordnet, das Sie im Dialog wählen: Wählen Sie also nur Punkte auf diesem Schnittteil.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="661"/>
         <source>Select the &lt;b&gt;objects to turn&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Die &lt;b&gt;zu drehenden Objekte&lt;/b&gt; auswählen, &lt;b&gt;%1&lt;/b&gt; - Auswahl bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="713"/>
         <source>Select the objects of the portion, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Objekte des Abschnitts auswählen, &lt;b&gt;%1&lt;/b&gt; - Auswahl bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="728"/>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="742"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Objekte der Kontur &lt;b&gt;der Reihe nach&lt;/b&gt; auswählen: alle im Uhrzeigersinn oder alle gegen den Uhrzeigersinn, niemals beides gemischt. Dann &lt;b&gt;%1&lt;/b&gt; zum Bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="758"/>
         <source>Select the point the inner spiral starts at, then fill in the width and the length of the flounce</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Startpunkt der inneren Spirale auswählen, dann Breite und Länge des Volants eingeben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="769"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Objekte der Kontur &lt;b&gt;der Reihe nach&lt;/b&gt; auswählen: alle im Uhrzeigersinn oder alle gegen den Uhrzeigersinn, niemals beides gemischt - die Punkte der Startlinien eingeschlossen. Dann &lt;b&gt;%1&lt;/b&gt; zum Bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="782"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the two points of the middle line included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Objekte der Kontur &lt;b&gt;der Reihe nach&lt;/b&gt; auswählen: alle im Uhrzeigersinn oder alle gegen den Uhrzeigersinn, niemals beides gemischt - die beiden Punkte der Mittellinie eingeschlossen. Dann &lt;b&gt;%1&lt;/b&gt; zum Bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="838"/>
         <source>Insert node</source>
-        <translation type="unfinished"></translation>
+        <translation>Knoten einfügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="839"/>
         <source>None of the selected nodes could be placed in the piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keiner der ausgewählten Knoten kann in das Schnittteil platziert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1044"/>
         <source>Select the armhole point. Optional: create a perpendicular point beforehand to end the curve perpendicular to the shoulder line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Armlochpunkt. Optional: Erstellen Sie vorab einen senkrechten Punkt, um die Kurve senkrecht zur Schulterlinie enden zu lassen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1056"/>
         <source>Select the point the spiral starts at</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Startpunkt der Spirale</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="559"/>
@@ -7733,12 +7740,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="977"/>
         <source>This pattern contains legacy labels. Ostara does not use them - they have been replaced by the Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittmuster enthält veraltete Beschriftungen. Ostara verwendet sie nicht - sie wurden durch den Informationsblock ersetzt. Die Konvertierung erfolgt nicht automatisch, Ihre Beschriftungen wurden nicht beibehalten. Die ursprüngliche .val-Datei bleibt unverändert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1320"/>
         <source>Ostara didn&apos;t shut down correctly. Do you want to reopen the files (%1) you had open?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara wurde nicht korrekt beendet. Möchten Sie die Dateien (%1) wieder öffnen, die Sie geöffnet hatten?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1363"/>
@@ -7926,17 +7933,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1780"/>
         <source>Point from circle and tangent</source>
-        <translation> Schnittpunkt des Bogens und Tangente</translation>
+        <translation>Schnittpunkt des Bogens und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1762"/>
         <source>Point from arc and tangent</source>
-        <translation> Schnittpunkt des Bogens und Tangente</translation>
+        <translation>Schnittpunkt des Bogens und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1726"/>
         <source>Arc with given length</source>
-        <translation> Bogen mit vorgegebener Länge</translation>
+        <translation>Bogen mit vorgegebener Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="902"/>
@@ -7978,24 +7985,25 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="126"/>
         <source>No measurement table loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Maßtabelle geladen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="135"/>
         <source>File not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei nicht gefunden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="136"/>
         <source>The measurement file could not be found at:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßdatei wurde nicht gefunden unter:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="166"/>
         <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="251"/>
         <source>Measurements reloaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Maße neu geladen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="328"/>
@@ -8049,12 +8057,13 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="262"/>
         <source>The files were successfully exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Dateien wurden erfolgreich exportiert nach:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="316"/>
         <source>The console layout export is gone with the Layout mode. Use --exportOnlyDetails, or the Export mode, to export a cutting plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Layout-Export in der Kommandozeile ist mit dem Layout-Modus verschwunden. Verwenden Sie --exportOnlyDetails oder den Export-Modus, um einen Zuschnittplan zu exportieren.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="470"/>
@@ -8094,12 +8103,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="400"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.cpp" line="502"/>
         <source>add a pattern piece</source>
-        <translation type="unfinished"></translation>
+        <translation>ein Schnittteil hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="791"/>
@@ -8187,7 +8196,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="493"/>
         <source>Select a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Kurve auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="520"/>
@@ -8202,7 +8211,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1435"/>
         <source>untitled.ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbenannt.ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1477"/>
@@ -8333,7 +8342,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1636"/>
         <source>Segment a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Kurve segmentieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2115"/>
@@ -8359,7 +8368,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="14"/>
         <location filename="../../src/app/ostara/mainwindow_welcome.cpp" line="180"/>
         <source>Ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_events.cpp" line="799"/>
@@ -8471,7 +8480,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="717"/>
         <source>name the objects of a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>die Objekte eines Schnittteils benennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="762"/>
@@ -8479,12 +8488,12 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="788"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="798"/>
         <source>Save piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="806"/>
         <source>Piece saved: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil gespeichert: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="836"/>
@@ -8493,27 +8502,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="875"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="962"/>
         <source>Piece library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteilbibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="848"/>
         <source>Load a measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Maßtabelle laden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="933"/>
         <source>Loading the piece. Please, wait.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil wird geladen. Bitte warten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="962"/>
         <source>This piece holds no block to insert.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil enthält keinen Block zum Einfügen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="988"/>
         <source>Piece inserted: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil eingefügt: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="275"/>
@@ -8528,225 +8537,225 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="60"/>
         <source>&amp;Pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="72"/>
         <source>&amp;Piece</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Schnittteil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="83"/>
         <source>&amp;Display</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ansicht</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="115"/>
         <source>&amp;Libraries</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bibliotheken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="173"/>
         <source>Top bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Obere Leiste</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="190"/>
         <source>Options</source>
-        <translation type="unfinished">Optionen</translation>
+        <translation>Optionen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="205"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="571"/>
         <source>Change the name of pattern piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Namen des Schnittteils ändern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="658"/>
         <source>&amp;About Ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Über Ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="731"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="734"/>
         <source>Zoom 100%</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom 100 %</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="822"/>
         <source>Show segment point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen der Segmente anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="825"/>
         <source>Allow segment point names to appear. Uncheck to hide them in all cases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzeige der Punktnamen der Segmente erlauben. Deaktivieren, um sie in allen Fällen auszublenden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="123"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="136"/>
         <source>PDF editor</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-Editor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="214"/>
         <source>Size Ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereiche</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="223"/>
         <source>Size Styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenstile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="232"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="241"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="864"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckblatt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="554"/>
         <source>Save piece to library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil in der Bibliothek speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="557"/>
         <source>Save the active pattern piece to the piece library</source>
-        <translation type="unfinished"></translation>
+        <translation>Das aktive Schnittteil in der Schnittteilbibliothek speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="612"/>
         <source>Graded</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradation</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="615"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with graded sizes of the details. To enable &amp;quot;Graded mode&amp;quot; you need at least one detail on the stage &amp;quot;Details mode&amp;quot; and a multi-size measurements table loaded.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modus für die Gradation der Details nach Größen. Um den &amp;quot;Gradationsmodus&amp;quot; zu aktivieren, müssen Sie mindestens ein Schnittteil im &amp;quot;Modus Teile&amp;quot; extrahiert und eine Mehrgrößen-Maßtabelle geladen haben.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="636"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="639"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for nesting the details and producing the printable PDF, without leaving Ostara.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modus zum Ineinanderlegen der Teile und zum Erzeugen des druckbaren PDF, ohne Ostara zu verlassen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="853"/>
         <source>Final Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Endmaße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
         <source>Assembly marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Montagemarken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
         <source>Export templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportvorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="888"/>
         <source>Export as image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Bild exportieren…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="896"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="904"/>
         <source>Create new</source>
-        <translation type="unfinished"></translation>
+        <translation>Neu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="912"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="920"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="928"/>
         <source>Collections</source>
-        <translation type="unfinished"></translation>
+        <translation>Sammlungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="936"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmerkungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="944"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniaturbild</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="952"/>
         <source>Foldline text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text der Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="974"/>
         <source>Load a measurement table (.omt/.otu) and connect it to the pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Maßtabelle (.omt/.otu) laden und mit dem Schnittmuster verbinden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="991"/>
         <source>Edit the measurement table currently loaded in the pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Die aktuell im Schnittmuster geladene Maßtabelle bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1002"/>
         <source>Create New</source>
-        <translation type="unfinished"></translation>
+        <translation>Neu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1005"/>
         <source>Create a new measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine neue Maßtabelle erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1047"/>
         <source>Increase point name font</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Punktnamen vergrößern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1058"/>
         <source>Decrease point name font</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Punktnamen verkleinern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1069"/>
         <source>Original point name font</source>
-        <translation type="unfinished"></translation>
+        <translation>Ursprüngliche Schrift der Punktnamen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1083"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="99"/>
         <source>Hide point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen ausblenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1125"/>
@@ -8776,147 +8785,147 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1891"/>
         <source>Dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1894"/>
         <source>Dart cap: draw the cap of a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe: die Kappe zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1912"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Rechteck</translation>
+        <translation>Rechteck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1915"/>
         <source>Rectangle: a base point, a width and a height</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechteck: ein Startpunkt, eine Breite und eine Höhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1933"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1936"/>
         <source>Transfer: graft a portion of one part onto another</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung: einen Abschnitt eines Schnittteils auf ein anderes übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1954"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirale</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1957"/>
         <source>Spiral: a golden spiral of the length you ask for, drawn from an existing point</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirale: eine goldene Spirale der gewünschten Länge, gezeichnet von einem vorhandenen Punkt aus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2118"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Passmarke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2201"/>
         <source>Reload point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen neu laden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2204"/>
         <source>Reload piece point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen des Schnittteils neu laden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2215"/>
         <source>Auto-arrange point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen automatisch anordnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2218"/>
         <source>Auto-arrange point names to reduce overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen automatisch anordnen, um Überlappungen zu reduzieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2283"/>
         <source>Measurement Tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2286"/>
         <source>Browse, open, and manage measurement tables in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabellen in der Bibliothek durchsuchen, öffnen und verwalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2294"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2297"/>
         <source>Browse the pieces saved in the library, and see what each of them needs</source>
-        <translation type="unfinished"></translation>
+        <translation>Die in der Bibliothek gespeicherten Schnittteile durchsuchen und sehen, was jedes davon benötigt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2305"/>
         <source>Patterns</source>
-        <translation type="unfinished">Schnittmuster</translation>
+        <translation>Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2308"/>
         <source>Browse the patterns saved in the library, and manage what each folder holds</source>
-        <translation type="unfinished"></translation>
+        <translation>Die in der Bibliothek gespeicherten Schnittmuster durchsuchen und den Inhalt jedes Ordners verwalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2326"/>
         <source>Slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2329"/>
         <source>Slash and spread: open a piece along cut lines by rotating its parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen: ein Schnittteil entlang von Schnittlinien öffnen, indem seine Teile gedreht werden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2347"/>
         <source>Flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Schneckenvolant</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2350"/>
         <source>Flounce spiral: a band of constant width wound as a snail</source>
-        <translation type="unfinished"></translation>
+        <translation>Schneckenvolant: ein Band konstanter Breite, spiralförmig gewickelt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2368"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2371"/>
         <source>Pleat: fold the fabric back on itself along a departure line</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte: den Stoff entlang einer Startlinie der Falte auf sich selbst zurückfalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2389"/>
         <source>Middle pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittelfalte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2392"/>
         <source>Middle pleat: lay a pleat at the centre of a piece, on the line of its middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittelfalte: eine Falte in der Mitte eines Schnittteils anlegen, auf der Linie seiner Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2410"/>
         <source>Move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargenweise verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="2413"/>
         <source>Move by batch: move the parts of a piece along cut lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargenweise verschieben: die Teile eines Schnittteils entlang von Schnittlinien verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="66"/>
@@ -8931,27 +8940,27 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="976"/>
         <source>Labels not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungen nicht unterstützt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="986"/>
         <source>Grainlines anchored to pins</source>
-        <translation type="unfinished"></translation>
+        <translation>Fadenläufe neu platzieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="987"/>
         <source>This pattern contains grainlines anchored to pins. Ostara no longer uses them - these grainlines have been disabled. Please place them again in the Details mode. Conversion is not automatic. The original .val file remains intact.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittmuster enthält Fadenläufe, deren Position von Nadeln abhing - eine alte Funktion von Valentina. Ostara verwendet sie nicht mehr: Diese Fadenläufe wurden deaktiviert. Bitte platzieren Sie sie im Modus Details neu. Die Konvertierung erfolgt nicht automatisch. Die ursprüngliche .val-Datei bleibt unverändert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1074"/>
         <source>The pattern reads measurements and no table was chosen.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittmuster liest Maße und es wurde keine Tabelle ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1100"/>
         <source>Legacy measurement file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßdatei im alten Format</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1101"/>
@@ -8960,22 +8969,26 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 %1
 
 Ostara uses .omt/.otu format. Choose how to proceed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittmuster ist mit einer Tape-Datei im alten Format verknüpft:
+
+%1
+
+Ostara verwendet das Format .omt/.otu. Wählen Sie, wie vorgegangen werden soll:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1104"/>
         <source>Convert this file</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Datei konvertieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1105"/>
         <source>Replace with existing .%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch vorhandene Datei .%1 ersetzen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="486"/>
         <source>Find the measurements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßdatei suchen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="832"/>
@@ -9117,17 +9130,17 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <location filename="../../src/app/ostara/mainwindow_events.cpp" line="800"/>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="141"/>
         <source>Piece:</source>
-        <translation type="unfinished">Stück:</translation>
+        <translation>Stück:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="98"/>
         <source>Show all point names</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Punktnamen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="433"/>
         <source>Load measurements table</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabelle laden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="219"/>
@@ -9149,149 +9162,151 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="891"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="895"/>
         <source>Graded mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradationsmodus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="220"/>
         <source>You can&apos;t use Graded mode yet. Please, create at least one workpiece and load a measurements table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie können den Gradationsmodus derzeit nicht verwenden. Erstellen Sie bitte mindestens ein Schnittteil und laden Sie eine Maßtabelle.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="291"/>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="585"/>
         <source>Graded mode needs a multi-size measurements table (.omt).</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Gradationsmodus benötigt eine Mehrgrößen-Maßtabelle (.omt).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="370"/>
         <source>The stored size range no longer matches the loaded measurements table. It was removed - please, create a new one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der gespeicherte Größenbereich entspricht nicht mehr der geladenen Maßtabelle. Er wurde entfernt - bitte erstellen Sie einen neuen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="467"/>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="734"/>
         <source>A size range with this name already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Größenbereich mit diesem Namen existiert bereits.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="484"/>
         <source>Add size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereich hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="484"/>
         <source>Add size ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereiche hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="653"/>
         <source>Duplicate size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereich duplizieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="678"/>
         <source>This size range belongs to another measurements table. Load its table to edit it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Größenbereich gehört zu einer anderen Maßtabelle. Laden Sie diese Tabelle, um ihn bearbeiten zu können.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="746"/>
         <source>Edit size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereich bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="789"/>
         <source>Delete size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereich löschen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="816"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1516"/>
         <source>A favorite already has this name. Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Favorit trägt bereits diesen Namen. Wählen Sie einen anderen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded.cpp" line="910"/>
         <source>Rename size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereich umbenennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="214"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Ausrichtung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="215"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikale Ausrichtung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_build.cpp" line="237"/>
         <source>Preparing the graded scene…</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradationsszene wird vorbereitet…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="133"/>
         <source>This size range needs its measurements table loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Für diesen Größenbereich muss die Maßtabelle geladen werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="173"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="177"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="811"/>
         <source>Cannot create the export folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Exportordner kann nicht erstellt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="213"/>
         <source>The file &quot;%1&quot; already exists in the export folder.
 Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei „%1“ ist im Exportordner bereits vorhanden.
+Soll sie ersetzt werden?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="226"/>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="120"/>
         <source>Layout</source>
         <comment>Decor layout layer default name in a graded SVG export</comment>
-        <translation type="unfinished">Layout</translation>
+        <translation>Layout</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="471"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="476"/>
         <source>The graded export failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Export der Gradation ist fehlgeschlagen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="769"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="773"/>
         <source>The SVG file could not be written.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die SVG-Datei konnte nicht geschrieben werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="255"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="786"/>
         <source>The file &quot;%1&quot; was successfully exported to:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei „%1“ wurde erfolgreich exportiert nach:
+%2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="835"/>
         <source>No size range to export.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Größenbereich zum Exportieren.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="868"/>
         <source>The following files were exported to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Die folgenden Dateien wurden exportiert nach:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="876"/>
         <source>%1 file(s) were not exported (replace declined).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Datei(en) nicht exportiert (Ersetzen abgelehnt).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="880"/>
         <source>The following size ranges could not be exported: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die folgenden Größenbereiche konnten nicht exportiert werden: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportmode.cpp" line="74"/>
@@ -9310,59 +9325,53 @@ Do you want to replace it?</source>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="236"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="248"/>
         <source>Export mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportmodus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportmode.cpp" line="75"/>
         <source>You can&apos;t use Export mode yet. Please, open a pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Exportmodus ist noch nicht verfügbar: Öffnen Sie zuerst ein Schnittmuster.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="148"/>
         <source>hour</source>
-        <translation type="unfinished"></translation>
+        <translation>Stunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="152"/>
         <source>minute</source>
-        <translation type="unfinished"></translation>
+        <translation>Minute</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="156"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="163"/>
         <source>second</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="169"/>
         <source>%1 and %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 und %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="217"/>
         <source>Mat %1 × %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Matte %1 × %2</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="221"/>
         <source> · %n piece(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n Schnittteil</numerusform><numerusform> · %n Schnittteile</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="226"/>
         <source> · %n mat(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n Matte</numerusform><numerusform> · %n Matten</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="229"/>
         <source>Canvas %1 × %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Leinwand %1 × %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="233"/>
@@ -9370,175 +9379,171 @@ Do you want to replace it?</source>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="314"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="341"/>
         <source> · %1</source>
-        <translation type="unfinished"></translation>
+        <translation> · %1</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="264"/>
         <source> · %n pages (cover page included)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n Seite (Deckblatt enthalten)</numerusform><numerusform> · %n Seiten (Deckblatt enthalten)</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="266"/>
         <source> · %n pages</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform> · %n Seite</numerusform><numerusform> · %n Seiten</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="293"/>
         <source>Canvas: half fabric width %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Leinwand: halbe Stoffbreite %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="298"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="303"/>
         <source>Fabric width %1 · length %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffbreite %1 · Stoffbedarf %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="329"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="336"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="486"/>
         <source>Nesting. Please, wait.</source>
-        <translation type="unfinished">Verschachtelung läuft. Bitte warten.</translation>
+        <translation>Verschachtelung läuft. Bitte warten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="936"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheitsgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1294"/>
         <source>This size range carries no piece to nest.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Größenbereich enthält kein Schnittteil zum Verschachteln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1302"/>
         <source>A cutting plan only takes the pieces whose %1 cut quantity is filled in (Details mode, Dock Options, Piece, Information).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Zuschnittplan berücksichtigt nur die Schnittteile, deren Schnittanzahl %1 angegeben ist (Modus Details, Dock Options, Schnittteil, Information).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="124"/>
         <source>No measurements table is loaded. The metrage mode needs one with size axes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Maßtabelle geladen: der Stoffbedarf-Modus benötigt eine Maßtabelle mit Größenachsen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="141"/>
         <source>The measurements table declares an axis of hip (%1) that a cutting plan cannot address. The three axes a run carries are height, size and waist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßtabelle deklariert eine Achse Hüftumfang (%1), die ein Zuschnittplan nicht verarbeiten kann. Die drei Achsen eines Laufs sind Höhe, Größe und Taillenumfang.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="152"/>
         <source>The measurements table declares no size axis: there is no complete size to walk.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßtabelle deklariert keine Größenachse: es gibt keine vollständige Größe zum Durchlaufen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="201"/>
         <source>The measurements table offers no combination: every axis came back empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßtabelle bietet keine Kombination: jede Achse kam leer zurück.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="243"/>
         <source>The metrage mode needs at least one --fabricWidth, in centimetres.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Stoffbedarf-Modus verlangt mindestens eine --fabricWidth, in Zentimetern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="278"/>
         <source>The pattern carries no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittmuster enthält kein Schnittteil.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="292"/>
         <source>This pattern declares no piece group, so --group names nothing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittmuster deklariert keine Schnittteilgruppe: --group benennt also nichts.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="301"/>
         <source>A --group must read &quot;Group name=Member name&quot;; this one reads:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine --group muss „Gruppenname=Mitgliedsname“ lauten; diese hier lautet:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="328"/>
         <source>No group of this pattern is called &quot;%1&quot;. The groups are: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Gruppe dieses Schnittmusters heißt „%1“. Die Gruppen sind: %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="336"/>
         <source>The group &quot;%1&quot; is out of the layout in this pattern: switch it on, or leave it out of the model.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Gruppe „%1“ ist in diesem Schnittmuster nicht im Plan: aktivieren Sie sie, oder lassen Sie sie aus dem Modell heraus.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="361"/>
         <source>&quot;%1&quot; is not a member of the group &quot;%2&quot;. Its members are: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ ist kein Mitglied der Gruppe „%2“. Ihre Mitglieder sind: %3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="392"/>
         <source>A cutting plan needs a direction — an enabled grainline, or a fold line — for every piece it cuts. These have none: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Zuschnittplan benötigt für jedes Schnittteil, das er zuschneidet, eine Richtung — einen aktivierten Fadenlauf oder eine Bruchlinie. Diese hier haben keine: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="412"/>
         <source>Careful: &quot;%1&quot; has no %2 cut — neither its own nor its group&apos;s — so it is not cut at all: the run will measure the plan WITHOUT it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Achtung: „%1“ hat keine Schnittanzahl %2 — weder eigene noch die ihrer Gruppe — sie wird also überhaupt nicht zugeschnitten: der Lauf misst den Plan OHNE sie.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="415"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1305"/>
         <source>lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="416"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1306"/>
         <source>fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="426"/>
         <source>No size to cut:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Größe zum Zuschneiden:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="437"/>
         <source>No --destination was given: the table goes to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine --destination angegeben: die Tabelle geht nach %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="473"/>
         <source>The metrage batch could not start: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Stoffbedarf-Lauf konnte nicht gestartet werden: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_metrage.cpp" line="478"/>
         <source>Metrage: %1 run(s) done, %2 failed, %3 already there — %4 s. Table: %5</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffbedarf: %1 Läufe fertig, %2 fehlgeschlagen, %3 bereits vorhanden — %4 s. Tabelle: %5</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1706"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Soll „%1“ wirklich gelöscht werden?
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1838"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1879"/>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1946"/>
         <source>&quot;%1&quot; could not be exported.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ konnte nicht exportiert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1846"/>
@@ -9546,38 +9551,30 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="1953"/>
         <source>&quot;%1&quot; was exported to
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ wurde exportiert nach
+%2</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="2079"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="214"/>
         <source>%n file(s) written to %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Datei nach %1 geschrieben</numerusform><numerusform>%n Dateien nach %1 geschrieben</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="2095"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="245"/>
         <source>%n file(s) could not be written:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Datei konnte nicht geschrieben werden:</numerusform><numerusform>%n Dateien konnten nicht geschrieben werden:</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="252"/>
         <source>%1 × %2 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 × %2 %3</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="228"/>
         <source>%n file(s) left untouched:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Datei unverändert gelassen:</numerusform><numerusform>%n Dateien unverändert gelassen:</numerusform></translation>
     </message>
 </context>
 <context>
@@ -9708,97 +9705,97 @@ Möchten Sie eine andere Datei auswählen?</translation>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="517"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="647"/>
         <source>Measurement details</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßdetails</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="83"/>
         <source>Name used in formulas (@ auto)</source>
-        <translation type="unfinished"></translation>
+        <translation>In Formeln verwendeter Name (@ auto)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="86"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="91"/>
         <source>e.g., Chest circumference</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. Brustumfang</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="94"/>
         <source>Full name:</source>
-        <translation type="unfinished">Vollständiger Name:</translation>
+        <translation>Vollständiger Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="100"/>
         <source>Measurement description</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßbeschreibung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="119"/>
         <source>Description:</source>
-        <translation type="unfinished">Beschreibung:</translation>
+        <translation>Beschreibung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="126"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="200"/>
         <source>Value at reference size</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert bei der Referenzgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="130"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="197"/>
         <source>Base value:</source>
-        <translation type="unfinished">Basiswert:</translation>
+        <translation>Basiswert:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="155"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="182"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="340"/>
         <source>Select or create a measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Maß auswählen oder erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="197"/>
         <source>Value:</source>
-        <translation type="unfinished">Wert:</translation>
+        <translation>Wert:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="199"/>
         <source>Measurement value</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßwert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="268"/>
         <source>Interval &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervall &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="273"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linear</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="276"/>
         <source>Non-linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht linear</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="284"/>
         <source>Configure ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereiche konfigurieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="321"/>
         <source>No range groups defined. Click Configure ranges.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Bereichsgruppe definiert. Auf Bereiche konfigurieren klicken.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="177"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="608"/>
         <source>Group properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppeneigenschaften</translation>
     </message>
 </context>
 <context>
@@ -9806,17 +9803,17 @@ Möchten Sie eine andere Datei auswählen?</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="82"/>
         <source>New measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Maßtabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="196"/>
         <source>Conversion error</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvertierungsfehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="197"/>
         <source>Unable to convert .vst file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die .vst-Datei kann nicht konvertiert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="206"/>
@@ -9825,38 +9822,42 @@ Möchten Sie eine andere Datei auswählen?</translation>
 Ostara calculates measurements differently from Tape, so the converted values may differ from the original file.
 
 Please verify the measurement values and adjust if needed before saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese alte .vst-Datei wurde ins .omt-Format konvertiert.
+
+Ostara berechnet Maße anders als Tape, die konvertierten Werte können daher von der Originaldatei abweichen.
+
+Bitte prüfen Sie die Maßwerte und passen Sie sie bei Bedarf an, bevor Sie speichern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="213"/>
         <source>Unresolved measurements: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht aufgelöste Maße: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="216"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="275"/>
         <source>Conversion complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Konvertierung abgeschlossen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="226"/>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lesefehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="227"/>
         <source>Unable to open file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 kann nicht geöffnet werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="235"/>
         <source>XML error</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="236"/>
         <source>Invalid .vit file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige .vit-Datei: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="276"/>
@@ -9865,39 +9866,45 @@ Please verify the measurement values and adjust if needed before saving.</source
 Ostara calculates measurements differently from Tape, so the converted values may differ from the original file.
 
 Please verify the measurement values and adjust if needed before saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese alte .vit-Datei wurde ins .otu-Format konvertiert.
+
+Ostara berechnet Maße anders als Tape, die konvertierten Werte können daher von der Originaldatei abweichen.
+
+Bitte prüfen Sie die Maßwerte und passen Sie sie bei Bedarf an, bevor Sie speichern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="283"/>
         <source>Unsupported format</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht unterstütztes Format</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="284"/>
         <source>File %1 is not a recognized format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 ist kein erkanntes Format.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="331"/>
         <source>Unsaved table</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gespeicherte Tabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="332"/>
         <source>The measurement table was not saved.
 If you close without saving, data will be lost.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßtabelle wurde nicht gespeichert.
+Wenn ohne Speichern geschlossen wird, gehen die Daten verloren.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="358"/>
         <source>Unsaved changes</source>
-        <translation type="unfinished">Ungespeicherte Änderungen</translation>
+        <translation>Ungespeicherte Änderungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWindow.cpp" line="359"/>
         <source>The measurement table has been modified.
 Do you want to save changes before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßtabelle wurde geändert.
+Sollen die Änderungen vor dem Schließen gespeichert werden?</translation>
     </message>
 </context>
 <context>
@@ -9905,72 +9912,75 @@ Do you want to save changes before closing?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="246"/>
         <source>New measurement table</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Maßtabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="145"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="146"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="155"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="391"/>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Startseite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="181"/>
         <source>&lt; Back</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; Zurück</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="189"/>
         <source>Next &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Weiter &gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="222"/>
         <source>Measurements</source>
-        <translation type="unfinished">Maße</translation>
+        <translation>Maße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="228"/>
         <source>Step %1: %2 Sizes  %3 Measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Schritt %1: %2 Größen  %3 Maße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="358"/>
         <source>table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="396"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="426"/>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Speicherfehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="427"/>
         <source>Unable to save file.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei kann nicht gespeichert werden.
+
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="445"/>
         <source>File already exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei ist bereits vorhanden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementWorkspace.cpp" line="446"/>
         <source>A file named &quot;%1&quot; already exists at this location.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>An diesem Speicherort ist bereits eine Datei namens „%1“ vorhanden.
+Soll sie ersetzt werden?</translation>
     </message>
 </context>
 <context>
@@ -10026,142 +10036,142 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="62"/>
         <source>About Ostara</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Ostara</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="104"/>
         <source>Copy the technical details</source>
-        <translation type="unfinished"></translation>
+        <translation>Technische Details kopieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="109"/>
         <source>Licence texts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lizenztexte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="115"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="141"/>
         <source>Ostara %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="142"/>
         <source>Qt: built with %1, running %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt: kompiliert mit %1, ausgeführt mit %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="149"/>
         <source>Version %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Version %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="150"/>
         <source>A free program, published under the GNU General Public License, version 3 or later. It comes with no warranty of any kind.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein freies Programm, veröffentlicht unter der GNU General Public License, Version 3 oder später. Es wird ohne jegliche Gewährleistung bereitgestellt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="157"/>
         <source>Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ursprung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="158"/>
         <source>Ostara is a fork of Valentina, © 2013-2026 the Valentina project — Roman Telezhynskyi and its contributors — published under the GNU General Public License, version 3. Ostara © 2026 Sophie Denys, under the same licence.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara ist ein Fork von Valentina, © 2013-2026 das Valentina-Projekt — Roman Telezhynskyi und seine Mitwirkenden — veröffentlicht unter der GNU General Public License, Version 3. Ostara © 2026 Sophie Denys, unter derselben Lizenz.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="167"/>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Komponenten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="168"/>
         <source>Interface icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole der Oberfläche:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="168"/>
         <source>Phosphor Icons — Tobias Fried and Helena Zhang, MIT</source>
-        <translation type="unfinished"></translation>
+        <translation>Phosphor Icons — Tobias Fried und Helena Zhang, MIT</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="169"/>
         <source>Tool icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole der Werkzeuge:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="169"/>
         <source>Valentina project — Roman Telezhynskyi and contributors, HiDPI redraw by Benjamin Nauck, 2016</source>
-        <translation type="unfinished"></translation>
+        <translation>Valentina-Projekt — Roman Telezhynskyi und Mitwirkende, HiDPI-Neuzeichnung von Benjamin Nauck, 2016</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="171"/>
         <source>Typeface:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftart:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="171"/>
         <source>Inter — Rasmus Andersson (The Inter Project Authors), SIL Open Font License 1.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter — Rasmus Andersson (The Inter Project Authors), SIL Open Font License 1.1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="173"/>
         <source>Nesting:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschachtelung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="173"/>
         <source>Clipper2 — Angus Johnson, Boost Software License 1.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Clipper2 — Angus Johnson, Boost Software License 1.0</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
         <source>XML:</source>
-        <translation type="unfinished"></translation>
+        <translation>XML:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
         <source>Xerces-C++ — The Apache Software Foundation, Apache License 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Xerces-C++ — The Apache Software Foundation, Apache License 2.0</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
         <source>DXF:</source>
-        <translation type="unfinished"></translation>
+        <translation>DXF:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
         <source>libdxfrw — Rallaz and contributors, GNU GPL v2 or later</source>
-        <translation type="unfinished"></translation>
+        <translation>libdxfrw — Rallaz und Mitwirkende, GNU GPL v2 oder später</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
         <source>Expression parser:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdrucksparser:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
         <source>muParser — Ingo Berg, MIT</source>
-        <translation type="unfinished"></translation>
+        <translation>muParser — Ingo Berg, MIT</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="177"/>
         <source>Framework:</source>
-        <translation type="unfinished"></translation>
+        <translation>Framework:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="178"/>
         <source>Qt %1 — The Qt Company, LGPLv3</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt %1 — The Qt Company, LGPLv3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="181"/>
         <source>Technical details</source>
-        <translation type="unfinished"></translation>
+        <translation>Technische Details</translation>
     </message>
 </context>
 <context>
@@ -10170,40 +10180,40 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="48"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="223"/>
         <source>Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="71"/>
         <source>Default</source>
-        <translation type="unfinished">Standard</translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="86"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="224"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="90"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="226"/>
         <source>Annotation text</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungstext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="91"/>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="225"/>
         <source>Content:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inhalt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="101"/>
         <source>Angle:</source>
-        <translation type="unfinished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oannotationdialog.cpp" line="103"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Winkel bearbeiten</translation>
+        <translation>Winkel bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -10211,7 +10221,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationpreview.cpp" line="74"/>
         <source>No annotation selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Beschriftung ausgewählt</translation>
     </message>
 </context>
 <context>
@@ -10220,157 +10230,157 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="87"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="658"/>
         <source>Add annotation style</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungsstil hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="90"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="558"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="659"/>
         <source>Remove style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Font</source>
-        <translation type="unfinished">Schrift</translation>
+        <translation>Schrift</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Stärke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Size</source>
-        <translation type="unfinished">Größe</translation>
+        <translation>Größe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="98"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="660"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrund</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="108"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="661"/>
         <source>Annotation style</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungsstil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="118"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="662"/>
         <source>Style name</source>
-        <translation type="unfinished"></translation>
+        <translation>Stilname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="121"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="126"/>
         <source>Font:</source>
-        <translation type="unfinished">Schrift:</translation>
+        <translation>Schrift:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="139"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stärke:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="265"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="266"/>
         <source>Default</source>
-        <translation type="unfinished">Standard</translation>
+        <translation>Standard</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="150"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="159"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="663"/>
         <source>#RRGGBB, empty = transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>#RRGGBB, leer = transparent</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="168"/>
         <source>Background:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hintergrund:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="175"/>
         <source>Presets:</source>
-        <translation type="unfinished"></translation>
+        <translation>Voreinstellungen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="178"/>
         <source>White</source>
-        <translation type="unfinished">Weiß</translation>
+        <translation>Weiß</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="184"/>
         <source>Black</source>
-        <translation type="unfinished">Schwarz</translation>
+        <translation>Schwarz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="192"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="664"/>
         <source>White text for dark backgrounds</source>
-        <translation type="unfinished"></translation>
+        <translation>Weißer Text für dunkle Hintergründe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="204"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="665"/>
         <source>Annotation text</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungstext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="206"/>
         <source>This is an annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist eine Beschriftung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="245"/>
         <source>No styles yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Stil vorhanden. Fügen Sie einen hinzu.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="269"/>
         <source>Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparent</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="534"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="566"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="579"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="541"/>
         <source>Annotation style added</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungsstil hinzugefügt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="558"/>
         <source>Remove the style &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil „%1“ aus der Bibliothek entfernen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/oannotationstylespage.cpp" line="570"/>
         <source>Annotation style removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungsstil entfernt</translation>
     </message>
 </context>
 <context>
@@ -10379,35 +10389,35 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="54"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="372"/>
         <source>Add annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="62"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="373"/>
         <source>Active annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktive Beschriftungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="73"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="374"/>
         <source>No annotations yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch keine Beschriftung vorhanden. Fügen Sie eine hinzu.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="206"/>
         <source>Edit annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="210"/>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="351"/>
         <source>Delete annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oannotationsconfigwidget.cpp" line="352"/>
         <source>Delete the annotation &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung „%1“ entfernen?</translation>
     </message>
 </context>
 <context>
@@ -10415,12 +10425,12 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oaxisrenameeditor.cpp" line="61"/>
         <source>Write each language on its own line</source>
-        <translation type="unfinished"></translation>
+        <translation>Jede Sprache in eine eigene Zeile schreiben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oaxisrenameeditor.cpp" line="191"/>
         <source>This axis is the one the size range grades along.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist die Achse, entlang derer der Größenbereich abgestuft wird.</translation>
     </message>
 </context>
 <context>
@@ -10428,37 +10438,37 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="73"/>
         <source>Click the first point of the axis (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie auf den ersten Punkt der Achse (Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="92"/>
         <source>Click a point of the pattern (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie auf einen Punkt des Schnittmusters (Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="99"/>
         <source>Click another point than the first one (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie auf einen anderen Punkt als den ersten (Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="108"/>
         <source>Click the second point of the axis (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie auf den zweiten Punkt der Achse (Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="158"/>
         <source>Apply</source>
-        <translation type="unfinished">Anwenden</translation>
+        <translation>Anwenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="212"/>
         <source>The angle follows the axis.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Winkel folgt der Achse.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxissession.cpp" line="215"/>
         <source>%1 — the angle follows the axis.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 — der Winkel folgt der Achse.</translation>
     </message>
 </context>
 <context>
@@ -10467,29 +10477,29 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="75"/>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="202"/>
         <source>Activate information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="82"/>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="203"/>
         <source>Template:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="96"/>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="204"/>
         <source>Split into multiple blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf mehrere Blöcke aufteilen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="259"/>
         <source>Don&apos;t show</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oblockconfigwidget.cpp" line="262"/>
         <source>Block %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Block %1</translation>
     </message>
 </context>
 <context>
@@ -10498,17 +10508,18 @@ Do you want to overwrite it?</source>
         <location filename="../../src/app/ostara/dialogs/ocheckablerowlistwidget.cpp" line="192"/>
         <source>No favorite yet.
 Star a size range in the Size Ranges dock to keep its definition here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Favorit vorhanden.
+Markieren Sie einen Größenbereich im Dock „Größenbereiche“ mit einem Stern, um seine Definition hier zu behalten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocheckablerowlistwidget.cpp" line="193"/>
         <source>Select all</source>
-        <translation type="unfinished">Alles auswählen</translation>
+        <translation>Alles auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocheckablerowlistwidget.cpp" line="194"/>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle abwählen</translation>
     </message>
 </context>
 <context>
@@ -10516,12 +10527,12 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="59"/>
         <source>Direction of the axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung der Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooseaxisdirectiondialog.cpp" line="101"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -10529,12 +10540,12 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooselayerdialog.cpp" line="49"/>
         <source>Choose a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene wählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ochooselayerdialog.cpp" line="86"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -10542,17 +10553,17 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/ocovergradedaxiseditor.cpp" line="75"/>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation> cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocovergradedaxiseditor.cpp" line="79"/>
         <source>Trace length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge der Linie:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocovergradedaxiseditor.cpp" line="133"/>
         <source>Size names:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größennamen:</translation>
     </message>
 </context>
 <context>
@@ -10560,42 +10571,42 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="137"/>
         <source>+ Add information</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Information hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="138"/>
         <source>Move up</source>
-        <translation type="unfinished">Anheben</translation>
+        <translation>Anheben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="139"/>
         <source>Move down</source>
-        <translation type="unfinished">Absenken</translation>
+        <translation>Absenken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="140"/>
         <source>Remove information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="168"/>
         <source>Top</source>
-        <translation type="unfinished">Oben</translation>
+        <translation>Oben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="170"/>
         <source>Middle left</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitte links</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="172"/>
         <source>Middle right</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitte rechts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagebandeditor.cpp" line="174"/>
         <source>Bottom</source>
-        <translation type="unfinished">Unten</translation>
+        <translation>Unten</translation>
     </message>
 </context>
 <context>
@@ -10603,95 +10614,101 @@ Star a size range in the Size Ranges dock to keep its definition here.</source>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="209"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="210"/>
         <source>Template name</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlagenname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="211"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="213"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="214"/>
         <source>Create a template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="215"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="216"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="217"/>
         <source>Seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="221"/>
         <source>Cover page language</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache des Deckblatts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="222"/>
         <source>You can choose several for a multilingual page</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie können mehrere für eine mehrsprachige Seite wählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="531"/>
         <source>Unsaved template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gespeicherte Vorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="610"/>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="627"/>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="634"/>
         <source>Save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="611"/>
         <source>Give the template a name before saving it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie der Vorlage einen Namen, bevor Sie sie speichern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="628"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Vorlage namens „%1“ existiert bereits.
+
+Wählen Sie einen anderen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="635"/>
         <source>Could not save the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Vorlage konnte nicht gespeichert werden.
+
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="674"/>
         <source>Open template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpageeditor.cpp" line="675"/>
         <source>Could not open the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Vorlage konnte nicht geöffnet werden.
+
+%1</translation>
     </message>
 </context>
 <context>
@@ -10700,69 +10717,71 @@ Choose another name.</source>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="155"/>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="157"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="200"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="201"/>
         <source>Search templates…</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlagen suchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="202"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="244"/>
         <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch keine Vorlage vorhanden. Erstellen Sie eine.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="271"/>
         <source>This is the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist die Standardvorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="272"/>
         <source>Make this the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Standardvorlage festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="280"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="284"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="340"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Löschvorgang bestätigen</translation>
+        <translation>Löschvorgang bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="341"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie „%1“ wirklich löschen?
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="360"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoverpagetemplatespage.cpp" line="360"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht gelöscht werden.</translation>
     </message>
 </context>
 <context>
@@ -10770,27 +10789,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="47"/>
         <source>No size range chosen</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Größenbereich gewählt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="49"/>
         <source>%1 - from %2 to %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 - von %2 bis %3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="74"/>
         <source>Choose a size range…</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich wählen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="84"/>
         <source>For the preview only. When printing, the page takes the size range the export is run with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur für die Vorschau. Beim Drucken übernimmt die Seite den Größenbereich, mit dem der Export gestartet wird.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/ocoversizerangechooser.cpp" line="90"/>
         <source>Load a multi-size measurements table (.omt) to list sizes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Laden Sie eine Mehrgrößen-Maßtabelle (.omt), um die Größen aufzulisten.</translation>
     </message>
 </context>
 <context>
@@ -10798,27 +10817,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="42"/>
         <source>Cover page - size range for the preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckblatt - Größenbereich für die Vorschau</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="50"/>
         <source>The page will list these sizes while you design it. Which sizes the printed page holds is decided when the export is run.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Seite listet diese Größen auf, während Sie sie gestalten. Welche Größen die gedruckte Seite enthält, wird beim Start des Exports entschieden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="61"/>
         <source>Graded axis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradierungsachse:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="66"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ocoversizerangedialog.cpp" line="68"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum:</translation>
     </message>
 </context>
 <context>
@@ -10827,27 +10846,27 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="105"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="163"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="152"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="153"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="154"/>
         <source>Center</source>
-        <translation type="unfinished">Mitte</translation>
+        <translation>Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinevalueswidget.cpp" line="155"/>
         <source>0 = automatic value, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>0 = automatischer Wert, Formeln erlaubt</translation>
     </message>
 </context>
 <context>
@@ -10855,23 +10874,23 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinetypes.cpp" line="35"/>
         <source>No text</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohne Text</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinetypes.cpp" line="36"/>
         <source>With text</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit Text</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ofoldlinetypes.cpp" line="37"/>
         <source>Invisible fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Unsichtbare Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="52"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="102"/>
         <source>Foldline</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="55"/>
@@ -10883,68 +10902,68 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="386"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="418"/>
         <source>Define foldline</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinie festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="58"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="104"/>
         <source>Deactivate foldline</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinie deaktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="65"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="105"/>
         <source>Show unfolded piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfaltetes Schnittteil anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="68"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="106"/>
         <source>Show symmetry line</source>
-        <translation type="unfinished"></translation>
+        <translation>Symmetrielinie anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="91"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="107"/>
         <source>Cut on fold</source>
-        <translation type="unfinished">im Bruch zuschneiden</translation>
+        <translation>im Bruch zuschneiden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="103"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="134"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="135"/>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="148"/>
         <source>Select the first point of the foldline - respect clockwise direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den ersten Punkt der Faltlinie - beachten Sie den Uhrzeigersinn</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="352"/>
         <source>Error - wrong piece. Start over.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler - falsches Schnittteil. Beginnen Sie von vorn.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="362"/>
         <source>Select the second point of the foldline - respect clockwise direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den zweiten Punkt der Faltlinie - beachten Sie den Uhrzeigersinn</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="377"/>
         <source>Error - invalid points. Start over.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler - ungültige Punkte. Beginnen Sie von vorn.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="427"/>
         <source>Foldline defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinie festgelegt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsfoldlinewidget.cpp" line="431"/>
         <source>Foldline not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinie nicht festgelegt</translation>
     </message>
 </context>
 <context>
@@ -10952,64 +10971,64 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="54"/>
         <source>5 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>5 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="55"/>
         <source>10 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>10 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="56"/>
         <source>20 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>20 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="57"/>
         <source>40 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>40 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="58"/>
         <source>80 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>80 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="76"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="147"/>
         <source>Grainline</source>
-        <translation type="unfinished">Fadenlauf</translation>
+        <translation>Fadenlauf</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="80"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="148"/>
         <source>Activate grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>Fadenlauf aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="85"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="149"/>
         <source>Length</source>
-        <translation type="unfinished">Länge</translation>
+        <translation>Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="108"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="114"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="152"/>
         <source>Rotation</source>
-        <translation type="unfinished">Drehung</translation>
+        <translation>Drehung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="124"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="154"/>
         <source>Simple</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfach</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="131"/>
         <location filename="../../src/app/ostara/core/odetailsgrainlinewidget.cpp" line="155"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelt</translation>
     </message>
 </context>
 <context>
@@ -11019,109 +11038,109 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="491"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="516"/>
         <source>Align on the common point</source>
-        <translation type="unfinished"></translation>
+        <translation>Am gemeinsamen Punkt ausrichten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="161"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="492"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="517"/>
         <source>Show alignment point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausrichtungspunkt anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="175"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="494"/>
         <source>Force flipping</source>
-        <translation type="unfinished">Spiegeln erzwingen</translation>
+        <translation>Spiegeln erzwingen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="176"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="495"/>
         <source>Force piece to be always flipped in a layout.</source>
-        <translation type="unfinished">Zwangsweise das Schnittteil immer im Zuschnittplan spiegeln.</translation>
+        <translation>Zwangsweise das Schnittteil immer im Zuschnittplan spiegeln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="179"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="496"/>
         <source>Symmetrical copy</source>
-        <translation type="unfinished">Symmetrische Kopie</translation>
+        <translation>Symmetrische Kopie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="180"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="498"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn die Anzahl der Kopien größer als 1 ist und „Spiegelung erzwingen“ aktiviert ist, wird jede gerade Kopie des Schnittteils vertikal gespiegelt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="225"/>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="244"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="501"/>
         <source>Fold line</source>
-        <translation type="unfinished">Faltlinie</translation>
+        <translation>Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="247"/>
         <source>Use the fold line of</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinie verwenden von</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="260"/>
         <source>Grainline</source>
-        <translation type="unfinished">Fadenlauf</translation>
+        <translation>Fadenlauf</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="287"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="299"/>
         <source>Group</source>
-        <translation type="unfinished">Gruppe</translation>
+        <translation>Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="301"/>
         <source>Blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Blöcke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="303"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="305"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatur</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="308"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="654"/>
         <source>None</source>
-        <translation type="unfinished">Keine</translation>
+        <translation>Keine</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="676"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation>Unbenannt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="689"/>
         <source>The group uses that member&apos;s fold line. It is edited on the piece, in its Grainline tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Gruppe verwendet die Falzlinie dieses Mitglieds. Sie wird am Schnittteil geändert, in dessen Registerkarte Grainline.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Mitglied hat bisher eine Falzlinie. Legen Sie eine am Schnittteil fest, in dessen Registerkarte Grainline.</translation>
     </message>
 </context>
 <context>
@@ -11129,12 +11148,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailsinternalpathwidget.cpp" line="288"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsinternalpathwidget.cpp" line="293"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
 </context>
 <context>
@@ -11142,134 +11161,134 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="55"/>
         <source>One line</source>
-        <translation type="unfinished">Eine Linie</translation>
+        <translation>Eine Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="56"/>
         <source>Two lines</source>
-        <translation type="unfinished">Zwei Linien</translation>
+        <translation>Zwei Linien</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="57"/>
         <source>Three lines</source>
-        <translation type="unfinished">Drei Linien</translation>
+        <translation>Drei Linien</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="58"/>
         <source>T mark</source>
-        <translation type="unfinished">T Markierung</translation>
+        <translation>T Markierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="59"/>
         <source>External V mark</source>
-        <translation type="unfinished">Externe V-Markierung</translation>
+        <translation>Externe V-Markierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="60"/>
         <source>Internal V mark</source>
-        <translation type="unfinished">Interne V-Markierung</translation>
+        <translation>Interne V-Markierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="61"/>
         <source>U mark</source>
-        <translation type="unfinished">U Markierung</translation>
+        <translation>U Markierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="62"/>
         <source>Box mark</source>
-        <translation type="unfinished">Box Markierung</translation>
+        <translation>Box Markierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="63"/>
         <source>Check mark</source>
-        <translation type="unfinished">Häkchen</translation>
+        <translation>Häkchen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="64"/>
         <source>Check mark clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>In Häkchenform, im Uhrzeigersinn</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="78"/>
         <source>Straightforward</source>
-        <translation type="unfinished">Geradeaus</translation>
+        <translation>Geradeaus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="79"/>
         <source>Bisector</source>
-        <translation type="unfinished">Bisektor</translation>
+        <translation>Bisektor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="80"/>
         <source>Intersection</source>
-        <translation type="unfinished">Überschneidung</translation>
+        <translation>Überschneidung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="82"/>
         <source>Intersection (only left)</source>
-        <translation type="unfinished">Überscheidung (nur links)</translation>
+        <translation>Überscheidung (nur links)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="84"/>
         <source>Intersection (only right)</source>
-        <translation type="unfinished">Überschneidung (nur rechts)</translation>
+        <translation>Überschneidung (nur rechts)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="85"/>
         <source>Intersection 2</source>
-        <translation type="unfinished">Überschneidung 2</translation>
+        <translation>Überschneidung 2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="87"/>
         <source>Intersection 2 (only left)</source>
-        <translation type="unfinished">Überschneidung 2 (nur links)</translation>
+        <translation>Überschneidung 2 (nur links)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="89"/>
         <source>Intersection 2 (only right)</source>
-        <translation type="unfinished">Überschneidung 2 (nur rechts)</translation>
+        <translation>Überschneidung 2 (nur rechts)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="99"/>
         <source>By length</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="100"/>
         <source>By points intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Schnittpunkten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="101"/>
         <source>By first edge symmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch Symmetrie zur ersten Seite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="102"/>
         <source>By second edge symmetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch Symmetrie zur zweiten Seite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="103"/>
         <source>By first edge right angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch rechten Winkel zur ersten Seite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="104"/>
         <source>By second edge right angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Durch rechten Winkel zur zweiten Seite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="119"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="576"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="125"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="558"/>
         <source>Passmark</source>
-        <translation type="unfinished">Passmarke</translation>
+        <translation>Passmarke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="133"/>
@@ -11277,7 +11296,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="560"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="570"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="142"/>
@@ -11285,60 +11304,60 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="561"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="566"/>
         <source>Angle</source>
-        <translation type="unfinished">Winkel</translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="151"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="562"/>
         <source>Show the second passmark on seam line</source>
-        <translation type="unfinished">Zeige die zweite Passmarke auf der Nahtkante</translation>
+        <translation>Zeige die zweite Passmarke auf der Nahtkante</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="157"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="563"/>
         <source>Not Mirrored</source>
-        <translation type="unfinished">Nicht gespiegelt</translation>
+        <translation>Nicht gespiegelt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="177"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="564"/>
         <source>Length</source>
-        <translation type="unfinished">Länge</translation>
+        <translation>Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="178"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="565"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="181"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="567"/>
         <source>Leave a field empty for the automatic value, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>Feld leer lassen für den automatischen Wert, Formeln erlaubt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="188"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="568"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="200"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="569"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = sichtbar, 0 = unsichtbar, Formeln erlaubt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="206"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="559"/>
         <source>Seam allowance angle</source>
-        <translation type="unfinished">Nahtzugabe Winkel</translation>
+        <translation>Nahtzugabe Winkel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="240"/>
         <source>None</source>
-        <translation type="unfinished">Keine</translation>
+        <translation>Keine</translation>
     </message>
 </context>
 <context>
@@ -11347,77 +11366,77 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="438"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="473"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="230"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="478"/>
         <source>Graded alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenausrichtung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="234"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="482"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="138"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="139"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="145"/>
         <source>Center</source>
-        <translation type="unfinished">Mitte</translation>
+        <translation>Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="140"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="265"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="486"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikal</translation>
+        <translation>Vertikal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="144"/>
         <source>Top</source>
-        <translation type="unfinished">Oben</translation>
+        <translation>Oben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="146"/>
         <source>Bottom</source>
-        <translation type="unfinished">Unten</translation>
+        <translation>Unten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="326"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="519"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn die Anzahl der Kopien größer als 1 ist und „Spiegelung erzwingen“ aktiviert ist, wird jede gerade Kopie des Schnittteils vertikal gespiegelt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="340"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="506"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1207"/>
         <source>- Remove marks</source>
-        <translation type="unfinished"></translation>
+        <translation>- Passmarken entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="446"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="526"/>
         <source>Piece</source>
-        <translation type="unfinished">Teil</translation>
+        <translation>Teil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="336"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="503"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1206"/>
         <source>+ Add passmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Kerben hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="302"/>
@@ -11425,90 +11444,90 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1298"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1483"/>
         <source>Align on a point</source>
-        <translation type="unfinished"></translation>
+        <translation>An einem Punkt ausrichten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="305"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
         <source>Remove point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="309"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="499"/>
         <source>Show alignment point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausrichtungspunkt anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="321"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="509"/>
         <source>Force flipping</source>
-        <translation type="unfinished">Spiegeln erzwingen</translation>
+        <translation>Spiegeln erzwingen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="513"/>
         <source>Force piece to be always flipped in a layout.</source>
-        <translation type="unfinished">Zwangsweise das Schnittteil immer im Zuschnittplan spiegeln.</translation>
+        <translation>Zwangsweise das Schnittteil immer im Zuschnittplan spiegeln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="325"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="517"/>
         <source>Symmetrical copy</source>
-        <translation type="unfinished">Symmetrische Kopie</translation>
+        <translation>Symmetrische Kopie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="345"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="501"/>
         <source>Manage main path</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptkontur verwalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="350"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="522"/>
         <source>General</source>
-        <translation type="unfinished">Allgemein</translation>
+        <translation>Allgemein</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="374"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="523"/>
         <source>Grainline</source>
-        <translation type="unfinished">Fadenlauf</translation>
+        <translation>Fadenlauf</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="399"/>
         <source>Internal outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Innenkontur</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="408"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="524"/>
         <source>Seam Allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="449"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="527"/>
         <source>Blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Blöcke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="452"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="528"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmerkungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="455"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="529"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatur</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="457"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="525"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="496"/>
@@ -11519,54 +11538,54 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1334"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1482"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1006"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1022"/>
         <source>Delete internal path</source>
-        <translation type="unfinished"></translation>
+        <translation>Internen Pfad löschen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1007"/>
         <source>Delete internal path &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Internen Pfad „%1“ löschen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1098"/>
         <source>Set the fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Falzlinie festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1157"/>
         <source>Click points to add passmarks - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf die Punkte klicken, um Passkerben hinzuzufügen - Enter zum Bestätigen, Esc zum Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1197"/>
         <source>Click passmark points and internal marks to remove - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf die Punkte der Kerben und die zu entfernenden internen Passmarken klicken - Enter zum Bestätigen, Esc zum Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1239"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1559"/>
         <source>%1 mark(s) selected - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Passmarke(n) ausgewählt - Enter zum Bestätigen, Esc zum Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1335"/>
         <source>Click the point to align on, on the piece outline (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf den Ausrichtungspunkt auf der Kontur des Schnittteils klicken (Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1350"/>
         <source>This point is not on the piece outline - click a point of the piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Punkt liegt nicht auf der Kontur des Schnittteils - auf einen Punkt des Schnittteils klicken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1580"/>
         <source>Choose Passmark Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ der Passkerbe wählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1593"/>
@@ -11619,111 +11638,111 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="73"/>
         <source>Cross</source>
-        <translation type="unfinished">Kreuz</translation>
+        <translation>Kreuz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="74"/>
         <source>Segment</source>
-        <translation type="unfinished">Abschnitt</translation>
+        <translation>Abschnitt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="75"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Rechteck</translation>
+        <translation>Rechteck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="76"/>
         <source>T-shaped</source>
-        <translation type="unfinished">T-förmig</translation>
+        <translation>T-förmig</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="77"/>
         <source>Doubletree</source>
-        <translation type="unfinished">Dublette</translation>
+        <translation>Dublette</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="78"/>
         <source>Corner</source>
-        <translation type="unfinished">Ecke</translation>
+        <translation>Ecke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="79"/>
         <source>Triangle</source>
-        <translation type="unfinished">Dreieck</translation>
+        <translation>Dreieck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="80"/>
         <source>H-shaped</source>
-        <translation type="unfinished">H-förmig</translation>
+        <translation>H-förmig</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="81"/>
         <source>Button</source>
-        <translation type="unfinished">Knopf</translation>
+        <translation>Knopf</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="82"/>
         <source>Circle</source>
-        <translation type="unfinished">Kreis</translation>
+        <translation>Kreis</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="66"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="394"/>
         <source>Internal mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Passmarke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="78"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="407"/>
         <source>Edit expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausdruck bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="86"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="395"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="97"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="396"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="108"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="397"/>
         <source>Angle</source>
-        <translation type="unfinished">Winkel</translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="119"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="398"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="143"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="399"/>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="153"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="400"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>1 = sichtbar, 0 = unsichtbar, Formeln erlaubt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="160"/>
         <location filename="../../src/app/ostara/core/odetailsplacelabelwidget.cpp" line="401"/>
         <source>Not mirrored</source>
-        <translation type="unfinished">Nicht gespiegelt</translation>
+        <translation>Nicht gespiegelt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/onodeplacelabel.cpp" line="159"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
 </context>
 <context>
@@ -11731,12 +11750,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/odetailssavedmarginsdialog.cpp" line="64"/>
         <source>Saved custom seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Gespeicherte benutzerdefinierte Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailssavedmarginsdialog.cpp" line="98"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
@@ -11745,20 +11764,20 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="216"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="259"/>
         <source>Activate seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="219"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="260"/>
         <source>Hide main path</source>
-        <translation type="unfinished">Verstecke Hauptpfad</translation>
+        <translation>Verstecke Hauptpfad</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="237"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="267"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="960"/>
         <source>Apply</source>
-        <translation type="unfinished">Anwenden</translation>
+        <translation>Anwenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="241"/>
@@ -11767,89 +11786,89 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="870"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="997"/>
         <source>+ Add custom seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Benutzerdefinierte Nahtzugabe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="250"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="269"/>
         <source>Manage saved custom seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Gespeicherte benutzerdefinierte Nahtzugaben verwalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="268"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="384"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="385"/>
         <source>Select the first and last point of the seam allowance segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Ersten und letzten Punkt des Nahtzugabensegments auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="276"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="516"/>
         <source>Custom seam allowance %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierte Nahtzugabe %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="222"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="261"/>
         <source>Show the second passmark on seam line</source>
-        <translation type="unfinished">Zeige die zweite Passmarke auf der Nahtkante</translation>
+        <translation>Zeige die zweite Passmarke auf der Nahtkante</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="223"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="262"/>
         <source>Draws a second notch on the seam line, in addition to the one on the cutting line. Seeded from the pattern when the piece is created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeichnet eine zweite Kerbe auf der Nahtlinie, zusätzlich zu der auf der Schnittlinie. Wird beim Erstellen des Schnittteils vom Schnittmuster übernommen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="227"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="264"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtlinie mit den Zeichnungen exportieren (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="228"/>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="265"/>
         <source>Places the sew line on the Draw line (8) instead of the dedicated sew-line layer (14). DXF-AAMA export only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Legt die Nahtlinie auf die Ebene der Zeichnungen (8) statt auf die eigene Nahtlinien-Ebene (14). Nur DXF-AAMA-Export.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="918"/>
         <source>Apply custom seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierte Nahtzugabe anwenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="921"/>
         <source>Select a saved custom seam allowance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gespeicherte benutzerdefinierte Nahtzugabe auswählen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="944"/>
         <source>Create a new custom seam allowance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue benutzerdefinierte Nahtzugabe erstellen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="949"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="952"/>
         <source>Value</source>
-        <translation type="unfinished">Wert</translation>
+        <translation>Wert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="954"/>
         <source>Color</source>
-        <translation type="unfinished">Farbe</translation>
+        <translation>Farbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsseamallowancewidget.cpp" line="957"/>
         <source>Save to saved custom seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>In den gespeicherten benutzerdefinierten Nahtzugaben speichern</translation>
     </message>
 </context>
 <context>
@@ -11858,72 +11877,72 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="81"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="488"/>
         <source>Closing divisor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließteiler:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="82"/>
         <source>Edit the closing divisor</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließteiler bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="241"/>
         <source>Select the pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt auswählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="344"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Punkt kann nicht der Drehpunkt sein. Wählen Sie einen anderen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="367"/>
         <source>Select the Moving point: the one that will close onto the other one</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu verschiebenden Punkt auswählen: den, der sich auf den anderen schließt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="375"/>
         <source>The Moving point must be another point than the pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Der zu verschiebende Punkt muss ein anderer Punkt als der Drehpunkt sein</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="388"/>
         <source>Select the Target point: the one the Moving point lands on</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielpunkt auswählen: den Punkt, auf dem der zu verschiebende Punkt zu liegen kommt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="396"/>
         <source>The Target point must be a third point, different from the pivot and the Moving point</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Zielpunkt muss ein dritter Punkt sein, verschieden vom Drehpunkt und vom zu verschiebenden Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="404"/>
         <source>The Target point does not move, so it cannot be one of the objects to rotate either. Remove it from the selection, or choose another point</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Zielpunkt bewegt sich nicht: Er kann auch nicht zu den zu drehenden Objekten gehören. Entfernen Sie ihn aus der Auswahl, oder wählen Sie einen anderen Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="428"/>
         <source>Dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäher-Drehpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="526"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="536"/>
         <source>The pivot, the Moving point and the Target point must be three different points</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt, zu verschiebender Punkt und Zielpunkt müssen drei verschiedene Punkte sein</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="540"/>
         <source>The closing divisor cannot be zero</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Schließteiler kann nicht null sein</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="544"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Ebenenname</translation>
     </message>
 </context>
 <context>
@@ -11932,93 +11951,93 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="469"/>
         <source>Dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="24"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="30"/>
         <source>Draw the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="62"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Linientyp:</translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="79"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="118"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="40"/>
         <source>Cut the piece&apos;s edge at the cap point, so that the crank is a point of it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Rand des Schnittteils am Punkt der Kappe abschneiden, damit die Kerbe ein Punkt dieses Rands ist.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="43"/>
         <source>Notch</source>
-        <translation type="unfinished">Einschnitt</translation>
+        <translation>Einschnitt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="50"/>
         <source>Build the cap on the edge the piece carries at the other point of the opening.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kappe auf dem Rand aufbauen, den das Schnittteil am anderen Punkt der Öffnung hat.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="53"/>
         <source>Reverse the sense</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung umkehren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="126"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="132"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="377"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="398"/>
         <source>The two points of the opening are two different points, and neither of them is the point of the dart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die beiden Punkte der Öffnung sind zwei verschiedene Punkte, und keiner von beiden ist die Spitze des Abnähers.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="355"/>
         <source>Select the tip of the dart (the point inside the piece)</source>
-        <translation type="unfinished"></translation>
+        <translation>Spitze des Abnähers auswählen (der Punkt im Inneren des Schnittteils)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="382"/>
         <source>Select the first point of the opening (a point of the piece&apos;s edge)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ersten Punkt der Öffnung auswählen (einen Punkt des Schnittteilrands)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="403"/>
         <source>Select the second point of the opening (the other end)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiten Punkt der Öffnung auswählen (das andere Ende)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="423"/>
         <source>Select a point of the line to extend</source>
-        <translation type="unfinished"></translation>
+        <translation>Einen Punkt der zu verlängernden Linie auswählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="448"/>
         <source>The cap of this dart cannot be built from this point: the line it carries does not meet the axis of the dart. Choose another point of the line to extend.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kappe dieses Abnähers kann nicht von diesem Punkt aus aufgebaut werden: Die Linie, die er trägt, trifft die Achse des Abnähers nicht. Wählen Sie einen anderen Punkt der zu verlängernden Linie.</translation>
     </message>
 </context>
 <context>
@@ -12026,97 +12045,97 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="14"/>
         <source>Flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiralvolant</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="31"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="95"/>
         <source>Width = height of the flounce, seam and hem allowances included. Length = the length of the inner edge, the one that is sewn on, allowances included.</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite = Höhe des Volants, einschließlich Naht- und Saumzugabe. Länge = Länge des inneren Rands, des angenähten, Zugaben eingeschlossen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="148"/>
         <source>Start point:</source>
-        <translation type="unfinished">Anfangspunkt:</translation>
+        <translation>Anfangspunkt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="158"/>
         <source>Select the point the inner spiral starts at</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt der inneren Spirale auswählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="165"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Linientyp:</translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="194"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="57"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="236"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier können Sie eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="250"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="261"/>
         <source>Outer edge start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Start des äußeren Rands:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="279"/>
         <source>Inner edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ende des inneren Rands:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.ui" line="297"/>
         <source>Outer edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ende des äußeren Rands:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="67"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="69"/>
         <source>Edit width</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="76"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="78"/>
         <source>Edit length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="85"/>
         <source>Angle:</source>
-        <translation type="unfinished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogflouncespiral.cpp" line="87"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Winkel bearbeiten</translation>
+        <translation>Winkel bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -12125,81 +12144,81 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="90"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="373"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="92"/>
         <source>Edit length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="98"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="374"/>
         <source>Angle:</source>
-        <translation type="unfinished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="100"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Winkel bearbeiten</translation>
+        <translation>Winkel bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="106"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="375"/>
         <source>Rotation angle:</source>
-        <translation type="unfinished">Drehungs-Winkel:</translation>
+        <translation>Drehungs-Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="108"/>
         <source>Edit rotation angle</source>
-        <translation type="unfinished">Drehungs-Winkel bearbeiten</translation>
+        <translation>Drehungs-Winkel bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="205"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="319"/>
         <source>Move %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebung %1: Auf den &lt;b&gt;Startpunkt&lt;/b&gt; des Schnitts klicken (die Saumkante), oder &lt;b&gt;%2&lt;/b&gt; zum Beenden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="217"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="235"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie zuerst mindestens einen Schnitt: einen Startpunkt, dann einen Drehpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="288"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Punkt gehört nicht zu den ausgewählten Objekten, wählen Sie einen Punkt der Kontur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="301"/>
         <source>Move %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the point the part turns around)</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebung %1: Auf seinen &lt;b&gt;Drehpunkt&lt;/b&gt; klicken (der Punkt, um den sich der Teil dreht)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="392"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="397"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Ebenenname</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="463"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">Unzulässige Längenformel</translation>
+        <translation>Unzulässige Längenformel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="477"/>
         <source>Invalid angle formula</source>
-        <translation type="unfinished">Ungültige Winkelformeln</translation>
+        <translation>Ungültige Winkelformeln</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="491"/>
         <source>Invalid rotation angle formula</source>
-        <translation type="unfinished">Ungültige Drehwinkel-Formel</translation>
+        <translation>Ungültige Drehwinkel-Formel</translation>
     </message>
 </context>
 <context>
@@ -12208,173 +12227,173 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Value</source>
-        <translation type="unfinished">Wert</translation>
+        <translation>Wert</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Kind</source>
-        <translation type="unfinished"></translation>
+        <translation>Art</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="108"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1271"/>
         <source>Add a pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="109"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1272"/>
         <source>Remove the pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte entfernen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="126"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1265"/>
         <source>Value of the finished pleat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert der fertigen Falte:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="128"/>
         <source>Value of the finished pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert der fertigen Falte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="139"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="881"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1273"/>
         <source>Simple</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfach</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="140"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="881"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1274"/>
         <source>Double</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="141"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1287"/>
         <source>Pleat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="174"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1288"/>
         <source>Line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="175"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1289"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="176"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1290"/>
         <source>Fold line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ der Falzlinie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="177"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1291"/>
         <source>Fold line color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Farbe der Falzlinie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="378"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1269"/>
         <source>Middle pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Mittelfalte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="654"/>
         <source>Click the two points of the first departure line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie die beiden Punkte der ersten Startlinie.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="663"/>
         <source>Put a pleat value greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie einen Faltenwert größer als null an.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="677"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Ebenenname</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="681"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="696"/>
         <source>The edge is not recognized at the cap of point 1 (green): click a point of the piece&apos;s outline, right next to it</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Rand wird an der Kappe von Punkt 1 (dem grünen) nicht erkannt: Klicken Sie einen Punkt der Kontur des Schnittteils, direkt daneben.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="698"/>
         <source>The edge is not recognized at the cap of point 2 (red): click a point of the piece&apos;s outline, right next to it</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Rand wird an der Kappe von Punkt 2 (dem roten) nicht erkannt: Klicken Sie einen Punkt der Kontur des Schnittteils, direkt daneben.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="793"/>
         <source>Cap 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe 1:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="794"/>
         <source>Cap 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe 2:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="808"/>
         <source>Click point 1 of the departure line of pleat 1 (it turns green)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie Punkt 1 der Startlinie der Falte 1 (er wird grün)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="809"/>
         <source>Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie Punkt 1 der Startlinie der Falte %1 (er wird grün), oder %2 zum Beenden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="814"/>
         <source>Click point 2 of the departure line of pleat %1 (it turns red)</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie Punkt 2 der Startlinie der Falte %1 (er wird rot)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="879"/>
         <source>Pleat %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1034"/>
         <source>Select the objects of the contour, then %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie die Objekte der Kontur, dann %1</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1098"/>
         <source>A departure line is made of two points</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Startlinie besteht aus zwei Punkten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1109"/>
         <source>This point is not one of the objects you selected: click a point of the contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Punkt gehört nicht zu den ausgewählten Objekten: Klicken Sie einen Punkt der Kontur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1171"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1203"/>
         <source>Click a point of the outline, right next to it</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie einen Punkt der Kontur des Schnittteils, direkt daneben</translation>
     </message>
 </context>
 <context>
@@ -12382,85 +12401,85 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="20"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Rechteck</translation>
+        <translation>Rechteck</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="37"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="111"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="149"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="162"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Linientyp:</translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="191"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="239"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie können hier eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="266"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="277"/>
         <source>Point B:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt B:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="287"/>
         <source>Point C:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt C:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="297"/>
         <source>Point D:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt D:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="309"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="316"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.ui" line="323"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="72"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="74"/>
         <source>Edit width</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="84"/>
         <source>Height:</source>
-        <translation type="unfinished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="86"/>
         <source>Edit height</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogrectangle.cpp" line="458"/>
         <source>Set the width and the height, then click OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie die Breite und die Höhe ein, dann klicken Sie auf OK</translation>
     </message>
 </context>
 <context>
@@ -12468,87 +12487,87 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="14"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirale</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="31"/>
         <source>Tool</source>
-        <translation type="unfinished">Werkzeug</translation>
+        <translation>Werkzeug</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="37"/>
         <source>Radius = distance from the start point to the centre of the spiral, e.g. 5.</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius = Abstand vom Startpunkt zum Mittelpunkt der Spirale, zum Beispiel 5.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="90"/>
         <source>Start point:</source>
-        <translation type="unfinished">Anfangspunkt:</translation>
+        <translation>Anfangspunkt:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="100"/>
         <source>Select start point of the spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Startpunkt der Spirale</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="107"/>
         <source>Pen style:</source>
-        <translation type="unfinished">Zeichenstil:</translation>
+        <translation>Zeichenstil:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="136"/>
         <source>Color:</source>
-        <translation type="unfinished">Farbe:</translation>
+        <translation>Farbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="150"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="189"/>
         <source>You can add a note here…</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie können hier eine Notiz hinzufügen…</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="203"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.ui" line="214"/>
         <source>End point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Endpunkts:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="72"/>
         <source>Radius:</source>
-        <translation type="unfinished">Radius:</translation>
+        <translation>Radius:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="74"/>
         <source>Edit radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="81"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="83"/>
         <source>Edit length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="90"/>
         <source>Angle:</source>
-        <translation type="unfinished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspiral.cpp" line="92"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Winkel bearbeiten</translation>
+        <translation>Winkel bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -12557,80 +12576,80 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="101"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="421"/>
         <source>Angle:</source>
-        <translation type="unfinished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="103"/>
         <source>Edit angle</source>
-        <translation type="unfinished">Winkel bearbeiten</translation>
+        <translation>Winkel bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="109"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="422"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="111"/>
         <source>Edit length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="144"/>
         <source>Line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="145"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="244"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="355"/>
         <source>Rotation %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehung %1: Klicken Sie den &lt;b&gt;Startpunkt&lt;/b&gt; des Schnitts (den unteren Rand) oder &lt;b&gt;%2&lt;/b&gt; zum Beenden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="256"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="274"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie zuerst mindestens einen Schnitt: einen Startpunkt, dann einen Drehpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="326"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Punkt gehört nicht zu den ausgewählten Objekten, wählen Sie einen Punkt der Kontur</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="337"/>
         <source>Rotation %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the apex the part turns around)</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehung %1: Klicken Sie ihren &lt;b&gt;Drehpunkt&lt;/b&gt; (den Scheitelpunkt, um den sich das Schnittteil dreht)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="437"/>
         <source>Ready</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="442"/>
         <source>Invalid layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Ebenenname</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="509"/>
         <source>Invalid angle formula</source>
-        <translation type="unfinished">Ungültige Winkelformeln</translation>
+        <translation>Ungültige Winkelformeln</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="524"/>
         <source>Invalid length formula</source>
-        <translation type="unfinished">Unzulässige Längenformel</translation>
+        <translation>Unzulässige Längenformel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="692"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Länge darf den Durchmesser des Kreises nicht überschreiten (%1%2).</translation>
     </message>
 </context>
 <context>
@@ -12638,28 +12657,28 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="297"/>
         <source>Select the objects to transfer first</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie zuerst die zu übertragenden Objekte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="314"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="315"/>
         <source>Click the merge point of the part to transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie den Fusionspunkt des zu übertragenden Schnittteils</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="345"/>
         <source>Click a point of the part: it is the point the portion is anchored on</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie einen Punkt des Schnittteils: Er ist der Verankerungspunkt des Teilstücks</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="356"/>
         <source>This pattern has no part that could receive the portion.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittmuster hat kein Schnittteil, das das Teilstück aufnehmen kann.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="361"/>
         <source>Choose the part that receives the portion, and its layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie das Schnittteil, das das Teilstück aufnimmt, und seine Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="375"/>
@@ -12667,22 +12686,22 @@ This action cannot be undone.</source>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="439"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="440"/>
         <source>Click the point of the host part that receives the merge point</source>
-        <translation type="unfinished"></translation>
+        <translation>Klicken Sie den Punkt des aufnehmenden Schnittteils, der den Fusionspunkt aufnimmt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="409"/>
         <source>Choose the part that receives the portion</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie das Schnittteil, das das Teilstück aufnimmt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="419"/>
         <source>The part %1 could not be activated</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil %1 konnte nicht aktiviert werden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogtransfert.cpp" line="527"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
 </context>
 <context>
@@ -12692,28 +12711,28 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="454"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="577"/>
         <source>Size Ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereiche</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="109"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="456"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="578"/>
         <source>Size Styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenstile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="114"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="477"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="573"/>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="120"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="479"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="574"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckblatt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="409"/>
@@ -12721,31 +12740,31 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="565"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="570"/>
         <source>Options</source>
-        <translation type="unfinished">Optionen</translation>
+        <translation>Optionen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="412"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="563"/>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="414"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="564"/>
         <source>Contains all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Enthält alle Ebenen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="433"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="568"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="435"/>
         <location filename="../../src/app/ostara/widgets/ODockManager.cpp" line="569"/>
         <source>Show which details will go in layout</source>
-        <translation type="unfinished">Zeigt, welche Details ins Layout kommen</translation>
+        <translation>Zeigt, welche Details ins Layout kommen</translation>
     </message>
 </context>
 <context>
@@ -12753,12 +12772,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="218"/>
         <source>Export the ticked generations</source>
-        <translation type="unfinished"></translation>
+        <translation>Die angehakten Generierungen exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="219"/>
         <source>There is no output to export here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier gibt es keine Ausgabe zum Exportieren.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="238"/>
@@ -12766,47 +12785,47 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="254"/>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="277"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="238"/>
         <source>That folder does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Zielordner existiert nicht.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="246"/>
         <source>No generation is ticked.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Generierung ist angehakt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="254"/>
         <source>Every ticked generation needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jede angehakte Generierung braucht einen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="265"/>
         <source>Export several outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrere Ausgaben exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="267"/>
         <source>Cutting plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuschnittplan</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="268"/>
         <source>Print</source>
-        <translation type="unfinished">Drucken</translation>
+        <translation>Drucken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="269"/>
         <source>Plotter</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchdialog.cpp" line="280"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -12814,27 +12833,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="229"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="241"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielordner:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="246"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen...</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="253"/>
         <source>Add Layout layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene „Layout“ hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpage.cpp" line="258"/>
         <source>There is no output to export here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hier gibt es keine Ausgabe zum Exportieren.</translation>
     </message>
 </context>
 <context>
@@ -12842,17 +12861,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="67"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Generieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="118"/>
         <source>Before generating</source>
-        <translation type="unfinished"></translation>
+        <translation>Vor dem Generieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportbatchpreflightdialog.cpp" line="119"/>
         <source>These choices apply to every favorite of this batch.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Auswahl gilt für alle Favoriten dieses Stapels.</translation>
     </message>
 </context>
 <context>
@@ -12860,27 +12879,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="284"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="285"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="307"/>
         <source>There is no plan to write.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es gibt keinen Plan zum Schreiben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="335"/>
         <source>This plan was generated before the seam-allowance-free geometry existed: generate it again, then export it as Clo3D/Style3D.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Plan wurde generiert, bevor es die Geometrie ohne Nahtzugaben gab: Generieren Sie ihn neu und exportieren Sie ihn dann als Clo3D/Style3D.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportcuttingfile.cpp" line="348"/>
         <source>The plan holds no piece to write.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Plan enthält kein Schnittteil zum Schreiben.</translation>
     </message>
 </context>
 <context>
@@ -12888,17 +12907,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="102"/>
         <source>Export the cutting plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuschnittplan exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="109"/>
         <source>Fabric:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfiledialog.cpp" line="110"/>
         <source>Lining:</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter:</translation>
     </message>
 </context>
 <context>
@@ -12906,57 +12925,57 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="58"/>
         <source>Exports the pieces as if their main path were visible: each piece then has both its cutting line and its sew line. Nothing is changed in the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportiert die Schnittteile, als wäre ihre Hauptkontur sichtbar: Jedes Schnittteil hat dann seine Schnittlinie und seine Nahtlinie. Am Schnittmuster wird nichts geändert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="62"/>
         <source>Which CAD reads this file. Clo3D/Style3D assemble edge to edge, with no seam allowances: the pieces are written WITHOUT them, exactly as if every piece of the pattern had its seam allowance switched off. Nothing is changed in the pattern - the plan on screen keeps its own margins.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das CAD, das diese Datei liest. Clo3D und Style3D setzen Kante an Kante zusammen, ohne Nahtzugaben: Die Schnittteile werden OHNE sie geschrieben, genau so, als wäre bei jedem Schnittteil des Schnittmusters die Nahtzugabe deaktiviert. Am Schnittmuster wird nichts geändert — der Plan auf dem Bildschirm behält seine Nahtzugaben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="229"/>
         <source>By standard</source>
-        <translation type="unfinished">Nach Norm</translation>
+        <translation>Nach Norm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="243"/>
         <source>File format:</source>
-        <translation type="unfinished">Dateiformat:</translation>
+        <translation>Dateiformat:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="244"/>
         <source>Type:</source>
-        <translation type="unfinished">Typ:</translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="245"/>
         <source>Binary form</source>
-        <translation type="unfinished">Binärform</translation>
+        <translation>Binärform</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="246"/>
         <source>Text as paths</source>
-        <translation type="unfinished">Text als Pfade</translation>
+        <translation>Text als Pfade</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="247"/>
         <source>Show grainline</source>
-        <translation type="unfinished">Fadenlauf anzeigen</translation>
+        <translation>Fadenlauf anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="248"/>
         <source>Boundary together with notches</source>
-        <translation type="unfinished">Umriss mit Einschnitten</translation>
+        <translation>Umriss mit Einschnitten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="249"/>
         <source>Show the main path, even when the pieces hide it</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptkontur anzeigen, auch wenn die Schnittteile sie verdecken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingfileoptions.cpp" line="250"/>
         <source>Compatibility:</source>
-        <translation type="unfinished">Kompatibilität:</translation>
+        <translation>Kompatibilität:</translation>
     </message>
 </context>
 <context>
@@ -12964,67 +12983,67 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="844"/>
         <source>Fabric width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffbreite:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="866"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="867"/>
         <source>Lining width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Futterbreite:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="879"/>
         <source>Sizes to cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu schneidende Größen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="880"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheitsgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="881"/>
         <source>Several sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrere Größen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="896"/>
         <source>Space between pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zwischen den Schnittteilen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="900"/>
         <source>Space from the edges:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zu den Rändern:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="904"/>
         <source>The space kept between the pieces and the fabric&apos;s edges. It is a margin for error - cloth is not always cut straight - so every rectangle of the plan keeps it on THREE sides: all of them except the fold. A piece cut on the fold keeps its fold line on the fold, which is straight by construction.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Abstand zwischen den Schnittteilen und den Stoffrändern. Er ist eine Fehlertoleranz - Stoff wird nicht immer gerade zugeschnitten - deshalb behält jedes Rechteck des Plans ihn auf DREI Seiten: allen außer dem Bruch. Ein am Bruch zugeschnittenes Schnittteil behält seine Bruchlinie auf dem Bruch, der konstruktionsbedingt gerade ist.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="909"/>
         <source>Folded fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Gefalteter Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="911"/>
         <source>The fabric is folded in two along its length, and the halves are traced on the folded cloth - the fold gives the second half. The nesting then runs on HALF the fabric width: 140 entered here means a plan laid out on 70. A piece cut on the fold keeps its fold line on the fold and stays folded; a piece cut twice is laid once, and the fold mirrors it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Stoff wird auf seiner Länge in zwei Hälften gefaltet, und die Hälften werden auf dem gefalteten Stoff gezeichnet - der Bruch liefert die zweite Hälfte. Die Verschachtelung arbeitet dann auf der HÄLFTE der Stoffbreite: 140 hier eingegeben bedeutet einen Plan auf 70. Ein am Bruch zugeschnittenes Schnittteil behält seine Bruchlinie auf dem Bruch und bleibt gefaltet; ein zweimal zugeschnittenes Schnittteil wird einmal aufgelegt, und der Bruch spiegelt es.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="917"/>
         <source>One-way layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Schnittteile in dieselbe Richtung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportcuttingwidget.cpp" line="919"/>
         <source>No piece is turned a half-turn: every piece takes the fabric&apos;s direction the same way. Tick it for a cloth that has one - velvet, checks, a print. A piece cut on the cross keeps that freedom; it is simply never laid upside down.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittteil wird um eine halbe Drehung gedreht: Alle nehmen die Stoffrichtung auf dieselbe Weise auf. Haken Sie diese Option für einen Stoff mit Richtung an - Samt, Karos, Druckmuster. Ein quer zum Fadenlauf zugeschnittenes Schnittteil behält diese Freiheit; es wird einfach nie verkehrt herum aufgelegt.</translation>
     </message>
 </context>
 <context>
@@ -13032,7 +13051,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriterowwidget.cpp" line="95"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus Favoriten entfernen</translation>
     </message>
 </context>
 <context>
@@ -13041,17 +13060,18 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriteswidget.cpp" line="203"/>
         <source>No favorite yet.
 Star a generation in the Outputs dock to keep its recipe here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Favorit.
+Fügen Sie eine Generierung über das Dock Ausgaben zu den Favoriten hinzu, um ihr Rezept hier zu behalten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriteswidget.cpp" line="204"/>
         <source>Select all</source>
-        <translation type="unfinished">Alles auswählen</translation>
+        <translation>Alles auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfavoriteswidget.cpp" line="205"/>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle abwählen</translation>
     </message>
 </context>
 <context>
@@ -13062,47 +13082,47 @@ Star a generation in the Outputs dock to keep its recipe here.</source>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="302"/>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="311"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="275"/>
         <source>%1 already exists. Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 existiert bereits. Ersetzen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="284"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="302"/>
         <source>The file needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei braucht einen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="311"/>
         <source>That folder does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Zielordner existiert nicht.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="333"/>
         <source>Export the plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Plan exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="334"/>
         <source>File name:</source>
-        <translation type="unfinished">Dateiname:</translation>
+        <translation>Dateiname:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="335"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielordner:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportfiledialog.cpp" line="336"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen...</translation>
     </message>
 </context>
 <context>
@@ -13111,7 +13131,8 @@ Star a generation in the Outputs dock to keep its recipe here.</source>
         <location filename="../../src/app/ostara/dialogs/oexportgenerationlistwidget.cpp" line="106"/>
         <source>Nothing to generate yet.
 Add a run from the Print tab.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch nichts zu generieren.
+Fügen Sie einen Lauf im Tab Drucken hinzu.</translation>
     </message>
 </context>
 <context>
@@ -13120,7 +13141,7 @@ Add a run from the Print tab.</source>
         <location filename="../../src/app/ostara/dialogs/oexportgenerationrowwidget.cpp" line="55"/>
         <location filename="../../src/app/ostara/dialogs/oexportgenerationrowwidget.cpp" line="78"/>
         <source>Remove this run from the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Diesen Lauf aus der Liste entfernen</translation>
     </message>
 </context>
 <context>
@@ -13128,17 +13149,17 @@ Add a run from the Print tab.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupchoicewidget.cpp" line="117"/>
         <source>Unnamed group</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbenannte Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupchoicewidget.cpp" line="124"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation>Unbenannt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupchoicewidget.cpp" line="147"/>
         <source>One piece per group</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Schnittteil pro Gruppe</translation>
     </message>
 </context>
 <context>
@@ -13146,24 +13167,26 @@ Add a run from the Print tab.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="103"/>
         <source>Unnamed group</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbenannte Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="118"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation>Unbenannt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="145"/>
         <source>Group members to cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu schneidende Gruppenmitglieder</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportgroupmemberswidget.cpp" line="147"/>
         <source>A plotter cuts every member of a group, one by one: the group is decomposed, not printed as one shape.
 
 Untick a member to leave it out of this run. All ticked is what a plotter run has always cut.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Plotter schneidet jedes Mitglied einer Gruppe, eines nach dem anderen: Die Gruppe wird zerlegt, nicht als eine einzige Form gedruckt.
+
+Haken Sie ein Mitglied ab, um es aus diesem Lauf herauszunehmen. Alles angehakt ist das, was ein Plotter-Lauf immer geschnitten hat.</translation>
     </message>
 </context>
 <context>
@@ -13171,29 +13194,29 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="209"/>
         <source>%1 × %2 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 × %2 %3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="217"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="218"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="217"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="218"/>
         <source>Height:</source>
-        <translation type="unfinished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="222"/>
         <source>%1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="235"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="293"/>
@@ -13201,92 +13224,92 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="315"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="327"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="293"/>
         <source>That folder does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Zielordner existiert nicht.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="300"/>
         <source>The size must be a number greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Größe muss eine Zahl größer als null sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="315"/>
         <source>The plan cannot be written at that size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Plan kann in dieser Größe nicht geschrieben werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="328"/>
         <source>That image would be too large. Lower the size or the resolution.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Bild wäre zu groß. Verringern Sie die Größe oder die Auflösung.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="341"/>
         <source>Export the plan as an image</source>
-        <translation type="unfinished"></translation>
+        <translation>Plan als Bild exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="343"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielordner:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="344"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchsuchen...</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="346"/>
         <source>Format:</source>
-        <translation type="unfinished">Format:</translation>
+        <translation>Format:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="350"/>
         <source>Plan:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plan:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="352"/>
         <source>Give:</source>
-        <translation type="unfinished"></translation>
+        <translation>Angeben:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="353"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="354"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="361"/>
         <source>Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Auflösung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="362"/>
         <source> dpi</source>
-        <translation type="unfinished"></translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="371"/>
         <source>Export the active output</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktive Ausgabe exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="374"/>
         <source>Export several outputs...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrere Ausgaben exportieren…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagedialog.cpp" line="377"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -13296,27 +13319,27 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="167"/>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="186"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="159"/>
         <source>No generation is ticked.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Generierung ist angehakt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="167"/>
         <source>Every ticked generation needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jede angehakte Generierung braucht einen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="178"/>
         <source>Export the plan as an image</source>
-        <translation type="unfinished"></translation>
+        <translation>Plan als Bild exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="189"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
 </context>
 <context>
@@ -13324,17 +13347,17 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
     <message>
         <location filename="../../src/app/ostara/core/oexportmarksettings.cpp" line="42"/>
         <source>Circle</source>
-        <translation type="unfinished">Kreis</translation>
+        <translation>Kreis</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportmarksettings.cpp" line="43"/>
         <source>Square</source>
-        <translation type="unfinished"></translation>
+        <translation>Quadrat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportmarksettings.cpp" line="44"/>
         <source>Octagon</source>
-        <translation type="unfinished"></translation>
+        <translation>Achteck</translation>
     </message>
 </context>
 <context>
@@ -13343,24 +13366,25 @@ Untick a member to leave it out of this run. All ticked is what a plotter run ha
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="115"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1307"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1309"/>
         <source>List to generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste zum Generieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="941"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1310"/>
         <source>Cutting plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuschnittplan</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="159"/>
         <source>The runs described in the tabs beside, waiting to be generated.
 They are not kept: closing the pattern takes them with the session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die in den Tabs daneben beschriebenen Läufe, die auf ihre Generierung warten.
+Sie werden nicht gespeichert: Das Schließen des Schnittmusters nimmt sie mit der Sitzung mit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="942"/>
@@ -13369,13 +13393,17 @@ They are not kept: closing the pattern takes them with the session.</source>
 %1
 
 Give each one a grainline or a fold line in the Details mode, then ask for the plan again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Verschachtelung kann keine Richtung erfinden, und diese Schnittteile haben keine:
+
+%1
+
+Geben Sie jedem einen Fadenlauf oder eine Bruchlinie im Modus Details, und fordern Sie den Plan dann erneut an.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1078"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1324"/>
         <source>%1 was added to the list.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 wurde zur Liste hinzugefügt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1140"/>
@@ -13383,7 +13411,7 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1171"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1184"/>
         <source>Add to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Zur Liste hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1146"/>
@@ -13391,74 +13419,74 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1175"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1188"/>
         <source>Generate this output</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Ausgabe generieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1111"/>
         <source>Generate the whole list</source>
-        <translation type="unfinished"></translation>
+        <translation>Die ganze Liste generieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="609"/>
         <source>Cut-%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuschnitt-%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="627"/>
         <source>Plot-%1x%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter-%1x%2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="637"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1313"/>
         <source>Projector</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektor</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1112"/>
         <source>Generate the checked favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Die aktivierten Favoriten erzeugen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1198"/>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1204"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1311"/>
         <source>Print</source>
-        <translation type="unfinished">Drucken</translation>
+        <translation>Drucken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1312"/>
         <source>Plotter</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1318"/>
         <source>Working list</source>
-        <translation type="unfinished"></translation>
+        <translation>Arbeitsliste</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1319"/>
         <source>Cutting plan favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuschnittplan-Favoriten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1320"/>
         <source>Print favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Druck-Favoriten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1321"/>
         <source>Plotter favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Plotter-Favoriten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportmodedialog.cpp" line="1322"/>
         <source>Projector favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Projektor-Favoriten</translation>
     </message>
 </context>
 <context>
@@ -13466,12 +13494,12 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
     <message>
         <location filename="../../src/app/ostara/core/oexportpaginationsettings.cpp" line="41"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportpaginationsettings.cpp" line="42"/>
         <source>Number + letter</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer + Buchstabe</translation>
     </message>
 </context>
 <context>
@@ -13479,17 +13507,17 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
     <message>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="304"/>
         <source>Magenta background</source>
-        <translation type="unfinished"></translation>
+        <translation>Magenta-Hintergrund</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="307"/>
         <source>5cm grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster 5 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportpdf.cpp" line="310"/>
         <source>3in grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster 3 Zoll</translation>
     </message>
 </context>
 <context>
@@ -13497,12 +13525,12 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="77"/>
         <source>Export the plan as PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Plan als PDF exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="78"/>
         <source>Add Layout layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene „Layout“ hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="80"/>
@@ -13510,12 +13538,15 @@ Give each one a grainline or a fold line in the Details mode, then ask for the p
 Left unchecked, the layout is printed with the plan and cannot be switched off -
 which is the safer setting: a plan printed without its information block, its
 folds and its annotations looks perfectly normal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schreibt das Layout als eine der PDF-Ebenen, die eine Druckerei also ausblenden kann.
+Ohne Häkchen wird das Layout mit dem Plan gedruckt und kann nicht ausgeblendet werden -
+das ist die sicherere Einstellung: ein Plan, der ohne seinen Informationsblock, seine
+Faltlinien und seine Anmerkungen gedruckt wird, sieht völlig normal aus.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="85"/>
         <source>Compatible with Rabnest</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompatibel mit Rabnest</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportpdfdialog.cpp" line="87"/>
@@ -13523,7 +13554,10 @@ folds and its annotations looks perfectly normal.</source>
 Rabnest and delivered again in another format. Nothing in the PDF looks different
 and no reader shows it; the file is only heavier.
 Left unchecked, the PDF prints and nothing reopens it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schreibt in die Datei, woraus der Plan gezeichnet wurde, damit er in
+Rabnest wieder geöffnet und erneut in einem anderen Format geliefert werden kann. Im PDF ändert sich nichts und kein Betrachter zeigt es an;
+die Datei ist nur größer.
+Ohne Häkchen wird das PDF gedruckt und nichts öffnet es wieder.</translation>
     </message>
 </context>
 <context>
@@ -13531,14 +13565,16 @@ Left unchecked, the PDF prints and nothing reopens it.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportplotterwidget.cpp" line="339"/>
         <source>Cutting mat:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schneidematte:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportplotterwidget.cpp" line="340"/>
         <source>The area your plotter can really cut - what its own software shows you, not the size of the mat itself.
 
 A piece larger than it is cut into pieces at the mat borders, to be put back together like a puzzle. A smaller mat means more, smaller, pieces: that is how you keep a safety margin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Fläche, die Ihr Plotter wirklich schneiden kann - was seine eigene Software Ihnen zeigt, nicht die Größe der Matte selbst.
+
+Ein Schnittteil, das größer ist als sie, wird an den Mattenrändern in Stücke geschnitten, die wie ein Puzzle wieder zusammengesetzt werden. Eine kleinere Matte bedeutet mehr, kleinere Stücke: so bleibt ein Sicherheitsabstand gewahrt.</translation>
     </message>
 </context>
 <context>
@@ -13546,42 +13582,42 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="51"/>
         <source>A0 Roll</source>
-        <translation type="unfinished"></translation>
+        <translation>A0 Rolle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="52"/>
         <source>A0</source>
-        <translation type="unfinished"></translation>
+        <translation>A0</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="53"/>
         <source>A3</source>
-        <translation type="unfinished"></translation>
+        <translation>A3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="54"/>
         <source>Tabloid</source>
-        <translation type="unfinished">Tablett</translation>
+        <translation>Tablett</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="55"/>
         <source>A4</source>
-        <translation type="unfinished"></translation>
+        <translation>A4</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="56"/>
         <source>Letter</source>
-        <translation type="unfinished">Letter (US-Papiergröße)</translation>
+        <translation>Letter (US-Papiergröße)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="61"/>
         <source>A4/Letter framed</source>
-        <translation type="unfinished"></translation>
+        <translation>A4/Letter mit Rahmen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintmodel.cpp" line="62"/>
         <source>A3/Tabloid framed</source>
-        <translation type="unfinished"></translation>
+        <translation>A3/Tabloid mit Rahmen</translation>
     </message>
 </context>
 <context>
@@ -13589,62 +13625,62 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="743"/>
         <source>Unit:</source>
-        <translation type="unfinished">Einheit:</translation>
+        <translation>Einheit:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="381"/>
         <source>No cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Deckblatt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="748"/>
         <source>Generate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="749"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="750"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="751"/>
         <source>Size range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="752"/>
         <source>Print model:</source>
-        <translation type="unfinished"></translation>
+        <translation>Druckvorlage:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
         <source>Assembly marks:</source>
-        <translation type="unfinished"></translation>
+        <translation>Montagemarken:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
         <source>Cover page:</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckblatt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="755"/>
         <source>Document margin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentrand:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="756"/>
         <source>Space between pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zwischen den Schnittteilen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="757"/>
         <source>Document width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentbreite:</translation>
     </message>
 </context>
 <context>
@@ -13652,38 +13688,38 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="140"/>
         <source>The plan does not fit in %1 × %1 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Plan passt nicht in %1 × %1 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="151"/>
         <source>The pieces take %1 m². With an edge margin of %2 cm, only %3 m² remain in a %4 × %4 cm plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Schnittteile belegen %1 m². Mit einem Randabstand von %2 cm bleiben nur %3 m² in einem Plan von %4 × %4 cm.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="164"/>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="198"/>
         <source>Reducing the edge margin to %1 cm would be enough.</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Randabstand auf %1 cm zu verringern, würde genügen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="170"/>
         <source>No edge margin can make it fit: the pieces themselves fill the largest plan this format can hold.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Randabstand kann ihn passen lassen: die Schnittteile selbst füllen den größten Plan, den dieses Format ausgeben kann.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="189"/>
         <source>The most compact plan obtained is %1 × %2 cm, with an edge margin of %3 cm and a space between pieces of %4 cm.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der kompakteste erhaltene Plan misst %1 × %2 cm, mit einem Randabstand von %3 cm und einem Abstand zwischen den Schnittteilen von %4 cm.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="203"/>
         <source>Reduce the space between pieces, or split the plan.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verringern Sie den Abstand zwischen den Schnittteilen oder teilen Sie den Plan.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportprojector.cpp" line="368"/>
         <source>The pieces are wider than the largest plan this format can hold, with the edge margin asked for. Reduce the edge margin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Schnittteile sind breiter als der größte Plan, den dieses Format mit dem gewünschten Randabstand ausgeben kann. Verringern Sie den Randabstand.</translation>
     </message>
 </context>
 <context>
@@ -13691,66 +13727,70 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="425"/>
         <source>Unit:</source>
-        <translation type="unfinished">Einheit:</translation>
+        <translation>Einheit:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="426"/>
         <source>cm</source>
-        <translation type="unfinished">cm</translation>
+        <translation>cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="427"/>
         <source>inch</source>
-        <translation type="unfinished">Zoll</translation>
+        <translation>Zoll</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="429"/>
         <source>What to nest:</source>
-        <translation type="unfinished"></translation>
+        <translation>Was verschachteln:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="430"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="431"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="432"/>
         <source>Size range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="434"/>
         <source>Space between pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zwischen den Schnittteilen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="435"/>
         <source>Room left between two pieces, to be able to lift one without dragging its neighbour.
 
 Never less than 5 cm: below that a projected plan is a cutting plan, and it is no longer what this format is for.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Platz, der zwischen zwei Schnittteilen bleibt, um eines anheben zu können, ohne das benachbarte mitzuziehen.
+
+Nie weniger als 5 cm: darunter ist ein projizierter Plan ein Zuschnittplan, und das ist nicht mehr, wofür dieses Format da ist.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="440"/>
         <source>Space from the edge:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zum Rand:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="441"/>
         <source>Room kept around the whole plan - a safety margin, and a place to put a hand.
 
 It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the pieces themselves rarely are the problem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Platz, der um den ganzen Plan herum freigehalten wird - ein Sicherheitsabstand und Platz, um die Hand aufzulegen.
+
+Er ist das Erste, was verringert wird, wenn der Plan nicht in 500 x 500 cm passt: die Schnittteile selbst sind selten das Problem.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="449"/>
         <source>The PDF also carries three calibration layers, which the Ostara canvas does not show: a 5 cm grid, a 3 in grid and a magenta background.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das PDF enthält außerdem drei Kalibrierungsebenen, die die Ostara-Zeichenfläche nicht anzeigt: ein Raster von 5 cm, ein Raster von 3 Zoll und einen Magenta-Hintergrund.</translation>
     </message>
 </context>
 <context>
@@ -13758,7 +13798,7 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportrollformatwidget.cpp" line="78"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
 </context>
 <context>
@@ -13766,22 +13806,22 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="39"/>
         <source>Running</source>
-        <translation type="unfinished"></translation>
+        <translation>Läuft</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="41"/>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Fertig</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="43"/>
         <source>Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportrunqueue.cpp" line="46"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartet</translation>
     </message>
 </context>
 <context>
@@ -13789,236 +13829,244 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
         <source>Cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckblatt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="217"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="242"/>
         <source>Assembly marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Montagemarken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="219"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="220"/>
         <source>Template name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Vorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="221"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="223"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="224"/>
         <source>Create a template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="225"/>
         <source>Custom marks</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigene Markierungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="229"/>
         <source>Preview format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorschauformat:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="231"/>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Rahmen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="232"/>
         <source>Used by the framed formats only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur für die Formate mit Rahmen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="233"/>
         <source>Thickness:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dicke:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="234"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="235"/>
         <source>Dash:</source>
-        <translation type="unfinished"></translation>
+        <translation>Strich:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="236"/>
         <source>Space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="237"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="245"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="500"/>
         <source>Opacity:</source>
-        <translation type="unfinished">Deckkraft:</translation>
+        <translation>Deckkraft:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="238"/>
         <source>Scissors horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Schere horizontal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="239"/>
         <source>Scissors vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Schere vertikal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Scissors opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckkraft der Schere:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="243"/>
         <source>Shape:</source>
-        <translation type="unfinished"></translation>
+        <translation>Form:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="244"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="499"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="246"/>
         <source>Corner</source>
-        <translation type="unfinished">Ecke</translation>
+        <translation>Ecke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="247"/>
         <source>Vertical center</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikale Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="248"/>
         <source>Horizontal center</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="250"/>
         <source>Pagination</source>
-        <translation type="unfinished"></translation>
+        <translation>Seitennummerierung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="251"/>
         <source>Numbering:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummerierung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="252"/>
         <source>Show the number at the center of the page</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer in der Seitenmitte anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="253"/>
         <source>Show the number at the corners of the sheets</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer an den Ecken der Blätter anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="254"/>
         <source>Show the number at the vertical center of the sheets</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer in der vertikalen Mitte der Blätter anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="255"/>
         <source>Show the number at the horizontal center of the sheets</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer in der horizontalen Mitte der Blätter anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="285"/>
         <source>Coming soon</source>
-        <translation type="unfinished"></translation>
+        <translation>Demnächst verfügbar</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="329"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Durchgezogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="330"/>
         <source>Dashed</source>
-        <translation type="unfinished"></translation>
+        <translation>Gestrichelt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="497"/>
         <source>Font:</source>
-        <translation type="unfinished">Schrift:</translation>
+        <translation>Schrift:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="498"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="586"/>
         <source>Zoom: %1 %</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoom: %1 %</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1351"/>
         <source>Unsaved template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gespeicherte Vorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1352"/>
         <source>This template has been changed and not saved.
 
 Save it before leaving it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Vorlage wurde geändert und nicht gespeichert.
+
+Vor dem Verlassen speichern?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1503"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1516"/>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1531"/>
         <source>Save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1504"/>
         <source>Give the template a name before saving it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie der Vorlage einen Namen, bevor Sie sie speichern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1517"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Vorlage namens „%1“ existiert bereits.
+
+Wählen Sie einen anderen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1532"/>
         <source>Could not save the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Vorlage konnte nicht gespeichert werden.
+
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1574"/>
         <source>Open template</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1575"/>
         <source>Could not open the template.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Vorlage konnte nicht geöffnet werden.
+
+%1</translation>
     </message>
 </context>
 <context>
@@ -14027,19 +14075,21 @@ Choose another name.</source>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="55"/>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="140"/>
         <source>Export templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportvorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="161"/>
         <source>Unsaved template</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gespeicherte Vorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatewindow.cpp" line="162"/>
         <source>This template has been changed and not saved.
 
 Save it before closing?</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Vorlage wurde geändert und nicht gespeichert.
+
+Vor dem Schließen speichern?</translation>
     </message>
 </context>
 <context>
@@ -14048,69 +14098,71 @@ Save it before closing?</source>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="157"/>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="162"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="202"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="203"/>
         <source>Search templates…</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlagen suchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="204"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="245"/>
         <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch keine Vorlagen. Erstellen Sie eine.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="272"/>
         <source>This is the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist die Standardvorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="273"/>
         <source>Make this the default template</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Standardvorlage festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="281"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="285"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="341"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Löschvorgang bestätigen</translation>
+        <translation>Löschvorgang bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="342"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie „%1“ wirklich löschen?
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht gelöscht werden.</translation>
     </message>
 </context>
 <context>
@@ -14118,17 +14170,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="140"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="141"/>
         <source>Height:</source>
-        <translation type="unfinished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexporttiledformatwidget.cpp" line="149"/>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Spalten:</translation>
     </message>
 </context>
 <context>
@@ -14136,22 +14188,22 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="143"/>
         <source>Foldline text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text der Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="151"/>
         <source>Font:</source>
-        <translation type="unfinished">Schrift:</translation>
+        <translation>Schrift:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="152"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/ofoldlinetextpage.cpp" line="153"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe:</translation>
     </message>
 </context>
 <context>
@@ -14160,7 +14212,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="78"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="54"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Links</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="79"/>
@@ -14168,43 +14220,43 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="55"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="61"/>
         <source>Center</source>
-        <translation type="unfinished">Mitte</translation>
+        <translation>Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="80"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="56"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="84"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="60"/>
         <source>Top</source>
-        <translation type="unfinished">Oben</translation>
+        <translation>Oben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_graded_alignmenu.cpp" line="86"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="62"/>
         <source>Bottom</source>
-        <translation type="unfinished">Unten</translation>
+        <translation>Unten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="117"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="231"/>
         <source>Graded alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenausrichtung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="122"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="232"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="159"/>
         <location filename="../../src/app/ostara/widgets/ogradedalignwidget.cpp" line="233"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikal</translation>
+        <translation>Vertikal</translation>
     </message>
 </context>
 <context>
@@ -14212,133 +14264,133 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="58"/>
         <source>Graded mode - size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradationsmodus - Größenbereich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="84"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="85"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Weiter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="86"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="125"/>
         <source>Which axis of the table is the grading axis?</source>
-        <translation type="unfinished"></translation>
+        <translation>Welche Achse der Tabelle ist die Gradationsachse?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="144"/>
         <source>Create a new size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Einen neuen Größenbereich erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="145"/>
         <source>Load existing from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandenen aus den Favoriten laden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="148"/>
         <source>Favorites:</source>
-        <translation type="unfinished"></translation>
+        <translation>Favoriten:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="197"/>
         <source>already in this pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereits in diesem Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="296"/>
         <source>Size range name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Größenbereichs</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="301"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="306"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="318"/>
         <source>Minimum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="321"/>
         <source>Maximum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="342"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="351"/>
         <source>Browse…</source>
-        <translation type="unfinished">Auswählen…</translation>
+        <translation>Auswählen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="353"/>
         <source>Path:</source>
-        <translation type="unfinished">Verzeichnis:</translation>
+        <translation>Verzeichnis:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="357"/>
         <source>File name:</source>
-        <translation type="unfinished">Dateiname:</translation>
+        <translation>Dateiname:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="361"/>
         <source>Scale</source>
-        <translation type="unfinished">Skalieren</translation>
+        <translation>Skalieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="367"/>
         <source>100%</source>
-        <translation type="unfinished"></translation>
+        <translation>100 %</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="376"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>oder</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="384"/>
         <source>Horizontal:</source>
-        <translation type="unfinished">Horizontal:</translation>
+        <translation>Horizontal:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="385"/>
         <source>Vertical:</source>
-        <translation type="unfinished">Vertikal:</translation>
+        <translation>Vertikal:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="389"/>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="624"/>
         <source>Layout</source>
-        <translation type="unfinished">Layout</translation>
+        <translation>Layout</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="390"/>
         <source>Layout layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Layout-Ebene:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="570"/>
         <source>Select folder</source>
-        <translation type="unfinished">Ordner auswählen</translation>
+        <translation>Ordner auswählen</translation>
     </message>
 </context>
 <context>
@@ -14347,38 +14399,38 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="113"/>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="220"/>
         <source>Edit size styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenstile bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="148"/>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="152"/>
         <source>Layer name for SVG export</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenenname für den SVG-Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="182"/>
         <source>Dash</source>
-        <translation type="unfinished"></translation>
+        <translation>Strich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="182"/>
         <source>Space</source>
-        <translation type="unfinished">Leertaste</translation>
+        <translation>Leertaste</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="257"/>
         <source>Size %1: “%2” is not a valid hex color.</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe %1: „%2“ ist keine gültige Hexadezimalfarbe.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="271"/>
         <source>Size %1: a dash pair needs both a Dash and a Space value (or leave both empty).</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe %1: Ein Strichpaar braucht sowohl einen Wert für den Strich als auch einen für die Lücke (oder beide leer lassen).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ogratedsizestylesdialog.cpp" line="283"/>
         <source>Size %1: dash value “%2” must be a positive number in points (pt).</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe %1: Der Strichwert „%2“ muss eine positive Zahl in Punkten (pt) sein.</translation>
     </message>
 </context>
 <context>
@@ -14388,7 +14440,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/ogroupthumbnailsconfigwidget.cpp" line="189"/>
         <location filename="../../src/app/ostara/core/ogroupthumbnailsconfigwidget.cpp" line="192"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation>Unbenannt</translation>
     </message>
 </context>
 <context>
@@ -14396,53 +14448,53 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="173"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="174"/>
         <source>Create new</source>
-        <translation type="unfinished"></translation>
+        <translation>Neu erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="175"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="193"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="339"/>
         <source>Template name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Vorlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="194"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="346"/>
         <source>+ Add information</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Information hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="197"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="358"/>
         <source>Move up</source>
-        <translation type="unfinished">Anheben</translation>
+        <translation>Anheben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="198"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="373"/>
         <source>Move down</source>
-        <translation type="unfinished">Absenken</translation>
+        <translation>Absenken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="195"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="388"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="196"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="392"/>
         <source>Save As…</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern unter…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="232"/>
@@ -14452,38 +14504,38 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="698"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1065"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="176"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="177"/>
         <source>Collections</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektionen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="178"/>
         <source>Annotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Anmerkungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="199"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="429"/>
         <source>Remove information</source>
-        <translation type="unfinished"></translation>
+        <translation>Information entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="202"/>
         <source>Block display language</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzeigesprache des Blocks</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="203"/>
         <source>You can choose several for a multilingual block</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie können mehrere für einen mehrsprachigen Block auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="224"/>
@@ -14491,7 +14543,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="601"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1080"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="223"/>
@@ -14501,63 +14553,63 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="925"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="977"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="225"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="606"/>
         <source>Email:</source>
-        <translation type="unfinished">Email:</translation>
+        <translation>Email:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="226"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="611"/>
         <source>Phone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="227"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="617"/>
         <source>Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="228"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="599"/>
         <source>Client name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kundenname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="229"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="604"/>
         <source>Email</source>
-        <translation type="unfinished"></translation>
+        <translation>E-Mail</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="230"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="609"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="231"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="614"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="233"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="575"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="935"/>
         <source>Add Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="234"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="578"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="968"/>
         <source>Remove Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="235"/>
@@ -14565,7 +14617,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="631"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1109"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Chronik</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="236"/>
@@ -14573,7 +14625,7 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="639"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1117"/>
         <source>No associated patterns yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Schnittmuster zugeordnet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="252"/>
@@ -14581,19 +14633,19 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="624"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1102"/>
         <source>Create the folder in the pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Ordner in der Schnittmusterbibliothek erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="253"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="625"/>
         <source>Makes a folder of the client&apos;s name in the library of patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstellt einen Ordner mit dem Namen des Kunden in der Schnittmusterbibliothek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="256"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="673"/>
         <source>No clients yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Kunde vorhanden. Fügen Sie einen hinzu.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="243"/>
@@ -14603,42 +14655,42 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1308"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1361"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="180"/>
         <source>Foldline text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text der Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="243"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="698"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Geändert am</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="262"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1085"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jahr:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="263"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1090"/>
         <source>Period:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitraum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="264"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1097"/>
         <source>Description:</source>
-        <translation type="unfinished">Beschreibung:</translation>
+        <translation>Beschreibung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="265"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1078"/>
         <source>Collection name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="266"/>
@@ -14646,68 +14698,68 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1065"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1088"/>
         <source>Period</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitraum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="267"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1093"/>
         <source>Description</source>
-        <translation type="unfinished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="268"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1065"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Jahr</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="269"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1047"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1318"/>
         <source>Add Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="270"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1050"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1351"/>
         <source>Remove Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="271"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1054"/>
         <source>Sort by year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Jahr sortieren:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="272"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1057"/>
         <source>Newest first</source>
-        <translation type="unfinished"></translation>
+        <translation>Neueste zuerst</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="273"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1058"/>
         <source>Oldest first</source>
-        <translation type="unfinished"></translation>
+        <translation>Älteste zuerst</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="277"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1103"/>
         <source>Makes a folder of the collection&apos;s name in the library of patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erstellt einen Ordner mit dem Namen der Kollektion in der Schnittmusterbibliothek.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="280"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1150"/>
         <source>No collections yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch keine Kollektion vorhanden. Fügen Sie eine hinzu.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="765"/>
         <source>Show the folder that holds this pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Ordner zeigen, der dieses Schnittmuster enthält</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="998"/>
@@ -14719,62 +14771,66 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1400"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1409"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmusterbibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="998"/>
         <source>Name the client first: the folder takes its name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie zuerst den Kunden: Der Ordner übernimmt seinen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1009"/>
         <source>The folder &quot;%1&quot; already exists in the pattern library.
 
 Link the client to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner „%1“ ist bereits in der Schnittmusterbibliothek vorhanden.
+
+Kunden mit diesem Ordner verknüpfen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1015"/>
         <source>The client is linked to the folder &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Kunde ist mit dem Ordner „%1“ verknüpft</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1020"/>
         <source>Rename the client or the folder, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie den Kunden oder den Ordner um, damit beide zu unterscheiden sind.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1032"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1413"/>
         <source>The folder &quot;%1&quot; was created in the pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner „%1“ wurde in der Schnittmusterbibliothek erstellt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1381"/>
         <source>Name the collection first: the folder takes its name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie zuerst die Kollektion: Der Ordner übernimmt ihren Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1390"/>
         <source>The folder &quot;%1&quot; already exists in the pattern library.
 
 Link the collection to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner „%1“ ist bereits in der Schnittmusterbibliothek vorhanden.
+
+Kollektion mit diesem Ordner verknüpfen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1396"/>
         <source>The collection is linked to the folder &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kollektion ist mit dem Ordner „%1“ verknüpft</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1401"/>
         <source>Rename the collection or the folder, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie die Kollektion oder den Ordner um, damit beide zu unterscheiden sind.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1691"/>
         <source>Unsaved information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht gespeicherter Informationsblock</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="681"/>
@@ -14782,81 +14838,83 @@ Link the collection to it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1158"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1214"/>
         <source>(unnamed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(unbenannt)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="179"/>
         <source>Thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorschaubild</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="951"/>
         <source>Client added</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde hinzugefügt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="968"/>
         <source>Remove the client &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden „%1“ aus der Bibliothek entfernen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="981"/>
         <source>Client removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde entfernt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1334"/>
         <source>Collection added</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion hinzugefügt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1352"/>
         <source>Remove the collection &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion „%1“ aus der Bibliothek entfernen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1365"/>
         <source>Collection removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion entfernt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1427"/>
         <source>Template 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage 1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1500"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1564"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1607"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1565"/>
         <source>Save failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern fehlgeschlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1570"/>
         <source>Template saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlage gespeichert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1608"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Vorlage namens „%1“ existiert bereits.
+
+Wählen Sie einen anderen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1640"/>
         <source>Save cartouche template</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfeldvorlage speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockEditor.cpp" line="1641"/>
         <source>Cartouche template (*.oct)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfeldvorlage (*.oct)</translation>
     </message>
 </context>
 <context>
@@ -14864,51 +14922,51 @@ Choose another name.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="95"/>
         <source>No sections yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Abschnitt vorhanden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="280"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="427"/>
         <source>fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="282"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="429"/>
         <source>interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Einlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="284"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="431"/>
         <source>lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="303"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="407"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="445"/>
         <source>Cut %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1-mal zuschneiden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="308"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="412"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="450"/>
         <source> on fold</source>
-        <translation type="unfinished"></translation>
+        <translation> im Bruch</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockPreview.cpp" line="310"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockResolver.cpp" line="452"/>
         <source> (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation> (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="85"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="86"/>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>aus</translation>
     </message>
 </context>
 <context>
@@ -14917,77 +14975,79 @@ Choose another name.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="196"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="220"/>
         <source>Search templates…</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorlagen suchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="197"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="267"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="211"/>
         <source>Existing templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Vorhandene Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="231"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="235"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="232"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="236"/>
         <source>Languages</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprachen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="280"/>
         <source>No templates yet. Create one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch keine Vorlage vorhanden. Erstellen Sie eine.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="306"/>
         <source>This is the default cartouche</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist das Standard-Schriftfeld</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="306"/>
         <source>Make this the default cartouche</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schriftfeld als Standard festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="324"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="332"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="375"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Löschvorgang bestätigen</translation>
+        <translation>Löschvorgang bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="376"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie „%1“ wirklich löschen?
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht gelöscht werden.</translation>
     </message>
 </context>
 <context>
@@ -14996,17 +15056,17 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="48"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="113"/>
         <source>Information block[*]</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock[*]</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockWindow.cpp" line="84"/>
         <source>The template has unsaved changes. Do you want to save them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Vorlage enthält nicht gespeicherte Änderungen. Möchten Sie diese speichern?</translation>
     </message>
 </context>
 <context>
@@ -15014,17 +15074,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/olayergroupchooser.cpp" line="55"/>
         <source>Group name</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppenname</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/olayergroupchooser.cpp" line="154"/>
         <source>No group</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/widgets/olayergroupchooser.cpp" line="175"/>
         <source>New group…</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Gruppe…</translation>
     </message>
 </context>
 <context>
@@ -15032,37 +15092,37 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="59"/>
         <source>Group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe von Ebenen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="65"/>
         <source>Group name:</source>
-        <translation type="unfinished">Gruppenname:</translation>
+        <translation>Gruppenname:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="68"/>
         <source>Choose group name</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppennamen auswählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="78"/>
         <source>Layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="93"/>
         <source>Add another layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Weitere Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="188"/>
         <source>Remove the layer from the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene aus der Gruppe entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olayergroupdialog.cpp" line="364"/>
         <source>Another group already wears this name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine andere Gruppe trägt diesen Namen bereits.</translation>
     </message>
 </context>
 <context>
@@ -15071,22 +15131,22 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="81"/>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="111"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer Ordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="83"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="84"/>
         <source>Folder name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordnername</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olibraryfolderdialog.cpp" line="88"/>
         <source>Create</source>
-        <translation type="unfinished">Erstellen</translation>
+        <translation>Erstellen</translation>
     </message>
 </context>
 <context>
@@ -15094,53 +15154,53 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="42"/>
         <source>A folder&apos;s name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name eines Ordners darf nicht leer sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="46"/>
         <source>A folder&apos;s name cannot hold a slash.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name eines Ordners darf keinen Schrägstrich enthalten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="50"/>
         <source>&quot;%1&quot; already exists here.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ existiert hier bereits.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="78"/>
         <source>The folder could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner konnte nicht erstellt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="108"/>
         <source>&quot;%1&quot; already exists there.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ existiert dort bereits.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="119"/>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="160"/>
         <source>The file it replaces could not be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die zu ersetzende Datei konnte nicht gelöscht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="139"/>
         <source>The file could not be moved there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht dorthin verschoben werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="151"/>
         <source>The chosen destination is the file itself.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das gewählte Ziel ist die Datei selbst.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="169"/>
         <source>Could not copy the file to the selected destination.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht zum gewählten Ziel kopiert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="185"/>
         <source>Could not delete the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht gelöscht werden.</translation>
     </message>
 </context>
 <context>
@@ -15148,17 +15208,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/olicencedialog.cpp" line="58"/>
         <source>The licence text is missing from this build.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Lizenztext fehlt in dieser Version.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olicencedialog.cpp" line="76"/>
         <source>Licence texts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lizenztexte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/olicencedialog.cpp" line="94"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
@@ -15167,29 +15227,29 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="120"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="298"/>
         <source>Add Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="121"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="334"/>
         <source>Remove Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="122"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="122"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="127"/>
         <source>Notes</source>
-        <translation type="unfinished">Notizen</translation>
+        <translation>Notizen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="122"/>
         <source>Path</source>
-        <translation type="unfinished">Pfad</translation>
+        <translation>Pfad</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="123"/>
@@ -15197,47 +15257,47 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="307"/>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="343"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="124"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="125"/>
         <source>Logo name</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo-Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="126"/>
         <source>Notes:</source>
-        <translation type="unfinished">Notiz:</translation>
+        <translation>Notiz:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="152"/>
         <source>No logos yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Logo vorhanden. Fügen Sie eines hinzu.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="298"/>
         <source>SVG files (*.svg)</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-Dateien (*.svg)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="314"/>
         <source>Logo added</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo hinzugefügt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="334"/>
         <source>Remove the logo &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo „%1“ aus der Bibliothek entfernen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="348"/>
         <source>Logo removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo entfernt</translation>
     </message>
 </context>
 <context>
@@ -15245,12 +15305,12 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="54"/>
         <source>No logo selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Logo ausgewählt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="62"/>
         <source>Invalid SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige SVG</translation>
     </message>
 </context>
 <context>
@@ -15258,42 +15318,42 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="260"/>
         <source>Ranges (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereiche (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="271"/>
         <source>Group: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="305"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="306"/>
         <source>Full name</source>
-        <translation type="unfinished">Vollständiger Name</translation>
+        <translation>Vollständiger Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="310"/>
         <source>Calculated value (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechneter Wert (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="316"/>
         <source>Value (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="317"/>
         <source>Base value (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Basiswert (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementTablePanel.cpp" line="324"/>
         <source>Interval &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervall „%1“</translation>
     </message>
 </context>
 <context>
@@ -15301,7 +15361,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/ifc/xml/oomtdocument.cpp" line="138"/>
         <source>File is not a valid Ostara measurement table. Expected root: &lt;%1&gt;, got: &lt;%2&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei ist keine gültige Ostara-Maßtabelle. Erwartete Wurzel: &lt;%1&gt;, erhalten: &lt;%2&gt;.</translation>
     </message>
 </context>
 <context>
@@ -15309,7 +15369,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/ifc/xml/ootudocument.cpp" line="106"/>
         <source>File is not a valid Ostara measurement table. Expected root: &lt;%1&gt;, got: &lt;%2&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei ist keine gültige Ostara-Maßtabelle. Erwartete Wurzel: &lt;%1&gt;, erhalten: &lt;%2&gt;.</translation>
     </message>
 </context>
 <context>
@@ -15317,17 +15377,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="53"/>
         <source>Export mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportmodus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="54"/>
         <source>You have made changes. Your outputs must be regenerated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie haben Änderungen vorgenommen. Ihre Ausgaben müssen neu erzeugt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/ooutputsstale.cpp" line="59"/>
         <source>Do not show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Meldung nicht mehr anzeigen</translation>
     </message>
 </context>
 <context>
@@ -15343,131 +15403,135 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="298"/>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="312"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuer Ordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="132"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="133"/>
         <source>Folder name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordnername</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="135"/>
         <source>Create the client of the same name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde mit demselben Namen erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="136"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="137"/>
         <source>Email:</source>
-        <translation type="unfinished">Email:</translation>
+        <translation>Email:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="138"/>
         <source>Email</source>
-        <translation type="unfinished"></translation>
+        <translation>E-Mail</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="139"/>
         <source>Phone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="140"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="141"/>
         <source>Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="142"/>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="144"/>
         <source>Create the collection of the same name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion mit demselben Namen erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="145"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="146"/>
         <source>Year:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jahr:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="147"/>
         <source>Period:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitraum:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="148"/>
         <source>Period</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitraum</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="149"/>
         <source>Description:</source>
-        <translation type="unfinished">Beschreibung:</translation>
+        <translation>Beschreibung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="150"/>
         <source>Description</source>
-        <translation type="unfinished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="154"/>
         <source>Create</source>
-        <translation type="unfinished">Erstellen</translation>
+        <translation>Erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="250"/>
         <source>A client called &quot;%1&quot; already exists in the Information block.
 
 Link the folder to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Kunde namens „%1“ existiert bereits im Informationsblock.
+
+Ordner mit diesem Kunden verknüpfen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="257"/>
         <source>Rename the folder or the client, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie den Ordner oder den Kunden um, damit beide zu unterscheiden sind.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="267"/>
         <source>A collection called &quot;%1&quot; already exists in the Information block.
 
 Link the folder to it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Kollektion namens „%1“ existiert bereits im Informationsblock.
+
+Ordner mit dieser Kollektion verknüpfen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="274"/>
         <source>Rename the folder or the collection, so that the two can be told apart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie den Ordner oder die Kollektion um, damit beide zu unterscheiden sind.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="299"/>
         <source>The folder was created, but the client could not be: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner wurde erstellt, der Kunde jedoch nicht: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternfolderdialog.cpp" line="313"/>
         <source>The folder was created, but the collection could not be: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner wurde erstellt, die Kollektion jedoch nicht: %1</translation>
     </message>
 </context>
 <context>
@@ -15475,36 +15539,36 @@ Link the folder to it?</source>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="72"/>
         <source>Pattern</source>
-        <translation type="unfinished">Schnittmuster</translation>
+        <translation>Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="77"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="348"/>
         <source>Pattern name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Schnittmusters:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="81"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="352"/>
         <source>Client:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="85"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="356"/>
         <source>Collection:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="89"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="360"/>
         <source>Fabric info:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffinfos:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="117"/>
         <source>Seam Allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="124"/>
@@ -15512,54 +15576,54 @@ Link the folder to it?</source>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="374"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="395"/>
         <source>Applies to all pieces, including those created afterwards. Not retroactive: existing pieces are left unchanged.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gilt für alle Schnittteile, auch für später erstellte. Nicht rückwirkend: bestehende Schnittteile werden nicht geändert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="131"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="379"/>
         <source>Activate seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="133"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="383"/>
         <source>Hide main path</source>
-        <translation type="unfinished">Verstecke Hauptpfad</translation>
+        <translation>Verstecke Hauptpfad</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="135"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="387"/>
         <source>Show the second passmark on seam line</source>
-        <translation type="unfinished">Zeige die zweite Passmarke auf der Nahtkante</translation>
+        <translation>Zeige die zweite Passmarke auf der Nahtkante</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="137"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="391"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtlinie mit den Zeichnungen exportieren (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="160"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="400"/>
         <source>Activate information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="147"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="255"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="364"/>
         <source>No client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="281"/>
         <location filename="../../src/app/ostara/core/opatterninfowidget.cpp" line="369"/>
         <source>No collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Kollektion</translation>
     </message>
 </context>
 <context>
@@ -15567,22 +15631,22 @@ Link the folder to it?</source>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="164"/>
         <source>The file could not be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht geöffnet werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="172"/>
         <source>The file is empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei ist leer.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="178"/>
         <source>Not a pattern file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Schnittmusterdatei.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternlibrary.cpp" line="226"/>
         <source>The file could not be read: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei konnte nicht gelesen werden: %1</translation>
     </message>
 </context>
 <context>
@@ -15590,161 +15654,166 @@ Link the folder to it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="287"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmusterbibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="289"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="290"/>
         <source>Search the patterns of every folder…</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmuster aller Ordner durchsuchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="292"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>The folders of the library. Choose none to read the library&apos;s own folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Ordner der Bibliothek. Keinen auswählen, um den Ordner der Bibliothek zu lesen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Geändert am</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="299"/>
         <source>Description</source>
-        <translation type="unfinished">Beschreibung</translation>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="300"/>
         <source>Notes</source>
-        <translation type="unfinished">Notizen</translation>
+        <translation>Notizen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="301"/>
         <source>Fabric info</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffinfos</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="303"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="443"/>
         <source>Transfer to another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>In einen anderen Ordner übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="447"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="451"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="679"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="698"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="488"/>
         <source>No pattern matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittmuster entspricht der Suche.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="489"/>
         <source>This folder holds no pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Ordner enthält kein Schnittmuster.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="592"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="555"/>
         <source>Transfer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="560"/>
         <source>Move to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragen nach:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="570"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="607"/>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="621"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="608"/>
         <source>&quot;%1&quot; already exists in that folder.
 
 Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ existiert bereits in diesem Ordner.
+
+Ersetzen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="643"/>
         <source>Export &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="645"/>
         <source>Pattern files (*.%1);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmusterdateien (*.%1);;Alle Dateien (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="662"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportfehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="666"/>
         <source>Export successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Export erfolgreich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="666"/>
         <source>Pattern exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmuster exportiert nach:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="680"/>
         <source>&quot;%1&quot; is the pattern that is open in Ostara.
 
 Close it before deleting it.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ ist das in Ostara geöffnete Schnittmuster.
+
+Schließen Sie es, bevor Sie es löschen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="686"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Löschvorgang bestätigen</translation>
+        <translation>Löschvorgang bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="687"/>
@@ -15753,7 +15822,11 @@ Close it before deleting it.</source>
 %2
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ löschen?
+
+%2
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
 </context>
 <context>
@@ -15762,68 +15835,68 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="141"/>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="295"/>
         <source>Open a pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmuster öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="143"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmusterbibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="144"/>
         <source>Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="145"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="146"/>
         <source>Search this folder&apos;s patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Diesen Ordner durchsuchen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="149"/>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="184"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="152"/>
         <source>Another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein anderer Ordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="153"/>
         <source>Browse files…</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien durchsuchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="154"/>
         <source>Open a .ostara file from any folder on the computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine .ostara-Datei aus einem beliebigen Ordner des Computers öffnen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="266"/>
         <source>This folder holds no pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Ordner enthält kein Schnittmuster.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="270"/>
         <source>No pattern matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittmuster entspricht der Suche.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="274"/>
         <source>Double-click a pattern to open it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelklicken Sie ein Schnittmuster, um es zu öffnen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opatternopendialog.cpp" line="293"/>
         <source>Pattern files</source>
-        <translation type="unfinished">Schnittmusterdateien</translation>
+        <translation>Schnittmusterdateien</translation>
     </message>
 </context>
 <context>
@@ -15832,25 +15905,25 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="49"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="110"/>
         <source>Pattern</source>
-        <translation type="unfinished">Schnittmuster</translation>
+        <translation>Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="54"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="111"/>
         <source>Pattern name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Name des Schnittmusters:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="58"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="112"/>
         <source>Description:</source>
-        <translation type="unfinished">Beschreibung:</translation>
+        <translation>Beschreibung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="62"/>
         <location filename="../../src/app/ostara/core/opatternpropertieswidget.cpp" line="113"/>
         <source>Notes:</source>
-        <translation type="unfinished">Notiz:</translation>
+        <translation>Notiz:</translation>
     </message>
 </context>
 <context>
@@ -15858,7 +15931,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/opieceautomation.cpp" line="518"/>
         <source>Select at least two points of a curve to determine its direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie mindestens zwei Punkte einer Kurve, um ihre Richtung zu bestimmen</translation>
     </message>
 </context>
 <context>
@@ -15866,17 +15939,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp" line="359"/>
         <source>This piece calls %1 by a name the pattern composes. A composed name cannot travel into a library piece: give that object an alias, then call it by its alias.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil ruft %1 über einen Namen auf, den das Schnittmuster zusammensetzt. Ein zusammengesetzter Name kann nicht in ein Bibliotheks-Schnittteil wandern: Geben Sie diesem Objekt einen Alias und rufen Sie es dann über seinen Alias auf.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp" line="364"/>
         <source>%1 calls %2 of this piece by a name the pattern composes. A composed name cannot travel into a library piece: give that object an alias, then call it by its alias.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ruft %2 dieses Schnittteils über einen Namen auf, den das Schnittmuster zusammensetzt. Ein zusammengesetzter Name kann nicht in ein Bibliotheks-Schnittteil wandern: Geben Sie diesem Objekt einen Alias und rufen Sie es dann über seinen Alias auf.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecebuilder.cpp" line="390"/>
         <source>There is no block named %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Block trägt den Namen %1.</translation>
     </message>
 </context>
 <context>
@@ -15884,27 +15957,27 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="56"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="58"/>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Einlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="60"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="74"/>
         <source>Cut</source>
-        <translation type="unfinished">Schnitt</translation>
+        <translation>Schnitt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCutEditor.cpp" line="87"/>
         <source>On fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Bruch</translation>
     </message>
 </context>
 <context>
@@ -15912,37 +15985,37 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="67"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="68"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Weiter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="69"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="181"/>
         <source>Cannot calculate curve %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurve %1 kann nicht berechnet werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="189"/>
         <source>You need more points!</source>
-        <translation type="unfinished">Sie brauchen mehr Punkte!</translation>
+        <translation>Sie brauchen mehr Punkte!</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="194"/>
         <source>You have to choose points in a clockwise direction!</source>
-        <translation type="unfinished">Sie müssen Punkte im Uhrzeigersinn auswählen!</translation>
+        <translation>Sie müssen die Punkte im Uhrzeigersinn auswählen!</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog.cpp" line="255"/>
         <source>Select main path objects clockwise, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte der Hauptkontur im Uhrzeigersinn auswählen, &lt;b&gt;%1&lt;/b&gt; - Erstellung beenden</translation>
     </message>
 </context>
 <context>
@@ -15950,7 +16023,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecegroupdialog.cpp" line="40"/>
         <source>Link pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile verknüpfen</translation>
     </message>
 </context>
 <context>
@@ -15958,17 +16031,17 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecegroupholderitem.cpp" line="526"/>
         <source>Press Escape to leave the thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc drücken, um die Miniaturansicht zu verlassen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecegroupholderitem.cpp" line="821"/>
         <source>In layout</source>
-        <translation type="unfinished">Im Layout</translation>
+        <translation>Im Layout</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecegroupholderitem.cpp" line="829"/>
         <source>Unlink all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle lösen</translation>
     </message>
 </context>
 <context>
@@ -15976,7 +16049,7 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecegrouplayoutflags.cpp" line="150"/>
         <source>Layout flags of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Platzierungsoptionen der Gruppe</translation>
     </message>
 </context>
 <context>
@@ -15984,22 +16057,22 @@ This action cannot be undone.</source>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="283"/>
         <source>The piece does not say which unit its lengths are written in, and a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil gibt nicht an, in welcher Einheit seine Längen geschrieben sind, und ein Schnittteil wird in Millimetern, Zentimetern oder Zoll geschrieben. Es kann so nicht gelesen werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="287"/>
         <source>The piece says its lengths are written in %1, which is not a unit a piece may carry: a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil gibt an, dass seine Längen in %1 geschrieben sind, was keine Einheit ist, die ein Schnittteil tragen kann: ein Schnittteil wird in Millimetern, Zentimetern oder Zoll geschrieben. Es kann so nicht gelesen werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="298"/>
         <source>The piece is in %1 and this pattern is in %2. A pattern holds one unit from end to end, and a piece is never converted: import it into a pattern of its own unit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil ist in %1 und dieses Schnittmuster in %2. Ein Schnittmuster hat durchgehend eine einzige Einheit, und ein Schnittteil wird nie umgerechnet: Importieren Sie es in ein Schnittmuster seiner Einheit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="329"/>
         <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittmuster hat noch keine Maßtabelle, und ein Schnittteil wird gegen eine Tabelle gelesen: seine Formeln werden mit den Maßen der Tabelle ausgewertet. Laden Sie eine Maßtabelle und fügen Sie dann das Schnittteil ein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="361"/>
@@ -16008,12 +16081,12 @@ This action cannot be undone.</source>
 Missing: %1
 
 Load a measurement table that defines them, then insert the piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maßtabelle dieses Schnittmusters definiert nicht alle Maße, die das Schnittteil liest.\n\nFehlende: %1\n\nLaden Sie eine Maßtabelle, die sie definiert, und fügen Sie dann das Schnittteil ein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceimport.cpp" line="526"/>
         <source>This piece reads %1, and no piece of this pattern declares it. Import the piece it comes from first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil liest %1, und kein Schnittteil dieses Schnittmusters deklariert es. Importieren Sie zuerst das Schnittteil, aus dem es stammt.</translation>
     </message>
 </context>
 <context>
@@ -16021,103 +16094,103 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="17"/>
         <source>Insert a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil einfügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="30"/>
         <source>Piece name</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnitteilname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="39"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="46"/>
         <source>Unique pattern piece name</source>
-        <translation type="unfinished">Eindeutiger Name des Schnittteils</translation>
+        <translation>Eindeutiger Name des Schnittteils</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.ui" line="66"/>
         <source>Names of the piece&apos;s objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Namen der Objekte des Schnittteils</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="102"/>
         <source>Insert the piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil einfügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="178"/>
         <source>Reference pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenzschnittteile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="190"/>
         <source>Read %1 from:</source>
         <comment>the piece this one reads values in</comment>
-        <translation type="unfinished"></translation>
+        <translation>%1 lesen aus:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="208"/>
         <source>The piece needs a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil braucht einen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="212"/>
         <source>A piece of this pattern already wears this name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Schnittteil dieses Schnittmusters trägt diesen Namen bereits.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="230"/>
         <source>Two names cannot be the same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwei Namen dürfen nicht identisch sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="301"/>
         <source>Line</source>
-        <translation type="unfinished">Linie</translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="303"/>
         <source>Arc</source>
-        <translation type="unfinished">Bogen</translation>
+        <translation>Bogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="305"/>
         <source>Elliptical arc</source>
-        <translation type="unfinished">Elliptischer Bogen</translation>
+        <translation>Elliptischer Bogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="310"/>
         <source>Curve</source>
-        <translation type="unfinished">Kurve</translation>
+        <translation>Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="325"/>
         <source>A name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Name darf nicht leer sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="330"/>
         <source>A name cannot hold a space nor a reserved character.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Name darf weder ein Leerzeichen noch ein reserviertes Zeichen enthalten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="335"/>
         <source>The pattern already answers to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittmuster trägt bereits den Namen %1.</translation>
     </message>
 </context>
 <context>
@@ -16126,37 +16199,37 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="244"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="69"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="260"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="70"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="261"/>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Einlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="71"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="262"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="75"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="258"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Freitext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="170"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="250"/>
         <source>Quantity</source>
-        <translation type="unfinished"></translation>
+        <translation>Menge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="175"/>
@@ -16164,7 +16237,7 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="254"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="255"/>
         <source>On fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Bruch</translation>
     </message>
 </context>
 <context>
@@ -16172,7 +16245,7 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="265"/>
         <source>Insert the piece &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil „%1“ einfügen</translation>
     </message>
 </context>
 <context>
@@ -16180,66 +16253,63 @@ Load a measurement table that defines them, then insert the piece.</source>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="242"/>
         <source>Not a piece file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das ist keine Schnittteil-Datei.</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="309"/>
         <source>%n measurement(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Maß</numerusform><numerusform>%n Maße</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="314"/>
         <source>Nothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Nichts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="323"/>
         <source>This piece could not be read: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil konnte nicht gelesen werden: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="326"/>
         <source>From other pieces:</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere Schnittteile:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="330"/>
         <source>Nothing: everything it reads, it declares.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nichts: alles, was sie liest, deklariert sie.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="341"/>
         <source>%1 - no piece declares it</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: kein Schnittteil deklariert es</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="351"/>
         <source>Measurements it reads:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maße, die sie liest:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="354"/>
         <source>None.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="390"/>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="404"/>
         <source>This file is not a piece: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Datei ist kein Schnittteil: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="415"/>
         <source>This piece does not match the piece format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil entspricht nicht dem Format eines Schnittteils: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="429"/>
         <source>The piece could not be copied to the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil konnte nicht in die Bibliothek kopiert werden.</translation>
     </message>
 </context>
 <context>
@@ -16248,53 +16318,53 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="273"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="642"/>
         <source>Piece library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteilbibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="275"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Suchen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="276"/>
         <source>Search pieces…</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil suchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="277"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="285"/>
         <source>Needs</source>
-        <translation type="unfinished"></translation>
+        <translation>Benötigt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheit</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Modified</source>
-        <translation type="unfinished"></translation>
+        <translation>Geändert am</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="281"/>
         <source>Insert</source>
-        <translation type="unfinished"></translation>
+        <translation>Einfügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="282"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner öffnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="283"/>
@@ -16303,133 +16373,140 @@ Load a measurement table that defines them, then insert the piece.</source>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="906"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="924"/>
         <source>Import a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil importieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="286"/>
         <source>Notes</source>
-        <translation type="unfinished">Notizen</translation>
+        <translation>Notizen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="287"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="603"/>
         <source>What you want to remember about this piece…</source>
-        <translation type="unfinished"></translation>
+        <translation>Was Sie sich zu diesem Schnittteil merken möchten…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="497"/>
         <source>Transfer to another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>In einen anderen Ordner verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="501"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="505"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="576"/>
         <source>No piece is saved in the library yet.</source>
-        <translation type="unfinished"></translation>
+        <translation>Es ist noch kein Schnittteil in der Bibliothek gespeichert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="580"/>
         <source>No piece matches the search.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittteil entspricht der Suche.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="584"/>
         <source>This folder holds no piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Ordner enthält kein Schnittteil.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="701"/>
         <source>Transfer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="706"/>
         <source>Move to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben nach:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="716"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="757"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="771"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="738"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="758"/>
         <source>&quot;%1&quot; already exists in that folder.
 
 Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ existiert bereits in diesem Ordner.
+
+Ersetzen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="793"/>
         <source>Export &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="795"/>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="907"/>
         <source>Ostara piece (*.%1);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostara-Schnittteil (*.%1);;Alle Dateien (*)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="816"/>
         <source>Export successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Export erfolgreich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="816"/>
         <source>Piece exported to:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil exportiert nach:
+%1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="812"/>
         <source>Export error</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportfehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="825"/>
         <source>Confirm deletion</source>
-        <translation type="unfinished">Löschvorgang bestätigen</translation>
+        <translation>Löschvorgang bestätigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="826"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie „%1“ wirklich löschen?
+
+Diese Aktion kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="837"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="882"/>
         <source>The library already holds a piece named &quot;%1&quot;.
 
 Name the piece entering:</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Bibliothek enthält bereits ein Schnittteil namens „%1“.
+
+Benennen Sie das eintretende Schnittteil:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="893"/>
         <source>A piece name cannot be empty nor hold a slash.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Schnittteilname darf weder leer sein noch einen Schrägstrich enthalten.</translation>
     </message>
 </context>
 <context>
@@ -16437,67 +16514,67 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="59"/>
         <source>Pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmustername</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="66"/>
         <source>No client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="88"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="96"/>
         <source>No collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="119"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="134"/>
         <source>Fabric info</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffinfo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="144"/>
         <source>Seam Allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="146"/>
         <source>Activate seam allowances for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben für alle Schnittteile aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="149"/>
         <source>Hide main path for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptkontur für alle Schnittteile ausblenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="152"/>
         <source>Show the second passmark on seam line for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweite Passmarke auf der Nahtlinie für alle Schnittteile anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="155"/>
         <source>Export the sew line with the drawings for all pieces (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtlinie mit den Zeichnungen für alle Schnittteile exportieren (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="166"/>
         <source>Information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_patternstep.cpp" line="169"/>
         <source>Activate information block for all pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock für alle Schnittteile aktivieren</translation>
     </message>
 </context>
 <context>
@@ -16505,62 +16582,62 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="61"/>
         <source>Piece name</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnitteilname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="78"/>
         <source>Piece number</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteilnummer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="84"/>
         <source>Fabric</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoff</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="85"/>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Einlage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="86"/>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="103"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Freitext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="131"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wenn die Anzahl der Kopien größer als 1 ist und die Option „Spiegelung erzwingen“ ausgewählt ist, wird jede gerade Kopie des Schnittteils vertikal gespiegelt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="126"/>
         <source>Force flipping</source>
-        <translation type="unfinished">Spiegeln erzwingen</translation>
+        <translation>Spiegeln erzwingen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="127"/>
         <source>Force piece to be always flipped in a layout.</source>
-        <translation type="unfinished">Zwangsweise das Schnittteil immer im Zuschnittplan spiegeln.</translation>
+        <translation>Zwangsweise das Schnittteil immer im Zuschnittplan spiegeln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
         <source>Symmetrical copy</source>
-        <translation type="unfinished">Symmetrische Kopie</translation>
+        <translation>Symmetrische Kopie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="148"/>
         <source>Quantity</source>
-        <translation type="unfinished"></translation>
+        <translation>Menge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="152"/>
         <source>On fold</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Bruch</translation>
     </message>
 </context>
 <context>
@@ -16568,37 +16645,37 @@ Name the piece entering:</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="347"/>
         <source>You clicked the same point twice.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie haben denselben Punkt zweimal angeklickt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="349"/>
         <source>Put a pleat value greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie einen Faltenwert größer als null ein.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="351"/>
         <source>Every object you selected must be on the same side of the departure lines.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle ausgewählten Objekte müssen auf derselben Seite der Ausgangslinien liegen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="354"/>
         <source>The edge was not recognized at one end of a departure line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Rand wurde an einem Ende einer Ausgangslinie nicht erkannt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="357"/>
         <source>This edge is parallel to the fold line: no cap is possible here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Rand ist parallel zur Faltenlinie: hier ist keine Kappe möglich.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="360"/>
         <source>The notch of a pleat falls past the end of the edge it should mark.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kerbe einer Falte fällt über den Rand hinaus, den sie markieren soll.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/opleatrule.cpp" line="363"/>
         <source>Two departure lines share a point, and the pleats do not carry them together: no cap can be built there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwei Ausgangslinien teilen einen Punkt, und die Falten führen sie nicht gemeinsam mit: dort kann keine Kappe gebaut werden.</translation>
     </message>
 </context>
 <context>
@@ -16608,70 +16685,72 @@ Name the piece entering:</source>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="323"/>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="332"/>
         <source>Save the pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmuster speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="160"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="161"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="163"/>
         <source>Add to the pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Zur Schnittmusterbibliothek hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="165"/>
         <source>Pattern library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmusterbibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="166"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="168"/>
         <source>Save to another folder…</source>
-        <translation type="unfinished"></translation>
+        <translation>In einem anderen Ordner speichern…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="172"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="208"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="266"/>
         <source>The folder will be asked for when you save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner wird beim Speichern abgefragt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="273"/>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="323"/>
         <source>Give the file a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie der Datei einen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="277"/>
         <source>Will be saved in: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wird gespeichert in: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepatterndialog.cpp" line="333"/>
         <source>&quot;%1&quot; already exists in this folder.
 
 Replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ existiert bereits in diesem Ordner.
+
+Ersetzen?</translation>
     </message>
 </context>
 <context>
@@ -16679,127 +16758,127 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="17"/>
         <source>Save piece to the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil in der Bibliothek speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="35"/>
         <source>Pattern piece name:</source>
-        <translation type="unfinished">Name des Schnittteils:</translation>
+        <translation>Name des Schnittteils:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="42"/>
         <source>The name the piece will wear in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name, den das Schnittteil in der Bibliothek tragen wird</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="45"/>
         <source>Name the piece in the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil in der Bibliothek benennen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="52"/>
         <source>Notes:</source>
-        <translation type="unfinished">Notiz:</translation>
+        <translation>Notiz:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="74"/>
         <source>What you want to remember about this piece…</source>
-        <translation type="unfinished"></translation>
+        <translation>Was Sie sich zu diesem Schnittteil merken möchten…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="89"/>
         <source>A piece is written as a file in the library, so its name cannot hold a slash.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Schnittteil wird in der Bibliothek als Datei gespeichert: sein Name kann daher keinen Schrägstrich enthalten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="96"/>
         <source>Folder in the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner in der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="124"/>
         <source>Create a folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="144"/>
         <source>Objects with no name</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte ohne Namen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.ui" line="150"/>
         <source>This piece shares objects that have no name. Please name them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil teilt Objekte ohne Namen. Bitte benennen Sie sie.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="93"/>
         <source>The library&apos;s own folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Ordner der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="120"/>
         <source>Give the file a name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geben Sie der Datei einen Namen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="121"/>
         <source>Will be saved in: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wird gespeichert in: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
         <source>Object</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
         <source>Called in</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwendet in</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="196"/>
         <source>Line</source>
-        <translation type="unfinished">Linie</translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="198"/>
         <source>Arc</source>
-        <translation type="unfinished">Bogen</translation>
+        <translation>Bogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="200"/>
         <source>Elliptical arc</source>
-        <translation type="unfinished">Elliptischer Bogen</translation>
+        <translation>Elliptischer Bogen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="205"/>
         <source>Curve</source>
-        <translation type="unfinished">Kurve</translation>
+        <translation>Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="213"/>
         <source>A name cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Name darf nicht leer sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="218"/>
         <source>A name cannot hold a space nor a reserved character.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Name darf weder ein Leerzeichen noch ein reserviertes Zeichen enthalten.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="223"/>
         <source>Two names cannot be the same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwei Namen dürfen nicht identisch sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="315"/>
         <source>The pattern already answers to %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittmuster trägt bereits den Namen %1.</translation>
     </message>
 </context>
 <context>
@@ -16807,112 +16886,112 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="204"/>
         <source>Add margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="205"/>
         <source>Remove margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="206"/>
         <source>Move up</source>
-        <translation type="unfinished">Anheben</translation>
+        <translation>Anheben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="207"/>
         <source>Move down</source>
-        <translation type="unfinished">Absenken</translation>
+        <translation>Absenken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="208"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="208"/>
         <source>Recognised by</source>
-        <translation type="unfinished"></translation>
+        <translation>Erkannt durch</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="209"/>
         <source>Selected margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewählte Nahtzugabe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="210"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="211"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="219"/>
         <source>is exactly</source>
-        <translation type="unfinished"></translation>
+        <translation>beträgt genau</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="223"/>
         <source>is at least</source>
-        <translation type="unfinished"></translation>
+        <translation>beträgt mindestens</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="228"/>
         <source>This is the default margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Das ist die Standardnahtzugabe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="229"/>
         <source>The margin a pattern keeps when nothing has been changed on it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Nahtzugabe, die ein Schnittmuster behält, wenn daran nichts geändert wurde.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="230"/>
         <source>The default margin is the width set in the preferences (Pattern page). Its line appears only on patterns whose pieces really are cut with that width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Standardnahtzugabe ist die in den Einstellungen (Seite Schnittmuster) eingestellte Breite. Ihre Linie erscheint nur bei Schnittmustern, deren Schnittteile tatsächlich mit dieser Breite zugeschnitten werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="236"/>
         <source>Margin languages</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprachen der Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="236"/>
         <source>Every margin is named in all of them</source>
-        <translation type="unfinished"></translation>
+        <translation>Jede Nahtzugabe ist in allen benannt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="288"/>
         <source>default</source>
-        <translation type="unfinished">standard</translation>
+        <translation>standard</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="290"/>
         <source>from %1 on</source>
-        <translation type="unfinished"></translation>
+        <translation>ab %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="291"/>
         <source>exactly %1</source>
-        <translation type="unfinished"></translation>
+        <translation>genau %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="491"/>
         <source>New margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Nahtzugabe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="505"/>
         <source>Margin added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe hinzugefügt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancelibrarypage.cpp" line="524"/>
         <source>Margin removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe entfernt.</translation>
     </message>
 </context>
 <context>
@@ -16920,22 +16999,22 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="86"/>
         <source>No margin selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Nahtzugabe ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="114"/>
         <source>The application&apos;s default seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Standardnahtzugabe der Anwendung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="115"/>
         <source>from %1 on</source>
-        <translation type="unfinished"></translation>
+        <translation>ab %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/oseamallowancepreview.cpp" line="116"/>
         <source>exactly %1</source>
-        <translation type="unfinished"></translation>
+        <translation>genau %1</translation>
     </message>
 </context>
 <context>
@@ -16943,104 +17022,104 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="217"/>
         <source>Add symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="218"/>
         <source>Remove symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="219"/>
         <source>Move up</source>
-        <translation type="unfinished">Anheben</translation>
+        <translation>Anheben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="220"/>
         <source>Move down</source>
-        <translation type="unfinished">Absenken</translation>
+        <translation>Absenken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="221"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="221"/>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="225"/>
         <source>Text</source>
-        <translation type="unfinished">Text</translation>
+        <translation>Text</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="222"/>
         <source>Selected symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgewähltes Symbol</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="223"/>
         <source>Marks</source>
-        <translation type="unfinished">Markierungen</translation>
+        <translation>Markierungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="224"/>
         <source>Add another mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Weitere Passmarke hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="229"/>
         <source>Permanent</source>
-        <translation type="unfinished"></translation>
+        <translation>Dauerhaft</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="230"/>
         <source>Shown on every cover page that uses this template.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wird auf jeder Titelseite angezeigt, die diese Vorlage verwendet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="231"/>
         <source>A permanent symbol appears on every cover page that uses this template, without being asked for. The others are added page by page, where they are wanted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein dauerhaftes Symbol erscheint auf jeder Titelseite, die diese Vorlage verwendet, ohne dass es angefordert wird. Die anderen werden Seite für Seite dort hinzugefügt, wo sie gewünscht sind.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="235"/>
         <source>Symbol languages</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbolsprachen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="235"/>
         <source>Every symbol is written in all of them</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedes Symbol ist in allen geschrieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="289"/>
         <source>No symbols yet. Add one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch kein Symbol. Eines hinzufügen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="431"/>
         <source>Remove this mark</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Passmarke entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="582"/>
         <source>Symbol added</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol hinzugefügt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="596"/>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="722"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="596"/>
         <source>Remove &quot;%1&quot; from the library?</source>
-        <translation type="unfinished"></translation>
+        <translation>„%1“ aus der Bibliothek löschen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbollibrarypage.cpp" line="611"/>
         <source>Symbol removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol entfernt</translation>
     </message>
 </context>
 <context>
@@ -17048,7 +17127,7 @@ Replace it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/osymbolpreview.cpp" line="81"/>
         <source>No symbol selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Symbol ausgewählt</translation>
     </message>
 </context>
 <context>
@@ -17058,7 +17137,9 @@ Replace it?</source>
         <source>This template has been changed and not saved.
 
 Save it before leaving it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Vorlage wurde geändert und nicht gespeichert.
+
+Vor dem Verlassen speichern?</translation>
     </message>
 </context>
 <context>
@@ -17067,12 +17148,12 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/Template/otemplatelanguagerow.cpp" line="115"/>
         <location filename="../../src/app/ostara/widgets/Template/otemplatelanguagerow.cpp" line="197"/>
         <source>Add language</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatelanguagerow.cpp" line="187"/>
         <source>Remove language</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprache entfernen</translation>
     </message>
 </context>
 <context>
@@ -17081,345 +17162,345 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="66"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="61"/>
         <source>Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="68"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="63"/>
         <source>Font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="65"/>
         <source>Font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="73"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="68"/>
         <source>Line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="98"/>
         <source>Text</source>
-        <translation type="unfinished">Text</translation>
+        <translation>Text</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="102"/>
         <source>Your text</source>
-        <translation type="unfinished"></translation>
+        <translation>Ihr Text</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="114"/>
         <source>5 cm square</source>
-        <translation type="unfinished"></translation>
+        <translation>5-cm-Quadrat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="117"/>
         <source>3&quot; square</source>
-        <translation type="unfinished"></translation>
+        <translation>3-Zoll-Quadrat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="122"/>
         <source>Square test</source>
-        <translation type="unfinished"></translation>
+        <translation>Testquadrat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="126"/>
         <source>Corner font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie der Ecke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="129"/>
         <source>Corner font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke der Ecke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="132"/>
         <source>Corner font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Ecke (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="135"/>
         <source>Corner line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand der Ecke (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="147"/>
         <source>Center font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie der Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="150"/>
         <source>Center font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke der Mitte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="153"/>
         <source>Center font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Mitte (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="156"/>
         <source>Center line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand der Mitte (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="171"/>
         <source>Written for</source>
-        <translation type="unfinished"></translation>
+        <translation>Geschrieben für</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="177"/>
         <source>Axes</source>
-        <translation type="unfinished"></translation>
+        <translation>Achsen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="195"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="254"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="450"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="204"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="278"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="475"/>
         <source>Title separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenner des Titels</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="212"/>
         <source>Axis font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie der Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="215"/>
         <source>Axis font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke der Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="218"/>
         <source>Axis font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Achse (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="221"/>
         <source>Axis line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand der Achse (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="227"/>
         <source>Axis value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert der Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="236"/>
         <source>Separator between axe and value</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenner zwischen Achse und Wert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="266"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="463"/>
         <source>Rename the title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titel umbenennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="288"/>
         <source>Symbol font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie der Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="291"/>
         <source>Symbol font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke der Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="294"/>
         <source>Symbol font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Symbole (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="297"/>
         <source>Symbol line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand der Symbole (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="301"/>
         <source>Symbol text</source>
-        <translation type="unfinished"></translation>
+        <translation>Symboltext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="310"/>
         <source>Symbol separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenner der Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="321"/>
         <source>Size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="355"/>
         <source>Graded axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradationsachse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="369"/>
         <source>Sizes font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie der Größen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="372"/>
         <source>Sizes font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke der Größen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="375"/>
         <source>Sizes font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Größen (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="378"/>
         <source>Sizes line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand der Größen (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="382"/>
         <source>Size value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wert der Größe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="437"/>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="649"/>
         <source>Seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="442"/>
         <source>Included in the drawings</source>
-        <translation type="unfinished"></translation>
+        <translation>In den Zeichnungen enthalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="443"/>
         <source>Not included</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht enthalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="484"/>
         <source>Margin font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfamilie der Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="487"/>
         <source>Margin font weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke der Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="490"/>
         <source>Margin font size (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Nahtzugaben (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="493"/>
         <source>Margin line spacing (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeilenabstand der Nahtzugaben (px)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="497"/>
         <source>Margin lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabenlinien</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="507"/>
         <source>Name separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenner des Namens</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="513"/>
         <source>Separator between name and value</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenner zwischen Name und Wert</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="520"/>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="529"/>
         <source>Separator between units</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenner zwischen den Einheiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="573"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="598"/>
         <source>A text of your own - written here, so that every cover page made with this template says it, or filled in for each pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein eigener Text - hier geschrieben, damit jede mit dieser Vorlage erstellte Titelseite ihn trägt, oder für jeden Schnitt einzeln ausgefüllt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="607"/>
         <source>Two squares of a known size, to check that the page is printed at its true size. The wording in the middle is the name of this information, written once per display language.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwei Quadrate bekannter Größe, um zu prüfen, dass die Seite in ihrer tatsächlichen Größe gedruckt wird. Die Beschriftung in der Mitte ist der Name dieser Information, einmal pro Anzeigesprache geschrieben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="621"/>
         <source>Size(s) - .omt</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe(n) - .omt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="622"/>
         <source>The sizes the printed sheet holds, so that its reader knows which trace is which. The content adapts by itself: an output generated from a single size states it, an output generated from a size range lists them. For the preview to show anything, the pattern must have a .omt size table loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Größen, die das gedruckte Blatt trägt, damit seine Leserin weiß, welche Zeichnung welche ist. Der Inhalt passt sich von selbst an: eine aus einer einzigen Größe erzeugte Ausgabe nennt sie, eine aus einem Größenbereich erzeugte Ausgabe listet sie auf. Damit die Vorschau etwas zeigt, muss der Schnitt eine geladene .omt-Größentabelle haben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="636"/>
         <location filename="../../src/app/ostara/core/ocoversymbols.cpp" line="40"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="637"/>
         <source>What the marks on the pattern mean: one line per symbol your library holds as permanent, followed by the ones this pattern chose - in their own order. Symbols themselves are written and ordered in the Symbols page; the ones that wait to be chosen are picked per pattern, in the Cover page dock.</source>
-        <translation type="unfinished"></translation>
+        <translation>Was die Passmarken des Schnitts bedeuten: eine Zeile pro Symbol, das Ihre Bibliothek als dauerhaft führt, gefolgt von denen, die dieser Schnitt gewählt hat - in ihrer eigenen Reihenfolge. Die Symbole selbst werden auf der Seite Symbole geschrieben und geordnet; die, die auf ihre Auswahl warten, werden Schnitt für Schnitt im Dock Titelseite ausgewählt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="650"/>
         <source>Whether the seam allowances are part of the drawings and, when they are, the name of each margin the pattern is cut with: one line per width the pattern actually carries. The names are written in the Seam allowances page, and a pattern must be open for the preview to show them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ob die Nahtzugaben Teil der Zeichnungen sind und, wenn ja, der Name jeder Nahtzugabe, mit der der Schnitt zugeschnitten wird: eine Zeile pro Breite, die der Schnitt tatsächlich trägt. Die Namen werden auf der Seite Nahtzugaben geschrieben, und ein Schnitt muss geöffnet sein, damit die Vorschau sie anzeigt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="660"/>
         <source>Space</source>
-        <translation type="unfinished">Leertaste</translation>
+        <translation>Leertaste</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="661"/>
         <source>An empty space, to set the page out: give it the height it should take, and nothing is drawn in it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein leerer Raum, um die Seite aufzulockern: Geben Sie ihm die Höhe, die er einnehmen soll, und nichts wird darin gezeichnet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="192"/>
         <source>Measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Maß</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="72"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="80"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="84"/>
         <source>Separator</source>
-        <translation type="unfinished">Trenner</translation>
+        <translation>Trenner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="90"/>
         <source>Number format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format der Nummer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="90"/>
@@ -17427,167 +17508,167 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="93"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="197"/>
         <source>Logo</source>
-        <translation type="unfinished"></translation>
+        <translation>Logo</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="92"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="95"/>
         <source>Logo size (cm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Logogröße (cm)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="102"/>
         <source>Cut</source>
-        <translation type="unfinished">Schnitt</translation>
+        <translation>Schnitt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="132"/>
         <source>Rename the axis and its values</source>
-        <translation type="unfinished"></translation>
+        <translation>Achse und ihre Werte umbenennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="149"/>
         <source>Rename the measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>Maß umbenennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="583"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="161"/>
         <source>Pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmustername</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="584"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="162"/>
         <source>The name of the pattern (set in the pattern toolbar).</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name des Schnitts (in der Werkzeugleiste des Schnitts festgelegt).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="164"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="165"/>
         <source>The client&apos;s name, birth date and email from the document.</source>
-        <translation type="unfinished"></translation>
+        <translation>Name, Geburtsdatum und E-Mail des Kunden aus dem Dokument.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="167"/>
         <source>Piece name</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnitteilname</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="168"/>
         <source>The name of the piece (from the piece options).</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name des Schnittteils (aus den Optionen des Schnittteils).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="170"/>
         <source>Piece number</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteilnummer</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="171"/>
         <source>The piece number and its total, e.g. 1 of 10. The total shown here is an example - it is computed automatically from the number of pieces in the layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Nummer des Schnittteils und seine Gesamtzahl, z. B. 1 von 10. Die hier angezeigte Gesamtzahl ist ein Beispiel - sie wird automatisch aus der Anzahl der Schnittteile im Zuschnittplan berechnet.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="175"/>
         <source>Cut (Fabric / Interfacing / Lining)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuschnitt (Stoff / Einlage / Futter)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="176"/>
         <source>One section covers all three fabrics - no need to add Cut several times. The values here are only an example so you can see how the section renders: in the pieces, the cut quantities are entered per piece and are empty by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Abschnitt deckt alle drei Stoffe ab - es ist nicht nötig, Zuschnitt mehrmals hinzuzufügen. Die Werte hier sind nur ein Beispiel, um zu sehen, wie der Abschnitt dargestellt wird: in den Schnittteilen werden die Zuschnittmengen pro Schnittteil eingegeben und sind standardmäßig leer.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="188"/>
         <source>Requires a multi-size table (.omt). Shows the size axes you tick, each with its value under a name of your own. With a single-size table, this information is simply ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erfordert eine Mehrgrößentabelle (.omt). Zeigt die Größenachsen, die Sie ankreuzen, jeweils mit ihrem Wert unter einem eigenen Namen. Bei einer Tabelle mit einer einzigen Größe wird diese Information einfach ignoriert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="597"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="182"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Freitext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="183"/>
         <source>Free text entered per piece in the information block. It can span several lines.</source>
-        <translation type="unfinished"></translation>
+        <translation>Freitext, pro Schnittteil im Schriftfeld eingegeben. Er kann sich über mehrere Zeilen erstrecken.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="187"/>
         <source>Sizes (Height, Commercial size, Group...)</source>
-        <translation type="unfinished"></translation>
+        <translation>Größen (Höhe, Konfektionsgröße, Gruppe...)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="193"/>
         <source>Read from the pattern&apos;s size table. Shows the measurement&apos;s full name, its calculated value at the reference size and its unit.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus der Größentabelle des Schnitts gelesen. Zeigt den vollständigen Namen des Maßes, seinen berechneten Wert bei der Referenzgröße und seine Einheit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="589"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="198"/>
         <source>A logo from your library (add your SVG logos in the Logo page).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Logo aus Ihrer Bibliothek (fügen Sie Ihre SVG-Logos auf der Seite Logo hinzu).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="201"/>
         <source>Collection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="202"/>
         <source>The collection name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Name der Kollektion.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="204"/>
         <source>Fabric info</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffinfos</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="205"/>
         <source>Fabric information (nature, material, weight…).</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationen zum Stoff (Art, Material, Gewicht…).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpageresolver.cpp" line="106"/>
         <source>Size</source>
-        <translation type="unfinished">Größe</translation>
+        <translation>Größe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpageresolver.cpp" line="110"/>
         <source>Sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Größen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverseamallowances.cpp" line="39"/>
         <source>Seam allowances included</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben enthalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/ocoverseamallowances.cpp" line="41"/>
         <source>Seam allowances not included</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben nicht enthalten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="179"/>
         <source>Seam allowances in centimeters (in inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben in Zentimetern (in Zoll)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="184"/>
         <source>Seam allowances in centimeters</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben in Zentimetern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailtextbuilder.cpp" line="189"/>
         <source>Seam allowances in inches</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben in Zoll</translation>
     </message>
 </context>
 <context>
@@ -17595,62 +17676,62 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="137"/>
         <source>Select a section to edit its settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie einen Abschnitt aus, um seine Einstellungen zu ändern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="309"/>
         <source>Extra vertical space below this line. 0 = default spacing, negative = tighter, positive = more space. It counts on the last line of the information as well, which is what moves what stands beneath it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zusätzlicher vertikaler Abstand unter dieser Zeile. 0 = Standardabstand, negativ = enger, positiv = mehr Abstand. Er wirkt auch auf die letzte Zeile der Information und verschiebt das, was darunter steht.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="388"/>
         <source>No separator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Trenner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="393"/>
         <source>of</source>
-        <translation type="unfinished"></translation>
+        <translation>von</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="401"/>
         <source>In brackets</source>
-        <translation type="unfinished"></translation>
+        <translation>In Klammern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="402"/>
         <source>The first language is written plainly, the others in brackets - Tailles (Sizes).</source>
-        <translation type="unfinished"></translation>
+        <translation>Die erste Sprache wird unverändert geschrieben, die anderen in Klammern - Größen (Sizes).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="470"/>
         <source>No logos yet - add them in the Logo page</source>
-        <translation type="unfinished"></translation>
+        <translation>Noch keine Logos - fügen Sie sie auf der Seite Logo hinzu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="513"/>
         <source>Same on every cover page</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf jeder Titelseite identisch</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="515"/>
         <source>Filled in for each pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Für jeden Schnitt ausgefüllt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="593"/>
         <source>Single size</source>
-        <translation type="unfinished"></translation>
+        <translation>Einzelgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="595"/>
         <source>A range of sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Größenbereich</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/otemplatesectioneditor.cpp" line="645"/>
         <source>Choose…</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen…</translation>
     </message>
 </context>
 <context>
@@ -17659,51 +17740,51 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="85"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="222"/>
         <source>Activate thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatur aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="90"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="227"/>
         <source>Piece thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatur des Schnittteils</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="102"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="224"/>
         <source>Seam allowances to show</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzuzeigende Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="117"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="211"/>
         <source>Centimeters</source>
-        <translation type="unfinished">Zentimeter</translation>
+        <translation>Zentimeter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="120"/>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="212"/>
         <source>Inches</source>
-        <translation type="unfinished"></translation>
+        <translation>Inch</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="206"/>
         <source>The thumbnail draws the piece with its seam allowances, its notches and its internal paths, at the reference size of each axis - so it keeps showing the same size when the active size changes. Move and resize it directly on the canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Miniatur zeichnet das Schnittteil mit seinen Nahtzugaben, seinen Kerben und seinen inneren Pfaden, in der Referenzgröße jeder Achse - sie zeigt also weiterhin dieselbe Größe, wenn sich die aktive Größe ändert. Verschieben und skalieren Sie sie direkt auf der Zeichenfläche.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="209"/>
         <source>How many times each value is printed. To place them, click the thumbnail once to select it, then once more to open it: the values and the legend can then be dragged.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wie oft jeder Wert gedruckt wird. Um sie zu platzieren, klicken Sie einmal auf die Miniatur, um sie auszuwählen, und ein zweites Mal, um sie zu öffnen: die Werte und die Legende lassen sich dann verschieben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="222"/>
         <source>Activate thumbnail for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatur für %1 aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/othumbnailconfigwidget.cpp" line="223"/>
         <source>Seam allowances to show for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Anzuzeigende Nahtzugaben für %1</translation>
     </message>
 </context>
 <context>
@@ -17712,57 +17793,57 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="56"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="241"/>
         <source>Seam allowance values</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabewerte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="59"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="242"/>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Legende</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="64"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="243"/>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Einheiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="68"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="244"/>
         <source>Centimeters</source>
-        <translation type="unfinished">Zentimeter</translation>
+        <translation>Zentimeter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="70"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="245"/>
         <source>Inches</source>
-        <translation type="unfinished"></translation>
+        <translation>Inch</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="118"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="253"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="256"/>
         <source>Font:</source>
-        <translation type="unfinished">Schrift:</translation>
+        <translation>Schrift:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="123"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="254"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="257"/>
         <source>Weight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftstärke:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="130"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="255"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="258"/>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/othumbnailstylespage.cpp" line="238"/>
         <source>What every miniature says: the seam-allowance values a piece is cut with, and the legend that names their unit. The fonts apply to every miniature; the units are the default a miniature starts from.</source>
-        <translation type="unfinished"></translation>
+        <translation>Was jede Miniatur aussagt: die Nahtzugabewerte, mit denen ein Schnittteil zugeschnitten wird, und die Legende, die ihre Einheit nennt. Die Schriften gelten für alle Miniaturen; die Einheiten sind die Vorgabe, von der eine Miniatur ausgeht.</translation>
     </message>
 </context>
 <context>
@@ -17770,17 +17851,17 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolarmholecurvecollector.cpp" line="95"/>
         <source>Select the chest/back width point</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Punkt der Brust-/Rückenbreite</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolarmholecurvecollector.cpp" line="97"/>
         <source>Select the perpendicular point - or click the shoulder point to skip the perpendicular.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Lotpunkt - oder klicken Sie auf den Schulterpunkt, um das Lot zu überspringen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolarmholecurvecollector.cpp" line="100"/>
         <source>Select the shoulder point. If you skipped the perpendicular, click the shoulder point again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Schulterpunkt. Wenn Sie das Lot übersprungen haben, klicken Sie erneut auf den Schulterpunkt.</translation>
     </message>
 </context>
 <context>
@@ -17788,7 +17869,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarlayout.cpp" line="197"/>
         <source>Group</source>
-        <translation type="unfinished">Gruppe</translation>
+        <translation>Gruppe</translation>
     </message>
 </context>
 <context>
@@ -17796,27 +17877,27 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="317"/>
         <source>rotate a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäher drehen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="366"/>
         <source>Pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="372"/>
         <source>Moving point</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu verschiebender Punkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="378"/>
         <source>Target point</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="478"/>
         <source>Closing divisor</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließteiler</translation>
     </message>
 </context>
 <context>
@@ -17824,12 +17905,12 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolcurve.cpp" line="112"/>
         <source>Select the second point of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Den zweiten Punkt der Kurve auswählen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/otoolcurve.cpp" line="116"/>
         <source>Select an additional point or press &lt;b&gt;%1&lt;/b&gt; to finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Einen weiteren Punkt auswählen oder &lt;b&gt;%1&lt;/b&gt; drücken, um zu beenden</translation>
     </message>
 </context>
 <context>
@@ -17837,37 +17918,37 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1047"/>
         <source>dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1166"/>
         <source>read the cap on the other edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kappe am anderen Rand lesen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1167"/>
         <source>read the cap on this edge</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kappe an diesem Rand lesen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1188"/>
         <source>draw the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1188"/>
         <source>stop drawing the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe nicht mehr zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1208"/>
         <source>mark the crank</source>
-        <translation type="unfinished"></translation>
+        <translation>Kerbe markieren</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooldartcap.cpp" line="1208"/>
         <source>take the crank away</source>
-        <translation type="unfinished"></translation>
+        <translation>Kerbe entfernen</translation>
     </message>
 </context>
 <context>
@@ -17875,7 +17956,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolflouncespiral.cpp" line="471"/>
         <source>flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiralvolant</translation>
     </message>
 </context>
 <context>
@@ -17883,12 +17964,12 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="272"/>
         <source>move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Chargenweise verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="439"/>
         <source>Moves</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebungen</translation>
     </message>
 </context>
 <context>
@@ -17896,22 +17977,22 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="637"/>
         <source>pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="652"/>
         <source>show the fold lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinien anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="652"/>
         <source>hide the fold lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Faltlinien ausblenden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolpleat.cpp" line="1263"/>
         <source>Pleats</source>
-        <translation type="unfinished"></translation>
+        <translation>Falten</translation>
     </message>
 </context>
 <context>
@@ -17919,17 +18000,17 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="830"/>
         <source>save tool options</source>
-        <translation type="unfinished">Werkzeugoptionen speichern</translation>
+        <translation>Werkzeugoptionen speichern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="880"/>
         <source>Width</source>
-        <translation type="unfinished">Breite</translation>
+        <translation>Breite</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="881"/>
         <source>Height</source>
-        <translation type="unfinished">Höhe</translation>
+        <translation>Höhe</translation>
     </message>
 </context>
 <context>
@@ -17937,7 +18018,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/otoolspiral.cpp" line="206"/>
         <source>add a spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirale hinzufügen</translation>
     </message>
 </context>
 <context>
@@ -17945,22 +18026,22 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="358"/>
         <source>slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="482"/>
         <source>show the rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellung der Drehungen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="482"/>
         <source>hide the rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellung der Drehungen ausblenden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="693"/>
         <source>Rotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehungen</translation>
     </message>
 </context>
 <context>
@@ -17968,18 +18049,18 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="242"/>
         <source>The portion could not be read: its objects are not in the pattern any more.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Abschnitt konnte nicht gelesen werden: seine Objekte sind nicht mehr im Schnittmuster.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="322"/>
         <source>transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="359"/>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otooltransfert.cpp" line="372"/>
         <source>Merge point</source>
-        <translation type="unfinished"></translation>
+        <translation>Fusionspunkt</translation>
     </message>
 </context>
 <context>
@@ -17987,17 +18068,17 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="44"/>
         <source>Transfer layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="49"/>
         <source>Choose the layers to transfer, and the group they go to.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie die zu übertragenden Ebenen und die Gruppe, die sie aufnimmt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/otransferlayersdialog.cpp" line="58"/>
         <source>Move to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragen nach:</translation>
     </message>
 </context>
 <context>
@@ -18005,7 +18086,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/ovistoolclosedart.cpp" line="76"/>
         <source>Closing angle = %1°, &lt;b&gt;Mouse click&lt;/b&gt; - select the Target point</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließwinkel = %1°, &lt;b&gt;Klick&lt;/b&gt; - Zielpunkt auswählen</translation>
     </message>
 </context>
 <context>
@@ -18013,7 +18094,7 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/owaitdialog.cpp" line="89"/>
         <source>%1 s</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 s</translation>
     </message>
 </context>
 <context>
@@ -18021,47 +18102,47 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="299"/>
         <source>Pattern name</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmustername</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="300"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="302"/>
         <source>Symbols this pattern adds to the legend. The permanent ones are already there.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Symbole, die dieses Schnittmuster der Legende hinzufügt. Die dauerhaften stehen bereits darin.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="303"/>
         <source>Add a symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbol hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="304"/>
         <source>Free text</source>
-        <translation type="unfinished"></translation>
+        <translation>Freitext</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="305"/>
         <source>Margins</source>
-        <translation type="unfinished"></translation>
+        <translation>Ränder</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="306"/>
         <source>Margins this pattern names differently from the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Nahtzugaben, die dieses Schnittmuster anders als die Bibliothek benennt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="423"/>
         <source>Choose…</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetcoverpage.cpp" line="459"/>
         <source>Remove</source>
-        <translation type="unfinished">Entfernen</translation>
+        <translation>Entfernen</translation>
     </message>
 </context>
 <context>
@@ -18070,63 +18151,63 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="174"/>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="596"/>
         <source>Add an output</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="179"/>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="597"/>
         <source>Export several outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrere Ausgaben exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="322"/>
         <source>Shown in the canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf der Zeichenfläche angezeigt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="351"/>
         <source>Favorites need a measurements table</source>
-        <translation type="unfinished"></translation>
+        <translation>Favoriten benötigen eine Maßtabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="355"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus Favoriten entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="359"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu Favoriten hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="379"/>
         <source>Export as a cutting file (DXF, PLT, HPGL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Als Zuschnittdatei exportieren (DXF, PLT, HPGL)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="415"/>
         <source>Export several outputs at once</source>
-        <translation type="unfinished"></translation>
+        <translation>Mehrere Ausgaben auf einmal exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="416"/>
         <source>There is no output to export yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Es gibt noch keine Ausgabe zum Exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="367"/>
         <source>Refresh</source>
-        <translation type="unfinished">Neu laden</translation>
+        <translation>Neu laden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="383"/>
         <source>Export</source>
-        <translation type="unfinished">Export</translation>
+        <translation>Export</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetoutputs.cpp" line="390"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
 </context>
 <context>
@@ -18135,65 +18216,65 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="194"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="571"/>
         <source>Add a size range</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenbereich hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="277"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="572"/>
         <source>Export all size ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Größenbereiche exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="285"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="573"/>
         <source>Browse…</source>
-        <translation type="unfinished">Auswählen…</translation>
+        <translation>Auswählen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="292"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="574"/>
         <source>Export all size ranges (SVG)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Größenbereiche exportieren (SVG)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
         <source>Remove from favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus Favoriten entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
         <source>Add to favorites</source>
-        <translation type="unfinished"></translation>
+        <translation>Zu Favoriten hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="445"/>
         <source>Favorites need a measurements table from the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Favoriten benötigen eine Maßtabelle aus der Bibliothek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="453"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="458"/>
         <source>Duplicate</source>
-        <translation type="unfinished">Duplizieren</translation>
+        <translation>Duplizieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="463"/>
         <source>Export SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="468"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="558"/>
         <source>Select the export folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportordner wählen</translation>
     </message>
 </context>
 <context>
@@ -18202,42 +18283,42 @@ Save it before leaving it?</source>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="179"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="334"/>
         <source>Edit size styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenstile bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="188"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="335"/>
         <source>Show in canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Auf der Zeichenfläche anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Size</source>
-        <translation type="unfinished">Größe</translation>
+        <translation>Größe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Color</source>
-        <translation type="unfinished">Farbe</translation>
+        <translation>Farbe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="220"/>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="336"/>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontur</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizestyles.cpp" line="276"/>
         <source>Size styles need a measurements table from the library</source>
-        <translation type="unfinished"></translation>
+        <translation>Größenstile benötigen eine Maßtabelle aus der Bibliothek</translation>
     </message>
 </context>
 <context>
@@ -18253,189 +18334,184 @@ Save it before leaving it?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
         <source>Files left behind</source>
-        <translation type="unfinished"></translation>
+        <translation>Zurückgebliebene Dateien</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="206"/>
         <source>%n file(s) could not be moved to « %1 » and stay in the old folder.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Datei konnte nicht nach „%1“ verschoben werden und bleibt im alten Ordner.</numerusform><numerusform>%n Dateien konnten nicht nach „%1“ verschoben werden und bleiben im alten Ordner.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="231"/>
         <source>Measurements</source>
-        <translation type="unfinished">Maße</translation>
+        <translation>Maße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="232"/>
         <source>Measurements you build and reuse in your patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Maße, die Sie erstellen und in Ihren Schnittmustern wiederverwenden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="240"/>
         <source>Pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="241"/>
         <source>Pieces kept to be reused in other patterns.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Schnittteile, die zur Wiederverwendung in anderen Schnittmustern aufbewahrt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="248"/>
         <source>Patterns</source>
-        <translation type="unfinished">Schnittmuster</translation>
+        <translation>Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="249"/>
         <source>Where Open and Save start.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wo Öffnen und Speichern beginnen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="256"/>
         <source>Collections</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektionen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="257"/>
         <source>Collections of pieces.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kollektionen von Schnittteilen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="263"/>
         <source>Clients</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="264"/>
         <source>Clients a cartouche can name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kunden, die ein Schriftfeld benennen kann.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="270"/>
         <source>Seam allowances</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugaben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="271"/>
         <source>Seam allowance values kept for reuse.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabewerte, die zur Wiederverwendung aufbewahrt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="278"/>
         <source>Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="279"/>
         <source>Symbols to place on a piece.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Symbole, die auf ein Schnittteil gesetzt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="285"/>
         <source>Annotation styles</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftungsstile</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="286"/>
         <source>Styles of the pattern annotations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stile der Beschriftungen des Schnittmusters.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="294"/>
         <source>Cartouche templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Schriftfeldvorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="295"/>
         <source>Cartouche templates (.oct).</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Schriftfeldvorlagen (.oct).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="303"/>
         <source>PDF templates</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF-Vorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="304"/>
         <source>Templates of the exported PDF.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Vorlagen der exportierten PDFs.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="312"/>
         <source>Cover page templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Deckblattvorlagen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="313"/>
         <source>Cover pages of the exports.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Deckblätter der Exporte.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="320"/>
         <source>Logos</source>
-        <translation type="unfinished"></translation>
+        <translation>Logos</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="321"/>
         <source>Logos to place in the cartouche.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Logos, die im Schriftfeld platziert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="392"/>
         <source>Choose the « %1 » folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Den Ordner „%1“ wählen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="423"/>
         <source>Folder inside the other</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner im anderen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="424"/>
         <source>The two folders are inside one another. Choose a folder that does not contain « %1 », nor is contained by it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die beiden Ordner liegen ineinander. Wählen Sie einen Ordner, der „%1“ nicht enthält und von ihm nicht enthalten ist.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="437"/>
         <source>Move the files</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien verschieben</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="438"/>
         <source>The « %1 » folder holds %n file(s). Move them into the new folder?</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Der Ordner „%1“ enthält %n Datei. In den neuen Ordner verschieben?</numerusform><numerusform>Der Ordner „%1“ enthält %n Dateien. In den neuen Ordner verschieben?</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="441"/>
         <source>From %1
 to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Von %1
+nach %2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="496"/>
         <source>Folders</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordner</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="497"/>
         <source>Restore defaults</source>
-        <translation type="unfinished">Standards wiederherstellen</translation>
+        <translation>Standards wiederherstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="503"/>
         <source>Change…</source>
-        <translation type="unfinished"></translation>
+        <translation>Ändern…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="504"/>
         <source>Choose another folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Anderen Ordner wählen</translation>
     </message>
 </context>
 <context>
@@ -18443,115 +18519,115 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="35"/>
         <source>Save</source>
-        <translation type="unfinished">Speichern</translation>
+        <translation>Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="41"/>
         <source>Auto-save modified pattern</source>
-        <translation type="unfinished">Automatisches Speichern geänderter Schnittmuster</translation>
+        <translation>Automatisches Speichern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="51"/>
         <source>Interval:</source>
-        <translation type="unfinished">Intervall:</translation>
+        <translation>Intervall:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="64"/>
         <source>min</source>
         <comment>minutes</comment>
-        <translation type="unfinished"></translation>
+        <translation>min</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="80"/>
         <source>Language</source>
-        <translation type="unfinished">Sprache</translation>
+        <translation>Sprache</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="89"/>
         <source>GUI language:</source>
-        <translation type="unfinished">Sprache der Benutzeroberfläche:</translation>
+        <translation>Sprache der Benutzeroberfläche:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="106"/>
         <source>Default unit:</source>
-        <translation type="unfinished">Standard Einheit:</translation>
+        <translation>Standardeinheit:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="119"/>
         <source>Pattern editing</source>
-        <translation type="unfinished">Muster bearbeiten</translation>
+        <translation>Muster bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="131"/>
         <source>Reset warnings</source>
-        <translation type="unfinished">Warnungen zurücksetzen</translation>
+        <translation>Warnungen zurücksetzen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="138"/>
         <source>Checked: the curve follows the pointer, and the whole drag is undone in one step when you release it. Unchecked: every mouse movement is written into the pattern and can be undone on its own, one step at a time.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktiviert: Die Kurve folgt dem Zeiger, und beim Loslassen wird das ganze Ziehen in einem Schritt rückgängig gemacht. Deaktiviert: Jede Mausbewegung wird ins Schnittmuster geschrieben und kann einzeln, Schritt für Schritt, rückgängig gemacht werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="141"/>
         <source>One undo step per curve drag</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein einziger Rückgängig-Schritt pro Kurvenziehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="151"/>
         <source>Enable to translate formula according to locale</source>
-        <translation type="unfinished">Formelübersetzung gemäß Spracheinstellung aktivieren</translation>
+        <translation>Formelübersetzung gemäß Spracheinstellung aktivieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="154"/>
         <source>Translate formula</source>
-        <translation type="unfinished">Formel übersetzen</translation>
+        <translation>Formel übersetzen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="167"/>
         <source>User Interface</source>
-        <translation type="unfinished">Benutzeroberfläche</translation>
+        <translation>Benutzeroberfläche</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="175"/>
         <source>Theme:</source>
-        <translation type="unfinished">Design:</translation>
+        <translation>Design:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.ui" line="197"/>
         <source>Don&apos;t use the native file dialog</source>
-        <translation type="unfinished">Verwenden Sie nicht den nativen Dateidialog</translation>
+        <translation>Verwenden Sie nicht den nativen Dateidialog</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
         <source>default unit</source>
-        <translation type="unfinished">Standard Einheit</translation>
+        <translation>Standard Einheit</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="193"/>
         <source>Light</source>
         <comment>theme</comment>
-        <translation type="unfinished">Hell</translation>
+        <translation>Hell</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="194"/>
         <source>Dark</source>
         <comment>theme</comment>
-        <translation type="unfinished">Dunkel</translation>
+        <translation>Dunkel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="200"/>
         <source>Centimeters</source>
-        <translation type="unfinished">Zentimeter</translation>
+        <translation>Zentimeter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="201"/>
         <source>Millimiters</source>
-        <translation type="unfinished">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="202"/>
         <source>Inches</source>
-        <translation type="unfinished"></translation>
+        <translation>Inch</translation>
     </message>
 </context>
 <context>
@@ -18559,7 +18635,7 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Linienstärke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="99"/>
@@ -18589,7 +18665,7 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="108"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtlinie mit den Zeichnungen exportieren (DXF-AAMA)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="115"/>
@@ -18647,17 +18723,17 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="57"/>
         <source>Action</source>
-        <translation type="unfinished">Aktion</translation>
+        <translation>Aktion</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="62"/>
         <source>Shortcuts</source>
-        <translation type="unfinished">Tastenkürzel</translation>
+        <translation>Tastenkürzel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="85"/>
         <source>Restore defaults</source>
-        <translation type="unfinished">Standards wiederherstellen</translation>
+        <translation>Standards wiederherstellen</translation>
     </message>
 </context>
 <context>
@@ -18665,72 +18741,72 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="283"/>
         <source>Tools of « %1 »</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeuge von „%1“</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="287"/>
         <source>Tools</source>
-        <translation type="unfinished">Werkzeuge</translation>
+        <translation>Werkzeuge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="307"/>
         <source>New group</source>
-        <translation type="unfinished">Neue Gruppe</translation>
+        <translation>Neue Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="494"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="495"/>
         <source>Tools not shown</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht angezeigte Werkzeuge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="496"/>
         <source>Restore defaults</source>
-        <translation type="unfinished">Standards wiederherstellen</translation>
+        <translation>Standards wiederherstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="498"/>
         <source>Add a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="499"/>
         <source>Move the group up</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe nach oben schieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="500"/>
         <source>Move the group down</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe nach unten schieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="501"/>
         <source>Delete the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe löschen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="502"/>
         <source>Move the tool up</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug nach oben schieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="503"/>
         <source>Move the tool down</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug nach unten schieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="504"/>
         <source>Take the tool out of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug aus der Gruppe herausnehmen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="505"/>
         <source>Put the tool into the selected group</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug in die ausgewählte Gruppe legen</translation>
     </message>
 </context>
 <context>
@@ -18882,7 +18958,7 @@ to %2</source>
         <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="440"/>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3243"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
-        <translation>Schnitteil &apos;%1&apos;. Nahtzugabe ist ungültig.</translation>
+        <translation>Schnittteil &apos;%1&apos;. Nahtzugabe ist ungültig.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="126"/>
@@ -18958,12 +19034,12 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="1221"/>
         <source>Unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation>Unbenannt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="126"/>
         <source>Curve has no points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Kurve hat keine Punkte.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="153"/>
@@ -19033,7 +19109,7 @@ to %2</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1569"/>
         <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
-        <translation>Schnitteil &apos;%1&apos;. Fadenlauf ist ungültig.</translation>
+        <translation>Schnittteil &apos;%1&apos;. Fadenlauf ist ungültig.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4044"/>
@@ -19077,12 +19153,12 @@ to %2</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="526"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Formel verwendet ein Objekt ohne Namen. Geben Sie ihm einen Namen, damit es in einer Formel verwendet werden kann.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="756"/>
         <source>name the objects of a formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte einer Formel benennen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1531"/>
@@ -19200,78 +19276,78 @@ to %2</source>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="200"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="205"/>
         <source>Recent:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt verwendet:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/savegradedrangecontent.cpp" line="48"/>
         <source>Edit graded layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradationslayout bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="379"/>
         <source> Usable width: %1 cm, cloth %2 cm, margin %3 cm.</source>
-        <translation type="unfinished"></translation>
+        <translation> Nutzbare Breite: %1 cm, Stoff %2 cm, Randabstand %3 cm.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1176"/>
         <source>The size range carries no piece to nest.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Größenbereich enthält kein Schnittteil zum Verschachteln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1181"/>
         <source>The document width must be greater than zero.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Breite des Dokuments muss größer als null sein.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1253"/>
         <source>The piece &quot;%1&quot; (id %2) is cut on the fold, but its fold line is not one of its own edges. Check its fold line in the Details mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Schnittteil „%1“ (id %2) wird im Stoffbruch zugeschnitten, aber seine Bruchlinie ist keine seiner eigenen Kanten. Prüfen Sie seine Bruchlinie im Detailmodus.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1288"/>
         <source>No piece of this range could be prepared for nesting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Schnittteil dieses Größenbereichs konnte für die Verschachtelung vorbereitet werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1303"/>
         <source>The size range carries no usable contour.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieser Größenbereich enthält keine nutzbare Kontur.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="426"/>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="1407"/>
         <source>The nesting engine returned an incomplete result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Verschachtelungs-Engine hat ein unvollständiges Ergebnis zurückgegeben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="368"/>
         <source> Refused: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation> Abgelehnt: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="372"/>
         <source>The document is too narrow: some pieces could not be placed. The space kept from the fabric&apos;s edges may be what leaves too little room.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Dokument ist zu schmal: Einige Schnittteile konnten nicht platziert werden. Der von den Stoffrändern freigehaltene Abstand ist vielleicht der Grund, warum zu wenig Platz bleibt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="378"/>
         <source>The document is too narrow: some pieces could not be placed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Dokument ist zu schmal: Einige Schnittteile konnten nicht platziert werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportsetplacement.cpp" line="45"/>
         <source>Turn a piece on the plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil im Zuschnittplan drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oexportsetplacement.cpp" line="46"/>
         <source>Move a piece on the plan</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteil im Zuschnittplan schieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecename.cpp" line="142"/>
         <source>name the curves of a piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurven eines Schnittteils benennen</translation>
     </message>
 </context>
 <context>
@@ -19571,7 +19647,7 @@ to %2</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/savepiecegroupoptions.cpp" line="39"/>
         <source>save group options</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppenoptionen speichern</translation>
     </message>
 </context>
 <context>
@@ -19619,124 +19695,124 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="55"/>
         <source>Configure size groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Größengruppen konfigurieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="66"/>
         <source>Each group represents an axis (e.g., Height, Size…). Name it and enter its values to activate it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jede Gruppe steht für eine Achse (z. B. Höhe, Größe…). Benennen Sie sie und geben Sie ihre Werte ein, um sie zu aktivieren.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="77"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="130"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="80"/>
         <source>Table name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Tabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="93"/>
         <source>Group 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe 1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="94"/>
         <source>Group 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe 2</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="95"/>
         <source>Group 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe 3</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="124"/>
         <source>e.g., Height</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. Höhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="125"/>
         <source>e.g., Commercial size</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. Handelsgröße</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="126"/>
         <source>e.g., Cup or Body type</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. Körbchen oder Körpertyp</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="137"/>
         <source>e.g., 160 cm, 168 cm, 176 cm</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. 160 cm, 168 cm, 176 cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="141"/>
         <source>e.g., 32, 34, 36  or  XS, S, M  or  6 years, 8 years, 10 years</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. 32, 34, 36  oder  XS, S, M  oder  6 Jahre, 8 Jahre, 10 Jahre</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="143"/>
         <source>e.g., A, B, C</source>
-        <translation type="unfinished"></translation>
+        <translation>z. B. A, B, C</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="150"/>
         <source>Values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Werte:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="156"/>
         <source>Separate each value with a comma</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeden Wert durch ein Komma trennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="163"/>
         <source>Generate</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="178"/>
         <source>Base:</source>
-        <translation type="unfinished">Grundwert:</translation>
+        <translation>Grundwert:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="193"/>
         <source>Reference size for calculating other sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Referenzgröße für die Berechnung der anderen Größen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="255"/>
         <source>Group %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="257"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="317"/>
         <source>Group &quot;%1&quot; · %2 values</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe „%1“ · %2 Werte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="378"/>
         <source>Name at least one group and generate its values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Benennen Sie mindestens eine Gruppe und erzeugen Sie ihre Werte.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="395"/>
         <source>Group &quot;%1&quot; must have at least 2 values.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Gruppe „%1“ muss mindestens 2 Werte haben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="403"/>
         <source>Generate values and select a base for group &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeugen Sie die Werte und wählen Sie eine Basis für die Gruppe „%1“.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="415"/>
         <source>Group name &quot;%1&quot; is used multiple times.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Gruppenname „%1“ wird mehrfach verwendet.</translation>
     </message>
 </context>
 <context>
@@ -19744,130 +19820,133 @@ to %2</source>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="119"/>
         <source>Edit measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Maße bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="128"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="314"/>
         <source>Select a size in the bar below, then edit the measurements in the details panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie unten in der Leiste eine Größe und bearbeiten Sie dann die Maße im Detailbereich.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="136"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="139"/>
         <source>Table name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Tabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="158"/>
         <source>Import from table</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus Tabelle importieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="175"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="257"/>
         <source>+ Add measurement</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Maß hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="180"/>
         <source>+ Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="181"/>
         <source>Add a measurement group</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßgruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="191"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="262"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="206"/>
         <source>↑</source>
-        <translation type="unfinished"></translation>
+        <translation>↑</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="207"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="263"/>
         <source>Move up</source>
-        <translation type="unfinished">Anheben</translation>
+        <translation>Anheben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="213"/>
         <source>↓</source>
-        <translation type="unfinished"></translation>
+        <translation>↓</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="214"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="264"/>
         <source>Move down</source>
-        <translation type="unfinished">Absenken</translation>
+        <translation>Absenken</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="238"/>
         <source>Search measurements…</source>
-        <translation type="unfinished"></translation>
+        <translation>Maße suchen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="258"/>
         <source>+ Insert group</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Gruppe einfügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="310"/>
         <source>Add and edit measurements in the details panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fügen Sie die Maße im Detailbereich hinzu und bearbeiten Sie sie dort.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="532"/>
         <source>New group</source>
-        <translation type="unfinished">Neue Gruppe</translation>
+        <translation>Neue Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="635"/>
         <source>Import complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Import abgeschlossen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="636"/>
         <source>%1 measurement(s)/group(s) imported.
 %2 measurement(s)/group(s) skipped (name already exists).</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Maß(e)/Gruppe(n) importiert.
+%2 Maß(e)/Gruppe(n) übersprungen (Name bereits vorhanden).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="683"/>
         <source>Group &quot;%1&quot; contains %2 measurement(s).
 Deleting the group will also delete all its measurements.
 Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Gruppe „%1“ enthält %2 Maß(e).
+Beim Löschen der Gruppe werden auch alle ihre Maße gelöscht.
+Möchten Sie fortfahren?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="691"/>
         <source>Do you want to delete group &quot;%1&quot;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Möchten Sie die Gruppe „%1“ löschen?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="696"/>
         <source>Delete group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe löschen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="772"/>
         <source>Delete group and its measurements</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe und ihre Maße löschen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
         <source>Delete measurement</source>
-        <translation type="unfinished">Maß löschen</translation>
+        <translation>Maß löschen</translation>
     </message>
 </context>
 <context>
@@ -19875,7 +19954,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglegroupinlayout.cpp" line="48"/>
         <source>group in layout list</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe in der Liste des Zuschnittplans</translation>
     </message>
 </context>
 <context>
@@ -19891,7 +19970,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="97"/>
         <source>piece flipping</source>
-        <translation type="unfinished">Schnittteil spiegeln</translation>
+        <translation>Schnittteil spiegeln</translation>
     </message>
 </context>
 <context>
@@ -19915,7 +19994,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/undocommands/unlinkpiecegroup.cpp" line="35"/>
         <source>unlink pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile entkoppeln</translation>
     </message>
 </context>
 <context>
@@ -20264,7 +20343,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1732"/>
         <source>Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="773"/>
@@ -20305,13 +20384,13 @@ Do you want to continue?</source>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3583"/>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3650"/>
         <source>New layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Neue Ebene</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2878"/>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3116"/>
         <source>Group</source>
-        <translation type="unfinished">Gruppe</translation>
+        <translation>Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="804"/>
@@ -20379,25 +20458,25 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Increase point name font size</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Punktnamen vergrößern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
         <source>Decrease point name font size</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Schriftgröße der Punktnamen verkleinern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
         <source>Original point name font size</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ursprüngliche Schriftgröße der Punktnamen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
         <source>Show all point names</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Alle Punktnamen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
@@ -20451,7 +20530,7 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
         <source>Graded mode</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Gradationsmodus</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
@@ -20763,73 +20842,73 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
         <source>Tool &apos;Dart cap&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Abnäher“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
         <source>Tool &apos;Rectangle&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Rechteck“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="508"/>
         <source>Auto-arrange point names</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen automatisch neu anordnen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="510"/>
         <source>Tool &apos;Select&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Auswählen“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="512"/>
         <source>Tool &apos;Curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Kurve“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="514"/>
         <source>Tool &apos;Segment a curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Kurve segmentieren“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="516"/>
         <source>Tool &apos;Spiral&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Spirale“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="518"/>
         <source>Tool &apos;Slash and spread&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Schneiden und Drehen“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="520"/>
         <source>Tool &apos;Move by batch&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Stapelweise schieben“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="522"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Falte“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="524"/>
         <source>Tool &apos;Flounce spiral&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Schneckenvolant“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="526"/>
         <source>Tool &apos;Middle pleat&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Mittelfalte“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
@@ -20841,19 +20920,19 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
         <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Armlochkurve“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
         <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Abnäherdrehung“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
         <source>Tool &apos;Transfer&apos;</source>
         <comment>shortcut for action</comment>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Übertragung“</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
@@ -20960,17 +21039,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="524"/>
         <source>light blue</source>
-        <translation type="unfinished"></translation>
+        <translation>hellblau</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="530"/>
         <source>pink</source>
-        <translation type="unfinished"></translation>
+        <translation>rosa</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="533"/>
         <source>purple</source>
-        <translation type="unfinished"></translation>
+        <translation>violett</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="536"/>
@@ -20980,12 +21059,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="542"/>
         <source>light green</source>
-        <translation type="unfinished"></translation>
+        <translation>hellgrün</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="548"/>
         <source>brown</source>
-        <translation type="unfinished"></translation>
+        <translation>braun</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="539"/>
@@ -21000,7 +21079,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1666"/>
         <source>White</source>
-        <translation type="unfinished">Weiß</translation>
+        <translation>Weiß</translation>
     </message>
 </context>
 <context>
@@ -21148,7 +21227,7 @@ Do you want to continue?</source>
         <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="192"/>
         <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="220"/>
         <source>The image declares a canvas size that is too large to render safely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Bild gibt eine Leinwandgröße an, die zu groß ist, um sie sicher anzuzeigen.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="200"/>
@@ -21309,7 +21388,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="510"/>
         <source>Print the debug messages to the console too. They always go to the log file; this key only repeats them on the console.</source>
-        <translation type="unfinished"></translation>
+        <translation>Auch die Debug-Meldungen in der Konsole ausgeben. Sie landen immer in der Protokolldatei; diese Option wiederholt sie nur in der Konsole.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="531"/>
@@ -21359,7 +21438,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="610"/>
         <source>Make all parsing warnings into errors. Have effect only in console mode. Use to force Ostara to immediately terminate if a pattern contains a parsing warning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Lesewarnungen in Fehler umwandeln. Wirkt nur im Konsolenmodus. Damit lässt sich Ostara zwingen, sofort anzuhalten, wenn ein Schnittmuster eine Lesewarnung enthält.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="619"/>
@@ -21404,89 +21483,89 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="662"/>
         <source>Compute the fabric length of a cutting plan for every complete size of the measurements table, for each fabric width of --fabricWidth, and write the table as a CSV in --destination. Nothing is ever written to the pattern.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechnet den Stoffbedarf eines Zuschnittplans für jede vollständige Größe der Maßtabelle, für jede Stoffbreite aus --fabricWidth, und schreibt die Tabelle als CSV nach --destination. Am Schnittmuster wird nie etwas geschrieben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="667"/>
         <source>Name of the model this run measures. Written in the CSV.</source>
-        <translation type="unfinished"></translation>
+        <translation>Name der Vorlage, die dieser Lauf berechnet. Wird in die CSV geschrieben.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="668"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="670"/>
         <source>The member a piece group contributes, as &quot;Group name=Member name&quot;. Repeat once per group: a cutting plan takes exactly one member per group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Mitglied, das eine Schnittteilgruppe beiträgt, in der Form „Gruppenname=Mitgliedsname“. Einmal pro Gruppe wiederholen: Ein Zuschnittplan nimmt genau ein Mitglied pro Gruppe.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="673"/>
         <source>Group=member</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe=Mitglied</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="675"/>
         <source>Fabric width in centimetres. Comma separated to ask for several in one run.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stoffbreite in Zentimetern. Durch Kommas getrennt, um mehrere in einem Lauf anzufordern.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="677"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="680"/>
         <source>Width in cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite in cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="679"/>
         <source>Lining width in centimetres. Defaults to the fabric width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Futterbreite in Zentimetern. Standardmäßig die des Stoffs.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="682"/>
         <source>Ask for the lining plan too: one run, two passes, two lengths in the table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Auch den Futterplan anfordern: ein Lauf, zwei Durchgänge, zwei Längen in der Tabelle.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="685"/>
         <source>Lay every piece the same way round.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Schnittteile in dieselbe Richtung legen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="687"/>
         <source>The plan is laid on folded fabric.</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Plan wird auf gefalteten Stoff gelegt.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="689"/>
         <source>Space between two pieces, in centimetres (default 0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zwischen zwei Schnittteilen in Zentimetern (Standard: 0).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="690"/>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="694"/>
         <source>Space in cm</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand in cm</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="693"/>
         <source>Space kept from the edges, in centimetres (default 0).</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstand zu den Rändern in Zentimetern (Standard: 0).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="729"/>
         <source>The metrage options can be used with single input file only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Stoffbedarfsoptionen lassen sich nur mit einer einzigen Eingabedatei verwenden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="779"/>
         <source>Not a fabric width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine gültige Stoffbreite:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="799"/>
         <source>Not a lining width.</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine gültige Futterbreite.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="578"/>
@@ -21644,7 +21723,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="578"/>
         <source>Can&apos;t cast object to the requested type. Name = &apos;%1&apos;, type = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt kann nicht in den angeforderten Typ umgewandelt werden. Name = „%1“, Typ = %2.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="588"/>
@@ -21656,12 +21735,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="719"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt kann nicht umgewandelt werden. Name = „%1“, Typ = %2.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.h" line="729"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekt nicht gefunden. Typ stimmt nicht überein. Name = „%1“, vorhandener Typ = %2, eingehender Typ = %3.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="412"/>
@@ -21715,20 +21794,20 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
         <source>Dart rotation</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherdrehung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1064"/>
         <source>Dart cap</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1000"/>
         <source>Rectangle</source>
         <comment>tool</comment>
-        <translation type="unfinished">Rechteck</translation>
+        <translation>Rechteck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1002"/>
@@ -21752,39 +21831,39 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1008"/>
         <source>Transfer</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1010"/>
         <source>Slash and spread</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1012"/>
         <source>Move by batch</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben im Stapel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1014"/>
         <source>Pleat</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1058"/>
         <source>Middle pleat</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Mittelfalte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1018"/>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1060"/>
         <source>Flounce spiral</source>
         <comment>operation</comment>
-        <translation type="unfinished"></translation>
+        <translation>Schneckenvolant</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1020"/>
@@ -21825,27 +21904,27 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1048"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Rechteck</translation>
+        <translation>Rechteck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1050"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1052"/>
         <source>Slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
         <source>Move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschieben im Stapel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1056"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1066"/>
@@ -21881,7 +21960,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1080"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirale</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1083"/>
@@ -21951,7 +22030,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1109"/>
         <source>Point from circle and tangent</source>
-        <translation> Schnittpunkt des Bogens und Tangente</translation>
+        <translation>Schnittpunkt des Bogens und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1111"/>
@@ -22039,17 +22118,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="773"/>
         <source>Refusing to save: the document has no content.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern nicht ausgeführt: kein Inhalt im Dokument.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="791"/>
         <source>Refusing to save: serialization produced no data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern nicht ausgeführt: Die Serialisierung hat keine Daten erzeugt.</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="885"/>
         <source>Schema file %3 invalid in line %1 column %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Schemadatei %3 ist ungültig in Zeile %1, Spalte %2</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="992"/>
@@ -22092,12 +22171,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="537"/>
         <source>add objects to a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte zu einer Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="570"/>
         <source>remove objects from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte von einer Ebene entfernen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="661"/>
@@ -22107,17 +22186,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="372"/>
         <source>Add to layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Zur Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="404"/>
         <source>Remove from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Von der Ebene entfernen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="456"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen anzeigen</translation>
     </message>
 </context>
 <context>
@@ -22173,7 +22252,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpatterndb/vformula.cpp" line="352"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Formel verwendet ein Objekt, das keinen Namen hat. Geben Sie ihm einen Namen, um es in einer Formel zu verwenden.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vformula.cpp" line="363"/>
@@ -22213,17 +22292,17 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="115"/>
         <source>Cannot Delete Object</source>
-        <translation type="unfinished">Objekt kann nicht gelöscht werden</translation>
+        <translation>Objekt kann nicht gelöscht werden</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="116"/>
         <source>This object cannot be deleted because it is being used by other items.</source>
-        <translation type="unfinished">Dieses Objekt kann nicht gelöscht werden, da es von anderen Elementen verwendet wird.</translation>
+        <translation>Dieses Objekt kann nicht gelöscht werden, da es von anderen Elementen verwendet wird.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="117"/>
         <source>Please resolve the dependencies before attempting to delete this object.</source>
-        <translation type="unfinished">Bitte lösen Sie die Abhängigkeiten auf, bevor Sie versuchen, dieses Objekt zu löschen.</translation>
+        <translation>Bitte lösen Sie die Abhängigkeiten auf, bevor Sie versuchen, dieses Objekt zu löschen.</translation>
     </message>
 </context>
 <context>
@@ -22351,7 +22430,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vpropertyexplorer/plugins/vlinecolorproperty.cpp" line="118"/>
         <source>White</source>
-        <translation type="unfinished">Weiß</translation>
+        <translation>Weiß</translation>
     </message>
 </context>
 <context>
@@ -22425,7 +22504,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="471"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="606"/>
@@ -22490,12 +22569,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="576"/>
         <source>Check mark clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>In Häkchenform, im Uhrzeigersinn</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="578"/>
         <source>Turn point (for DXF)</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtungswechselpunkt (für DXF)</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="596"/>
@@ -22745,7 +22824,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern.cpp" line="275"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Formel verwendet einen Namen, den das Schnittmuster nicht definiert: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern.cpp" line="969"/>
@@ -22827,7 +22906,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="312"/>
         <source>Duplicate line role name &apos;%1&apos; in &lt;lineNames&gt;; second occurrence ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Doppelter Zeilenrollenname „%1“ in &lt;lineNames&gt;; das zweite Vorkommen wird ignoriert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="777"/>
@@ -22891,13 +22970,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1734"/>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1740"/>
         <source>Error creating or updating the cap of a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren der Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1797"/>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1803"/>
         <source>Error creating or updating a rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren eines Rechtecks</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="280"/>
@@ -22913,7 +22992,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="313"/>
         <source>Error creating or updating armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren der Armlochkurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="381"/>
@@ -22937,7 +23016,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="708"/>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="714"/>
         <source>Error creating or updating a spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren einer Spirale</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="768"/>
@@ -22972,41 +23051,41 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="448"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="454"/>
         <source>Error creating or updating the operation that closes a dart</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren der Operation, die einen Abnäher schließt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="487"/>
         <source>A transfer without both of its merge points was ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Übertragung ohne ihre beiden Fusionspunkte wurde ignoriert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="557"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="563"/>
         <source>Error creating or updating the slash and spread operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren der Operation Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="597"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="603"/>
         <source>Error creating or updating the move by batch operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren der Operation Verschieben im Stapel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="640"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="646"/>
         <source>Error creating or updating the flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren des Schneckenvolants</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="681"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="687"/>
         <source>Error creating or updating the pleat operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren der Faltoperation</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="804"/>
         <source>A transfer refers to objects the pattern does not define, and was ignored.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Übertragung verweist auf Objekte, die das Schnittmuster nicht definiert, und wurde ignoriert.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1043"/>
@@ -23036,12 +23115,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1558"/>
         <source>Error creating or updating arc point</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren des Bogenpunkts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1588"/>
         <source>Error creating or updating curve point</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Erstellen oder Aktualisieren des Kurvenpunkts</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1639"/>
@@ -23124,7 +23203,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="524"/>
         <source>A transfer could not be rebuilt and was ignored: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Übertragung konnte nicht neu aufgebaut werden und wurde ignoriert: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="873"/>
@@ -23466,22 +23545,22 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="292"/>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="306"/>
         <source>Delete piece</source>
-        <translation type="unfinished">Teil löschen</translation>
+        <translation>Teil löschen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="294"/>
         <source>This piece cannot be deleted yet: the pattern is not fully solved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil kann vorerst nicht gelöscht werden: Das Schnittmuster ist nicht vollständig gelöst.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="295"/>
         <source>This piece cannot be deleted: %1 depends on it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil kann nicht gelöscht werden: %1 hängt davon ab.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="307"/>
         <source>This action will delete the piece %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Aktion löscht das Schnittteil %1.</translation>
     </message>
 </context>
 <context>
@@ -23869,7 +23948,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="303"/>
         <source>Arc with given length</source>
-        <translation> Bogen mit vorgegebener Länge</translation>
+        <translation>Bogen mit vorgegebener Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="408"/>
@@ -23889,12 +23968,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="402"/>
         <source>Tool to make point from circle and tangent</source>
-        <translation> Punkt aus Bogen und Tangente</translation>
+        <translation>Punkt aus Bogen und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="405"/>
         <source>Tool to make point from arc and tangent</source>
-        <translation> Punkt aus Bogen und Tangente</translation>
+        <translation>Punkt aus Bogen und Tangente</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="190"/>
@@ -23945,7 +24024,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="801"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Point</source>
-        <translation type="unfinished">Punkt</translation>
+        <translation>Punkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="923"/>
@@ -23973,7 +24052,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="683"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Point name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktname:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="924"/>
@@ -24005,7 +24084,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="814"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Show Point name</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktnamen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
@@ -24022,7 +24101,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="929"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
         <source>Line:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="426"/>
@@ -24052,7 +24131,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="567"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
         <source>Length:</source>
-        <translation type="unfinished">Länge:</translation>
+        <translation>Länge:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="433"/>
@@ -24069,7 +24148,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Angle:</source>
-        <translation type="unfinished">Winkel:</translation>
+        <translation>Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="190"/>
@@ -24086,13 +24165,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="957"/>
         <source>Line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="376"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="379"/>
         <source>Pattern piece:</source>
-        <translation type="unfinished">Schnittteil:</translation>
+        <translation>Schnittteil:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="195"/>
@@ -24110,13 +24189,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="935"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="958"/>
         <source>Line color:</source>
-        <translation type="unfinished">Linienfarbe:</translation>
+        <translation>Linienfarbe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="428"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="530"/>
         <source>Base point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="447"/>
@@ -24125,7 +24204,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="652"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="666"/>
         <source>First point:</source>
-        <translation type="unfinished">Erster Punkt:</translation>
+        <translation>Erster Punkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
@@ -24134,150 +24213,150 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="653"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="667"/>
         <source>Second point:</source>
-        <translation type="unfinished">Zweiter Punkt:</translation>
+        <translation>Zweiter Punkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="465"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="654"/>
         <source>Third point:</source>
-        <translation type="unfinished">Dritter Punkt:</translation>
+        <translation>Dritter Punkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="473"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="476"/>
         <source>Point 1 label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt 1 Beschriftung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="492"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="495"/>
         <source>Point 2 label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt 2 Beschriftung:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
         <source>First base point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erster Ausgangspunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
         <source>Second base point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter Ausgangspunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="513"/>
         <source>First dart point:</source>
-        <translation type="unfinished">Erster Abnäherpunkt:</translation>
+        <translation>Erster Abnäherpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="514"/>
         <source>Second dart point:</source>
-        <translation type="unfinished">Zweiter Abnäherpunkt:</translation>
+        <translation>Zweiter Abnäherpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="515"/>
         <source>Third dart point:</source>
-        <translation type="unfinished"> Dritter Abnäherpunkt:</translation>
+        <translation>Dritter Abnäherpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="703"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="706"/>
         <source>Draw the cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappe zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="766"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="934"/>
         <source>Type of line:</source>
-        <translation type="unfinished">Linientyp:</translation>
+        <translation>Linientyp:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="748"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="752"/>
         <source>Reverse the sense</source>
-        <translation type="unfinished"></translation>
+        <translation>Richtung umkehren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="723"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="726"/>
         <source>Notch</source>
-        <translation type="unfinished">Einschnitt</translation>
+        <translation>Einschnitt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
         <source>Point B:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt B:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="806"/>
         <source>Point C:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt C:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="808"/>
         <source>Point D:</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt D:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="901"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="904"/>
         <source>Height:</source>
-        <translation type="unfinished">Höhe:</translation>
+        <translation>Höhe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="127"/>
         <source>Line style</source>
-        <translation type="unfinished"></translation>
+        <translation>Linienstil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="133"/>
         <source>Arc style</source>
-        <translation type="unfinished"></translation>
+        <translation>Bogenstil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="135"/>
         <source>Elliptical arc style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil des elliptischen Bogens</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="137"/>
         <source>Curve style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurvenstil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="183"/>
         <source>Pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Falte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="248"/>
         <source>Fold line</source>
-        <translation type="unfinished">Faltlinie</translation>
+        <translation>Faltlinie</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="252"/>
         <source>Draw the fold line</source>
-        <translation type="unfinished"></translation>
+        <translation>Falzlinie zeichnen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="260"/>
         <source>Fold line type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ der Falzlinie:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="265"/>
         <source>Fold line color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Farbe der Falzlinie:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="413"/>
         <source>Rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellung der Drehungen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="418"/>
         <source>Show the rotation display</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellung der Drehungen anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="483"/>
@@ -24285,13 +24364,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="733"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="737"/>
         <source>Pivot point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="591"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="596"/>
         <source>Closing divisor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Schließteiler:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="759"/>
@@ -24299,7 +24378,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="531"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="685"/>
         <source>First line point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erster Linienpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="775"/>
@@ -24307,81 +24386,81 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="532"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="686"/>
         <source>Second line point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter Linienpunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="878"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="882"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="894"/>
         <source>Edit rotations</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehungen bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="913"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="917"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="929"/>
         <source>Edit pleats</source>
-        <translation type="unfinished"></translation>
+        <translation>Falten bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="949"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="953"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="965"/>
         <source>Edit moves</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschiebungen bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="991"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="996"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1055"/>
         <source>Outer edge start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Start der Außenkante:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1057"/>
         <source>Inner edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ende der Innenkante:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1059"/>
         <source>Outer edge end:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ende der Außenkante:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1073"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1077"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="554"/>
         <source>First line (first point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Erste Zeile (erster Punkt):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
         <source>First line (second point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Erste Zeile (zweiter Punkt):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="556"/>
         <source>Second line (first point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweite Zeile (erster Punkt):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="557"/>
         <source>Second line (second point):</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweite Zeile (zweiter Punkt):</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="569"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="572"/>
         <source>Additional angle degrees:</source>
-        <translation type="unfinished">Zusätzlicher Winkel:</translation>
+        <translation>Zusätzlicher Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="719"/>
@@ -24393,32 +24472,32 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="607"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="610"/>
         <source>Radius:</source>
-        <translation type="unfinished">Radius:</translation>
+        <translation>Radius:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="636"/>
         <source>X: vertical point:</source>
-        <translation type="unfinished"></translation>
+        <translation>X: vertikaler Punkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
         <source>Y: horizontal point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y: horizontaler Punkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="664"/>
         <source>First point of axis:</source>
-        <translation type="unfinished">Erster Punkt der Achse:</translation>
+        <translation>Erster Punkt der Achse:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
         <source>Second point of axis:</source>
-        <translation type="unfinished">Zweiter Punkt der Achse:</translation>
+        <translation>Zweiter Punkt der Achse:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="684"/>
         <source>Axis point:</source>
-        <translation type="unfinished">Punkt der Schnittachse:</translation>
+        <translation>Punkt der Schnittachse:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="934"/>
@@ -24441,7 +24520,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
         <source>Curve:</source>
-        <translation type="unfinished">Kurve:</translation>
+        <translation>Kurve:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="352"/>
@@ -24486,78 +24565,78 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="288"/>
         <source>Arc point</source>
-        <translation type="unfinished"></translation>
+        <translation>Bogenpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="291"/>
         <source>Curve point</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurvenpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="312"/>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="315"/>
         <source>Tool segment a curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Kurve segmentieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="334"/>
         <source>Point at intersection of two lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt am Schnittpunkt zweier Linien</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="337"/>
         <source>Point along normal to line</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt entlang einer Senkrechten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="340"/>
         <source>Point of contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Berührungspunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="343"/>
         <source>Point of intersection two lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittpunkt zweier Linien</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="355"/>
         <source>Shoulder point</source>
-        <translation type="unfinished">Schulterpunkt</translation>
+        <translation>Schulterpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="364"/>
         <source>Armhole curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Armlochkurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="374"/>
         <source>Triangle</source>
-        <translation type="unfinished">Dreieck</translation>
+        <translation>Dreieck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="396"/>
         <source>Point of intersection line and axis</source>
-        <translation type="unfinished">Schnittpunkt Linie und Achse</translation>
+        <translation>Schnittpunkt Linie und Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="399"/>
         <source>Point of intersection curve and axis</source>
-        <translation type="unfinished">Schnittpunkt Kurve und Achse</translation>
+        <translation>Schnittpunkt Kurve und Achse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="414"/>
         <source>Tool dart rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug „Abnäherdrehung“</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="417"/>
         <source>Dart cap</source>
-        <translation type="unfinished"></translation>
+        <translation>Abnäherkappe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="420"/>
         <source>Tool rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Rechteck</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="426"/>
@@ -24567,52 +24646,52 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="432"/>
         <source>Tool transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Übertragung</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="435"/>
         <source>Tool slash and spread</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Einschneiden und Drehen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="438"/>
         <source>Tool move by batch</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Chargenweise verschieben</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="445"/>
         <source>Tool pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Falte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="445"/>
         <source>Tool middle pleat</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Mittelfalte</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="449"/>
         <source>Flounce spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Schneckenvolant</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="461"/>
         <source>Elliptical arc with length</source>
-        <translation type="unfinished">Elliptischer Bogen mit Länge</translation>
+        <translation>Elliptischer Bogen mit Länge</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="464"/>
         <source>Tool parallel curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Parallele Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="467"/>
         <source>Tool graduated curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeug Abgestufte Kurve</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="470"/>
         <source>Spiral</source>
-        <translation type="unfinished"></translation>
+        <translation>Spirale</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="452"/>
@@ -24622,28 +24701,28 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="97"/>
         <source>(Unnamed)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Unbenannt)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxisrows.cpp" line="46"/>
         <source>by hand</source>
-        <translation type="unfinished"></translation>
+        <translation>manuell</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxisrows.cpp" line="55"/>
         <source>Change the axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Achse ändern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/oaxisrows.cpp" line="56"/>
         <source>Set the angle by an axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel durch eine Achse festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="444"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="551"/>
         <source>Axis:</source>
-        <translation type="unfinished"></translation>
+        <translation>Achse:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="685"/>
@@ -24659,7 +24738,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1616"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1619"/>
         <source>Create start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="702"/>
@@ -24675,7 +24754,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1633"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1636"/>
         <source>Create end point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt erstellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="736"/>
@@ -24687,7 +24766,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1361"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1364"/>
         <source>First angle:</source>
-        <translation type="unfinished">Erster Winkel:</translation>
+        <translation>Erster Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="753"/>
@@ -24695,7 +24774,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1248"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1251"/>
         <source>Second angle:</source>
-        <translation type="unfinished">Zweiter Winkel:</translation>
+        <translation>Zweiter Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="770"/>
@@ -24711,7 +24790,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1650"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="333"/>
         <source>Pen style:</source>
-        <translation type="unfinished">Zeichenstil:</translation>
+        <translation>Zeichenstil:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
@@ -24728,31 +24807,31 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1651"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="338"/>
         <source>Color:</source>
-        <translation type="unfinished">Farbe:</translation>
+        <translation>Farbe:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="918"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="971"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1024"/>
         <source>Show the two segments instead of the curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Die beiden Segmente statt der Kurve anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="919"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="972"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1025"/>
         <source>Type of line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linientyp</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1041"/>
         <source>First handle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erster Griff:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1045"/>
         <source>Second handle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter Griff:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1084"/>
@@ -24762,23 +24841,23 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1597"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1609"/>
         <source>Edit curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurve bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1114"/>
         <source>Start point</source>
-        <translation type="unfinished"></translation>
+        <translation>Startpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1135"/>
         <source>End point</source>
-        <translation type="unfinished"></translation>
+        <translation>Endpunkt</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1162"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1292"/>
         <source>ElArc:</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptischer Bogen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1197"/>
@@ -24786,7 +24865,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1327"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1330"/>
         <source>Radius 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius 1:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1214"/>
@@ -24794,7 +24873,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1344"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1347"/>
         <source>Radius 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius 2:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1457"/>
@@ -24804,7 +24883,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="882"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="885"/>
         <source>Width:</source>
-        <translation type="unfinished">Breite:</translation>
+        <translation>Breite:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="772"/>
@@ -24860,7 +24939,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1122"/>
         <source>Point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="283"/>
@@ -24868,7 +24947,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="387"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="397"/>
         <source>Take:</source>
-        <translation type="unfinished">Nehmen:</translation>
+        <translation>Nehmen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="684"/>
@@ -24881,41 +24960,41 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="288"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="290"/>
         <source>Arc:</source>
-        <translation type="unfinished">Bogen:</translation>
+        <translation>Bogen:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="302"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="305"/>
         <source>First circle radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erster Kreisradius:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="321"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="324"/>
         <source>Second circle radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiter Kreisradius:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="349"/>
         <source>Vertical correction:</source>
-        <translation type="unfinished">Vertikale Korrektur:</translation>
+        <translation>Vertikale Korrektur:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="350"/>
         <source>Horizontal correction:</source>
-        <translation type="unfinished">Horizontale Korrektur:</translation>
+        <translation>Horizontale Korrektur:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="369"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="372"/>
         <source>Circle radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreisradius:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="407"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="469"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="408"/>
@@ -24923,7 +25002,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="470"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="473"/>
         <source>Hold:</source>
-        <translation type="unfinished"></translation>
+        <translation>Halt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="425"/>
@@ -24931,7 +25010,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="487"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="490"/>
         <source>Visible:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbar:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="442"/>
@@ -24939,13 +25018,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="504"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="509"/>
         <source>Opacity:</source>
-        <translation type="unfinished">Deckkraft:</translation>
+        <translation>Deckkraft:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="839"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="843"/>
         <source>Origin point:</source>
-        <translation type="unfinished">Ursprungspunkt:</translation>
+        <translation>Ursprungspunkt:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1265"/>
@@ -24955,13 +25034,13 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="705"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="709"/>
         <source>Rotation angle:</source>
-        <translation type="unfinished">Drehungs-Winkel:</translation>
+        <translation>Drehungs-Winkel:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="801"/>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="805"/>
         <source>Axis type:</source>
-        <translation type="unfinished">Achsentyp:</translation>
+        <translation>Achsentyp:</translation>
     </message>
 </context>
 <context>
@@ -24969,7 +25048,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vtoolplacelabel.cpp" line="55"/>
         <source>place labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Interne Passmarken</translation>
     </message>
 </context>
 <context>
@@ -24993,7 +25072,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
-        <translation type="unfinished">Radius</translation>
+        <translation>Radius</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="380"/>
@@ -25070,7 +25149,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="281"/>
         <source>Pivot point</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehpunkt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="455"/>
@@ -25109,42 +25188,42 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1713"/>
         <source>move information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Informationsblock verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1743"/>
         <source>resize information block</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe des Informationsblocks ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1941"/>
         <source>move thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Miniatur verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2096"/>
         <source>Delete place labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Passmarken löschen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2151"/>
         <source>move annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Beschriftung verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2172"/>
         <source>move seam allowance value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabewert verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2186"/>
         <source>move seam allowance legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahtzugabe-Legende verschieben</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2235"/>
         <source>resize annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe der Beschriftung ändern</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2716"/>
@@ -25189,7 +25268,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2928"/>
         <source>Press Escape to leave the thumbnail</source>
-        <translation type="unfinished"></translation>
+        <translation>Esc drücken, um die Miniatur zu verlassen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3708"/>
@@ -25199,12 +25278,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vwidgets/ogroupmembershipmark.cpp" line="46"/>
         <source>Member of a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitglied einer Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/libs/vwidgets/ogroupmembershipmark.cpp" line="47"/>
         <source>Member of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitglied von %1</translation>
     </message>
 </context>
 <context>
@@ -25444,37 +25523,37 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="104"/>
         <source>Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Kurve_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="105"/>
         <source>Angle1Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Winkel1Kurve_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="106"/>
         <source>Angle2Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Winkel2Kurve_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="107"/>
         <source>Handle1Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Griff1Kurve_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="108"/>
         <source>Handle2Curve_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Griff2Kurve_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="109"/>
         <source>Radius_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Radius_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="176"/>
@@ -25642,13 +25721,13 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="181"/>
         <source>atanh</source>
         <comment>hyperbolic arcus tangent function</comment>
-        <translation type="unfinished">atanh</translation>
+        <translation>atanh</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="183"/>
         <source>hyperbolic arcus tangent function</source>
         <comment>function atanh</comment>
-        <translation type="unfinished"></translation>
+        <translation>hyperbolische Arkustangensfunktion</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="249"/>
@@ -25906,19 +25985,19 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="319"/>
         <source>pi = 3.14159... - the ratio of a circle&apos;s circumference to its diameter</source>
         <comment>constant _pi</comment>
-        <translation type="unfinished"></translation>
+        <translation>π = 3,14159… - Verhältnis des Umfangs eines Kreises zu seinem Durchmesser</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="323"/>
         <source>e = 2.71828... - the base of the natural logarithm</source>
         <comment>constant _e</comment>
-        <translation type="unfinished"></translation>
+        <translation>e = 2,71828… - Basis des natürlichen Logarithmus</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="326"/>
         <source>phi = 1.61803... - the golden ratio</source>
         <comment>constant _phi</comment>
-        <translation type="unfinished"></translation>
+        <translation>φ = 1,61803… - der Goldene Schnitt</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="121"/>
@@ -26161,7 +26240,7 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
         <source>Merge pieces into one</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile zu einem zusammenführen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="307"/>
@@ -26172,7 +26251,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="545"/>
         <source>In layout</source>
-        <translation type="unfinished">Im Layout</translation>
+        <translation>Im Layout</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="556"/>
@@ -26187,7 +26266,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="588"/>
         <source>Unlink all</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Verknüpfungen lösen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="698"/>
@@ -26203,44 +26282,44 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="771"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="799"/>
         <source>Select pieces to link (min 2, Enter to confirm, Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile zum Verknüpfen auswählen (min. 2, Enter zum Bestätigen, Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="785"/>
         <source>This piece is already part of a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Schnittteil gehört bereits zu einer Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="805"/>
         <source>%1 piece(s) selected - Enter to confirm, Esc to cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Schnittteil(e) ausgewählt - Enter zum Bestätigen, Esc zum Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="820"/>
         <source>Less than 2 pieces selected - cancelled</source>
-        <translation type="unfinished"></translation>
+        <translation>Weniger als 2 Schnittteile ausgewählt - abgebrochen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="833"/>
         <source>Click the common point (Esc to cancel)</source>
-        <translation type="unfinished"></translation>
+        <translation>Den gemeinsamen Punkt anklicken (Esc zum Abbrechen)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="860"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="928"/>
         <source>Link pieces</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittteile verknüpfen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="861"/>
         <source>The selected point is not common to the %1 pieces of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Der ausgewählte Punkt ist den %1 Schnittteilen der Gruppe nicht gemeinsam</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
         <source>Cancel</source>
-        <translation type="unfinished">Abbrechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="26"/>
@@ -26275,181 +26354,166 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="337"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1791"/>
         <source>Add a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="347"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1794"/>
         <source>Add a group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="396"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1796"/>
         <source>Show the active layer on the canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktive Ebene auf der Zeichenfläche anzeigen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="604"/>
         <source>add a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>eine Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="650"/>
         <source>edit layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="716"/>
         <source>add a group of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>eine Gruppe von Ebenen hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="768"/>
         <source>Group not empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe nicht leer</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="769"/>
         <source>The group &quot;%1&quot; still holds %n layer(s). Move them to another group first, (the transfer button), then delete the group.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Die Gruppe „%1“ enthält noch %n Ebene. Zuerst in eine andere Gruppe verschieben (Übertragungsschaltfläche), dann die Gruppe löschen.</numerusform><numerusform>Die Gruppe „%1“ enthält noch %n Ebenen. Zuerst in eine andere Gruppe verschieben (Übertragungsschaltfläche), dann die Gruppe löschen.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="796"/>
         <source>Empty group</source>
-        <translation type="unfinished"></translation>
+        <translation>Leere Gruppe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="797"/>
         <source>The group &quot;%1&quot; holds no layer - there is nothing to transfer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Gruppe „%1“ enthält keine Ebene - es gibt nichts zu übertragen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="870"/>
         <source>The group &quot;%1&quot; holds no layer yet - there is nothing to show or hide.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Gruppe „%1“ enthält noch keine Ebene - es gibt nichts anzuzeigen oder auszublenden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="928"/>
         <source>Layer not empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene nicht leer</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="929"/>
         <source>The layer &quot;%1&quot; still contains %n object(s). Remove them from the layer first, then delete it.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>Die Ebene „%1“ enthält noch %n Objekt. Zuerst das Objekt aus der Ebene entfernen, dann die Ebene löschen.</numerusform><numerusform>Die Ebene „%1“ enthält noch %n Objekte. Zuerst die Objekte aus der Ebene entfernen, dann die Ebene löschen.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="941"/>
         <source>Last layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Letzte Ebene</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="942"/>
         <source>The layer &quot;%1&quot; is the only one of this piece. An object must always belong to a layer, so a piece keeps at least one - add another layer first, then delete this one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Ebene „%1“ ist die einzige dieses Schnittteils. Ein Objekt muss immer zu einer Ebene gehören, ein Schnittteil behält also mindestens eine - zuerst eine weitere Ebene hinzufügen, dann diese löschen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1096"/>
         <source>This is the only layer of this piece - there is no other layer to transfer to.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dies ist die einzige Ebene dieses Schnittteils - es gibt keine andere Ebene zum Übertragen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1102"/>
         <source>This layer holds no object - there is nothing to transfer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Ebene enthält kein Objekt - es gibt nichts zu übertragen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1103"/>
         <source>This layer holds no object - there is nothing to remove.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Ebene enthält kein Objekt - es gibt nichts zu entfernen.</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1356"/>
         <source>%n object(s) selected - Enter to choose the layer they move to, Escape cancels.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Objekt ausgewählt - Enter zum Wählen der Zielebene, Esc bricht ab.</numerusform><numerusform>%n Objekte ausgewählt - Enter zum Wählen der Zielebene, Esc bricht ab.</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1358"/>
         <source>%n object(s) selected - Enter to confirm, Escape cancels.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Objekt ausgewählt - Enter zum Bestätigen, Esc bricht ab.</numerusform><numerusform>%n Objekte ausgewählt - Enter zum Bestätigen, Esc bricht ab.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1366"/>
         <source>Select the objects to transfer, then press Enter to choose the layer they move to - Escape cancels. Magenta is this layer&apos;s content, and every object of it can move.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die zu übertragenden Objekte auswählen, dann Enter drücken, um die Zielebene zu wählen - Esc bricht ab. Magenta ist der Inhalt dieser Ebene, und jedes ihrer Objekte kann wechseln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1376"/>
         <source>No object of this layer is shared with another layer - an object must always belong to at least one layer, so there is nothing to remove here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein Objekt dieser Ebene wird mit einer anderen Ebene geteilt - ein Objekt muss immer zu mindestens einer Ebene gehören, hier gibt es also nichts zu entfernen.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1381"/>
         <source>Select the objects to remove, then press Enter to confirm - Escape cancels. Magenta is what can be removed: an object must always stay in one layer, so only what another layer holds can go.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die zu entfernenden Objekte auswählen, dann Enter zum Bestätigen - Esc bricht ab. Magenta ist, was entfernt werden kann: ein Objekt muss immer in einer Ebene bleiben, nur was eine andere Ebene ebenfalls enthält, kann wechseln.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1387"/>
         <source>Select the objects to add, then press Enter to confirm - Escape cancels. Magenta is this layer&apos;s content, so those cannot be added again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die hinzuzufügenden Objekte auswählen, dann Enter zum Bestätigen - Esc bricht ab. Magenta ist der Inhalt dieser Ebene: sie können daher nicht erneut hinzugefügt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1398"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1411"/>
         <source>This object is not in this layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Objekt ist nicht in dieser Ebene.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1406"/>
         <source>This object belongs only to this layer - an object must always belong to at least one layer, so it cannot be removed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Objekt gehört nur zu dieser Ebene - ein Objekt muss immer zu mindestens einer Ebene gehören, es kann daher nicht entfernt werden.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1418"/>
         <source>This object is already in this layer - a layer holds an object once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses Objekt ist bereits in dieser Ebene - eine Ebene enthält ein Objekt nur einmal.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1460"/>
         <source>remove objects from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte aus einer Ebene entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1460"/>
         <source>add objects to a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte zu einer Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1495"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1713"/>
         <source>Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Übertragen</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1498"/>
         <source>%n object(s) will leave &quot;%1&quot;. Choose the layer they move to:</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Objekt verlässt „%1“. Zielebene wählen:</numerusform><numerusform>%n Objekte verlassen „%1“. Zielebene wählen:</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1542"/>
         <source>transfer objects to another layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte in eine andere Ebene übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1740"/>
@@ -26459,81 +26523,78 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1948"/>
         <source>Show or hide the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene anzeigen oder ausblenden</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1954"/>
         <source>The colour the layer draws with</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Farbe, mit der die Ebene zeichnet</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1965"/>
         <source>Group: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe: %1.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1969"/>
         <source>Make this layer the active one</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Ebene zur aktiven machen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1982"/>
         <source>Rename the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene umbenennen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1984"/>
         <source>Add objects to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte zur Ebene hinzufügen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1988"/>
         <source>Move objects of this layer to another one</source>
-        <translation type="unfinished"></translation>
+        <translation>In eine andere Ebene übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1990"/>
         <source>Remove objects from the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekte aus der Ebene entfernen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1994"/>
         <source>Delete the layer - allowed once it holds no object</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene löschen - möglich, sobald sie kein Objekt mehr enthält</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2010"/>
         <source>Show or hide every layer of the group</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Ebenen der Gruppe anzeigen oder ausblenden</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2022"/>
         <source>%n layer(s) in this group.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n Ebene in dieser Gruppe.</numerusform><numerusform>%n Ebenen in dieser Gruppe.</numerusform></translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2031"/>
         <source>Rename the group and settle the layers it holds</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe umbenennen und die enthaltenen Ebenen festlegen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2033"/>
         <source>Move layers of this group to another one</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebenen dieser Gruppe in eine andere übertragen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2035"/>
         <source>Delete the group - allowed once it holds no layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppe löschen - möglich, sobald sie keine Ebene mehr enthält</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1711"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1742"/>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1745"/>
@@ -26548,12 +26609,12 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.ui" line="26"/>
         <source>Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ebene:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetgroups.ui" line="33"/>
         <source>Filter by name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach Namen filtern</translation>
     </message>
 </context>
 <context>
@@ -26748,7 +26809,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="198"/>
         <source>Length = %1%2, angle = %3°, rotation angle = %4°, &lt;b&gt;%5&lt;/b&gt; - sticking angle, &lt;b&gt;%6&lt;/b&gt; - change the pivot point, &lt;b&gt;Mouse click&lt;/b&gt; - finish creating</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge = %1%2, Winkel = %3°, Drehwinkel = %4°, &lt;b&gt;%5&lt;/b&gt; - Magnetwinkel, &lt;b&gt;%6&lt;/b&gt; - Drehpunkt ändern, &lt;b&gt;Mausklick&lt;/b&gt; - Erstellung abschließen</translation>
     </message>
 </context>
 <context>
@@ -26801,7 +26862,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="186"/>
         <source>Rotating angle = %1°, length = %2%3, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehwinkel = %1°, Länge = %2%3, &lt;b&gt;%4&lt;/b&gt; - Magnetwinkel, &lt;b&gt;Mausklick&lt;/b&gt; - Erstellung abschließen</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="196"/>
@@ -26845,7 +26906,7 @@ Do you want to continue?</source>
     <message>
         <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="177"/>
         <source>Point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt %1</translation>
     </message>
 </context>
 <context>
@@ -27205,43 +27266,43 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="137"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="198"/>
         <source>Sewing pattern design application</source>
-        <translation type="unfinished"></translation>
+        <translation>Anwendung zum Entwerfen von Schnittmustern</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="158"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="201"/>
         <source>Patterns</source>
-        <translation type="unfinished">Schnittmuster</translation>
+        <translation>Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="159"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="202"/>
         <source>+ New pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Neues Schnittmuster</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="160"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="203"/>
         <source>Open pattern...</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittmuster öffnen…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="175"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="206"/>
         <source>Measurement tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßtabellen</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="176"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="207"/>
         <source>+ New table</source>
-        <translation type="unfinished"></translation>
+        <translation>+ Neue Tabelle</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="177"/>
         <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="208"/>
         <source>Open table...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelle öffnen…</translation>
     </message>
 </context>
 <context>
@@ -27279,7 +27340,9 @@ Do you want to continue?</source>
         <source>%1
 
 (%2 further messages were logged.)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+
+(%2 weitere Meldungen wurden protokolliert.)</translation>
     </message>
 </context>
 </TS>
