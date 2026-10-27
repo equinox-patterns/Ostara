@@ -202,33 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>About Valentina</source>
-        <translation type="vanished">Σχετικά με το Valentina</translation>
-    </message>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">Έκδοση Valentina</translation>
-    </message>
-    <message>
-        <source>Web site : %1</source>
-        <translation type="vanished">Ιστοσελίδα : %1</translation>
-    </message>
-    <message>
-        <source>Cannot open your default browser</source>
-        <translation type="vanished">Δεν είναι δυνατό το άνοιγμα του προεπιλεγμένου περιηγητή</translation>
-    </message>
-    <message>
-        <source>Build revision:</source>
-        <translation type="vanished">Αναθεώρηση έκδοσης:</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translation type="vanished">Έλεγχος για ενημερώσεις</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -519,13 +492,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="14"/>
         <source>Arc with length</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DialogAskCollectStatistic</name>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">Διεύθυνση email:</translation>
     </message>
 </context>
 <context>
@@ -4132,81 +4098,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Ιδιότητες πατρόν</translation>
-    </message>
-    <message>
-        <source>Pattern description</source>
-        <translation type="vanished">Περιγραφή πατρόν</translation>
-    </message>
-    <message>
-        <source>Security</source>
-        <translation type="vanished">Ασφάλεια</translation>
-    </message>
-    <message>
-        <source>Open only for read</source>
-        <translation type="vanished">Άνοιγμα μόνο για ανάγνωση</translation>
-    </message>
-    <message>
-        <source>No image</source>
-        <translation type="vanished">Χωρίς εικόνα</translation>
-    </message>
-    <message>
-        <source>Delete image</source>
-        <translation type="vanished">Διαγραφή εικόνας</translation>
-    </message>
-    <message>
-        <source>Change image</source>
-        <translation type="vanished">Αλλαγή εικόνας</translation>
-    </message>
-    <message>
-        <source>Save image to file</source>
-        <translation type="vanished">Αποθήκευση εικόνας σε αρχείο</translation>
-    </message>
-    <message>
-        <source>Show image</source>
-        <translation type="vanished">Εμφάνιση εικόνας</translation>
-    </message>
-    <message>
-        <source>Image for pattern</source>
-        <translation type="vanished">Εικόνα για το πατρόν</translation>
-    </message>
-    <message>
-        <source>untitled</source>
-        <translation type="vanished">ανώνυμο</translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="vanished">Διαδρομή:</translation>
-    </message>
-    <message>
-        <source>Show in Explorer</source>
-        <translation type="vanished">Εμφάνιση στην Εξερεύνηση</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;Empty&gt;</translation>
-    </message>
-    <message>
-        <source>File was not saved yet.</source>
-        <translation type="vanished">Το αρχείο δεν αποθηκεύτηκε ακόμα.</translation>
-    </message>
-    <message>
-        <source>Show in Finder</source>
-        <translation type="vanished">Εμφάνιση στην Εύρεση</translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="obsolete">Πατρόν</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Γλώσσα ετικέτας:</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -5603,17 +5494,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="vanished">Ρυθμίσεις</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation>Πατρόν</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Μονοπάτια</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -6072,14 +5955,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>DialogSeamAllowance</name>
     <message>
-        <source>Ready!</source>
-        <translation type="vanished">Έτοιμο!</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Τιμή</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Γραμμή ισιάδας</translation>
@@ -6160,89 +6035,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Διαγραφή</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="vanished">Επιλογές</translation>
-    </message>
-    <message>
-        <source>Infinite/undefined result</source>
-        <translation type="vanished">Απεριόριστο/απροσδιόριστο αποτέλεσμα</translation>
-    </message>
-    <message>
-        <source>Length should be positive</source>
-        <translation type="vanished">Το μήκος θα πρέπει να έχει θετική τιμή</translation>
-    </message>
-    <message>
-        <source>Current seam allowance</source>
-        <translation type="vanished">Τρέχων περιθώριο ραφής</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width</source>
-        <translation type="vanished">Επεξεργασία πλάτους περιθωρίου ραφής</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width before</source>
-        <translation type="vanished">Επεξεργασία πλάτους περιθωρίου ραφής πριν</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width after</source>
-        <translation type="vanished">Επεξεργασία πλάτους περιθωρίου ραφής μετά</translation>
-    </message>
-    <message>
-        <source>You need more points!</source>
-        <translation type="vanished">Χρειάζονται περισσότερα σημεία!</translation>
-    </message>
-    <message>
-        <source>You have to choose points in a clockwise direction!</source>
-        <translation type="vanished">Πρέπει να επιλέξετε σημεία δεξιόστροφα!</translation>
-    </message>
-    <message>
-        <source>First point cannot be equal to the last point!</source>
-        <translation type="obsolete">Το πρώτο σημείο δεν μπορεί να ισούται με το τελευταίο σημείο!</translation>
-    </message>
-    <message>
-        <source>You have double points!</source>
-        <translation type="vanished">Έχετε διπλά σημεία!</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="vanished">Κενό</translation>
-    </message>
-    <message>
-        <source>main path</source>
-        <translation type="vanished">κύριο μονοπάτι</translation>
-    </message>
-    <message>
-        <source>custom seam allowance</source>
-        <translation type="vanished">προσαρμοσμένο περιθώριο ραφής</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation>Κανένα</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="vanished">Σφάλμα</translation>
-    </message>
-    <message>
-        <source>Edit length</source>
-        <translation type="vanished">Επεξεργασία μήκους</translation>
-    </message>
-    <message>
-        <source>Edit angle</source>
-        <translation type="vanished">Επεξεργασία γωνίας</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Μονοπάτια</translation>
-    </message>
-    <message>
-        <source>Each point in the path must be unique!</source>
-        <translation type="vanished">Κάθε σημείο στο μονοπάτι πρέπει να είναι μοναδικό!</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;Empty&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
@@ -7344,10 +7139,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished">Εξαγωγή</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">Νέο</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
         <translation type="unfinished">Καμπύλη</translation>
@@ -7445,40 +7236,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>FvUpdateWindow</name>
-    <message>
-        <source>Software Update</source>
-        <translation type="vanished">Αναβάθμιση προγράμματος</translation>
-    </message>
-    <message>
-        <source>Skip This Version</source>
-        <translation type="vanished">Παράλειψη έκδοσης</translation>
-    </message>
-    <message>
-        <source>Remind Me Later</source>
-        <translation type="vanished">Υπενθύμιση αργότερα</translation>
-    </message>
-    <message>
-        <source>Get Update</source>
-        <translation type="vanished">Λήψη ενημέρωσης</translation>
-    </message>
-</context>
-<context>
-    <name>FvUpdater</name>
-    <message>
-        <source>Cannot open your default browser.</source>
-        <translation type="vanished">Δεν είναι δυνατό το άνοιγμα του προεπιλεγμένου σας περιηγητή.</translation>
-    </message>
-    <message>
-        <source>Feed download failed: %1.</source>
-        <translation type="vanished">Η λήψη της φόρτωσης απέτυχε: %1.</translation>
-    </message>
-    <message>
-        <source>No updates were found.</source>
-        <translation type="vanished">Δεν βρέθηκαν διαθέσιμες ενημερώσεις.</translation>
-    </message>
-</context>
-<context>
     <name>HideAllBackgroundImages</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/image/hideallbackgroundimages.cpp" line="38"/>
@@ -7531,13 +7288,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>InitPieceLabelLanguages</name>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Προεπιλογή</translation>
-    </message>
-</context>
-<context>
     <name>LinkPieceGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
@@ -7547,10 +7297,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Valentina</source>
-        <translation type="vanished">Valentina</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point along perpendicular</source>
@@ -7770,10 +7516,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Προτιμήσεις</translation>
     </message>
     <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Ιδιότητες πατρόν</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
         <source>Zoom in</source>
@@ -7795,10 +7537,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
         <source>Zoom fit best</source>
         <translation>Προσαρμογή zoom</translation>
-    </message>
-    <message>
-        <source>Report bug</source>
-        <translation type="vanished">Αναφορά σφάλματος</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="691"/>
@@ -8079,10 +7817,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="554"/>
         <source>File error.</source>
         <translation>Σφάλμα στο αρχείο.</translation>
-    </message>
-    <message>
-        <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
-        <translation type="vanished">Το Valentina δεν τερματίστηκε σωστά. Θέλετε να ανοίξετε εκ νέου τα αρχεία (%1) που είχατε ανοιχτά;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1322"/>
@@ -11384,14 +11118,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cut on fold</source>
-        <translation type="obsolete">Κόψιμο στη δίπλωση</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Ακύρωση</translation>
     </message>
 </context>
 <context>
@@ -18519,97 +18245,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesAppearancePage</name>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Μέγεθος</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="vanished">Αποθήκευση</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="vanished">Αυτόματη αποθήκευση τροποποιημένου πατρόν</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="obsolete">Χρονικό διάστημα:</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="vanished">Γλώσσα</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="obsolete">Γλώσσα  γραφικού περιβάλλοντος χρήστη:</translation>
-    </message>
-    <message>
-        <source>Decimal separator parts:</source>
-        <translation type="obsolete">Υποδιαστολές:</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="obsolete">Προεπιλεγμένη μονάδα:</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Γλώσσα ετικέτας:</translation>
-    </message>
-    <message>
-        <source>Pattern editing</source>
-        <translation type="vanished">Επεξεργασία πατρόν</translation>
-    </message>
-    <message>
-        <source>Reset warnings</source>
-        <translation type="vanished">Επαναφορά προειδοποιήσεων</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="vanished">Γραμμή εργαλείων</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">Το κείμενο εμφανίζεται κάτω απο το εικονίδιο (συνιστάται για αρχάριους).</translation>
-    </message>
-    <message>
-        <source>With OS options</source>
-        <translation type="vanished">Με επιλογές του λειτουργικού συστήματος</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="vanished">Εκατοστά</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="vanished">Χιλιοστά</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="vanished">Ίντσες</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="vanished">Γενικά</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">λεπτά</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">Διεύθυνση email:</translation>
-    </message>
-    <message>
-        <source>Update</source>
-        <translation type="vanished">Ενημέρωση</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -18883,10 +18518,6 @@ to %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Update</source>
-        <translation type="obsolete">Ενημέρωση</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
         <source>default unit</source>
         <translation type="unfinished"></translation>
@@ -18920,38 +18551,7 @@ to %2</source>
     </message>
 </context>
 <context>
-    <name>PreferencesPathPage</name>
-    <message>
-        <source>Paths that Valentina uses</source>
-        <translation type="vanished">Διαδρομές φακέλων που χρησιμοποιεί το Valentina</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Τύπος</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">Μονοπάτι</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Προεπιλογή</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Επεξεργασία</translation>
-    </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="obsolete">Άνοιγμα φακέλου</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesPatternPage</name>
-    <message>
-        <source>Undo</source>
-        <translation type="vanished">Αναίρεση</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
@@ -20264,263 +19864,6 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
         <source>Delete measurement</source>
         <translation type="unfinished">Διαγραφή διάστασης</translation>
-    </message>
-</context>
-<context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Type:</source>
-        <translation type="vanished">Τύπος:</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="vanished">Ύψος</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Ύψος:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Βοηθός φόρμουλας</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Τιμή</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Υπολογισμός</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Εμφάνιση πλήρους υπολογισμού σε πλαίσιο μηνύματος&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Φάρδος</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Φάρδος:</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Rotation:</source>
-        <translation type="obsolete">Περιστροφή:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Βοηθός φόρμουλας</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Τιμή</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="obsolete">Υπολογισμός</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Εμφάνιση πλήρους υπολογισμού σε πλαίσιο μηνύματος&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="obsolete">Μήκος:</translation>
-    </message>
-    <message>
-        <source>Arrows:</source>
-        <translation type="obsolete">Τόξα:</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Angle</source>
-        <translation type="vanished">Γωνία</translation>
-    </message>
-    <message>
-        <source>Bisector</source>
-        <translation type="vanished">Διχοτόμος</translation>
-    </message>
-    <message>
-        <source>Marks</source>
-        <translation type="vanished">Σημάδια</translation>
-    </message>
-    <message>
-        <source>Intersection</source>
-        <translation type="vanished">Διατομή</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Μήκος</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Μήκος:</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Φάρδος</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Φάρδος:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Γωνία:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Τύπος</translation>
-    </message>
-    <message>
-        <source>One line</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Μια γραμμή</translation>
-    </message>
-    <message>
-        <source>Two lines</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Δυο γραμμές</translation>
-    </message>
-    <message>
-        <source>Three lines</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Τρείς γραμμές</translation>
-    </message>
-    <message>
-        <source>T mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Σημάδι Τ</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Βοηθός φόρμουλας</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Τιμή</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Υπολογισμός</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Εμφάνιση πλήρους υπολογισμού σε πλαίσιο μηνύματος&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>All objects in path should follow in clockwise direction.</source>
-        <translation type="vanished">Όλα τα αντικείμενα του μονοπατιού θα πρέπει να ακολουθούν ωρολογιακή φορά.</translation>
-    </message>
-    <message>
-        <source>Ready!</source>
-        <translation type="obsolete">Έτοιμο!</translation>
-    </message>
-    <message>
-        <source>Seam allowance</source>
-        <translation type="vanished">Περιθώριο ραφής</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="vanished">Φάρδος:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Βοηθός φόρμουλας</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Τιμή</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="obsolete">Υπολογισμός</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Εμφάνιση πλήρους υπολογισμού σε πλαίσιο μηνύματος&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Nodes</source>
-        <translation type="obsolete">Κόμβοι</translation>
-    </message>
-    <message>
-        <source>Node:</source>
-        <translation type="vanished">Κόμβος:</translation>
-    </message>
-    <message>
-        <source>Before:</source>
-        <translation type="vanished">Πριν:</translation>
-    </message>
-    <message>
-        <source>Return to default width</source>
-        <translation type="obsolete">Επιστροφή στο προεπιλεγμένο πλάτος</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Προεπιλογή</translation>
-    </message>
-    <message>
-        <source>After:</source>
-        <translation type="vanished">Μετά:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">Γωνία:</translation>
-    </message>
-    <message>
-        <source>Start point:</source>
-        <translation type="vanished">Αρχικό σημείο:</translation>
-    </message>
-    <message>
-        <source>End point:</source>
-        <translation type="vanished">Τελικό σημείο:</translation>
-    </message>
-    <message>
-        <source>Hide the main path if the seam allowance is enabled</source>
-        <translation type="vanished">Απόκρυψη του κύριου μονοπατιού αν το περιθώριο ραφής είναι ενεργοποιημένο</translation>
-    </message>
-    <message>
-        <source>Hide main path</source>
-        <translation type="vanished">Απόκρυψη κύριου μονοπατιού</translation>
-    </message>
-    <message>
-        <source>Name of detail:</source>
-        <translation type="vanished">Όνομα της λεπτομέρειας:</translation>
-    </message>
-    <message>
-        <source>Detail</source>
-        <translation type="vanished">Λεπτομέρεια</translation>
-    </message>
-    <message>
-        <source>Name can&apos;t be empty</source>
-        <translation type="vanished">Το όνομα δε μπορεί να είναι κενό</translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <comment>seam allowance</comment>
-        <translation type="vanished">Προσαρμογή</translation>
-    </message>
-</context>
-<context>
-    <name>TabPlaceLabels</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Διάλογος</translation>
     </message>
 </context>
 <context>
@@ -24322,14 +23665,6 @@ Do you want to continue?</source>
 <context>
     <name>VToolFlippingByLine</name>
     <message>
-        <source>First line point</source>
-        <translation type="obsolete">Πρώτο σημείο γραμμής</translation>
-    </message>
-    <message>
-        <source>Second line point</source>
-        <translation type="obsolete">Δεύτερο σημείο γραμμής</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="170"/>
         <source>flipping by line</source>
         <translation type="unfinished"></translation>
@@ -25650,10 +24985,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolPointOfContact</name>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">Μήκος</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
@@ -27918,26 +27249,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>vNoisyHandler</name>
-    <message>
-        <source>DEBUG:</source>
-        <translation type="vanished">ΕΚΣΦΑΛΜΑΤΩΣΗ:</translation>
-    </message>
-    <message>
-        <source>WARNING:</source>
-        <translation type="vanished">ΠΡΟΕΙΔΟΠΟΙΗΣΗ:</translation>
-    </message>
-    <message>
-        <source>CRITICAL:</source>
-        <translation type="vanished">ΚΡΙΣΙΜΟ:</translation>
-    </message>
-    <message>
-        <source>FATAL:</source>
-        <translation type="vanished">ΑΝΕΠΑΝΟΡΘΩΤΟ:</translation>
-    </message>
-    <message>
-        <source>INFO:</source>
-        <translation type="vanished">ΠΛΗΡΟΦΟΡΙΕΣ:</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/core/vapplication.cpp" line="248"/>
         <source>Warning</source>

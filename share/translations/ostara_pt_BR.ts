@@ -202,45 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>About Valentina</source>
-        <translation type="vanished">Sobre Valentina</translation>
-    </message>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">Versão Valentina</translation>
-    </message>
-    <message>
-        <source>Special thanks</source>
-        <translation type="vanished">Agradecimentos especiais</translation>
-    </message>
-    <message>
-        <source>Credits</source>
-        <translation type="vanished">Créditos</translation>
-    </message>
-    <message>
-        <source>Web site : %1</source>
-        <translation type="vanished">Web site: %1</translation>
-    </message>
-    <message>
-        <source>Cannot open your default browser</source>
-        <translation type="vanished">Não foi possível abrir o navegador padrão</translation>
-    </message>
-    <message>
-        <source>Build revision:</source>
-        <translation type="vanished">Revisão de construção:</translation>
-    </message>
-    <message>
-        <source>Built on %1 at %2</source>
-        <translation type="vanished">Construído com %1 a %2</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translation type="vanished">Checar atualizações</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -534,41 +495,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAskCollectStatistic</name>
-    <message>
-        <source>Privacy</source>
-        <translation type="vanished">Privacidade</translation>
-    </message>
-    <message>
-        <source>Usage statistic</source>
-        <translation type="vanished">Estatísticas de Uso</translation>
-    </message>
-    <message>
-        <source>Send usage statistics</source>
-        <translation type="vanished">Enviar estatísticas de uso</translation>
-    </message>
-    <message>
-        <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation type="vanished">Ajude-nos a melhorar a Valentina, autorizando-nos a coletar estatísticas sobre o seu uso do software. &lt;span style=&quot; font-weight:700;&quot;&gt;Os dados coletados não contêm informações confidenciais,&lt;/span&gt; como nomes de usuários, endereços de e-mail, conteúdo de arquivos ou caminhos de acesso.</translation>
-    </message>
-    <message>
-        <source>Crash reports</source>
-        <translation type="vanished">Relatórios de falhas de software</translation>
-    </message>
-    <message>
-        <source>Send automatic crash reports</source>
-        <translation type="vanished">Enviar relatório de falhas automaticamente</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">E-mail:</translation>
-    </message>
-    <message>
-        <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation type="vanished">Os relatórios de falhas nos ajudam a melhorar a estabilidade do Valentina. Todas as informações contidas nesses relatórios são tratadas como confidenciais e são usadas apenas para melhorar as versões futuras do software. Ative o envio automático desses relatórios e preencha seu endereço de e-mail (opcional). Se você preencher o seu endereço de e-mail, poderemos entrar em contato com você com mais informações sobre a falha.</translation>
-    </message>
-</context>
-<context>
     <name>DialogBisector</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="118"/>
@@ -693,21 +619,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="172"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DialogCredits</name>
-    <message>
-        <source>Credits</source>
-        <translation type="vanished">Créditos</translation>
-    </message>
-    <message>
-        <source>Sponsors</source>
-        <translation type="vanished">Patrocinadores</translation>
-    </message>
-    <message>
-        <source>Authors</source>
-        <translation type="vanished">Autores</translation>
     </message>
 </context>
 <context>
@@ -2858,25 +2769,6 @@ Values and intervals will not be imported.</source>
     </message>
 </context>
 <context>
-    <name>DialogKnownMaterials</name>
-    <message>
-        <source>Known materials</source>
-        <translation type="vanished">Materiais utilizados</translation>
-    </message>
-    <message>
-        <source>Material:</source>
-        <translation type="vanished">Material:</translation>
-    </message>
-    <message>
-        <source>Name of material</source>
-        <translation type="vanished">Nome do material</translation>
-    </message>
-    <message>
-        <source>User material</source>
-        <translation type="vanished">Material do usuário</translation>
-    </message>
-</context>
-<context>
     <name>DialogLine</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="72"/>
@@ -4206,117 +4098,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Propriedades do molde</translation>
-    </message>
-    <message>
-        <source>Pattern description</source>
-        <translation type="vanished">Descrição do molde</translation>
-    </message>
-    <message>
-        <source>Security</source>
-        <translation type="vanished">Segurança</translation>
-    </message>
-    <message>
-        <source>Open only for read</source>
-        <translation type="vanished">Abrir somente para leitura</translation>
-    </message>
-    <message>
-        <source>Call context menu for edit</source>
-        <translation type="vanished">Abra o menu contextual para edição</translation>
-    </message>
-    <message>
-        <source>Name of measurement or increment</source>
-        <translation type="vanished">Nome da medida ou incremento</translation>
-    </message>
-    <message>
-        <source>Passmark width:</source>
-        <translation type="vanished">Largura do pique:</translation>
-    </message>
-    <message>
-        <source>No image</source>
-        <translation type="vanished">Sem imagem</translation>
-    </message>
-    <message>
-        <source>Delete image</source>
-        <translation type="vanished">Remover imagem</translation>
-    </message>
-    <message>
-        <source>Change image</source>
-        <translation type="vanished">Trocar imagem</translation>
-    </message>
-    <message>
-        <source>Save image to file</source>
-        <translation type="vanished">Salvar imagem</translation>
-    </message>
-    <message>
-        <source>Show image</source>
-        <translation type="vanished">Mostrar imagem</translation>
-    </message>
-    <message>
-        <source>Image for pattern</source>
-        <translation type="vanished">Imagem do molde</translation>
-    </message>
-    <message>
-        <source>untitled</source>
-        <translation type="vanished">sem título</translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="vanished">Caminho:</translation>
-    </message>
-    <message>
-        <source>Show in Explorer</source>
-        <translation type="vanished">Mostrar no Explorer</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;Empty&gt;</translation>
-    </message>
-    <message>
-        <source>File was not saved yet.</source>
-        <translation type="vanished">O arquivo não foi salvo.</translation>
-    </message>
-    <message>
-        <source>Show in Finder</source>
-        <translation type="vanished">Mostrar no Finder</translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="vanished">Modelagem</translation>
-    </message>
-    <message>
-        <source>For technical notes</source>
-        <translation type="vanished">Notas técnicas</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Idioma dos rótulos:</translation>
-    </message>
-    <message>
-        <source>Passmark length:</source>
-        <translation type="vanished">Tamanho do Pique:</translation>
-    </message>
-    <message>
-        <source>Invalid image. Error: %1</source>
-        <translation type="vanished">Imagem inválida. Erro: %1</translation>
-    </message>
-    <message>
-        <source>Unable to save image. Error: %1</source>
-        <translation type="vanished">Não foi possível salvar a imagem. Erro: %1</translation>
-    </message>
-    <message>
-        <source>Save Image</source>
-        <translation type="vanished">Salvar imagem</translation>
-    </message>
-    <message>
-        <source>Unable to show image. Error: %1</source>
-        <translation type="vanished">Não foi possível mostrar a imagem. Erro: %1</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -4357,30 +4138,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="66"/>
         <source>Type of pen:</source>
         <translation>Tipo de traço:</translation>
-    </message>
-    <message>
-        <source>Reverse node direction</source>
-        <translation type="vanished"> Inverter a direção do nó</translation>
-    </message>
-    <message>
-        <source>Excluded node</source>
-        <translation type="vanished">Nó excluído</translation>
-    </message>
-    <message>
-        <source>Turn point</source>
-        <translation type="vanished">Ponto de mudança de direção</translation>
-    </message>
-    <message>
-        <source>Check node uniqness</source>
-        <translation type="vanished">Verificar a unicidade do nó</translation>
-    </message>
-    <message>
-        <source>Notch</source>
-        <translation type="vanished">Pique</translation>
-    </message>
-    <message>
-        <source>Delete node</source>
-        <translation type="vanished">Excluir nó</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="125"/>
@@ -4733,22 +4490,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="1080"/>
         <source>Intersection 2 (only right)</source>
         <translation>Interseção 2 (apenas à direita)</translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Mover para o topo</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Subir</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Descer</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Mover para o final</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="101"/>
@@ -5753,17 +5494,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="vanished">Configuração</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation>Modelagem</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Caminhos</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -6222,14 +5955,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>DialogSeamAllowance</name>
     <message>
-        <source>Ready!</source>
-        <translation type="vanished">Pronto!</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valor</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Fio</translation>
@@ -6310,290 +6035,14 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Excluir</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="vanished">Opções</translation>
-    </message>
-    <message>
-        <source>Error. Can&apos;t save piece path.</source>
-        <translation type="vanished">Erro. Não foi possível salvar o caminho da peça.</translation>
-    </message>
-    <message>
-        <source>Infinite/undefined result</source>
-        <translation type="vanished">Resultado infinito ou indefinido</translation>
-    </message>
-    <message>
-        <source>Length should be positive</source>
-        <translation type="vanished">Comprimento deve ser positivo</translation>
-    </message>
-    <message>
-        <source>Parser error: %1</source>
-        <translation type="vanished">Erro de análise: %1</translation>
-    </message>
-    <message>
-        <source>Current seam allowance</source>
-        <translation type="vanished">Margem de costura atual</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width</source>
-        <translation type="vanished">Editar largura da margem de costura</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width before</source>
-        <translation type="vanished">Editar a largura da margem de costura antes</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width after</source>
-        <translation type="vanished">Editar a largura da margem de costura depois</translation>
-    </message>
-    <message>
-        <source>Edit passmark width</source>
-        <translation type="vanished">Editar largura do pique</translation>
-    </message>
-    <message>
-        <source>Edit passmark angle</source>
-        <translation type="vanished">Editar ângulo do pique</translation>
-    </message>
-    <message>
-        <source>You need more points!</source>
-        <translation type="vanished">São necessários mais pontos!</translation>
-    </message>
-    <message>
-        <source>You have to choose points in a clockwise direction!</source>
-        <translation type="vanished">Os pontos devem ser selecionados no sentido horário!</translation>
-    </message>
-    <message>
-        <source>First point cannot be equal to the last point!</source>
-        <translation type="vanished">O ponto inicial não pode ser o mesmo que o último!</translation>
-    </message>
-    <message>
-        <source>You have double points!</source>
-        <translation type="vanished">Existem pontos duplicados!</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="vanished">Vazio</translation>
-    </message>
-    <message>
-        <source>main path</source>
-        <translation type="vanished">caminho principal</translation>
-    </message>
-    <message>
-        <source>custom seam allowance</source>
-        <translation type="vanished">margem de costura personalizada</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation>nenhum</translation>
     </message>
     <message>
-        <source>Pins</source>
-        <translation type="vanished">Pinos</translation>
-    </message>
-    <message>
-        <source>no pin</source>
-        <translation type="vanished">nenhum pino</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="vanished">Erro</translation>
-    </message>
-    <message>
-        <source>Edit length</source>
-        <translation type="vanished">Editar comprimento</translation>
-    </message>
-    <message>
-        <source>Edit angle</source>
-        <translation type="vanished">Editar ângulo</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Caminhos</translation>
-    </message>
-    <message>
-        <source>Each point in the path must be unique!</source>
-        <translation type="vanished">Cada ponto no caminho deve ser único!</translation>
-    </message>
-    <message>
-        <source>Passmarks</source>
-        <translation type="vanished">Piques</translation>
-    </message>
-    <message>
-        <source>Workpiece tool</source>
-        <translation type="vanished">Ferramenta de peça de trabalho</translation>
-    </message>
-    <message>
-        <source>Segment</source>
-        <translation type="vanished">Segmento</translation>
-    </message>
-    <message>
-        <source>Rectangle</source>
-        <translation type="vanished">Retângulo</translation>
-    </message>
-    <message>
-        <source>Cross</source>
-        <translation type="vanished">Marcação em Cruz</translation>
-    </message>
-    <message>
-        <source>T-shaped</source>
-        <translation type="vanished">Marcação em T</translation>
-    </message>
-    <message>
-        <source>Doubletree</source>
-        <translation type="vanished">Árvore dupla</translation>
-    </message>
-    <message>
-        <source>Corner</source>
-        <translation type="vanished">Canto</translation>
-    </message>
-    <message>
-        <source>Triangle</source>
-        <translation type="vanished">Triângulo</translation>
-    </message>
-    <message>
-        <source>H-shaped</source>
-        <translation type="vanished">Marcação em H</translation>
-    </message>
-    <message>
-        <source>Button</source>
-        <translation type="vanished">Botão</translation>
-    </message>
-    <message>
-        <source>Place label</source>
-        <translation type="vanished">Colocar rótulo</translation>
-    </message>
-    <message>
-        <source>To open all detail&apos;s features complete creating the main path. Please, press OK.</source>
-        <translation type="vanished">Para abrir todas as funcionalidades de molde, finalize a criação do caminho principal. Clique em OK.</translation>
-    </message>
-    <message>
-        <source>The same curve repeats twice!</source>
-        <translation type="vanished">A mesma curva repete duas vezes!</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;Empty&gt;</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <source>Fold line</source>
         <translation>Linha de dobra</translation>
-    </message>
-    <message>
-        <source>Circle</source>
-        <translation type="vanished">Círculo</translation>
-    </message>
-    <message>
-        <source>Edit passmark length</source>
-        <translation type="vanished">Editar largura do pique</translation>
-    </message>
-    <message>
-        <source>Edit notch visibility</source>
-        <translation type="vanished">Editar visibilidade do pique</translation>
-    </message>
-    <message>
-        <source>Edit fold line height</source>
-        <translation type="vanished">Editar altura da linha de dobra</translation>
-    </message>
-    <message>
-        <source>Edit fold line width</source>
-        <translation type="vanished">Editar largura da linha de dobra</translation>
-    </message>
-    <message>
-        <source>Edit fold line center position</source>
-        <translation type="vanished">Editar posição central da linha de dobra</translation>
-    </message>
-    <message>
-        <source>Invalid mirror line start point!</source>
-        <translation type="vanished">Ponto de início da linha de espelhamento inválido!</translation>
-    </message>
-    <message>
-        <source>Invalid mirror line end point!</source>
-        <translation type="vanished">Ponto de término da linha de espelhamento inválido!</translation>
-    </message>
-    <message>
-        <source>Start and end mirror line points must be unique!</source>
-        <translation type="vanished">Os pontos de início e fim da linha de espelhamento devem ser únicos!</translation>
-    </message>
-    <message>
-        <source>Mirror points must be neighbors!</source>
-        <translation type="vanished">Pontos de espelhamento devem ser vizinhos!</translation>
-    </message>
-    <message>
-        <source>Two ways (Up/Down)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Duas direções (Para cima/Para baixo)</translation>
-    </message>
-    <message>
-        <source>One way (Up)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Uma direção (Para cima)</translation>
-    </message>
-    <message>
-        <source>One way (Down)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Uma direção (Para baixo)</translation>
-    </message>
-    <message>
-        <source>Four ways</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Quatro direções</translation>
-    </message>
-    <message>
-        <source>Two ways (Up/Left)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Duas direções (Para Cima/Esquerda)</translation>
-    </message>
-    <message>
-        <source>Two ways (Up/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Duas direções (Para cima/Direita)</translation>
-    </message>
-    <message>
-        <source>Two ways (Down/Left)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Duas direções (Para Baixo/Esquerda)</translation>
-    </message>
-    <message>
-        <source>Two ways (Down/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Duas direções (Para Baixo/Direita)</translation>
-    </message>
-    <message>
-        <source>Three ways (Up/Down/Left)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Três direções (Para cima/Para baixo/Esquerda)</translation>
-    </message>
-    <message>
-        <source>Three ways (Up/Down/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Três direções (Para cima/Para baixo/Direita)</translation>
-    </message>
-    <message>
-        <source>Three ways (Up/Left/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Três direções (Para cima/Esquerda/Direita)</translation>
-    </message>
-    <message>
-        <source>Three ways (Down/Left/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Três direções (Para baixo/Esquerda/Direita)</translation>
-    </message>
-    <message>
-        <source>Two arrows (text above)</source>
-        <translation type="vanished">Duas setas (texto acima)</translation>
-    </message>
-    <message>
-        <source>Two arrows</source>
-        <translation type="vanished">Duas setas</translation>
-    </message>
-    <message>
-        <source>Duplicate</source>
-        <translation type="vanished">Duplicar</translation>
-    </message>
-    <message>
-        <source>Invalid segment!</source>
-        <translation type="vanished">Segmento inválido!</translation>
     </message>
 </context>
 <context>
@@ -7690,10 +7139,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished">Exportar</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">Novo</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
         <translation type="unfinished">Curva</translation>
@@ -7791,60 +7236,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>FvUpdateWindow</name>
-    <message>
-        <source>Software Update</source>
-        <translation type="vanished">Atualização de Software</translation>
-    </message>
-    <message>
-        <source>%1 %2 is now available - you have %3. Would you like to download it now?</source>
-        <translation type="vanished">%1 %2 está disponível - atual %3. Gostaria de baixar agora?</translation>
-    </message>
-    <message>
-        <source>Skip This Version</source>
-        <translation type="vanished">Ignorar esta Versão</translation>
-    </message>
-    <message>
-        <source>Remind Me Later</source>
-        <translation type="vanished">Lembrar Mais Tarde</translation>
-    </message>
-    <message>
-        <source>Get Update</source>
-        <translation type="vanished">Obter Atualizações</translation>
-    </message>
-    <message>
-        <source>%1 update is available!</source>
-        <translation type="vanished">%1 atualização disponível!</translation>
-    </message>
-    <message>
-        <source>New %1 test version is now available. Would you like to download it now?</source>
-        <translation type="vanished">Nova versão de teste %1 está disponível. Gostaria de baixá-la agora?</translation>
-    </message>
-</context>
-<context>
-    <name>FvUpdater</name>
-    <message>
-        <source>Cannot open your default browser.</source>
-        <translation type="vanished">Não foi possível abrir o navegador padrão.</translation>
-    </message>
-    <message>
-        <source>Feed download failed: %1.</source>
-        <translation type="vanished">Falha no download do feed: %1.</translation>
-    </message>
-    <message>
-        <source>Feed parsing failed: %1 %2.</source>
-        <translation type="vanished">Falhas na transmissão do download: %1 %2.</translation>
-    </message>
-    <message>
-        <source>No updates were found.</source>
-        <translation type="vanished">Não foram encontradas atualizações.</translation>
-    </message>
-    <message>
-        <source>Feed error: invalid &quot;enclosure&quot; with the download link</source>
-        <translation type="vanished">Erro de feed: &quot;anexo&quot; inválido com o link de download</translation>
-    </message>
-</context>
-<context>
     <name>HideAllBackgroundImages</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/image/hideallbackgroundimages.cpp" line="38"/>
@@ -7897,20 +7288,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>InitPieceLabelLanguages</name>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Padrão</translation>
-    </message>
-</context>
-<context>
-    <name>InternalStrings</name>
-    <message>
-        <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
-        <translation type="vanished">O PROGRAMA É FORNECIDO COMO ESTÁ; SEM GARANTIA DE QUALQUER TIPO, INCLUINDO A GARANTIA DE DESIGN, COMERCIALIZAÇÃO E ADEQUAÇÃO PARA UM PROPÓSITO ESPECÍFICO.</translation>
-    </message>
-</context>
-<context>
     <name>LinkPieceGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
@@ -7920,10 +7297,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Valentina</source>
-        <translation type="vanished">Valentina</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point along perpendicular</source>
@@ -8143,10 +7516,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Preferências</translation>
     </message>
     <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Propriedades do molde</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
         <source>Zoom in</source>
@@ -8168,10 +7537,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
         <source>Zoom fit best</source>
         <translation>Ajustar à janela</translation>
-    </message>
-    <message>
-        <source>Report bug</source>
-        <translation type="vanished">Reportar erro</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="691"/>
@@ -8452,10 +7817,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="554"/>
         <source>File error.</source>
         <translation>Erro de arquivo.</translation>
-    </message>
-    <message>
-        <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
-        <translation type="vanished">Valentina não fechou corretamente. Deseja abrir novamente os arquivos (%1) que estavam abertos?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1322"/>
@@ -8923,10 +8284,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="441"/>
         <source>Save &amp;As…</source>
         <translation>Salvar &amp;Como…</translation>
-    </message>
-    <message>
-        <source>Report Bug…</source>
-        <translation type="vanished">Reportar erro…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="785"/>
@@ -9669,10 +9026,6 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="302"/>
         <source>Could not create recipe file. %1</source>
         <translation>Não foi possível criar o arquivo de histórico. %1</translation>
-    </message>
-    <message>
-        <source>Shop</source>
-        <translation type="vanished">Loja</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="159"/>
@@ -11769,14 +11122,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cut on fold</source>
-        <translation type="obsolete">Cortar na dobra</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Cancelar</translation>
     </message>
 </context>
 <context>
@@ -18586,10 +17931,6 @@ Save it before leaving it?</source>
         <source>Height</source>
         <translation type="unfinished">Altura</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Rótulo</translation>
-    </message>
 </context>
 <context>
     <name>OToolSpiral</name>
@@ -18908,298 +18249,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesAppearancePage</name>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Tamanho</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="vanished">Salvar</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="vanished">Salvamento automático para molde modificado</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="vanished">Intervalo:</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="vanished">Idioma</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="vanished">Idioma da Interface:</translation>
-    </message>
-    <message>
-        <source>Decimal separator parts:</source>
-        <translation type="vanished">Separadores decimais:</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="vanished">Unidade de medida padrão:</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Idioma dos rótulos:</translation>
-    </message>
-    <message>
-        <source>Pattern editing</source>
-        <translation type="vanished">Edição de molde</translation>
-    </message>
-    <message>
-        <source>Reset warnings</source>
-        <translation type="vanished">reinicializar avisos</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="vanished">Barra de ferramentas</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">A legenda aparece embaixo do ícone. (recomendado para iniciantes).</translation>
-    </message>
-    <message>
-        <source>With OS options</source>
-        <translation type="vanished">Com opções de OS</translation>
-    </message>
-    <message>
-        <source>send crash report</source>
-        <translation type="vanished">enviar relatório de falha</translation>
-    </message>
-    <message>
-        <source>user email in case of crash</source>
-        <translation type="vanished">E-mail do usuário em caso de falha</translation>
-    </message>
-    <message>
-        <source>Dark</source>
-        <comment>theme</comment>
-        <translation type="vanished">Escuro</translation>
-    </message>
-    <message>
-        <source>Light</source>
-        <comment>theme</comment>
-        <translation type="vanished">Claro</translation>
-    </message>
-    <message>
-        <source>Tool icon cursor</source>
-        <translation type="vanished">Cursor da ferramenta em uso</translation>
-    </message>
-    <message>
-        <source>Arrow cursor</source>
-        <translation type="vanished">Cursor de seta</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="vanished">Centímetros</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="vanished">Milímetros</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="vanished">Polegadas</translation>
-    </message>
-    <message>
-        <source>Update a pattern only after a curve release</source>
-        <translation type="vanished">Atualize o molde somente quando a curva for liberada</translation>
-    </message>
-    <message>
-        <source>Free curve mode</source>
-        <translation type="vanished">Modo de curva livre</translation>
-    </message>
-    <message>
-        <source>default unit</source>
-        <translation type="vanished">unidade de medida padrão</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="vanished">Geral</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">min</translation>
-    </message>
-    <message>
-        <source>Piece label language:</source>
-        <translation type="vanished">Idioma do rótulo da peça:</translation>
-    </message>
-    <message>
-        <source>Double click calls Zoom fit best for current pattern piece</source>
-        <translation type="vanished">Duplo clique para ajustar para a melhor visualização para peça atual</translation>
-    </message>
-    <message>
-        <source>Enable to translate formula according to locale</source>
-        <translation type="vanished">Habilitar para traduzir fórmulas de acordo com o idioma do sistema</translation>
-    </message>
-    <message>
-        <source>Translate formula</source>
-        <translation type="vanished">Traduzir fórmula</translation>
-    </message>
-    <message>
-        <source>Enable Garbage Collector</source>
-        <translation type="vanished">Ativar Coletor De Lixo</translation>
-    </message>
-    <message>
-        <source>Toolbox icon size:</source>
-        <translation type="vanished">Tamanho do ícone da barra de ferramentas:</translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation type="vanished">Pequeno</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="vanished">Normal</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="vanished">Tema:</translation>
-    </message>
-    <message>
-        <source>Pointer mode:</source>
-        <translation type="vanished">Modo de cursor:</translation>
-    </message>
-    <message>
-        <source>Shortcuts</source>
-        <translation type="vanished">Atalhos</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="vanished">Ação</translation>
-    </message>
-    <message>
-        <source>Restore defaults</source>
-        <translation type="vanished">Restaurar padrão</translation>
-    </message>
-    <message>
-        <source>Scrolling</source>
-        <translation type="vanished">Rolagem</translation>
-    </message>
-    <message>
-        <source>Animation</source>
-        <translation type="vanished">Animação</translation>
-    </message>
-    <message>
-        <source>Duration:</source>
-        <translation type="vanished">Duração:</translation>
-    </message>
-    <message>
-        <source>Scrolling animation duration</source>
-        <translation type="vanished">Duração da animação de rolagem</translation>
-    </message>
-    <message>
-        <source>ms</source>
-        <comment>milliseconds</comment>
-        <translation type="vanished">ms</translation>
-    </message>
-    <message>
-        <source>Update interval:</source>
-        <translation type="vanished">Intervalo de atualização:</translation>
-    </message>
-    <message>
-        <source>Time in milliseconds between each animation update</source>
-        <translation type="vanished">Tempo em milissegundos entre cada atualização de animação</translation>
-    </message>
-    <message>
-        <source>Mouse scale</source>
-        <translation type="vanished">Escala do mouse</translation>
-    </message>
-    <message>
-        <source>Sensor:</source>
-        <comment>sensor mouse</comment>
-        <translation type="vanished">Sensor:</translation>
-    </message>
-    <message>
-        <source>Scale scrolling sensitivity for mouse with sensor</source>
-        <translation type="vanished">Ajustar a sensibilidade de rolagem para o mouse com sensor</translation>
-    </message>
-    <message>
-        <source>Wheel:</source>
-        <comment>mouse wheel</comment>
-        <translation type="vanished">Roda:</translation>
-    </message>
-    <message>
-        <source>Scale scrolling sensitivity for mouse with wheel</source>
-        <translation type="vanished">Ajustar a sensibilidade de rolagem para o mouse com roda</translation>
-    </message>
-    <message>
-        <source>Acceleration:</source>
-        <translation type="vanished">Aceleração:</translation>
-    </message>
-    <message>
-        <source>Privacy</source>
-        <translation type="vanished">Privacidade</translation>
-    </message>
-    <message>
-        <source>Usage statistic</source>
-        <translation type="vanished">Estatísticas de Uso</translation>
-    </message>
-    <message>
-        <source>Send usage statistics</source>
-        <translation type="vanished">Enviar estatísticas de uso</translation>
-    </message>
-    <message>
-        <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation type="vanished">Ajude-nos a melhorar a Valentina, autorizando-nos a coletar estatísticas sobre o seu uso do software. &lt;span style=&quot; font-weight:700;&quot;&gt;Os dados coletados não contêm informações confidenciais,&lt;/span&gt; como nomes de usuários, endereços de e-mail, conteúdo de arquivos ou caminhos de acesso.</translation>
-    </message>
-    <message>
-        <source>Crash reports</source>
-        <translation type="vanished">Relatórios de falhas de software</translation>
-    </message>
-    <message>
-        <source>Send automatic crash reports</source>
-        <translation type="vanished">Enviar relatório de falhas automaticamente</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">E-mail:</translation>
-    </message>
-    <message>
-        <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation type="vanished">Os relatórios de falhas nos ajudam a melhorar a estabilidade do Valentina. Todas as informações contidas nesses relatórios são tratadas como confidenciais e são usadas apenas para melhorar as versões futuras do software. Ative o envio automático desses relatórios e preencha seu endereço de e-mail (opcional). Se você preencher o seu endereço de e-mail, poderemos entrar em contato com você com mais informações sobre a falha.</translation>
-    </message>
-    <message>
-        <source>User Interface</source>
-        <translation type="vanished">Interface do usuário</translation>
-    </message>
-    <message>
-        <source>Enable collecting unused objects when open pattern file.</source>
-        <translation type="vanished">Habilitar a coleta de objetos não utilizados ao abrir o arquivo de modelagem.</translation>
-    </message>
-    <message>
-        <source>Don&apos;t use the native file dialog</source>
-        <translation type="vanished">Não use o diálogo de arquivo do sistema</translation>
-    </message>
-    <message>
-        <source>Update</source>
-        <translation type="vanished">Atualizar</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates each time the application starts</source>
-        <translation type="vanished">Verificar automaticamente as atualizações cada vez que o aplicativo é iniciado</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates</source>
-        <translation type="vanished">Buscar atualizações automaticamente</translation>
-    </message>
-    <message>
-        <source>Disable if you want to skip interactive part of creating tools. And go straight to editing formulas instead.</source>
-        <translation type="vanished">Desmarque essa caixa se preferir desativar a ajuda interativa ao usar as ferramentas e ir direto para a composição da fórmula.</translation>
-    </message>
-    <message>
-        <source>Interactive tools</source>
-        <translation type="vanished">Ferramentas interativas</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -19473,18 +18522,6 @@ to %2</source>
         <translation type="unfinished">Não use o diálogo de arquivo do sistema</translation>
     </message>
     <message>
-        <source>Update</source>
-        <translation type="obsolete">Atualizar</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates each time the application starts</source>
-        <translation type="obsolete">Verificar automaticamente as atualizações cada vez que o aplicativo é iniciado</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates</source>
-        <translation type="obsolete">Buscar atualizações automaticamente</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
         <source>default unit</source>
         <translation type="unfinished">unidade de medida padrão</translation>
@@ -19518,62 +18555,7 @@ to %2</source>
     </message>
 </context>
 <context>
-    <name>PreferencesPathPage</name>
-    <message>
-        <source>Paths that Valentina uses</source>
-        <translation type="vanished">Caminhos que Valentina usa</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Tipo</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">Caminho</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Padrão</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="vanished">Editar</translation>
-    </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="vanished">Abrir Diretório</translation>
-    </message>
-    <message>
-        <source>My SVG Fonts</source>
-        <translation type="vanished">Minhas Fontes SVG</translation>
-    </message>
-    <message>
-        <source>My font corrections</source>
-        <translation type="vanished">Minhas correções de fonte</translation>
-    </message>
-    <message>
-        <source>My known measurements</source>
-        <translation type="vanished">Minhas medidas conhecidas</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesPatternPage</name>
-    <message>
-        <source>Graphical output</source>
-        <translation type="vanished">Saída gráfica</translation>
-    </message>
-    <message>
-        <source>Use antialiasing</source>
-        <translation type="vanished">Usar antisserrilhamento</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="vanished">Desfazer</translation>
-    </message>
-    <message>
-        <source>Count steps (0 - no limit):</source>
-        <translation type="vanished">Contar passos (0 - sem limites):</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
@@ -19605,10 +18587,6 @@ to %2</source>
         <translation>Margem de costura</translation>
     </message>
     <message>
-        <source>This setting has no effect since the value is overridden by the command-line option</source>
-        <translation type="vanished">Esta configuração não tem efeito, pois o valor é substituído pela opção de linha de comando</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="108"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
         <translation type="unfinished"></translation>
@@ -19622,62 +18600,6 @@ to %2</source>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="161"/>
         <source>Default value:</source>
         <translation>Valor padrão:</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="vanished">Fonte</translation>
-    </message>
-    <message>
-        <source>Outline font:</source>
-        <translation type="vanished">Fonte de contorno:</translation>
-    </message>
-    <message>
-        <source>Single-line font:</source>
-        <translation type="vanished">Fonte de uma única linha:</translation>
-    </message>
-    <message>
-        <source>Allow single stroke outline fonts</source>
-        <translation type="vanished">Permitir fontes com contorno de traço único</translation>
-    </message>
-    <message>
-        <source>When this option is activated, the application will utilize SVG Fonts present in your system to render piece label text, instead of using outline fonts.</source>
-        <translation type="vanished">Quando essa opção estiver ativada, o aplicativo utilizará Fontes SVG presentes em seu sistema para renderizar o texto do rótulo da peça, em vez de usar fontes de contorno.</translation>
-    </message>
-    <message>
-        <source>Use single-line fonts</source>
-        <translation type="vanished">Use fontes de uma linha</translation>
-    </message>
-    <message>
-        <source>Materials</source>
-        <translation type="vanished">Materiais</translation>
-    </message>
-    <message>
-        <source>Known materials:</source>
-        <translation type="vanished">Materiais conhecidos:</translation>
-    </message>
-    <message>
-        <source>Manage list of known materials</source>
-        <translation type="vanished">Gerenciar lista de materiais conhecidos</translation>
-    </message>
-    <message>
-        <source>Manage</source>
-        <translation type="vanished">Gerenciar</translation>
-    </message>
-    <message>
-        <source>When manage pattern materials save them to known materials list</source>
-        <translation type="vanished">Quando adicionar materiais ao molde, salve-os na lista de materiais conhecidos</translation>
-    </message>
-    <message>
-        <source>Remeber pattern materials</source>
-        <translation type="vanished">Lembrar materiais do molde</translation>
-    </message>
-    <message>
-        <source>Curve approximation:</source>
-        <translation type="vanished">Curva de aproximação:</translation>
-    </message>
-    <message>
-        <source>Set default curve approximation scale</source>
-        <translation type="vanished">Definir a escala padrão para a aproximação da curva</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="55"/>
@@ -19698,24 +18620,6 @@ to %2</source>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.cpp" line="146"/>
         <source>Inches</source>
         <translation>Polegadas</translation>
-    </message>
-    <message>
-        <source>Use OpenGL to render a scene.
-This option will take an affect after restart.</source>
-        <translation type="vanished">Use o OpenGL para renderizar uma cena.
-Esta opção terá efeito após reinicialização.</translation>
-    </message>
-    <message>
-        <source>Use OpenGL render</source>
-        <translation type="vanished">Usar renderização OpenGL</translation>
-    </message>
-    <message>
-        <source>antialiasing</source>
-        <translation type="vanished">antisserrilhamento</translation>
-    </message>
-    <message>
-        <source>scene render</source>
-        <translation type="vanished">cena renderizada</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="187"/>
@@ -19848,70 +18752,6 @@ Esta opção terá efeito após reinicialização.</translation>
         <location filename="../../src/libs/vmisc/projectversion.cpp" line="121"/>
         <source>Based on Qt %1 (%2, %3 bit)</source>
         <translation>Baseado no QT %1 (%2, %3 bit)</translation>
-    </message>
-    <message>
-        <source>VLayoutPassmark prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade de prefixo VLayoutPassmark: cabeçalho de fluxo real = 0x%1 e cabeçalho de fluxo = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPassmark compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade VLayoutPassmark: versão de classe real = %1 e versão de classe = %2</translation>
-    </message>
-    <message>
-        <source>VLayoutPlaceLabel prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade de prefixo em VLayoutPlaceLabel: cabeçalho de fluxo real = 0x%1 e cabeçalho de fluxo = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPlaceLabel compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade em VLayoutPlaceLabel: versão de classe real = %1 e versão de classe = %2</translation>
-    </message>
-    <message>
-        <source>VAbstractPieceData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade de prefixo em VAbstractPieceData: cabeçalho de fluxo real = 0x%1 e cabeçalho de fluxo = 0x%2</translation>
-    </message>
-    <message>
-        <source>VAbstractPieceData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade em VAbstractPieceData: versão da classe real = %1 e versão da classe = %2</translation>
-    </message>
-    <message>
-        <source>VLayoutPiecePathData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade do prefixo VLayoutPieceData: actualStreamHeader = 0x%1 e streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPiecePathData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade nos Dados de Caminho da Peça no Encaixe: a versão real da classe é %1 e a versão da classe &apos;esperada&apos; é %2</translation>
-    </message>
-    <message>
-        <source>CustomSARecord prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade de prefixo CustomSARecord: actualStreamHeader = 0x%1 e streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>CustomSARecord compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade CustomSARecord: actualClassVersion = %1 e classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VPieceNodeData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade de prefixo VPieceNodeData: actualStreamHeader = 0x%1 e streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VPieceNodeData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade VPieceNodeData: actualClassVersion = %1 e classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VLayoutPieceData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade do prefixo VLayoutPieceData: actualStreamHeader = 0x%1 e streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPieceData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade VLayoutPieceData: actualClassVersion = %1 e classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VPieceGrainlinePrivate prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Erro de incompatibilidade do prefixo VPieceGrainlinePrivate: actualStreamHeader = 0x%1 e streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VPieceGrainlinePrivate compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Erro de compatibilidade em VPieceGrainlinePrivate: versão real da classe = %1 e versão da classe = %2</translation>
     </message>
 </context>
 <context>
@@ -21031,542 +19871,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Form</source>
-        <translation type="vanished">Forma</translation>
-    </message>
-    <message>
-        <source>Fold line</source>
-        <translation type="vanished">Linha de dobra</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="vanished">Tipo:</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation type="vanished">Rótulo:</translation>
-    </message>
-    <message>
-        <source>Manual shape</source>
-        <translation type="vanished">Forma manual</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="vanished">Altura</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Altura:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Assistente de fórmulas</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valor</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Fórmula</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar cálculo completo na caixa de mensagem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Largura</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Largura:</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="vanished">Centro</translation>
-    </message>
-    <message>
-        <source>Center:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Centro:</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Grainline enabled</source>
-        <translation type="vanished">Sentido do fio habilitado</translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="vanished">Rotação:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Assistente de fórmulas</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valor</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Fórmula</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar cálculo completo na caixa de mensagem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="vanished">Comprimento:</translation>
-    </message>
-    <message>
-        <source>Center pin:</source>
-        <translation type="vanished">Pino central:</translation>
-    </message>
-    <message>
-        <source>Top pin:</source>
-        <translation type="vanished">Pino superior:</translation>
-    </message>
-    <message>
-        <source>Bottom pin:</source>
-        <translation type="vanished">Pino inferior:</translation>
-    </message>
-    <message>
-        <source>Arrows:</source>
-        <translation type="vanished">Setas:</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="vanished">Visibilidade</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Passmark:</source>
-        <translation type="vanished">Pique:</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="vanished">Ângulo</translation>
-    </message>
-    <message>
-        <source>Straightforward</source>
-        <translation type="vanished">Reto</translation>
-    </message>
-    <message>
-        <source>Bisector</source>
-        <translation type="vanished">Bissetriz</translation>
-    </message>
-    <message>
-        <source>Marks</source>
-        <translation type="vanished">Marcações</translation>
-    </message>
-    <message>
-        <source>Select if need designate the corner point as a passmark</source>
-        <translation type="vanished">Selecione para designar o ponto do canto como um pique</translation>
-    </message>
-    <message>
-        <source>Intersection</source>
-        <translation type="vanished">Interseção</translation>
-    </message>
-    <message>
-        <source>Clockwise opening</source>
-        <translation type="vanished">Abertura no sentido horário</translation>
-    </message>
-    <message>
-        <source>Not Mirrored</source>
-        <translation type="vanished">Não espelhado</translation>
-    </message>
-    <message>
-        <source>Manual shape</source>
-        <translation type="vanished">Forma manual</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Comprimento</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Comprimento:</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Largura</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Largura:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Ângulo:</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Controle</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="vanished">Visível</translation>
-    </message>
-    <message>
-        <source>Create a formula that regulates visibility. Values different from &quot;0&quot; make a notch visible</source>
-        <translation type="vanished">Crie uma fórmula para gerenciar a visibilidade. Valor diferente de &quot;0&quot; torna o pique visível</translation>
-    </message>
-    <message>
-        <source>Show the second passmark on seam line</source>
-        <translation type="vanished">Mostrar segundo pique na linha de costura</translation>
-    </message>
-    <message>
-        <source>This option has effect only if the second passmark on seam line enabled in global preferences. The option helps disable the second passmark for this passmark only.</source>
-        <translation type="vanished">Esta opção só terá efeito se o segundo pique na linha de costura for ativado nas preferências globais. A opção ajuda a desativar a segunda marcação somente para este pique.</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Tipo</translation>
-    </message>
-    <message>
-        <source>One line</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Uma linha</translation>
-    </message>
-    <message>
-        <source>Two lines</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Duas linhas</translation>
-    </message>
-    <message>
-        <source>Three lines</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Três linhas</translation>
-    </message>
-    <message>
-        <source>T mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Marcação em T</translation>
-    </message>
-    <message>
-        <source>External V mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Marcação em V externa</translation>
-    </message>
-    <message>
-        <source>Internal V mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Marcação em V interna</translation>
-    </message>
-    <message>
-        <source>U mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Marcação em U</translation>
-    </message>
-    <message>
-        <source>Box mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Marcação quadrada</translation>
-    </message>
-    <message>
-        <source>Check mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Marca de seleção</translation>
-    </message>
-    <message>
-        <source>Select if need designate the corner point as a passmark. Show only left passmark.</source>
-        <translation type="vanished">Selecione para designar o ponto do canto como um pique. Mostrar apenas o pique esquerdo.</translation>
-    </message>
-    <message>
-        <source>Intersection (only left)</source>
-        <translation type="vanished">Interseção (apenas à esquerda)</translation>
-    </message>
-    <message>
-        <source>Select if need designate the corner point as a passmark. Show only right passmark.</source>
-        <translation type="vanished">Selecione para designar o ponto do canto como um pique. Mostrar apenas o pique direito.</translation>
-    </message>
-    <message>
-        <source>Intersection (only right)</source>
-        <translation type="vanished">Interseção (apenas à direita)</translation>
-    </message>
-    <message>
-        <source>Intersection 2</source>
-        <translation type="vanished">Interseção 2</translation>
-    </message>
-    <message>
-        <source>Intersection 2 (only left)</source>
-        <translation type="vanished">Interseção 2 (apenas à esquerda)</translation>
-    </message>
-    <message>
-        <source>Intersection 2 (only right)</source>
-        <translation type="vanished">Interseção 2 (apenas à direita)</translation>
-    </message>
-    <message>
-        <source>Acute angle that looks outside of piece</source>
-        <translation type="vanished">Ângulo agudo apontando para o exterior da peça</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Assistente de fórmulas</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valor</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Fórmula</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar cálculo completo na caixa de mensagem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>List of all defined passmarks. To define a passmark return to the Main Path tab, call context menu for a point item and make it a passmark.</source>
-        <translation type="vanished">Lista de todos os piques definidos. Para definir um novo pique, retorne à guia Caminho Principal, abra o menu contextual de um ponto e torne-o um pique.</translation>
-    </message>
-    <message>
-        <source>Acute angle that looks inside of piece</source>
-        <translation type="vanished">Ângulo agudo apontando para o interior da peça</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>Main path</source>
-        <translation type="vanished">Caminho principal</translation>
-    </message>
-    <message>
-        <source>All objects in path should follow in clockwise direction.</source>
-        <translation type="vanished">Todos os objetos no traçado devem seguir o sentido horário.</translation>
-    </message>
-    <message>
-        <source>Ready!</source>
-        <translation type="vanished">Pronto!</translation>
-    </message>
-    <message>
-        <source>Show full piece</source>
-        <translation type="vanished">Mostrar peça inteira</translation>
-    </message>
-    <message>
-        <source>Reverse node direction</source>
-        <translation type="vanished"> Inverter a direção do nó</translation>
-    </message>
-    <message>
-        <source>Excluded node</source>
-        <translation type="vanished">Nó excluído</translation>
-    </message>
-    <message>
-        <source>Turn point</source>
-        <translation type="vanished">Ponto de mudança de direção</translation>
-    </message>
-    <message>
-        <source>Check node uniqness</source>
-        <translation type="vanished">Verificar a unicidade do nó</translation>
-    </message>
-    <message>
-        <source>Notch</source>
-        <translation type="vanished">Pique</translation>
-    </message>
-    <message>
-        <source>Duplicate</source>
-        <translation type="vanished">Duplicar</translation>
-    </message>
-    <message>
-        <source>Delete node</source>
-        <translation type="vanished">Excluir nó</translation>
-    </message>
-    <message>
-        <source>Mirror line</source>
-        <translation type="vanished">Linha de espelhamento</translation>
-    </message>
-    <message>
-        <source>Show mirror line</source>
-        <translation type="vanished">Exibir linha de simetria</translation>
-    </message>
-    <message>
-        <source>Symmetrical copy</source>
-        <translation type="vanished">Cópia Simétrica</translation>
-    </message>
-    <message>
-        <source>Seam allowance</source>
-        <translation type="vanished">Margem de costura</translation>
-    </message>
-    <message>
-        <source>Activates true zero seam allowance width. This also disables intersection checks between the seam line and seam allowance.</source>
-        <translation type="vanished">Ativa opção de margem de costura com largura zerada. Também desabilita marcações de interseção entre margem de costura e área de costura.</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="vanished">Largura:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Assistente de fórmulas</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valor</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Fórmula</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mostrar cálculo completo na caixa de mensagem&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Nodes</source>
-        <translation type="vanished">Nós</translation>
-    </message>
-    <message>
-        <source>Node:</source>
-        <translation type="vanished">Nó:</translation>
-    </message>
-    <message>
-        <source>Before:</source>
-        <translation type="vanished">Antes:</translation>
-    </message>
-    <message>
-        <source>Return to default width</source>
-        <translation type="vanished">Retornar à largura padrão</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Padrão</translation>
-    </message>
-    <message>
-        <source>After:</source>
-        <translation type="vanished">Depois:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="vanished">Ângulo:</translation>
-    </message>
-    <message>
-        <source>Start point:</source>
-        <translation type="vanished">Ponto inicial:</translation>
-    </message>
-    <message>
-        <source>End point:</source>
-        <translation type="vanished">Ponto Final:</translation>
-    </message>
-    <message>
-        <source>Include as:</source>
-        <translation type="vanished">Incluir como:</translation>
-    </message>
-    <message>
-        <source>Internal paths</source>
-        <translation type="vanished">Caminhos internos</translation>
-    </message>
-    <message>
-        <source>The seam allowance is part of main path</source>
-        <translation type="vanished">A margem de costura faz parte do caminho principal</translation>
-    </message>
-    <message>
-        <source>Built in</source>
-        <translation type="vanished">Embutido</translation>
-    </message>
-    <message>
-        <source>Hide the main path if the seam allowance is enabled</source>
-        <translation type="vanished">Ocultar o caminho principal se a margem de costura estiver ativada</translation>
-    </message>
-    <message>
-        <source>Hide main path</source>
-        <translation type="vanished">Ocultar caminho principal</translation>
-    </message>
-    <message>
-        <source>Name of detail:</source>
-        <translation type="vanished">Nome do molde:</translation>
-    </message>
-    <message>
-        <source>Detail</source>
-        <translation type="vanished">Molde</translation>
-    </message>
-    <message>
-        <source>Name can&apos;t be empty</source>
-        <translation type="vanished">Nome não pode ficar vazio</translation>
-    </message>
-    <message>
-        <source>Force piece to be always flipped in a layout.</source>
-        <translation type="vanished">Forçar espelhamento da peça no encaixe.</translation>
-    </message>
-    <message>
-        <source>Force flipping</source>
-        <translation type="vanished">Forçar giro</translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Mover para o topo</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Subir</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Descer</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Mover para o final</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation type="vanished">Prioridade:</translation>
-    </message>
-    <message>
-        <source>Controls priority in layout. 0 - no priority.</source>
-        <translation type="vanished">Controles de prioridade no encaixe. 0 - sem prioridade.</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <comment>seam allowance</comment>
-        <translation type="vanished">Automático</translation>
-    </message>
-    <message>
-        <source>True zero width</source>
-        <translation type="vanished">Largura zerada</translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <comment>seam allowance</comment>
-        <translation type="vanished">Personalizado</translation>
-    </message>
-    <message>
-        <source>Piece</source>
-        <translation type="vanished">Peça</translation>
-    </message>
-    <message>
-        <source>Universally Unique IDentifier of piece. Used to identifier piece while updating manual layout. Left empty to generate new value.</source>
-        <translation type="vanished">Identificador único universal (UUID) para a peça. Usado para identificar a peça quando o plano de corte é atualizado manualmente. Deixe em branco para gerar um novo valor.</translation>
-    </message>
-    <message>
-        <source>On drawing</source>
-        <translation type="vanished">No traçado</translation>
-    </message>
-    <message>
-        <source>Export to DXF-AAMA sew line on Draw layer</source>
-        <translation type="vanished">Exportar para DXF-AAMA linha de costura na camada de Traçado</translation>
-    </message>
-</context>
-<context>
-    <name>TabPlaceLabels</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="vanished">Caixa de diálogo</translation>
-    </message>
-</context>
-<context>
     <name>ToggleGroupInLayout</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglegroupinlayout.cpp" line="48"/>
@@ -21954,10 +20258,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 </context>
 <context>
     <name>VAbstractOperation</name>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Rótulo</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1719"/>
         <source>Length</source>
@@ -23226,10 +21526,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Material do usuário</translation>
     </message>
     <message>
-        <source>Make all parsing warnings into errors. Have effect only in console mode. Use to force Valentina to immediately terminate if a pattern contains a parsing warning.</source>
-        <translation type="vanished">Tornar todos os avisos de análise em erros. Ter efeito apenas no modo console. Usar para forçar o Valentina a encerrar imediatamente se uma modelagem contiver um aviso de análise.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="323"/>
         <source>Invalid user material &apos;%1&apos;. Separator is missing.</source>
         <translation>Material de usuário inválido &apos;%1&apos;. Separador está faltando.</translation>
@@ -23833,72 +22129,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <location filename="../../src/libs/vexception/vexception.cpp" line="81"/>
         <source>Exception: %1</source>
         <translation>Exceção: %1</translation>
-    </message>
-</context>
-<context>
-    <name>VFoldLine</name>
-    <message>
-        <source>Invalid SVG font &apos;%1&apos;. Fallback to outline font.</source>
-        <translation type="vanished">Fonte SVG inválida &apos;%1&apos;. Utilizar para fonte de contorno.</translation>
-    </message>
-</context>
-<context>
-    <name>VFontInstaller</name>
-    <message>
-        <source>Could not determine the system font installation path.</source>
-        <translation type="vanished">Não foi possível determinar o caminho de instalação da fonte do sistema.</translation>
-    </message>
-    <message>
-        <source>Failed to create destination directory: %1</source>
-        <translation type="vanished">Falha ao criar o diretório de destino: %1</translation>
-    </message>
-    <message>
-        <source>Failed to copy file from %1 to %2. Possible reasons: permission denied, file locked, or general I/O error.</source>
-        <translation type="vanished">Falha ao copiar o arquivo de %1 para %2. Possíveis razões: permissão negada, arquivo bloqueado ou erro geral de E/S.</translation>
-    </message>
-    <message>
-        <source>Font copy succeeded, but Linux font cache rebuild failed. Font may not be immediately visible.</source>
-        <translation type="vanished">A cópia da fonte foi bem-sucedida, mas a reconstrução do cache de fontes do Linux falhou. A fonte pode não estar imediatamente visível.</translation>
-    </message>
-    <message>
-        <source>Font copy succeeded, but Windows Registry registration failed.</source>
-        <translation type="vanished">A cópia da fonte foi bem-sucedida, mas o registro do Windows Registry falhou.</translation>
-    </message>
-    <message>
-        <source>Font loaded, but could not determine font family name to install font corrections.</source>
-        <translation type="vanished">Fonte carregada, mas não foi possível determinar o nome da família de fontes para instalar correções de fontes.</translation>
-    </message>
-    <message>
-        <source>Font correction file already exists at destination: %1.</source>
-        <translation type="vanished">O arquivo de correção de fonte já existe no destino: %1.</translation>
-    </message>
-    <message>
-        <source>Failed to copy font correction file from %1 to %2. Possible reasons: permission denied, file locked, or general I/O error.</source>
-        <translation type="vanished">Falha ao copiar o arquivo de correção de fonte de %1 para %2. Possíveis razões: permissão negada, arquivo bloqueado ou erro geral de E/S.</translation>
-    </message>
-    <message>
-        <source>Skipped existing font (User choice: No to All): %1</source>
-        <translation type="vanished">Pulou a fonte existente (Escolha do usuário: Não para Todos): %1</translation>
-    </message>
-    <message>
-        <source>Font Already Exists</source>
-        <translation type="vanished">A Fonte Já Existe</translation>
-    </message>
-    <message>
-        <source>The font &apos;%1&apos; is already installed.</source>
-        <translation type="vanished">A fonte &apos;%1&apos; já está instalada.</translation>
-    </message>
-    <message>
-        <source>Do you want to replace it?</source>
-        <translation type="vanished">Deseja substituir?</translation>
-    </message>
-    <message>
-        <source>Installation cancelled by user. Font not replaced.</source>
-        <translation type="vanished">Instalação cancelada pelo usuário. Fonte não substituída.</translation>
-    </message>
-    <message>
-        <source>Failed to remove existing file: %1. Check permissions.</source>
-        <translation type="vanished">Falha ao remover o arquivo existente: %1. Verifique as permissões.</translation>
     </message>
 </context>
 <context>
@@ -25103,17 +23333,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
     </message>
 </context>
 <context>
-    <name>VSvgFontReader</name>
-    <message>
-        <source>Incorrect file</source>
-        <translation type="vanished">Arquivo incorreto</translation>
-    </message>
-    <message>
-        <source>Unexpected tag %1 in line %2</source>
-        <translation type="vanished">Tag inesperada %1 na linha %2</translation>
-    </message>
-</context>
-<context>
     <name>VTableSearch</name>
     <message>
         <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="433"/>
@@ -25170,10 +23389,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <source>Length</source>
         <translation>Comprimento</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Rótulo</translation>
-    </message>
 </context>
 <context>
     <name>VToolAbstractOffsetCurve</name>
@@ -25224,10 +23439,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <source>End angle</source>
         <translation>Ângulo final</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Rótulo</translation>
-    </message>
 </context>
 <context>
     <name>VToolArcWithLength</name>
@@ -25250,10 +23461,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="430"/>
         <source>End angle</source>
         <translation>Ângulo final</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Rótulo</translation>
     </message>
 </context>
 <context>
@@ -25354,10 +23561,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>raio</translation>
     </message>
     <message>
-        <source>label</source>
-        <translation type="vanished">rótulo</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="401"/>
         <source>radius1</source>
         <translation>raio1</translation>
@@ -25380,10 +23583,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <source>length</source>
         <translation>comprimento</translation>
     </message>
-    <message>
-        <source>label</source>
-        <translation type="vanished">rótulo</translation>
-    </message>
 </context>
 <context>
     <name>VToolCutSplinePath</name>
@@ -25396,10 +23595,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.cpp" line="607"/>
         <source>length</source>
         <translation>comprimento</translation>
-    </message>
-    <message>
-        <source>label</source>
-        <translation type="vanished">rótulo</translation>
     </message>
 </context>
 <context>
@@ -25434,10 +23629,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <translation>Ângulo final</translation>
     </message>
     <message>
-        <source>Label</source>
-        <translation type="vanished">Rótulo</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="514"/>
         <source>Rotation</source>
         <translation>Rotação</translation>
@@ -25470,17 +23661,9 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
         <source>End angle</source>
         <translation>Ângulo final</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Rótulo</translation>
-    </message>
 </context>
 <context>
     <name>VToolFlippingByAxis</name>
-    <message>
-        <source>Origin point</source>
-        <translation type="vanished">Ponto de origem</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="169"/>
         <source>Flipping by axis</source>
@@ -25489,14 +23672,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 </context>
 <context>
     <name>VToolFlippingByLine</name>
-    <message>
-        <source>First line point</source>
-        <translation type="vanished">Primeiro ponto da linha</translation>
-    </message>
-    <message>
-        <source>Second line point</source>
-        <translation type="vanished">Segundo ponto da linha</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="170"/>
         <source>flipping by line</source>
@@ -26818,10 +24993,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 </context>
 <context>
     <name>VToolPointOfContact</name>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Comprimento</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
@@ -29087,26 +27258,6 @@ Ao salvar o arquivo com a versão atual, não será mais possível abri-lo em um
 </context>
 <context>
     <name>vNoisyHandler</name>
-    <message>
-        <source>DEBUG:</source>
-        <translation type="vanished">DEBUG:</translation>
-    </message>
-    <message>
-        <source>WARNING:</source>
-        <translation type="vanished">AVISO:</translation>
-    </message>
-    <message>
-        <source>CRITICAL:</source>
-        <translation type="vanished">CRÍTICO:</translation>
-    </message>
-    <message>
-        <source>FATAL:</source>
-        <translation type="vanished">FATAL:</translation>
-    </message>
-    <message>
-        <source>INFO:</source>
-        <translation type="vanished">INFORMAÇÃO:</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/core/vapplication.cpp" line="248"/>
         <source>Warning</source>

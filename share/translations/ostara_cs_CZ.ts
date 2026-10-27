@@ -202,45 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>About Valentina</source>
-        <translation type="vanished">O programu Valentina</translation>
-    </message>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">Verze programu Valentina</translation>
-    </message>
-    <message>
-        <source>Special thanks</source>
-        <translation type="vanished">Zvláštní poděkování</translation>
-    </message>
-    <message>
-        <source>Credits</source>
-        <translation type="vanished">Zásluhy</translation>
-    </message>
-    <message>
-        <source>Web site : %1</source>
-        <translation type="vanished">Stránky: %1</translation>
-    </message>
-    <message>
-        <source>Cannot open your default browser</source>
-        <translation type="vanished">Nelze otevřít váš výchozí prohlížeč</translation>
-    </message>
-    <message>
-        <source>Build revision:</source>
-        <translation type="vanished">Revize sestavení:</translation>
-    </message>
-    <message>
-        <source>Built on %1 at %2</source>
-        <translation type="vanished">Sestaveno %1 v %2</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translation type="vanished">Zkontrolovat aktualizace</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -534,41 +495,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAskCollectStatistic</name>
-    <message>
-        <source>Privacy</source>
-        <translation type="vanished">Soukromí</translation>
-    </message>
-    <message>
-        <source>Usage statistic</source>
-        <translation type="vanished">Statistika používání</translation>
-    </message>
-    <message>
-        <source>Send usage statistics</source>
-        <translation type="vanished">Poslat statistiku používání</translation>
-    </message>
-    <message>
-        <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation type="vanished">Pomozte prosím zlepšit kvalitu Valentiny automatickým zasíláním statistik o používání. Odeslaná data neobsahují &lt;span style=&quot; font-weight:700;&quot;&gt;žádné potenciálně citlivé informace,&lt;/span&gt; jako jsou uživatelská jména, e-mailové adresy, obsah souborů nebo cesty k souborům.</translation>
-    </message>
-    <message>
-        <source>Crash reports</source>
-        <translation type="vanished">Hlášení o pádech</translation>
-    </message>
-    <message>
-        <source>Send automatic crash reports</source>
-        <translation type="vanished">Posílat automaticky hlášení o pádech</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">E-mail:</translation>
-    </message>
-    <message>
-        <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation type="vanished">Nahlašování hlášení o pádech nám pomůže zvýšit spolehlivost systému Valentina. Všechny informace jsou považovány za důvěrné a slouží pouze ke zlepšení budoucích verzí tohoto programu. zapněte, prosím, zasílání automatických hlášení o pádech a vyplňte svou e-mailovou adresu (nepovinné). Pokud ji uvedete, můžeme se svámi spojit, abychom zjistili další informace o pádu.</translation>
-    </message>
-</context>
-<context>
     <name>DialogBisector</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="118"/>
@@ -693,21 +619,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="172"/>
         <source>You can add a note here…</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DialogCredits</name>
-    <message>
-        <source>Credits</source>
-        <translation type="vanished">Zásluhy</translation>
-    </message>
-    <message>
-        <source>Sponsors</source>
-        <translation type="vanished">Sponzoři</translation>
-    </message>
-    <message>
-        <source>Authors</source>
-        <translation type="vanished">Autoři</translation>
     </message>
 </context>
 <context>
@@ -2858,25 +2769,6 @@ Values and intervals will not be imported.</source>
     </message>
 </context>
 <context>
-    <name>DialogKnownMaterials</name>
-    <message>
-        <source>Known materials</source>
-        <translation type="vanished">Známé materiály</translation>
-    </message>
-    <message>
-        <source>Material:</source>
-        <translation type="vanished">Materiál:</translation>
-    </message>
-    <message>
-        <source>Name of material</source>
-        <translation type="vanished">Název materiálu</translation>
-    </message>
-    <message>
-        <source>User material</source>
-        <translation type="vanished">Uživatelský materiál</translation>
-    </message>
-</context>
-<context>
     <name>DialogLine</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="72"/>
@@ -4207,117 +4099,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Vlastnosti střihu</translation>
-    </message>
-    <message>
-        <source>Pattern description</source>
-        <translation type="vanished">Popis střihu</translation>
-    </message>
-    <message>
-        <source>Security</source>
-        <translation type="vanished">Bezpečnost</translation>
-    </message>
-    <message>
-        <source>Open only for read</source>
-        <translation type="vanished">Otevřít pouze pro čtení</translation>
-    </message>
-    <message>
-        <source>Call context menu for edit</source>
-        <translation type="vanished">Vyvolat nabídku souvisejících činností pro úpravy</translation>
-    </message>
-    <message>
-        <source>Name of measurement or increment</source>
-        <translation type="vanished">Název míry nebo přídavku</translation>
-    </message>
-    <message>
-        <source>Passmark width:</source>
-        <translation type="vanished">Šířka značky sestavení:</translation>
-    </message>
-    <message>
-        <source>No image</source>
-        <translation type="vanished">Žádný obrázek</translation>
-    </message>
-    <message>
-        <source>Delete image</source>
-        <translation type="vanished">Smazat obrázek</translation>
-    </message>
-    <message>
-        <source>Change image</source>
-        <translation type="vanished">Změnit obrázek</translation>
-    </message>
-    <message>
-        <source>Save image to file</source>
-        <translation type="vanished">Uložit obrázek do souboru</translation>
-    </message>
-    <message>
-        <source>Show image</source>
-        <translation type="vanished">Ukázat obrázek</translation>
-    </message>
-    <message>
-        <source>Image for pattern</source>
-        <translation type="vanished">Obrázek pro střih</translation>
-    </message>
-    <message>
-        <source>untitled</source>
-        <translation type="vanished">bez názvu</translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="vanished">Cesta:</translation>
-    </message>
-    <message>
-        <source>Show in Explorer</source>
-        <translation type="vanished">Ukázat ve správci souborů</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;prázdné&gt;</translation>
-    </message>
-    <message>
-        <source>File was not saved yet.</source>
-        <translation type="vanished">Soubor ještě nebyl uložen.</translation>
-    </message>
-    <message>
-        <source>Show in Finder</source>
-        <translation type="vanished">Ukázat v hledání</translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="vanished">Střih</translation>
-    </message>
-    <message>
-        <source>For technical notes</source>
-        <translation type="vanished">Technické poznámky</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Jazyk popisu:</translation>
-    </message>
-    <message>
-        <source>Passmark length:</source>
-        <translation type="vanished">Délka značky sestavení:</translation>
-    </message>
-    <message>
-        <source>Invalid image. Error: %1</source>
-        <translation type="vanished">Neplatný obrázek. Chyba: %1</translation>
-    </message>
-    <message>
-        <source>Unable to save image. Error: %1</source>
-        <translation type="vanished">Nepodařilo se uložit obrázek. Chyba: %1</translation>
-    </message>
-    <message>
-        <source>Save Image</source>
-        <translation type="vanished">Uložit obrázek</translation>
-    </message>
-    <message>
-        <source>Unable to show image. Error: %1</source>
-        <translation type="vanished">Nepodařilo se zobrazit obrázek. Chyba: %1</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -4358,30 +4139,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="66"/>
         <source>Type of pen:</source>
         <translation>Typ pera:</translation>
-    </message>
-    <message>
-        <source>Reverse node direction</source>
-        <translation type="vanished">Obrátit směr uzlu</translation>
-    </message>
-    <message>
-        <source>Excluded node</source>
-        <translation type="vanished">Vyloučit uzel</translation>
-    </message>
-    <message>
-        <source>Turn point</source>
-        <translation type="vanished">Bod změny směru</translation>
-    </message>
-    <message>
-        <source>Check node uniqness</source>
-        <translation type="vanished">Ověřit jedinečnost uzlu</translation>
-    </message>
-    <message>
-        <source>Notch</source>
-        <translation type="vanished">Zářez</translation>
-    </message>
-    <message>
-        <source>Delete node</source>
-        <translation type="vanished">Smazat uzel</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="125"/>
@@ -4734,22 +4491,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="1080"/>
         <source>Intersection 2 (only right)</source>
         <translation>Průsečík 2 (pouze pravý)</translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Posunout úplně nahoru</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Posunout nahoru</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Posunout dolů</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Posunout úplně dolů</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="101"/>
@@ -5754,17 +5495,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="vanished">Nastavení</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation>Střih</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Cesty</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -6224,14 +5957,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>DialogSeamAllowance</name>
     <message>
-        <source>Ready!</source>
-        <translation type="vanished">Připraven!</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Hodnota</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Dráha nitě</translation>
@@ -6312,290 +6037,14 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Smazat</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="vanished">Volby</translation>
-    </message>
-    <message>
-        <source>Error. Can&apos;t save piece path.</source>
-        <translation type="vanished">Chyba. Nelze uložit cestu k dílu.</translation>
-    </message>
-    <message>
-        <source>Infinite/undefined result</source>
-        <translation type="vanished">Nekonečný/Nevymezený výsledek</translation>
-    </message>
-    <message>
-        <source>Length should be positive</source>
-        <translation type="vanished">Délka má být kladná</translation>
-    </message>
-    <message>
-        <source>Parser error: %1</source>
-        <translation type="vanished">Chyba při zpracování: %1</translation>
-    </message>
-    <message>
-        <source>Current seam allowance</source>
-        <translation type="vanished">Nynější švová záložka</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width</source>
-        <translation type="vanished">Upravit šířku švové záložky</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width before</source>
-        <translation type="vanished">Upravit šířku švové záložky před</translation>
-    </message>
-    <message>
-        <source>Edit seam allowance width after</source>
-        <translation type="vanished">Upravit šířku švové záložky po</translation>
-    </message>
-    <message>
-        <source>Edit passmark width</source>
-        <translation type="vanished">Upravit šířku značky sestavení</translation>
-    </message>
-    <message>
-        <source>Edit passmark angle</source>
-        <translation type="vanished">Upravit úhel značky sestavení</translation>
-    </message>
-    <message>
-        <source>You need more points!</source>
-        <translation type="vanished">Potřebujete více bodů!</translation>
-    </message>
-    <message>
-        <source>You have to choose points in a clockwise direction!</source>
-        <translation type="vanished">Musíte vybrat body po směru otáčení hodinových ručiček!</translation>
-    </message>
-    <message>
-        <source>First point cannot be equal to the last point!</source>
-        <translation type="vanished">První bod nemůže být stejný s posledním bodem!</translation>
-    </message>
-    <message>
-        <source>You have double points!</source>
-        <translation type="vanished">Máte zdvojené body!</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="vanished">Prázdný</translation>
-    </message>
-    <message>
-        <source>main path</source>
-        <translation type="vanished">Hlavní cesta</translation>
-    </message>
-    <message>
-        <source>custom seam allowance</source>
-        <translation type="vanished">Vlastní švová záložka</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation>Žádný</translation>
     </message>
     <message>
-        <source>Pins</source>
-        <translation type="vanished">Špendlíky</translation>
-    </message>
-    <message>
-        <source>no pin</source>
-        <translation type="vanished">Žádný špendlík</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="vanished">Chyba</translation>
-    </message>
-    <message>
-        <source>Edit length</source>
-        <translation type="vanished">Upravit délku</translation>
-    </message>
-    <message>
-        <source>Edit angle</source>
-        <translation type="vanished">Upravit úhel</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Cesty</translation>
-    </message>
-    <message>
-        <source>Each point in the path must be unique!</source>
-        <translation type="vanished">Každý bod v cestě musí být jedinečný!</translation>
-    </message>
-    <message>
-        <source>Passmarks</source>
-        <translation type="vanished">Značky sestavení</translation>
-    </message>
-    <message>
-        <source>Workpiece tool</source>
-        <translation type="vanished">Nástroj pro vytažení hlavního obrysu</translation>
-    </message>
-    <message>
-        <source>Segment</source>
-        <translation type="vanished">Část</translation>
-    </message>
-    <message>
-        <source>Rectangle</source>
-        <translation type="vanished">Obdélník</translation>
-    </message>
-    <message>
-        <source>Cross</source>
-        <translation type="vanished">Kříž</translation>
-    </message>
-    <message>
-        <source>T-shaped</source>
-        <translation type="vanished">T-tvarovaný</translation>
-    </message>
-    <message>
-        <source>Doubletree</source>
-        <translation type="vanished">Dvojitý strom</translation>
-    </message>
-    <message>
-        <source>Corner</source>
-        <translation type="vanished">Roh</translation>
-    </message>
-    <message>
-        <source>Triangle</source>
-        <translation type="vanished">Trojúhelník</translation>
-    </message>
-    <message>
-        <source>H-shaped</source>
-        <translation type="vanished">H-tvarovaný</translation>
-    </message>
-    <message>
-        <source>Button</source>
-        <translation type="vanished">Tlačítko</translation>
-    </message>
-    <message>
-        <source>Place label</source>
-        <translation type="vanished">Umístit popis</translation>
-    </message>
-    <message>
-        <source>To open all detail&apos;s features complete creating the main path. Please, press OK.</source>
-        <translation type="vanished">Pro otevření všech vlastností jednotlivosti (dílu střihu) dokončete vytvoření hlavní cesty. Stiskněte, prosím, OK.</translation>
-    </message>
-    <message>
-        <source>The same curve repeats twice!</source>
-        <translation type="vanished">Tatáž křivka se opakuje dvakrát!</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;prázdné&gt;</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
         <source>Fold line</source>
         <translation>Čára záhybu</translation>
-    </message>
-    <message>
-        <source>Circle</source>
-        <translation type="vanished">Kruh</translation>
-    </message>
-    <message>
-        <source>Edit passmark length</source>
-        <translation type="vanished">Upravit délku značky sestavení</translation>
-    </message>
-    <message>
-        <source>Edit notch visibility</source>
-        <translation type="vanished">Upravit viditelnost zářezu</translation>
-    </message>
-    <message>
-        <source>Edit fold line height</source>
-        <translation type="vanished">Upravit výšku čáry záhybu</translation>
-    </message>
-    <message>
-        <source>Edit fold line width</source>
-        <translation type="vanished">Upravit šířku čáry záhybu</translation>
-    </message>
-    <message>
-        <source>Edit fold line center position</source>
-        <translation type="vanished">Upravit středovou polohu čáry záhybu</translation>
-    </message>
-    <message>
-        <source>Invalid mirror line start point!</source>
-        <translation type="vanished">Neplatný počáteční bod zrcadlové čáry!</translation>
-    </message>
-    <message>
-        <source>Invalid mirror line end point!</source>
-        <translation type="vanished">Neplatný koncový bod zrcadlové čáry!</translation>
-    </message>
-    <message>
-        <source>Start and end mirror line points must be unique!</source>
-        <translation type="vanished">Počáteční a koncové body zrcadlové čáry musí být jedinečné!</translation>
-    </message>
-    <message>
-        <source>Mirror points must be neighbors!</source>
-        <translation type="vanished">Body na zrcadlové čáře musí jít za sebou!</translation>
-    </message>
-    <message>
-        <source>Two ways (Up/Down)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Dva směry (nahoru/dolů)</translation>
-    </message>
-    <message>
-        <source>One way (Up)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Jeden směr (nahoru)</translation>
-    </message>
-    <message>
-        <source>One way (Down)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Jeden směr (dolů)</translation>
-    </message>
-    <message>
-        <source>Four ways</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Čtyři směry</translation>
-    </message>
-    <message>
-        <source>Two ways (Up/Left)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Dva směry (nahoru/vlevo)</translation>
-    </message>
-    <message>
-        <source>Two ways (Up/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Dva směry (nahoru/vpravo)</translation>
-    </message>
-    <message>
-        <source>Two ways (Down/Left)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Dva směry (dolů/vlevo)</translation>
-    </message>
-    <message>
-        <source>Two ways (Down/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Dva směry (dolů/vpravo)</translation>
-    </message>
-    <message>
-        <source>Three ways (Up/Down/Left)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Tři směry (nahoru/dolů/vlevo)</translation>
-    </message>
-    <message>
-        <source>Three ways (Up/Down/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Tři směry (nahoru/dolů/vpravo)</translation>
-    </message>
-    <message>
-        <source>Three ways (Up/Left/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Tři směry (nahoru/vlevo/vpravo)</translation>
-    </message>
-    <message>
-        <source>Three ways (Down/Left/Right)</source>
-        <comment>grainline direction</comment>
-        <translation type="vanished">Tři směry (dolů/vlevo/vpravo)</translation>
-    </message>
-    <message>
-        <source>Two arrows (text above)</source>
-        <translation type="vanished">Dvojitá šipka (text nahoře)</translation>
-    </message>
-    <message>
-        <source>Two arrows</source>
-        <translation type="vanished">Dvojitá šipka</translation>
-    </message>
-    <message>
-        <source>Duplicate</source>
-        <translation type="vanished">Zdvojit</translation>
-    </message>
-    <message>
-        <source>Invalid segment!</source>
-        <translation type="vanished">Neplatná část!</translation>
     </message>
 </context>
 <context>
@@ -7692,10 +7141,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished">Vyvést</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">Nový</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
         <translation type="unfinished">Křivka</translation>
@@ -7793,60 +7238,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>FvUpdateWindow</name>
-    <message>
-        <source>Software Update</source>
-        <translation type="vanished">Aktualizace programu</translation>
-    </message>
-    <message>
-        <source>%1 %2 is now available - you have %3. Would you like to download it now?</source>
-        <translation type="vanished">%1 %2 je nyní dostupná - máte %3. Chcete ji stáhnout nyní?</translation>
-    </message>
-    <message>
-        <source>Skip This Version</source>
-        <translation type="vanished">Přeskočit tuto verzi</translation>
-    </message>
-    <message>
-        <source>Remind Me Later</source>
-        <translation type="vanished">Připomenout později</translation>
-    </message>
-    <message>
-        <source>Get Update</source>
-        <translation type="vanished">Stáhnout aktualizaci</translation>
-    </message>
-    <message>
-        <source>%1 update is available!</source>
-        <translation type="vanished">Je dostupná aktualizace %1!</translation>
-    </message>
-    <message>
-        <source>New %1 test version is now available. Would you like to download it now?</source>
-        <translation type="vanished">Nyní je dostupná nová pokusná verze %1. Chcete si ji nyní stáhnout?</translation>
-    </message>
-</context>
-<context>
-    <name>FvUpdater</name>
-    <message>
-        <source>Cannot open your default browser.</source>
-        <translation type="vanished">Nelze otevřít výchozí prohlížeč.</translation>
-    </message>
-    <message>
-        <source>Feed download failed: %1.</source>
-        <translation type="vanished">Tok stahování přerušen: %1.</translation>
-    </message>
-    <message>
-        <source>Feed parsing failed: %1 %2.</source>
-        <translation type="vanished">Zpracování stahování přerušeno: %1 %2.</translation>
-    </message>
-    <message>
-        <source>No updates were found.</source>
-        <translation type="vanished">Nebyly nalezeny žádné aktualizace.</translation>
-    </message>
-    <message>
-        <source>Feed error: invalid &quot;enclosure&quot; with the download link</source>
-        <translation type="vanished">Chyba při stahování: neplatné &quot;ohrazení&quot; s odkazem na stahování</translation>
-    </message>
-</context>
-<context>
     <name>HideAllBackgroundImages</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/image/hideallbackgroundimages.cpp" line="38"/>
@@ -7899,20 +7290,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>InitPieceLabelLanguages</name>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Výchozí</translation>
-    </message>
-</context>
-<context>
-    <name>InternalStrings</name>
-    <message>
-        <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
-        <translation type="vanished">Program je poskytován TAK JAK JE bez JAKÉKOLIV ZÁRUKY JAKÉHOKOLIV DRUHU, VČETNĚ ZÁRUKY VZHLEDU, PRODEJNOSTI A VHODNOSTI PRO DANÝ ÚČEL.</translation>
-    </message>
-</context>
-<context>
     <name>LinkPieceGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
@@ -7922,10 +7299,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Valentina</source>
-        <translation type="vanished">Valentina</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point along perpendicular</source>
@@ -8145,10 +7518,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Nastavení</translation>
     </message>
     <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Vlastnosti střihu</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
         <source>Zoom in</source>
@@ -8170,10 +7539,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
         <source>Zoom fit best</source>
         <translation>Přizpůsobit velikost oknu aplikace</translation>
-    </message>
-    <message>
-        <source>Report bug</source>
-        <translation type="vanished">Nahlásit chybu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="691"/>
@@ -8454,10 +7819,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="554"/>
         <source>File error.</source>
         <translation>Chyba souboru.</translation>
-    </message>
-    <message>
-        <source>Valentina didn&apos;t shut down correctly. Do you want reopen files (%1) you had open?</source>
-        <translation type="vanished">Valentina nebyla vypnuta správně. Chcete znovu otevřít soubory (%1), které jste měli otevřeny?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1322"/>
@@ -8925,10 +8286,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="441"/>
         <source>Save &amp;As…</source>
         <translation>Uložit j&amp;ako…</translation>
-    </message>
-    <message>
-        <source>Report Bug…</source>
-        <translation type="vanished">Nahlásit chybu…</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="785"/>
@@ -9671,10 +9028,6 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="302"/>
         <source>Could not create recipe file. %1</source>
         <translation>Nepodařilo se vytvořit soubor Recipe. %1</translation>
-    </message>
-    <message>
-        <source>Shop</source>
-        <translation type="vanished">Obchod</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="159"/>
@@ -11778,14 +11131,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cut on fold</source>
-        <translation type="obsolete">Střihnout v záhybu</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Zrušit</translation>
     </message>
 </context>
 <context>
@@ -18596,10 +17941,6 @@ Save it before leaving it?</source>
         <source>Height</source>
         <translation type="unfinished">Výška</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Popis</translation>
-    </message>
 </context>
 <context>
     <name>OToolSpiral</name>
@@ -18918,298 +18259,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesAppearancePage</name>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Velikost</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="vanished">Uložit</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="vanished">Automaticky ukládat změny ve střihu</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="vanished">Interval:</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="vanished">Jazyk</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="vanished">Jazyk rozhraní:</translation>
-    </message>
-    <message>
-        <source>Decimal separator parts:</source>
-        <translation type="vanished">Desetinné rozdělovací znaménko:</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="vanished">Výchozí jednotka:</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Jazyk popisu:</translation>
-    </message>
-    <message>
-        <source>Pattern editing</source>
-        <translation type="vanished">Upravování střihu</translation>
-    </message>
-    <message>
-        <source>Reset warnings</source>
-        <translation type="vanished">Vynulovat varování</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="vanished">Nástrojový panel</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">Text se ukáže pod symbolem (doporučeno pro začátečníky).</translation>
-    </message>
-    <message>
-        <source>With OS options</source>
-        <translation type="vanished">S volbami OS</translation>
-    </message>
-    <message>
-        <source>send crash report</source>
-        <translation type="vanished">Poslat hlášení o pádu</translation>
-    </message>
-    <message>
-        <source>user email in case of crash</source>
-        <translation type="vanished">Adresa elektronické pošty uživatele v případě pádu</translation>
-    </message>
-    <message>
-        <source>Dark</source>
-        <comment>theme</comment>
-        <translation type="vanished">Tmavý</translation>
-    </message>
-    <message>
-        <source>Light</source>
-        <comment>theme</comment>
-        <translation type="vanished">Světlý</translation>
-    </message>
-    <message>
-        <source>Tool icon cursor</source>
-        <translation type="vanished">Zahrnuje používaný nástroj</translation>
-    </message>
-    <message>
-        <source>Arrow cursor</source>
-        <translation type="vanished">Jednoduchý ukazatel</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="vanished">Centimetry</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="vanished">Milimetry</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="vanished">Palce</translation>
-    </message>
-    <message>
-        <source>Update a pattern only after a curve release</source>
-        <translation type="vanished">Aktualizovat jen střih po uvolnění křivky</translation>
-    </message>
-    <message>
-        <source>Free curve mode</source>
-        <translation type="vanished">Režim volné křivky</translation>
-    </message>
-    <message>
-        <source>default unit</source>
-        <translation type="vanished">Výchozí jednotka</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="vanished">Obecné</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">min</translation>
-    </message>
-    <message>
-        <source>Piece label language:</source>
-        <translation type="vanished">Jazyk popisu dílu:</translation>
-    </message>
-    <message>
-        <source>Double click calls Zoom fit best for current pattern piece</source>
-        <translation type="vanished">Dvojité poklepání vyvolá Přizpůsobit pohled nejlépe na nynější díl střihu</translation>
-    </message>
-    <message>
-        <source>Enable to translate formula according to locale</source>
-        <translation type="vanished">Povolit překlad popisků proměnných v jazyce systému uživatele</translation>
-    </message>
-    <message>
-        <source>Translate formula</source>
-        <translation type="vanished">Překládat popisky proměnných ve vzorcích</translation>
-    </message>
-    <message>
-        <source>Enable Garbage Collector</source>
-        <translation type="vanished">Povolit sběrač odpadu</translation>
-    </message>
-    <message>
-        <source>Toolbox icon size:</source>
-        <translation type="vanished">Velikost ikony panelu nástrojů:</translation>
-    </message>
-    <message>
-        <source>Small</source>
-        <translation type="vanished">Malá</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation type="vanished">Kolmice</translation>
-    </message>
-    <message>
-        <source>Theme:</source>
-        <translation type="vanished">Motiv:</translation>
-    </message>
-    <message>
-        <source>Pointer mode:</source>
-        <translation type="vanished">Režim ukazovátka:</translation>
-    </message>
-    <message>
-        <source>Shortcuts</source>
-        <translation type="vanished">Klávesové zkratky</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="vanished">Činnost</translation>
-    </message>
-    <message>
-        <source>Restore defaults</source>
-        <translation type="vanished">Obnovit výchozí nastavení</translation>
-    </message>
-    <message>
-        <source>Scrolling</source>
-        <translation type="vanished">Posun</translation>
-    </message>
-    <message>
-        <source>Animation</source>
-        <translation type="vanished">Animace</translation>
-    </message>
-    <message>
-        <source>Duration:</source>
-        <translation type="vanished">Doba trvání:</translation>
-    </message>
-    <message>
-        <source>Scrolling animation duration</source>
-        <translation type="vanished">Doba trvání animace posunu</translation>
-    </message>
-    <message>
-        <source>ms</source>
-        <comment>milliseconds</comment>
-        <translation type="vanished">ms</translation>
-    </message>
-    <message>
-        <source>Update interval:</source>
-        <translation type="vanished">Interval aktualizace:</translation>
-    </message>
-    <message>
-        <source>Time in milliseconds between each animation update</source>
-        <translation type="vanished">Čas v milisekundách mezi každou aktualizací animace</translation>
-    </message>
-    <message>
-        <source>Mouse scale</source>
-        <translation type="vanished">Rozsah myši</translation>
-    </message>
-    <message>
-        <source>Sensor:</source>
-        <comment>sensor mouse</comment>
-        <translation type="vanished">Čidlo:</translation>
-    </message>
-    <message>
-        <source>Scale scrolling sensitivity for mouse with sensor</source>
-        <translation type="vanished">Změnit velikost citlivosti posunu pro myš s čidlem</translation>
-    </message>
-    <message>
-        <source>Wheel:</source>
-        <comment>mouse wheel</comment>
-        <translation type="vanished">Kolečko:</translation>
-    </message>
-    <message>
-        <source>Scale scrolling sensitivity for mouse with wheel</source>
-        <translation type="vanished">Změnit velikost citlivosti posunu pro myš s kolečkem</translation>
-    </message>
-    <message>
-        <source>Acceleration:</source>
-        <translation type="vanished">Zrychlení:</translation>
-    </message>
-    <message>
-        <source>Privacy</source>
-        <translation type="vanished">Soukromí</translation>
-    </message>
-    <message>
-        <source>Usage statistic</source>
-        <translation type="vanished">Statistika používání</translation>
-    </message>
-    <message>
-        <source>Send usage statistics</source>
-        <translation type="vanished">Poslat statistiku používání</translation>
-    </message>
-    <message>
-        <source>Please help to improve Valentina&apos;s quality by automatically sending usage statistics. Sent data contains &lt;span style=&quot; font-weight:700;&quot;&gt;no potentially sensitive information&lt;/span&gt; like user names, email addresses, file contents or file paths.</source>
-        <translation type="vanished">Pomozte prosím zlepšit kvalitu Valentiny automatickým zasíláním statistik o používání. Odeslaná data neobsahují &lt;span style=&quot; font-weight:700;&quot;&gt;žádné potenciálně citlivé informace,&lt;/span&gt; jako jsou uživatelská jména, e-mailové adresy, obsah souborů nebo cesty k souborům.</translation>
-    </message>
-    <message>
-        <source>Crash reports</source>
-        <translation type="vanished">Hlášení o pádech</translation>
-    </message>
-    <message>
-        <source>Send automatic crash reports</source>
-        <translation type="vanished">Poslat automaticky hlášení o pádech</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">E-mail:</translation>
-    </message>
-    <message>
-        <source>Reporting crash reports will help us make Valentina more reliable. All information is treated as confidential and is only used to improve future versions of this program. Please activate sending automatic crash reports and fill your email address (optional). If provided, we may contact you with additional information about the crash.</source>
-        <translation type="vanished">Nahlašování hlášení o pádech nám pomůže zvýšit spolehlivost systému Valentina. Všechny informace jsou považovány za důvěrné a slouží pouze ke zlepšení budoucích verzí tohoto programu. zapněte, prosím, zasílání automatických hlášení o pádech a vyplňte svou e-mailovou adresu (nepovinné). Pokud ji uvedete, můžeme se svámi spojit, abychom zjistili další informace o pádu.</translation>
-    </message>
-    <message>
-        <source>User Interface</source>
-        <translation type="vanished">Uživatelské rozhraní</translation>
-    </message>
-    <message>
-        <source>Enable collecting unused objects when open pattern file.</source>
-        <translation type="vanished">Povolit sbírání nepoužívaných předmětů při otevření souboru se střihem.</translation>
-    </message>
-    <message>
-        <source>Don&apos;t use the native file dialog</source>
-        <translation type="vanished">Nepoužívat dialogové okno nativního souboru</translation>
-    </message>
-    <message>
-        <source>Update</source>
-        <translation type="vanished">Aktualizovat</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates each time the application starts</source>
-        <translation type="vanished">Automaticky kontrolovat aktualizace při každém spuštění programu</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates</source>
-        <translation type="vanished">Automaticky kontrolovat aktualizace</translation>
-    </message>
-    <message>
-        <source>Disable if you want to skip interactive part of creating tools. And go straight to editing formulas instead.</source>
-        <translation type="vanished">Zakázat, pokud chcete přeskočit interaktivní část vytváření nástrojů. A místo toho přejděte rovnou k úpravě vzorců.</translation>
-    </message>
-    <message>
-        <source>Interactive tools</source>
-        <translation type="vanished">Interaktivní nástroje</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -19485,18 +18534,6 @@ to %2</source>
         <translation type="unfinished">Nepoužívat dialogové okno nativního souboru</translation>
     </message>
     <message>
-        <source>Update</source>
-        <translation type="obsolete">Aktualizovat</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates each time the application starts</source>
-        <translation type="obsolete">Automaticky kontrolovat aktualizace při každém spuštění programu</translation>
-    </message>
-    <message>
-        <source>Automatically check for updates</source>
-        <translation type="obsolete">Automaticky kontrolovat aktualizace</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
         <source>default unit</source>
         <translation type="unfinished">Výchozí jednotka</translation>
@@ -19530,62 +18567,7 @@ to %2</source>
     </message>
 </context>
 <context>
-    <name>PreferencesPathPage</name>
-    <message>
-        <source>Paths that Valentina uses</source>
-        <translation type="vanished">Cesty, které používá Valentina</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Typ</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">Cesta</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Výchozí</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="vanished">Upravit</translation>
-    </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="vanished">Otevřít adresář</translation>
-    </message>
-    <message>
-        <source>My SVG Fonts</source>
-        <translation type="vanished">Moje písma SVG</translation>
-    </message>
-    <message>
-        <source>My font corrections</source>
-        <translation type="vanished">Moje opravy písma</translation>
-    </message>
-    <message>
-        <source>My known measurements</source>
-        <translation type="vanished">Moje známé míry</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesPatternPage</name>
-    <message>
-        <source>Graphical output</source>
-        <translation type="vanished">Obrazový výstup</translation>
-    </message>
-    <message>
-        <source>Use antialiasing</source>
-        <translation type="vanished">Použít vyhlazování</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="vanished">Zpět</translation>
-    </message>
-    <message>
-        <source>Count steps (0 - no limit):</source>
-        <translation type="vanished">Počítat kroky (0 - bez omezení):</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
@@ -19617,10 +18599,6 @@ to %2</source>
         <translation>Švová záložka</translation>
     </message>
     <message>
-        <source>This setting has no effect since the value is overridden by the command-line option</source>
-        <translation type="vanished">Toto nastavení nemá žádný účinek, protože hodnota je přepsána volbou příkazového řádku</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="108"/>
         <source>Export the sew line with the drawings (DXF-AAMA)</source>
         <translation type="unfinished"></translation>
@@ -19634,62 +18612,6 @@ to %2</source>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="161"/>
         <source>Default value:</source>
         <translation>Výchozí hodnota:</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="vanished">Písmo</translation>
-    </message>
-    <message>
-        <source>Outline font:</source>
-        <translation type="vanished">Obrysové písmo:</translation>
-    </message>
-    <message>
-        <source>Single-line font:</source>
-        <translation type="vanished">Jednotahové písmo:</translation>
-    </message>
-    <message>
-        <source>Allow single stroke outline fonts</source>
-        <translation type="vanished">Povolit jednotahová obrysová písma</translation>
-    </message>
-    <message>
-        <source>When this option is activated, the application will utilize SVG Fonts present in your system to render piece label text, instead of using outline fonts.</source>
-        <translation type="vanished">Pokud je zapnuta tato volba, aplikace použije k vykreslení textu popisu místo obrysových písem písma SVG přítomná ve vašem systému.</translation>
-    </message>
-    <message>
-        <source>Use single-line fonts</source>
-        <translation type="vanished">Použít jednotahové písmo</translation>
-    </message>
-    <message>
-        <source>Materials</source>
-        <translation type="vanished">Materiály</translation>
-    </message>
-    <message>
-        <source>Known materials:</source>
-        <translation type="vanished">Známé materiály:</translation>
-    </message>
-    <message>
-        <source>Manage list of known materials</source>
-        <translation type="vanished">Spravovat seznam známých materiálů</translation>
-    </message>
-    <message>
-        <source>Manage</source>
-        <translation type="vanished">Spravovat</translation>
-    </message>
-    <message>
-        <source>When manage pattern materials save them to known materials list</source>
-        <translation type="vanished">Při správě materiálů střihů je uložit do seznamu známých materiálů</translation>
-    </message>
-    <message>
-        <source>Remeber pattern materials</source>
-        <translation type="vanished">Zapamatovat si materiály střihu</translation>
-    </message>
-    <message>
-        <source>Curve approximation:</source>
-        <translation type="vanished">Přibližná podoba křivky:</translation>
-    </message>
-    <message>
-        <source>Set default curve approximation scale</source>
-        <translation type="vanished">Nastavit výchozí měřítko přibližnosti křivky</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="55"/>
@@ -19710,24 +18632,6 @@ to %2</source>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.cpp" line="146"/>
         <source>Inches</source>
         <translation>Palce</translation>
-    </message>
-    <message>
-        <source>Use OpenGL to render a scene.
-This option will take an affect after restart.</source>
-        <translation type="vanished">Použít na vykreslení scény OpenGL.
-Tato volba se projeví po opětovném spuštění.</translation>
-    </message>
-    <message>
-        <source>Use OpenGL render</source>
-        <translation type="vanished">Použít vykreslování pomocí OpenGL</translation>
-    </message>
-    <message>
-        <source>antialiasing</source>
-        <translation type="vanished">Vyhlazování</translation>
-    </message>
-    <message>
-        <source>scene render</source>
-        <translation type="vanished">Vykreslení scény</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="187"/>
@@ -19860,70 +18764,6 @@ Tato volba se projeví po opětovném spuštění.</translation>
         <location filename="../../src/libs/vmisc/projectversion.cpp" line="121"/>
         <source>Based on Qt %1 (%2, %3 bit)</source>
         <translation>Postaveno na Qt %1 (%2, %3 bit)</translation>
-    </message>
-    <message>
-        <source>VLayoutPassmark prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VLayoutPassmark: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPassmark compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VLayoutPassmark: actualClassVersion = %1 and classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VLayoutPlaceLabel prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VLayoutPlaceLabel: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPlaceLabel compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VLayoutPlaceLabel: actualClassVersion = %1 a classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VAbstractPieceData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VAbstractPieceData: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VAbstractPieceData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VAbstractPieceData: actualClassVersion = %1 a classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VLayoutPiecePathData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VLayoutPiecePathData: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPiecePathData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VLayoutPiecePathData: actualClassVersion = %1 a classVersion = %2</translation>
-    </message>
-    <message>
-        <source>CustomSARecord prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony CustomSARecord: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>CustomSARecord compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility CustomSARecord: actualClassVersion = %1 a classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VPieceNodeData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VPieceNodeData: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VPieceNodeData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VPieceNodeData: actualClassVersion = %1 a classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VLayoutPieceData prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VLayoutPieceData: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VLayoutPieceData compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VLayoutPieceData: actualClassVersion = %1 a classVersion = %2</translation>
-    </message>
-    <message>
-        <source>VPieceGrainlinePrivate prefix mismatch error: actualStreamHeader = 0x%1 and streamHeader = 0x%2</source>
-        <translation type="vanished">Chyba v nesouladu předpony VPieceGrainlinePrivate: actualStreamHeader = 0x%1 a streamHeader = 0x%2</translation>
-    </message>
-    <message>
-        <source>VPieceGrainlinePrivate compatibility error: actualClassVersion = %1 and classVersion = %2</source>
-        <translation type="vanished">Chyba kompatibility VPieceGrainlinePrivate: actualClassVersion = %1 a classVersion = %2</translation>
     </message>
 </context>
 <context>
@@ -21043,542 +19883,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
-    <message>
-        <source>Fold line</source>
-        <translation type="vanished">Čára záhybu</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="vanished">Typ:</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation type="vanished">Popis:</translation>
-    </message>
-    <message>
-        <source>Manual shape</source>
-        <translation type="vanished">Ruční tvar</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="vanished">Výška</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Výška:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Průvodce vzorcem</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Hodnota</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Výpočet</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ukázat celý výpočet v okně se zprávami&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Šířka</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Šířka:</translation>
-    </message>
-    <message>
-        <source>Center</source>
-        <translation type="vanished">Střed</translation>
-    </message>
-    <message>
-        <source>Center:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Střed:</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Grainline enabled</source>
-        <translation type="vanished">Dráha nitě povolena</translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="vanished">Otočení:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Průvodce vzorcem</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Hodnota</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Výpočet</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ukázat celý výpočet v okně se zprávami&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="vanished">Délka:</translation>
-    </message>
-    <message>
-        <source>Center pin:</source>
-        <translation type="vanished">Středový špendlík:</translation>
-    </message>
-    <message>
-        <source>Top pin:</source>
-        <translation type="vanished">Horní špendlík:</translation>
-    </message>
-    <message>
-        <source>Bottom pin:</source>
-        <translation type="vanished">Dolní špendlík:</translation>
-    </message>
-    <message>
-        <source>Arrows:</source>
-        <translation type="vanished">Šipky:</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="vanished">Viditelný</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Passmark:</source>
-        <translation type="vanished">Značka sestavení:</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="vanished">Úhel</translation>
-    </message>
-    <message>
-        <source>Straightforward</source>
-        <translation type="vanished">Přímo</translation>
-    </message>
-    <message>
-        <source>Bisector</source>
-        <translation type="vanished">Osa</translation>
-    </message>
-    <message>
-        <source>Marks</source>
-        <translation type="vanished">Značky</translation>
-    </message>
-    <message>
-        <source>Select if need designate the corner point as a passmark</source>
-        <translation type="vanished">Vyberte, pokud je potřeba, označte rohový bod jako značku sestavení</translation>
-    </message>
-    <message>
-        <source>Intersection</source>
-        <translation type="vanished">Průsečík</translation>
-    </message>
-    <message>
-        <source>Clockwise opening</source>
-        <translation type="vanished">Otevírání po směru hodinových ručiček</translation>
-    </message>
-    <message>
-        <source>Not Mirrored</source>
-        <translation type="vanished">Nezrcadlit</translation>
-    </message>
-    <message>
-        <source>Manual shape</source>
-        <translation type="vanished">Ruční tvar</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Délka</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Délka:</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Šířka</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Šířka:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Úhel:</translation>
-    </message>
-    <message>
-        <source>Control</source>
-        <translation type="vanished">Nastavení</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="vanished">Viditelný</translation>
-    </message>
-    <message>
-        <source>Create a formula that regulates visibility. Values different from &quot;0&quot; make a notch visible</source>
-        <translation type="vanished">Vytvořte vzorec, který řídí viditelnost. Hodnoty různé od &quot;0&quot; zviditelní zářez</translation>
-    </message>
-    <message>
-        <source>Show the second passmark on seam line</source>
-        <translation type="vanished">Ukázat druhou značku sestavení na čáře švu</translation>
-    </message>
-    <message>
-        <source>This option has effect only if the second passmark on seam line enabled in global preferences. The option helps disable the second passmark for this passmark only.</source>
-        <translation type="vanished">Tato volba účinkuje, jen když je druhá značka sestavení na čáře švu povolena v celkovém nastavení. Volba pomáhá zakázat druhou značku sestavení jen pro tuto značku sestavení.</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Typ</translation>
-    </message>
-    <message>
-        <source>One line</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Jedna čára</translation>
-    </message>
-    <message>
-        <source>Two lines</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Dvě čáry</translation>
-    </message>
-    <message>
-        <source>Three lines</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Tři čáry</translation>
-    </message>
-    <message>
-        <source>T mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Značka T</translation>
-    </message>
-    <message>
-        <source>External V mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Vnější značka V</translation>
-    </message>
-    <message>
-        <source>Internal V mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Vnitřní značka V</translation>
-    </message>
-    <message>
-        <source>U mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Značka U</translation>
-    </message>
-    <message>
-        <source>Box mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Značka okénko</translation>
-    </message>
-    <message>
-        <source>Check mark</source>
-        <comment>notch type</comment>
-        <translation type="vanished">Odškrtnutí</translation>
-    </message>
-    <message>
-        <source>Select if need designate the corner point as a passmark. Show only left passmark.</source>
-        <translation type="vanished">Vyberte, pokud je potřeba, označte rohový bod jako značku sestavení. Ukázat pouze levou značku sestavení.</translation>
-    </message>
-    <message>
-        <source>Intersection (only left)</source>
-        <translation type="vanished">Průsečík (pouze levý)</translation>
-    </message>
-    <message>
-        <source>Select if need designate the corner point as a passmark. Show only right passmark.</source>
-        <translation type="vanished">Vyberte, pokud je potřeba, označte rohový bod jako značku sestavení. Ukázat pouze pravou značku sestavení.</translation>
-    </message>
-    <message>
-        <source>Intersection (only right)</source>
-        <translation type="vanished">Průsečík (pouze pravý)</translation>
-    </message>
-    <message>
-        <source>Intersection 2</source>
-        <translation type="vanished">Průsečík 2</translation>
-    </message>
-    <message>
-        <source>Intersection 2 (only left)</source>
-        <translation type="vanished">Průsečík 2 (pouze levý)</translation>
-    </message>
-    <message>
-        <source>Intersection 2 (only right)</source>
-        <translation type="vanished">Průsečík 2 (pouze pravý)</translation>
-    </message>
-    <message>
-        <source>Acute angle that looks outside of piece</source>
-        <translation type="vanished">Ostrý úhel, který vypadá, že je vně střihu</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Průvodce vzorcem</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Hodnota</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Výpočet</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ukázat celý výpočet v okně se zprávami&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>List of all defined passmarks. To define a passmark return to the Main Path tab, call context menu for a point item and make it a passmark.</source>
-        <translation type="vanished">Seznam všech stanovených značek sestavení. Chcete-li stanovit obnovení značky sestavení na kartě Hlavní cesta, vyvolejte související nabídku pro bodovou položku a udělejte z ní značku sestavení.</translation>
-    </message>
-    <message>
-        <source>Acute angle that looks inside of piece</source>
-        <translation type="vanished">Ostrý úhel, který vypadá, že je uvnitř dílu</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>Main path</source>
-        <translation type="vanished">Hlavní cesta</translation>
-    </message>
-    <message>
-        <source>All objects in path should follow in clockwise direction.</source>
-        <translation type="vanished">Všechny předměty v cestě mají následovat po směru otáčení hodinových ručiček.</translation>
-    </message>
-    <message>
-        <source>Ready!</source>
-        <translation type="vanished">Připraven!</translation>
-    </message>
-    <message>
-        <source>Show full piece</source>
-        <translation type="vanished">Ukázat celý díl</translation>
-    </message>
-    <message>
-        <source>Reverse node direction</source>
-        <translation type="vanished">Obrátit směr uzlu</translation>
-    </message>
-    <message>
-        <source>Excluded node</source>
-        <translation type="vanished">Vyloučit objekt</translation>
-    </message>
-    <message>
-        <source>Turn point</source>
-        <translation type="vanished">Bod změny směru</translation>
-    </message>
-    <message>
-        <source>Check node uniqness</source>
-        <translation type="vanished">Ověřit jedinečnost uzlu</translation>
-    </message>
-    <message>
-        <source>Notch</source>
-        <translation type="vanished">Zářez</translation>
-    </message>
-    <message>
-        <source>Duplicate</source>
-        <translation type="vanished">Zdvojit</translation>
-    </message>
-    <message>
-        <source>Delete node</source>
-        <translation type="vanished">Smazat uzel</translation>
-    </message>
-    <message>
-        <source>Mirror line</source>
-        <translation type="vanished">Čára zrcadlení</translation>
-    </message>
-    <message>
-        <source>Show mirror line</source>
-        <translation type="vanished">Ukázat čáru zrcadlení</translation>
-    </message>
-    <message>
-        <source>Symmetrical copy</source>
-        <translation type="vanished">Souměrná kopie</translation>
-    </message>
-    <message>
-        <source>Seam allowance</source>
-        <translation type="vanished">Švová záložka</translation>
-    </message>
-    <message>
-        <source>Activates true zero seam allowance width. This also disables intersection checks between the seam line and seam allowance.</source>
-        <translation type="vanished">Zapne skutečnou nulovou šířku švové záložky. Toto také vypne kontroly průsečíků mezi švovou čarou a švovou záložkou.</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="vanished">Šířka:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Průvodce vzorcem</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Hodnota</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Výpočet</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ukázat celý výpočet v okně se zprávami&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Nodes</source>
-        <translation type="vanished">Uzly</translation>
-    </message>
-    <message>
-        <source>Node:</source>
-        <translation type="vanished">Uzel:</translation>
-    </message>
-    <message>
-        <source>Before:</source>
-        <translation type="vanished">Předchozí:</translation>
-    </message>
-    <message>
-        <source>Return to default width</source>
-        <translation type="vanished">Vrátit na výchozí šířku</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Výchozí</translation>
-    </message>
-    <message>
-        <source>After:</source>
-        <translation type="vanished">Po:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="vanished">Úhel:</translation>
-    </message>
-    <message>
-        <source>Start point:</source>
-        <translation type="vanished">Počáteční bod:</translation>
-    </message>
-    <message>
-        <source>End point:</source>
-        <translation type="vanished">Koncový bod:</translation>
-    </message>
-    <message>
-        <source>Include as:</source>
-        <translation type="vanished">Zahrnout jako:</translation>
-    </message>
-    <message>
-        <source>Internal paths</source>
-        <translation type="vanished">Vnitřní cesty</translation>
-    </message>
-    <message>
-        <source>The seam allowance is part of main path</source>
-        <translation type="vanished">Švová záložka je částí hlavní cesty</translation>
-    </message>
-    <message>
-        <source>Built in</source>
-        <translation type="vanished">Vestavěno</translation>
-    </message>
-    <message>
-        <source>Hide the main path if the seam allowance is enabled</source>
-        <translation type="vanished">Skrýt hlavní cestu, pokud je povolena švová záložka</translation>
-    </message>
-    <message>
-        <source>Hide main path</source>
-        <translation type="vanished">Skrýt hlavní cestu</translation>
-    </message>
-    <message>
-        <source>Name of detail:</source>
-        <translation type="vanished">Název jednotlivosti (dílu střihu):</translation>
-    </message>
-    <message>
-        <source>Detail</source>
-        <translation type="vanished">Jednotlivost (díl střihu)</translation>
-    </message>
-    <message>
-        <source>Name can&apos;t be empty</source>
-        <translation type="vanished">Název nemůže být prázdný</translation>
-    </message>
-    <message>
-        <source>Force piece to be always flipped in a layout.</source>
-        <translation type="vanished">Vynutit, aby byl díl vždy přetočen v rozložení.</translation>
-    </message>
-    <message>
-        <source>Force flipping</source>
-        <translation type="vanished">Vynutit převrácení</translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Posunout úplně nahoru</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Posunout nahoru</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Posunout dolů</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Posunout úplně dolů</translation>
-    </message>
-    <message>
-        <source>Priority:</source>
-        <translation type="vanished">Přednost:</translation>
-    </message>
-    <message>
-        <source>Controls priority in layout. 0 - no priority.</source>
-        <translation type="vanished">Ovládá přednost v rozvržení. 0 - žádná přednost.</translation>
-    </message>
-    <message>
-        <source>Automatic</source>
-        <comment>seam allowance</comment>
-        <translation type="vanished">Automaticky</translation>
-    </message>
-    <message>
-        <source>True zero width</source>
-        <translation type="vanished">Skutečná nulová šířka</translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <comment>seam allowance</comment>
-        <translation type="vanished">Vlastní</translation>
-    </message>
-    <message>
-        <source>Piece</source>
-        <translation type="vanished">Díl</translation>
-    </message>
-    <message>
-        <source>Universally Unique IDentifier of piece. Used to identifier piece while updating manual layout. Left empty to generate new value.</source>
-        <translation type="vanished">Univerzálně jedinečný identifikátor dílu (UUID). Používá se k rozpoznání kusu při aktualizaci ručního rozvržení. Ponechejte prázdné pro vytvoření nové hodnoty.</translation>
-    </message>
-    <message>
-        <source>On drawing</source>
-        <translation type="vanished">Na výkresu</translation>
-    </message>
-    <message>
-        <source>Export to DXF-AAMA sew line on Draw layer</source>
-        <translation type="vanished">Při uložení ve formátu DXF-AAMA zahrnout data čáry švu do vrstvy výkresu</translation>
-    </message>
-</context>
-<context>
-    <name>TabPlaceLabels</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="vanished">Dialog</translation>
-    </message>
-</context>
-<context>
     <name>ToggleGroupInLayout</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglegroupinlayout.cpp" line="48"/>
@@ -21965,10 +20269,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VAbstractOperation</name>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1719"/>
         <source>Length</source>
@@ -23237,10 +21537,6 @@ Do you want to continue?</source>
         <translation>Uživatelský materiál</translation>
     </message>
     <message>
-        <source>Make all parsing warnings into errors. Have effect only in console mode. Use to force Valentina to immediately terminate if a pattern contains a parsing warning.</source>
-        <translation type="vanished">Udělat všechna varování ohledně zpracování do chyb. Účinkuje jen v režimu konzole. Použijte k přinucení Valentiny k okamžitému ukončení, pokud střih obsahuje varování týkající se zpracování.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="323"/>
         <source>Invalid user material &apos;%1&apos;. Separator is missing.</source>
         <translation>Neplatný uživatelský materiál &apos;%1&apos;. Chybí oddělovač.</translation>
@@ -23844,72 +22140,6 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vexception/vexception.cpp" line="81"/>
         <source>Exception: %1</source>
         <translation>Výjimka: %1</translation>
-    </message>
-</context>
-<context>
-    <name>VFoldLine</name>
-    <message>
-        <source>Invalid SVG font &apos;%1&apos;. Fallback to outline font.</source>
-        <translation type="vanished">Neplatný font SVG &apos;%1&apos;. Zpět na obrysové písmo.</translation>
-    </message>
-</context>
-<context>
-    <name>VFontInstaller</name>
-    <message>
-        <source>Could not determine the system font installation path.</source>
-        <translation type="vanished">Nepodařilo se určit cestu pro instalaci systémových písem.</translation>
-    </message>
-    <message>
-        <source>Failed to create destination directory: %1</source>
-        <translation type="vanished">Nepodařilo se vytvořit cílový adresář: %1</translation>
-    </message>
-    <message>
-        <source>Failed to copy file from %1 to %2. Possible reasons: permission denied, file locked, or general I/O error.</source>
-        <translation type="vanished">Nepodařilo se zkopírovat soubor z %1 do %2. Možné důvody: přístup odepřen, soubor uzamčen nebo obecná chyba I/O.</translation>
-    </message>
-    <message>
-        <source>Font copy succeeded, but Linux font cache rebuild failed. Font may not be immediately visible.</source>
-        <translation type="vanished">Kopírování písma se zdařilo, ale obnovení mezipaměti písem v Linuxu selhalo. Písmo nemusí být ihned viditelné.</translation>
-    </message>
-    <message>
-        <source>Font copy succeeded, but Windows Registry registration failed.</source>
-        <translation type="vanished">Kopírování písma se zdařilo, ale registrace v registru Windows selhala.</translation>
-    </message>
-    <message>
-        <source>Font loaded, but could not determine font family name to install font corrections.</source>
-        <translation type="vanished">Písmo načteno, ale nepodařilo se určit název rodiny písma pro instalaci oprav písma.</translation>
-    </message>
-    <message>
-        <source>Font correction file already exists at destination: %1.</source>
-        <translation type="vanished">Soubor s opravou písma již v cíli existuje: %1.</translation>
-    </message>
-    <message>
-        <source>Failed to copy font correction file from %1 to %2. Possible reasons: permission denied, file locked, or general I/O error.</source>
-        <translation type="vanished">Nepodařilo se zkopírovat soubor s opravou písma z %1 do %2. Možné důvody: přístup odepřen, soubor uzamčen nebo obecná chyba I/O.</translation>
-    </message>
-    <message>
-        <source>Skipped existing font (User choice: No to All): %1</source>
-        <translation type="vanished">Přeskočeno stávající písmo (volba uživatele: Ne všem): %1</translation>
-    </message>
-    <message>
-        <source>Font Already Exists</source>
-        <translation type="vanished">Písmo již existuje</translation>
-    </message>
-    <message>
-        <source>The font &apos;%1&apos; is already installed.</source>
-        <translation type="vanished">Písmo &apos;%1&apos; je již nainstalováno.</translation>
-    </message>
-    <message>
-        <source>Do you want to replace it?</source>
-        <translation type="vanished">Chcete je nahradit?</translation>
-    </message>
-    <message>
-        <source>Installation cancelled by user. Font not replaced.</source>
-        <translation type="vanished">Instalace zrušena uživatelem. Písmo nebylo nahrazeno.</translation>
-    </message>
-    <message>
-        <source>Failed to remove existing file: %1. Check permissions.</source>
-        <translation type="vanished">Nepodařilo se odstranit stávající soubor: %1. Zkontrolujte oprávnění.</translation>
     </message>
 </context>
 <context>
@@ -25114,17 +23344,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>VSvgFontReader</name>
-    <message>
-        <source>Incorrect file</source>
-        <translation type="vanished">Neplatný soubor</translation>
-    </message>
-    <message>
-        <source>Unexpected tag %1 in line %2</source>
-        <translation type="vanished">Neočekávaná značka %1 v řádku %2</translation>
-    </message>
-</context>
-<context>
     <name>VTableSearch</name>
     <message>
         <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="433"/>
@@ -25181,10 +23400,6 @@ Do you want to continue?</source>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
 </context>
 <context>
     <name>VToolAbstractOffsetCurve</name>
@@ -25235,10 +23450,6 @@ Do you want to continue?</source>
         <source>End angle</source>
         <translation>Koncový úhel</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
 </context>
 <context>
     <name>VToolArcWithLength</name>
@@ -25261,10 +23472,6 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="430"/>
         <source>End angle</source>
         <translation>Koncový úhel</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Popis</translation>
     </message>
 </context>
 <context>
@@ -25365,10 +23572,6 @@ Do you want to continue?</source>
         <translation>Poloměr</translation>
     </message>
     <message>
-        <source>label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="401"/>
         <source>radius1</source>
         <translation>poloměr1</translation>
@@ -25391,10 +23594,6 @@ Do you want to continue?</source>
         <source>length</source>
         <translation>Délka</translation>
     </message>
-    <message>
-        <source>label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
 </context>
 <context>
     <name>VToolCutSplinePath</name>
@@ -25407,10 +23606,6 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.cpp" line="607"/>
         <source>length</source>
         <translation>Délka</translation>
-    </message>
-    <message>
-        <source>label</source>
-        <translation type="vanished">Popis</translation>
     </message>
 </context>
 <context>
@@ -25445,10 +23640,6 @@ Do you want to continue?</source>
         <translation>Koncový úhel</translation>
     </message>
     <message>
-        <source>Label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="514"/>
         <source>Rotation</source>
         <translation>Otáčení</translation>
@@ -25481,17 +23672,9 @@ Do you want to continue?</source>
         <source>End angle</source>
         <translation>Koncový úhel</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Popis</translation>
-    </message>
 </context>
 <context>
     <name>VToolFlippingByAxis</name>
-    <message>
-        <source>Origin point</source>
-        <translation type="vanished">Původní bod</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="169"/>
         <source>Flipping by axis</source>
@@ -25500,14 +23683,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolFlippingByLine</name>
-    <message>
-        <source>First line point</source>
-        <translation type="vanished">První bod čáry</translation>
-    </message>
-    <message>
-        <source>Second line point</source>
-        <translation type="vanished">Druhý bod čáry</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="170"/>
         <source>flipping by line</source>
@@ -26829,10 +25004,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolPointOfContact</name>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Délka</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
@@ -29103,26 +27274,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>vNoisyHandler</name>
-    <message>
-        <source>DEBUG:</source>
-        <translation type="vanished">LADĚNÍ:</translation>
-    </message>
-    <message>
-        <source>WARNING:</source>
-        <translation type="vanished">VAROVÁNÍ:</translation>
-    </message>
-    <message>
-        <source>CRITICAL:</source>
-        <translation type="vanished">VÁŽNÁ:</translation>
-    </message>
-    <message>
-        <source>FATAL:</source>
-        <translation type="vanished">ZÁSADNÍ:</translation>
-    </message>
-    <message>
-        <source>INFO:</source>
-        <translation type="vanished">INFORMACE:</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/core/vapplication.cpp" line="248"/>
         <source>Warning</source>

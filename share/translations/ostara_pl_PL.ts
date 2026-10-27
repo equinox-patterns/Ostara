@@ -202,37 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>About Valentina</source>
-        <translation type="vanished">O programie</translation>
-    </message>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">Wersja programu</translation>
-    </message>
-    <message>
-        <source>Web site : %1</source>
-        <translation type="vanished">Strona www : %1</translation>
-    </message>
-    <message>
-        <source>Cannot open your default browser</source>
-        <translation type="vanished">Nie mogę otworzyć domyślnej przeglądarki</translation>
-    </message>
-    <message>
-        <source>Build revision:</source>
-        <translation type="vanished">Rewizja:</translation>
-    </message>
-    <message>
-        <source>Built on %1 at %2</source>
-        <translation type="vanished">Zdudowano %1 o %2</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translation type="vanished">Sprawdź aktualizacje</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -4130,65 +4099,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Właściwości wykroju</translation>
-    </message>
-    <message>
-        <source>Pattern description</source>
-        <translation type="vanished">Opis wykroju</translation>
-    </message>
-    <message>
-        <source>Delete image</source>
-        <translation type="vanished">Usuń obraz</translation>
-    </message>
-    <message>
-        <source>Change image</source>
-        <translation type="vanished">Zmień obraz</translation>
-    </message>
-    <message>
-        <source>Save image to file</source>
-        <translation type="vanished">Zapisz obraz do pliku</translation>
-    </message>
-    <message>
-        <source>Show image</source>
-        <translation type="vanished">Pokaż obrazy</translation>
-    </message>
-    <message>
-        <source>untitled</source>
-        <translation type="vanished">bez nazwy</translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="vanished">Ścieżka:</translation>
-    </message>
-    <message>
-        <source>Show in Explorer</source>
-        <translation type="vanished">Pokaż w przeglądarce</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;pusty&gt;</translation>
-    </message>
-    <message>
-        <source>File was not saved yet.</source>
-        <translation type="vanished">Plik jeszcze nie zapisany.</translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="vanished">Wykrój</translation>
-    </message>
-    <message>
-        <source>For technical notes</source>
-        <translation type="vanished">Notatki techniczne</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Język etykiet:</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -4586,22 +4496,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="1080"/>
         <source>Intersection 2 (only right)</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Przesuń na wierzch</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Przesuń wyżej</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Przesuń niżej</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Przesuń na spód</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="101"/>
@@ -5601,17 +5495,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="vanished">Konfiguracja</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation>Wykrój</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Ścieżki</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -6071,14 +5957,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>DialogSeamAllowance</name>
     <message>
-        <source>Ready!</source>
-        <translation type="vanished">Gotowe!</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Wartość</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation>Linia osnowy</translation>
@@ -6159,53 +6037,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Usuń</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="vanished">Opcje</translation>
-    </message>
-    <message>
-        <source>Parser error: %1</source>
-        <translation type="vanished">Błąd składni: %1</translation>
-    </message>
-    <message>
-        <source>You need more points!</source>
-        <translation type="vanished">Potrzebujesz więcej punktów!</translation>
-    </message>
-    <message>
-        <source>Empty</source>
-        <translation type="vanished">Pusty</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="vanished">Błąd</translation>
-    </message>
-    <message>
-        <source>Edit length</source>
-        <translation type="vanished">Edytuj długość</translation>
-    </message>
-    <message>
-        <source>Edit angle</source>
-        <translation type="vanished">Edytuj kąt</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">Ścieżki</translation>
-    </message>
-    <message>
-        <source>Rectangle</source>
-        <translation type="vanished">Prostokąt</translation>
-    </message>
-    <message>
-        <source>Triangle</source>
-        <translation type="vanished">Trójkąt</translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="vanished">&lt;pusty&gt;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
@@ -7307,10 +7141,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished">Eksport</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">Nowy</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
         <translation type="unfinished">Krzywa</translation>
@@ -7460,13 +7290,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>InitPieceLabelLanguages</name>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Domyślny</translation>
-    </message>
-</context>
-<context>
     <name>LinkPieceGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
@@ -7476,10 +7299,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Valentina</source>
-        <translation type="vanished">Valentina</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point along perpendicular</source>
@@ -7682,10 +7501,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.cpp" line="181"/>
         <source>Preferences</source>
         <translation>Ustawienia</translation>
-    </message>
-    <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Właściwości wykroju</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
@@ -11312,10 +11127,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Anuluj</translation>
     </message>
 </context>
 <context>
@@ -18126,10 +17937,6 @@ Save it before leaving it?</source>
         <source>Height</source>
         <translation type="unfinished">Wysokość</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etykieta</translation>
-    </message>
 </context>
 <context>
     <name>OToolSpiral</name>
@@ -18448,81 +18255,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesAppearancePage</name>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Rozmiar</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="vanished">Zapisz</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="vanished">Zapisuj automatycznie</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="vanished">co:</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="vanished">Język</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="vanished">Język interfejsu:</translation>
-    </message>
-    <message>
-        <source>Decimal separator parts:</source>
-        <translation type="vanished">Separator części dziesiętnych:</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="vanished">Domyślna jednostka:</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Język etykiet:</translation>
-    </message>
-    <message>
-        <source>Pattern editing</source>
-        <translation type="vanished">Edytowanie wykroju</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="vanished">Pasek narzędzi</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">Wyświetl napisy pod ikonkami (zalecane dla początkujących).</translation>
-    </message>
-    <message>
-        <source>With OS options</source>
-        <translation type="vanished">Z opcjami systemu operacyjnego</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="vanished">Centymetry</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="vanished">Milimetry</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="vanished">Cale</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">min</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -18831,50 +18563,7 @@ to %2</source>
     </message>
 </context>
 <context>
-    <name>PreferencesPathPage</name>
-    <message>
-        <source>Paths that Valentina uses</source>
-        <translation type="vanished">Ścieżki używane przez program</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="obsolete">Ścieżka</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Domyślny</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="vanished">Edytuj</translation>
-    </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="vanished">Otwórz katalog</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesPatternPage</name>
-    <message>
-        <source>Graphical output</source>
-        <translation type="obsolete">Ustawienia grafiki</translation>
-    </message>
-    <message>
-        <source>Use antialiasing</source>
-        <translation type="obsolete">Włącz wygładzanie</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">Cofnij</translation>
-    </message>
-    <message>
-        <source>Count steps (0 - no limit):</source>
-        <translation type="obsolete">Liczba kroków (0 - brak limitu):</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
@@ -20190,210 +19879,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Type:</source>
-        <translation type="vanished">Typ:</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="vanished">Wysokość</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Wysokość:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Kreator formuł</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Wartość</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Obliczenia</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pokaż pełne obliczenia&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Szerokość</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Szerokość:</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Rotation:</source>
-        <translation type="vanished">Obrót:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Kreator formuły</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Wartość</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Obliczenia</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pokaż pełną kalkulację w oknie wiadomości&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="vanished">Długość:</translation>
-    </message>
-    <message>
-        <source>Arrows:</source>
-        <translation type="vanished">Strzałki:</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Angle</source>
-        <translation type="vanished">Kąt</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Długość</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Długość:</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Szerokość</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Szerokość:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Kąt:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">Typ</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Kreator formuł</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Wartość</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Obliczenia</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pokaż pełne obliczenia&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>Ready!</source>
-        <translation type="vanished">Gotowe!</translation>
-    </message>
-    <message>
-        <source>Seam allowance</source>
-        <translation type="vanished">Dodatek na szew</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="vanished">Szerokość:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Kreator formuły</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Wartość</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Obliczenia</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pokaż pełną kalkulację w oknie wiadomości&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="vanished">Domyślny</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="vanished">Kąt:</translation>
-    </message>
-    <message>
-        <source>Start point:</source>
-        <translation type="vanished">Punkt początkowy:</translation>
-    </message>
-    <message>
-        <source>End point:</source>
-        <translation type="vanished">Punkt końcowy:</translation>
-    </message>
-    <message>
-        <source>Internal paths</source>
-        <translation type="vanished">Ścieżki wewnętrzne</translation>
-    </message>
-    <message>
-        <source>Detail</source>
-        <translation type="vanished">Detal</translation>
-    </message>
-    <message>
-        <source>Name can&apos;t be empty</source>
-        <translation type="vanished">Nazwa nie może być pusta</translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Przesuń na wierzch</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Przesuń wyżej</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Przesuń niżej</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Przesuń na spód</translation>
-    </message>
-</context>
-<context>
-    <name>TabPlaceLabels</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Wartość pierwszego kąta</translation>
-    </message>
-</context>
-<context>
     <name>ToggleGroupInLayout</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglegroupinlayout.cpp" line="48"/>
@@ -20779,10 +20264,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VAbstractOperation</name>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Etykieta</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1719"/>
         <source>Length</source>
@@ -23912,10 +23393,6 @@ Do you want to continue?</source>
         <source>Length</source>
         <translation type="unfinished">Długość</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etykieta</translation>
-    </message>
 </context>
 <context>
     <name>VToolAbstractOffsetCurve</name>
@@ -23966,10 +23443,6 @@ Do you want to continue?</source>
         <source>End angle</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Etykieta</translation>
-    </message>
 </context>
 <context>
     <name>VToolArcWithLength</name>
@@ -23992,10 +23465,6 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="430"/>
         <source>End angle</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Etykieta</translation>
     </message>
 </context>
 <context>
@@ -24164,10 +23633,6 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Label</source>
-        <translation type="vanished">Etykieta</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="514"/>
         <source>Rotation</source>
         <translation type="unfinished"></translation>
@@ -24199,10 +23664,6 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="508"/>
         <source>End angle</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etykieta</translation>
     </message>
 </context>
 <context>
@@ -25536,10 +24997,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolPointOfContact</name>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">Długość</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
@@ -27810,14 +27267,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>vNoisyHandler</name>
-    <message>
-        <source>WARNING:</source>
-        <translation type="vanished">OSTRZEŻENIE:</translation>
-    </message>
-    <message>
-        <source>INFO:</source>
-        <translation type="vanished">INFORMACJA:</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/core/vapplication.cpp" line="248"/>
         <source>Warning</source>

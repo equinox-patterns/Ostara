@@ -48,6 +48,8 @@
  */
 class OOmtDocument : public VDomDocument
 {
+    Q_OBJECT // NOLINT
+
 public:
     // --- Format version ---
     static constexpr const char *CurrentFormatVersion = "0.1.0";

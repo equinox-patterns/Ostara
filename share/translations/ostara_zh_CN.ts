@@ -202,17 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>About Valentina</source>
-        <translation type="vanished">关于Valentina</translation>
-    </message>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">Valentina版本</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -503,13 +492,6 @@
         <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.ui" line="14"/>
         <source>Arc with length</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DialogAskCollectStatistic</name>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">邮箱:</translation>
     </message>
 </context>
 <context>
@@ -4115,13 +4097,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern</source>
-        <translation type="obsolete">样板</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -5518,17 +5493,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="vanished">配置</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation type="unfinished">样板</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="obsolete">路径</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -6069,18 +6036,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">错误</translation>
-    </message>
-    <message>
-        <source>Edit length</source>
-        <translation type="obsolete">修长度</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="obsolete">路径</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
@@ -7180,10 +7135,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="113"/>
         <source>Export</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
@@ -18284,65 +18235,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesAppearancePage</name>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">尺码</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">保存</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="vanished">自动储存被更改的纸样</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="vanished">间隔：</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">语言</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="vanished">GUI语言:</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="obsolete">默认单位:</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="obsolete">工具栏</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="obsolete">公分</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="obsolete">毫米</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="obsolete">英寸</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">min</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="vanished">邮箱:</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -19960,77 +19852,6 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
         <source>Delete measurement</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Type:</source>
-        <translation type="vanished">类型:</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="vanished">高度</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">打算</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">宽度</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">宽度:</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Calculation</source>
-        <translation type="obsolete">打算</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="obsolete">长度:</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">长度</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">长度:</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">宽度</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">宽度:</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">打算</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">宽度:</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="obsolete">打算</translation>
     </message>
 </context>
 <context>
@@ -25153,10 +24974,6 @@ Do you want to continue?</source>
 <context>
     <name>VToolPointOfContact</name>
     <message>
-        <source>Length</source>
-        <translation type="obsolete">长度</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
         <translation type="unfinished"></translation>
@@ -27414,18 +27231,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>vNoisyHandler</name>
-    <message>
-        <source>DEBUG:</source>
-        <translation type="vanished">BUG:</translation>
-    </message>
-    <message>
-        <source>WARNING:</source>
-        <translation type="vanished">警告:</translation>
-    </message>
-    <message>
-        <source>INFO:</source>
-        <translation type="vanished">信息:</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/core/vapplication.cpp" line="248"/>
         <source>Warning</source>

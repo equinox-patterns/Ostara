@@ -202,37 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>About Valentina</source>
-        <translation type="vanished">Despre Valentina</translation>
-    </message>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">Versiunea Valentina</translation>
-    </message>
-    <message>
-        <source>Web site : %1</source>
-        <translation type="vanished">Site Web: %1</translation>
-    </message>
-    <message>
-        <source>Cannot open your default browser</source>
-        <translation type="vanished">Nu pot deschide browser-ul implicit</translation>
-    </message>
-    <message>
-        <source>Build revision:</source>
-        <translation type="vanished">Revizie Versiune:</translation>
-    </message>
-    <message>
-        <source>Built on %1 at %2</source>
-        <translation type="vanished">Construit pe %1 la %2</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translation type="vanished">Căutați actualizări</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -2800,13 +2769,6 @@ Values and intervals will not be imported.</source>
     </message>
 </context>
 <context>
-    <name>DialogKnownMaterials</name>
-    <message>
-        <source>User material</source>
-        <translation type="vanished">Materialul utilizatorului</translation>
-    </message>
-</context>
-<context>
     <name>DialogLine</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="72"/>
@@ -4137,29 +4099,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Proprietăți tipar</translation>
-    </message>
-    <message>
-        <source>Pattern description</source>
-        <translation type="vanished">Descriere tipar</translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="vanished">Rută:</translation>
-    </message>
-    <message>
-        <source>Pattern</source>
-        <translation type="obsolete">Model</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="vanished">Limbă etichetă:</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -4557,22 +4496,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="1080"/>
         <source>Intersection 2 (only right)</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Deplasați-vă în partea de sus</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Deplasare în sus</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Deplasarea în jos</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Deplasați-vă în partea de jos</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="101"/>
@@ -5572,17 +5495,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="obsolete">Configurație</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation type="unfinished">Model</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="obsolete">Căi</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -6042,14 +5957,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>DialogSeamAllowance</name>
     <message>
-        <source>Ready!</source>
-        <translation type="obsolete">Gata!</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valoare</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation type="unfinished"></translation>
@@ -6130,49 +6037,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished">Șterge</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation type="obsolete">Opțiuni</translation>
-    </message>
-    <message>
-        <source>Infinite/undefined result</source>
-        <translation type="vanished">Rezultat infinit/nedefinit</translation>
-    </message>
-    <message>
-        <source>Length should be positive</source>
-        <translation type="vanished">Lungimea trebuie să fie pozitivă</translation>
-    </message>
-    <message>
-        <source>Parser error: %1</source>
-        <translation type="vanished">Eroare parser: %1</translation>
-    </message>
-    <message>
-        <source>You need more points!</source>
-        <translation type="obsolete">Ai nevoie de mai multe puncte!</translation>
-    </message>
-    <message>
-        <source>You have to choose points in a clockwise direction!</source>
-        <translation type="obsolete">Trebuie să alegi punctele în sensul acelor de ceasornic!</translation>
-    </message>
-    <message>
-        <source>First point cannot be equal to the last point!</source>
-        <translation type="obsolete">Primul punct nu poate fi la fel cu ultimul punct!</translation>
-    </message>
-    <message>
-        <source>You have double points!</source>
-        <translation type="obsolete">Ai puncte duble!</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation>Niciunul</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="vanished">Eroare</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="obsolete">Căi</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
@@ -7274,10 +7141,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished">Export</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">Nou</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Curve</source>
         <translation type="unfinished">Curbură</translation>
@@ -7427,13 +7290,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>InternalStrings</name>
-    <message>
-        <source>The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.</source>
-        <translation type="vanished">Programul este prevăzut CA ATARE CU NICI O GARANȚIE DE ORICE FEL, INCLUSIV GARANȚIA DE DESIGN, COMERCIALIZARE ȘI POTRIVIRE PENTRU UN ANUMIT SCOP.</translation>
-    </message>
-</context>
-<context>
     <name>LinkPieceGroup</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/linkpiecegroup.cpp" line="38"/>
@@ -7443,10 +7299,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 </context>
 <context>
     <name>MainWindow</name>
-    <message>
-        <source>Valentina</source>
-        <translation type="vanished">Valentina</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1402"/>
         <source>Point along perpendicular</source>
@@ -7651,10 +7503,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Preferințe</translation>
     </message>
     <message>
-        <source>Pattern properties</source>
-        <translation type="vanished">Proprietăți tipar</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="310"/>
         <location filename="../../src/app/ostara/mainwindow.ui" line="697"/>
         <source>Zoom in</source>
@@ -7676,10 +7524,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow.ui" line="748"/>
         <source>Zoom fit best</source>
         <translation>Zoom se potrivesc cel mai bine</translation>
-    </message>
-    <message>
-        <source>Report bug</source>
-        <translation type="vanished">Raportează o eroare</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="691"/>
@@ -11283,10 +11127,6 @@ This action cannot be undone.</source>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="691"/>
         <source>No member has a fold line yet. Set one on a piece, in its Grainline tab.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cut on fold</source>
-        <translation type="obsolete">Tăiați pe pliu</translation>
     </message>
 </context>
 <context>
@@ -18097,10 +17937,6 @@ Save it before leaving it?</source>
         <source>Height</source>
         <translation type="unfinished">Înălțime</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etichetă</translation>
-    </message>
 </context>
 <context>
     <name>OToolSpiral</name>
@@ -18419,81 +18255,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesAppearancePage</name>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Dimensiune</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Salvează</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="obsolete">Auto salvarea modelului modificat</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="obsolete">Interval:</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="obsolete">Limba</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="obsolete">Limbaj GUI:</translation>
-    </message>
-    <message>
-        <source>Decimal separator parts:</source>
-        <translation type="obsolete">Piese separator decimal:</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="obsolete">Unitate standard:</translation>
-    </message>
-    <message>
-        <source>Label language:</source>
-        <translation type="obsolete">Limbă etichetă:</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="obsolete">Bară de instrumente</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon (recommended for beginners).</source>
-        <translation type="vanished">Textul apare sub pictogramă (recomandat pentru începători).</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="obsolete">Centimetrii</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="obsolete">Milimetrii</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="obsolete">Inci</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="vanished">General</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">min</translation>
-    </message>
-    <message>
-        <source>Update</source>
-        <translation type="vanished">Actualiza</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -18769,10 +18530,6 @@ to %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Update</source>
-        <translation type="obsolete">Actualiza</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
         <source>default unit</source>
         <translation type="unfinished"></translation>
@@ -18803,13 +18560,6 @@ to %2</source>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="202"/>
         <source>Inches</source>
         <translation type="unfinished">Inci</translation>
-    </message>
-</context>
-<context>
-    <name>PreferencesPathPage</name>
-    <message>
-        <source>Edit</source>
-        <translation type="vanished">Editare</translation>
     </message>
 </context>
 <context>
@@ -20129,204 +19879,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Height</source>
-        <translation type="vanished">Înălțime</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Înălțime:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Expertul pentru formule</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valoare</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Calcul</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Afișați calculul complet în caseta de mesaje&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Lățime</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Lățime:</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Rotation:</source>
-        <translation type="vanished">Rotație:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Expertul pentru formule</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valoare</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Calcul</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Afișați calculul complet în caseta de mesaje&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="vanished">Lungime:</translation>
-    </message>
-    <message>
-        <source>Arrows:</source>
-        <translation type="vanished">Săgeţi:</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Angle</source>
-        <translation type="obsolete">Unghi</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">Lungime</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">Lungime:</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">Lățime</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">Lățime:</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <comment>notch angle</comment>
-        <translation type="vanished">Unghi:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Asistent Formulă</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valoare</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Calcul</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt; Arată calcul complet în message box &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>All objects in path should follow in clockwise direction.</source>
-        <translation type="obsolete">Toate obiectele de pe rută trebuie să urmeze în sensul acelor de ceasornic.</translation>
-    </message>
-    <message>
-        <source>Ready!</source>
-        <translation type="obsolete">Gata!</translation>
-    </message>
-    <message>
-        <source>Seam allowance</source>
-        <translation type="obsolete">Adaos cusatură</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">Lățime:</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">Expertul pentru formule</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">Valoare</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">Calcul</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="vanished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Afișați calculul complet în caseta de mesaje&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Angle:</source>
-        <translation type="obsolete">Unghi:</translation>
-    </message>
-    <message>
-        <source>Built in</source>
-        <translation type="vanished">Încorporat</translation>
-    </message>
-    <message>
-        <source>Name of detail:</source>
-        <translation type="vanished">Nume detaliu:</translation>
-    </message>
-    <message>
-        <source>Detail</source>
-        <translation type="vanished">Detalii</translation>
-    </message>
-    <message>
-        <source>Name can&apos;t be empty</source>
-        <translation type="vanished">Numele nu poate fi gol</translation>
-    </message>
-    <message>
-        <source>Move on top</source>
-        <translation type="vanished">Deplasați-vă în partea de sus</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="vanished">Deplasare în sus</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="vanished">Deplasarea în jos</translation>
-    </message>
-    <message>
-        <source>Move on bottom</source>
-        <translation type="vanished">Deplasați-vă în partea de jos</translation>
-    </message>
-    <message>
-        <source>Custom</source>
-        <comment>seam allowance</comment>
-        <translation type="vanished">Custom
-&#xa0;</translation>
-    </message>
-</context>
-<context>
-    <name>TabPlaceLabels</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Dialog</translation>
-    </message>
-</context>
-<context>
     <name>ToggleGroupInLayout</name>
     <message>
         <location filename="../../src/libs/vtools/undocommands/togglegroupinlayout.cpp" line="48"/>
@@ -20713,10 +20265,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VAbstractOperation</name>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Etichetă</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1719"/>
         <source>Length</source>
@@ -23846,10 +23394,6 @@ Do you want to continue?</source>
         <source>Length</source>
         <translation type="unfinished">Lungime</translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etichetă</translation>
-    </message>
 </context>
 <context>
     <name>VToolAbstractOffsetCurve</name>
@@ -23900,10 +23444,6 @@ Do you want to continue?</source>
         <source>End angle</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Etichetă</translation>
-    </message>
 </context>
 <context>
     <name>VToolArcWithLength</name>
@@ -23926,10 +23466,6 @@ Do you want to continue?</source>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="430"/>
         <source>End angle</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="vanished">Etichetă</translation>
     </message>
 </context>
 <context>
@@ -24098,10 +23634,6 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Label</source>
-        <translation type="vanished">Etichetă</translation>
-    </message>
-    <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="514"/>
         <source>Rotation</source>
         <translation type="unfinished"></translation>
@@ -24134,10 +23666,6 @@ Do you want to continue?</source>
         <source>End angle</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etichetă</translation>
-    </message>
 </context>
 <context>
     <name>VToolFlippingByAxis</name>
@@ -24149,14 +23677,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolFlippingByLine</name>
-    <message>
-        <source>First line point</source>
-        <translation type="obsolete">Primul punct de linie</translation>
-    </message>
-    <message>
-        <source>Second line point</source>
-        <translation type="obsolete">Al doilea Punct de linie</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="170"/>
         <source>flipping by line</source>
@@ -25478,10 +24998,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolPointOfContact</name>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">Lungime</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>

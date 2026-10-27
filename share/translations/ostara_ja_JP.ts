@@ -202,17 +202,6 @@
     </message>
 </context>
 <context>
-    <name>DialogAboutApp</name>
-    <message>
-        <source>Valentina version</source>
-        <translation type="vanished">バージョン</translation>
-    </message>
-    <message>
-        <source>Check For Updates</source>
-        <translation type="vanished">更新を確認</translation>
-    </message>
-</context>
-<context>
     <name>DialogAddBackgroundImage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogaddbackgroundimage.ui" line="14"/>
@@ -4108,13 +4097,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
 </context>
 <context>
-    <name>DialogPatternProperties</name>
-    <message>
-        <source>Pattern</source>
-        <translation type="vanished">パターン</translation>
-    </message>
-</context>
-<context>
     <name>DialogPiecePath</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="14"/>
@@ -5511,17 +5493,9 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configuration</source>
-        <translation type="vanished">設定</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.ui" line="80"/>
         <source>Pattern</source>
         <translation>パターン</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">パス</translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
@@ -5979,10 +5953,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
 <context>
     <name>DialogSeamAllowance</name>
     <message>
-        <source>Value</source>
-        <translation type="vanished">数値</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="42"/>
         <source>Grainline</source>
         <translation type="unfinished"></translation>
@@ -6066,18 +6036,6 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
         <source>None</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="vanished">エラー</translation>
-    </message>
-    <message>
-        <source>Edit length</source>
-        <translation type="vanished">長さを編集</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="vanished">パス</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/osymbolshapes.cpp" line="43"/>
@@ -18277,62 +18235,6 @@ Save it before leaving it?</source>
     </message>
 </context>
 <context>
-    <name>PreferencesConfigurationPage</name>
-    <message>
-        <source>Save</source>
-        <translation type="vanished">保存</translation>
-    </message>
-    <message>
-        <source>Auto-save modified pattern</source>
-        <translation type="vanished">パターン編集時に自動保存</translation>
-    </message>
-    <message>
-        <source>Interval:</source>
-        <translation type="vanished">間隔：</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="vanished">言語</translation>
-    </message>
-    <message>
-        <source>GUI language:</source>
-        <translation type="vanished">言語設定：</translation>
-    </message>
-    <message>
-        <source>Default unit:</source>
-        <translation type="vanished">単位：</translation>
-    </message>
-    <message>
-        <source>Pattern editing</source>
-        <translation type="vanished">パターン編集</translation>
-    </message>
-    <message>
-        <source>Reset warnings</source>
-        <translation type="vanished">警告ダイアログをリセット</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="vanished">ツールバー</translation>
-    </message>
-    <message>
-        <source>Centimeters</source>
-        <translation type="vanished">センチ</translation>
-    </message>
-    <message>
-        <source>Millimiters</source>
-        <translation type="vanished">ミリ</translation>
-    </message>
-    <message>
-        <source>Inches</source>
-        <translation type="vanished">インチ</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>minutes</comment>
-        <translation type="vanished">分</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
@@ -18637,22 +18539,7 @@ to %2</source>
     </message>
 </context>
 <context>
-    <name>PreferencesPathPage</name>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">タイプ</translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="vanished">パス</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesPatternPage</name>
-    <message>
-        <source>Undo</source>
-        <translation type="vanished">取り消し</translation>
-    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.ui" line="47"/>
         <source>Line width</source>
@@ -19965,112 +19852,6 @@ Do you want to continue?</source>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
         <source>Delete measurement</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TabFoldLine</name>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">幅</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">数値</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">計算</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">幅</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">幅：</translation>
-    </message>
-</context>
-<context>
-    <name>TabGrainline</name>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">幅</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">数値</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">計算</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation type="vanished">長さ：</translation>
-    </message>
-</context>
-<context>
-    <name>TabPassmarks</name>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">長さ</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <comment>notch depth</comment>
-        <translation type="vanished">長さ：</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="vanished">幅</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <comment>notch width</comment>
-        <translation type="vanished">幅：</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="vanished">タイプ</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">幅</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">数値</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">計算</translation>
-    </message>
-</context>
-<context>
-    <name>TabPaths</name>
-    <message>
-        <source>Width:</source>
-        <translation type="vanished">幅：</translation>
-    </message>
-    <message>
-        <source>Formula wizard</source>
-        <translation type="vanished">幅</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="vanished">数値</translation>
-    </message>
-    <message>
-        <source>Calculation</source>
-        <translation type="vanished">計算</translation>
-    </message>
-</context>
-<context>
-    <name>TabPlaceLabels</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="vanished">ダイアログ</translation>
     </message>
 </context>
 <context>
@@ -25192,10 +24973,6 @@ Do you want to continue?</source>
 </context>
 <context>
     <name>VToolPointOfContact</name>
-    <message>
-        <source>Length</source>
-        <translation type="vanished">長さ</translation>
-    </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
         <source>Radius</source>
