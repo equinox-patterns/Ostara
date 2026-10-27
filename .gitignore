@@ -46,7 +46,12 @@ build/
 build_cmake/
 # Le banc d'essai CMake (`cmake -S . -B build_test -DBUILD_TESTING=ON`) : ses objets ne sont pas du produit.
 build_test/
+# Les variantes instrumentées (AddressSanitizer, ThreadSanitizer) : ~5 Go chacune, jamais du produit.
+build_asan/
+build_tsan/
 .vscode/
+# Configuration personnelle d'outils d'assistance : ne concerne pas le projet.
+.claude/
 
 # Ignore Coverity Scan Build Tool
 cov-int/
