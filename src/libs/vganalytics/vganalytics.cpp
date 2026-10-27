@@ -9,6 +9,8 @@
  **  @copyright
  **  Copyright (C) 2023-2024 Valentina project
  **  <https://gitlab.com/smart-pattern/valentina> All Rights Reserved.
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **  Modified for Ostara (fork of Valentina) on 01/08/2026.
  **
  **  Valentina is free software: you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by

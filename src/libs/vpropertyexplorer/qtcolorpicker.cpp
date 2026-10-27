@@ -42,6 +42,8 @@
 ** If you are unsure which license is appropriate for your use, please
 ** contact Nokia at qt-info@nokia.com.
 **
+**  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+**  Modified for Ostara on 05/08/2026.
 ****************************************************************************/
 
 #include <cmath>

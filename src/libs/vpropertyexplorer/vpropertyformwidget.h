@@ -16,6 +16,8 @@
  **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  **  Lesser General Public License for more details.
  **
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **  Modified for Ostara on 06/10/2026.
  *************************************************************************/
 
 #ifndef VPROPERTYFORMWIDGET_H

@@ -17,6 +17,8 @@
  **  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  **  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **  Modified for Ostara on 23/10/2026.
  ******************************************************************************************************/
 
 #include "qmuformulabase.h"

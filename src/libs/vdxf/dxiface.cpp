@@ -1,6 +1,8 @@
 /******************************************************************************
 **                                                                           **
 **  Copyright (C) 2015 José F. Soriano, rallazz@gmail.com                    **
+**  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>                **
+**  Modified for Ostara (fork of Valentina) on 27/10/2026.                   **
 **                                                                           **
 **  This library is free software, licensed under the terms of the GNU       **
 **  General Public License as published by the Free Software Foundation,     **

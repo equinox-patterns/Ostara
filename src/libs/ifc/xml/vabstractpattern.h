@@ -25,6 +25,7 @@
  **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
  **
  // Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+**  Modified for Ostara (fork of Valentina) on 23/10/2026. **
  *************************************************************************/
 
 #ifndef VABSTRACTPATTERN_H

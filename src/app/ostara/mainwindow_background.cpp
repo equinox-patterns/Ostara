@@ -11,6 +11,8 @@
  **
  **  @copyright
  **  Copyright (C) 2013-2015 Valentina project
+ **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+ **  Modified for Ostara (fork of Valentina) on 26/08/2026.
  **
  **  This program is free software: you can redistribute it and/or modify
  **  it under the terms of the GNU General Public License as published by

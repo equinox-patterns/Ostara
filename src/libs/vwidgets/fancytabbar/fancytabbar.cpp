@@ -25,6 +25,8 @@
 ** rights.  These rights are described in the Digia Qt LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
 **
+**  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+**  Modified for Ostara on 07/09/2026.
 ****************************************************************************/
 
 #include "fancytabbar.h"

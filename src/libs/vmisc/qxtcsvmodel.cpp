@@ -26,6 +26,9 @@
 ** SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **
 ** <http://libqxt.org>  <foundation@libqxt.org>
+**
+**  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+**  Modified for Ostara on 30/07/2026.
 *****************************************************************************/
 
 /*!

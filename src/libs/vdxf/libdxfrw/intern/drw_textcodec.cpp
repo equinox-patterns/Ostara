@@ -1,3 +1,16 @@
+/******************************************************************************
+**  drw_textcodec.cpp — part of libDXFrw, the DXF read/write library.
+**
+**  libDXFrw is released under the GNU General Public License, version 2 or
+**  (at your option) any later version; see COPYING in this directory. The
+**  library's authors are listed in AUTHORS. This file carries no copyright
+**  notice of its own in the upstream distribution, and none is asserted here
+**  on the authors' behalf.
+**
+**  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+**  Modified for Ostara on 27/10/2026.
+******************************************************************************/
+
 #include "drw_textcodec.h"
 #include "../drw_base.h"
 #include <cstring>

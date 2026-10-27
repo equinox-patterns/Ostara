@@ -24,6 +24,8 @@
 **
 ** $QT_END_LICENSE$
 **
+**  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
+**  Modified for Ostara on 27/10/2026.
 ****************************************************************************/
 
 #include "vtextstream.h"
