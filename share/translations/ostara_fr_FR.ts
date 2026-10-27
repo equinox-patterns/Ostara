@@ -654,8 +654,8 @@
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="14"/>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="106"/>
-        <source>Close dart</source>
-        <translation>Pince fermée</translation>
+        <source>Dart rotation</source>
+        <translation>Pivot de pince</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.ui" line="28"/>
@@ -7751,8 +7751,8 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="97"/>
-        <source>Armhole curve passing through 4 points</source>
-        <translation>Courbe d&apos;emmanchure passant par 4 points</translation>
+        <source>Armhole curve</source>
+        <translation>Courbe d&apos;emmanchure</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="100"/>
@@ -7791,8 +7791,8 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="98"/>
-        <source>Close dart tool</source>
-        <translation>Fermer une pince</translation>
+        <source>Dart rotation</source>
+        <translation>Pivot de pince</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="99"/>
@@ -9497,7 +9497,7 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1694"/>
-        <source>Armhole tool</source>
+        <source>Armhole curve</source>
         <translation>Courbe d&apos;emmanchure</translation>
     </message>
     <message>
@@ -10214,14 +10214,18 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1892"/>
-        <source>Close dart</source>
-        <translation>Fermer une pince</translation>
+        <source>Dart rotation</source>
+        <translation>Pivot de pince</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1895"/>
+        <source>Rotate a dart: turn one leg onto the other</source>
+        <translation>Pivot de pince : ramener un bras sur l’autre</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1916"/>
-        <source>Close a dart: turn one leg onto the other</source>
-        <translation>Fermer une pince : ramener un bras sur l’autre</translation>
+        <source>Dart cap: draw the cap of a dart</source>
+        <translation>Chapeau de pince : tracer le chapeau</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1913"/>
@@ -12708,8 +12712,8 @@ Cette action ne peut pas être annulée.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogclosedart.cpp" line="428"/>
-        <source>Close dart</source>
-        <translation>Fermer une pince</translation>
+        <source>Dart rotation</source>
+        <translation>Pivot de pince</translation>
     </message>
 </context>
 <context>
@@ -18721,8 +18725,8 @@ L&apos;enregistrer avant de le quitter ?</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolclosedart.cpp" line="317"/>
-        <source>close a dart</source>
-        <translation>fermer une pince</translation>
+        <source>rotate a dart</source>
+        <translation>pivoter une pince</translation>
     </message>
 </context>
 <context>
@@ -22565,9 +22569,9 @@ Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
-        <source>Tool &apos;Armhole curve through 3 points&apos;</source>
+        <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
-        <translation>Outil « Courbe d&apos;emmanchure passant par 3 points »</translation>
+        <translation>Outil « Courbe d&apos;emmanchure »</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
@@ -22739,9 +22743,9 @@ Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
-        <source>Tool &apos;Close dart&apos;</source>
+        <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
-        <translation>Outil &apos;Pince fermée&apos;</translation>
+        <translation>Outil &apos;Pivot de pince&apos;</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
@@ -23667,9 +23671,9 @@ Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
-        <source>Close dart</source>
+        <source>Dart rotation</source>
         <comment>operation</comment>
-        <translation>Pince fermée</translation>
+        <translation>Pivot de pince</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
@@ -27038,8 +27042,8 @@ Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="414"/>
-        <source>Tool close dart</source>
-        <translation>Outil &apos;Fermer une pince&apos;</translation>
+        <source>Tool dart rotation</source>
+        <translation>Outil &apos;Pivot de pince&apos;</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="183"/>

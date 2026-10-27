@@ -411,7 +411,7 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowToolOptions<VToolRotation>(item, tr("Tool rotation"), RotationProperties());
             break;
         case OToolCloseDart::Type:
-            ShowToolOptions<OToolCloseDart>(item, tr("Tool close dart"), CloseDartProperties());
+            ShowToolOptions<OToolCloseDart>(item, tr("Tool dart rotation"), CloseDartProperties());
             break;
         case OToolDartCap::Type:
             ShowToolOptions<OToolDartCap>(item, tr("Dart cap"), DartCapOperationProperties());

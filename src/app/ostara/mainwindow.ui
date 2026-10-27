@@ -1691,7 +1691,7 @@
      <normaloff>:/toolicon/light/cubic_bezier.png</normaloff>:/toolicon/light/cubic_bezier.png</iconset>
    </property>
    <property name="text">
-    <string>Armhole tool</string>
+    <string>Armhole curve</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1889,10 +1889,10 @@
      <normaloff>:/toolicon/light/rotation.png</normaloff>:/toolicon/light/rotation.png</iconset>
    </property>
    <property name="text">
-    <string>Close dart</string>
+    <string>Dart rotation</string>
    </property>
    <property name="toolTip">
-    <string>Close a dart: turn one leg onto the other</string>
+    <string>Rotate a dart: turn one leg onto the other</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
@@ -1913,7 +1913,7 @@
     <string>Dart cap</string>
    </property>
    <property name="toolTip">
-    <string>Close a dart: turn one leg onto the other</string>
+    <string>Dart cap: draw the cap of a dart</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

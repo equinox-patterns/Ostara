@@ -417,7 +417,7 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
         case VShortcutAction::ToolCubicBezier:
             return tr("Tool 'Curve which uses point as control handle'", "shortcut for action");
         case VShortcutAction::ToolArmholeCurve:
-            return tr("Tool 'Armhole curve through 3 points'", "shortcut for action");
+            return tr("Tool 'Armhole curve'", "shortcut for action");
         case VShortcutAction::ToolArc:
             return tr("Tool 'Arc'", "shortcut for action");
         case VShortcutAction::ToolSplinePath:
@@ -469,7 +469,7 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
         case VShortcutAction::ToolRotation:
             return tr("Tool 'Rotate objects'", "shortcut for action");
         case VShortcutAction::ToolCloseDart:
-            return tr("Tool 'Close dart'", "shortcut for action");
+            return tr("Tool 'Dart rotation'", "shortcut for action");
         case VShortcutAction::ToolDartCap:
             return tr("Tool 'Dart cap'", "shortcut for action");
         case VShortcutAction::ToolRectangle:

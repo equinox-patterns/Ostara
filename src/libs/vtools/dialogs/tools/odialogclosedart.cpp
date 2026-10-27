@@ -425,7 +425,7 @@ void ODialogCloseDart::Refuse(const QString &message)
 
     // Over the main window, not over this dialog: the dialog is not on screen yet while the points are picked.
     // One button, and the step is still the one to answer: there is nothing to choose.
-    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Close dart"), message);
+    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Dart rotation"), message);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

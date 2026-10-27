@@ -993,7 +993,7 @@ auto VDependencyTreeModel::GetOperationToolName(Tool toolType, const QString &de
         case Tool::Rotation:
             return tr("Rotation", "operation");
         case Tool::CloseDart:
-            return tr("Close dart", "operation");
+            return tr("Dart rotation", "operation");
         case Tool::DartCap: // an operation, like the pleat: the context says which translation is looked up
             return tr("Dart cap", "operation");
         case Tool::Rectangle:

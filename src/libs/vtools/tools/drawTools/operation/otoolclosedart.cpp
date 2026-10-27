@@ -314,7 +314,7 @@ auto OToolCloseDart::Create(OToolCloseDartInitData &initData) -> OToolCloseDart 
 
     if (initData.parse == Document::FullParse)
     {
-        return AddToolToScene<OToolCloseDart>(initData, Tool::CloseDart, tr("close a dart"),
+        return AddToolToScene<OToolCloseDart>(initData, Tool::CloseDart, tr("rotate a dart"),
                                              [&initData]() { return new OToolCloseDart(initData); });
     }
     return nullptr;

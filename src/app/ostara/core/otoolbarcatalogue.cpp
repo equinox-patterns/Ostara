@@ -94,8 +94,8 @@ auto ToolNames() -> const QHash<QString, const char *> &
         // New
         {QStringLiteral("curve"),                         QT_TRANSLATE_NOOP("DrawToolBar", "Curve")},
         {QStringLiteral("curve_cut_point"),               QT_TRANSLATE_NOOP("DrawToolBar", "Segment a curve")},
-        {QStringLiteral("armhole_curve"),                 QT_TRANSLATE_NOOP("DrawToolBar", "Armhole curve passing through 4 points")},
-        {QStringLiteral("close_dart"),                    QT_TRANSLATE_NOOP("DrawToolBar", "Close dart tool")},
+        {QStringLiteral("armhole_curve"),                 QT_TRANSLATE_NOOP("DrawToolBar", "Armhole curve")},
+        {QStringLiteral("close_dart"),                    QT_TRANSLATE_NOOP("DrawToolBar", "Dart rotation")},
         {QStringLiteral("dart_cap"),                      QT_TRANSLATE_NOOP("DrawToolBar", "Dart cap tool")},
         {QStringLiteral("rectangle"),                     QT_TRANSLATE_NOOP("DrawToolBar", "Rectangle tool")},
         {QStringLiteral("transfert"),                     QT_TRANSLATE_NOOP("DrawToolBar", "Transfer tool")},
@@ -212,7 +212,7 @@ auto OToolBarCatalogue::DrawGroups() -> QVector<Group>
 auto OToolBarCatalogue::HiddenByDefault() -> QStringList
 {
     // Arc start and Arc end are redundant with the "create start/end point" boxes of Arc and Arc
-    // with given length; True darts is superseded by Close dart. Hidden, not removed: the three
+    // with given length; True darts is superseded by Dart rotation. Hidden, not removed: the three
     // stay in their group's table above, which is what keeps them present in the dispatch list.
     return {QStringLiteral("arc_start"), QStringLiteral("arc_end"), QStringLiteral("true_darts")};
 }
