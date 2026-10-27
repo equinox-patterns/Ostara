@@ -52,6 +52,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vtoolsinglepoint.h"
 #include "../vwidgets/scalesceneitems.h"
+#include "tools/otooltip.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -256,16 +257,12 @@ auto VToolLinePoint::MakeToolTip() const -> QString
 
     const QLineF line(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%6:</b> %7</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(RoundForDisplay(line.angle()))
-                                .arg(tr("Point name"), second->name());
-    return toolTip;
+    // The point is named, never: the tooltip reads its distance and its direction from the base point, and
+    // nothing else (see OToolTip).
+    return OToolTip::Table({
+        OToolTip::Row(tr("Length"), OToolTip::Measure(line.length())),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(line.angle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

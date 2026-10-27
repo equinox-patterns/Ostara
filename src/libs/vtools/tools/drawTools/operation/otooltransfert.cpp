@@ -476,14 +476,9 @@ void OToolTransfert::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolTransfert::MakeToolTip() const -> QString
 {
-    return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
-                          "<tr> <td><b>%3:</b> %4</td> </tr>"
-                          "%5")
-        .arg(tr("From"),        // 1
-             OriginPointName()) // 2
-        .arg(tr("To"),          // 3
-             TargetPointName(), // 4
-             VisibilityGroupToolTip()); // 5
+    // The graft is told by two points, and a point name is never written (see OToolTip): what is left is the
+    // layer the result belongs to.
+    return VisibilityGroupToolTip();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

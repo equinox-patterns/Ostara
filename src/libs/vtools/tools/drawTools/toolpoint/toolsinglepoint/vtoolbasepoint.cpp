@@ -436,12 +436,9 @@ void VToolBasePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolBasePoint::MakeToolTip() const -> QString
 {
-    const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(m_id);
-
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%1:</b> %2</td> </tr>"
-                            u"</table>"_s.arg(tr("Point name"), point->name());
-    return toolTip;
+    // Nothing to say. The tooltip used to hold the point's own name, and a point name is never written (see
+    // OToolTip): a base point carries no length, no angle and no alias.
+    return {};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

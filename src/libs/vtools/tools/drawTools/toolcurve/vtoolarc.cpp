@@ -52,6 +52,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vtoolabstractcurve.h"
+#include "tools/otooltip.h"
 #include "../toolpoint/toolsinglepoint/otoolarcpoint.h"
 #include "../../../undocommands/deltool.h"
 
@@ -440,22 +441,13 @@ auto VToolArc::MakeToolTip() const -> QString
 {
     const QSharedPointer<VArc> arc = VAbstractTool::data.GeometricObject<VArc>(m_id);
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%10:</b> %11</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %7°</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9°</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc->GetLength())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Radius"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc->GetRadius())))
-                                .arg(tr("Start angle"))
-                                .arg(RoundForDisplay(arc->GetStartAngle()))
-                                .arg(tr("End angle"))
-                                .arg(RoundForDisplay(arc->GetEndAngle()))
-                                .arg(tr("Label"), arc->ObjectName());
-    return toolTip;
+    return OToolTip::Table({
+        OToolTip::NameRow(*arc),
+        OToolTip::Row(tr("Length"), OToolTip::Measure(arc->GetLength())),
+        OToolTip::Row(tr("Radius"), OToolTip::Measure(arc->GetRadius())),
+        OToolTip::Row(tr("Start angle"), OToolTip::Degrees(arc->GetStartAngle())),
+        OToolTip::Row(tr("End angle"), OToolTip::Degrees(arc->GetEndAngle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

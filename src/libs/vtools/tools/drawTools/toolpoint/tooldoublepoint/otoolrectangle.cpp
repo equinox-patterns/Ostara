@@ -58,6 +58,7 @@
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vsimplepoint.h"
 #include "orectanglerule.h"
+#include "tools/otooltip.h"
 #include "vtooldoublepoint.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -864,46 +865,50 @@ auto OToolRectangle::PointToolTip(quint32 id) const -> QString
     const QSharedPointer<VPointF> pB = VAbstractTool::data.GeometricObject<VPointF>(p1id);
     const QSharedPointer<VPointF> pC = VAbstractTool::data.GeometricObject<VPointF>(p2id);
     const QSharedPointer<VPointF> pD = VAbstractTool::data.GeometricObject<VPointF>(m_p4id);
-    const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(id);
 
-    QString name1;
-    QString name2;
-    QLineF side1;
-    QLineF side2;
-
-    if (id == p1id) // B: the sides A→B and B→C
+    // The two sides this corner closes, in the colours the hover gives them — the width is green, the height
+    // red — and each one by the name the user gave that line, or by what it is when they gave none. The
+    // corner's own point name is not written (see OToolTip).
+    struct Side
     {
-        name1 = u"%1→%2"_s.arg(pA->name(), pB->name());
-        name2 = u"%1→%2"_s.arg(pB->name(), pC->name());
-        side1 = QLineF(static_cast<QPointF>(*pA), static_cast<QPointF>(*pB));
-        side2 = QLineF(static_cast<QPointF>(*pB), static_cast<QPointF>(*pC));
-    }
-    else if (id == p2id) // C: the sides B→C and C→D
+        QLineF line;
+        QString roleName;
+        QString fallback;
+        VColorRole role;
+    };
+
+    const Side width{QLineF(), GetWidthLineRoleName(), tr("Width"), VColorRole::VisSupportColor2};
+    const Side height{QLineF(), GetHeightLineRoleName(), tr("Height"), VColorRole::VisSupportColor4};
+
+    Side first = width;
+    Side second = height;
+
+    if (id == p1id) // B: the sides A→B (width) and B→C (height)
     {
-        name1 = u"%1→%2"_s.arg(pB->name(), pC->name());
-        name2 = u"%1→%2"_s.arg(pC->name(), pD->name());
-        side1 = QLineF(static_cast<QPointF>(*pB), static_cast<QPointF>(*pC));
-        side2 = QLineF(static_cast<QPointF>(*pC), static_cast<QPointF>(*pD));
+        first.line = QLineF(static_cast<QPointF>(*pA), static_cast<QPointF>(*pB));
+        second.line = QLineF(static_cast<QPointF>(*pB), static_cast<QPointF>(*pC));
     }
-    else // D: the sides C→D and D→A
+    else if (id == p2id) // C: the sides B→C (height) and C→D (width)
     {
-        name1 = u"%1→%2"_s.arg(pC->name(), pD->name());
-        name2 = u"%1→%2"_s.arg(pD->name(), pA->name());
-        side1 = QLineF(static_cast<QPointF>(*pC), static_cast<QPointF>(*pD));
-        side2 = QLineF(static_cast<QPointF>(*pD), static_cast<QPointF>(*pA));
+        first = height;
+        second = width;
+        first.line = QLineF(static_cast<QPointF>(*pB), static_cast<QPointF>(*pC));
+        second.line = QLineF(static_cast<QPointF>(*pC), static_cast<QPointF>(*pD));
+    }
+    else // D: the sides C→D (width) and D→A (height)
+    {
+        first.line = QLineF(static_cast<QPointF>(*pC), static_cast<QPointF>(*pD));
+        second.line = QLineF(static_cast<QPointF>(*pD), static_cast<QPointF>(*pA));
     }
 
-    const QString unit = UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true);
-    const qreal l1 = VAbstractValApplication::VApp()->fromPixel(side1.length());
-    const qreal l2 = VAbstractValApplication::VApp()->fromPixel(side2.length());
+    const auto sideRow = [](const Side &side) -> QString {
+        const QString name = OToolTip::LineName(side.roleName);
+        const QString value = QStringLiteral("%1, %2")
+                                  .arg(OToolTip::Measure(side.line.length()), OToolTip::Degrees(side.line.angle()));
+        return OToolTip::StrokeRow(name.isEmpty() ? side.fallback : name, value, side.role);
+    };
 
-    const QString rowLabel = u"<tr> <td><b>%1:</b> %2</td> </tr>"_s.arg(tr("Label"), point->name());
-    const QString rowSide1 =
-        u"<tr> <td><b>%1:</b> %2 %3, %4°</td> </tr>"_s.arg(name1).arg(RoundForDisplay(l1)).arg(unit).arg(RoundForDisplay(side1.angle()));
-    const QString rowSide2 =
-        u"<tr> <td><b>%1:</b> %2 %3, %4°</td> </tr>"_s.arg(name2).arg(RoundForDisplay(l2)).arg(unit).arg(RoundForDisplay(side2.angle()));
-
-    return u"<table>%1%2%3</table>"_s.arg(rowLabel, rowSide1, rowSide2);
+    return OToolTip::Table({sideRow(first), sideRow(second)});
 }
 
 //---------------------------------------------------------------------------------------------------------------------

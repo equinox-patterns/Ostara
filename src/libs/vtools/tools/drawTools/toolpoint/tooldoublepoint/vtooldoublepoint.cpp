@@ -504,13 +504,11 @@ void VToolDoublePoint::ChangeLabelVisibility(quint32 id, bool visible)
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolDoublePoint::ComplexToolTip(quint32 itemId) const -> QString
 {
-    const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(itemId);
+    Q_UNUSED(itemId)
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%1:</b> %2</td> </tr>"
-                            u"%3"
-                            u"</table>"_s.arg(tr("Point name"), point->name(), MakeToolTip());
-    return toolTip;
+    // The endpoint has no name to show — a point name is never written (see OToolTip) — so the tool's own
+    // tooltip is the whole answer.
+    return MakeToolTip();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

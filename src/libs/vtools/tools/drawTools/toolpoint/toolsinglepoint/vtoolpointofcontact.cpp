@@ -57,6 +57,7 @@
 #include "../vpatterndb/vformula.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vtoolsinglepoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -366,32 +367,18 @@ void VToolPointOfContact::SetVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolPointOfContact::MakeToolTip() const -> QString
 {
-    const QSharedPointer<VPointF> p1 = VAbstractTool::data.GeometricObject<VPointF>(firstPointId);
-    const QSharedPointer<VPointF> p2 = VAbstractTool::data.GeometricObject<VPointF>(secondPointId);
     const QSharedPointer<VPointF> centerP = VAbstractTool::data.GeometricObject<VPointF>(center);
     const QSharedPointer<VPointF> current = VAbstractTool::data.GeometricObject<VPointF>(m_id);
 
-    const QLineF p1ToCur(static_cast<QPointF>(*p1), static_cast<QPointF>(*current));
-    const QLineF p2ToCur(static_cast<QPointF>(*p2), static_cast<QPointF>(*current));
     const QLineF centerToCur(static_cast<QPointF>(*centerP), static_cast<QPointF>(*current));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%10:</b> %11</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9°</td> </tr>"
-                            u"</table>"_s.arg(u"%1->%2"_s.arg(p1->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
-                                     u"%1->%2"_s.arg(p2->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length())))
-                                .arg(u"%1 %2->%3"_s.arg(tr("Length"), centerP->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(centerToCur.length())))
-                                .arg(u"%1 %2->%3"_s.arg(tr("Angle"), centerP->name(), current->name()))
-                                .arg(RoundForDisplay(centerToCur.angle()))
-                                .arg(tr("Point name"), current->name());
-    return toolTip;
+    // The contact point lies on the circle: its distance from the centre IS the radius the tool asked for.
+    // The distances to the two points of the guided line only ever had point names to name them (see
+    // OToolTip), so they are gone.
+    return OToolTip::Table({
+        OToolTip::Row(tr("Radius"), OToolTip::Measure(centerToCur.length())),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(centerToCur.angle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

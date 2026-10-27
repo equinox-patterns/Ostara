@@ -53,6 +53,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vtoollinepoint.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -400,30 +401,17 @@ void VToolLineIntersectAxis::SetVisualization()
 auto VToolLineIntersectAxis::MakeToolTip() const -> QString
 {
     const QSharedPointer<VPointF> basePoint = VAbstractTool::data.GeometricObject<VPointF>(basePointId);
-    const QSharedPointer<VPointF> firstPoint = VAbstractTool::data.GeometricObject<VPointF>(firstPointId);
-    const QSharedPointer<VPointF> secondPoint = VAbstractTool::data.GeometricObject<VPointF>(secondPointId);
     const QSharedPointer<VPointF> current = VAbstractTool::data.GeometricObject<VPointF>(m_id);
 
     const QLineF curLine(static_cast<QPointF>(*basePoint), static_cast<QPointF>(*current));
-    const QLineF firstToCur(static_cast<QPointF>(*firstPoint), static_cast<QPointF>(*current));
-    const QLineF curToSecond(static_cast<QPointF>(*current), static_cast<QPointF>(*secondPoint));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%10:</b> %11</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9 %3</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curLine.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(RoundForDisplay(curLine.angle()))
-                                .arg(u"%1->%2"_s.arg(firstPoint->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(firstToCur.length())))
-                                .arg(u"%1->%2"_s.arg(current->name(), secondPoint->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curToSecond.length())))
-                                .arg(tr("Point name"), current->name());
-    return toolTip;
+    // The point sits where an axis meets a line: its distance from the base point and its direction are what
+    // it is. Its distances to the axis' own two points were named by point names alone, and the preview
+    // paints them the support's magenta (see OToolTip).
+    return OToolTip::Table({
+        OToolTip::Row(tr("Length"), OToolTip::Measure(curLine.length())),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(curLine.angle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

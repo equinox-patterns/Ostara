@@ -54,6 +54,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/scalesceneitems.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vtoollinepoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -209,21 +210,22 @@ auto VToolAlongLine::MakeToolTip() const -> QString
     const QLineF curLine(static_cast<QPointF>(*basePoint), static_cast<QPointF>(*current));
     const QLineF curToSecond(static_cast<QPointF>(*current), static_cast<QPointF>(*secondPoint));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%9:</b> %10</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%7:</b> %8 %3</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curLine.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(RoundForDisplay(curLine.angle()))
-                                .arg(QStringLiteral("%1->%2").arg(basePoint->name(), current->name()),
-                                     QStringLiteral("%1->%2").arg(current->name(), secondPoint->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curToSecond.length())))
-                                .arg(tr("Point name"), current->name());
-    return toolTip;
+    // The point cuts the line in two, and the preview paints the halves green (A→C, the length asked for)
+    // and red (C→B, what remains). Each half is a real line with its own name: when the user has named one,
+    // the row carries that name, otherwise it says what it is. The two rows keep the preview's colours, so
+    // each number meets the line it measures; the point's own name is not written (see OToolTip).
+    const QString firstLine = OToolTip::LineName(GetLineRoleName());
+    const QString secondLine = OToolTip::LineName(GetSecondLineRoleName());
+
+    return OToolTip::Table({
+        OToolTip::StrokeRow(firstLine.isEmpty() ? tr("Length") : firstLine,
+                            OToolTip::Measure(curLine.length()),
+                            VColorRole::VisSupportColor2),
+        OToolTip::StrokeRow(secondLine.isEmpty() ? tr("Length") : secondLine,
+                            OToolTip::Measure(curToSecond.length()),
+                            VColorRole::VisSupportColor4),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(curLine.angle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

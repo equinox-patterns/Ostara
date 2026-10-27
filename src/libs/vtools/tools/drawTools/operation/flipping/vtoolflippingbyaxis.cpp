@@ -272,11 +272,9 @@ void VToolFlippingByAxis::SaveOptions(QDomElement &tag, QSharedPointer<VGObject>
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolFlippingByAxis::MakeToolTip() const -> QString
 {
-    return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
-                          "%3")
-        .arg(tr("Origin point"),        // 1
-             OriginPointName(),         // 2
-             VisibilityGroupToolTip()); // 3
+    // The axis is told by a point, and a point name is never written (see OToolTip): what is left is the layer
+    // the result belongs to.
+    return VisibilityGroupToolTip();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

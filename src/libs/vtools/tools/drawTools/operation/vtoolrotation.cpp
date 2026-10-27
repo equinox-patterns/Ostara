@@ -449,12 +449,12 @@ void VToolRotation::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolRotation::MakeToolTip() const -> QString
 {
-    return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
-                          "<tr> <td><b>%3:</b> %4°</td> </tr>"
-                          "%5")
-        .arg(tr("Pivot point"), OriginPointName(), tr("Rotation angle"))  // 1, 2, 3
-        .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaAngle().getDoubleValue()))) // 4: read, not raw
-        .arg(VisibilityGroupToolTip());                                   // 5
+    // The pivot point's name is not written: a point name never reaches the canvas (see OToolTip).
+    return QStringLiteral("<tr> <td><b>%1:</b> %2°</td> </tr>"
+                          "%3")
+        .arg(tr("Rotation angle"))                                                    // 1
+        .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaAngle().getDoubleValue()))) // 2: read, not raw
+        .arg(VisibilityGroupToolTip());                                               // 3
 }
 
 //---------------------------------------------------------------------------------------------------------------------

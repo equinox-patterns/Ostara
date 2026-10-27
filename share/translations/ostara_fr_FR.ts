@@ -18837,6 +18837,16 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <source>Label</source>
         <translation>Étiquette</translation>
     </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="877"/>
+        <source>Width</source>
+        <translation>Largeur</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/otoolrectangle.cpp" line="878"/>
+        <source>Height</source>
+        <translation>Hauteur</translation>
+    </message>
 </context>
 <context>
     <name>OToolSpiral</name>
@@ -27113,6 +27123,11 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="393"/>
         <source>Point name</source>
         <translation>Nom du point</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="380"/>
+        <source>Radius</source>
+        <translation>Rayon</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="425"/>

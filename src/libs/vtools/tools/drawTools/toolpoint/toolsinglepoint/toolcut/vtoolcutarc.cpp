@@ -51,6 +51,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vtoolcut.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -397,7 +398,6 @@ auto VToolCutArc::MakeToolTip() const -> QString
     const QString startAngleStr = QCoreApplication::translate("VToolCutArc", "start angle");
     const QString endAngleStr = QCoreApplication::translate("VToolCutArc", "end angle");
     const QString radiusStr = QCoreApplication::translate("VToolCutArc", "radius");
-    const QString labelStr = QCoreApplication::translate("VToolCutArc", "label");
     const QString radius1Str = QCoreApplication::translate("VToolCutArc", "radius1");
     const QString radius2Str = QCoreApplication::translate("VToolCutArc", "radius2");
 
@@ -405,28 +405,19 @@ auto VToolCutArc::MakeToolTip() const -> QString
 
     if (arc->getType() == GOType::Arc)
     {
-        auto ArcToolTip =
-            [arcStr, lengthStr, startAngleStr, endAngleStr, radiusStr, labelStr](QString toolTip,
-                                                                                 const VArc &arc,
-                                                                                 const QString &arcNumber) -> QString
+        // One sub-arc, in the preview's colour: the first half is green, the second red. Its length row is
+        // called by the name the user gave it, or by what it is when they gave none (see OToolTip).
+        auto ArcToolTip = [arcStr, lengthStr, startAngleStr, endAngleStr, radiusStr](const VArc &arc,
+                                                                                    const QString &arcNumber,
+                                                                                    VColorRole role) -> QString
         {
-            toolTip += u"<tr> <td><b>%10:</b> %11</td> </tr>"
-                       u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                       u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
-                       u"<tr> <td><b>%6:</b> %7°</td> </tr>"
-                       u"<tr> <td><b>%8:</b> %9°</td> </tr>"_s
-                           .arg(arcStr + arcNumber + " "_L1 + lengthStr)                           // %1
-                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())))       // %2
-                           .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
-                                arcStr + arcNumber + " "_L1 + radiusStr)                           // %4
-                           .arg(RoundForDisplay(arc.GetRadius()))                                                   // %5
-                           .arg(arcStr + arcNumber + " "_L1 + startAngleStr)                       // %6
-                           .arg(RoundForDisplay(arc.GetStartAngle()))                                               // %7
-                           .arg(arcStr + arcNumber + " "_L1 + endAngleStr)                         // %8
-                           .arg(RoundForDisplay(arc.GetEndAngle()))                                                 // %9
-                           .arg(arcStr + arcNumber + " "_L1 + labelStr,                            // %10
-                                arc.ObjectName());                                                 // %11
-            return toolTip;
+            const QString name = OToolTip::DisplayName(arc);
+            return OToolTip::StrokeRow(name.isEmpty() ? arcStr + arcNumber + " "_L1 + lengthStr : name,
+                                       OToolTip::Measure(arc.GetLength()), role)
+                   + OToolTip::Row(arcStr + arcNumber + " "_L1 + radiusStr, OToolTip::Measure(arc.GetRadius()))
+                   + OToolTip::Row(arcStr + arcNumber + " "_L1 + startAngleStr,
+                                   OToolTip::Degrees(arc.GetStartAngle()))
+                   + OToolTip::Row(arcStr + arcNumber + " "_L1 + endAngleStr, OToolTip::Degrees(arc.GetEndAngle()));
         };
 
         VArc ar1;
@@ -441,40 +432,32 @@ auto VToolCutArc::MakeToolTip() const -> QString
         ar2.SetNameSuffix(m_name2);
         ar2.SetAliasSuffix(m_aliasSuffix2);
 
-        return ArcToolTip(ArcToolTip(QStringLiteral("<table>"), ar1, QChar('1')), ar2, QChar('2'))
-               + QStringLiteral("</table>");
+        return OToolTip::Table({
+            ArcToolTip(ar1, QChar('1'), VColorRole::VisSupportColor2),
+            ArcToolTip(ar2, QChar('2'), VColorRole::VisSupportColor4),
+        });
     }
 
     if (arc->getType() == GOType::EllipticalArc)
     {
+        // Same reading for an elliptical arc: the length row carries the user's name when there is one.
         auto ElArcToolTip = [elArcStr,
                              lengthStr,
                              startAngleStr,
                              endAngleStr,
                              radius1Str,
-                             radius2Str,
-                             labelStr](QString toolTip, const VEllipticalArc &arc, const QString &arcNumber) -> QString
+                             radius2Str](const VEllipticalArc &arc,
+                                         const QString &arcNumber,
+                                         VColorRole role) -> QString
         {
-            toolTip += u"<tr> <td><b>%12:</b> %13</td> </tr>"
-                       u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                       u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
-                       u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
-                       u"<tr> <td><b>%8:</b> %9°</td> </tr>"
-                       u"<tr> <td><b>%10:</b> %11°</td> </tr>"_s
-                           .arg(elArcStr + arcNumber + QChar(QChar::Space) + lengthStr)            // %1
-                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetLength())))       // %2
-                           .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
-                                elArcStr + arcNumber + QChar(QChar::Space) + radius1Str)           // %4
-                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius1())))      // %5
-                           .arg(elArcStr + arcNumber + QChar(QChar::Space) + radius2Str)           // %6
-                           .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(arc.GetRadius2())))      // %7
-                           .arg(elArcStr + arcNumber + QChar(QChar::Space) + startAngleStr)        // %8
-                           .arg(RoundForDisplay(arc.GetStartAngle()))                                               // %9
-                           .arg(elArcStr + arcNumber + QChar(QChar::Space) + endAngleStr)          // %10
-                           .arg(RoundForDisplay(arc.GetEndAngle()))                                                 // %11
-                           .arg(elArcStr + arcNumber + QChar(QChar::Space) + labelStr,             // %12
-                                arc.ObjectName());                                                 // %13
-            return toolTip;
+            const QString name = OToolTip::DisplayName(arc);
+            const QString label = elArcStr + arcNumber + QChar(QChar::Space);
+            return OToolTip::StrokeRow(name.isEmpty() ? label + lengthStr : name, OToolTip::Measure(arc.GetLength()),
+                                       role)
+                   + OToolTip::Row(label + radius1Str, OToolTip::Measure(arc.GetRadius1()))
+                   + OToolTip::Row(label + radius2Str, OToolTip::Measure(arc.GetRadius2()))
+                   + OToolTip::Row(label + startAngleStr, OToolTip::Degrees(arc.GetStartAngle()))
+                   + OToolTip::Row(label + endAngleStr, OToolTip::Degrees(arc.GetEndAngle()));
         };
 
         VEllipticalArc ar1;
@@ -489,8 +472,10 @@ auto VToolCutArc::MakeToolTip() const -> QString
         ar2.SetNameSuffix(m_name2);
         ar2.SetAliasSuffix(m_aliasSuffix2);
 
-        return ElArcToolTip(ElArcToolTip(QStringLiteral("<table>"), ar1, QChar('1')), ar2, QChar('2'))
-               + QStringLiteral("</table>");
+        return OToolTip::Table({
+            ElArcToolTip(ar1, QChar('1'), VColorRole::VisSupportColor2),
+            ElArcToolTip(ar2, QChar('2'), VColorRole::VisSupportColor4),
+        });
     }
 
     return {};

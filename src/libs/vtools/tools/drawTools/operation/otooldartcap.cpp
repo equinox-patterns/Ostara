@@ -1531,13 +1531,9 @@ void OToolDartCap::ReadToolAttributes(const QDomElement &domElement)
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolDartCap::MakeToolTip() const -> QString
 {
-    // The three points the cap is built on — what the point tool showed — and the layer, which every operation's
-    // tooltip carries. The old tool read `Cap of the dart %1-%2-%3`; a bare title would have been a step backwards
-    // in the one place a user reads what a tool is attached to.
-    return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
-                          "%3")
-        .arg(tr("Cap"), QStringLiteral("%1-%2-%3").arg(ApexName(), FirstPointName(), SecondPointName()))
-        .arg(VisibilityGroupToolTip());
+    // The cap is built on three points, and a point name is never written (see OToolTip): what is left is the
+    // layer the result belongs to.
+    return VisibilityGroupToolTip();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

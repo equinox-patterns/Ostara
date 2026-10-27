@@ -55,6 +55,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "vexception.h"
+#include "tools/otooltip.h"
 #include "vtoolcut.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -605,22 +606,20 @@ auto VToolCutSplinePath::MakeToolTip() const -> QString
     const QString curveStr = QCoreApplication::translate("VToolCutSplinePath", "Curve");
     const QString lengthStr = QCoreApplication::translate("VToolCutSplinePath", "length");
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%6:</b> %7</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
-                            u"</table>"_s.arg(curveStr + " 1 "_L1 + lengthStr)
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(splPath1->GetLength())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
-                                     curveStr + " 2 "_L1 + lengthStr)
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(splPath2->GetLength())))
-                                .arg(curveStr + " 1 "_L1 + QCoreApplication::translate("VToolCutSplinePath", "label"),
-                                     splPath1->ObjectName(),
-                                     curveStr + " 2 "_L1 + QCoreApplication::translate("VToolCutSplinePath", "label"),
-                                     splPath2->ObjectName());
+    // The cut gives two halves of the path, green before the point and red after it. Each half wears the
+    // preview's colour and is called by the name the user gave it, or by what it is when they gave none (see
+    // OToolTip).
+    const auto halfRow = [&curveStr, &lengthStr](const VSplinePath &half, const QString &number,
+                                                 VColorRole role) {
+        const QString name = OToolTip::DisplayName(half);
+        return OToolTip::StrokeRow(name.isEmpty() ? curveStr + number + " "_L1 + lengthStr : name,
+                                   OToolTip::Measure(half.GetLength()), role);
+    };
 
-    return toolTip;
+    return OToolTip::Table({
+        halfRow(*splPath1, " 1"_L1, VColorRole::VisSupportColor2),
+        halfRow(*splPath2, " 2"_L1, VColorRole::VisSupportColor4),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

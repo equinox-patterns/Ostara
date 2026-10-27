@@ -40,6 +40,7 @@
 #include "../vmisc/compatibility.h"
 #include "../vwidgets/vsimplepoint.h"
 #include "../vtoolline.h"
+#include "tools/otooltip.h"
 #include "vtools/undocommands/renameobject.h"
 
 using namespace Qt::Literals::StringLiterals;
@@ -1699,12 +1700,11 @@ void VAbstractOperation::InitOperatedLine(quint32 id)
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractOperation::ComplexPointToolTip(quint32 itemId) const -> QString
 {
-    return QStringLiteral("<table>"
-                          "<tr> <td><b>%1:</b> %2</td> </tr>"
-                          "<tr> <td colspan=\"100%\"><hr/></td> </tr>"
-                          "%3"
-                          "</table>")
-        .arg(tr("Label"), VAbstractTool::data.GetGObject(itemId)->name(), MakeToolTip());
+    Q_UNUSED(itemId)
+
+    // A destination point has no name to show (see OToolTip); what the operation asked for is the whole
+    // tooltip.
+    return OToolTip::Table({MakeToolTip()});
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1712,15 +1712,14 @@ auto VAbstractOperation::ComplexCurveToolTip(quint32 itemId) const -> QString
 {
     const QSharedPointer<VAbstractCurve> curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(itemId);
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%1:</b> %2</td> </tr>"
-                            u"<tr> <td><b>%3:</b> %4 %5</td> </tr>"
-                            u"<tr> <td colspan=\"100%\"><hr/></td> </tr>"
-                            u"%6"
-                            u"</table>"_s.arg(tr("Label"), curve->ObjectName(), tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curve->GetLength())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), MakeToolTip());
-    return toolTip;
+    // The result curve's name is the alias the user gave it — nothing when they gave none — then the curve's
+    // own length, then what the operation asked for (see OToolTip).
+    return OToolTip::Table({
+        OToolTip::NameRow(*curve),
+        OToolTip::Row(tr("Length"), OToolTip::Measure(curve->GetLength())),
+        OToolTip::Separator(),
+        MakeToolTip(),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

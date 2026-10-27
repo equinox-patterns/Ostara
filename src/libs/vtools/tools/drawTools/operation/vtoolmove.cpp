@@ -474,11 +474,12 @@ void VToolMove::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolMove::MakeToolTip() const -> QString
 {
+    // The pivot point's name is not written: a point name never reaches the canvas (see OToolTip). What the
+    // operation was asked for is the whole tooltip.
     return QStringLiteral("<tr> <td><b>%1:</b> %2°</td> </tr>"
                           "<tr> <td><b>%3:</b> %4 %5</td> </tr>"
                           "<tr> <td><b>%6:</b> %7°</td> </tr>"
-                          "<tr> <td><b>%8:</b> %9</td> </tr>"
-                          "%10")
+                          "%8")
         .arg(tr("Angle"))                                                       // 1
         .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaAngle().getDoubleValue()))) // 2
         .arg(tr("Length"))                                                      // 3
@@ -486,9 +487,7 @@ auto VToolMove::MakeToolTip() const -> QString
         .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // 5
              tr("Rotation angle"))                                              // 6
         .arg(FormatDisplayNumber(RoundForDisplay(GetFormulaRotationAngle().getDoubleValue()))) // 7
-        .arg(tr("Pivot point"),                                                 // 8
-             OriginPointName(),                                                 // 9
-             VisibilityGroupToolTip());                                         // 10
+        .arg(VisibilityGroupToolTip());                                         // 8
 }
 
 //---------------------------------------------------------------------------------------------------------------------

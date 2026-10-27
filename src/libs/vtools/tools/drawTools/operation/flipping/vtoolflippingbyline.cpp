@@ -264,14 +264,9 @@ void VToolFlippingByLine::SaveOptions(QDomElement &tag, QSharedPointer<VGObject>
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolFlippingByLine::MakeToolTip() const -> QString
 {
-    return QStringLiteral("<tr> <td><b>%1:</b> %2</td> </tr>"
-                          "<tr> <td><b>%3:</b> %4</td> </tr>"
-                          "%5")
-        .arg(tr("First line point"),    // 1
-             FirstLinePointName(),      // 2
-             tr("Second line point"),   // 3
-             SecondLinePointName(),     // 4
-             VisibilityGroupToolTip()); // 5
+    // The axis is told by two points, and a point name is never written (see OToolTip): what is left is the
+    // layer the result belongs to.
+    return VisibilityGroupToolTip();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

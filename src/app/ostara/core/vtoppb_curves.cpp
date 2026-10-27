@@ -34,6 +34,7 @@
 #include "../dialogs/ochooseaxisdirectiondialog.h"
 #include "../vgeometry/vpointf.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vtools/tools/otooltip.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolabstractcurve.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarcwithlength.h"
@@ -84,46 +85,16 @@ auto SegmentDotPixmap(VColorRole role) -> QPixmap
  * @brief CurveDisplayName simplified name shown by the property browser.
  *
  * Ostara drives the user away from point-derived technical names: Spl_ and SplPath_ both
- * collapse to Curve_, arcs keep Arc_ and ElArc_. When the user has not named the object yet
- * the suffix reads (Unnamed), which is the nudge to name it.
+ * collapse to Curve_, arcs keep Arc_ and ElArc_. The rule itself lives in OToolTip::DisplayName, which the
+ * canvas tooltips read too — one reading of a name for the whole product. When the user has not named the
+ * object yet the suffix reads (Unnamed), which is the nudge to name it.
  *
  * @param objectName a VGObject::ObjectName() result, either "Spl_A_B" or "Spl_MyName (Spl_A_B)".
  */
 auto CurveDisplayName(const QString &objectName) -> QString
 {
-    const qsizetype headEnd = objectName.indexOf(QLatin1Char('_'));
-    if (headEnd < 0)
-    {
-        return objectName;
-    }
-
-    const QString head = objectName.left(headEnd + 1);
-
-    QString prefix;
-    if (head == QLatin1String(SPL_) || head == splPath_V + QLatin1Char('_'))
-    {
-        prefix = VAbstractApplication::VApp()->TrVars()->InternalVarToUser(QStringLiteral("Curve_"));
-    }
-    else if (head == QLatin1String(ARC_) || head == QLatin1String(ELARC_))
-    {
-        prefix = VAbstractApplication::VApp()->TrVars()->InternalVarToUser(head);
-    }
-    else
-    {
-        return objectName; // not a curve or an arc, leave it alone
-    }
-
-    // The alias carries the user suffix: "Spl_MyName (Spl_A_B)" -> "MyName".
-    QString suffix;
-    if (const qsizetype aliasEnd = objectName.indexOf(QLatin1String(" (")); aliasEnd > 0)
-    {
-        if (const QString alias = objectName.left(aliasEnd); alias.startsWith(head))
-        {
-            suffix = alias.mid(head.length());
-        }
-    }
-
-    return prefix + (suffix.isEmpty() ? T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "(Unnamed)")) : suffix);
+    const QString name = OToolTip::DisplayName(objectName);
+    return name.isEmpty() ? T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "(Unnamed)")) : name;
 }
 
 // --- Helpers ---

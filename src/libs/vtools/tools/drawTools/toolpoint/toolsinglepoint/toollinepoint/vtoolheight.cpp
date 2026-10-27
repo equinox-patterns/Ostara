@@ -48,6 +48,7 @@
 #include "../vpatterndb/variables/vlinelength.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vtoollinepoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -292,30 +293,17 @@ void VToolHeight::SetVisualization()
 auto VToolHeight::MakeToolTip() const -> QString
 {
     const QSharedPointer<VPointF> basePoint = VAbstractTool::data.GeometricObject<VPointF>(basePointId);
-    const QSharedPointer<VPointF> p1Line = VAbstractTool::data.GeometricObject<VPointF>(p1LineId);
-    const QSharedPointer<VPointF> p2Line = VAbstractTool::data.GeometricObject<VPointF>(p2LineId);
     const QSharedPointer<VPointF> current = VAbstractTool::data.GeometricObject<VPointF>(m_id);
 
     const QLineF curLine(static_cast<QPointF>(*basePoint), static_cast<QPointF>(*current));
-    const QLineF p1ToCur(static_cast<QPointF>(*p1Line), static_cast<QPointF>(*current));
-    const QLineF p2ToCur(static_cast<QPointF>(*p2Line), static_cast<QPointF>(*current));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%10:</b> %11</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9 %3</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curLine.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(RoundForDisplay(curLine.angle()))
-                                .arg(u"%1->%2"_s.arg(p1Line->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p1ToCur.length())))
-                                .arg(u"%1->%2"_s.arg(p2Line->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(p2ToCur.length())))
-                                .arg(tr("Point name"), current->name());
-    return toolTip;
+    // What the point IS: its height from the base point, and on which side. Its distances to the two ends of
+    // the base line only ever had a point name to name them (see OToolTip), and the preview paints them the
+    // same magenta as the support, so they said nothing the canvas does not.
+    return OToolTip::Table({
+        OToolTip::Row(tr("Length"), OToolTip::Measure(curLine.length())),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(curLine.angle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

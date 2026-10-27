@@ -56,6 +56,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vdrawtool.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -618,14 +619,13 @@ auto VToolLine::MakeToolTip() const -> QString
 
         const QLineF line(static_cast<QPointF>(*first), static_cast<QPointF>(*second));
 
-        const QString toolTip = u"<table>"
-                                u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                                u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                                u"</table>"_s.arg(tr("Length"))
-                                    .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length())))
-                                    .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                    .arg(RoundForDisplay(line.angle()));
-        return toolTip;
+        // A line has no VGObject: its name is the role name the container keeps for its pair of points, and
+        // the tooltip shows it only when the user gave one (see OToolTip).
+        return OToolTip::Table({
+            OToolTip::NameRow(OToolTip::LineName(GetLineRoleName())),
+            OToolTip::Row(tr("Length"), OToolTip::Measure(line.length())),
+            OToolTip::Row(tr("Angle"), OToolTip::Degrees(line.angle())),
+        });
     }
     catch (const VExceptionBadId &)
     {

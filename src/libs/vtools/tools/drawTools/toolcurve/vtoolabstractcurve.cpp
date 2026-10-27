@@ -65,6 +65,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
+#include "tools/otooltip.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
 #include "../vmisc/backport/qpainterstateguard.h"
@@ -264,14 +265,12 @@ auto VToolAbstractCurve::MakeToolTip() const -> QString
 {
     const QSharedPointer<VAbstractCurve> curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(m_id);
 
-    const QString toolTip =
-        u"<table>"
-        u"<tr> <td><b>%4:</b> %5</td> </tr>"
-        u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-        u"</table>"_s.arg(tr("Length"))
-            .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(curve->GetLength())))
-            .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Label"), curve->ObjectName());
-    return toolTip;
+    // The curve's name is the alias the user gave it, and nothing at all when they have not named it: the
+    // technical name (`Spl_A_B`, `SplPath_A_B`) never reaches the canvas (see OToolTip).
+    return OToolTip::Table({
+        OToolTip::NameRow(*curve),
+        OToolTip::Row(tr("Length"), OToolTip::Measure(curve->GetLength())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

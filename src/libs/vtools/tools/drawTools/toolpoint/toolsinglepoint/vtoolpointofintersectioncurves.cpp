@@ -49,6 +49,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vsegmentlabel.h"
+#include "tools/otooltip.h"
 #include "vtoolsinglepoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -1405,32 +1406,26 @@ void VToolPointOfIntersectionCurves::SetVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 auto VToolPointOfIntersectionCurves::MakeToolTip() const -> QString
 {
-    const QSharedPointer<VPointF> p = VAbstractTool::data.GeometricObject<VPointF>(m_id);
+    // A half that the file does not carry has no row: the hover must never throw, or the event loop goes
+    // with it (no more hover, no more tool, no more mode).
+    auto segmentRow = [this](const QString &label, quint32 id, VColorRole role) -> QString {
+        if (id <= NULL_ID || not VAbstractTool::data.HasObject(id))
+        {
+            return {};
+        }
 
-    QSharedPointer<VGObject> const curve1Segment1 = VAbstractTool::data.GetGObject(m_curve1Segment1Id);
-    QSharedPointer<VGObject> const curve1Segment2 = VAbstractTool::data.GetGObject(m_curve1Segment2Id);
-    QSharedPointer<VGObject> const curve2Segment1 = VAbstractTool::data.GetGObject(m_curve1Segment1Id);
-    QSharedPointer<VGObject> const curve2Segment2 = VAbstractTool::data.GetGObject(m_curve1Segment2Id);
+        return OToolTip::StrokeNameRow(label, *VAbstractTool::data.GetGObject(id), role);
+    };
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%1:</b> %2</td> </tr>"
-                            u"<tr> <td><b>%3:</b> %4</td> </tr>"
-                            u"<tr> <td><b>%5:</b> %6</td> </tr>"
-                            u"<tr> <td><b>%7:</b> %8</td> </tr>"
-                            u"<tr> <td><b>%9:</b> %10</td> </tr>"
-                            u"</table>"_s
-                                .arg(tr("Point name"),
-                                     p->name(), /* 1, 2 */
-                                     tr("Curve 1 segment 1"),
-                                     curve1Segment1->ObjectName(), /* 3, 4 */
-                                     tr("Curve 1 segment 2"),
-                                     curve1Segment2->ObjectName()) /* 5, 6 */
-                                .arg(tr("Curve 2 segment 1"),
-                                     curve2Segment1->ObjectName(), /* 7, 8 */
-                                     tr("Curve 2 segment 2"),
-                                     curve2Segment2->ObjectName()); /* 9, 10 */
-
-    return toolTip;
+    // Four halves cut by the crossing point, in the four colours the preview gives them — green, red, magenta,
+    // blue — and by the name the user gave each one. A half nobody named says nothing; the point itself is
+    // never named (see OToolTip).
+    return OToolTip::Table({
+        segmentRow(tr("Curve 1 segment 1"), m_curve1Segment1Id, VColorRole::VisSupportColor2),
+        segmentRow(tr("Curve 1 segment 2"), m_curve1Segment2Id, VColorRole::VisSupportColor4),
+        segmentRow(tr("Curve 2 segment 1"), m_curve2Segment1Id, VColorRole::VisSupportColor),
+        segmentRow(tr("Curve 2 segment 2"), m_curve2Segment2Id, VColorRole::VisSupportColor3),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

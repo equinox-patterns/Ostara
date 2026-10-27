@@ -47,6 +47,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../toolpoint/toolsinglepoint/otoolarcpoint.h"
+#include "tools/otooltip.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 #include "../vmisc/compatibility.h"
@@ -498,28 +499,14 @@ auto VToolEllipticalArcWithLength::MakeToolTip() const -> QString
 {
     const QSharedPointer<VEllipticalArc> elArc = VAbstractTool::data.GeometricObject<VEllipticalArc>(m_id);
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%12:</b> %13</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5 %3</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9°</td> </tr>"
-                            u"<tr> <td><b>%10:</b> %11°</td> </tr>"
-                            u"</table>"_s
-                                .arg(tr("Length"))                                                      // %1
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(elArc->GetLength())))    // %2
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), // %3
-                                     tr("Radius1"))                                                     // %4
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(elArc->GetRadius1())))   // %5
-                                .arg(tr("Radius2"))                                                     // %6
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(elArc->GetRadius2())))   // %7
-                                .arg(tr("Start angle"))                                                 // %8
-                                .arg(RoundForDisplay(elArc->GetStartAngle()))                                            // %9
-                                .arg(tr("End angle"))                                                   // %10
-                                .arg(RoundForDisplay(elArc->GetEndAngle()))                                              // %11
-                                .arg(tr("Label"),                                                       // %12
-                                     elArc->ObjectName());                                              // %13
-    return toolTip;
+    return OToolTip::Table({
+        OToolTip::NameRow(*elArc),
+        OToolTip::Row(tr("Length"), OToolTip::Measure(elArc->GetLength())),
+        OToolTip::Row(tr("Radius1"), OToolTip::Measure(elArc->GetRadius1())),
+        OToolTip::Row(tr("Radius2"), OToolTip::Measure(elArc->GetRadius2())),
+        OToolTip::Row(tr("Start angle"), OToolTip::Degrees(elArc->GetStartAngle())),
+        OToolTip::Row(tr("End angle"), OToolTip::Degrees(elArc->GetEndAngle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

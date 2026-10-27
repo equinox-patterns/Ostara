@@ -61,6 +61,7 @@
 #include "../vtools/visualization/visualization.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vsegmentlabel.h"
+#include "tools/otooltip.h"
 #include "vtoollinepoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -841,25 +842,15 @@ auto VToolCurveIntersectAxis::MakeToolTip() const -> QString
     QSharedPointer<VGObject> const segment1 = VAbstractTool::data.GetGObject(m_segment1Id);
     QSharedPointer<VGObject> const segment2 = VAbstractTool::data.GetGObject(m_segment2Id);
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%6:</b> %7</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"<tr> <td><b>%8:</b> %9</td> </tr>"
-                            u"<tr> <td><b>%10:</b> %11</td> </tr>"
-                            u"</table>"_s
-                                .arg(tr("Length"))                                              // 1
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(line.length()))) // 2
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true),
-                                     tr("Angle"))  // 3, 4
-                                .arg(RoundForDisplay(line.angle())) // 5
-                                .arg(tr("Point name"),
-                                     second->name(), /* 6, 7 */
-                                     tr("Segment 1"),
-                                     segment1->ObjectName(), /* 8, 9 */
-                                     tr("Segment 2"),
-                                     segment2->ObjectName()); /* 10, 11 */
-    return toolTip;
+    // The point where an axis meets a curve: its distance and direction from the base point, then the two
+    // halves of the curve it cuts — green before the point, red after — by the name the user gave them, and
+    // by nothing at all when they have none (see OToolTip).
+    return OToolTip::Table({
+        OToolTip::Row(tr("Length"), OToolTip::Measure(line.length())),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(line.angle())),
+        OToolTip::StrokeNameRow(tr("Segment 1"), *segment1, VColorRole::VisSupportColor2),
+        OToolTip::StrokeNameRow(tr("Segment 2"), *segment2, VColorRole::VisSupportColor4),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -54,6 +54,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "tools/otooltip.h"
 #include "vtoollinepoint.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
@@ -346,25 +347,16 @@ void VToolShoulderPoint::SetVisualization()
 auto VToolShoulderPoint::MakeToolTip() const -> QString
 {
     const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(basePointId);
-    const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(p2Line);
     const QSharedPointer<VPointF> current = VAbstractTool::data.GeometricObject<VPointF>(m_id);
 
     const QLineF firstToCur(static_cast<QPointF>(*first), static_cast<QPointF>(*current));
-    const QLineF secondToCur(static_cast<QPointF>(*second), static_cast<QPointF>(*current));
 
-    const QString toolTip = u"<table>"
-                            u"<tr> <td><b>%8:</b> %9</td> </tr>"
-                            u"<tr> <td><b>%1:</b> %2 %3</td> </tr>"
-                            u"<tr> <td><b>%4:</b> %5°</td> </tr>"
-                            u"<tr> <td><b>%6:</b> %7 %3</td> </tr>"
-                            u"</table>"_s.arg(tr("Length"))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(firstToCur.length())))
-                                .arg(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true), tr("Angle"))
-                                .arg(RoundForDisplay(firstToCur.angle()))
-                                .arg(u"%1->%2"_s.arg(second->name(), current->name()))
-                                .arg(RoundForDisplay(VAbstractValApplication::VApp()->fromPixel(secondToCur.length())))
-                                .arg(tr("Point name"), current->name());
-    return toolTip;
+    // The point is a shoulder on the base line: its length from the base point and its direction say it all.
+    // The distance to the line's second point only ever had a point name to name it (see OToolTip).
+    return OToolTip::Table({
+        OToolTip::Row(tr("Length"), OToolTip::Measure(firstToCur.length())),
+        OToolTip::Row(tr("Angle"), OToolTip::Degrees(firstToCur.angle())),
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
