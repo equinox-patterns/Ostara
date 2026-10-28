@@ -12244,6 +12244,11 @@ Cette action ne peut pas être annulée.</translation>
         <source>Invalid rotation angle formula</source>
         <translation>La formule de l&apos;angle de rotation est non valide</translation>
     </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="1"/>
+        <source>You clicked the same point twice.</source>
+        <translation>Vous avez cliqué deux fois le même point.</translation>
+    </message>
 </context>
 <context>
     <name>ODialogPleat</name>
@@ -12674,6 +12679,11 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="692"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
         <translation>La longueur ne peut pas dépasser le diamètre du cercle (%1%2).</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="1"/>
+        <source>You clicked the same point twice.</source>
+        <translation>Vous avez cliqué deux fois le même point.</translation>
     </message>
 </context>
 <context>

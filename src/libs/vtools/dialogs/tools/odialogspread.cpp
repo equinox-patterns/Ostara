@@ -339,6 +339,14 @@ void ODialogSpread::ChosenObject(quint32 id, const SceneObject &type)
     }
     else if (m_step == Step::Pivot)
     {
+        // A cut line joins two DIFFERENT points of the selection: the same point twice describes no region, and
+        // the rule would skip the pair without a word — a cut in the list that cuts nothing.
+        if (id == m_rotations[m_currentRotation].startId)
+        {
+            emit ToolTip(tr("You clicked the same point twice."));
+            return;
+        }
+
         OSpreadRotation &rotation = m_rotations[m_currentRotation];
         rotation.pivotId = id;
 
