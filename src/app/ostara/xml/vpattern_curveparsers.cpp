@@ -591,6 +591,9 @@ void VPattern::ParseToolMoveBatch(VMainGraphicsScene *scene, QDomElement &domEle
 
         VAbstractOperation::ExtractData(domElement, initData);
         initData.moves = OToolMoveBatch::ExtractMoves(domElement);
+        // The copies a point needs at an intermediate state are read before the tool is built: its figure asks
+        // for them the moment its items are made.
+        initData.intermediates = OToolMoveBatch::ExtractIntermediates(domElement);
 
         OToolMoveBatch::Create(initData);
     }

@@ -37,6 +37,7 @@
 #include "visoperation.h"
 
 class OMoveBatchTransform;
+class VScaledEllipse;
 
 class OVisToolMoveBatch : public VisOperation
 {
@@ -64,7 +65,17 @@ private:
     QVector<quint32> m_sourceIds{};
     QVector<OMoveBatchMove> m_moves{};
 
+    /** The dots of the gesture, one pool per role: **green for the start point** of a pair, **red for its pivot** —
+     *  the two colours a pleat gives the ends of its departure line, and the very ones Couper et pivoter uses. */
+    QVector<VScaledEllipse *> m_startDots{};
+    QVector<VScaledEllipse *> m_pivotDots{};
+
     void CreateTransformedObjects(int &iPoint, int &iCurve, const OMoveBatchTransform &transform);
+
+    /** @brief The dots of the pairs: green on the start point, red on the pivot, nothing for the second one while
+     *  it is still to be picked. Drawn on every refresh, including the ones where the chain has nothing to show
+     *  yet — that is exactly when the gesture needs to be read. */
+    void DrawPairPoints();
 
     template <class Item> auto AddTransformedCurve(quint32 id, int i, const OMoveBatchTransform &transform) -> int;
 };

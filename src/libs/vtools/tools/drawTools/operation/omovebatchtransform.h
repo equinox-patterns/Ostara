@@ -91,6 +91,38 @@ public:
         return result;
     }
 
+    /** @brief The image of an object after @a state moves only, named as the caller asks.
+     *
+     *  The intermediate states are never materialized for the chain — one copy each, at its final place. A point
+     *  a portion of the contour STOPS on is the exception: its copy at that state is what closes the portion, and
+     *  this is how its place is read. @a state 0 is the object itself, before any move. */
+    template <class Item> auto ImageAt(const Item &item, const QString &name, int state) const -> Item
+    {
+        Item result = item;
+
+        const auto it = m_stepsById.constFind(item.id());
+        if (it == m_stepsById.cend())
+        {
+            return result.Move(0., 0., name);
+        }
+
+        const QVector<OMoveBatchStep> &steps = it.value();
+        const int count = qBound(0, state, static_cast<int>(steps.size()));
+        if (count == 0)
+        {
+            return result.Move(0., 0., name);
+        }
+
+        for (int k = 0; k < count; ++k)
+        {
+            const QString stepName = (k == count - 1) ? name : QString();
+            result = result.Move(steps.at(k).length, steps.at(k).angle, QString())
+                         .Rotate(steps.at(k).pivot, steps.at(k).rotationAngle, stepName);
+        }
+
+        return result;
+    }
+
 private:
     QHash<quint32, QVector<OMoveBatchStep>> m_stepsById{};
 };

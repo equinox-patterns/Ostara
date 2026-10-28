@@ -118,6 +118,28 @@ public:
                         const QVector<qreal> &rotationAngles, const VContainer *data)
         -> QVector<QVector<OMoveBatchStep>>;
 
+    /** @brief One state of one point: the point, and how many moves it has been through at that state. */
+    struct Intermediate
+    {
+        quint32 sourceId{NULL_ID}; //!< the point whose state is materialized
+        int state{0};              //!< the number of moves it has been through there
+    };
+
+    /** @brief The intermediate states the points of the chain need, in source order.
+     *
+     *  A point a portion of the contour stops on must exist at the state that portion stops at. A cut line
+     *  divides the chain, so the object before it and the object after it do not travel the same number of
+     *  times: the point is the end of one of them, and the copy of that one stops beside a point already
+     *  further away — the move is then incomplete (a curve with no point at its end), and no later state can
+     *  close it. So a point receives one copy more than its final one, at each state where a neighbour of the
+     *  ordered chain stops: `<source>__M<state>`, the final copy keeping `<source>__M`.
+     *
+     *  The counts do not depend on the VALUES of the moves — only on which regions hold which object — which
+     *  is why the caller passes none. The neighbours are the previous and the next object of the ordered
+     *  selection: that order is the contour, and it is the contract of the whole tool. */
+    static auto IntermediateStates(const QVector<SourceItem> &source, const QVector<OMoveBatchMove> &moves)
+        -> QVector<Intermediate>;
+
 private:
     Q_DISABLE_COPY_MOVE(OMoveBatchRule) // NOLINT
     OMoveBatchRule() = default;

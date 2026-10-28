@@ -427,6 +427,27 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
+                            <!-- The copies a point needs at an INTERMEDIATE state. A cut line divides the
+                                 ordered chain, so the two objects it separates do not travel the same number of
+                                 times: the point they share is the end of one of them, and the copy of that one
+                                 stops beside a point already further away. It therefore receives one copy per
+                                 state where a neighbour stops, named <source>__M<state>, the final copy keeping
+                                 <source>__M. `point` is the object created, `source` the point it comes from,
+                                 `state` the number of moves it has been through. -->
+                            <xs:element name="intermediates" minOccurs="0" maxOccurs="1">
+                              <xs:complexType>
+                                <xs:sequence>
+                                  <xs:element name="item" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                      <xs:attribute name="point" type="xs:unsignedInt"/>
+                                      <xs:attribute name="source" type="xs:unsignedInt"/>
+                                      <xs:attribute name="state" type="xs:unsignedInt"/>
+                                      <xs:attribute name="name" type="xs:string"/>
+                                    </xs:complexType>
+                                  </xs:element>
+                                </xs:sequence>
+                              </xs:complexType>
+                            </xs:element>
                             <!-- The pleats: one departure line per fold the operation takes — two points of the
                                  source list, the value that pleat shows once folded, whether it is simple or
                                  double, and what it draws at each end. The lines are given flat, and how far the

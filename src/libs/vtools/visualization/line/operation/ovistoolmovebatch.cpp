@@ -39,6 +39,7 @@
 #include "../vgeometry/vsplinepath.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/global.h"
+#include "../vwidgets/scalesceneitems.h"
 #include "visoperation.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -70,13 +71,16 @@ void OVisToolMoveBatch::RefreshGeometry()
     if (originObjects.isEmpty())
     {
         RefreshPreviewLines(false);
+        DrawPairPoints();
         return;
     }
 
     if (m_moves.isEmpty())
     {
-        // The chain is not picked yet: only the source side is drawn.
+        // The chain is not picked yet: only the source side is drawn — and the dots of the pair being picked,
+        // which is all there is to read at that moment.
         RefreshPreviewLines(false);
+        DrawPairPoints();
         return;
     }
 
@@ -105,6 +109,54 @@ void OVisToolMoveBatch::RefreshGeometry()
 
     // The moved images of the line endpoints are already drawn as points; the source lines stay as reference.
     RefreshPreviewLines(false);
+
+    // The dots come last, and above: they are what the gesture asks the eye to read — which end of the pair is
+    // which — and the copies of the points would otherwise cover them.
+    DrawPairPoints();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolMoveBatch::DrawPairPoints()
+{
+    const auto dot = [this](QVector<VScaledEllipse *> &pool, int index, VColorRole role, quint32 id) -> void
+    {
+        VScaledEllipse *item = (index < pool.size()) ? pool.at(index) : nullptr;
+        if (item == nullptr)
+        {
+            // A dot is a mark, not an object of the figure: it takes the pass of the gesture (see InitMark), so the
+            // echo of the objects never hides it.
+            item = InitMark<VScaledEllipse>(role, this);
+            pool.append(item);
+        }
+
+        if (id == NULL_ID || GetData() == nullptr || not GetData()->HasObject(id))
+        {
+            item->setVisible(false); // the second point of the pair is not picked yet
+            return;
+        }
+
+        DrawPoint(item, static_cast<QPointF>(*GetData()->GeometricObject<VPointF>(id)));
+        item->setVisible(true);
+    };
+
+    // Green for the start point of a pair, red for its pivot: the two colours of a pleat's departure line, and the
+    // ones Couper et pivoter uses — one convention for the two batch tools, which share the gesture.
+    int start = 0;
+    int pivot = 0;
+    for (const OMoveBatchMove &move : std::as_const(m_moves))
+    {
+        dot(m_startDots, start++, VColorRole::VisSupportColor2, move.startId);
+        dot(m_pivotDots, pivot++, VColorRole::VisSupportColor4, move.pivotId);
+    }
+
+    for (int i = start; i < m_startDots.size(); ++i)
+    {
+        m_startDots.at(i)->setVisible(false);
+    }
+    for (int i = pivot; i < m_pivotDots.size(); ++i)
+    {
+        m_pivotDots.at(i)->setVisible(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -46,9 +46,20 @@ template <class T> class QSharedPointer;
 class QDomElement;
 class QGraphicsSceneContextMenuEvent;
 
+/** @brief One copy a point needs at an intermediate state: the object created for it, the point it comes
+ *  from, and how many moves it has been through there. See OMoveBatchRule::IntermediateStates. */
+struct OMoveBatchIntermediate
+{
+    quint32 point{NULL_ID};
+    quint32 sourceId{NULL_ID};
+    int state{0};
+    QString name{};
+};
+
 struct OToolMoveBatchInitData : VAbstractOperationInitData
 {
     QVector<OMoveBatchMove> moves{};
+    QVector<OMoveBatchIntermediate> intermediates{};
 };
 
 class OToolMoveBatch : public VAbstractOperation
@@ -70,6 +81,11 @@ public:
     static const QString AttrStart;
     static const QString AttrPivot;
 
+    static const QString TagIntermediates;
+    static const QString AttrPoint;
+    static const QString AttrSource;
+    static const QString AttrState;
+
     auto type() const -> int override { return Type; }
     enum
     {
@@ -88,6 +104,12 @@ public:
     static void SaveMoves(VAbstractPattern *doc, QDomElement &tag, const QVector<OMoveBatchMove> &moves);
     static auto ExtractMoves(const QDomElement &domElement) -> QVector<OMoveBatchMove>;
 
+    /** The copies a point needs at the intermediate states of the chain, written beside the moves: one entry
+     *  per object, holding the id the file gave it, the point it comes from, its state and its name. */
+    static void SaveIntermediates(VAbstractPattern *doc, QDomElement &tag,
+                                  const QVector<OMoveBatchIntermediate> &intermediates);
+    static auto ExtractIntermediates(const QDomElement &domElement) -> QVector<OMoveBatchIntermediate>;
+
 protected slots:
     void ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id = NULL_ID) override;
 
@@ -99,12 +121,26 @@ protected:
     auto MakeToolTip() const -> QString override;
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
 
+    /** @brief The points the operation materializes at an intermediate state, so the framework builds their items
+     *  exactly as it builds the copies'. */
+    auto ExtraPointIds() const -> QVector<quint32> override;
+
+    /** @brief The objects of the figure a layer has to answer for: the copies, and the intermediate points. */
+    auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;
+
 private:
     Q_DISABLE_COPY_MOVE(OToolMoveBatch) // NOLINT
 
     QVector<OMoveBatchMove> m_moves{};
+    QVector<OMoveBatchIntermediate> m_intermediates{};
 
     explicit OToolMoveBatch(const OToolMoveBatchInitData &initData, QGraphicsItem *parent = nullptr);
+
+    /** @brief Materialize, before the tool exists, every copy a point needs at an intermediate state.
+     *
+     *  Called once the destinations are made, from the very place they are: the figure must be in the container
+     *  before InitOperatedObjects() asks for the objects whose items it has to build. */
+    static void BuildIntermediates(OToolMoveBatchInitData &initData);
 
     auto SyncDestination(const QVector<SourceItem> &source) -> QVector<DestinationItem>;
 };

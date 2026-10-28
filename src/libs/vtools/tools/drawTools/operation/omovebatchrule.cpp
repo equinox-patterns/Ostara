@@ -35,6 +35,20 @@
 
 using namespace Qt::Literals::StringLiterals;
 
+namespace
+{
+/** The region of one move as positions in the ordered source list: false when the pair describes none.
+ *
+ *  One answer for the rule that composes the moves and for the states it derives from them: the two can never
+ *  disagree about which objects a cut carries. */
+auto RegionOf(const QVector<SourceItem> &source, const OMoveBatchMove &move, int &startIndex, int &pivotIndex) -> bool
+{
+    startIndex = SourceIndexOf(source, move.startId);
+    pivotIndex = SourceIndexOf(source, move.pivotId);
+    return startIndex >= 0 && pivotIndex >= 0 && startIndex < pivotIndex;
+}
+} // namespace
+
 const QString OMoveBatchRule::DefaultLength = QStringLiteral("0");
 const QString OMoveBatchRule::DefaultAngle = QStringLiteral("0");
 const QString OMoveBatchRule::DefaultRotationAngle = QStringLiteral("0");
@@ -78,9 +92,9 @@ auto OMoveBatchRule::Compose(const QVector<SourceItem> &source, const QVector<OM
     {
         const OMoveBatchMove &move = moves.at(k);
 
-        const int startIndex = IndexOf(source, move.startId);
-        const int pivotIndex = IndexOf(source, move.pivotId);
-        if (startIndex < 0 || pivotIndex < 0 || startIndex >= pivotIndex)
+        int startIndex = -1;
+        int pivotIndex = -1;
+        if (not RegionOf(source, move, startIndex, pivotIndex))
         {
             continue; // The pair does not describe a region: nothing to move.
         }
@@ -130,4 +144,65 @@ auto OMoveBatchRule::Compose(const QVector<SourceItem> &source, const QVector<OM
     }
 
     return steps;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OMoveBatchRule::IntermediateStates(const QVector<SourceItem> &source, const QVector<OMoveBatchMove> &moves)
+    -> QVector<Intermediate>
+{
+    QVector<Intermediate> result;
+
+    // How many moves each object of the chain goes through. The regions alone decide it: the values of the moves
+    // turn a part, they never decide which part travels.
+    QVector<int> counts(source.size(), 0);
+    for (const OMoveBatchMove &move : std::as_const(moves))
+    {
+        int startIndex = -1;
+        int pivotIndex = -1;
+        if (not RegionOf(source, move, startIndex, pivotIndex))
+        {
+            continue;
+        }
+
+        for (int i = startIndex; i <= pivotIndex && i < counts.size(); ++i)
+        {
+            ++counts[i];
+        }
+    }
+
+    for (int i = 0; i < source.size(); ++i)
+    {
+        if (counts.at(i) <= 0)
+        {
+            continue; // the object does not travel: nothing stops on it
+        }
+
+        // A neighbour of the ordered chain is the previous or the next object of the contour; that order is the
+        // contract of the tool. When it stops earlier than the point does, the point has to exist at its state.
+        for (const int neighbour : {i - 1, i + 1})
+        {
+            if (neighbour < 0 || neighbour >= counts.size())
+            {
+                continue;
+            }
+
+            const int other = counts.at(neighbour);
+            if (other <= 0 || other >= counts.at(i))
+            {
+                continue;
+            }
+
+            const bool known = std::any_of(result.cbegin(), result.cend(),
+                                           [&source, i, other](const Intermediate &one)
+                                           {
+                                               return one.sourceId == source.at(i).id && one.state == other;
+                                           });
+            if (not known)
+            {
+                result.append({.sourceId = source.at(i).id, .state = other});
+            }
+        }
+    }
+
+    return result;
 }

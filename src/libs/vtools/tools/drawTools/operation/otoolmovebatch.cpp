@@ -52,6 +52,10 @@ const QString OToolMoveBatch::ToolType = QStringLiteral("movingbatch");
 const QString OToolMoveBatch::TagMoves = QStringLiteral("moves");
 const QString OToolMoveBatch::AttrStart = QStringLiteral("start");
 const QString OToolMoveBatch::AttrPivot = QStringLiteral("pivot");
+const QString OToolMoveBatch::TagIntermediates = QStringLiteral("intermediates");
+const QString OToolMoveBatch::AttrPoint = QStringLiteral("point");
+const QString OToolMoveBatch::AttrSource = QStringLiteral("source");
+const QString OToolMoveBatch::AttrState = QStringLiteral("state");
 
 namespace
 {
@@ -117,9 +121,87 @@ void CreateDestination(OToolMoveBatchInitData &initData)
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolMoveBatch::BuildIntermediates(OToolMoveBatchInitData &initData)
+{
+    VContainer *data = initData.data;
+    if (data == nullptr)
+    {
+        return;
+    }
+
+    const QVector<OMoveBatchRule::Intermediate> needed = OMoveBatchRule::IntermediateStates(initData.source,
+                                                                                            initData.moves);
+    QVector<OMoveBatchIntermediate> kept;
+    kept.reserve(needed.size());
+
+    const MoveBatchValues values = EvaluateValues(initData.id, initData.moves, data);
+    const OMoveBatchTransform transform(initData.source, initData.moves, values.lengths, values.angles,
+                                        values.rotationAngles, data);
+
+    for (const OMoveBatchRule::Intermediate &one : std::as_const(needed))
+    {
+        if (one.sourceId == NULL_ID || not data->HasObject(one.sourceId))
+        {
+            continue;
+        }
+
+        // An id the file gave is kept, matched by the state it shows: a re-parse must not hand the figure a new
+        // id, or the layer would name an object that no longer exists.
+        OMoveBatchIntermediate entry;
+        for (const OMoveBatchIntermediate &old : std::as_const(initData.intermediates))
+        {
+            if (old.sourceId == one.sourceId && old.state == one.state)
+            {
+                entry = old;
+                break;
+            }
+        }
+
+        QString sourceName;
+        QSharedPointer<VPointF> sourcePoint;
+        try
+        {
+            sourcePoint = data->GeometricObject<VPointF>(one.sourceId);
+            sourceName = sourcePoint->name();
+        }
+        catch (const VExceptionBadId &)
+        {
+            continue;
+        }
+
+        if (entry.point == NULL_ID)
+        {
+            entry.point = data->getNextId();
+        }
+
+        if (entry.name.isEmpty())
+        {
+            entry.name = CopyName(data, sourceName, CopySuffix::MoveBatch + QString::number(one.state));
+        }
+
+        entry.sourceId = one.sourceId;
+        entry.state = one.state;
+
+        const QSharedPointer<VPointF> image
+            = QSharedPointer<VPointF>::create(transform.ImageAt(*sourcePoint, entry.name, one.state));
+        image->setIdObject(initData.id);
+        // A construction point: its name is read in the tree, where it names the object, and not on the canvas,
+        // where it would sit under the contour it closes.
+        image->SetShowLabel(false);
+
+        data->UpdateGObject(entry.point, image);
+        data->UpdateId(entry.point);
+        kept.append(entry);
+    }
+
+    initData.intermediates = kept;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 OToolMoveBatch::OToolMoveBatch(const OToolMoveBatchInitData &initData, QGraphicsItem *parent)
   : VAbstractOperation(initData, parent),
-    m_moves(initData.moves)
+    m_moves(initData.moves),
+    m_intermediates(initData.intermediates)
 {
     InitOperatedObjects();
     ToolCreation(initData.typeCreation);
@@ -235,6 +317,10 @@ auto OToolMoveBatch::Create(OToolMoveBatchInitData &initData) -> OToolMoveBatch 
 
     CreateDestination(initData);
 
+    // The copies a point needs at an intermediate state, in the container before the tool is built: the frame
+    // asks ExtraPointIds() to make their items.
+    BuildIntermediates(initData);
+
     // The two points of every move are read by the copies, so the graph knows what the operation depends on.
     for (const auto &move : std::as_const(initData.moves))
     {
@@ -257,6 +343,17 @@ auto OToolMoveBatch::Create(OToolMoveBatchInitData &initData) -> OToolMoveBatch 
     {
         patternGraph->AddVertex(object.id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
         patternGraph->AddEdge(initData.id, object.id);
+    }
+
+    for (const OMoveBatchIntermediate &one : std::as_const(initData.intermediates))
+    {
+        if (one.point == NULL_ID)
+        {
+            continue;
+        }
+
+        patternGraph->AddVertex(one.point, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
+        patternGraph->AddEdge(initData.id, one.point);
     }
 
     // A move by batch has no fixed point: every pivot travels with the moves that precede it.
@@ -349,6 +446,7 @@ void OToolMoveBatch::SaveDialog(QDomElement &domElement)
 
     SaveSourceDestination(domElement, source, destination);
     SaveMoves(doc, domElement, m_moves);
+    SaveIntermediates(doc, domElement, m_intermediates);
 
     SaveVisibilityGroupData(dialogTool);
 }
@@ -359,6 +457,7 @@ void OToolMoveBatch::ReadToolAttributes(const QDomElement &domElement)
     VAbstractOperation::ReadToolAttributes(domElement);
 
     m_moves = ExtractMoves(domElement);
+    m_intermediates = ExtractIntermediates(domElement);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -368,6 +467,7 @@ void OToolMoveBatch::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj
 
     doc->SetAttribute(tag, AttrType, ToolType);
     SaveMoves(doc, tag, m_moves);
+    SaveIntermediates(doc, tag, m_intermediates);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -416,9 +516,14 @@ auto OToolMoveBatch::ExtractMoves(const QDomElement &domElement) -> QVector<OMov
                 continue;
             }
 
+            // A move whose name the file lost keeps the name it is given by rank: the window writes the four
+            // fields of a row together, and a name typed there used to be written back empty when the editor had
+            // not been loaded — the operation then showed a move with no name for good.
+            const QString name = VDomDocument::GetParametrEmptyString(item, AttrName);
             moves.append({.startId = VAbstractPattern::GetParametrUInt(item, AttrStart, NULL_ID_STR),
                           .pivotId = VAbstractPattern::GetParametrUInt(item, AttrPivot, NULL_ID_STR),
-                          .name = VDomDocument::GetParametrEmptyString(item, AttrName),
+                          .name = name.isEmpty() ? OMoveBatchRule::DefaultMoveName(static_cast<int>(moves.size()))
+                                                 : name,
                           .length = VDomDocument::GetParametrString(item, AttrLength, OMoveBatchRule::DefaultLength),
                           .angle = VDomDocument::GetParametrString(item, AttrAngle, OMoveBatchRule::DefaultAngle),
                           .rotationAngle = VDomDocument::GetParametrString(item, AttrRotationAngle,
@@ -429,6 +534,93 @@ auto OToolMoveBatch::ExtractMoves(const QDomElement &domElement) -> QVector<OMov
     }
 
     return moves;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolMoveBatch::SaveIntermediates(VAbstractPattern *doc, QDomElement &tag,
+                                       const QVector<OMoveBatchIntermediate> &intermediates)
+{
+    if (intermediates.isEmpty())
+    {
+        return;
+    }
+
+    QDomElement tagIntermediates = doc->createElement(TagIntermediates);
+    for (const OMoveBatchIntermediate &one : std::as_const(intermediates))
+    {
+        QDomElement item = doc->createElement(VAbstractOperation::TagItem);
+        doc->SetAttribute(item, AttrPoint, one.point);
+        doc->SetAttribute(item, AttrSource, one.sourceId);
+        doc->SetAttribute(item, AttrState, static_cast<int>(one.state));
+        doc->SetAttribute(item, AttrName, one.name);
+        tagIntermediates.appendChild(item);
+    }
+    tag.appendChild(tagIntermediates);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolMoveBatch::ExtractIntermediates(const QDomElement &domElement) -> QVector<OMoveBatchIntermediate>
+{
+    QVector<OMoveBatchIntermediate> intermediates;
+
+    const QDomNodeList nodeList = domElement.childNodes();
+    for (int i = 0; i < nodeList.size(); ++i)
+    {
+        const QDomElement element = nodeList.at(i).toElement();
+        if (element.isNull() || element.tagName() != TagIntermediates)
+        {
+            continue;
+        }
+
+        const QDomNodeList items = element.childNodes();
+        for (int j = 0; j < items.size(); ++j)
+        {
+            const QDomElement item = items.at(j).toElement();
+            if (item.isNull() || item.tagName() != VAbstractOperation::TagItem)
+            {
+                continue;
+            }
+
+            intermediates.append({.point = VAbstractPattern::GetParametrUInt(item, AttrPoint, NULL_ID_STR),
+                                  .sourceId = VAbstractPattern::GetParametrUInt(item, AttrSource, NULL_ID_STR),
+                                  .state = static_cast<int>(VAbstractPattern::GetParametrUInt(item, AttrState, u"0"_s)),
+                                  .name = VDomDocument::GetParametrEmptyString(item, AttrName)});
+        }
+
+        break;
+    }
+
+    return intermediates;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolMoveBatch::ExtraPointIds() const -> QVector<quint32>
+{
+    QVector<quint32> ids;
+    ids.reserve(m_intermediates.size());
+    for (const OMoveBatchIntermediate &one : std::as_const(m_intermediates))
+    {
+        if (one.point != NULL_ID)
+        {
+            ids.append(one.point);
+        }
+    }
+    return ids;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolMoveBatch::DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32>
+{
+    QSet<quint32> ids;
+    const QVector<OMoveBatchIntermediate> intermediates = ExtractIntermediates(domElement);
+    for (const OMoveBatchIntermediate &one : intermediates)
+    {
+        if (one.point != NULL_ID)
+        {
+            ids.insert(one.point);
+        }
+    }
+    return ids;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

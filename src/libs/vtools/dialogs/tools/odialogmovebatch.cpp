@@ -151,10 +151,7 @@ auto ODialogMoveBatch::GetMoves() const -> QVector<OMoveBatchMove>
 void ODialogMoveBatch::SetMoves(const QVector<OMoveBatchMove> &moves)
 {
     m_moves = moves;
-    FillMoves();
-    // The selectRow(0) inside FillMoves is signal-blocked: load the first move into the editor here, so the
-    // dialog does not open on an empty row.
-    ShowMoveDetails();
+    FillMoves(); // it loads the selected row into the editor itself, so the dialog never opens on an empty row
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -237,8 +234,7 @@ void ODialogMoveBatch::ShowDialog(bool click)
         }
 
         m_step = Step::Editing;
-        FillMoves();
-        ShowMoveDetails(); // load the first move, so the editor does not open empty
+        FillMoves(); // loads the first move into the editor, so it does not open empty
         setModal(true);
         emit ToolTip(QString());
         show();
@@ -320,6 +316,15 @@ void ODialogMoveBatch::ChosenObject(quint32 id, const SceneObject &type)
                         "or <b>%2</b> to finish")
                          .arg(m_currentMove + 1)
                          .arg(VModifierKey::EnterKey()));
+    }
+
+    // The pair is drawn as it is picked, before the operation exists: green on the start point, red on the pivot
+    // — the pleat's two colours, and Couper et pivoter's. Without this push the gesture is invisible, because the
+    // preview only learned the moves when the dialog opened.
+    if (auto *operation = qobject_cast<OVisToolMoveBatch *>(vis))
+    {
+        operation->SetMoves(SourceToObjects(SourceObjects()), m_moves);
+        operation->RefreshGeometry();
     }
 }
 
@@ -450,6 +455,7 @@ void ODialogMoveBatch::SaveMoveName(const QString &text)
         return;
     }
 
+
     m_moves[row].name = text;
 
     RefreshRow(row);
@@ -544,6 +550,12 @@ void ODialogMoveBatch::FillMoves()
     {
         ui->tableWidget->selectRow(0);
     }
+
+    // The table is rebuilt with its signals blocked, so nothing loads the selected row: done here, in the one place
+    // every caller goes through. Without it the editor opened empty, and the first value typed wrote an empty NAME
+    // back into the row (CommitEditorFor writes the four fields together): « Move 1 » lost its name as soon as it
+    // was filled.
+    ShowMoveDetails();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -577,6 +589,7 @@ void ODialogMoveBatch::CommitEditorFor(int row)
     {
         return;
     }
+
 
     // The name goes with the three values: all the fields describe one row, and they are written back together.
     m_moves[row].name = ui->lineEditName->text();
