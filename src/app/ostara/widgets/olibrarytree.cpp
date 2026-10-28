@@ -36,7 +36,7 @@
 namespace
 {
 /// One level under @p parent, then each of those in turn — the order the tree reads, top to bottom.
-void AddLevel(QTreeWidget *tree, QTreeWidgetItem *parent, const QString &path, const QIcon &folderIcon)
+void AddLevel(QTreeWidgetItem *parent, const QString &path, const QIcon &folderIcon)
 {
     const QStringList folders = OLibraryScanner::Directories(path);
     for (const QString &folder : folders)
@@ -45,38 +45,32 @@ void AddLevel(QTreeWidget *tree, QTreeWidgetItem *parent, const QString &path, c
         item->setText(0, QFileInfo(folder).fileName());
         item->setIcon(0, folderIcon);
         item->setData(0, Qt::UserRole, folder);
+        parent->addChild(item);
 
-        if (parent == nullptr)
-        {
-            tree->addTopLevelItem(item);
-        }
-        else
-        {
-            parent->addChild(item);
-        }
-
-        AddLevel(tree, item, folder, folderIcon);
+        AddLevel(item, folder, folderIcon);
     }
 }
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
-void OLibraryTree::Fill(QTreeWidget *tree, const QString &rootPath, bool includeRoot, const QString &rootLabel,
+void OLibraryTree::Fill(QTreeWidget *tree, const QString &rootPath, const QString &rootLabel,
                         const QIcon &folderIcon)
 {
     tree->clear();
 
-    QTreeWidgetItem *root = nullptr;
-    if (includeRoot)
-    {
-        root = new QTreeWidgetItem();
-        root->setText(0, rootLabel);
-        root->setIcon(0, folderIcon);
-        root->setData(0, Qt::UserRole, rootPath);
-        tree->addTopLevelItem(root);
-    }
+    // The library's own folder, as a line of its own. It is where the window stands when no folder is chosen,
+    // and it is the only line a reader can click to come back up from a subfolder.
+    auto *root = new QTreeWidgetItem();
+    root->setText(0, rootLabel);
+    root->setIcon(0, folderIcon);
+    root->setData(0, Qt::UserRole, rootPath);
+    tree->addTopLevelItem(root);
 
-    AddLevel(tree, root, rootPath, folderIcon);
+    AddLevel(root, rootPath, folderIcon);
+
+    // Open, so that the folders underneath stay in sight: closing them is the reader's gesture, never the
+    // window's.
+    root->setExpanded(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

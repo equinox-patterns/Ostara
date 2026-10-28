@@ -39,23 +39,25 @@ class QTreeWidget;
  * choice out of it. Written once here, so the two cannot drift apart: a folder the window shows and the dialog
  * does not would be a folder the reader could never save into.
  *
- * The callers keep their own idea of what "nothing chosen" means — the window reads the library's own folder,
- * which is why it does not show it as a line of its own; the save dialog needs a destination that is always
- * visible, so it asks for that line.
+ * The library's own folder is a line of the tree, always, for every caller: it is the only way back up once a
+ * folder has been chosen, and "nothing chosen" is not something a reader can see — let alone click.
  */
 namespace OLibraryTree
 {
 /**
- * @brief Empties @p tree and fills it with the folders found under @p rootPath.
+ * @brief Empties @p tree and fills it with the library's own folder, then every folder found under @p rootPath.
  *
- * @param includeRoot adds the library's own folder as the first line, wearing @p rootLabel.
+ * @param rootLabel the name the library's own folder wears — each caller says it in the language the window is
+ *        speaking, which is also why this is called again on a language change.
  * @param folderIcon the icon every line wears — each caller builds it with its own theme helper, the way the
  *        rest of the application does.
  *
+ * The first line is the library's own folder, already open: a tree that opened on one closed line would hide
+ * the folders the window is about.
+ *
  * The caller cuts the signals around this: rebuilding a tree is not the reader choosing anything.
  */
-void Fill(QTreeWidget *tree, const QString &rootPath, bool includeRoot, const QString &rootLabel,
-          const QIcon &folderIcon);
+void Fill(QTreeWidget *tree, const QString &rootPath, const QString &rootLabel, const QIcon &folderIcon);
 
 /// @brief Points the selection at the folder @p path, opening its parents so that it is seen.
 /// @return false when the tree does not hold it.

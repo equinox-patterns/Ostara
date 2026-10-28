@@ -89,8 +89,9 @@ void OSavePieceDialog::PopulateTree()
     // the signals are cut, and the folder is put back before the destination is said.
     const QSignalBlocker blocker(ui->treeFolder);
 
-    // Here the library's own folder **is** a line: a destination has to be visible at all times.
-    OLibraryTree::Fill(ui->treeFolder, m_library, true, tr("The library's own folder"),
+    // The library's own folder is a line here like in every other showing of this tree: a destination has to be
+    // visible at all times, and it is also the way back up from a subfolder.
+    OLibraryTree::Fill(ui->treeFolder, m_library, tr("The library's own folder"),
                        OLibraryIcon(QStringLiteral("folder-open")));
     OLibraryTree::Select(ui->treeFolder, current.isEmpty() ? m_library : current);
 

@@ -291,8 +291,6 @@ void OPatternLibraryDialog::Retranslate()
 
     m_createFolderButton->setText(tr("Create a folder"));
 
-    m_tree->setToolTip(tr("The folders of the library. Choose none to read the library's own folder."));
-
     m_table->setHorizontalHeaderLabels({tr("Name"), tr("Modified"), tr("Collection"), tr("Client"), QString(),
                                         QString(), QString()});
 
@@ -301,6 +299,11 @@ void OPatternLibraryDialog::Retranslate()
     m_fabricGroup->setTitle(tr("Fabric info"));
 
     m_openFolderButton->setText(tr("Open folder"));
+
+    // The tree holds one word, the name of the library's own folder, and the folders are file names that no
+    // language changes: it is rebuilt rather than re-said, so a language change never leaves a window whose tree
+    // still speaks the old one.
+    PopulateTree();
 
     // The panels belong to the selection: re-saying what the selected pattern holds, in the language the window
     // is now speaking.
@@ -333,14 +336,19 @@ void OPatternLibraryDialog::PopulateTree()
     // read.
     const QSignalBlocker blocker(m_tree);
 
-    // The library's own folder is not a line of its own here: it is what the window is standing in.
-    OLibraryTree::Fill(m_tree, m_directory, false, QString(), OLibraryIcon(QStringLiteral("folder-open")));
+    // The library's own folder is the first line, like everywhere else this tree is shown: it is what the window
+    // is standing in when no folder is chosen, and the only line to click to come back up from a subfolder.
+    OLibraryTree::Fill(m_tree, m_directory, tr("The library's own folder"),
+                       OLibraryIcon(QStringLiteral("folder-open")));
 
-    // The chosen folder is chosen again — unless it is gone, in which case the library's own folder takes over
-    // rather than the window insisting on a place that no longer exists.
-    if (m_activeFolder.isEmpty() || not OLibraryTree::Select(m_tree, m_activeFolder))
+    // The window always stands on a line — the chosen folder, or the library's own when none is chosen. A list
+    // whose folder no line points at would leave the reader guessing where the patterns come from.
+    if (not OLibraryTree::Select(m_tree, ActiveFolder()))
     {
+        // The chosen folder is gone: the library's own folder takes over rather than the window insisting on a
+        // place that no longer exists.
         m_activeFolder.clear();
+        OLibraryTree::Select(m_tree, m_directory);
     }
 }
 
@@ -392,7 +400,7 @@ void OPatternLibraryDialog::Populate()
         const QSignalBlocker blocker(m_tree);
         if (needle.isEmpty())
         {
-            OLibraryTree::Select(m_tree, m_activeFolder); // the choice comes back where it was
+            OLibraryTree::Select(m_tree, ActiveFolder()); // the choice comes back where it was
         }
         else
         {

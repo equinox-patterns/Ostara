@@ -205,7 +205,7 @@ void OSavePatternDialog::PopulateTree()
     // back afterwards.
     const QSignalBlocker blocker(m_tree);
 
-    OLibraryTree::Fill(m_tree, m_library, true, tr("The library's own folder"),
+    OLibraryTree::Fill(m_tree, m_library, tr("The library's own folder"),
                        OLibraryIcon(QStringLiteral("folder-open")));
 
     // The folder the pattern already lives in, when it lives in the library: that is the one she means.
