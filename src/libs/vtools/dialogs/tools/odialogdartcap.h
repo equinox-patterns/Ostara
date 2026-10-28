@@ -204,6 +204,17 @@ private:
     void TakeSecondPoint(quint32 id);
     void TakeExtendPoint(quint32 id);
 
+    /** @brief What the status line asks, at the step the dialog is on.
+     *
+     * The prompt of the step that BEGINS, and not the one of the object that has just been taken: a window that
+     * pushes its message when the object lands leaves the line describing the click that is already done — at the
+     * second point of the opening it still asked for the tip of the dart. One source for the four steps, so that no
+     * call site can name a step that is not the one to answer, and a translated string that already exists. */
+    auto StepPrompt() const -> QString;
+
+    /** @brief Put the prompt of the step the dialog is on, and no other, on the status line. */
+    void ShowStepPrompt();
+
     /** @brief Say why a click cannot answer the step, and leave the user on that same step.
      *
      * The status line alone is too discreet for a click that does nothing: the user does not read it and

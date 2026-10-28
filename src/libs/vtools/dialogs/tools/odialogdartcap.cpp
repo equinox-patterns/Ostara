@@ -352,7 +352,7 @@ void ODialogDartCap::ChosenObject(quint32 id, const SceneObject &type)
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogDartCap::TakeApex(quint32 id)
 {
-    if (not SetObject(id, m_comboApex, tr("Select the tip of the dart (the point inside the piece)")))
+    if (not SetObject(id, m_comboApex, QString()))
     {
         return;
     }
@@ -366,6 +366,7 @@ void ODialogDartCap::TakeApex(quint32 id)
 
     m_step = Step::FirstPoint;
     m_swallowRelease = true;
+    ShowStepPrompt();
     RefreshPreview();
 }
 
@@ -379,7 +380,7 @@ void ODialogDartCap::TakeFirstPoint(quint32 id)
         return;
     }
 
-    if (not SetObject(id, m_comboFirstPoint, tr("Select the first point of the opening (a point of the piece's edge)")))
+    if (not SetObject(id, m_comboFirstPoint, QString()))
     {
         return;
     }
@@ -387,6 +388,7 @@ void ODialogDartCap::TakeFirstPoint(quint32 id)
     m_firstPointId = id;
     m_step = Step::SecondPoint;
     m_swallowRelease = true;
+    ShowStepPrompt();
     RefreshPreview();
 }
 
@@ -400,7 +402,7 @@ void ODialogDartCap::TakeSecondPoint(quint32 id)
         return;
     }
 
-    if (not SetObject(id, m_comboSecondPoint, tr("Select the second point of the opening (the other end)")))
+    if (not SetObject(id, m_comboSecondPoint, QString()))
     {
         return;
     }
@@ -414,13 +416,13 @@ void ODialogDartCap::TakeSecondPoint(quint32 id)
     {
         m_step = Step::Complete;
         m_swallowRelease = false;
-        emit ToolTip(QString()); // the edge was read: there is nothing more to ask here
+        ShowStepPrompt(); // the edge was read: there is nothing more to ask here
     }
     else
     {
         m_step = Step::ExtendPoint;
         m_swallowRelease = true;
-        emit ToolTip(tr("Select a point of the line to extend"));
+        ShowStepPrompt();
     }
 
     RefreshPreview();
@@ -455,8 +457,36 @@ void ODialogDartCap::TakeExtendPoint(quint32 id)
     // The dart cap is complete: the release that picked this point may open the window.
     m_step = Step::Complete;
     m_swallowRelease = false;
+    ShowStepPrompt(); // the step asks nothing any more, and the line says so
     RefreshPreview();
     CheckState();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogDartCap::StepPrompt() const -> QString
+{
+    // The prompt of the step that BEGINS. The four strings are the ones the window already carried for its combos:
+    // no new text, so no new translation, and one place decides what the line asks for.
+    switch (m_step)
+    {
+        case Step::Apex:
+            return tr("Select the tip of the dart (the point inside the piece)");
+        case Step::FirstPoint:
+            return tr("Select the first point of the opening (a point of the piece's edge)");
+        case Step::SecondPoint:
+            return tr("Select the second point of the opening (the other end)");
+        case Step::ExtendPoint:
+            return tr("Select a point of the line to extend");
+        case Step::Complete:
+        default:
+            return {};
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogDartCap::ShowStepPrompt()
+{
+    emit ToolTip(StepPrompt());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
