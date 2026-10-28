@@ -91,6 +91,13 @@ public:
     /// keeps its old meaning: the click is whatever its parent does with it.
     void SetSegmentClickHandler(std::function<void()> handler);
 
+    /** @brief Whether the click on this line belongs to it, or to its parent.
+     *
+     *  True only while a tool dialog is picking the objects of an OPERATION: the click is then the way a portion of
+     *  a line is taken, and the line must grab the press for its own handler to see the release. False everywhere
+     *  else, where the click selects the parent as it always did (see VScaledLine::mousePressEvent). */
+    void SetSegmentClickable(bool clickable);
+
     auto GetColorRole() const -> VColorRole;
     void SetColorRole(VColorRole role);
 
@@ -129,6 +136,7 @@ private:
     Qt::PenStyle m_authoredStyle{Qt::SolidLine};
     /// Set when the line stands for a segment its owning tool draws; empty for every other line.
     std::function<void()> m_segmentClickHandler{};
+    bool m_segmentClickable{false};
     bool m_layerSelected{false};
     bool m_inLayer{false};
     /// Colour to restore for a CustomColor line, which has no role to recompute from. Invalid when none is saved.

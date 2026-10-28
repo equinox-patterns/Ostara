@@ -629,6 +629,19 @@ void VAbstractTool::SetLabelVisible(quint32 id, bool visible)
 void VAbstractTool::ToolSelectionType(const SelectionType &selectionType)
 {
     m_selectionType = selectionType;
+
+    // The lines this tool draws answer a click of their own only while a dialog picks the objects of an OPERATION:
+    // there, clicking a portion of a line is how the operation takes it (an AlongLine's two halves, a rectangle's
+    // side, a cap's tracé). In Select mode the same click belongs to the parent — it selects the tool — and the line
+    // must not steal it. One answer, pushed to the items, so no line has to know what the scene is doing.
+    const bool picking = (selectionType == SelectionType::ByMouseRelease);
+    for (VScaledLine *line : DrawnSegmentItems())
+    {
+        if (line != nullptr)
+        {
+            line->SetSegmentClickable(picking);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

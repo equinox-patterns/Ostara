@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "scalesceneitems.h"
+
 #include "vscenestylesheet.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vbackport/qpainterstateguard.h"
@@ -349,6 +350,25 @@ void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->accept();
         return;
     }
+
+    // The parent is not selectable. Two cases, and they do not answer alike:
+    //
+    //  - a dialog is picking the objects of an OPERATION: the click is the way the operation takes a portion of a
+    //    line, and the line has to TAKE the press. Qt sends the release back only to the item that grabbed the
+    //    press, so a press left to the default handler — ignored, since the line is not selectable either — meant
+    //    the release never came back, and the portion could not be taken at all (commit 2d9304aa took the grab
+    //    away with the focus, and with it the feature);
+    //  - anywhere else — a construction point the layers keep out of reach — the press goes on its way, exactly as
+    //    2d9304aa decided: accepting it there would swallow the click that belongs to the object drawn underneath.
+    //
+    // The tool says which case it is (VAbstractTool::ToolSelectionType), so no line has to know what a scene is
+    // picking for.
+    if (m_segmentClickable)
+    {
+        event->accept();
+        return;
+    }
+
     QGraphicsLineItem::mousePressEvent(event);
 }
 
@@ -356,6 +376,12 @@ void VScaledLine::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void VScaledLine::SetSegmentClickHandler(std::function<void()> handler)
 {
     m_segmentClickHandler = std::move(handler);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScaledLine::SetSegmentClickable(bool clickable)
+{
+    m_segmentClickable = clickable;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
