@@ -37,6 +37,7 @@
 #include "visoperation.h"
 
 class OSpreadTransform;
+class VScaledEllipse;
 
 class OVisToolSpread : public VisOperation
 {
@@ -71,15 +72,26 @@ private:
     QVector<quint32> m_sourceIds{};
     QVector<OSpreadRotation> m_rotations{};
 
+    /** The dots of the gesture, one pool per role: **green for the start point** of a pair, **red for its pivot**.
+     *  The colour IS the name, exactly as a pleat names the two ends of its departure line, and the pair is thus
+     *  readable before the operation exists. */
+    QVector<VScaledEllipse *> m_startDots{};
+    QVector<VScaledEllipse *> m_pivotDots{};
+
     /** True when the spread is in the pattern: the preview then keeps the images of the operated objects and hides
      *  their origin, which the pattern draws itself (see SetInPattern). */
     bool m_inPattern{false};
 
     void CreateTransformedObjects(int &iPoint, int &iCurve, const OSpreadTransform &transform);
 
-    /** @brief Draw the lines attached to the spread as they are — their two ends are the reference the user picked —
-     *  and keep them out of sight where the pattern draws those lines itself. */
+    /** @brief The lines attached to the spread as they are — their two ends are the reference the user picked —
+     *  and kept out of sight where the pattern draws those lines itself. */
     void DrawAttachedLines();
+
+    /** @brief The dots of the pairs: green on the start point, red on the pivot, and nothing for the second one
+     *  while it is still to be picked. Drawn on every refresh, including the ones where the transform has nothing to
+     *  show yet — that is exactly when the gesture needs to be read. */
+    void DrawPairPoints();
 
     template <class Item> auto AddTransformedCurve(quint32 id, int i, const OSpreadTransform &transform) -> int;
 };

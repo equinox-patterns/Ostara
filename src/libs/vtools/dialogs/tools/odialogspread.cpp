@@ -357,6 +357,15 @@ void ODialogSpread::ChosenObject(quint32 id, const SceneObject &type)
                          .arg(m_currentRotation + 1)
                          .arg(VModifierKey::EnterKey()));
     }
+
+    // The pair is drawn as it is picked, before the operation exists: green on the start point, red on the pivot
+    // (the pleat's two colours). Without this push the gesture is invisible — the preview only learned the cuts when
+    // the dialog opened, so the point just clicked left nothing on the canvas.
+    if (auto *operation = ConfiguredVis())
+    {
+        operation->SetRotations(SourceToObjects(SourceObjects()), m_rotations);
+        operation->RefreshGeometry();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
