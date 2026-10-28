@@ -827,7 +827,9 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
 
     // The notches: the mark itself, and, where a curve carries the edge, the two halves that curve is cut into.
     // The cut is what makes the notch a point OF the edge — the piece the user builds later is traced through it —
-    // and it is made on the edge as the fold meets it, that is on the image the operation drew of that curve.
+    // and it is made on the edge as the pattern drew it, then carried by the offset the rule counted the notch from:
+    // a pleat only translates, so the halves land exactly where the mark stands, whether or not the pleat carries
+    // that curve (see OPleatNotch, and OPleatCapRule for the same idiom on the caps).
     for (int i = 0; i < display.notches.size() && i < plan.notches.size(); ++i)
     {
         const OPleatNotchDisplay &notch = display.notches.at(i);
@@ -846,23 +848,28 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
             continue; // a line carries the edge: the notch is the point alone, and there is nothing to cut
         }
 
-        const quint32 carried = CarriedId(resolved.edgeId, source, destination);
-        if (not data->HasObject(carried))
+        if (not data->HasObject(resolved.edgeId))
         {
             continue; // the edge is gone: the plan would have refused, and nothing is left to cut here
         }
 
         const QSharedPointer<VAbstractCurve> curve
-            = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carried));
+            = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(resolved.edgeId));
+        if (curve.isNull())
+        {
+            continue;
+        }
+
+        // What carries the edge as the pattern drew it to the place the sense counts the notch from: the difference
+        // between that place of the departure line and the point itself, which is null for the second sense — the
+        // notch then stands on the curve where it is drawn.
+        const QPointF carry = plan.Place(prise, resolved.departure, resolved.place) - prise.position;
 
         // The two ends the halves run between are named after the points the pattern shows there: the copies the
         // operation made of the points of the selection that stand at those places, which is where the cut stands. The
-        // carried curve cannot say them — its ends are the control points a moved spline renames X1 and X4 — so they
+        // curve cannot say them — its ends are the control points a moved spline renames X1 and X4 — so they
         // are read from the edge as the pattern drew it, the one the notch was read on (see OPleatNotchRule::Cut).
-        const QPair<QPointF, QPointF> ends
-            = EndPositions(data->HasObject(resolved.edgeId)
-                               ? qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(resolved.edgeId))
-                               : QSharedPointer<VAbstractCurve>{});
+        const QPair<QPointF, QPointF> ends = EndPositions(curve);
 
         const OPleatNotchHalves halves
             = OPleatNotchRule::Cut(curve, resolved.length, notch.name,
@@ -873,17 +880,34 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
             continue;
         }
 
+        // The two halves are what the mark stands on, so they are carried exactly as it is: one offset, one place.
+        const QSharedPointer<VAbstractCurve> first = OPleatCapRule::Moved(halves.first, carry);
+        const QSharedPointer<VAbstractCurve> second = OPleatCapRule::Moved(halves.second, carry);
+        if (first.isNull() || second.isNull())
+        {
+            continue; // a kind of curve the figure has not been taught to move: the mark stays the point alone
+        }
+
+        // A moved curve is a curve built afresh, so the look of the edge and the fact that these two exist only
+        // through the figure are given again after the move — exactly as OPleatCapRule::Sides does for a cap.
+        for (const QSharedPointer<VAbstractCurve> &half : {first, second})
+        {
+            half->SetDerivative(true);
+            half->SetColor(curve->GetColor());
+            half->SetPenStyle(curve->GetPenStyle());
+        }
+
         // The halves carry the names their ends give them — the start of the edge to the notch, and the notch to
         // its end — and belong to the operation exactly as the curves it copies do.
-        halves.first->SetNameSuffix(UniqueName(halves.firstName, data));
-        halves.second->SetNameSuffix(UniqueName(halves.secondName, data));
-        halves.first->setIdObject(idTool);
-        halves.second->setIdObject(idTool);
+        first->SetNameSuffix(UniqueName(halves.firstName, data));
+        second->SetNameSuffix(UniqueName(halves.secondName, data));
+        first->setIdObject(idTool);
+        second->setIdObject(idTool);
 
-        data->UpdateGObject(notch.curve1, halves.first);
-        data->UpdateGObject(notch.curve2, halves.second);
-        RegisterCurve(data, halves.first, notch.curve1);
-        RegisterCurve(data, halves.second, notch.curve2);
+        data->UpdateGObject(notch.curve1, first);
+        data->UpdateGObject(notch.curve2, second);
+        RegisterCurve(data, first, notch.curve1);
+        RegisterCurve(data, second, notch.curve2);
     }
 }
 

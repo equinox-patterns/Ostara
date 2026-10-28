@@ -738,6 +738,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 notch.departure = departure;
                 notch.pleat = place.firstPleat + rank;
                 notch.end = end;
+                notch.place = secondSense ? rank : rank + 1;
 
                 // Where the edge is, on that side. A point the user designated to carry the edge describes a line
                 // and no object, so nothing is asked of the pattern then.
@@ -764,12 +765,18 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     notch.edgeId = carrier.objectId;
                     notch.length = placement.length;
 
-                    // **A notch marks the edge where it is carried**, never where the pattern drew it. The pleat
-                    // taken on its first arm has the fabric arriving on the copy, and the pleat laid on the middle
-                    // has its two halves travelling: in both, the seamstress reads the mark on the edge the fold has
-                    // brought there. The figure cuts that very carried curve, at that very length, so the point and
-                    // the cut are one and the same place (PleatMid.md).
-                    notch.point = placement.point + plan.Move(carrier.objectId);
+                    // **The notch stands one value from the place the sense counts it from**, and never one value
+                    // from the point the edge happens to be read at. A pleat only translates: the edge as the
+                    // pattern drew it is walked a value from the point of the departure line, then carried to the
+                    // place of the sense — **after the second arm** for the first sense, on the copy, and at the
+                    // departure line itself for the second, where the offset is null. Reading the place off the
+                    // carrier's own move put the first sense one value from the departure line instead: the edge
+                    // the notch marks is not always an object the pleat carries, and a mark that moves with the
+                    // object it is cut from is a mark in the wrong place (Pleat.md, « Le cran »).
+                    //
+                    // The offset kept here is what the figure moves the two halves by, so the point and the cut
+                    // stay one and the same place whatever the pleat does to that curve.
+                    notch.point = placement.point + (from - edge.position);
                 }
                 else
                 {

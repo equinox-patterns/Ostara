@@ -221,12 +221,16 @@ struct OPleatMark
  * laid the right way round and its depth checked — and it is the reason it is read per **sense**: the two senses
  * send the folded edge to two different places, and each place has its own mark.
  *
- * The line the value is counted from is the one the sense designates — the pleat's own departure line when it
- * follows the edge as drawn, its copy when it follows the edge the move carries. The value is then walked **along
- * the piece's edge**, never along the move, and on the side the fold leaves free.
+ * The place the value is counted from is the one the sense designates — the pleat's copy when the cap follows the
+ * edge as drawn, the departure line itself when it follows the edge the move carries. The value is then walked
+ * **along the piece's edge**, never along the move, and on the side the fold leaves free.
  *
- * @a point is where the notch stands in the pattern. @a edgeId is the curve the notch cuts when a curve carries
- * the edge there — the cut is what makes the notch a point *of* that curve, and what lets the piece be built
+ * @a point is where the notch stands in the pattern, and @a place is the place of the departure line it is counted
+ * from — the same grid `OPleatPlan::Place` reads. A pleat only translates, so the edge is read where the pattern
+ * drew it, walked a value from the point of the departure line, and then carried by the offset between @a place and
+ * that point: the figure cuts that same curve at @a length and moves the two halves by that same offset, which is
+ * what keeps the mark and the halves at one and the same place. @a edgeId is the curve the notch cuts when a curve
+ * carries the edge there — the cut is what makes the notch a point *of* that curve, and what lets the piece be built
  * through it later — and NULL_ID when a plain segment carries it, the notch being then a point and nothing else.
  * @a length is where the cut falls on that curve, measured from its start the way the cut tools measure it: a
  * notch placed on an edge that runs towards the point is at its total length less the value.
@@ -236,6 +240,7 @@ struct OPleatNotch
     int departure{0};
     int pleat{0};
     int end{0};
+    int place{0};
     QPointF point{};
     quint32 edgeId{NULL_ID};
     qreal length{0.};
