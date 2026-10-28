@@ -165,6 +165,21 @@ public:
     static auto DefaultLegendOrigin(const QString &legend, const QRectF &block, const QFont &font)
         -> QPointF;
     /**
+     * @brief Where each line of a word stands: every line centred in the word's own box.
+     *
+     * A legend is ONE string carrying a line break per language (see OThumbnailTextBuilder::Legend),
+     * so its box is as wide as its widest language. Drawn from the box's left edge, the shorter
+     * language starts where the longer one starts and the caption reads left-aligned under the piece;
+     * centred in the box, the caption reads as one caption — which is what a caption is.
+     *
+     * A word on one line is untouched by this: its box IS its line, so the single origin is the one
+     * it always had. Every painter of these words asks here — the canvases, the block editor's
+     * preview and both SVG writers — for the same reason @ref LabelTextSize is asked: a second
+     * transcription of the rule would drift from the first.
+     */
+    static auto CenteredLineOrigins(const QString &text, const QPointF &topLeft, const QFont &font)
+        -> QVector<QPointF>;
+    /**
      * @brief Where a word placed by hand lands: a point of the drawing, put through the same fit
      * the drawing itself goes through.
      */

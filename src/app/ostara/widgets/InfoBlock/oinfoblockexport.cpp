@@ -706,21 +706,24 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
                 // own `height()`, the same one the item measures its box with (and the same one the
                 // annotations above are laid out with).
                 const QStringList lines = word.text.split(QLatin1Char('\n'));
-                qreal baseline = word.origin.y() + metrics.ascent();
-                for (const QString &line : lines)
+                // **Every line centred in the word's box**, as the canvas draws it — asked of the
+                // item, so the file cannot drift from the screen on a point nobody would notice
+                // until a legend in two languages printed crooked.
+                const QVector<QPointF> origins =
+                    OThumbnailItem::CenteredLineOrigins(word.text, word.origin, wordFont);
+                for (qsizetype i = 0; i < lines.size(); ++i)
                 {
-                    if (!line.isEmpty())
+                    if (!lines.at(i).isEmpty())
                     {
                         OCartoucheRenderItem item;
                         item.kind = OCartoucheRenderItem::Kind::Text;
-                        item.text = line;
+                        item.text = lines.at(i);
                         item.font = wordFont;
-                        // The anchor is the top-left of the word's box, all that the screen ever
-                        // needs; a <text> wants its baseline, which is one ascent lower.
-                        item.pen = QPointF(word.origin.x(), baseline);
+                        // The anchor is the top-left of the line's cell; a <text> wants its baseline,
+                        // which is one ascent lower.
+                        item.pen = origins.at(i) + QPointF(0.0, metrics.ascent());
                         wordItems.append(item);
                     }
-                    baseline += metrics.height();
                 }
             }
             // The items go to the shared serializer, so a miniature's wording is written — as text

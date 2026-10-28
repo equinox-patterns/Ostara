@@ -309,6 +309,28 @@ auto OThumbnailItem::LabelTextSize(const QString &text, const QFont &font) -> QS
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OThumbnailItem::CenteredLineOrigins(const QString &text, const QPointF &topLeft, const QFont &font)
+    -> QVector<QPointF>
+{
+    // The box is the one LabelTextSize measures — as wide as the widest line, one font height per
+    // line — and each line is centred inside it. The first line starts at the box's top, the others a
+    // height below it, which is the pitch the item has always drawn its lines at.
+    const QFontMetricsF metrics(font);
+    const QStringList lines = text.split(QLatin1Char('\n'));
+    const qreal boxWidth = LabelTextSize(text, font).width();
+
+    QVector<QPointF> origins;
+    origins.reserve(lines.size());
+    for (qsizetype i = 0; i < lines.size(); ++i)
+    {
+        const qreal lineWidth = metrics.horizontalAdvance(lines.at(i));
+        origins.append(QPointF(topLeft.x() + (boxWidth - lineWidth) / 2.0,
+                               topLeft.y() + metrics.height() * static_cast<qreal>(i)));
+    }
+    return origins;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OThumbnailItem::TextRect(const QString &text, const QPointF &offset, const QFont &font) const -> QRectF
 {
     return QRectF(offset, LabelTextSize(text, font));
@@ -524,27 +546,39 @@ void OThumbnailItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     // cartouche's text. They also stay out of the cached content, which is geometry alone.
     painter->setPen(textColor);
     painter->setBrush(Qt::NoBrush);
+
+    // One way of painting a word, wherever it comes from: its anchor is the top-left of its box (see
+    // CenteredLineOrigins), every line of it is centred in that box, and a `drawText()` call takes
+    // the baseline of the line, one ascent below the top of its cell.
+    const auto drawWord = [painter](const QString &text, const QPointF &topLeft, const QFont &font)
+    {
+        if (text.isEmpty())
+        {
+            return; // an empty word is not a word
+        }
+        painter->setFont(font);
+        const QStringList lines = text.split(QLatin1Char('\n'));
+        const QVector<QPointF> origins = CenteredLineOrigins(text, topLeft, font);
+        const qreal ascent = QFontMetricsF(font).ascent();
+        for (qsizetype i = 0; i < lines.size(); ++i)
+        {
+            if (lines.at(i).isEmpty())
+            {
+                continue;
+            }
+            painter->drawText(origins.at(i) + QPointF(0.0, ascent), lines.at(i));
+        }
+    };
+
     for (int i = 0; i < m_labels.size(); ++i)
     {
         const LabelView &word = m_labels.at(i);
-        if (word.text.isEmpty())
-        {
-            continue;
-        }
         // **Each word in its own font.** A value and the caption that names its unit are two texts
         // with two settings; and the caption travels among the values when a record is replayed (see
         // SetPlacedWords), so it must not come out as loud as the numbers it captions.
-        const QFont font = word.legend ? LegendFont() : ValuesFont();
-        painter->setFont(font);
-        painter->drawText(TextRect(word.text, EffectiveOffset(i), font), Qt::AlignLeft | Qt::AlignTop,
-                          word.text);
+        drawWord(word.text, EffectiveOffset(i), word.legend ? LegendFont() : ValuesFont());
     }
-    if (not m_legend.isEmpty())
-    {
-        painter->setFont(LegendFont());
-        painter->drawText(TextRect(m_legend, EffectiveLegendOffset(), LegendFont()),
-                          Qt::AlignLeft | Qt::AlignTop, m_legend);
-    }
+    drawWord(m_legend, EffectiveLegendOffset(), LegendFont());
 
     // Light dashed outline + 8 filled square handles only when the block is active (clicked), like
     // the information blocks — otherwise only the drawing and its words are visible.

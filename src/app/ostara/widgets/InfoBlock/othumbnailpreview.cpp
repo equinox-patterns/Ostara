@@ -141,21 +141,21 @@ void OThumbnailPreview::paintEvent(QPaintEvent *event)
     {
         const Line &line = lines.at(i);
         const QFontMetricsF metrics(line.font);
-        // The canvas anchors a word by the top-left of its BOX, all of whose lines start at the same
-        // x — the widest line is the one that gets centred, and the others sit left inside it. Drawn
-        // from a baseline here, one ascent below that top, line by line: SVG does the same when it
-        // writes the words out, and the two must agree.
-        qreal baseline = y + metrics.ascent();
-        const qreal x = content.center().x() - sizes.at(i).width() / 2.0;
+        // The canvas anchors a word by the top-left of its BOX, and every line of that box is centred
+        // in it — the box itself is centred here, so a legend in two languages comes out as one
+        // centred caption rather than one line hanging left under the other. Asked of the item
+        // rather than remeasured: the preview has to show what the canvas will draw.
+        const QPointF topLeft(content.center().x() - sizes.at(i).width() / 2.0, y);
+        const QVector<QPointF> origins = OThumbnailItem::CenteredLineOrigins(line.text, topLeft, line.font);
+        const qreal ascent = metrics.ascent();
         const QStringList parts = line.text.split(QLatin1Char('\n'));
         painter.setFont(line.font);
-        for (const QString &part : parts)
+        for (qsizetype j = 0; j < parts.size(); ++j)
         {
-            if (!part.isEmpty())
+            if (!parts.at(j).isEmpty())
             {
-                painter.drawText(QPointF(x, baseline), part);
+                painter.drawText(origins.at(j) + QPointF(0.0, ascent), parts.at(j));
             }
-            baseline += metrics.height();
         }
         y += sizes.at(i).height() + (i + 1 < lines.size() ? kGap : 0.0);
     }

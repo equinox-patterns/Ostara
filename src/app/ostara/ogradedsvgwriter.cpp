@@ -34,6 +34,7 @@
 #include "oexportink.h"
 #include "core/oexportrecipe.h"
 #include "../vlayout/vgraphicsfillitem.h"
+#include "../vtools/tools/othumbnailitem.h"
 
 #include <QColor>
 #include <QDomDocument>
@@ -672,21 +673,23 @@ void WriteMiniature(QXmlStreamWriter &writer, const QPointF &origin,
         // wider than the block they belong to. The pitch is the font's own `height()`, the same one
         // the item measures its box with.
         const QStringList lines = word.text.split(QLatin1Char('\n'));
-        qreal baseline = word.origin.y() + metrics.ascent();
-        for (const QString &line : lines)
+        // **Every line centred in the word's box**, as the canvas draws it — the same answer the
+        // other writer asks for, so the two documents and the screen place the words alike.
+        const QVector<QPointF> origins =
+            OThumbnailItem::CenteredLineOrigins(word.text, word.origin, wordFont);
+        for (qsizetype i = 0; i < lines.size(); ++i)
         {
-            if (!line.isEmpty())
+            if (!lines.at(i).isEmpty())
             {
                 OCartoucheRenderItem item;
                 item.kind = OCartoucheRenderItem::Kind::Text;
-                item.text = line;
+                item.text = lines.at(i);
                 item.font = wordFont;
-                // The anchor is the top-left of the word's box, all that the screen ever needs; a
-                // `<text>` wants its baseline, which is one ascent lower.
-                item.pen = QPointF(word.origin.x(), baseline);
+                // The anchor is the top-left of the line's cell; a `<text>` wants its baseline, which
+                // is one ascent lower.
+                item.pen = origins.at(i) + QPointF(0.0, metrics.ascent());
                 wordItems.append(item);
             }
-            baseline += metrics.height();
         }
     }
     // The items go to the shared serializer, so a miniature's wording is written exactly like a
