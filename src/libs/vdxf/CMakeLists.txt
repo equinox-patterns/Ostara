@@ -58,8 +58,10 @@ target_link_libraries(VDXFLib
 
 target_precompile_headers(VDXFLib PRIVATE stable.h)
 
-# Suppress warnings in vendored code
-set_source_files_properties(
-    ${VDXF_LIBDXFRW}
-    PROPERTIES COMPILE_FLAGS "-Wno-sign-conversion -Wno-conversion -Wno-old-style-cast -Wno-float-equal -Wno-cast-qual"
-)
+# Suppress warnings in vendored code — options GCC/Clang seulement : cl.exe les refuse.
+if(NOT MSVC)
+    set_source_files_properties(
+        ${VDXF_LIBDXFRW}
+        PROPERTIES COMPILE_FLAGS "-Wno-sign-conversion -Wno-conversion -Wno-old-style-cast -Wno-float-equal -Wno-cast-qual"
+    )
+endif()
