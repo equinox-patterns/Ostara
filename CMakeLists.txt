@@ -149,6 +149,9 @@ endif()
 # Warnings as errors (comme le QBS)
 if(MSVC)
     add_compile_options(/WX)
+    # windows.h définit max/min en macros : elles cassent std::numeric_limits<...>::max().
+    # WIN32_LEAN_AND_MEAN évite d'importer les en-têtes dont le projet n'a pas besoin.
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN)
 else()
     add_compile_options(-Werror)
 endif()

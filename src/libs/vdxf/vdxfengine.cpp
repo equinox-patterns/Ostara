@@ -2089,7 +2089,7 @@ auto VDxfEngine::SplicePathInContour(QVector<VLayoutPoint> &contour, const QVect
 
         for (int i = 0; i < contour.size(); ++i)
         {
-            const int next = (i + 1) % contour.size();
+            const int next = static_cast<int>((i + 1) % contour.size());
             if (IsPointOnLineSegment(point, contour.at(i), contour.at(next)))
             {
                 contour.insert(i + 1, point);
@@ -2106,7 +2106,7 @@ auto VDxfEngine::SplicePathInContour(QVector<VLayoutPoint> &contour, const QVect
         qreal best = std::numeric_limits<qreal>::max();
         for (int i = 0; i < contour.size(); ++i)
         {
-            const int next = (i + 1) % contour.size();
+            const int next = static_cast<int>((i + 1) % contour.size());
             const QLineF segment(contour.at(i), contour.at(next));
             const qreal distance = (segment.length() < 1e-9)
                                        ? QLineF(segment.p1(), QPointF(point)).length()
