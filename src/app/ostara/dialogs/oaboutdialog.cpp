@@ -181,9 +181,14 @@ void OAboutDialog::Fill()
         + Line(tr("Framework:"),
                tr("Qt %1 — The Qt Company, LGPLv3").arg(QString::fromLatin1(QT_VERSION_STR)));
 
+    const QString source =
+        QStringLiteral("<p><b>%1</b> <a href=\"https://github.com/equinox-patterns/Ostara\">"
+                       "https://github.com/equinox-patterns/Ostara</a></p>")
+            .arg(tr("Source code:"));
+
     const QString details = QStringLiteral("<h3>%1</h3>%2")
                                 .arg(tr("Technical details"), Block(TechnicalText()));
 
-    m_body->setHtml(origin + components + details);
+    m_body->setHtml(origin + components + source + details);
     m_body->verticalScrollBar()->setValue(0);
 }

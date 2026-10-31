@@ -10276,7 +10276,12 @@ Wilt u het overschrijven?</translation>
         <translation>Qt %1 — The Qt Company, LGPLv3</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="185"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="187"/>
+        <source>Source code:</source>
+        <translation>Broncode:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="190"/>
         <source>Technical details</source>
         <translation>Technische details</translation>
     </message>
