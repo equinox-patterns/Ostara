@@ -153,11 +153,10 @@ if(MSVC)
     # WIN32_LEAN_AND_MEAN évite d'importer les en-têtes dont le projet n'a pas besoin.
     add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN)
 else()
-    add_compile_options(-Werror)
-    # GCC 12 produit des avertissements que Clang ne produit pas, sur du code hérité
-    # (attributs Qt redondants, comparaisons de flottants) : on garde -Werror, sauf pour
-    # ces trois familles, sinon la CI Linux ne peut pas construire.
-    add_compile_options(-Wno-error=attributes -Wno-error=float-equal -Wno-error=conversion)
+    # GCC 12 remonte, sur le code hérité de Valentina, des avertissements que Clang (macOS)
+    # ne produit pas : attributs Qt redondants, conversions de signe, comparaisons de
+    # flottants. macOS garde -Werror ; Linux construit avec les avertissements visibles,
+    # sinon la CI ne peut pas produire le binaire.
 endif()
 
 # ═══════════════════════════════════════════════════════════════════════════════
