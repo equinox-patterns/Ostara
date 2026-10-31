@@ -171,6 +171,52 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="checkBoxSmooth">
+         <property name="toolTip">
+          <string>Rebuild each run of curves as one smooth curve passing through the pivots, then give every copy its own segment back. The corners the rotations leave disappear, and the points the copies reach do not move.</string>
+         </property>
+         <property name="text">
+          <string>Smooth the curves at the joints</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="copySuffixRow" native="true">
+         <layout class="QHBoxLayout" name="copySuffixLayout">
+          <item>
+           <widget class="QLabel" name="labelCopySuffix">
+            <property name="text">
+             <string>Suffix of the copies:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEditCopySuffix">
+            <property name="toolTip">
+             <string>The copies of curves, arcs and lines take the name of their source and this suffix, which is what makes them callable: a curve named portion2 becomes Courbe_portion2_Rotation.</string>
+            </property>
+            <property name="text">
+             <string>_Rotation</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelSmoothingSummary">
+         <property name="visible">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="labelStatus">
          <property name="visible">
           <bool>false</bool>

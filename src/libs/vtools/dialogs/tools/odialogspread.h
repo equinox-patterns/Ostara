@@ -65,6 +65,16 @@ public:
     auto GetDisplay() const -> OSpreadDisplay;
     void SetDisplay(const OSpreadDisplay &display);
 
+    /** @brief Whether the copies are smoothed at the pivots. Off, the operation makes the rigid image it has
+     *  always made. */
+    auto IsSmooth() const -> bool;
+    void SetSmooth(bool smooth);
+
+    /** @brief What the copies of curves, arcs and lines are named after: their source's name and this suffix,
+     *  "_Rotation" by default. Points are not concerned — they keep the "__R" of the operation. */
+    auto CopySuffixName() const -> QString;
+    void SetCopySuffixName(const QString &suffix);
+
     void ShowDialog(bool click) override;
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
@@ -78,6 +88,7 @@ protected:
 
 private slots:
     void ShowRotationDetails();
+    void UpdateSmoothingSummary();
     void SaveRotationName(const QString &text);
     void AngleChanged(bool valid);
     void LengthChanged(bool valid);

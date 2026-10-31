@@ -107,7 +107,7 @@ void OVisToolSpread::RefreshGeometry()
         angles.append(FindValFromUser(rotation.angle, GetData()->DataVariables()));
     }
 
-    const OSpreadTransform transform(source, m_rotations, angles, GetData());
+    const OSpreadTransform transform(source, m_rotations, angles, GetData(), m_smooth);
     CreateTransformedObjects(iPoint, iCurve, transform);
 
     // The spread images of the line endpoints are already drawn as points; the source lines stay as reference.

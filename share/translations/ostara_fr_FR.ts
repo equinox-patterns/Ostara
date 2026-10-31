@@ -6487,6 +6487,22 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <source>You can add a note here…</source>
         <translation>Vous pouvez ajouter une note ici…</translation>
     </message>
+    <message>
+        <source>Smooth the curves at the joints</source>
+        <translation>Lisser les courbes aux jonctions</translation>
+    </message>
+    <message>
+        <source>Rebuild each run of curves as one smooth curve passing through the pivots, then give every copy its own segment back. The corners the rotations leave disappear, and the points the copies reach do not move.</source>
+        <translation>Reconstruire chaque suite de courbes en une seule courbe lisse passant par les pivots, puis rendre à chaque copie son propre segment. Les cassures laissées par les rotations disparaissent, et les points atteints par les copies ne bougent pas.</translation>
+    </message>
+    <message>
+        <source>Suffix of the copies:</source>
+        <translation>Suffixe des copies :</translation>
+    </message>
+    <message>
+        <source>The copies of curves, arcs and lines take the name of their source and this suffix, which is what makes them callable: a curve named portion2 becomes Courbe_portion2_Rotation.</source>
+        <translation>Les copies de courbes, d'arcs et de lignes prennent le nom de leur source et ce suffixe, ce qui les rend appelables : une courbe nommée portion2 devient Courbe_portion2_Rotation.</translation>
+    </message>
 </context>
 <context>
     <name>DialogTool</name>
@@ -18081,6 +18097,14 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <source>Rotations</source>
         <translation>Rotations</translation>
     </message>
+    <message>
+        <source>Courbe %1</source>
+        <translation>Courbe %1</translation>
+    </message>
+    <message>
+        <source>%1 : %2%3</source>
+        <translation>%1 : %2%3</translation>
+    </message>
 </context>
 <context>
     <name>OToolTransfert</name>
@@ -25088,6 +25112,22 @@ Voulez-vous continuer ?</translation>
         <source>by hand</source>
         <translation>manuellement</translation>
     </message>
+    <message>
+        <source>Smoothing</source>
+        <translation>Lissage</translation>
+    </message>
+    <message>
+        <source>Smooth the curves at the joints</source>
+        <translation>Lisser les courbes aux jonctions</translation>
+    </message>
+    <message>
+        <source>Suffix of the copies:</source>
+        <translation>Suffixe des copies :</translation>
+    </message>
+    <message>
+        <source>Length change:</source>
+        <translation>Écart de longueur :</translation>
+    </message>
 </context>
 <context>
     <name>VToolPlaceLabel</name>
@@ -25503,7 +25543,7 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="73"/>
         <source>Spl_</source>
         <comment>Left symbol _ in the name</comment>
-        <translation>Spl_</translation>
+        <translation>Courbe_</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="74"/>

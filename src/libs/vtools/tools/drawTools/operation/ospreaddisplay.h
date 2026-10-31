@@ -97,9 +97,13 @@ struct OSpreadDisplay
 
     /** @brief Complete every mark of the display: an id for the objects it still misses, and a name for its
      *  point. One point per rotation whose start point an earlier rotation already carried, two lines per
-     *  rotation; what a mark already holds is kept as it is, so a parse never moves an object. */
+     *  rotation; what a mark already holds is kept as it is, so a parse never moves an object.
+     *
+     *  @a withLines says whether the arms are part of the figure. The point of a mark is not: it is the position
+     *  the start point had before the rotation, a point of the construction the copies and the lines of the
+     *  operation need whatever the display shows (see SlashAndSpread.md). Only the two arms follow the switch. */
     static void EnsureIds(OSpreadDisplay &display, const QVector<OSpreadRotation> &rotations, const OSpreadPlan &plan,
-                          VContainer *data);
+                          VContainer *data, bool withLines);
 
     /** @brief Create the point of every mark under the id it carries, or move the point that already exists to
      *  where its rotation puts it. Nothing is created for a mark without a point: its third vertex is a source

@@ -33,12 +33,19 @@
 #define OSPREADTRANSFORM_H
 
 #include <QHash>
+#include <type_traits>
+#include <QLineF>
 #include <QPointF>
 #include <QString>
 #include <QVector>
 #include <QtGlobal>
 
+#include "../../vgeometry/vgobject.h"
+#include "../../vgeometry/vpointf.h"
+#include "../../vgeometry/vspline.h"
+#include "../../vpatterndb/vcontainer.h"
 #include "ospreadrule.h"
+#include "ospreadsmooth.h"
 
 /**
  * @brief The transformation a slash-and-spread applies to one object.
@@ -47,12 +54,22 @@
  * the same signature, so one template serves every shape, exactly as a rotation does. The steps are read from a
  * table keyed by source id: each object has its own list of (pivot, angle), empty when no rotation carries it,
  * in which case the copy stays in place and only takes the new name.
+ *
+ * When the smoothing is on, the runs of consecutive curves are rebuilt into one C2 chain passing through their
+ * junctions (see OSpreadSmooth), and each of them takes the geometry of its own segment back. The copy keeps
+ * everything else it has — its name, its pen, its colour — and the objects of the pattern are the same, one per
+ * source: nothing is added, nothing is cut.
+ *
+ * A point posed on a curve has no geometry of its own: it is a place on that curve. Turning it like a free point
+ * would leave it beside the outline the moment the curve is smoothed, since the curve the rotation made is not
+ * the one the chain gives. Such a point therefore follows its curve — it is put back at the place it had along
+ * it, and the copy stays on the outline.
  */
 class OSpreadTransform
 {
 public:
     OSpreadTransform(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
-                     const QVector<qreal> &anglesDeg, const VContainer *data)
+                     const QVector<qreal> &anglesDeg, const VContainer *data, bool smooth = false)
     {
         const OSpreadPlan plan = OSpreadRule::Compose(source, rotations, anglesDeg, data);
         const QVector<QVector<OSpreadStep>> &steps = plan.steps;
@@ -61,9 +78,38 @@ public:
         {
             m_stepsById.insert(source.at(i).id, steps.at(i));
         }
+
+        if (smooth)
+        {
+            BuildSmoothing(source, data);
+        }
     }
 
     template <class Item> auto Image(const Item &item, const QString &name) const -> Item
+    {
+        Item result = Rotated(item, name);
+        // Only a single cubic takes part in a chain: a path and an arc keep the image the rotations made, and
+        // the test is on the type here rather than on the object, since that is what the template knows at
+        // compile time.
+        if constexpr (std::is_same_v<Item, VSpline>)
+        {
+            Smooth(result, item.id());
+        }
+        else if constexpr (std::is_same_v<Item, VPointF>)
+        {
+            // A point that sat on one of those curves is no longer where the rotation put it.
+            PlaceOnCurve(result, item.id());
+        }
+        return result;
+    }
+
+private:
+    QHash<quint32, QVector<OSpreadStep>> m_stepsById{};
+    QHash<quint32, OSpreadSmoothImage> m_smoothed{};
+    QHash<quint32, QPointF> m_pointsOnCurves{};
+
+    /** @brief The steps applied, and nothing else: this is the image the operation has always made. */
+    template <class Item> auto Rotated(const Item &item, const QString &name) const -> Item
     {
         Item result = item;
 
@@ -89,8 +135,124 @@ public:
         return result;
     }
 
-private:
-    QHash<quint32, QVector<OSpreadStep>> m_stepsById{};
+    /** @brief Give the copy the geometry of its chain segment. Only the control points move: the name, the
+     *  pen and the colour the rotation gave it stay. */
+    auto Smooth(VSpline &image, quint32 id) const -> void
+    {
+        const auto it = m_smoothed.constFind(id);
+        if (it == m_smoothed.cend())
+        {
+            return;
+        }
+
+        const OSpreadSmoothImage &segment = it.value();
+
+        const VPointF p1 = image.GetP1();
+        const VPointF p4 = image.GetP4();
+
+        image.SetP1(VPointF(segment.p1, p1.name(), p1.mx(), p1.my()));
+        image.SetP2(segment.p2);
+        image.SetP3(segment.p3);
+        image.SetP4(VPointF(segment.p4, p4.name(), p4.mx(), p4.my()));
+    }
+
+    /** @brief Put the copy back where its curve now passes. The place the point had along the curve is read off
+     *  the curve it was posed on — the source, not the rotated one, since the point was placed on that one — and
+     *  the same place is read back on the smoothed segment, which is drawn the same way round as its source. */
+    auto PlaceOnCurve(VPointF &image, quint32 id) const -> void
+    {
+        const auto it = m_pointsOnCurves.constFind(id);
+        if (it == m_pointsOnCurves.cend())
+        {
+            return;
+        }
+
+        image.setX(it.value().x());
+        image.setY(it.value().y());
+    }
+
+    /** @brief The source points that were posed on a curve taking part in a chain, and the place they hold on it.
+     *  The test is geometric because it is how a point is posed on a curve: the pattern keeps the curve and the
+     *  point apart, and their meeting is only a place they both reach — a cut curve leaves its point exactly on
+     *  it. A point whose distance is not zero to the last bit is a point of its own, and stays free. */
+    void AttachPoints(const QVector<SourceItem> &source, const VContainer *data)
+    {
+        for (const SourceItem &item : std::as_const(source))
+        {
+            const QSharedPointer<VGObject> object = data->GetGObject(item.id);
+            if (object.isNull() || object->getType() != GOType::Point)
+            {
+                continue;
+            }
+
+            const QPointF point = data->GeometricObject<VPointF>(item.id)->toQPointF();
+
+            for (auto it = m_smoothed.cbegin(); it != m_smoothed.cend(); ++it)
+            {
+                const QSharedPointer<VSpline> curve = data->GeometricObject<VSpline>(it.key());
+                const qreal t = curve->ParamT(point);
+                if (qFloor(t) == -1 || QLineF(point, PlaceAt(*curve, t)).length() > 1e-3)
+                {
+                    continue; // Not on that curve: ParamT says so, or says it about another branch.
+                }
+
+                const OSpreadSmoothImage &segment = it.value();
+                const VSpline smoothed(VPointF(segment.p1), segment.p2, segment.p3, VPointF(segment.p4));
+
+                const QPointF placed = PlaceAt(smoothed, t);
+                m_pointsOnCurves.insert(item.id, placed);
+                break;
+            }
+        }
+    }
+
+    /** @brief The runs of curves, as the rotations give them, handed to OSpreadSmooth. A curve whose image is
+     *  not a plain spline — a path, an arc — is left out: the chain is a chain of single cubic segments. */
+    void BuildSmoothing(const QVector<SourceItem> &source, const VContainer *data)
+    {
+        QVector<OSpreadSmoothCurve> curves;
+        curves.reserve(source.size());
+
+        for (const SourceItem &item : std::as_const(source))
+        {
+            const QSharedPointer<VGObject> object = data->GetGObject(item.id);
+            if (object.isNull() || object->getType() != GOType::Spline)
+            {
+                continue;
+            }
+
+            const VSpline raw = Rotated(*data->GeometricObject<VSpline>(item.id), QString());
+            const QPointF start = raw.GetP1().toQPointF();
+            const QPointF end = raw.GetP4().toQPointF();
+
+            curves.append({.id = item.id,
+                           .start = start,
+                           .end = end,
+                           .startTangent = Unit(raw.GetP2().toQPointF() - start),
+                           .endTangent = Unit(end - raw.GetP3().toQPointF()),
+                           .steps = m_stepsById.value(item.id)});
+        }
+
+        m_smoothed = OSpreadSmooth::Rebuild(curves);
+        AttachPoints(source, data);
+    }
+
+    static auto Unit(const QPointF &vector) -> QPointF
+    {
+        const qreal length = std::hypot(vector.x(), vector.y());
+        return length > 1e-12 ? QPointF(vector.x() / length, vector.y() / length) : QPointF(0., 0.);
+    }
+
+    /** @brief The place of parameter t on a curve. A cubic gives a point only by cutting itself, and that cut
+     *  is precisely what a point posed on a curve already is: the two halves meet where the point is. */
+    static auto PlaceAt(const VSpline &curve, qreal t) -> QPointF
+    {
+        QPointF firstHandle;
+        QPointF firstMiddle;
+        QPointF secondMiddle;
+        QPointF secondHandle;
+        return curve.CutSplineAtParam(t, firstHandle, firstMiddle, secondMiddle, secondHandle);
+    }
 };
 
 #endif // OSPREADTRANSFORM_H

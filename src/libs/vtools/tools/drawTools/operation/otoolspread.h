@@ -51,6 +51,14 @@ struct OToolSpreadInitData : VAbstractOperationInitData
 {
     QVector<OSpreadRotation> rotations{};
     OSpreadDisplay display{};
+
+    /** @brief Whether the curves are smoothed at the pivots: one C2 chain through them, one segment per
+     *  curve. Off by default — the operation keeps the rigid image it has always made. */
+    bool smooth{false};
+
+    /** @brief What the copies of curves, arcs and lines are named after, appended to the name of their source.
+     *  Points are not concerned: they keep the "__R" of the operation. */
+    QString copySuffix{QStringLiteral("_Rotation")};
 };
 
 class OToolSpread : public VAbstractOperation
@@ -71,6 +79,9 @@ public:
     static const QString TagRotations;
     static const QString AttrStart;
     static const QString AttrPivot;
+    static const QString AttrSmooth;
+    static const QString AttrCopySuffix;
+    static const QString DefaultCopySuffix;
 
     auto type() const -> int override { return Type; }
     enum
@@ -85,6 +96,25 @@ public:
      *  pen of its lines, and the id of every object it created. */
     auto Display() const -> const OSpreadDisplay &;
     void SetDisplay(const OSpreadDisplay &display);
+
+    /** @brief Whether the curves are smoothed at the pivots: off, the operation keeps the rigid image it has
+     *  always made; on, each run of consecutive curves is rebuilt as one C2 chain through their junctions. */
+    auto IsSmooth() const -> bool { return m_smooth; }
+    void SetSmooth(bool smooth);
+
+    /** @brief What the copies of curves, arcs and lines are named after, appended to the name of the source.
+     *  Points are not concerned: they keep the "__R" of the operation. */
+    auto CopySuffixName() const -> QString { return m_copySuffix; }
+    void SetCopySuffixName(const QString &suffix);
+
+    /** @brief What the smoothing costs to every curve of the selection, one line per curve, in the unit of the
+     *  pattern: `Courbe 2 : +0,114 cm`. Empty when the smoothing is off — the rigid image changes no length. */
+    auto SmoothingText() -> QString;
+
+    /** @brief The same, for a dialog whose rotations are still being edited: the angles are the ones it holds
+     *  right now, not the ones the operation was last saved with. */
+    static auto SmoothingText(const VContainer *data, const QVector<SourceItem> &source,
+                              const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles) -> QString;
 
     auto IsDisplayShown() const -> bool { return m_display.show; }
     void SetDisplayShown(bool show);
@@ -134,6 +164,8 @@ private:
 
     QVector<OSpreadRotation> m_rotations{};
     OSpreadDisplay m_display{};
+    bool m_smooth{false};
+    QString m_copySuffix{DefaultCopySuffix};
 
     explicit OToolSpread(const OToolSpreadInitData &initData, QGraphicsItem *parent = nullptr);
 
@@ -146,6 +178,14 @@ private:
     /** @brief Give the display the ids its marks still miss, and drop them when the representation is off: a
      *  mark is only ever created with an id the file carries. */
     void SyncDisplay(const QVector<SourceItem> &source);
+
+    /** @brief Write the smoothing flag: present when on, absent when off, so that a pattern written before the
+     *  option existed behaves exactly as it did. */
+    void SaveSmooth(QDomElement &tag);
+
+    /** @brief Write the suffix the copies of curves, arcs and lines are named after: absent when it is the
+     *  default, so a pattern written before it existed keeps the names it already carries. */
+    void SaveCopySuffix(QDomElement &tag);
 
     /** @brief Write this tool's element as an option change does, and ask for the full parse the change of a
      *  created object set needs. */

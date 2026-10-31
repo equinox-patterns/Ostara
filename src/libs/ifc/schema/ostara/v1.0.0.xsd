@@ -597,6 +597,14 @@
                           <xs:attribute name="cap1Ref" type="xs:unsignedInt"/>
                           <xs:attribute name="cap2Ref" type="xs:unsignedInt"/>
                           <xs:attribute name="foldLine" type="xs:boolean"/>
+                          <!-- The smoothing of a slash-and-spread: the runs of curves are rebuilt as one C2
+                               chain through their junctions, and every copy takes its own segment back. Absent
+                               means off, which is what a pattern written before the option existed says. -->
+                          <xs:attribute name="smooth" type="xs:boolean"/>
+                          <!-- What a copy of a curve or an arc is named after, appended to the name of its source.
+                               Absent means "_Rotation". Points are not concerned: they keep the "__R" that marks
+                               their generation. -->
+                          <xs:attribute name="copySuffix" type="xs:string"/>
                           <!-- The cap of a dart, written as an operation. It was a `<point>` before — the point
                                the tool was — and the same type name still opens those patterns, which is why the
                                attributes below are the very ones declared on `<point>`: an old file and a new one

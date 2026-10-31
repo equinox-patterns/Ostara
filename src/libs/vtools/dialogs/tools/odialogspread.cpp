@@ -26,6 +26,10 @@
 
 #include "odialogspread.h"
 
+
+#include "../../tools/drawTools/operation/otoolspread.h"
+#include "../../tools/drawTools/operation/ospreadtransform.h"
+
 #include "../../tools/drawTools/operation/orotationlength.h"
 
 #include <QColor>
@@ -119,6 +123,9 @@ ODialogSpread::ODialogSpread(const VContainer *data, VAbstractPattern *doc, quin
     connect(ui->tableWidget, &QTableWidget::itemSelectionChanged, this, &ODialogSpread::ShowRotationDetails);
     connect(ui->lineEditName, &QLineEdit::textEdited, this, &ODialogSpread::SaveRotationName);
     connect(ui->lineEditVisibilityGroup, &QLineEdit::textChanged, this, &DialogOperationTool::GroupNameChanged);
+    // The length the smoothing costs is read while the figure is being built: the switch, the angles and the
+    // rotations all change it, and the summary under the checkbox is what says by how much.
+    connect(ui->checkBoxSmooth, &QCheckBox::toggled, this, &ODialogSpread::UpdateSmoothingSummary);
 
     // The pen of the display's lines, and their colour: one style for every line of every rotation. The combos
     // start on what the layer the display goes into draws with, its own pen and colour, so a mark looks like
@@ -197,6 +204,52 @@ void ODialogSpread::SetDisplay(const OSpreadDisplay &display)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ODialogSpread::IsSmooth() const -> bool
+{
+    return ui->checkBoxSmooth->isChecked();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogSpread::SetSmooth(bool smooth)
+{
+    ui->checkBoxSmooth->setChecked(smooth);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogSpread::UpdateSmoothingSummary()
+{
+    const bool on = IsSmooth();
+    ui->labelSmoothingSummary->setVisible(on);
+    if (not on)
+    {
+        ui->labelSmoothingSummary->clear();
+        return;
+    }
+
+    QVector<qreal> angles;
+    angles.reserve(m_rotations.size());
+    for (const auto &rotation : std::as_const(m_rotations))
+    {
+        angles.append(VisLine::FindValFromUser(rotation.angle, data.DataVariables()));
+    }
+
+    ui->labelSmoothingSummary->setText(OToolSpread::SmoothingText(&data, SourceObjects(), m_rotations, angles));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto ODialogSpread::CopySuffixName() const -> QString
+{
+    const QString suffix = ui->lineEditCopySuffix->text().trimmed();
+    return suffix.isEmpty() ? QStringLiteral("_Rotation") : suffix;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogSpread::SetCopySuffixName(const QString &suffix)
+{
+    ui->lineEditCopySuffix->setText(suffix);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODialogSpread::ShowDialog(bool click)
 {
     if (m_step == Step::Selecting && !click)
@@ -233,7 +286,12 @@ void ODialogSpread::ShowDialog(bool click)
 
             try
             {
-                item.name = DefaultCopyName(&data, item.id, CopySuffix::Spread);
+                // A point keeps the mark of the operation, "__R"; a curve or an arc is named after its source and
+                // the suffix of the dialog. The tool applies the same rule when it saves (see OToolSpread).
+                const QSharedPointer<VGObject> object = data.GetGObject(item.id);
+                const bool point = object.isNull() || object->getType() == GOType::Point;
+                item.name = point ? DefaultCopyName(&data, item.id, CopySuffix::Spread)
+                                  : CopyNameOfSource(&data, item.id, CopySuffixName());
             }
             catch (const VExceptionBadId &)
             {
@@ -372,6 +430,7 @@ void ODialogSpread::ChosenObject(quint32 id, const SceneObject &type)
     if (auto *operation = ConfiguredVis())
     {
         operation->SetRotations(SourceToObjects(SourceObjects()), m_rotations);
+        operation->SetSmooth(IsSmooth());
         operation->RefreshGeometry();
     }
 }
@@ -390,6 +449,10 @@ auto ODialogSpread::ConfiguredVis() -> OVisToolSpread *
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogSpread::OnSourceObjectsSet()
 {
+    // The summary reads the objects of the selection and the angles: both are in place when this is called, at
+    // the end of the setup of the dialog as well as after a change of selection.
+    UpdateSmoothingSummary();
+
     if (auto *operation = ConfiguredVis())
     {
         operation->SetObjects(SourceToObjects(SourceObjects()));
@@ -414,6 +477,8 @@ void ODialogSpread::ShowVisualization()
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogSpread::SaveData()
 {
+    UpdateSmoothingSummary();
+
     // A length typed in the field and never left (the field evaluates on a timer) still has to become the angle
     // that gets stored, before the editor is read back.
     UpdateAngleFromLength();
@@ -424,6 +489,7 @@ void ODialogSpread::SaveData()
         operation->SetObjects(SourceToObjects(SourceObjects()));
         operation->SetPreviewLines(PreviewLines());
         operation->SetRotations(SourceToObjects(SourceObjects()), m_rotations);
+        operation->SetSmooth(IsSmooth());
         operation->RefreshGeometry();
     }
 
@@ -530,6 +596,7 @@ void ODialogSpread::AngleChanged(bool valid)
 
     CommitCurrentAngle();
     UpdateLengthFromAngle();
+    UpdateSmoothingSummary();
     CheckState();
 }
 

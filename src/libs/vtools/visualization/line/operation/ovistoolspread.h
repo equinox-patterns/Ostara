@@ -53,6 +53,9 @@ public:
      *  chain the tool will. */
     void SetRotations(const QVector<quint32> &sourceIds, const QVector<OSpreadRotation> &rotations);
 
+    /** @brief Whether the preview shows the smoothed copies, exactly as the operation will build them. */
+    void SetSmooth(bool smooth) { m_smooth = smooth; }
+
     /** @brief Tell the preview that the spread is already in the pattern.
      *
      *  The pattern then draws the objects the operation spread, where they stand, and the trace of their origin laid
@@ -71,6 +74,7 @@ private:
 
     QVector<quint32> m_sourceIds{};
     QVector<OSpreadRotation> m_rotations{};
+    bool m_smooth{false};
 
     /** The dots of the gesture, one pool per role: **green for the start point** of a pair, **red for its pivot**.
      *  The colour IS the name, exactly as a pleat names the two ends of its departure line, and the pair is thus

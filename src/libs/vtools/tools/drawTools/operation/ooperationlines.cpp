@@ -204,8 +204,12 @@ void OOperationLines::CreateLines(VAbstractPattern *doc, VContainer *data, VMain
 {
     for (const auto &line : lines)
     {
-        const quint32 first = PointImage(line.point1, source, destination, fixedPoints, referencedPoints);
-        const quint32 second = PointImage(line.point2, source, destination, fixedPoints, referencedPoints);
+        const quint32 first = line.point1Image != NULL_ID
+                                  ? line.point1Image
+                                  : PointImage(line.point1, source, destination, fixedPoints, referencedPoints);
+        const quint32 second = line.point2Image != NULL_ID
+                                   ? line.point2Image
+                                   : PointImage(line.point2, source, destination, fixedPoints, referencedPoints);
 
         // No image for one endpoint: the line cannot exist, and nothing is created. The preview shows
         // the same thing, so what is displayed is what will be built.

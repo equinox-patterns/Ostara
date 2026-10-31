@@ -63,6 +63,14 @@ struct OOperationLine
     quint32 result{NULL_ID};
     QString typeLine{};
     QString lineColor{};
+
+    /** @brief The image of an endpoint, when the operation knows it better than the positional lookup does.
+     *
+     *  A slash-and-spread turns each object around its own sequence of pivots: the two ends of a line can end up
+     *  one generation apart, and the line then belongs to the earlier one. The operation names here the copy at
+     *  that generation; NULL_ID — every other tool — leaves the endpoint to PointImage, exactly as before. */
+    quint32 point1Image{NULL_ID};
+    quint32 point2Image{NULL_ID};
 };
 
 /**

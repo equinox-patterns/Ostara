@@ -551,6 +551,7 @@ void VPattern::ParseToolSpread(VMainGraphicsScene *scene, QDomElement &domElemen
         VAbstractOperation::ExtractData(domElement, initData);
         initData.rotations = OToolSpread::ExtractRotations(domElement);
         initData.display = OSpreadDisplay::Extract(domElement);
+        initData.smooth = GetParametrBool(domElement, OToolSpread::AttrSmooth, QStringLiteral("false"));
 
         OToolSpread::Create(initData);
     }

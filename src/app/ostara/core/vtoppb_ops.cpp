@@ -404,6 +404,53 @@ template <class Tool> auto CopyStyleGroup() -> PropertyDesc
  *  Turning the box on or off creates or drops pattern objects, which is a full parse: the tool's own setter takes
  *  care of it, and is idempotent, so writing the three values here is also what keeps one change from writing
  *  twice. */
+/** @brief The smoothing of the curves at the pivots: one switch, off by default.
+ *
+ * Off, the operation keeps the rigid image it has always made. On, the runs of consecutive curves are rebuilt
+ * as one C2 chain through their junctions and every copy takes its own segment back, which is what removes the
+ * corners the rotations leave (see SlashAndSpread.md). */
+template <class Tool> auto SmoothGroup() -> PropertyDesc
+{
+    return {QStringLiteral("smooth"), QString(),
+            [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+
+                auto *group = new VPE::VProperty(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Smoothing")));
+                group->setCollapsible(true);
+                group->setExpandedByDefault(true);
+
+                auto *smooth = new VPE::VBoolProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Smooth the curves at the joints")));
+                smooth->setValue(t->IsSmooth());
+
+                auto *suffix = new VPE::VStringProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Suffix of the copies:")));
+                suffix->setValue(t->CopySuffixName());
+
+                auto *summary = new VPE::VLabelProperty(
+                    T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length change:")));
+                summary->setValue(t->SmoothingText());
+
+                group->addChild(smooth);
+                group->addChild(suffix);
+                group->addChild(summary);
+                return group;
+            },
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                auto *t = qgraphicsitem_cast<Tool *>(b->currentItem());
+                if (t == nullptr || prop->getRowCount() < 2)
+                {
+                    return;
+                }
+
+                t->SetCopySuffixName(prop->getChild(1)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toString());
+                t->SetSmooth(prop->getChild(0)->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool());
+            },
+            nullptr};
+}
+
 template <class Tool> auto RotationDisplayGroup() -> PropertyDesc
 {
     return {QStringLiteral("rotationDisplay"), QString(),
@@ -897,6 +944,8 @@ auto SpreadProperties() -> std::vector<PropertyDesc>
          },
          nullptr,
          nullptr},
+
+        SmoothGroup<OToolSpread>(),
 
         RotationDisplayGroup<OToolSpread>(),
 

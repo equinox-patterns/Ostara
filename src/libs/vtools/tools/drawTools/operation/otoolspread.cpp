@@ -55,14 +55,17 @@ const QString OToolSpread::ToolType = QStringLiteral("spread");
 const QString OToolSpread::TagRotations = QStringLiteral("rotations");
 const QString OToolSpread::AttrStart = QStringLiteral("start");
 const QString OToolSpread::AttrPivot = QStringLiteral("pivot");
+const QString OToolSpread::AttrSmooth = QStringLiteral("smooth");
+const QString OToolSpread::AttrCopySuffix = QStringLiteral("copySuffix");
+const QString OToolSpread::DefaultCopySuffix = QStringLiteral("_Rotation");
 
 namespace
 {
 //---------------------------------------------------------------------------------------------------------------------
 auto MakeDestination(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
-                     const QVector<qreal> &angles, VContainer *data) -> OOperationDestination<OSpreadTransform>
+                     const QVector<qreal> &angles, VContainer *data, bool smooth) -> OOperationDestination<OSpreadTransform>
 {
-    return OOperationDestination<OSpreadTransform>(OSpreadTransform(source, rotations, angles, data));
+    return OOperationDestination<OSpreadTransform>(OSpreadTransform(source, rotations, angles, data, smooth));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -83,15 +86,10 @@ auto EvaluateAngles(quint32 idTool, const QVector<OSpreadRotation> &rotations, V
  *  placement of the points it holds, which follows the rotations and changes with every edit. */
 void CreateDisplay(OToolSpreadInitData &initData, const OSpreadPlan &plan)
 {
-    if (not initData.display.show)
-    {
-        // Nothing is kept while the representation is off: switching it on allocates the marks again, which is
-        // what "the objects are created again" means (see SlashAndSpread.md).
-        initData.display.marks.clear();
-        return;
-    }
-
-    OSpreadDisplay::EnsureIds(initData.display, initData.rotations, plan, initData.data);
+    // The point of a mark is there whatever the figure shows: it is the position the start point had before its
+    // rotation, and both the lines of the operation and the arms of the display are drawn on it. Only the arms
+    // follow the switch — the display off means no line1/line2, not no point.
+    OSpreadDisplay::EnsureIds(initData.display, initData.rotations, plan, initData.data, initData.display.show);
     OSpreadDisplay::Create(initData.id, initData.display, plan, initData.data);
 }
 
@@ -171,11 +169,86 @@ auto SameDisplay(const OSpreadDisplay &left, const OSpreadDisplay &right) -> boo
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief Name the copies of the curves, arcs and paths after their source and the suffix of the operation.
+ *
+ * A point keeps the mark of the operation, "__R": a point is a generation, and the two points of a rotation are
+ * what the marks and the lines are read on. A curve, an arc or a path is a shape the user may want to call — its
+ * length, its angles — so it takes the name of its source and the suffix the user chose, "_Rotation" by default,
+ * which is what makes `Courbe_portion2_Rotation` a name one can write. */
+void ApplyCopyNames(QVector<SourceItem> &source, const QString &suffix, const VContainer *data)
+{
+    for (SourceItem &item : source)
+    {
+        if (item.id == NULL_ID)
+        {
+            continue;
+        }
+
+        const QSharedPointer<VGObject> object = data->GetGObject(item.id);
+        if (object.isNull() || object->getType() == GOType::Point)
+        {
+            continue; // A point keeps the suffix of the operation, given by the dialog.
+        }
+
+        try
+        {
+            item.name = CopyNameOfSource(data, item.id, suffix);
+        }
+        catch (const VExceptionBadId &)
+        {
+            continue; // An object the container does not hold keeps the name it came with.
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Give every line of the operation the endpoints of the generation it sits at.
+ *
+ * A line joins two points of the ordered selection. A rotation turns the whole region that starts at its own start
+ * point, so the two ends of a line are carried by the same rotations unless one of them is the start of a rotation
+ * and the other comes before it: the line is then rigid with the rotations of the earlier generation, and its
+ * second end must be the copy taken at that generation — the point the display keeps as the vertex of the mark of
+ * that rotation — and not the final copy, which has turned further and changed the length of the line.
+ */
+void ResolveLineGenerations(OToolSpreadInitData &initData, const OSpreadPlan &plan)
+{
+    for (OOperationLine &line : initData.lines)
+    {
+        const int first = OSpreadRule::IndexOf(initData.source, line.point1);
+        const int second = OSpreadRule::IndexOf(initData.source, line.point2);
+        if (first < 0 || second < 0)
+        {
+            continue; // An endpoint outside the selection has no image of its own to look for.
+        }
+
+        // The later end of the line is the one that can be carried one generation further.
+        const quint32 laterId = (first < second) ? line.point2 : line.point1;
+        const int earlier = qMin(first, second);
+        quint32 &laterImage = (first < second) ? line.point2Image : line.point1Image;
+
+        for (int k = 0; k < initData.rotations.size() && k < plan.cuts.size(); ++k)
+        {
+            const OSpreadCut &cut = plan.cuts.at(k);
+            const int start = OSpreadRule::IndexOf(initData.source, cut.startId);
+            if (cut.startId != laterId || start < 0 || earlier >= start)
+            {
+                continue; // This rotation does not separate the two ends of the line.
+            }
+
+            if (k < initData.display.marks.size() && initData.display.marks.at(k).point != NULL_ID)
+            {
+                laterImage = initData.display.marks.at(k).point;
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void CreateDestination(OToolSpreadInitData &initData)
 {
     const QVector<qreal> angles = EvaluateAngles(initData.id, initData.rotations, initData.data);
     const OOperationDestination<OSpreadTransform> destination =
-        MakeDestination(initData.source, initData.rotations, angles, initData.data);
+        MakeDestination(initData.source, initData.rotations, angles, initData.data, initData.smooth);
 
     if (initData.typeCreation == Source::FromGui)
     {
@@ -194,7 +267,8 @@ void CreateDestination(OToolSpreadInitData &initData)
 OToolSpread::OToolSpread(const OToolSpreadInitData &initData, QGraphicsItem *parent)
   : VAbstractOperation(initData, parent),
     m_rotations(initData.rotations),
-    m_display(initData.display)
+    m_display(initData.display),
+    m_smooth(initData.smooth)
 {
     InitOperatedObjects();
     ToolCreation(initData.typeCreation);
@@ -212,7 +286,7 @@ auto OToolSpread::SyncDestination(const QVector<SourceItem> &source) -> QVector<
 
     const QVector<qreal> angles = EvaluateAngles(m_id, m_rotations, getData());
     const OOperationDestination<OSpreadTransform> destination =
-        MakeDestination(source, m_rotations, angles, getData());
+        MakeDestination(source, m_rotations, angles, getData(), m_smooth);
 
     QVector<DestinationItem> newDestination;
     newDestination.reserve(source.size());
@@ -242,6 +316,8 @@ void OToolSpread::SetDialog()
     dialogTool->CheckDependencyTreeComplete();
     dialogTool->SetRotations(m_rotations);
     dialogTool->SetDisplay(m_display);
+    dialogTool->SetSmooth(m_smooth);
+    dialogTool->SetCopySuffixName(m_copySuffix);
     dialogTool->SetNotes(m_notes);
     dialogTool->SetSourceObjects(m_source);
     dialogTool->SetLineSources(Lines());
@@ -260,6 +336,8 @@ auto OToolSpread::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     OToolSpreadInitData initData;
     initData.rotations = dialogTool->GetRotations();
     initData.display = dialogTool->GetDisplay();
+    initData.smooth = dialogTool->IsSmooth();
+    initData.copySuffix = dialogTool->CopySuffixName();
     initData.source = dialogTool->GetSourceObjects();
     initData.lines = OOperationLines::Collect(dialogTool->GetLineSources());
     initData.hasLinkedVisibilityGroup = dialogTool->HasLinkedVisibilityGroup();
@@ -272,6 +350,8 @@ auto OToolSpread::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene 
     initData.parse = Document::FullParse;
     initData.typeCreation = Source::FromGui;
     initData.notes = dialogTool->GetNotes();
+
+    ApplyCopyNames(initData.source, initData.copySuffix, data);
 
     OToolSpread *operation = Create(initData);
     if (operation != nullptr)
@@ -342,7 +422,11 @@ auto OToolSpread::Create(OToolSpreadInitData &initData) -> OToolSpread *
         patternGraph->AddEdge(initData.id, id);
     }
 
-    // A slash-and-spread has no fixed point: every pivot turns in the rotations that precede it.
+    // A slash-and-spread has no fixed point: every pivot turns in the rotations that precede it. The lines are
+    // drawn between copies of the same generation, which is what ResolveLineGenerations works out before them.
+    const QVector<qreal> lineAngles = EvaluateAngles(initData.id, initData.rotations, initData.data);
+    ResolveLineGenerations(initData,
+                           OSpreadRule::Compose(initData.source, initData.rotations, lineAngles, initData.data));
     CreateDestinationLines(initData, {});
 
     // The lines of the rotation display, whose ends are objects rather than source ids.
@@ -377,6 +461,91 @@ void OToolSpread::SetRotations(const QVector<OSpreadRotation> &rotations)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolSpread::SetSmooth(bool smooth)
+{
+    if (m_smooth == smooth)
+    {
+        return;
+    }
+
+    m_smooth = smooth;
+
+    // The geometry of the copies changes, not the set of objects, but a full parse is what rebuilds them: the
+    // same call the display uses when it switches on, which is the one path that replays the operation.
+    SaveOptionsAndReparse();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolSpread::SetCopySuffixName(const QString &suffix)
+{
+    if (m_copySuffix == suffix)
+    {
+        return;
+    }
+
+    m_copySuffix = suffix;
+
+    // The names are written in the file, and the copies are rebuilt from them: a full parse is what renames them.
+    SaveOptionsAndReparse();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolSpread::SmoothingText(const VContainer *data, const QVector<SourceItem> &source,
+                                const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles) -> QString
+{
+    const OSpreadTransform plain(source, rotations, angles, data, false);
+    const OSpreadTransform smoothed(source, rotations, angles, data, true);
+
+    const auto unit = VAbstractValApplication::VApp()->fromPixel(1.);
+
+    QStringList lines;
+    int rank = 0;
+    for (const auto &item : std::as_const(source))
+    {
+        if (item.id == NULL_ID)
+        {
+            continue;
+        }
+
+        const QSharedPointer<VGObject> object = data->GetGObject(item.id);
+        if (object.isNull() || object->getType() != GOType::Spline)
+        {
+            continue;
+        }
+
+        ++rank;
+
+        const QSharedPointer<VSpline> curve = data->GeometricObject<VSpline>(item.id);
+        const qreal before = plain.Image(*curve, QString()).GetLength();
+        const qreal after = smoothed.Image(*curve, QString()).GetLength();
+
+        // The lengths come in pixels; what the user reads is in the unit of the pattern, and the delta is what the
+        // chain cost to that very curve — a few tenths of a millimetre, sometimes a millimetre.
+        const qreal delta = (after - before) * unit;
+
+        const QString alias = object->GetAlias();
+        const QString name = alias.isEmpty() ? tr("Courbe %1").arg(rank) : alias;
+
+        lines.append(tr("%1 : %2%3").arg(name, delta < 0 ? QString() : QStringLiteral("+"),
+                                         QLocale().toString(delta, 'f', 3) + QStringLiteral(" cm")));
+    }
+
+    return lines.join('\n');
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolSpread::SmoothingText() -> QString
+{
+    if (not m_smooth)
+    {
+        return {};
+    }
+
+    const QVector<qreal> angles = EvaluateAngles(m_id, m_rotations, getData());
+    return SmoothingText(getData(), m_source, m_rotations, angles);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OToolSpread::Display() const -> const OSpreadDisplay &
 {
     return m_display;
@@ -401,7 +570,13 @@ void OToolSpread::SetDisplayShown(bool show)
     }
     else
     {
-        m_display.marks.clear();
+        // Only the arms go: the points of the marks stay where they are, the lines of the operation are drawn on
+        // them, and turning the display back on has nothing to create again but the arms.
+        for (OSpreadMark &mark : m_display.marks)
+        {
+            mark.line1 = NULL_ID;
+            mark.line2 = NULL_ID;
+        }
     }
 
     SaveOptionsAndReparse();
@@ -409,8 +584,9 @@ void OToolSpread::SetDisplayShown(bool show)
     // The objects the display creates join the layer the copies go to, the active one, and nothing else gives them
     // one: a layer names its objects by id, and only the creation of a tool attaches what it produces. This is the
     // call that creation makes, and it skips what the layer already holds, so a display turned on twice, or one
-    // whose ids did not change, writes nothing.
-    if (m_display.show && doc->GetActiveGroup() != NULL_ID)
+    // whose ids did not change, writes nothing. The points exist whatever the switch says, so they are attached
+    // whatever it says too.
+    if (doc->GetActiveGroup() != NULL_ID)
     {
         QDomElement const element = doc->FindElementById(m_id, getTagName());
         if (element.isElement())
@@ -459,7 +635,7 @@ void OToolSpread::SyncDisplay(const QVector<SourceItem> &source)
 
     const QVector<qreal> angles = EvaluateAngles(m_id, m_rotations, getData());
     OSpreadDisplay::EnsureIds(m_display, m_rotations,
-                              OSpreadRule::Compose(source, m_rotations, angles, getData()), getData());
+                              OSpreadRule::Compose(source, m_rotations, angles, getData()), getData(), m_display.show);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -586,7 +762,7 @@ void OToolSpread::SaveDialog(QDomElement &domElement)
 
     SaveCommonDialogData(domElement, dialogTool->GetNotes());
 
-    const QVector<SourceItem> source = dialogTool->GetSourceObjects();
+    QVector<SourceItem> source = dialogTool->GetSourceObjects();
 
     m_rotations = dialogTool->GetRotations();
 
@@ -594,6 +770,8 @@ void OToolSpread::SaveDialog(QDomElement &domElement)
     m_display.show = dialogDisplay.show;
     m_display.typeLine = dialogDisplay.typeLine;
     m_display.lineColor = dialogDisplay.lineColor;
+
+    ApplyCopyNames(source, m_copySuffix, getData());
 
     const QVector<DestinationItem> destination = SyncDestination(source);
 
@@ -604,6 +782,9 @@ void OToolSpread::SaveDialog(QDomElement &domElement)
     SaveSourceDestination(domElement, source, destination);
 
     SaveRotations(doc, domElement, m_rotations);
+
+    SaveSmooth(domElement);
+    SaveCopySuffix(domElement);
 
     OSpreadDisplay::Save(doc, domElement, m_display);
 
@@ -617,6 +798,8 @@ void OToolSpread::ReadToolAttributes(const QDomElement &domElement)
 
     m_rotations = ExtractRotations(domElement);
     m_display = OSpreadDisplay::Extract(domElement);
+    m_smooth = VAbstractPattern::GetParametrBool(domElement, AttrSmooth, QStringLiteral("false"));
+    m_copySuffix = VDomDocument::GetParametrString(domElement, AttrCopySuffix, DefaultCopySuffix);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -626,7 +809,39 @@ void OToolSpread::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj)
 
     doc->SetAttribute(tag, AttrType, ToolType);
     SaveRotations(doc, tag, m_rotations);
+    SaveSmooth(tag);
+    SaveCopySuffix(tag);
     OSpreadDisplay::Save(doc, tag, m_display);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolSpread::SaveSmooth(QDomElement &tag)
+{
+    // Absent means off: a pattern written before the smoothing existed keeps exactly the behavior it had, and
+    // turning the option back off takes the attribute away instead of writing "false" into every file.
+    if (m_smooth)
+    {
+        doc->SetAttribute(tag, AttrSmooth, true);
+    }
+    else
+    {
+        tag.removeAttribute(AttrSmooth);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolSpread::SaveCopySuffix(QDomElement &tag)
+{
+    // Absent means the default: a pattern written before the suffix existed keeps the names it already carries,
+    // and the next copy it makes is called "_Rotation" like every other.
+    if (m_copySuffix == DefaultCopySuffix)
+    {
+        tag.removeAttribute(AttrCopySuffix);
+    }
+    else
+    {
+        doc->SetAttribute(tag, AttrCopySuffix, m_copySuffix);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

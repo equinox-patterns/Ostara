@@ -99,7 +99,7 @@ auto ThirdVertexName(const OSpreadCut &cut, const VContainer *data) -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 void OSpreadDisplay::EnsureIds(OSpreadDisplay &display, const QVector<OSpreadRotation> &rotations,
-                               const OSpreadPlan &plan, VContainer *data)
+                               const OSpreadPlan &plan, VContainer *data, bool withLines)
 {
     // One mark per rotation, at the rotation's own place: the two lists are read together, so a rotation that
     // draws nothing still holds its rank.
@@ -126,6 +126,14 @@ void OSpreadDisplay::EnsureIds(OSpreadDisplay &display, const QVector<OSpreadRot
         if (mark.point != NULL_ID && mark.name.isEmpty())
         {
             mark.name = ThirdVertexName(cut, data);
+        }
+
+        if (not withLines)
+        {
+            // The arms are off: their ids go, or the file would keep declaring lines nobody builds.
+            mark.line1 = NULL_ID;
+            mark.line2 = NULL_ID;
+            continue;
         }
 
         if (mark.line1 == NULL_ID)
