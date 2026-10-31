@@ -12,7 +12,7 @@ Unicode true
 !endif
 
 Name "Ostara"
-OutFile "${OUTDIR}\Ostara-${VERSION}-windows-x64.exe"
+OutFile "${OUTDIR}\Ostara.exe"
 InstallDir "$LOCALAPPDATA\Programs\Ostara"
 RequestExecutionLevel user
 SetCompressor /SOLID lzma
