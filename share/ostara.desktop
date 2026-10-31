@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Ostara
+GenericName=Pattern making
+Comment=Draw and model patterns of clothing
+Exec=Ostara
+Icon=Ostara
+Terminal=false
+Categories=Graphics;2DGraphics;Education;
+StartupWMClass=Ostara

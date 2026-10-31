@@ -66,3 +66,95 @@ jobs:
         with:
           name: macos-${{ matrix.arch }}
           path: '*.dmg'
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Qt 6.10.3
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.3'
+          arch: win64_msvc2022_64
+          cache: true
+
+      - name: Trame
+        run: git clone --depth 1 --branch v0.1.0 https://github.com/equinox-patterns/Trame.git ..\Trame
+
+      - name: zlib et xerces
+        run: vcpkg install zlib:x64-windows xerces-c:x64-windows
+
+      - name: Configurer
+        run: >-
+          cmake -B build -A x64 -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake"
+          -DVCPKG_TARGET_TRIPLET=x64-windows
+
+      - name: Compiler
+        run: cmake --build build --config Release --parallel
+
+      - name: Empaqueter
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item build\Release\Ostara.exe dist\
+          windeployqt --release --no-translations dist\Ostara.exe
+          choco install nsis -y --no-progress
+          $version = "$env:GITHUB_REF_NAME" -replace '^v',''
+          & "C:\Program Files (x86)\NSIS\makensis.exe" "-DVERSION=$version" "-DDIST=$PWD\dist" "-DOUTDIR=$PWD" packaging\windows\installer.nsi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: '*.exe'
+
+  linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Qt 6.11.1
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.11.1'
+          arch: linux_gcc_64
+          cache: true
+
+      - name: Dépendances
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libxerces-c-dev librsvg2-bin
+
+      - name: Trame
+        run: git clone --depth 1 --branch v0.1.0 https://github.com/equinox-patterns/Trame.git ../Trame
+
+      - name: Configurer
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compiler
+        run: cmake --build build --parallel "$(nproc)"
+
+      - name: AppImage
+        run: |
+          mkdir -p AppDir
+          DESTDIR="$PWD/AppDir" cmake --install build --prefix /usr
+          rsvg-convert -w 512 -h 512 share/icons/app/Ostara.svg -o Ostara.png
+          curl -fsSL -o linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          curl -fsSL -o linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy linuxdeploy-plugin-qt
+          export APPIMAGE_EXTRACT_AND_RUN=1
+          export PATH="$PWD:$PATH"
+          ./linuxdeploy --appdir AppDir -e AppDir/usr/bin/Ostara \
+            -d share/ostara.desktop -i Ostara.png --plugin qt --output appimage
+          VERSION="${GITHUB_REF_NAME#v}"
+          mv Ostara*.AppImage "Ostara-${VERSION}-linux-x86_64.AppImage"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-x86_64
+          path: '*.AppImage'
