@@ -242,7 +242,11 @@ if(APPLE)
     )
     install(SCRIPT ${deploy_script})
 else()
+    # Les bibliothèques internes sont des .so séparés : sans elles dans le paquet, le binaire
+    # ne démarre pas et linuxdeploy refuse de construire l'AppImage.
+    set_target_properties(Ostara PROPERTIES INSTALL_RPATH "$ORIGIN/../lib")
     install(TARGETS Ostara DESTINATION bin)
+    install(TARGETS VPropertyExplorerLib QMUParserLib LIBRARY DESTINATION lib)
     install(FILES "${CMAKE_SOURCE_DIR}/NOTICE"
                   "${CMAKE_SOURCE_DIR}/COPYRIGHT.md"
                   "${CMAKE_SOURCE_DIR}/AUTHORS.txt"
