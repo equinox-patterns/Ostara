@@ -250,6 +250,11 @@ else()
     install(FILES "${CMAKE_SOURCE_DIR}/NOTICE"
                   "${CMAKE_SOURCE_DIR}/COPYRIGHT.md"
                   "${CMAKE_SOURCE_DIR}/AUTHORS.txt"
+                  "${CMAKE_SOURCE_DIR}/LICENSE"
         DESTINATION "share/doc/ostara"
+    )
+    install(DIRECTORY "${CMAKE_SOURCE_DIR}/share/licenses/"
+        DESTINATION "share/doc/ostara/licenses"
+        FILES_MATCHING PATTERN "*.txt"
     )
 endif()

@@ -108,7 +108,16 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
-          Copy-Item build\Release\Ostara.exe dist\
+          $exe = "build\src\app\ostara\Release\Ostara.exe"
+          if (-not (Test-Path $exe)) {
+            $found = Get-ChildItem -Recurse -Filter Ostara.exe build | Select-Object -First 1
+            if (-not $found) { throw "Ostara.exe introuvable dans build" }
+            $exe = $found.FullName
+          }
+          Copy-Item $exe dist\Ostara.exe
+          Copy-Item NOTICE, COPYRIGHT.md, AUTHORS.txt, LICENSE dist\
+          New-Item -ItemType Directory -Force dist\licenses | Out-Null
+          Copy-Item share\licenses\*.txt dist\licenses\
           windeployqt --release --no-translations --compiler-runtime dist\Ostara.exe
           choco install nsis -y --no-progress
           $version = "$env:GITHUB_REF_NAME" -replace '^v',''
