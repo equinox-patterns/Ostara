@@ -12,7 +12,7 @@
 <context>
     <name>AddGroup</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="48"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="50"/>
         <source>add group</source>
         <translation>csoport hozzáadása</translation>
     </message>
@@ -20,7 +20,7 @@
 <context>
     <name>AddItemToGroup</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="253"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="255"/>
         <source>Add item to group</source>
         <translation>Elem hozzáadása a csoporthoz</translation>
     </message>
@@ -36,7 +36,7 @@
 <context>
     <name>AddPatternPiece</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/addpatternpiece.cpp" line="46"/>
+        <location filename="../../src/libs/vtools/undocommands/addpatternpiece.cpp" line="48"/>
         <source>add pattern piece %1</source>
         <translation>szabásmintadarab %1 hozzáadása</translation>
     </message>
@@ -44,7 +44,7 @@
 <context>
     <name>AddPiece</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/addpiece.cpp" line="49"/>
+        <location filename="../../src/libs/vtools/undocommands/addpiece.cpp" line="51"/>
         <source>add detail</source>
         <translation>alkatrész hozzáadása</translation>
     </message>
@@ -84,7 +84,7 @@
 <context>
     <name>ChangeActiveGroup</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="750"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="752"/>
         <source>change active layer</source>
         <translation>Aktív réteg váltása</translation>
     </message>
@@ -92,7 +92,7 @@
 <context>
     <name>ChangeGroupOptions</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="162"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="164"/>
         <source>edit layer</source>
         <translation>Réteg szerkesztése</translation>
     </message>
@@ -100,7 +100,7 @@
 <context>
     <name>ChangeGroupTool</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="198"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="200"/>
         <source>change the layer of the tool</source>
         <translation>Az eszköz rétegének váltása</translation>
     </message>
@@ -108,7 +108,7 @@
 <context>
     <name>ChangeGroupVisibility</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="444"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="446"/>
         <source>change group visibility</source>
         <translation>csoport láthatóságának módosítása</translation>
     </message>
@@ -140,7 +140,7 @@
 <context>
     <name>ChangeMultipleGroupsVisibility</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="507"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="509"/>
         <source>change multiple groups visibility</source>
         <translation>több csoport láthatóságának módosítása</translation>
     </message>
@@ -148,7 +148,7 @@
 <context>
     <name>DRW_TextCodec</name>
     <message>
-        <location filename="../../src/libs/vdxf/libdxfrw/intern/drw_textcodec.cpp" line="117"/>
+        <location filename="../../src/libs/vdxf/libdxfrw/intern/drw_textcodec.cpp" line="130"/>
         <source>No available codec for code page &apos;%1&apos;.</source>
         <translation>Nincs elérhető kodek a ‘%1’ kódlaphoz.</translation>
     </message>
@@ -156,7 +156,7 @@
 <context>
     <name>DelGroup</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="605"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="607"/>
         <source>delete group</source>
         <translation>csoport törlése</translation>
     </message>
@@ -172,7 +172,7 @@
 <context>
     <name>DelTool</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/deltool.cpp" line="46"/>
+        <location filename="../../src/libs/vtools/undocommands/deltool.cpp" line="48"/>
         <source>delete tool</source>
         <translation>eszköz törlése</translation>
     </message>
@@ -196,7 +196,7 @@
 <context>
     <name>DeletePiece</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/deletepiece.cpp" line="71"/>
+        <location filename="../../src/libs/vtools/undocommands/deletepiece.cpp" line="73"/>
         <source>delete tool</source>
         <translation>eszköz törlése</translation>
     </message>
@@ -227,13 +227,13 @@
 <context>
     <name>DialogAlongLine</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="128"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="155"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="130"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="157"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="228"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="230"/>
         <source>Select second point of line</source>
         <translation>Válassza ki a vonal második pontját</translation>
     </message>
@@ -243,12 +243,12 @@
         <translation>Pont adott távolságra a vonalon</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="87"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="89"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogalongline.cpp" line="87"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -301,32 +301,32 @@
         <translation>Ív</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="73"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="75"/>
         <source>Edit radius</source>
         <translation>Sugár szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="83"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="85"/>
         <source>Edit first angle</source>
         <translation>Első szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="91"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="93"/>
         <source>Edit second angle</source>
         <translation>Második szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="71"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="73"/>
         <source>Radius:</source>
         <translation>Sugár:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="81"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="83"/>
         <source>First angle:</source>
         <translation>Első szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="89"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarc.cpp" line="91"/>
         <source>Second angle:</source>
         <translation>Második szög:</translation>
     </message>
@@ -399,32 +399,32 @@
 <context>
     <name>DialogArcWithLength</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="77"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="79"/>
         <source>Edit radius</source>
         <translation>Sugár szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="86"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="88"/>
         <source>Edit the first angle</source>
         <translation>Az első szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="95"/>
         <source>Edit the arc length</source>
         <translation>Az ív hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="75"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="77"/>
         <source>Radius:</source>
         <translation>Sugár:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="84"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="86"/>
         <source>First angle:</source>
         <translation>Első szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="91"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogarcwithlength.cpp" line="93"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -497,17 +497,17 @@
 <context>
     <name>DialogBisector</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="118"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="120"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="187"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="189"/>
         <source>Select second point of angle</source>
         <translation>Válassza ki a szög második pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="195"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="197"/>
         <source>Select third point of angle</source>
         <translation>Válassza ki a szög harmadik pontját</translation>
     </message>
@@ -517,12 +517,12 @@
         <translation>Pont a szögfelező mentén</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="87"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="89"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogbisector.cpp" line="87"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -659,17 +659,17 @@
         <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="136"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="138"/>
         <source>Select the second point of curve</source>
         <translation>Válassza ki a görbe második pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="143"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="145"/>
         <source>Select the third point of curve</source>
         <translation>Válassza ki a görbe harmadik pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="152"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcubicbezier.cpp" line="154"/>
         <source>Select the fourth point of curve</source>
         <translation>Válassza ki a görbe negyedik pontját</translation>
     </message>
@@ -760,12 +760,12 @@
 <context>
     <name>DialogCurveIntersectAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="136"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="138"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="332"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="334"/>
         <source>Select axis point</source>
         <translation>Válassza ki a tengelypontot</translation>
     </message>
@@ -775,12 +775,12 @@
         <translation>Görbe és tengely metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="100"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="102"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="98"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcurveintersectaxis.cpp" line="100"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
@@ -873,12 +873,12 @@
         <translation>Ív felosztása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.cpp" line="87"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.cpp" line="89"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutarc.cpp" line="87"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -948,12 +948,12 @@
         <translation>Egyszerű görbe felosztása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.cpp" line="90"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.cpp" line="92"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.cpp" line="88"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutspline.cpp" line="90"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -1023,12 +1023,12 @@
         <translation>Görbeútvonal felosztása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.cpp" line="95"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.cpp" line="97"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogcutsplinepath.cpp" line="95"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -1108,7 +1108,7 @@
         <translation>Formátum beszúrása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogdatetimeformats.cpp" line="91"/>
+        <location filename="../../src/app/ostara/dialogs/dialogdatetimeformats.cpp" line="93"/>
         <source>&lt;empty&gt;</source>
         <translation>&lt;üres&gt;</translation>
     </message>
@@ -1179,17 +1179,17 @@
         <translation>Üres mérések elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="341"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="343"/>
         <source>Line length</source>
         <translation>Vonal hossza</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="347"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="349"/>
         <source>Curve length</source>
         <translation>Görbe hossza</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="353"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="355"/>
         <source>Line Angle</source>
         <translation>Vonal szöge</translation>
     </message>
@@ -1199,12 +1199,12 @@
         <translation>Görbék szögei</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="359"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="361"/>
         <source>Arc radius</source>
         <translation>Ív sugara</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="365"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="367"/>
         <source>Curve angle</source>
         <translation>Görbe szöge</translation>
     </message>
@@ -1264,47 +1264,47 @@
         <translation>Darabok területei</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="371"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="373"/>
         <source>Length to control point</source>
         <translation>A kontrollponthoz tartozó hosszértékek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1071"/>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1084"/>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1104"/>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1126"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1073"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1086"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1106"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1128"/>
         <source>Name it</source>
         <translation>Elnevezés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1168"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1170"/>
         <source>Name the curve</source>
         <translation>Görbe elnevezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1168"/>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="322"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1170"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="324"/>
         <source>Name the line</source>
         <translation>Vonal elnevezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1171"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1173"/>
         <source>Name:</source>
         <translation>Név:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1189"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1191"/>
         <source>The name %1 cannot be used in a formula.</source>
         <translation>A %1 név nem használható képletben.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1221"/>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="319"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1223"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="321"/>
         <source>The name %1 is already used by another line.</source>
         <translation>A %1 nevet már használja egy másik vonal.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1532"/>
+        <location filename="../../src/libs/vtools/dialogs/support/dialogeditwrongformula.cpp" line="1534"/>
         <source>Area of piece</source>
         <translation>Darab területe</translation>
     </message>
@@ -1312,27 +1312,27 @@
 <context>
     <name>DialogEllipticalArc</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="77"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="79"/>
         <source>Radius1:</source>
         <translation>Sugár1:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="87"/>
         <source>Radius2:</source>
         <translation>Sugár2:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="95"/>
         <source>First angle:</source>
         <translation>Első szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="103"/>
         <source>Second angle:</source>
         <translation>Második szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="109"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="111"/>
         <source>Rotation angle:</source>
         <translation>Forgatási szög:</translation>
     </message>
@@ -1352,27 +1352,27 @@
         <translation>Szín:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="79"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="81"/>
         <source>Edit radius1</source>
         <translation>Sugár1 szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="87"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="89"/>
         <source>Edit radius2</source>
         <translation>Sugár2 szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="95"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="97"/>
         <source>Edit first angle</source>
         <translation>Első szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="103"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="105"/>
         <source>Edit second angle</source>
         <translation>Második szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="111"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarc.cpp" line="113"/>
         <source>Edit rotation angle</source>
         <translation>Forgatási szög szerkesztése</translation>
     </message>
@@ -1440,27 +1440,27 @@
         <translation>Eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="75"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="77"/>
         <source>Radius1:</source>
         <translation>Sugár1:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="84"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="86"/>
         <source>Radius2:</source>
         <translation>Sugár2:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="95"/>
         <source>First angle:</source>
         <translation>Első szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="103"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="109"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="111"/>
         <source>Rotation angle:</source>
         <translation>Forgatási szög:</translation>
     </message>
@@ -1515,27 +1515,27 @@
         <translation>Végpont neve:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="77"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="79"/>
         <source>Edit radius1</source>
         <translation>Sugár1 szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="86"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="88"/>
         <source>Edit radius2</source>
         <translation>Sugár2 szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="95"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="97"/>
         <source>Edit the first angle</source>
         <translation>Az első szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="103"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="105"/>
         <source>Edit the elliptical arc length</source>
         <translation>Az elliptikus ív hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="111"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogellipticalarcwithlength.cpp" line="113"/>
         <source>Edit rotation angle</source>
         <translation>Forgatási szög szerkesztése</translation>
     </message>
@@ -1548,27 +1548,27 @@
         <translation>Pont adott távolsággal és szöggel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="99"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="101"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="91"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="93"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="89"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="91"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="139"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="141"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="97"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogendline.cpp" line="99"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
@@ -1746,54 +1746,54 @@
         <translation>Méretet lejebb</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="254"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="330"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="256"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="332"/>
         <source>measurement</source>
         <translation>mérés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="387"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="568"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="591"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="604"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="389"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="570"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="593"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="606"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="387"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="568"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="389"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="570"/>
         <source>Empty field.</source>
         <translation>Üres mező.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="457"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="459"/>
         <source>Edit measurement</source>
         <translation>Mérés szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="569"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="571"/>
         <source>Empty field</source>
         <translation>Üres mező</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="592"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="594"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
         <translation>Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="599"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="601"/>
         <source>Value</source>
         <translation>Érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="605"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="606"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="607"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="608"/>
         <source>Parser error: %1</source>
         <translation>Elemzési hiba: %1</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.ui" line="43"/>
-        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="750"/>
+        <location filename="../../src/app/ostara/dialogs/dialogfinalmeasurements.cpp" line="752"/>
         <source>0 results</source>
         <translation>0 találat</translation>
     </message>
@@ -1811,22 +1811,22 @@
         <translation>Tengely típusa:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="195"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="197"/>
         <source>Select origin point</source>
         <translation>Válassza ki a kiindulópontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="244"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="246"/>
         <source>Select origin point that is not part of the list of objects</source>
         <translation>Válasszon ki olyan kiindulópontot, amely nem része az objektumok listájának</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="335"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="337"/>
         <source>Vertical axis</source>
         <translation>Függőleges tengely</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="336"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="338"/>
         <source>Horizontal axis</source>
         <translation>Vízszintes tengely</translation>
     </message>
@@ -1868,7 +1868,7 @@
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.ui" line="117"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="346"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="348"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
@@ -1878,7 +1878,7 @@
         <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="318"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyaxis.cpp" line="320"/>
         <source>Invalid point</source>
         <translation>Érvénytelen pont</translation>
     </message>
@@ -1896,22 +1896,22 @@
         <translation>Második vonalpont:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="189"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="191"/>
         <source>Select first line point</source>
         <translation>Válassza ki az első vonalpontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="247"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="249"/>
         <source>Select first line point that is not part of the list of objects</source>
         <translation>Válasszon ki olyan első vonalpontot, amely nem része az objektumok listájának</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="251"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="253"/>
         <source>Select second line point</source>
         <translation>Válassza ki a második vonalpontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="264"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="266"/>
         <source>Select second line point that is not part of the list of objects</source>
         <translation>Válasszon ki olyan második vonalpontot, amely nem része az objektumok listájának</translation>
     </message>
@@ -1953,7 +1953,7 @@
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.ui" line="124"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="380"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="382"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
@@ -1963,17 +1963,17 @@
         <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="353"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="355"/>
         <source>Invalid line points</source>
         <translation>Érvénytelen vonalpontok</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="360"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="362"/>
         <source>Invalid first line point</source>
         <translation>Érvénytelen első vonalpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="367"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogflippingbyline.cpp" line="369"/>
         <source>Invalid second line point</source>
         <translation>Érvénytelen második vonalpont</translation>
     </message>
@@ -2114,50 +2114,50 @@
         <translation>Végpont neve:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="274"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="276"/>
         <source>Offset %1</source>
         <translation>Eltolás %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="462"/>
         <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="464"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="466"/>
         <source>The point exists already: rename it on the point itself.</source>
         <translation>A pont már létezik: nevezze át magán a ponton.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="711"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1086"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="713"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1088"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="717"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1092"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="719"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1094"/>
         <source>Value</source>
         <translation>Érték</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="899"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="901"/>
         <source>Edit offset</source>
         <translation>Eltolás szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="921"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="923"/>
         <source>An offset must carry a name.</source>
         <translation>A távolságnak nevet kell kapnia.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="926"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="928"/>
         <source>This name cannot be used as the name of a variable.</source>
         <translation>Ez a név nem használható változónévként.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="937"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="939"/>
         <source>Another variable of the pattern already carries this name.</source>
         <translation>A szabásminta egy másik változója már ezt a nevet viseli.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1087"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggraduatedcurve.cpp" line="1089"/>
         <source>Parser error: %1</source>
         <translation>Elemzési hiba: %1</translation>
     </message>
@@ -2195,7 +2195,7 @@
         <translation>Szín:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.cpp" line="172"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoggroup.cpp" line="174"/>
         <source>New layer</source>
         <translation>Új réteg</translation>
     </message>
@@ -2203,12 +2203,12 @@
 <context>
     <name>DialogHeight</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="97"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="99"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="234"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogheight.cpp" line="236"/>
         <source>Select second point of line</source>
         <translation>Válassza ki a vonal második pontját</translation>
     </message>
@@ -2435,119 +2435,119 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>Leírás:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="497"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="499"/>
         <source>Group: %1</source>
         <translation>Csoport: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="634"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="657"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="668"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2233"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2239"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="659"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="670"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="634"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2233"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2239"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
         <source>Empty field.</source>
         <translation>Üres mező.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="635"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="637"/>
         <source>Empty field</source>
         <translation>Üres mező</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="663"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="665"/>
         <source>Value</source>
         <translation>Érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="668"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="669"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="670"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="671"/>
         <source>Parser error: %1</source>
         <translation>Elemzési hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1297"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1299"/>
         <source>Increment name is empty.</source>
         <translation>A növekmény neve üres.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1302"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1304"/>
         <source>Imported file must not contain the same name twice.</source>
         <translation>Az importált fájl nem tartalmazhatja ugyanazt a nevet kétszer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1307"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1309"/>
         <source>Increment &apos;%1&apos; doesn&apos;t match regex pattern.</source>
         <translation>A(z) &apos;%1&apos; növekmény nem felel meg a regex mintának.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1312"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1314"/>
         <source>Increment &apos;%1&apos; already present in the file.</source>
         <translation>A(z) &apos;%1&apos; növekmény már szerepel a fájlban.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1335"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1337"/>
         <source>Name</source>
         <comment>increment column</comment>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1337"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1339"/>
         <source>Calculated value</source>
         <comment>increment column</comment>
         <translation>Számított érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1339"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1341"/>
         <source>Formula</source>
         <comment>increment column</comment>
         <translation>Képlet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1341"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1343"/>
         <source>Description</source>
         <comment>increment column</comment>
         <translation>Leírás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1358"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
         <source>Increments require at least 2 columns.</source>
         <translation>A növekményekhez legalább 2 oszlop szükséges.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1375"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
         <source>Error in row %1. The increment name is empty.</source>
         <translation>Hiba a(z) %1. sorban. A növekmény neve üres.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1395"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1397"/>
         <source>Increment &apos;%1&apos; already exists in the other table.</source>
         <translation>A „%1” növekmény már létezik a másik táblázatban.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1423"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1425"/>
         <source>Error in row %1. %2</source>
         <translation>Hiba a(z) %1. sorban. %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1589"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1655"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1591"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1657"/>
         <source>Comma-Separated Values</source>
         <translation>Vesszővel elválasztott értékek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1657"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1659"/>
         <source>values</source>
         <translation>értékek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2322"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2324"/>
         <source>Edit increment</source>
         <translation>Növekmény szerkesztése</translation>
     </message>
@@ -2581,7 +2581,7 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>A görbék kontrollpontjainak hosszértékei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="658"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="660"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
         <translation>Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
@@ -2611,22 +2611,22 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="74"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="521"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1150"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1181"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1152"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1183"/>
         <source>0 results</source>
         <translation>0 találat</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="255"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="702"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1660"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1662"/>
         <source>Export to CSV</source>
         <translation>Exportálás CSV-be</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="271"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="712"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1593"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1595"/>
         <source>Import from CSV</source>
         <translation>Importálás CSV-ből</translation>
     </message>
@@ -2637,22 +2637,22 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>Egységek:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1219"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1221"/>
         <source>Millimeters</source>
         <translation>Milliméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1222"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1224"/>
         <source>Inches</source>
         <translation>Hüvelyk</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1225"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1227"/>
         <source>Centimeters</source>
         <translation>Centiméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1234"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1236"/>
         <source>Degrees</source>
         <translation>Fok</translation>
     </message>
@@ -2701,52 +2701,52 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.ui" line="111"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="506"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="508"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="163"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="438"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="165"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="440"/>
         <source>Name</source>
         <comment>measurement column</comment>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="165"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="440"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="167"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="442"/>
         <source>Value</source>
         <comment>measurement column</comment>
         <translation>Érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="167"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="169"/>
         <source>Description</source>
         <comment>measurement column</comment>
         <translation>Leírás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="282"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="284"/>
         <source>Skip</source>
         <translation>Kihagyás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="477"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="479"/>
         <source>File path is empty</source>
         <translation>A fájlútvonal üres</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="486"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="488"/>
         <source>Not enough columns</source>
         <translation>Nincs elég oszlop</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="493"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="495"/>
         <source>Not enough data to import</source>
         <translation>Nincs elég adat az importáláshoz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="501"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrementscsvcolumns.cpp" line="503"/>
         <source>Please, select unique number for each column</source>
         <translation>Kérem, adjon meg egyedi számot minden oszlophoz</translation>
     </message>
@@ -2759,7 +2759,7 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>Darab:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialoginsertnode.cpp" line="71"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialoginsertnode.cpp" line="73"/>
         <source>The list of pieces is empty. Please, first create at least one piece for current pattern piece.</source>
         <translation>A darabok listája üres. Kérjük, először hozzon létre legalább egy darabot a jelenlegi mintához.</translation>
     </message>
@@ -2772,12 +2772,12 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
 <context>
     <name>DialogLine</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="72"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="74"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="184"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogline.cpp" line="186"/>
         <source>Select second point</source>
         <translation>Válassza ki a második pontot</translation>
     </message>
@@ -2820,37 +2820,37 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>Második vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="104"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="106"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="151"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="153"/>
         <source>Select second point of first line</source>
         <translation>Válassza ki az első vonal második pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="159"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="161"/>
         <source>Select first point of second line</source>
         <translation>Válassza ki a második vonal első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="167"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="169"/>
         <source>Select second point of second line</source>
         <translation>Válassza ki a második vonal második pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="196"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="198"/>
         <source>Line intersect</source>
         <translation>Vonalak metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="197"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="199"/>
         <source>These two lines are parallel, no intersection possible. Please choose 2 non-parallel lines.</source>
         <translation>Ez a két vonal párhuzamos, metszéspont nem hozható létre. Kérjük, válasszon 2 nem párhuzamos vonalat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="218"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersect.cpp" line="220"/>
         <source>Select first point of first line</source>
         <translation>Válassza ki az első vonal első pontját</translation>
     </message>
@@ -2920,17 +2920,17 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>Vonal megjelenítése az első ponttól eddig a pontig</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="126"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="128"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="345"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="347"/>
         <source>Select second point of line</source>
         <translation>Válassza ki a vonal második pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="357"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="359"/>
         <source>Select axis point</source>
         <translation>Válassza ki a tengelypontot</translation>
     </message>
@@ -2950,7 +2950,7 @@ Az értékek és az intervallumok nem kerülnek importálásra.</translation>
         <translation>A vonal második pontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="432"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialoglineintersectaxis.cpp" line="434"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
@@ -3428,12 +3428,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="434"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="436"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="462"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="464"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
@@ -3456,12 +3456,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Forgatási szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="448"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="450"/>
         <source>Edit rotation angle</source>
         <translation>Forgatási szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="116"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="118"/>
         <source>Center point</source>
         <translation>Középpont</translation>
     </message>
@@ -3502,7 +3502,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.ui" line="620"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="598"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="600"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
@@ -3512,17 +3512,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ide jegyzetet írhat…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="545"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="547"/>
         <source>Invalid angle formula</source>
         <translation>Érvénytelen szögképlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="561"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="563"/>
         <source>Invalid rotation angle formula</source>
         <translation>Érvénytelen forgatásiszög-képlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="577"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogmove.cpp" line="579"/>
         <source>Invalid length formula</source>
         <translation>Érvénytelen hosszképlet</translation>
     </message>
@@ -3736,22 +3736,22 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Kezdés egy meglévő táblázatból. Csak a mérések nevei lesznek átvéve, az értékek nem.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="125"/>
+        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="124"/>
         <source>No template</source>
         <translation>Nincs sablon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="142"/>
+        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="141"/>
         <source>Create</source>
         <translation>Létrehozás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="146"/>
+        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="145"/>
         <source>Name required</source>
         <translation>Név megadása kötelező</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="147"/>
+        <location filename="../../src/app/ostara/dialogs/DialogNewMeasurements.cpp" line="146"/>
         <source>Please name your table.</source>
         <translation>Adjon nevet a táblázatnak.</translation>
     </message>
@@ -3764,77 +3764,79 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Egységek:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="98"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="100"/>
         <source>New pattern piece</source>
         <translation>Új szabásminta rész</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="162"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="164"/>
         <source>Construction</source>
         <translation>Konstrukció</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="183"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="185"/>
         <source>First layer name:</source>
         <translation>Az első réteg neve:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="184"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="186"/>
         <source>Pen style:</source>
         <translation>Ceruza stílusa:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="185"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="187"/>
         <source>Color:</source>
         <translation>Szín:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="307"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="309"/>
         <source>%1 - needs %2</source>
         <translation>%1 - %2 szükséges</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="365"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="367"/>
         <source>No piece in the library is in %1.</source>
         <translation>A könyvtárban egyetlen darab sincs %1 mértékegységben.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="321"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="323"/>
         <source>%n piece(s) not shown: another unit, or unreadable.</source>
-        <translation><numerusform>%n darab nincs megjelenítve: más mértékegységben van, vagy olvashatatlan.</numerusform></translation>
+        <translation>
+            <numerusform>%n darab nincs megjelenítve: más mértékegységben van, vagy olvashatatlan.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="219"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="221"/>
         <source>The library&apos;s own folder</source>
         <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="364"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="366"/>
         <source>This folder holds no piece.</source>
         <translation>Ez a mappa nem tartalmaz darabot.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="380"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="382"/>
         <source>No piece matches the search.</source>
         <translation>Egyetlen darab sem felel meg a keresésnek.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="439"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="441"/>
         <source>Insert the piece</source>
         <translation>Darab beszúrása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="503"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="505"/>
         <source>Centimeters</source>
         <translation>Centiméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="504"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="506"/>
         <source>Millimiters</source>
         <translation>Milliméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="505"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="507"/>
         <source>Inches</source>
         <translation>Hüvelyk</translation>
     </message>
@@ -3880,7 +3882,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialognewpattern.ui" line="130"/>
-        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="381"/>
+        <location filename="../../src/app/ostara/dialogs/dialognewpattern.cpp" line="383"/>
         <source>Double-click a piece to insert it, or select one and accept.</source>
         <translation>Kattintson duplán egy darabra a beszúráshoz, vagy jelölje ki, és erősítse meg.</translation>
     </message>
@@ -3893,12 +3895,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogNormal</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="121"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="123"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="187"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="189"/>
         <source>Select second point of line</source>
         <translation>Válassza ki a vonal második pontját</translation>
     </message>
@@ -3908,12 +3910,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Pont a merőleges mentén</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="76"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="78"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="74"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialognormal.cpp" line="76"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -4015,17 +4017,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogOperationTool</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="242"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="244"/>
         <source>Take both points of this line first</source>
         <translation>Először jelölje ki ennek a vonalnak a két pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="364"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="366"/>
         <source>Invalid layer name</source>
         <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="516"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogoperationtool.cpp" line="518"/>
         <source>Adding or removing objects can&apos;t be applied while the dialog stays open. Use OK to confirm.</source>
         <translation>Objektumok hozzáadása vagy eltávolítása nem alkalmazható, amíg a párbeszédablak nyitva van. A megerősítéshez használja az OK gombot.</translation>
     </message>
@@ -4043,7 +4045,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.cpp" line="68"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.cpp" line="70"/>
         <source>Width:</source>
         <translation>Szélesség:</translation>
     </message>
@@ -4099,7 +4101,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Név:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.cpp" line="70"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogparallelcurve.cpp" line="72"/>
         <source>Edit width to parallel curve</source>
         <translation>Párhuzamos görbe szélességének szerkesztése</translation>
     </message>
@@ -4153,13 +4155,13 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="139"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2161"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2163"/>
         <source>Ready!</source>
         <translation>Kész!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="156"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2007"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2009"/>
         <source>Seam allowance</source>
         <translation>Varrásráhagyás</translation>
     </message>
@@ -4262,58 +4264,58 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Hozzon létre egy képletet, amely szabályozza a láthatóságot. A „0”-tól eltérő értékek láthatóvá teszik az útvonalat</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1160"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1162"/>
         <source>Edit seam allowance width</source>
         <translation>Varrásráhagyás szélességének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1174"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1176"/>
         <source>Edit seam allowance width before</source>
         <translation>Varrásráhagyás előtti szélességének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1188"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1190"/>
         <source>Edit seam allowance width after</source>
         <translation>Varrásráhagyás utáni szélességének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1229"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1231"/>
         <source>Edit passmark width</source>
         <translation>Bevágásjel szélességének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1243"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1245"/>
         <source>Edit passmark angle</source>
         <translation>Bevágásjel szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1256"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1258"/>
         <source>Edit notch visibility</source>
         <translation>Bevágás láthatóságának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1564"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1566"/>
         <source>Custom seam allowance</source>
         <translation>Egyéni varrásráhagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2112"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2114"/>
         <source>You need more points!</source>
         <translation>Több pontra van szükség!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2121"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2123"/>
         <source>First point of &lt;b&gt;custom seam allowance&lt;/b&gt; cannot be equal to the last point!</source>
         <translation>Az &lt;b&gt;egyéni varrásráhagyás&lt;/b&gt; első pontja nem lehet azonos az utolsó ponttal!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2129"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2131"/>
         <source>You have double points!</source>
         <translation>Ismétlődő pontok vannak!</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.ui" line="798"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2012"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2014"/>
         <source>Passmarks</source>
         <translation>Bevágásjelek</translation>
     </message>
@@ -4380,7 +4382,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Metszéspont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2144"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2146"/>
         <source>Each point in the &lt;b&gt;custom seam allowance&lt;/b&gt; path must be unique!</source>
         <translation>Az &lt;b&gt;egyéni varrásráhagyás&lt;/b&gt; útvonalának minden pontja egyedi kell legyen!</translation>
     </message>
@@ -4479,7 +4481,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1202"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1204"/>
         <source>Control visibility</source>
         <translation>Láthatóság vezérlése</translation>
     </message>
@@ -4514,7 +4516,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Az útvonal vágási kontúr. A DXF-AAMA exportálásának szabályozásához használható</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2062"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2064"/>
         <source>The list of pieces is empty. Please, first create at least one piece for current pattern piece.</source>
         <translation>A darabok listája üres. Kérjük, először hozzon létre legalább egy darabot a jelenlegi mintához.</translation>
     </message>
@@ -4529,22 +4531,22 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>A második bevágásjel megjelenítése a varrásvonalon</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2137"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2139"/>
         <source>The same curve repeats twice!</source>
         <translation>Ugyanaz a görbe kétszer ismétlődik!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1000"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1032"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1071"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1099"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1126"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1151"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1002"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1034"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1073"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1128"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1153"/>
         <source>&lt;Empty&gt;</source>
         <translation>&lt;Üres&gt;</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="964"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="966"/>
         <source>Current seam allowance</source>
         <translation>Jelenlegi varrásráhagyás</translation>
     </message>
@@ -4574,37 +4576,37 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Doboz jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1214"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1216"/>
         <source>Edit passmark length</source>
         <translation>Bevágásjel hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1548"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1550"/>
         <source>Visibility</source>
         <translation>Láthatóság</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1549"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1551"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
         <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1550"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1552"/>
         <source>Edit expression</source>
         <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1563"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="1565"/>
         <source>Internal outline</source>
         <translation>Belső körvonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2106"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2108"/>
         <source>Cannot calculate curve %1.</source>
         <translation>A %1 görbe nem számítható ki.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2157"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2159"/>
         <source>Invalid segment!</source>
         <translation>Érvénytelen szakasz!</translation>
     </message>
@@ -4690,143 +4692,143 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogPlaceLabel</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="421"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="435"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="423"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="437"/>
         <source>Edit rectangle width</source>
         <translation>Téglalap szélességének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="449"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="451"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="612"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="614"/>
         <source>Segment</source>
         <translation>Szakasz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="613"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="615"/>
         <source>Rectangle</source>
         <translation>Téglalap</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="611"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="613"/>
         <source>Cross</source>
         <translation>Kereszt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="367"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="369"/>
         <source>Empty formula</source>
         <translation>Üres képlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="381"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="383"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
         <translation>Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="385"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="387"/>
         <source>Value can&apos;t be less than 0</source>
         <translation>Az érték nem lehet kisebb 0-nál</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="394"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="396"/>
         <source>Parser error: %1</source>
         <translation>Elemzési hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="583"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="585"/>
         <source>Internal mark</source>
         <translation>Belső jelölés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="584"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="586"/>
         <source>Piece</source>
         <translation>Darab</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="585"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="587"/>
         <source>Width</source>
         <translation>Szélesség</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="586"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="588"/>
         <source>Height</source>
         <translation>Magasság</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="587"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="589"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="588"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="590"/>
         <source>Type</source>
         <translation>Típus</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="589"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="591"/>
         <source>Visibility</source>
         <translation>Láthatóság</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="590"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="592"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
         <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="592"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="594"/>
         <source>Edit expression</source>
         <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="614"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="616"/>
         <source>T-shaped</source>
         <translation>T alakú</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="615"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="617"/>
         <source>Doubletree</source>
         <translation>Kettős fa</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="616"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="618"/>
         <source>Corner</source>
         <translation>Sarok</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="617"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="619"/>
         <source>Triangle</source>
         <translation>Háromszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="618"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="620"/>
         <source>H-shaped</source>
         <translation>H alakú</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="619"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="621"/>
         <source>Button</source>
         <translation>Gomb</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="591"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="593"/>
         <source>Not mirrored</source>
         <translation>Nem tükrözött</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="241"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="243"/>
         <source>The list of pieces is empty. Please, first create at least one piece for current pattern piece.</source>
         <translation>A darabok listája üres. Kérjük, először hozzon létre legalább egy darabot a jelenlegi mintához.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="462"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="464"/>
         <source>Control visibility</source>
         <translation>Láthatóság vezérlése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="620"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogplacelabel.cpp" line="622"/>
         <source>Circle</source>
         <translation>Kör</translation>
     </message>
@@ -4943,7 +4945,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ív és érintő metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.cpp" line="161"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromarcandtangent.cpp" line="163"/>
         <source>Select an arc</source>
         <translation>Válasszon egy ívet</translation>
     </message>
@@ -5001,17 +5003,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Kör és érintő metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="258"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="260"/>
         <source>Select a circle center</source>
         <translation>Válassza ki a kör középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="67"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="69"/>
         <source>Edit radius</source>
         <translation>Szín</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="65"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointfromcircleandtangent.cpp" line="67"/>
         <source>Radius:</source>
         <translation>Sugár:</translation>
     </message>
@@ -5064,17 +5066,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogPointOfContact</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="122"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="124"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="270"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="272"/>
         <source>Select point of center of arc</source>
         <translation>Válassza ki az ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="262"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="264"/>
         <source>Select second point of line</source>
         <translation>Válassza ki a vonal második pontját</translation>
     </message>
@@ -5084,12 +5086,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ív és vonal metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="81"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="83"/>
         <source>Edit radius</source>
         <translation>Szín</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="79"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofcontact.cpp" line="81"/>
         <source>Radius:</source>
         <translation>Sugár:</translation>
     </message>
@@ -5147,7 +5149,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Pont két másik pont X és Y koordinátájából</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.cpp" line="121"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersection.cpp" line="123"/>
         <source>Select point for Y value (horizontal)</source>
         <translation>Válasszon pontot az Y értékhez (vízszintes)</translation>
     </message>
@@ -5185,7 +5187,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogPointOfIntersectionArcs</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.cpp" line="182"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectionarcs.cpp" line="184"/>
         <source>Select second an arc</source>
         <translation>Válassza ki a második ívet</translation>
     </message>
@@ -5289,27 +5291,27 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogPointOfIntersectionCircles</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="277"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="279"/>
         <source>Select second circle center</source>
         <translation>Válassza ki a második kör középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="76"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="78"/>
         <source>Edit first circle radius</source>
         <translation>Első kör sugarának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="84"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="86"/>
         <source>Edit second circle radius</source>
         <translation>Második kör sugarának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="74"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="76"/>
         <source>Radius of the first circle:</source>
         <translation>Az első kör sugara:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="82"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncircles.cpp" line="84"/>
         <source>Radius of the second circle:</source>
         <translation>A második kör sugara:</translation>
     </message>
@@ -5402,7 +5404,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Vízszintes korrekció:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.cpp" line="207"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogpointofintersectioncurves.cpp" line="209"/>
         <source>Select second curve</source>
         <translation>Válassza ki a második görbét</translation>
     </message>
@@ -5506,9 +5508,11 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Szabásminta</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="191"/>
+        <location filename="../../src/app/ostara/dialogs/dialogpreferences.cpp" line="193"/>
         <source>Followed %n option(s) require restart to take effect: %1.</source>
-        <translation><numerusform>%n követett beállítás érvénybe lépéséhez újraindítás szükséges: %1.</numerusform></translation>
+        <translation>
+            <numerusform>%n követett beállítás érvénybe lépéséhez újraindítás szükséges: %1.</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -5600,52 +5604,52 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>„%1” szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="283"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="281"/>
         <source>Confirm</source>
         <translation>Megerősítés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="284"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="282"/>
         <source>Delete group &quot;%1&quot;?</source>
         <translation>Törli a(z) „%1” csoportot?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="335"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="348"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="366"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="386"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="428"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="331"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="344"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="362"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="382"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="395"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="424"/>
         <source>Validation</source>
         <translation>Érvényesítés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="335"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="331"/>
         <source>Define at least one range.</source>
         <translation>Határozzon meg legalább egy tartományt.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="349"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="345"/>
         <source>Invalid range: %1 → %2.</source>
         <translation>Érvénytelen tartomány: %1 → %2.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="367"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="363"/>
         <source>All values must be covered. Missing values: %1</source>
         <translation>Minden értéket le kell fedni. Hiányzó értékek: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="387"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="383"/>
         <source>Ranges overlap. Each value must belong to a single range.</source>
         <translation>A tartományok átfedik egymást. Minden érték csak egyetlen tartományhoz tartozhat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="395"/>
         <source>Group name cannot be empty.</source>
         <translation>A csoport neve nem lehet üres.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="429"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="425"/>
         <source>A group named &quot;%1&quot; already exists.</source>
         <translation>Már létezik „%1” nevű csoport.</translation>
     </message>
@@ -5659,49 +5663,49 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Forgatás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="99"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="556"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="558"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="107"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="557"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="109"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="559"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="109"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="111"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="258"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="260"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
         <translation>A hossz nem haladhatja meg a kör átmérőjét (%1%2).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="329"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="331"/>
         <source>Invalid length formula</source>
         <translation>Érvénytelen hosszképlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="387"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="389"/>
         <source>Select the pivot point</source>
         <translation>Válassza ki a forgáspontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="479"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="481"/>
         <source>This point cannot be the pivot point. Please, select another point</source>
         <translation>Ez a pont nem lehet a forgáspont. Válasszon egy másik pontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="618"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="620"/>
         <source>Invalid layer name</source>
         <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="101"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="103"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
@@ -5742,7 +5746,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.ui" line="142"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="604"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="606"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
@@ -5752,13 +5756,13 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="577"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="614"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="579"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="616"/>
         <source>Invalid rotation point</source>
         <translation>Érvénytelen forgatáspont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="314"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogrotation.cpp" line="316"/>
         <source>Invalid angle formula</source>
         <translation>Érvénytelen szögképlet</translation>
     </message>
@@ -5876,54 +5880,54 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogSaveLayout</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="179"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="181"/>
         <source>Tried to use out of range file format type number.</source>
         <translation>Érvénytelen fájlformátumtípus.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="187"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="189"/>
         <source>Selected not present file format.</source>
         <translation>Nem létező fájlformátum.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="204"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="206"/>
         <source>Selected not present file format type.</source>
         <translation>Nem létező fájlformátumtípus.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="397"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="891"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="399"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="893"/>
         <source>By standard</source>
         <translation>Szabvány szerint</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="479"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="481"/>
         <source>Name conflict</source>
         <translation>Névütközés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="480"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="482"/>
         <source>Folder already contain file with name %1. Rewrite all conflict file names?</source>
         <translation>A mappában már van %1 nevű fájl. Felülírja a konfliktusos fájlokat?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="547"/>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="551"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="549"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="553"/>
         <source>Example:</source>
         <translation>Példa:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="146"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="148"/>
         <source>Select folder</source>
         <translation>Válasszon mappát</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="424"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="426"/>
         <source>The destination directory doesn&apos;t exists or is not readable.</source>
         <translation>A célkönyvtár nem létezik, vagy nem olvasható.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="99"/>
+        <location filename="../../src/app/ostara/dialogs/dialogsavelayout.cpp" line="101"/>
         <source>The base filename does not match a regular expression.</source>
         <translation>Az alapfájlnév nem felel meg a mintának.</translation>
     </message>
@@ -5964,82 +5968,82 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Szálirány</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2575"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2577"/>
         <source>Reverse</source>
         <translation>Megfordítás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2585"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2587"/>
         <source>Passmark</source>
         <translation>Bevágásjel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2605"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2607"/>
         <source>One line</source>
         <translation>Egy vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2608"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2610"/>
         <source>Two lines</source>
         <translation>Két vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2611"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2613"/>
         <source>Three lines</source>
         <translation>Három vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2614"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2616"/>
         <source>T mark</source>
         <translation>T jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2618"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2620"/>
         <source>External V mark</source>
         <translation>Külső V jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2622"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2624"/>
         <source>Internal V mark</source>
         <translation>Belső V jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2625"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2627"/>
         <source>U mark</source>
         <translation>U jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2628"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2630"/>
         <source>Box mark</source>
         <translation>Doboz jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2631"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2633"/>
         <source>Check mark</source>
         <translation>Pipa jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2635"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2637"/>
         <source>Check uniqueness</source>
         <translation>Egyediség ellenőrzése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2640"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2642"/>
         <source>Turn point</source>
         <translation>Fordulópont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2646"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2648"/>
         <source>Excluded</source>
         <translation>Kizárt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2652"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2654"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2588"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/piece/dialogpiecepath.cpp" line="2590"/>
         <source>None</source>
         <translation>Nincs</translation>
     </message>
@@ -6091,17 +6095,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogShoulderPoint</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="118"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="120"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="189"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="191"/>
         <source>Select first point of line</source>
         <translation>Válassza ki a vonal első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="197"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="199"/>
         <source>Select second point of line</source>
         <translation>Válassza ki a vonal második pontját</translation>
     </message>
@@ -6111,12 +6115,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Speciális vállpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="87"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="83"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogshoulderpoint.cpp" line="85"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -6164,7 +6168,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogSpline</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="179"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="181"/>
         <source>Select last point of curve</source>
         <translation>Válassza ki a görbe utolsó pontját</translation>
     </message>
@@ -6200,8 +6204,8 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ide megjegyzést fűzhet…</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="91"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="106"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="108"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
@@ -6211,28 +6215,28 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Második pont:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="83"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="98"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="100"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="93"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="95"/>
         <source>Edit first control point angle</source>
         <translation>Első kontrollpont szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="108"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="110"/>
         <source>Edit second control point angle</source>
         <translation>Második kontrollpont szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="85"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="87"/>
         <source>Edit first control point length</source>
         <translation>Első kontrollpont hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="100"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogspline.cpp" line="102"/>
         <source>Edit second control point length</source>
         <translation>Második kontrollpont hosszának szerkesztése</translation>
     </message>
@@ -6260,7 +6264,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Pontok listája</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="298"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="300"/>
         <source>Select point of curve path</source>
         <translation>Válassza ki a görbe útvonal pontját</translation>
     </message>
@@ -6285,8 +6289,8 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Első kontrollpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="142"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="159"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="144"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="161"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
@@ -6296,38 +6300,38 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Második kontrollpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="132"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="150"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="134"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="152"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="144"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="146"/>
         <source>Edit first control point angle</source>
         <translation>Első kontrollpont szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="161"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="163"/>
         <source>Edit second control point angle</source>
         <translation>Második kontrollpont szögének szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="997"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="999"/>
         <source>Point %1</source>
         <translation>Pont %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="134"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="136"/>
         <source>Edit first control point length</source>
         <translation>Első kontrollpont hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="152"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="154"/>
         <source>Edit second control point length</source>
         <translation>Második kontrollpont hosszának szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="629"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogsplinepath.cpp" line="631"/>
         <source>Not used</source>
         <translation>Nem használt</translation>
     </message>
@@ -6472,12 +6476,37 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>A forgatások megjelenítése</translation>
     </message>
     <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="176"/>
+        <source>Rebuild each run of curves as one smooth curve passing through the pivots, then give every copy its own segment back. The corners the rotations leave disappear, and the points the copies reach do not move.</source>
+        <translation>Építsd újra a görbék minden sorozatát egyetlen sima görbeként a forgáspontokon át, és add vissza minden másolatnak a saját szakaszát. A forgatások nyomán maradó sarkok eltűnnek, és a másolatok által elért pontok nem mozdulnak.</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="179"/>
+        <source>Smooth the curves at the joints</source>
+        <translation>A görbék simítása az illesztéseknél</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="189"/>
+        <source>Suffix of the copies:</source>
+        <translation>A másolatok utótagja:</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="196"/>
+        <source>The copies of curves, arcs and lines take the name of their source and this suffix, which is what makes them callable: a curve named portion2 becomes Curve_portion2_Rotation.</source>
+        <translation>A görbék, ívek és vonalak másolatai a forrásuk nevét és ezt az utótagot kapják, ettől hívhatók meg: a portion2 nevű görbéből Curve_portion2_Rotation lesz.</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="199"/>
+        <source>_Rotation</source>
+        <translation>_Rotation</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="225"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="212"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.ui" line="258"/>
         <source>You can add a note here…</source>
         <translation>Ide megjegyzést fűzhet…</translation>
     </message>
@@ -6485,87 +6514,87 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogTool</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="357"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="359"/>
         <source>First point</source>
         <translation>Első pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="358"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="360"/>
         <source>Second point</source>
         <translation>Második pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="366"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="368"/>
         <source>Highest point</source>
         <translation>Legmagasabb pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="367"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="369"/>
         <source>Lowest point</source>
         <translation>Legalacsonyabb pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="375"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="377"/>
         <source>Leftmost point</source>
         <translation>Bal szélső pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="376"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="378"/>
         <source>Rightmost point</source>
         <translation>Jobb szélső pont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="458"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="460"/>
         <source>Show the two segments instead of the curve</source>
         <translation>A két szakasz megjelenítése a görbe helyett</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="510"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="512"/>
         <source>The curve will be prolonged by %1%2.</source>
         <translation>A görbe %1%2-vel meghosszabbodik.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="585"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="587"/>
         <source>Type of line:</source>
         <translation>Vonaltípus:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="586"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="588"/>
         <source>Line color:</source>
         <translation>Vonal színe:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="622"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="624"/>
         <source>by length</source>
         <translation>hossz szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="623"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="625"/>
         <source>by points intersetions</source>
         <translation>pontok metszéspontjai szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="624"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="626"/>
         <source>by first edge symmetry</source>
         <translation>első él szimmetriája szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="625"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="627"/>
         <source>by second edge symmetry</source>
         <translation>második él szimmetriája szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="626"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="628"/>
         <source>by first edge right angle</source>
         <translation>első él derékszöge szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="627"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtool.cpp" line="629"/>
         <source>by second edge right angle</source>
         <translation>második él derékszöge szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="973"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="975"/>
         <source>Show Point name</source>
         <translation>Pont nevének megjelenítése</translation>
     </message>
@@ -6637,17 +6666,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
 <context>
     <name>DialogTriangle</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.cpp" line="116"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.cpp" line="118"/>
         <source>Select second point of axis</source>
         <translation>Válassza ki a tengely második pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.cpp" line="124"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.cpp" line="126"/>
         <source>Select first point</source>
         <translation>Első pont kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.cpp" line="138"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtriangle.cpp" line="140"/>
         <source>Select second point</source>
         <translation>Válassza ki a második pontot</translation>
     </message>
@@ -6715,12 +6744,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Szűkítők kiegyenlítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.cpp" line="249"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.cpp" line="251"/>
         <source>Select the second dart point</source>
         <translation>Válassza ki a második szűkítőpontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.cpp" line="265"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/dialogtruedarts.cpp" line="267"/>
         <source>Select the third dart point</source>
         <translation>Válassza ki a harmadik szűkítőpontot</translation>
     </message>
@@ -6862,338 +6891,338 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Eszközök</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="245"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="247"/>
         <source>Selection</source>
         <translation>Kijelölés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="47"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="49"/>
         <source>Select</source>
         <translation>Kijelölés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="109"/>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="273"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="111"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="275"/>
         <source>Export templates</source>
         <translation>Exportálási sablonok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="277"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="279"/>
         <source>Export image</source>
         <translation>Kép exportálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="110"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="112"/>
         <source>Export as image...</source>
         <translation>Exportálás képként…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="249"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="251"/>
         <source>Points</source>
         <translation>Pontok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="49"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="51"/>
         <source>Point at distance and angle</source>
         <translation>Pont adott távolsággal és szöggel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="50"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="52"/>
         <source>Point at distance along line</source>
         <translation>Pont adott távolságra a vonalon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="51"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="53"/>
         <source>Midpoint between two points</source>
         <translation>Két pont középpontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="52"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="54"/>
         <source>Point along perpendicular</source>
         <translation>Pont a merőleges mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="53"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="55"/>
         <source>Point along bisector</source>
         <translation>Pont a szögfelező mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="54"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="56"/>
         <source>Perpendicular point along line</source>
         <translation>Merőleges pont a vonalon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="55"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="57"/>
         <source>Point from X and Y of two other points</source>
         <translation>Pont két másik pont X és Y koordinátájából</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="56"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="58"/>
         <source>Point at line intersection</source>
         <translation>Vonalak metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="57"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="59"/>
         <source>Special point on shoulder</source>
         <translation>Speciális vállpont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="58"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="60"/>
         <source>Triangle tool</source>
         <translation>Háromszög eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="59"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="61"/>
         <source>Point intersect line and axis</source>
         <translation>Vonal és tengely metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="253"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="255"/>
         <source>Line</source>
         <translation>Vonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="61"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="63"/>
         <source>Line between points</source>
         <translation>Vonal két pont között</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="257"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="259"/>
         <source>Curves</source>
         <translation>Görbék</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="63"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="65"/>
         <source>Curve tool which uses point as control handle</source>
         <translation>Görbe pontvezérléssel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="64"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="66"/>
         <source>Curved path tool which uses point as control handle</source>
         <translation>Görbeútvonal pontvezérléssel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="65"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="67"/>
         <source>Point intersect curve and axis</source>
         <translation>Görbe és tengely metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="66"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="68"/>
         <source>Point intersection curves</source>
         <translation>Görbék metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="67"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="69"/>
         <source>Parallel curve tool</source>
         <translation>Párhuzamos görbe eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="68"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="70"/>
         <source>Graduated curve tool</source>
         <translation>Fokozatos görbe eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="261"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="263"/>
         <source>Arcs</source>
         <translation>Ívek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="70"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="72"/>
         <source>Arc</source>
         <translation>Ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="71"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="73"/>
         <source>Arc with given length</source>
         <translation>Ív adott ívhosszal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="72"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="74"/>
         <source>Elliptical Arc</source>
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="73"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="75"/>
         <source>Elliptical arc with given length</source>
         <translation>Elliptikus ív adott ívhosszal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="74"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="76"/>
         <source>Segment an arc</source>
         <translation>Ív felosztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="75"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="77"/>
         <source>Arc start point</source>
         <translation>Ív kezdőpontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="76"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="78"/>
         <source>Arc end point</source>
         <translation>Ív végpontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="77"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="79"/>
         <source>Point of intersection arcs</source>
         <translation>Ívek metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="78"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="80"/>
         <source>Point of intersection arc and axis</source>
         <translation>Ív és tengely metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="79"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="81"/>
         <source>Point of intersection circles</source>
         <translation>Körök metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="80"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="82"/>
         <source>Point from arc and tangent</source>
         <translation>Ív és érintő metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="81"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="83"/>
         <source>Point from circle and tangent</source>
         <translation>Kör és érintő metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="82"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="84"/>
         <source>Point of intersection circle and segment</source>
         <translation>Kör és szakasz metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="97"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="99"/>
         <source>Armhole curve</source>
         <translation>Karöltő görbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="98"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="100"/>
         <source>Dart rotation</source>
         <translation>Szűkítő forgatása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="265"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="267"/>
         <source>Operations</source>
         <translation>Műveletek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="84"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="86"/>
         <source>Flipping objects by axis</source>
         <translation>Objektumok tükrözése tengely mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="85"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="87"/>
         <source>Flipping objects by line</source>
         <translation>Objektumok tükrözése vonal mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="86"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="88"/>
         <source>Rotate objects</source>
         <translation>Objektumok elforgatása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="87"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="89"/>
         <source>Move objects</source>
         <translation>Objektumok mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="88"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="90"/>
         <source>True darts</source>
         <translation>Szűkítők kiegyenlítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="269"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="271"/>
         <source>Pieces</source>
         <translation>Darabok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="90"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="92"/>
         <source>Workpiece tool</source>
         <translation>Munkadarab eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="91"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="93"/>
         <source>Internal path tool</source>
         <translation>Belső útvonal eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="92"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="94"/>
         <source>Insert node tool</source>
         <translation>Csomópont beszúrása eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="93"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
         <source>Internal mark</source>
         <translation>Belső jelölés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="111"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="113"/>
         <source>Union tool</source>
         <translation>Darabok egyesítése eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="112"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="114"/>
         <source>Duplicate detail tool</source>
         <translation>Alkatrész másolata eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="113"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="115"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="95"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="97"/>
         <source>Curve</source>
         <translation>Görbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="96"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="98"/>
         <source>Segment a curve</source>
         <translation>Görbe felosztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="99"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="101"/>
         <source>Dart cap tool</source>
         <translation>Szűkítősapka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="100"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="102"/>
         <source>Rectangle tool</source>
         <translation>Téglalap eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="101"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="103"/>
         <source>Transfer tool</source>
         <translation>Átvitel eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="102"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="104"/>
         <source>Spiral tool</source>
         <translation>Spirál eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="103"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="105"/>
         <source>Slash and spread tool</source>
         <translation>Vágás és forgatás eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="104"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="106"/>
         <source>Move by batch tool</source>
         <translation>Kötegelt mozgatás eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="105"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="107"/>
         <source>Pleat tool</source>
         <translation>Hajtás eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="106"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="108"/>
         <source>Middle pleat tool</source>
         <translation>Középső hajtás eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="107"/>
+        <location filename="../../src/app/ostara/core/otoolbarcatalogue.cpp" line="109"/>
         <source>Flounce spiral tool</source>
         <translation>Volánspirál eszköz</translation>
     </message>
@@ -7388,7 +7417,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="786"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="818"/>
         <source>Save</source>
         <translation>Mentés</translation>
     </message>
@@ -7495,7 +7524,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="683"/>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="181"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="183"/>
         <source>Preferences</source>
         <translation>Beállítások</translation>
     </message>
@@ -7523,292 +7552,290 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Legjobb illesztés nagyítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="691"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="620"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="723"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="622"/>
         <source>Pattern piece %1</source>
         <translation>Mintadarab %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="241"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="269"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="280"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="294"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="243"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="271"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="282"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="296"/>
         <source>Select point</source>
         <translation>Pont kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="254"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="256"/>
         <source>Select first point</source>
         <translation>Első pont kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="308"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="506"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="868"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="310"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="508"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="869"/>
         <source>Select first point of line</source>
         <translation>Válassza ki a vonal első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="322"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="324"/>
         <source>Select first point of angle</source>
         <translation>Válassza ki a szög első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="336"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="338"/>
         <source>Select first point of first line</source>
         <translation>Válassza ki az első vonal első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="350"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="352"/>
         <source>Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point that carries the edge when no curve does - then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation>Válassza ki a szűkítő csúcsát (a darab belsejében lévő pontot), majd nyílásának két pontját, és azt a pontot, amely a szegélyt hordozza, ha egyetlen görbe sem teszi - majd &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="364"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="366"/>
         <source>Select the base point of the rectangle</source>
         <translation>Válassza ki a téglalap kezdőpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="378"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="380"/>
         <source>Select first point curve</source>
         <translation>Válassza ki a görbe első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="402"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="404"/>
         <source>Select simple curve</source>
         <translation>Válasszon egyszerű görbét</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="416"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="418"/>
         <source>Select point of center of arc</source>
         <translation>Válassza ki az ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="445"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="447"/>
         <source>Select point of curve path</source>
         <translation>Válassza ki a görbe útvonal pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="455"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="457"/>
         <source>Select the first point of the curve</source>
         <translation>Válassza ki a görbe első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="479"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="481"/>
         <source>Select curve path</source>
         <translation>Válasszon görbe útvonalat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="493"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="495"/>
         <source>Select a curve</source>
         <translation>Válasszon ki egy görbét</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="530"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="532"/>
         <source>Select the path objects in order - the direction is free, no clockwise rule. A full curve is reversed automatically; hold &lt;b&gt;%1&lt;/b&gt; to reverse a curve, &lt;b&gt;%2&lt;/b&gt; to finish.</source>
         <translation>Válassza ki az útvonal objektumait sorrendben - az irány szabad, nincs kötelező óramutató járás szerinti irány. A teljes görbe automatikusan megfordul; tartsa nyomva a(z) &lt;b&gt;%1&lt;/b&gt; billentyűt egy görbe megfordításához, a(z) &lt;b&gt;%2&lt;/b&gt; billentyűt a befejezéshez.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="541"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="543"/>
         <source>Select all the points of the internal marks to place, &lt;b&gt;%1&lt;/b&gt; - confirm selection. Every mark will be attached to the piece you choose in the dialog, so select only points lying on that piece.</source>
         <translation>Válassza ki az elhelyezendő belső jelölések összes pontját, &lt;b&gt;%1&lt;/b&gt; - a kijelölés megerősítése. Minden jelölés ahhoz a darabhoz kapcsolódik, amelyet a párbeszédablakban kiválaszt, ezért csak azon a darabon lévő pontokat jelölje ki.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="559"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="561"/>
         <source>Select base point</source>
         <translation>Alappont kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="573"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="575"/>
         <source>Select first point of axis</source>
         <translation>Válassza ki a tengely első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="602"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="622"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="604"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="624"/>
         <source>Select detail</source>
         <translation>Válasszon darabot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="648"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="674"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="687"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="700"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="976"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="650"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="676"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="689"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="702"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="977"/>
         <source>Select one or more objects, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation>Válasszon ki egy vagy több objektumot, &lt;b&gt;%1&lt;/b&gt; – kiválasztás megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="661"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="663"/>
         <source>Select the &lt;b&gt;objects to turn&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation>Válassza ki a &lt;b&gt;elforgatandó objektumokat&lt;/b&gt;, &lt;b&gt;%1&lt;/b&gt; - a kijelölés megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="713"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="715"/>
         <source>Select the objects of the portion, &lt;b&gt;%1&lt;/b&gt; - confirm selection</source>
         <translation>Válassza ki a szakasz objektumait, &lt;b&gt;%1&lt;/b&gt; - a kijelölés megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="728"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="742"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="730"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="744"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation>Válassza ki a kontúr objektumait &lt;b&gt;sorrendben&lt;/b&gt;: mindet az óramutató járásával megegyezően vagy mindet azzal ellentétesen, soha nem keverve a kettőt. Ezután &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="758"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="759"/>
         <source>Select the point the inner spiral starts at, then fill in the width and the length of the flounce</source>
         <translation>Válassza ki a belső spirál kezdőpontját, majd adja meg a volán szélességét és hosszát</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="769"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="770"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the points of the departure lines included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation>Válassza ki a kontúr objektumait &lt;b&gt;sorrendben&lt;/b&gt;: mindet az óramutató járásával megegyezően vagy mindet azzal ellentétesen, soha nem keverve a kettőt - a kiindulási vonalak pontjait is beleértve. Ezután &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="782"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="783"/>
         <source>Select the objects of the contour &lt;b&gt;in order&lt;/b&gt;: all clockwise or all anticlockwise, never mixing the two - the two points of the middle line included. Then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation>Válassza ki a kontúr objektumait &lt;b&gt;sorrendben&lt;/b&gt;: mindet az óramutató járásával megegyezően vagy mindet azzal ellentétesen, soha nem keverve a kettőt - a középső vonal két pontját is beleértve. Ezután &lt;b&gt;%1&lt;/b&gt; a megerősítéshez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="838"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="839"/>
         <source>Insert node</source>
         <translation>Csomópont beszúrása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="839"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="840"/>
         <source>None of the selected nodes could be placed in the piece.</source>
         <translation>A kijelölt csomópontok egyike sem helyezhető el a darabban.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="856"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="890"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="989"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="999"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="857"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="891"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="990"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1000"/>
         <source>Select arc</source>
         <translation>Válasszon ívet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="878"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1023"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1034"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="879"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1024"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1035"/>
         <source>Select curve</source>
         <translation>Válasszon görbét</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1044"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1045"/>
         <source>Select the armhole point. Optional: create a perpendicular point beforehand to end the curve perpendicular to the shoulder line.</source>
         <translation>Válassza ki a karöltőpontot. Opcionális: előzetesen hozzon létre egy merőleges pontot, hogy a görbe a vállvonalra merőlegesen végződjön.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1056"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1057"/>
         <source>Select the point the spiral starts at</source>
         <translation>Válassza ki a spirál kezdőpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="402"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="421"/>
         <source>About Qt</source>
         <translation>A Qt névjegye</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="351"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="383"/>
         <source>pattern</source>
         <translation>minta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="369"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="401"/>
         <source>Save as</source>
         <translation>Mentés másként</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="977"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1013"/>
         <source>This pattern contains legacy labels. Ostara does not use them - they have been replaced by the Information block. Conversion is not automatic, your labels have not been preserved. The original .val file remains intact.</source>
         <translation>Ez a minta örökölt címkéket tartalmaz. Az Ostara nem használja őket - helyüket az Információs blokk vette át. Az átalakítás nem automatikus, az Ön címkéi nem maradtak meg. Az eredeti .val fájl sértetlen marad.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1320"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1360"/>
         <source>Ostara didn&apos;t shut down correctly. Do you want to reopen the files (%1) you had open?</source>
         <translation>Az Ostara nem állt le megfelelően. Szeretné újra megnyitni a korábban megnyitott fájlokat (%1)?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1363"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1403"/>
         <source>Could not save file</source>
         <translation>A fájl nem menthető</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="496"/>
-        <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="69"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="528"/>
+        <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="71"/>
         <source>Open file</source>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="522"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="550"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="524"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="552"/>
         <source>Error parsing file.</source>
         <translation>Fájl‑feldolgozási hiba.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="529"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="531"/>
         <source>Error can&apos;t convert value.</source>
         <translation>Hiba: az érték nem alakítható át.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="367"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="536"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="369"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="538"/>
         <source>Error empty parameter.</source>
         <translation>Hiba: üres paraméter.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="543"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="545"/>
         <source>Error wrong id.</source>
         <translation>Hiba: hibás azonosító.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="557"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="559"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>Fájl‑feldolgozási hiba (std::bad_alloc).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="356"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="358"/>
         <source>Bad id.</source>
         <translation>Hibás azonosító.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="226"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="258"/>
         <source>File saved</source>
         <translation>Fájl mentve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="309"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="797"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="328"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="794"/>
         <source>&amp;Undo</source>
         <translation>&amp;Visszavonás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="316"/>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="798"/>
+        <location filename="../../src/app/ostara/mainwindow_actions.cpp" line="335"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="795"/>
         <source>&amp;Redo</source>
         <translation>Mé&amp;gis</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="186"/>
+        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="188"/>
         <source>Pattern piece:</source>
         <translation>Szabásminta rész:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="188"/>
+        <location filename="../../src/app/ostara/mainwindow_dialogs.cpp" line="190"/>
         <source>Enter a new label for the pattern piece.</source>
         <translation>Adjon meg egy új címkét a mintadarabhoz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="898"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1195"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="95"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="554"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="97"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="556"/>
         <source>File error.</source>
         <translation>Fájlhiba.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1322"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1362"/>
         <source>Reopen files.</source>
         <translation>Fájlok újranyitása.</translation>
     </message>
@@ -7878,7 +7905,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Az utoljára használt eszköz ismételt aktiválása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="588"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="590"/>
         <source>Select point for X value (vertical)</source>
         <translation>Válasszon pontot az X értékhez (függőleges)</translation>
     </message>
@@ -8121,7 +8148,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1083"/>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="99"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="104"/>
         <source>Hide point names</source>
         <translation>Pontnevek elrejtése</translation>
     </message>
@@ -8311,127 +8338,127 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ív adott ívhosszal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="902"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="903"/>
         <source>Select first an arc</source>
         <translation>Válassza ki az első ívet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="957"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="958"/>
         <source>Select point of the center of the arc</source>
         <translation>Válassza ki az ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="967"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="968"/>
         <source>Select the first base line point</source>
         <translation>Válassza ki az alapvonal első pontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="834"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="254"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="261"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="836"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="256"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="263"/>
         <source>Detail mode</source>
         <translation>Darab mód</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="189"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="191"/>
         <source>Layout mode</source>
         <translation>Elrendezés mód</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="775"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="807"/>
         <source>Unsaved changes</source>
         <translation>Módosítások nem lettek elmentve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="71"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="73"/>
         <source>Measurements loaded</source>
         <translation>Mérések betöltve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="126"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="128"/>
         <source>No measurement table loaded</source>
         <translation>Nincs betöltött méréstáblázat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="135"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="137"/>
         <source>File not found</source>
         <translation>A fájl nem található</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="136"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="138"/>
         <source>The measurement file could not be found at:
 %1</source>
         <translation>A mérésfájl nem található ezen a címen:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="166"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="251"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="168"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements_slots.cpp" line="253"/>
         <source>Measurements reloaded</source>
         <translation>Mérések újratöltve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="328"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="330"/>
         <source>You can&apos;t export empty scene.</source>
         <translation>Üres jelenet nem exportálható.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="409"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="441"/>
         <source>Failed to lock. This file already opened in another window.</source>
         <translation>Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1405"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1445"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban. 2 programpéldány ütközést okozhat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="517"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="519"/>
         <source>Measurement file has unknown format.</source>
         <translation>A mérésfájl formátuma ismeretlen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="540"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="542"/>
         <source>Measurement files types have not match.</source>
         <translation>A mérésfájlok típusai nem egyeznek.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="377"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="379"/>
         <source>Couldn&apos;t update measurements.</source>
         <translation>A mérések frissítése nem sikerült.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1079"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1115"/>
         <source>The measurements file &apos;%1&apos; could not be found.</source>
         <translation>A(z) &apos;%1&apos; mérésfájl nem található.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="851"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="895"/>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="939"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="853"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="897"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="941"/>
         <source>The method %1 does nothing in GUI mode</source>
         <translation>A(z) %1 metódus semmit sem tesz grafikus felület módban</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="271"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="383"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="273"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="385"/>
         <source>Export error.</source>
         <translation>Exportálási hiba.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="262"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="264"/>
         <source>The files were successfully exported to:
 %1</source>
         <translation>A fájlok sikeresen exportálva ide:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="316"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="318"/>
         <source>The console layout export is gone with the Layout mode. Use --exportOnlyDetails, or the Export mode, to export a cutting plan.</source>
         <translation>A parancssori elrendezés-export megszűnt az Elrendezés móddal együtt. A szabási terv exportálásához használja a --exportOnlyDetails kapcsolót vagy az Export módot.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="470"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="472"/>
         <source>Please, provide one input file.</source>
         <translation>Kérem, adjon meg egy bemeneti fájlt.</translation>
     </message>
@@ -8451,32 +8478,32 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Szűkítők kiegyenlítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="169"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="171"/>
         <source>New pattern</source>
         <translation>Új szabásminta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="173"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="175"/>
         <source>Open pattern</source>
         <translation>Szabásminta megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="177"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="179"/>
         <source>Create/Edit measurements</source>
         <translation>Mérések létrehozása/szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="400"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="402"/>
         <source>Help</source>
         <translation>Súgó</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="502"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="504"/>
         <source>add a pattern piece</source>
         <translation>szabásmintadarab hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="791"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="823"/>
         <source>Don&apos;t Save</source>
         <translation>Ne mentse</translation>
     </message>
@@ -8486,7 +8513,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Görbék metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="924"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="925"/>
         <source>Select first curve</source>
         <translation>Válassza ki az első görbét</translation>
     </message>
@@ -8496,12 +8523,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Görbe pontvezérléssel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="388"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="390"/>
         <source>Select first curve point</source>
         <translation>Válassza ki az első görbepontot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="465"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="467"/>
         <source>Select point of cubic bezier path</source>
         <translation>Válassza ki a köbös Bézier útvonal pontját</translation>
     </message>
@@ -8523,13 +8550,13 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Két pont középpontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="913"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="914"/>
         <source>Select first circle center</source>
         <translation>Válassza ki az első kör középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="935"/>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="946"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="936"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="947"/>
         <source>Select point on tangent</source>
         <translation>Válasszon pontot az érintőn</translation>
     </message>
@@ -8554,27 +8581,27 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="430"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="432"/>
         <source>Select point of center of elliptical arc</source>
         <translation>Válassza ki az elliptikus ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="520"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="522"/>
         <source>Select main path objects clockwise.</source>
         <translation>Válassza ki a fő útvonal objektumait az óramutató járásával megegyezően.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="461"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="493"/>
         <source>Could not save the file</source>
         <translation>A fájl nem menthető</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1435"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1475"/>
         <source>untitled.ostara</source>
         <translation>névtelen.ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1477"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1517"/>
         <source>read only</source>
         <translation>csak olvasható</translation>
     </message>
@@ -8594,8 +8621,8 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Eredeti szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="368"/>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="482"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="400"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="514"/>
         <source>Pattern files</source>
         <translation>Mintafájlok</translation>
     </message>
@@ -8605,7 +8632,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Csomópont beszúrása eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="835"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="837"/>
         <source>You can&apos;t use Detail mode yet. Please, create at least one workpiece.</source>
         <translation>A Darab mód még nem használható. Kérjük, hozzon létre legalább egy munkadarabot.</translation>
     </message>
@@ -8625,17 +8652,17 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Alkatrészek exportálása az Elrendezés kihagyásával</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="190"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="192"/>
         <source>You don&apos;t have enough details to export. Please, include at least one detail in layout.</source>
         <translation>Nincs elég alkatrész az exportáláshoz. Kérjük, vegyen fel legalább egy alkatrészt az elrendezésbe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="203"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="205"/>
         <source>Export details</source>
         <translation>Alkatrészek exportálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="203"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="205"/>
         <source>Can&apos;t export details.</source>
         <translation>Nem lehetett exportálni az alkatrészeket.</translation>
     </message>
@@ -8655,22 +8682,22 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Mentés másként…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="785"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="817"/>
         <source>Save…</source>
         <translation>Mentés…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="338"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="340"/>
         <source>You can&apos;t export empty scene. Please, include at least one detail in layout.</source>
         <translation>Üres jelenet nem exportálható. Kérjük, vegyen fel legalább egy darabot az elrendezésbe.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="404"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="406"/>
         <source>Export final measurements error.</source>
         <translation>Hiba a végső mérések exportálásakor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="405"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="407"/>
         <source>Destination path is empty.</source>
         <translation>A célútvonal üres.</translation>
     </message>
@@ -8720,12 +8747,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Alkatrész másolata eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1171"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1207"/>
         <source>The measurements file &apos;%1&apos; could not be found or provides not enough information.</source>
         <translation>A(z) &apos;%1&apos; mérésfájl nem található, vagy nem nyújt elegendő információt.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow.cpp" line="334"/>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="336"/>
         <source>Create new pattern piece to start working.</source>
         <translation>Hozzon létre új mintadarabot a munka megkezdéséhez.</translation>
     </message>
@@ -8736,12 +8763,12 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ostara</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="799"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="796"/>
         <source>Changes applied.</source>
         <translation>Módosítások alkalmazva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="198"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="230"/>
         <source>Cannot save settings. Access denied.</source>
         <translation>Beállítást nem sikerült elmenteni. Hozzáférés megtagadva.</translation>
     </message>
@@ -8751,7 +8778,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="125"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="157"/>
         <source>Cannot read settings from a malformed .INI file.</source>
         <translation>A beállítások nem olvashatók hibás .INI fájlból.</translation>
     </message>
@@ -8762,22 +8789,22 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="1097"/>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="284"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="286"/>
         <source>Export recipe</source>
         <translation>Recept exportálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="282"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="284"/>
         <source>Recipe files</source>
         <translation>Receptfájlok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="284"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="286"/>
         <source>recipe</source>
         <translation>recept</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="297"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="299"/>
         <source>Could not save recipe. %1</source>
         <translation>A recept nem menthető. %1</translation>
     </message>
@@ -8803,7 +8830,7 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="253"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="485"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="487"/>
         <source>Pattern messages</source>
         <translation>Mintaüzenetek</translation>
     </message>
@@ -8818,74 +8845,74 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Szűrő</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="460"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="462"/>
         <source>DEBUG</source>
         <translation>DEBUG</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="463"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="465"/>
         <source>WARNING</source>
         <translation>FIGYELMEZTETÉS</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="466"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="468"/>
         <source>CRITICAL</source>
         <translation>KRITIKUS</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="469"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="471"/>
         <source>FATAL</source>
         <translation>VÉGZETES</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="472"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="474"/>
         <source>INFO</source>
         <translation>INFÓ</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="717"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="719"/>
         <source>name the objects of a piece</source>
         <translation>egy darab objektumainak elnevezése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="762"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="782"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="788"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="798"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="764"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="784"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="790"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="800"/>
         <source>Save piece</source>
         <translation>Darab mentése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="806"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="808"/>
         <source>Piece saved: %1</source>
         <translation>Darab mentve: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="836"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="847"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="867"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="875"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="962"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="838"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="849"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="869"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="877"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
         <source>Piece library</source>
         <translation>Darabkönyvtár</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="848"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="850"/>
         <source>Load a measurement table</source>
         <translation>Méréstáblázat betöltése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="933"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="935"/>
         <source>Loading the piece. Please, wait.</source>
         <translation>A darab betöltése folyamatban. Kérjük, várjon.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="962"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
         <source>This piece holds no block to insert.</source>
         <translation>Ez a darab nem tartalmaz beszúrható blokkot.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="988"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="990"/>
         <source>Piece inserted: %1</source>
         <translation>Darab beszúrva: %1</translation>
     </message>
@@ -8925,42 +8952,62 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Vízjel létrehozása vagy szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="66"/>
+        <location filename="../../src/app/ostara/mainwindow_watermark.cpp" line="68"/>
         <source>Watermark files</source>
         <translation>Vízjelfájlok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="776"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="94"/>
+        <source>Pattern could not be opened</source>
+        <translation>A szabásminta nem nyitható meg</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="95"/>
+        <source>This pattern could not be opened.</source>
+        <translation>Ez a szabásminta nem nyitható meg.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="97"/>
+        <source>It may be damaged, or created with a newer version of Ostara.</source>
+        <translation>Lehet, hogy sérült, vagy az Ostara újabb verziójával készült.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="100"/>
+        <source>Copy the details</source>
+        <translation>Részletek másolása</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="808"/>
         <source>The pattern has been modified. Do you want to save your changes?</source>
         <translation>A minta módosult. Szeretné menteni a módosításokat?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="976"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1012"/>
         <source>Labels not supported</source>
         <translation>A címkék nem támogatottak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="986"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1022"/>
         <source>Grainlines anchored to pins</source>
         <translation>Szálirányok újra elhelyezése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="987"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1023"/>
         <source>This pattern contains grainlines anchored to pins. Ostara no longer uses them - these grainlines have been disabled. Please place them again in the Details mode. Conversion is not automatic. The original .val file remains intact.</source>
         <translation>Ez a minta olyan szálirányokat tartalmaz, amelyek helyzete tűktől függött – ez a Valentina egy régi funkciója. Az Ostara már nem használja: ezek a szálirányok letiltásra kerültek. Kérjük, helyezze el újra őket Darab módban. Az átalakítás nem automatikus. Az eredeti .val fájl sértetlen marad.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1110"/>
         <source>The pattern reads measurements and no table was chosen.</source>
         <translation>A minta méréseket olvas, de nem lett táblázat kiválasztva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1100"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1136"/>
         <source>Legacy measurement file</source>
         <translation>Örökölt mérésfájl</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1101"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1137"/>
         <source>The pattern is linked to a legacy Tape file:
 
 %1
@@ -8973,77 +9020,77 @@ Ostara uses .omt/.otu format. Choose how to proceed:</source>
 Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan szeretne továbblépni:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1104"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1140"/>
         <source>Convert this file</source>
         <translation>Fájl konvertálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1105"/>
+        <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1141"/>
         <source>Replace with existing .%1</source>
         <translation>Csere a meglévő .%1 fájlra</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="486"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="488"/>
         <source>Find the measurements file</source>
         <translation>A mérésfájl megkeresése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="832"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="834"/>
         <source>Not supported dimension A value &apos;%1&apos; for this pattern file.</source>
         <translation>A(z) &apos;%1&apos; A dimenzió érték nem támogatott ehhez a mintafájlhoz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="839"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="841"/>
         <source>Couldn&apos;t set dimension A. Need a file with multisize measurements.</source>
         <translation>Az A dimenzió nem állítható be. Méretsorozat-méréseket tartalmazó fájl szükséges.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="845"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="847"/>
         <source>Couldn&apos;t set dimension A. File wasn&apos;t opened.</source>
         <translation>Az A dimenzió nem állítható be. A fájl nem volt megnyitva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="876"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="878"/>
         <source>Not supported dimension B value &apos;%1&apos; for this pattern file.</source>
         <translation>A(z) &apos;%1&apos; B dimenzió érték nem támogatott ehhez a mintafájlhoz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="883"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="885"/>
         <source>Couldn&apos;t set dimension B. Need a file with multisize measurements.</source>
         <translation>A B dimenzió nem állítható be. Méretsorozat-méréseket tartalmazó fájl szükséges.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="889"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="891"/>
         <source>Couldn&apos;t set dimension B. File wasn&apos;t opened.</source>
         <translation>A B dimenzió nem állítható be. A fájl nem volt megnyitva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="920"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="922"/>
         <source>Not supported dimension C value &apos;%1&apos; for this pattern file.</source>
         <translation>A(z) &apos;%1&apos; C dimenzió érték nem támogatott ehhez a mintafájlhoz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="927"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="929"/>
         <source>Couldn&apos;t set dimension C. Need a file with multisize measurements.</source>
         <translation>A C dimenzió nem állítható be. Méretsorozat-méréseket tartalmazó fájl szükséges.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="933"/>
+        <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="935"/>
         <source>Couldn&apos;t set dimension C. File wasn&apos;t opened.</source>
         <translation>A C dimenzió nem állítható be. A fájl nem volt megnyitva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="302"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="304"/>
         <source>Could not create recipe file. %1</source>
         <translation>A receptfájl nem hozható létre. %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="159"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="161"/>
         <source>Scalable Vector Graphics files</source>
         <translation>Méretezhető vektorgrafikus fájlok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="161"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="163"/>
         <source>Save draw</source>
         <translation>Rajz mentése</translation>
     </message>
@@ -9063,58 +9110,58 @@ Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan szeretne tov�
         <translation>Háttérkép hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="66"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="68"/>
         <source>Unable to add background image</source>
         <translation>A háttérkép nem adható hozzá</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="86"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="88"/>
         <source>Invalid image. Error: %1</source>
         <translation>Érvénytelen kép. Hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1011"/>
+        <location filename="../../src/app/ostara/mainwindow_tools.cpp" line="1012"/>
         <source>Select point of the center of the elliptical arc</source>
         <translation>Válassza ki az elliptikus ív középpontját</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="827"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="824"/>
         <source>Pen style:</source>
         <translation>Tollstílus:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="831"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="828"/>
         <source>Color:</source>
         <translation>Szín:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="180"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="182"/>
         <source>Select background image</source>
         <translation>Válasszon háttérképet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="237"/>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="277"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="239"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="279"/>
         <source>Unable to save image. Error: %1</source>
         <translation>A kép nem menthető. Hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="243"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="245"/>
         <source>Unable to save image. No data.</source>
         <translation>A kép nem menthető. Nincs adat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="249"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="251"/>
         <source>untitled</source>
         <translation>névtelen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="262"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="264"/>
         <source>All files</source>
         <translation>Minden fájl</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="266"/>
+        <location filename="../../src/app/ostara/mainwindow_background.cpp" line="268"/>
         <source>Save Image</source>
         <translation>Kép mentése</translation>
     </message>
@@ -9124,18 +9171,18 @@ Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan szeretne tov�
         <translation>Pontossági sugár megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="800"/>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="141"/>
+        <location filename="../../src/app/ostara/mainwindow_events.cpp" line="797"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="146"/>
         <source>Piece:</source>
         <translation>Darab:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="98"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="103"/>
         <source>Show all point names</source>
         <translation>Az összes pontnév megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="433"/>
+        <location filename="../../src/app/ostara/mainwindow_toolbars.cpp" line="442"/>
         <source>Load measurements table</source>
         <translation>Méréstáblázat betöltése</translation>
     </message>
@@ -9278,7 +9325,7 @@ Lecseréli?</translation>
         <translation>Az SVG fájlt nem sikerült kiírni.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="255"/>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="257"/>
         <location filename="../../src/app/ostara/mainwindow_graded_export.cpp" line="786"/>
         <source>The file &quot;%1&quot; was successfully exported to:
 %2</source>
@@ -9358,12 +9405,16 @@ Lecseréli?</translation>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="221"/>
         <source> · %n piece(s)</source>
-        <translation><numerusform> · %n darab</numerusform></translation>
+        <translation>
+            <numerusform> · %n darab</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="226"/>
         <source> · %n mat(s)</source>
-        <translation><numerusform> · %n vágószőnyeg</numerusform></translation>
+        <translation>
+            <numerusform> · %n vágószőnyeg</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="229"/>
@@ -9381,12 +9432,16 @@ Lecseréli?</translation>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="264"/>
         <source> · %n pages (cover page included)</source>
-        <translation><numerusform> · %n oldal (a borítólapot is beleértve)</numerusform></translation>
+        <translation>
+            <numerusform> · %n oldal (a borítólapot is beleértve)</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="266"/>
         <source> · %n pages</source>
-        <translation><numerusform> · %n oldal</numerusform></translation>
+        <translation>
+            <numerusform> · %n oldal</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="293"/>
@@ -9555,13 +9610,17 @@ Ez a művelet nem vonható vissza.</translation>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="2079"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="214"/>
         <source>%n file(s) written to %1</source>
-        <translation><numerusform>%n fájl kiírva ide: %1</numerusform></translation>
+        <translation>
+            <numerusform>%n fájl kiírva ide: %1</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="2095"/>
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="245"/>
         <source>%n file(s) could not be written:</source>
-        <translation><numerusform>%n fájl kiírása nem sikerült:</numerusform></translation>
+        <translation>
+            <numerusform>%n fájl kiírása nem sikerült:</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexportoutputs.cpp" line="252"/>
@@ -9571,90 +9630,92 @@ Ez a művelet nem vonható vissza.</translation>
     <message numerus="yes">
         <location filename="../../src/app/ostara/oexportseveraloutputs.cpp" line="228"/>
         <source>%n file(s) left untouched:</source>
-        <translation><numerusform>%n fájl érintetlen maradt:</numerusform></translation>
+        <translation>
+            <numerusform>%n fájl érintetlen maradt:</numerusform>
+        </translation>
     </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1155"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1157"/>
         <source>unnamed</source>
         <translation>névtelen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="216"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="423"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="735"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="218"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="425"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="737"/>
         <source>Can&apos;t create a path</source>
         <translation>Az útvonal nem hozható létre</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="896"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="899"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="898"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="901"/>
         <source>Preparing details for layout</source>
         <translation>Alkatrészek előkészítése az elrendezéshez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="700"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1020"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="702"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1022"/>
         <source>Pattern</source>
         <translation>Szabásminta</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1172"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1174"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1173"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1175"/>
         <source>Value</source>
         <translation>Érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1200"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1212"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1230"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1202"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1214"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1232"/>
         <source>Export final measurements error.</source>
         <translation>Hiba a végső mérések exportálásakor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1202"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1204"/>
         <source>Value in line %1 is infinite or NaN. Please, check your calculations.</source>
         <translation>A(z) %1. sorban lévő érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1213"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1215"/>
         <source>Parser error at line %1: %2.</source>
         <translation>Elemzési hiba a(z) %1. sorban: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1231"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1233"/>
         <source>File error %1.</source>
         <translation>Fájlhiba %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1174"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1176"/>
         <source>Description</source>
         <translation>Leírás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1285"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1287"/>
         <source>Measurement file has unknown format.</source>
         <translation>A mérésfájl formátuma ismeretlen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1308"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1371"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1310"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1373"/>
         <source>File error.</source>
         <translation>Fájlhiba.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1372"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1374"/>
         <source>Measurement file doesn&apos;t include all required measurements.</source>
         <translation>A mérésfájl nem tartalmazza az összes szükséges mérést.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1378"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1380"/>
         <source>Measurement file doesn&apos;t include all required measurements.
 
 Missing: %1
@@ -9667,29 +9728,29 @@ Hiányzik: %1
 Szeretne másik fájlt választani?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1381"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1383"/>
         <source>Missing Measurements</source>
         <translation>Hiányzó mérések</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1404"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1406"/>
         <source>Select Measurement File</source>
         <translation>Válasszon mérésfájlt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1396"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1400"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1398"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1402"/>
         <source>Multisize measurements</source>
         <translation>Méretsorozat-mérések</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1396"/>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1400"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1398"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1402"/>
         <source>Individual measurements</source>
         <translation>Egyéni mérések</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1373"/>
+        <location filename="../../src/app/ostara/mainwindowsnogui.cpp" line="1375"/>
         <source>Please, additionally provide: %1</source>
         <translation>Kérjük, adja meg továbbá: %1</translation>
     </message>
@@ -9699,8 +9760,8 @@ Szeretne másik fájlt választani?</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="50"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="177"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="517"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="647"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="516"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="646"/>
         <source>Measurement details</source>
         <translation>A mérés részletei</translation>
     </message>
@@ -9749,7 +9810,7 @@ Szeretne másik fájlt választani?</translation>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="155"/>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="182"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="340"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="339"/>
         <source>Select or create a measurement</source>
         <translation>Mérés kiválasztása vagy létrehozása</translation>
     </message>
@@ -9784,13 +9845,13 @@ Szeretne másik fájlt választani?</translation>
         <translation>Tartományok beállítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="321"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="320"/>
         <source>No range groups defined. Click Configure ranges.</source>
         <translation>Nincs meghatározott tartománycsoport. Kattintson a Tartományok beállítása elemre.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="177"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="608"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/MeasurementDetailPanel.cpp" line="607"/>
         <source>Group properties</source>
         <translation>A csoport tulajdonságai</translation>
     </message>
@@ -9991,7 +10052,7 @@ Lecseréli?</translation>
 <context>
     <name>MoveSPoint</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/movespoint.cpp" line="53"/>
+        <location filename="../../src/libs/vtools/undocommands/movespoint.cpp" line="55"/>
         <source>move single point</source>
         <translation>egyetlen pont mozgatása</translation>
     </message>
@@ -9999,7 +10060,7 @@ Lecseréli?</translation>
 <context>
     <name>MoveSpline</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/movespline.cpp" line="50"/>
+        <location filename="../../src/libs/vtools/undocommands/movespline.cpp" line="52"/>
         <source>move spline</source>
         <translation>spline mozgatása</translation>
     </message>
@@ -10127,46 +10188,86 @@ Lecseréli?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
+        <source>Nesting engine:</source>
+        <translation>Nesting-motor:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
+        <source>Trame — Sophie Denys, GNU GPL v3</source>
+        <translation>Trame — Sophie Denys, GNU GPL v3</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
+        <source>Graph algorithms:</source>
+        <translation>Gráfalgoritmusok:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
+        <source>graaflib — Bob Luppes, MIT</source>
+        <translation>graaflib — Bob Luppes, MIT</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
+        <source>Property editor:</source>
+        <translation>Tulajdonságszerkesztő:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
+        <source>VPropertyExplorer — the Valentina project, LGPLv3</source>
+        <translation>VPropertyExplorer — a Valentina-projekt, LGPLv3</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="177"/>
         <source>XML:</source>
         <translation>XML:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="174"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="177"/>
         <source>Xerces-C++ — The Apache Software Foundation, Apache License 2.0</source>
         <translation>Xerces-C++ — The Apache Software Foundation, Apache License 2.0</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="178"/>
         <source>DXF:</source>
         <translation>DXF:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="175"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="178"/>
         <source>libdxfrw — Rallaz and contributors, GNU GPL v2 or later</source>
         <translation>libdxfrw — Rallaz és közreműködői, GNU GPL v2 vagy újabb</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="179"/>
         <source>Expression parser:</source>
         <translation>Kifejezéselemző:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="176"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="179"/>
         <source>muParser — Ingo Berg, MIT</source>
         <translation>muParser — Ingo Berg, MIT</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="177"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="180"/>
+        <source>Compression:</source>
+        <translation>Tömörítés:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="180"/>
+        <source>zlib — Jean-loup Gailly and Mark Adler, zlib licence</source>
+        <translation>zlib — Jean-loup Gailly és Mark Adler, zlib licenc</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="181"/>
         <source>Framework:</source>
         <translation>Keretrendszer:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="178"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="182"/>
         <source>Qt %1 — The Qt Company, LGPLv3</source>
         <translation>Qt %1 — The Qt Company, LGPLv3</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="181"/>
+        <location filename="../../src/app/ostara/dialogs/oaboutdialog.cpp" line="185"/>
         <source>Technical details</source>
         <translation>Technikai részletek</translation>
     </message>
@@ -11277,77 +11378,77 @@ Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="119"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="576"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="581"/>
         <source>Edit expression</source>
         <translation>Kifejezés szerkesztése</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="125"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="558"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="563"/>
         <source>Passmark</source>
         <translation>Bevágásjel</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="133"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="214"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="560"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="570"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="565"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="575"/>
         <source>Type</source>
         <translation>Típus</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="142"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="179"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="561"/>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="566"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="571"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="151"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="562"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="567"/>
         <source>Show the second passmark on seam line</source>
         <translation>A második bevágásjel megjelenítése a varrásvonalon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="157"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="563"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="568"/>
         <source>Not Mirrored</source>
         <translation>Nem tükrözött</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="177"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="564"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="569"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="178"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="565"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="570"/>
         <source>Width</source>
         <translation>Szélesség</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="181"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="567"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="572"/>
         <source>Leave a field empty for the automatic value, formulas allowed</source>
         <translation>Hagyja üresen a mezőt az automatikus értékhez, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="188"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="568"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="573"/>
         <source>Visibility</source>
         <translation>Láthatóság</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="200"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="569"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="574"/>
         <source>1 = visible, 0 = invisible, formulas allowed</source>
         <translation>1 = látható, 0 = láthatatlan, képletek engedélyezettek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="206"/>
-        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="559"/>
+        <location filename="../../src/app/ostara/core/odetailsnodewidget.cpp" line="564"/>
         <source>Seam allowance angle</source>
         <translation>Varrásráhagyás szöge</translation>
     </message>
@@ -11360,272 +11461,272 @@ Ez a művelet nem vonható vissza.</translation>
 <context>
     <name>ODetailsPieceWidget</name>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="438"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="473"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="439"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="474"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="230"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="478"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="231"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="479"/>
         <source>Graded alignment</source>
         <translation>Méretek igazítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="234"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="482"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="235"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="483"/>
         <source>Horizontal</source>
         <translation>Vízszintes</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="138"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="139"/>
         <source>Left</source>
         <translation>Balra</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="139"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="145"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="140"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="146"/>
         <source>Center</source>
         <translation>Közép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="140"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="141"/>
         <source>Right</source>
         <translation>Jobbra</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="265"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="486"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="266"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="487"/>
         <source>Vertical</source>
         <translation>Függőleges</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="144"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="145"/>
         <source>Top</source>
         <translation>Felül</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="146"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="147"/>
         <source>Bottom</source>
         <translation>Alul</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="326"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="519"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="327"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="520"/>
         <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
         <translation>Ha a másolatok száma 1-nél nagyobb, és a „Tükrözés kényszerítése” be van jelölve, a darab minden páros sorszámú másolata függőlegesen tükröződik.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="340"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="506"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1207"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="341"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="507"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1220"/>
         <source>- Remove marks</source>
         <translation>- Jelek eltávolítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="446"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="447"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="527"/>
         <source>Piece</source>
         <translation>Darab</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="336"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="503"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1206"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="337"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="504"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1219"/>
         <source>+ Add passmarks</source>
         <translation>+ Bevágásjelek hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="302"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="497"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1298"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1483"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="303"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1311"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1496"/>
         <source>Align on a point</source>
         <translation>Igazítás egy pontra</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="305"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="498"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="306"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="499"/>
         <source>Remove point</source>
         <translation>Pont eltávolítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="309"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="499"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="310"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="500"/>
         <source>Show alignment point</source>
         <translation>Igazítási pont megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="321"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="509"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="510"/>
         <source>Force flipping</source>
         <translation>Tükrözés kényszerítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="513"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="323"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="514"/>
         <source>Force piece to be always flipped in a layout.</source>
         <translation>A darab mindig tükrözve legyen az elrendezésben.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="325"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="517"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="326"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="518"/>
         <source>Symmetrical copy</source>
         <translation>Szimmetrikus másolat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="345"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="501"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="346"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="502"/>
         <source>Manage main path</source>
         <translation>Fő kontúr kezelése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="350"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="522"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="351"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="523"/>
         <source>General</source>
         <translation>Általános</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="374"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="523"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="375"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="524"/>
         <source>Grainline</source>
         <translation>Szálirány</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="399"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="400"/>
         <source>Internal outline</source>
         <translation>Belső körvonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="524"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="409"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="525"/>
         <source>Seam Allowance</source>
         <translation>Varrásráhagyás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="449"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="450"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="528"/>
         <source>Blocks</source>
         <translation>Blokkok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="452"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="528"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="453"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="529"/>
         <source>Annotations</source>
         <translation>Megjegyzések</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="455"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="529"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="456"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="530"/>
         <source>Thumbnail</source>
         <translation>Bélyegkép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="457"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="525"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="458"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="526"/>
         <source>Information</source>
         <translation>Információ</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="496"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="502"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="505"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1143"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1177"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1334"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1482"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="497"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="503"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="506"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1156"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1190"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1347"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1495"/>
         <source>Cancel</source>
         <translation>Mégsem</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1006"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1022"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1019"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1035"/>
         <source>Delete internal path</source>
         <translation>Belső útvonal törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1007"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1020"/>
         <source>Delete internal path &quot;%1&quot;?</source>
         <translation>Törli a(z) „%1” belső útvonalat?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1098"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1111"/>
         <source>Set the fold line</source>
         <translation>Hajtásvonal meghatározása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1157"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1170"/>
         <source>Click points to add passmarks - Enter to confirm, Esc to cancel</source>
         <translation>Kattintson a pontokra bevágásjelek hozzáadásához - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1197"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1210"/>
         <source>Click passmark points and internal marks to remove - Enter to confirm, Esc to cancel</source>
         <translation>Kattintson az eltávolítandó bevágásjel-pontokra és belső jelekre - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1239"/>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1559"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1252"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1572"/>
         <source>%1 mark(s) selected - Enter to confirm, Esc to cancel</source>
         <translation>%1 kijelölt jel - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1335"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1348"/>
         <source>Click the point to align on, on the piece outline (Esc to cancel)</source>
         <translation>Kattintson az igazítási pontra a darab körvonalán (Esc a megszakításhoz)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1350"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1363"/>
         <source>This point is not on the piece outline - click a point of the piece</source>
         <translation>Ez a pont nincs a darab körvonalán - kattintson a darab egy pontjára</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1580"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1593"/>
         <source>Choose Passmark Type</source>
         <translation>Bevágásjel típusának kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1593"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1606"/>
         <source>One line</source>
         <translation>Egy vonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1594"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1607"/>
         <source>Two lines</source>
         <translation>Két vonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1595"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1608"/>
         <source>Three lines</source>
         <translation>Három vonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1596"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1609"/>
         <source>T mark</source>
         <translation>T jel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1597"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1610"/>
         <source>External V mark</source>
         <translation>Külső V jel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1598"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1611"/>
         <source>Internal V mark</source>
         <translation>Belső V jel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1599"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1612"/>
         <source>U mark</source>
         <translation>U jel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1600"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1613"/>
         <source>Box mark</source>
         <translation>Doboz jel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1601"/>
+        <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="1614"/>
         <source>Check mark</source>
         <translation>Pipa jel</translation>
     </message>
@@ -11946,7 +12047,7 @@ Ez a művelet nem vonható vissza.</translation>
     <name>ODialogDartCap</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.ui" line="14"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="469"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="499"/>
         <source>Dart cap</source>
         <translation>Szűkítősapka</translation>
     </message>
@@ -12006,33 +12107,33 @@ Ez a művelet nem vonható vissza.</translation>
         <translation>Pont neve:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="377"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="398"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="378"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="400"/>
         <source>The two points of the opening are two different points, and neither of them is the point of the dart.</source>
         <translation>A nyílás két pontja két különböző pont, és egyik sem a szűkítő pontja.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="355"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="473"/>
         <source>Select the tip of the dart (the point inside the piece)</source>
         <translation>Válassza ki a szűkítő csúcsát (a darab belsejében lévő pontot)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="382"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="475"/>
         <source>Select the first point of the opening (a point of the piece&apos;s edge)</source>
         <translation>Válassza ki a nyílás első pontját (a darab szélének egy pontját)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="403"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="477"/>
         <source>Select the second point of the opening (the other end)</source>
         <translation>Válassza ki a nyílás második pontját (a másik végét)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="423"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="479"/>
         <source>Select a point of the line to extend</source>
         <translation>Válassza ki a meghosszabbítandó vonal egy pontját</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="448"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogdartcap.cpp" line="450"/>
         <source>The cap of this dart cannot be built from this point: the line it carries does not meet the axis of the dart. Choose another point of the line to extend.</source>
         <translation>Ebből a pontból nem építhető fel a szűkítő sapkája: az általa hordozott vonal nem találkozik a szűkítő tengelyével. Válasszon egy másik pontot a meghosszabbítandó vonalon.</translation>
     </message>
@@ -12139,7 +12240,7 @@ Ez a művelet nem vonható vissza.</translation>
     <name>ODialogMoveBatch</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="90"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="373"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="386"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
@@ -12150,7 +12251,7 @@ Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="98"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="374"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="387"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
@@ -12161,7 +12262,7 @@ Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="106"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="375"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="388"/>
         <source>Rotation angle:</source>
         <translation>Forgatási szög:</translation>
     </message>
@@ -12171,49 +12272,54 @@ Ez a művelet nem vonható vissza.</translation>
         <translation>Forgatási szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="205"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="319"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="202"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="323"/>
         <source>Move %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
         <translation>%1. mozgatás: kattintson a vágás &lt;b&gt;kezdőpontjára&lt;/b&gt; (az aljára), vagy &lt;b&gt;%2&lt;/b&gt; a befejezéshez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="217"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="235"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="214"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="232"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
         <translation>Először válasszon ki legalább egy vágást: egy kezdőpontot, majd egy forgáspontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="288"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="284"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
         <translation>Ez a pont nem része a kijelölt objektumoknak, válasszon egy pontot a kontúrból</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="301"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="297"/>
         <source>Move %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the point the part turns around)</source>
         <translation>%1. mozgatás: kattintson a &lt;b&gt;forgáspontjára&lt;/b&gt; (arra a pontra, amely körül a rész elfordul)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="392"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="306"/>
+        <source>You clicked the same point twice.</source>
+        <translation>Ugyanarra a pontra kétszer kattintott.</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="405"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="397"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="410"/>
         <source>Invalid layer name</source>
         <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="463"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="477"/>
         <source>Invalid length formula</source>
         <translation>Érvénytelen hosszképlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="477"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="491"/>
         <source>Invalid angle formula</source>
         <translation>Érvénytelen szögképlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="491"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogmovebatch.cpp" line="505"/>
         <source>Invalid rotation angle formula</source>
         <translation>Érvénytelen forgatásiszög-képlet</translation>
     </message>
@@ -12222,37 +12328,37 @@ Ez a művelet nem vonható vissza.</translation>
     <name>ODialogPleat</name>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1245"/>
         <source>Pleat</source>
         <translation>Pliszé</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1245"/>
         <source>Value</source>
         <translation>Érték</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="95"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1245"/>
         <source>Kind</source>
         <translation>Típus</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="108"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1271"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1250"/>
         <source>Add a pleat</source>
         <translation>Pliszé hozzáadása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="109"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1272"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1251"/>
         <source>Remove the pleat</source>
         <translation>A pliszé eltávolítása</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="126"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1265"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1244"/>
         <source>Value of the finished pleat:</source>
         <translation>A kész pliszé értéke:</translation>
     </message>
@@ -12263,51 +12369,51 @@ Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="139"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="881"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1273"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="860"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1252"/>
         <source>Simple</source>
         <translation>Egyszerű</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="140"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="881"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1274"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="860"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1253"/>
         <source>Double</source>
         <translation>Dupla</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="141"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1287"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1266"/>
         <source>Pleat:</source>
         <translation>Pliszé:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="174"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1288"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1267"/>
         <source>Line type:</source>
         <translation>Vonaltípus:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="175"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1289"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1268"/>
         <source>Line color:</source>
         <translation>Vonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="176"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1290"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1269"/>
         <source>Fold line type:</source>
         <translation>Hajtásvonal típusa:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="177"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1291"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1270"/>
         <source>Fold line color:</source>
         <translation>Hajtásvonal színe:</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="378"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1269"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1248"/>
         <source>Middle pleat</source>
         <translation>Középső pliszé</translation>
     </message>
@@ -12342,53 +12448,53 @@ Ez a művelet nem vonható vissza.</translation>
         <translation>A szél nem ismerhető fel a 2. pont végénél (a pirosnál): kattintson a darab körvonalának egy pontjára, közvetlenül mellette.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="793"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="772"/>
         <source>Cap 1:</source>
         <translation>Vég 1:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="794"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="773"/>
         <source>Cap 2:</source>
         <translation>Vég 2:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="808"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="787"/>
         <source>Click point 1 of the departure line of pleat 1 (it turns green)</source>
         <translation>Kattintson az 1. pliszé indulóvonalának 1. pontjára (zöldre vált)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="809"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="788"/>
         <source>Click point 1 of the departure line of pleat %1 (it turns green), or %2 to finish</source>
         <translation>Kattintson a(z) %1 ránc kiindulási vonalának 1. pontjára (zöldre vált), vagy %2 a befejezéshez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="814"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="793"/>
         <source>Click point 2 of the departure line of pleat %1 (it turns red)</source>
         <translation>Kattintson a(z) %1 ránc kiindulási vonalának 2. pontjára (pirosra vált)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="879"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="858"/>
         <source>Pleat %1</source>
         <translation>%1 ránc</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1034"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1013"/>
         <source>Select the objects of the contour, then %1</source>
         <translation>Válassza ki a kontúr objektumait, majd %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1098"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1077"/>
         <source>A departure line is made of two points</source>
         <translation>Egy kiindulási vonal két pontból áll.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1109"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1088"/>
         <source>This point is not one of the objects you selected: click a point of the contour</source>
         <translation>Ez a pont nem tartozik a kijelölt objektumokhoz: kattintson a kontúr egy pontjára</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1171"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1203"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1150"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogpleat.cpp" line="1182"/>
         <source>Click a point of the outline, right next to it</source>
         <translation>Kattintson a darab kontúrjának egy pontjára, közvetlenül mellette</translation>
     </message>
@@ -12570,81 +12676,86 @@ Ez a művelet nem vonható vissza.</translation>
 <context>
     <name>ODialogSpread</name>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="101"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="421"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="105"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="504"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="103"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="107"/>
         <source>Edit angle</source>
         <translation>Szög szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="109"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="422"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="113"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="505"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="111"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="115"/>
         <source>Edit length</source>
         <translation>Hossz szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="144"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="151"/>
         <source>Line type:</source>
         <translation>Vonaltípus:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="145"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="152"/>
         <source>Line color:</source>
         <translation>Vonal színe:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="244"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="355"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="302"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="421"/>
         <source>Rotation %1: click the &lt;b&gt;start point&lt;/b&gt; of the cut (the hem), or &lt;b&gt;%2&lt;/b&gt; to finish</source>
         <translation>Forgatás %1: kattintson a vágás &lt;b&gt;kezdőpontjára&lt;/b&gt; (az aljra), vagy &lt;b&gt;%2&lt;/b&gt; a befejezéshez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="256"/>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="274"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="314"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="332"/>
         <source>Pick at least one cut first: a start point, then a pivot point</source>
         <translation>Először válasszon legalább egy vágást: egy kezdőpontot, majd egy forgáspontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="326"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="384"/>
         <source>This point is not one of the selected objects, pick a point of the contour</source>
         <translation>Ez a pont nem tartozik a kijelölt objektumokhoz, válasszon egy pontot a kontúron</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="337"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="395"/>
         <source>Rotation %1: click its &lt;b&gt;pivot point&lt;/b&gt; (the apex the part turns around)</source>
         <translation>Forgatás %1: kattintson a &lt;b&gt;forgáspontjára&lt;/b&gt; (arra a csúcsra, amely körül a darab elfordul)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="437"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="404"/>
+        <source>You clicked the same point twice.</source>
+        <translation>Ugyanarra a pontra kétszer kattintott.</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="520"/>
         <source>Ready</source>
         <translation>Kész</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="442"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="525"/>
         <source>Invalid layer name</source>
         <translation>Érvénytelen rétegnév</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="509"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="592"/>
         <source>Invalid angle formula</source>
         <translation>Érvénytelen szögképlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="524"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="608"/>
         <source>Invalid length formula</source>
         <translation>Érvénytelen hosszképlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="692"/>
+        <location filename="../../src/libs/vtools/dialogs/tools/odialogspread.cpp" line="776"/>
         <source>The length cannot exceed the circle diameter (%1%2).</source>
         <translation>A hossz nem haladhatja meg a kör átmérőjét (%1%2).</translation>
     </message>
@@ -13824,196 +13935,194 @@ Ezt kell először csökkenteni, amikor a terv nem fér el 500 x 500 cm-ben: rit
 <context>
     <name>OExportTemplateEditor</name>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="215"/>
         <source>Cover page</source>
         <translation>Borítóoldal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="217"/>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="242"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Illesztési bevágások</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="219"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="218"/>
         <source>Name:</source>
         <translation>Név:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="220"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="219"/>
         <source>Template name</source>
         <translation>Sablon neve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="221"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="220"/>
         <source>Save</source>
         <translation>Mentés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="223"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="222"/>
         <source>Existing templates</source>
         <translation>Meglévő sablonok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="224"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="223"/>
         <source>Create a template</source>
         <translation>Sablon létrehozása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="225"/>
         <source>Custom marks</source>
-        <translation>Egyéni jelölések</translation>
+        <translation type="vanished">Egyéni jelölések</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="229"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="227"/>
         <source>Preview format:</source>
         <translation>Előnézet formátuma:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="231"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="229"/>
         <source>Frame</source>
         <translation>Keret</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="232"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="230"/>
         <source>Used by the framed formats only.</source>
         <translation>Csak a keretes formátumok használják.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="233"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="231"/>
         <source>Thickness:</source>
         <translation>Vastagság:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="234"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="232"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="235"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="233"/>
         <source>Dash:</source>
         <translation>Vonalka:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="236"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="234"/>
         <source>Space:</source>
         <translation>Szünet:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="237"/>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="245"/>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="500"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="235"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="243"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="493"/>
         <source>Opacity:</source>
         <translation>Átlátszatlanság:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="238"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="236"/>
         <source>Scissors horizontal</source>
         <translation>Vízszintes olló</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="239"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="237"/>
         <source>Scissors vertical</source>
         <translation>Függőleges olló</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="238"/>
         <source>Scissors opacity:</source>
         <translation>Olló átlátszósága:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="243"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="241"/>
         <source>Shape:</source>
         <translation>Forma:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="244"/>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="499"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="242"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="492"/>
         <source>Size:</source>
         <translation>Méret:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="246"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="244"/>
         <source>Corner</source>
         <translation>Sarok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="247"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="245"/>
         <source>Vertical center</source>
         <translation>Függőleges közép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="248"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="246"/>
         <source>Horizontal center</source>
         <translation>Vízszintes közép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="250"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="248"/>
         <source>Pagination</source>
         <translation>Oldalszámozás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="251"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="249"/>
         <source>Numbering:</source>
         <translation>Számozás:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="252"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="250"/>
         <source>Show the number at the center of the page</source>
         <translation>A szám megjelenítése az oldal közepén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="253"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="251"/>
         <source>Show the number at the corners of the sheets</source>
         <translation>A szám megjelenítése a lapok sarkain</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="254"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="252"/>
         <source>Show the number at the vertical center of the sheets</source>
         <translation>A szám megjelenítése a lapok függőleges közepén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="255"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="253"/>
         <source>Show the number at the horizontal center of the sheets</source>
         <translation>A szám megjelenítése a lapok vízszintes közepén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="285"/>
         <source>Coming soon</source>
-        <translation>Hamarosan</translation>
+        <translation type="vanished">Hamarosan</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="329"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="322"/>
         <source>Solid</source>
         <translation>Folytonos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="330"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="323"/>
         <source>Dashed</source>
         <translation>Szaggatott</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="497"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="490"/>
         <source>Font:</source>
         <translation>Betűtípus:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="498"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="491"/>
         <source>Weight:</source>
         <translation>Vastagság:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="586"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="579"/>
         <source>Zoom: %1 %</source>
         <translation>Nagyítás: %1%</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1351"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1315"/>
         <source>Unsaved template</source>
         <translation>Nem mentett sablon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1352"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1316"/>
         <source>This template has been changed and not saved.
 
 Save it before leaving it?</source>
@@ -14022,19 +14131,19 @@ Save it before leaving it?</source>
 Elmenti, mielőtt kilép?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1503"/>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1516"/>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1531"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1467"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1480"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1495"/>
         <source>Save template</source>
         <translation>Sablon mentése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1504"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1468"/>
         <source>Give the template a name before saving it.</source>
         <translation>Adjon nevet a sablonnak mentés előtt.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1517"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1481"/>
         <source>A template called &quot;%1&quot; already exists.
 
 Choose another name.</source>
@@ -14043,7 +14152,7 @@ Choose another name.</source>
 Válasszon másik nevet.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1532"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1496"/>
         <source>Could not save the template.
 
 %1</source>
@@ -14052,12 +14161,12 @@ Válasszon másik nevet.</translation>
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1574"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1538"/>
         <source>Open template</source>
         <translation>Sablon megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1575"/>
+        <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="1539"/>
         <source>Could not open the template.
 
 %1</source>
@@ -15669,101 +15778,101 @@ Link the folder to it?</source>
         <translation>Mappa létrehozása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>The folders of the library. Choose none to read the library&apos;s own folder.</source>
-        <translation>A könyvtár mappái. Ha egyet sem választ, a könyvtár saját mappáját olvassa.</translation>
+        <translation type="vanished">A könyvtár mappái. Ha egyet sem választ, a könyvtár saját mappáját olvassa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>Modified</source>
         <translation>Módosítva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>Collection</source>
         <translation>Kollekció</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="296"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="294"/>
         <source>Client</source>
         <translation>Ügyfél</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="299"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="297"/>
         <source>Description</source>
         <translation>Leírás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="300"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="298"/>
         <source>Notes</source>
         <translation>Megjegyzések</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="301"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="299"/>
         <source>Fabric info</source>
         <translation>Szövetadatok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="303"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="301"/>
         <source>Open folder</source>
         <translation>Mappa megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="443"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="451"/>
         <source>Transfer to another folder</source>
         <translation>Áthelyezés másik mappába</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="447"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="455"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="451"/>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="679"/>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="698"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="459"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="687"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="706"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="488"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="496"/>
         <source>No pattern matches the search.</source>
         <translation>Egyetlen szabásminta sem felel meg a keresésnek.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="489"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="497"/>
         <source>This folder holds no pattern.</source>
         <translation>Ez a mappa nem tartalmaz szabásmintát.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="592"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="341"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="600"/>
         <source>The library&apos;s own folder</source>
         <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="555"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="563"/>
         <source>Transfer &quot;%1&quot;</source>
         <translation>„%1” áthelyezése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="560"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="568"/>
         <source>Move to:</source>
         <translation>Áthelyezés ide:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="570"/>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="607"/>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="621"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="578"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="615"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="629"/>
         <source>Transfer</source>
         <translation>Áthelyezés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="608"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="616"/>
         <source>&quot;%1&quot; already exists in that folder.
 
 Replace it?</source>
@@ -15772,34 +15881,34 @@ Replace it?</source>
 Lecseréli?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="643"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="651"/>
         <source>Export &quot;%1&quot;</source>
         <translation>„%1” exportálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="645"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="653"/>
         <source>Pattern files (*.%1);;All files (*)</source>
         <translation>Szabásmintafájlok (*.%1);;Minden fájl (*)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="662"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="670"/>
         <source>Export error</source>
         <translation>Exportálási hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="666"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="674"/>
         <source>Export successful</source>
         <translation>Sikeres exportálás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="666"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="674"/>
         <source>Pattern exported to:
 %1</source>
         <translation>A szabásminta exportálva ide:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="680"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="688"/>
         <source>&quot;%1&quot; is the pattern that is open in Ostara.
 
 Close it before deleting it.</source>
@@ -15808,12 +15917,12 @@ Close it before deleting it.</source>
 Törlés előtt zárja be.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="686"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="694"/>
         <source>Confirm deletion</source>
         <translation>Törlés megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="687"/>
+        <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="695"/>
         <source>Delete &quot;%1&quot;?
 
 %2
@@ -16198,45 +16307,51 @@ Töltsön be egy méréstáblát, amely definiálja őket, majd szúrja be a dar
     <name>OPieceInfoWidget</name>
     <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="244"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="285"/>
+        <source>Exclude from total</source>
+        <translation>Kizárás az összegből</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="67"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="273"/>
         <source>Number</source>
         <translation>Szám</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="69"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="260"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="73"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="290"/>
         <source>Fabric</source>
         <translation>Szövet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="70"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="261"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="74"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="291"/>
         <source>Interfacing</source>
         <translation>Bélésanyag</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="71"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="262"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="75"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="292"/>
         <source>Lining</source>
         <translation>Bélés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="75"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="258"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="79"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="288"/>
         <source>Free text</source>
         <translation>Szabad szöveg</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="170"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="250"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="182"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="279"/>
         <source>Quantity</source>
         <translation>Mennyiség</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="175"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="253"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="254"/>
-        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="255"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="187"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="282"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="283"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="284"/>
         <source>On fold</source>
         <translation>Hajtásra</translation>
     </message>
@@ -16259,7 +16374,9 @@ Töltsön be egy méréstáblát, amely definiálja őket, majd szúrja be a dar
     <message numerus="yes">
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="309"/>
         <source>%n measurement(s)</source>
-        <translation><numerusform>%n mérés</numerusform></translation>
+        <translation>
+            <numerusform>%n mérés</numerusform>
+        </translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/opiecelibrary.cpp" line="314"/>
@@ -16317,7 +16434,7 @@ Töltsön be egy méréstáblát, amely definiálja őket, majd szúrja be a dar
     <name>OPieceLibraryDialog</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="273"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="642"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="647"/>
         <source>Piece library</source>
         <translation>Darabkönyvtár</translation>
     </message>
@@ -16369,10 +16486,10 @@ Töltsön be egy méréstáblát, amely definiálja őket, majd szúrja be a dar
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="283"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="881"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="893"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="906"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="924"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="886"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="898"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="911"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="929"/>
         <source>Import a piece</source>
         <translation>Darab importálása</translation>
     </message>
@@ -16383,64 +16500,65 @@ Töltsön be egy méréstáblát, amely definiálja őket, majd szúrja be a dar
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="287"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="603"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="608"/>
         <source>What you want to remember about this piece…</source>
         <translation>Amit meg szeretne jegyezni erről a darabról…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="497"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="502"/>
         <source>Transfer to another folder</source>
         <translation>Áthelyezés másik mappába</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="501"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="506"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="505"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="510"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="576"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="581"/>
         <source>No piece is saved in the library yet.</source>
         <translation>A könyvtárban még nincs mentett darab.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="580"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="585"/>
         <source>No piece matches the search.</source>
         <translation>Egyetlen darab sem felel meg a keresésnek.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="584"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="589"/>
         <source>This folder holds no piece.</source>
         <translation>Ez a mappa nem tartalmaz darabot.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="701"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="706"/>
         <source>Transfer &quot;%1&quot;</source>
         <translation>A „%1” áthelyezése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="706"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="711"/>
         <source>Move to:</source>
         <translation>Áthelyezés ide:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="716"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="757"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="771"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="721"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="762"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="776"/>
         <source>Transfer</source>
         <translation>Áthelyezés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="738"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="353"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="743"/>
         <source>The library&apos;s own folder</source>
         <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="758"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="763"/>
         <source>&quot;%1&quot; already exists in that folder.
 
 Replace it?</source>
@@ -16449,40 +16567,40 @@ Replace it?</source>
 Lecseréli?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="793"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="798"/>
         <source>Export &quot;%1&quot;</source>
         <translation>A „%1” exportálása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="795"/>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="907"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="800"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="912"/>
         <source>Ostara piece (*.%1);;All files (*)</source>
         <translation>Ostara darab (*.%1);;Minden fájl (*)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="816"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="821"/>
         <source>Export successful</source>
         <translation>Sikeres exportálás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="816"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="821"/>
         <source>Piece exported to:
 %1</source>
         <translation>A darab exportálva ide:
 %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="812"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="817"/>
         <source>Export error</source>
         <translation>Exportálási hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="825"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="830"/>
         <source>Confirm deletion</source>
         <translation>Törlés megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="826"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="831"/>
         <source>Are you sure you want to delete &quot;%1&quot;?
 
 This action cannot be undone.</source>
@@ -16491,12 +16609,12 @@ This action cannot be undone.</source>
 Ez a művelet nem vonható vissza.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="837"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="842"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="882"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="887"/>
         <source>The library already holds a piece named &quot;%1&quot;.
 
 Name the piece entering:</source>
@@ -16505,7 +16623,7 @@ Name the piece entering:</source>
 Adja meg a belépő darab nevét:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="893"/>
+        <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="898"/>
         <source>A piece name cannot be empty nor hold a slash.</source>
         <translation>A darab neve nem lehet üres, és nem tartalmazhat perjelet.</translation>
     </message>
@@ -16812,72 +16930,72 @@ Lecseréli?</translation>
         <translation>Ez a darab névtelen objektumokat oszt meg. Kérjük, nevezze el őket.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="93"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="94"/>
         <source>The library&apos;s own folder</source>
         <translation>A könyvtár saját mappája</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="120"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="121"/>
         <source>Give the file a name.</source>
         <translation>Adjon nevet a fájlnak.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="121"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="122"/>
         <source>Will be saved in: %1</source>
         <translation>Ide lesz mentve: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="161"/>
         <source>Object</source>
         <translation>Objektum</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="161"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="160"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="161"/>
         <source>Called in</source>
         <translation>Használat helye</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="196"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="197"/>
         <source>Line</source>
         <translation>Vonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="198"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="199"/>
         <source>Arc</source>
         <translation>Ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="200"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="201"/>
         <source>Elliptical arc</source>
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="205"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="206"/>
         <source>Curve</source>
         <translation>Görbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="213"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="214"/>
         <source>A name cannot be empty.</source>
         <translation>A név nem lehet üres.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="218"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="219"/>
         <source>A name cannot hold a space nor a reserved character.</source>
         <translation>A név nem tartalmazhat szóközt vagy fenntartott karaktert.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="223"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="224"/>
         <source>Two names cannot be the same.</source>
         <translation>Két név nem lehet azonos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="315"/>
+        <location filename="../../src/app/ostara/dialogs/osavepiecedialog.cpp" line="316"/>
         <source>The pattern already answers to %1.</source>
         <translation>A szabásminta már a %1 nevet viseli.</translation>
     </message>
@@ -17868,7 +17986,7 @@ Elmenti, mielőtt elhagyja?</translation>
 <context>
     <name>OToolBarLayout</name>
     <message>
-        <location filename="../../src/app/ostara/core/otoolbarlayout.cpp" line="197"/>
+        <location filename="../../src/app/ostara/core/otoolbarlayout.cpp" line="199"/>
         <source>Group</source>
         <translation>Csoport</translation>
     </message>
@@ -17963,12 +18081,12 @@ Elmenti, mielőtt elhagyja?</translation>
 <context>
     <name>OToolMoveBatch</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="272"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="369"/>
         <source>move by batch</source>
         <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="439"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolmovebatch.cpp" line="631"/>
         <source>Moves</source>
         <translation>Mozgatások</translation>
     </message>
@@ -18025,22 +18143,34 @@ Elmenti, mielőtt elhagyja?</translation>
 <context>
     <name>OToolSpread</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="358"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="442"/>
         <source>slash and spread</source>
         <translation>Vágás és forgatás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="482"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="528"/>
+        <source>Curve %1</source>
+        <extracomment>Default name of a copied curve that carries no alias. %1 is its rank.</extracomment>
+        <translation>Görbe %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="531"/>
+        <source>%1: %2%3</source>
+        <extracomment>%1 is the curve name, %2 its sign (empty or &quot;+&quot;), %3 the length change with its unit.</extracomment>
+        <translation>%1: %2%3</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="661"/>
         <source>show the rotation display</source>
         <translation>a forgatások ábrázolásának megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="482"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="661"/>
         <source>hide the rotation display</source>
         <translation>a forgatások ábrázolásának elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="693"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/otoolspread.cpp" line="911"/>
         <source>Rotations</source>
         <translation>Forgatások</translation>
     </message>
@@ -18333,184 +18463,188 @@ Elmenti, mielőtt elhagyja?</translation>
 <context>
     <name>PreferencesFoldersPage</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="205"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="207"/>
         <source>Files left behind</source>
         <translation>Helyben maradt fájlok</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="206"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="208"/>
         <source>%n file(s) could not be moved to « %1 » and stay in the old folder.</source>
-        <translation><numerusform>%n fájlt nem sikerült átmozgatni a(z) „%1” mappába, ezért a régi mappában marad.</numerusform></translation>
+        <translation>
+            <numerusform>%n fájlt nem sikerült átmozgatni a(z) „%1” mappába, ezért a régi mappában marad.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="231"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="233"/>
         <source>Measurements</source>
         <translation>Mérés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="232"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="234"/>
         <source>Measurements you build and reuse in your patterns.</source>
         <translation>A mérések, amelyeket a szabásmintáiban létrehoz és újrahasznál.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="240"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="242"/>
         <source>Pieces</source>
         <translation>Darabok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="241"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="243"/>
         <source>Pieces kept to be reused in other patterns.</source>
         <translation>A más szabásmintákban való újrahasználatra megtartott darabok.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="248"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="250"/>
         <source>Patterns</source>
         <translation>Szabásminták</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="249"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="251"/>
         <source>Where Open and Save start.</source>
         <translation>Ahol a Megnyitás és a Mentés indul.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="256"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="258"/>
         <source>Collections</source>
         <translation>Kollekciók</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="257"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="259"/>
         <source>Collections of pieces.</source>
         <translation>Darabkollekciók.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="263"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="265"/>
         <source>Clients</source>
         <translation>Ügyfelek</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="264"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="266"/>
         <source>Clients a cartouche can name.</source>
         <translation>Az ügyfelek, akiket egy kartussablon megnevezhet.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="270"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="272"/>
         <source>Seam allowances</source>
         <translation>Varrásráhagyások</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="271"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="273"/>
         <source>Seam allowance values kept for reuse.</source>
         <translation>Az újrahasználatra megtartott varrásráhagyás-értékek.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="278"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="280"/>
         <source>Symbols</source>
         <translation>Szimbólumok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="279"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="281"/>
         <source>Symbols to place on a piece.</source>
         <translation>A darabra helyezendő szimbólumok.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="285"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="287"/>
         <source>Annotation styles</source>
         <translation>Megjegyzésstílusok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="286"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="288"/>
         <source>Styles of the pattern annotations.</source>
         <translation>A szabásminta megjegyzéseinek stílusai.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="294"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="296"/>
         <source>Cartouche templates</source>
         <translation>Kartussablonok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="295"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="297"/>
         <source>Cartouche templates (.oct).</source>
         <translation>A kartussablonok (.oct).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="303"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="305"/>
         <source>PDF templates</source>
         <translation>PDF-sablonok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="304"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="306"/>
         <source>Templates of the exported PDF.</source>
         <translation>Az exportált PDF-ek sablonjai.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="312"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="314"/>
         <source>Cover page templates</source>
         <translation>Borítóoldal-sablonok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="313"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="315"/>
         <source>Cover pages of the exports.</source>
         <translation>Az exportok borítóoldalai.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="320"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="322"/>
         <source>Logos</source>
         <translation>Logók</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="321"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="323"/>
         <source>Logos to place in the cartouche.</source>
         <translation>A kartussablonba helyezendő logók.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="392"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="394"/>
         <source>Choose the « %1 » folder</source>
         <translation>A(z) „%1” mappa kiválasztása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="423"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="425"/>
         <source>Folder inside the other</source>
         <translation>Mappa a másikban</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="424"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="426"/>
         <source>The two folders are inside one another. Choose a folder that does not contain « %1 », nor is contained by it.</source>
         <translation>A két mappa egymásban van. Válasszon olyan mappát, amely nem tartalmazza a(z) „%1” mappát, és nem is annak része.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="437"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="439"/>
         <source>Move the files</source>
         <translation>A fájlok mozgatása</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="438"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="440"/>
         <source>The « %1 » folder holds %n file(s). Move them into the new folder?</source>
-        <translation><numerusform>A(z) „%1” mappa %n fájlt tartalmaz. Átmozgatja őket az új mappába?</numerusform></translation>
+        <translation>
+            <numerusform>A(z) „%1” mappa %n fájlt tartalmaz. Átmozgatja őket az új mappába?</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="441"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="443"/>
         <source>From %1
 to %2</source>
         <translation>Innen: %1
 Ide: %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="496"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="498"/>
         <source>Folders</source>
         <translation>Mappák</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="497"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="499"/>
         <source>Restore defaults</source>
         <translation>Alapértékek visszaállítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="503"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="505"/>
         <source>Change…</source>
         <translation>Módosítás…</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="504"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="506"/>
         <source>Choose another folder</source>
         <translation>Másik mappa kiválasztása</translation>
     </message>
@@ -18599,34 +18733,34 @@ Ide: %2</translation>
         <translation>Ne használja a natív fájlablakot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="170"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="172"/>
         <source>default unit</source>
         <translation>Alapértelmezett mértékegység</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="193"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="195"/>
         <source>Light</source>
         <comment>theme</comment>
         <translation>Világos</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="194"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="196"/>
         <source>Dark</source>
         <comment>theme</comment>
         <translation>Sötét</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="200"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="202"/>
         <source>Centimeters</source>
         <translation>Centiméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="201"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="203"/>
         <source>Millimiters</source>
         <translation>Milliméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="202"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesgeneralpage.cpp" line="204"/>
         <source>Inches</source>
         <translation>Hüvelyk</translation>
     </message>
@@ -18689,12 +18823,12 @@ Ide: %2</translation>
         <translation>Vonal szélessége:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.cpp" line="145"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.cpp" line="147"/>
         <source>Millimiters</source>
         <translation>Milliméter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.cpp" line="146"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencespatternpage.cpp" line="148"/>
         <source>Inches</source>
         <translation>Hüvelyk</translation>
     </message>
@@ -18740,72 +18874,72 @@ Ide: %2</translation>
 <context>
     <name>PreferencesToolBarPage</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="283"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="285"/>
         <source>Tools of « %1 »</source>
         <translation>A „%1” eszközei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="287"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="289"/>
         <source>Tools</source>
         <translation>Eszközök</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="307"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="309"/>
         <source>New group</source>
         <translation>Új csoport</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="494"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="496"/>
         <source>Groups</source>
         <translation>Csoportok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="495"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="497"/>
         <source>Tools not shown</source>
         <translation>Nem megjelenített eszközök</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="496"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="498"/>
         <source>Restore defaults</source>
         <translation>Alapértékek visszaállítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="498"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="500"/>
         <source>Add a group</source>
         <translation>Csoport hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="499"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="501"/>
         <source>Move the group up</source>
         <translation>Csoport mozgatása fel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="500"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="502"/>
         <source>Move the group down</source>
         <translation>Csoport mozgatása le</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="501"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="503"/>
         <source>Delete the group</source>
         <translation>Csoport törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="502"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="504"/>
         <source>Move the tool up</source>
         <translation>Eszköz mozgatása fel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="503"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="505"/>
         <source>Move the tool down</source>
         <translation>Eszköz mozgatása le</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="504"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="506"/>
         <source>Take the tool out of the group</source>
         <translation>Eszköz kivétele a csoportból</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="505"/>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="507"/>
         <source>Put the tool into the selected group</source>
         <translation>Eszköz behelyezése a kiválasztott csoportba</translation>
     </message>
@@ -18826,7 +18960,7 @@ Ide: %2</translation>
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="../../src/libs/vmisc/projectversion.cpp" line="121"/>
+        <location filename="../../src/libs/vmisc/projectversion.cpp" line="123"/>
         <source>Based on Qt %1 (%2, %3 bit)</source>
         <translation>Qt %1 alapján (%2, %3 bit)</translation>
     </message>
@@ -18856,7 +18990,7 @@ Ide: %2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vpropertyexplorer/vpropertymodel_p.h" line="54"/>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="896"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="898"/>
         <source>Value</source>
         <extracomment>The text that appears in the second column header</extracomment>
         <translation>Érték</translation>
@@ -18872,297 +19006,297 @@ Ide: %2</translation>
         <translation>darab mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="441"/>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="446"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="443"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="448"/>
         <source>Can&apos;t convert toUInt parameter</source>
         <translation>A toUInt paraméter nem konvertálható</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="492"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="494"/>
         <source>Can&apos;t convert toBool parameter</source>
         <translation>A toBool paraméter nem konvertálható</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="540"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="542"/>
         <source>Got empty parameter</source>
         <translation>Üres paraméter érkezett</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="577"/>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="582"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="579"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="584"/>
         <source>Can&apos;t convert toDouble parameter</source>
         <translation>A toDouble paraméter nem konvertálható</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="601"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="603"/>
         <source>Got wrong parameter id. Need only id &gt; 0.</source>
         <translation>Hibás paraméter-azonosító érkezett. Csak id &gt; 0 lehet.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtooluniondetails.cpp" line="1654"/>
+        <location filename="../../src/libs/vtools/tools/vtooluniondetails.cpp" line="1656"/>
         <source>United detail</source>
         <translation>Egyesített darab</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vplacelabelitem.cpp" line="146"/>
-        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="1121"/>
-        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="1131"/>
+        <location filename="../../src/libs/vgeometry/vplacelabelitem.cpp" line="148"/>
+        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="1123"/>
+        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="1133"/>
         <source>Visibility trigger contains error and will be ignored</source>
         <translation>A láthatósági kapcsoló hibát tartalmaz, és figyelmen kívül lesz hagyva</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="229"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="231"/>
         <source>Error: notch for point &apos;%1&apos; in piece &apos;%2&apos;. Width is less than minimal allowed.</source>
         <translation>Hiba: bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. A szélesség kisebb a megengedett minimumnál.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="946"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="948"/>
         <source>Piece &apos;%1&apos;. Notch collapse for point &apos;%2&apos;. Provide a manual angle value.</source>
         <translation>A(z) &apos;%1&apos; darab. A bevágás összeomlott a(z) &apos;%2&apos; pontnál. Adjon meg egy kézi szögértéket.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="237"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="238"/>
         <source>Cannot get tokens from formula &apos;%1&apos;. Parser error: %2.</source>
         <translation>Nem nyerhetők ki tokenek a(z) &apos;%1&apos; képletből. Elemzési hiba: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="803"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="805"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="837"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="839"/>
         <source>Empty formula</source>
         <translation>Üres képlet</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="869"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="871"/>
         <source>Invalid result. Value is infinite or NaN. Please, check your calculations.</source>
         <translation>Érvénytelen eredmény. Az érték végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="878"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="880"/>
         <source>Value can&apos;t be 0</source>
         <translation>Az érték nem lehet 0</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="884"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="886"/>
         <source>Value can&apos;t be less than 0</source>
         <translation>Az érték nem lehet kisebb 0-nál</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="904"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="906"/>
         <source>Parser error: %1</source>
         <translation>Elemzési hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="440"/>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3243"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="442"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3249"/>
         <source>Piece &apos;%1&apos;. Seam allowance is not valid.</source>
         <translation>A(z) &apos;%1&apos; darab. A varrásráhagyás nem érvényes.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="126"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="128"/>
         <source>Found null notch for point &apos;%1&apos; in piece &apos;%2&apos;. Length is less than minimal allowed.</source>
         <translation>Nulla bevágás található a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. A hossz kisebb a megengedett minimumnál.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="139"/>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="171"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="141"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="173"/>
         <source>Cannot calculate seam allowance before for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a varrásráhagyás előtti értéke a(z) &apos;%1&apos; pontnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="224"/>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="257"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="226"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="259"/>
         <source>Cannot calculate seam allowance after for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a varrásráhagyás utáni értéke a(z) &apos;%1&apos; pontnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="405"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="407"/>
         <source>Cannot calculate passmark width for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a bevágásjel szélessége a(z) &apos;%1&apos; pontnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="438"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="440"/>
         <source>Cannot calculate passmark angle for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a bevágásjel szöge a(z) &apos;%1&apos; pontnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="469"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="471"/>
         <source>Cannot calculate passmark visibility for point &apos;%1&apos;. Reason: %2. Visibility trigger will be ignored.</source>
         <translation>Nem számítható ki a bevágásjel láthatósága a(z) &apos;%1&apos; pontnál. Ok: %2. A láthatósági kapcsoló figyelmen kívül lesz hagyva.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="371"/>
+        <location filename="../../src/libs/vpatterndb/vpiecenode.cpp" line="373"/>
         <source>Cannot calculate passmark length for point &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a bevágásjel hossza a(z) &apos;%1&apos; pontnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="158"/>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="220"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="160"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="222"/>
         <source>Passmark &apos;%1&apos; is not part of piece &apos;%2&apos;.</source>
         <translation>A(z) &apos;%1&apos; bevágásjel nem része a(z) &apos;%2&apos; darabnak.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="134"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="136"/>
         <source>Cannot cast tool with id &apos;%1&apos;.</source>
         <translation>Nem alakítható át a(z) &apos;%1&apos; azonosítójú eszköz.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="815"/>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="861"/>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="1585"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="817"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="863"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="1587"/>
         <source>Empty list of nodes for tool with id &apos;%1&apos;.</source>
         <translation>Üres csomópontlista a(z) &apos;%1&apos; azonosítójú eszközhöz.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="1524"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="1526"/>
         <source>Invalid formula &apos;%1&apos; for tool with id &apos;%2&apos;. %3.</source>
         <translation>Érvénytelen képlet (&apos;%1&apos;) a(z) &apos;%2&apos; azonosítójú eszközhöz. %3.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="470"/>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="475"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="472"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="477"/>
         <source>Can&apos;t convert toInt parameter</source>
         <translation>A toInt paraméter nem konvertálható</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="150"/>
+        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="152"/>
         <source>Piece name &apos;%1&apos; is not unique.</source>
         <translation>A(z) &apos;%1&apos; darabnév nem egyedi.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/mainwindow_helpers.cpp" line="1223"/>
         <source>Unnamed</source>
         <translation>Névtelen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="126"/>
+        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="128"/>
         <source>Curve has no points.</source>
         <translation>A görbének nincsenek pontjai.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="153"/>
+        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="155"/>
         <source>Could not find the segment start.</source>
         <translation>A szakasz kezdete nem található.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="162"/>
+        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="164"/>
         <source>Could not find the segment end.</source>
         <translation>A szakasz vége nem található.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="168"/>
+        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="170"/>
         <source>Segment is too short.</source>
         <translation>A szakasz túl rövid.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="208"/>
+        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="210"/>
         <source>Error calculating segment for curve &apos;%1&apos;. %2</source>
         <translation>Hiba a(z) &apos;%1&apos; görbe szakaszának kiszámításakor. %2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="212"/>
+        <location filename="../../src/libs/vgeometry/vabstractcurve.cpp" line="214"/>
         <source>Error in path &apos;%1&apos;. Calculating segment for curve &apos;%2&apos; has failed. %3</source>
         <translation>Hiba a(z) &apos;%1&apos; útvonalban. A(z) &apos;%2&apos; görbe szakaszának kiszámítása sikertelen. %3</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="231"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="233"/>
         <source>Cannot prepare builtin passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark is empty.</source>
         <translation>Nem lehet előkészíteni a beépített jelölést (‘%1’) a(z) ‘%2’ alkatrészhez. A jelölés üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="245"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="247"/>
         <source>Cannot prepare builtin  passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark base line is empty.</source>
         <translation>Nem lehet előkészíteni a beépített jelölést (‘%1’) a(z) ‘%2’ alkatrészhez. A jelölés alapvonala üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="170"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="172"/>
         <source>Cannot prepare passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark base line is empty.</source>
         <translation>Nem készíthető elő a(z) &apos;%1&apos; bevágásjel a(z) &apos;%2&apos; darabhoz. A bevágásjel alapvonala üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="182"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="184"/>
         <source>Cannot prepare passmark &apos;%1&apos; for piece &apos;%2&apos;. Passmark is empty.</source>
         <translation>Nem készíthető elő a(z) &apos;%1&apos; bevágásjel a(z) &apos;%2&apos; darabhoz. A bevágásjel üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="243"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="244"/>
         <source>Cannot get tokens from formula &apos;%1&apos;. Formula error: %2.</source>
         <translation>Nem nyerhetők ki tokenek a(z) &apos;%1&apos; képletből. Képlethiba: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="123"/>
+        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="125"/>
         <source>Cannot calculate fold line height for piece &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a hajtásvonal magassága a(z) &apos;%1&apos; darabnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="144"/>
+        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="146"/>
         <source>Cannot calculate fold line width for piece &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a hajtásvonal szélessége a(z) &apos;%1&apos; darabnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="166"/>
+        <location filename="../../src/libs/vlayout/vfoldline.cpp" line="168"/>
         <source>Cannot calculate fold line center position for piece &apos;%1&apos;. Reason: %2.</source>
         <translation>Nem számítható ki a hajtásvonal középpontja a(z) &apos;%1&apos; darabnál. Ok: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1569"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1575"/>
         <source>Piece &apos;%1&apos;. Grainline is not valid.</source>
         <translation>A(z) &apos;%1&apos; darab. A szálirány nem érvényes.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4044"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="4050"/>
         <source>Piece &apos;%1&apos;. Fold line is not valid.</source>
         <translation>A(z) &apos;%1&apos; darab. A hajtásvonal nem érvényes.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1753"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1767"/>
         <source>Invalid global value for a passmark length. Piece &apos;%1&apos;. Length is less than minimal allowed.</source>
         <translation>Érvénytelen globális érték a bevágásjel hosszához. A(z) &apos;%1&apos; darab. A hossz kisebb a megengedett minimumnál.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="391"/>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="747"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="749"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="393"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="408"/>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="765"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="767"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="410"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="125"/>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="134"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="127"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="136"/>
         <source>Point &apos;%1&apos; repeats twice</source>
         <translation>A(z) &apos;%1&apos; pont kétszer ismétlődik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="147"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="149"/>
         <source>Points &apos;%1&apos; and &apos;%2&apos; have the same coordinates.</source>
         <translation>A(z) &apos;%1&apos; és &apos;%2&apos; pontok koordinátái azonosak.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="180"/>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="189"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="182"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="191"/>
         <source>Leave only one copy of curve &apos;%1&apos;</source>
         <translation>Hagyjon csak egy másolatot a(z) &apos;%1&apos; görbéből</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="526"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="528"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
         <translation>Ez a képlet egy névtelen objektumot használ. Adjon neki nevet, hogy használhassa a képletben.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="756"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="758"/>
         <source>name the objects of a formula</source>
         <translation>a képlet objektumainak elnevezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1531"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1533"/>
         <source>Point &apos;%1&apos; does not lie on a curve &apos;%2&apos;</source>
         <translation>A(z) &apos;%1&apos; pont nem fekszik a(z) &apos;%2&apos; görbén</translation>
     </message>
@@ -19177,84 +19311,84 @@ Ide: %2</translation>
         <translation>Minden fájl</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="124"/>
+        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="126"/>
         <source>Confirm deletion</source>
         <translation>Törlés megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="125"/>
+        <location filename="../../src/libs/vtools/tools/toolsdef.cpp" line="127"/>
         <source>Do you really want to delete?</source>
         <translation>Valóban törölni szeretné?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="385"/>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="741"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="743"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="387"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="403"/>
-        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="760"/>
+        <location filename="../../src/libs/vgeometry/vellipticalarc.cpp" line="762"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezier.cpp" line="405"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2000"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="2014"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with internal path &apos;%3&apos;.</source>
         <translation>A(z) &apos;%1&apos; darab. A(z) &apos;%2&apos; belső útvonal metszi a(z) &apos;%3&apos; belső útvonalat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1915"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1929"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; intersects with cutting contour.</source>
         <translation>A(z) &apos;%1&apos; darab. A(z) &apos;%2&apos; belső útvonal metszi a vágási kontúrt.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1788"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1802"/>
         <source>Invalid global value for a passmark width. Piece &apos;%1&apos;. Width is less than minimal allowed.</source>
         <translation>Érvénytelen globális érték a bevágásjel szélességéhez. A(z) &apos;%1&apos; darab. A szélesség kisebb a megengedett minimumnál.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1926"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1940"/>
         <source>Piece &apos;%1&apos;. Internal path &apos;%2&apos; not inside of cutting contour.</source>
         <translation>A(z) &apos;%1&apos; darab. A(z) &apos;%2&apos; belső útvonal nincs a vágási kontúron belül.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="467"/>
+        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="469"/>
         <source>Error in internal path &apos;%1&apos;. There is no intersection of first point with cutting contour</source>
         <translation>Hiba a(z) &apos;%1&apos; belső útvonalban. Az első pont nem metszi a vágási kontúrt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="486"/>
+        <location filename="../../src/libs/vpatterndb/vpiecepath.cpp" line="488"/>
         <source>Error in internal path &apos;%1&apos;. There is no intersection of last point with cutting contour</source>
         <translation>Hiba a(z) &apos;%1&apos; belső útvonalban. Az utolsó pont nem metszi a vágási kontúrt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/variables/vpiecearea.cpp" line="135"/>
+        <location filename="../../src/libs/vpatterndb/variables/vpiecearea.cpp" line="137"/>
         <source>Unknown</source>
         <comment>piece area</comment>
         <translation>Ismeretlen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="840"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="854"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="842"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="856"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam path at %2.</source>
         <translation>A(z) &apos;%1&apos; darab. Nem hozható létre a teljes varrásútvonal itt: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="842"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="856"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="844"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="858"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam path.</source>
         <translation>A(z) &apos;%1&apos; darab. Nem hozható létre a teljes varrásútvonal.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="898"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="915"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="900"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="917"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam allowance path at %2.</source>
         <translation>A(z) &apos;%1&apos; darab. Nem hozható létre a teljes varrásráhagyás-útvonal itt: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="900"/>
-        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="917"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="902"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.h" line="919"/>
         <source>Piece &apos;%1&apos;. Unable to generate full seam allowance path.</source>
         <translation>A(z) &apos;%1&apos; darab. Nem hozható létre a teljes varrásráhagyás-útvonal.</translation>
     </message>
@@ -19265,10 +19399,10 @@ Ide: %2</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/otoolarmholecurve.cpp" line="87"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezier.cpp" line="126"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.cpp" line="126"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolspline.cpp" line="204"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolsplinepath.cpp" line="188"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezier.cpp" line="128"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolcubicbezierpath.cpp" line="128"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolspline.cpp" line="206"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolsplinepath.cpp" line="190"/>
         <source>Curve &apos;%1&apos; with id %2 has not unique name.</source>
         <translation>A(z) %2 azonosítójú &apos;%1&apos; görbe neve nem egyedi.</translation>
     </message>
@@ -19354,15 +19488,15 @@ Ide: %2</translation>
 <context>
     <name>QmuParser</name>
     <message>
-        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="303"/>
-        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="324"/>
+        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="305"/>
+        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="326"/>
         <source>too few arguments for function sum.</source>
         <comment>parser error message</comment>
         <translation>túl kevés argumentum a sum függvényhez.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="345"/>
-        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="366"/>
+        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="347"/>
+        <location filename="../../src/libs/qmuparser/qmuparser.cpp" line="368"/>
         <source>too few arguments for function min.</source>
         <comment>parser error message</comment>
         <translation>túl kevés argumentum a min függvényhez.</translation>
@@ -19590,7 +19724,7 @@ Ide: %2</translation>
 <context>
     <name>RemoveItemFromGroup</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="349"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="351"/>
         <source>Remove item from group</source>
         <translation>Elem eltávolítása a csoportból</translation>
     </message>
@@ -19606,7 +19740,7 @@ Ide: %2</translation>
 <context>
     <name>RenameGroup</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="128"/>
+        <location filename="../../src/libs/vtools/undocommands/undogroup.cpp" line="130"/>
         <source>rename group</source>
         <translation>csoport átnevezése</translation>
     </message>
@@ -19654,7 +19788,7 @@ Ide: %2</translation>
 <context>
     <name>SavePieceOptions</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/savepieceoptions.cpp" line="49"/>
+        <location filename="../../src/libs/vtools/undocommands/savepieceoptions.cpp" line="51"/>
         <source>save detail options</source>
         <translation>darab beállításainak mentése</translation>
     </message>
@@ -19670,7 +19804,7 @@ Ide: %2</translation>
 <context>
     <name>SavePlaceLabelOptions</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/saveplacelabeloptions.cpp" line="46"/>
+        <location filename="../../src/libs/vtools/undocommands/saveplacelabeloptions.cpp" line="48"/>
         <source>save place label options</source>
         <translation>címke beállításainak mentése</translation>
     </message>
@@ -19780,38 +19914,38 @@ Ide: %2</translation>
         <translation>Alap:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="193"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="192"/>
         <source>Reference size for calculating other sizes</source>
         <translation>Referenciaméret a többi méret kiszámításához</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="255"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="254"/>
         <source>Group %1</source>
         <translation>%1. csoport</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="257"/>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="317"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="256"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="316"/>
         <source>Group &quot;%1&quot; · %2 values</source>
         <translation>„%1” csoport · %2 érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="378"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="377"/>
         <source>Name at least one group and generate its values.</source>
         <translation>Nevezzen el legalább egy csoportot, és generálja az értékeit.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="395"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="394"/>
         <source>Group &quot;%1&quot; must have at least 2 values.</source>
         <translation>A „%1” csoportnak legalább 2 értékkel kell rendelkeznie.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="403"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="402"/>
         <source>Generate values and select a base for group &quot;%1&quot;.</source>
         <translation>Generálja az értékeket, és válasszon alapot a „%1” csoporthoz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="415"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/SizeGridPanel.cpp" line="414"/>
         <source>Group name &quot;%1&quot; is used multiple times.</source>
         <translation>A „%1” csoportnév többször szerepel.</translation>
     </message>
@@ -19904,24 +20038,24 @@ Ide: %2</translation>
         <translation>Adjon hozzá és szerkesszen méréseket a részletek panelen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="532"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="531"/>
         <source>New group</source>
         <translation>Új csoport</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="635"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="634"/>
         <source>Import complete</source>
         <translation>Az importálás befejeződött</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="636"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="635"/>
         <source>%1 measurement(s)/group(s) imported.
 %2 measurement(s)/group(s) skipped (name already exists).</source>
         <translation>%1 mérés/csoport importálva.
 %2 mérés/csoport kihagyva (a név már létezik).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="683"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="682"/>
         <source>Group &quot;%1&quot; contains %2 measurement(s).
 Deleting the group will also delete all its measurements.
 Do you want to continue?</source>
@@ -19930,22 +20064,22 @@ A csoport törlése a méréseit is törli.
 Szeretné folytatni?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="691"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="690"/>
         <source>Do you want to delete group &quot;%1&quot;?</source>
         <translation>Szeretné törölni a „%1” csoportot?</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="696"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="695"/>
         <source>Delete group</source>
         <translation>Csoport törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="772"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="771"/>
         <source>Delete group and its measurements</source>
         <translation>Csoport és méréseinek törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="776"/>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/Step2Container.cpp" line="775"/>
         <source>Delete measurement</source>
         <translation>Méret törlése</translation>
     </message>
@@ -19961,7 +20095,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>ToggleHideMainPath</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="151"/>
+        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="153"/>
         <source>detail hide main path</source>
         <translation>darab fő útvonalának elrejtése</translation>
     </message>
@@ -19969,7 +20103,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>TogglePieceForceFlipping</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="97"/>
+        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="99"/>
         <source>piece flipping</source>
         <translation>darab tükrözése</translation>
     </message>
@@ -19977,7 +20111,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>TogglePieceInLayout</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="52"/>
+        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="54"/>
         <source>detail in layout list</source>
         <translation>darab az elrendezési listában</translation>
     </message>
@@ -19985,7 +20119,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>ToggleShowFullPiece</name>
     <message>
-        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="197"/>
+        <location filename="../../src/libs/vtools/undocommands/togglepiecestate.cpp" line="199"/>
         <source>show full piece</source>
         <translation>teljes darab megjelenítése</translation>
     </message>
@@ -20102,39 +20236,39 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractConverter</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="271"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="273"/>
         <source>Could not change version.</source>
         <translation>A verzió nem módosítható.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="124"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="126"/>
         <source>Error creating a reserv copy: %1.</source>
         <translation>Hiba a biztonsági másolat létrehozásakor: %1.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="196"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="198"/>
         <source>This file was created with an outdated version of the app and cannot be opened. Please re-save it using a newer version of the app that is compatible with this one.</source>
         <translation>Ez a fájl az alkalmazás elavult verziójával készült, és nem nyitható meg. Kérjük, mentse el újra az alkalmazás egy újabb, ezzel kompatibilis verziójával.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="202"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="204"/>
         <source>This file was created with a newer version of the app and cannot be opened. Please update your app to the latest version.</source>
         <translation>Ez a fájl az alkalmazás újabb verziójával készült, és nem nyitható meg. Kérjük, frissítse az alkalmazást a legújabb verzióra.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="206"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="208"/>
         <source>Unexpected version &quot;%1&quot;.</source>
         <translation>Váratlan verzió: „%1”.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="180"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="182"/>
         <source>Can&apos;t open file %1:
 %2.</source>
         <translation>A(z) %1 fájl nem nyitható meg:
 %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="82"/>
+        <location filename="../../src/libs/ifc/xml/vabstractconverter.cpp" line="84"/>
         <source>Error opening a temp file: %1.</source>
         <translation>Hiba az ideiglenes fájl megnyitásakor: %1.</translation>
     </message>
@@ -20142,27 +20276,27 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractCubicBezierPath</name>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="213"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="215"/>
         <source>Can&apos;t cut this spline</source>
         <translation>Ez a spline nem vágható el</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="236"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="238"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="242"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="244"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="253"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="255"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="258"/>
+        <location filename="../../src/libs/vgeometry/vabstractcubicbezierpath.cpp" line="260"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
@@ -20170,73 +20304,73 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractLayoutDialog</name>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="57"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="59"/>
         <source>Letter</source>
         <comment>Paper format</comment>
         <translation>Letter</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="58"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="60"/>
         <source>Legal</source>
         <comment>Paper format</comment>
         <translation>Legal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="59"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="61"/>
         <source>Tabloid</source>
         <comment>Paper format</comment>
         <translation>Tabloid</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="60"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="62"/>
         <source>Roll 24in</source>
         <comment>Paper format</comment>
         <translation>24 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="61"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="63"/>
         <source>Roll 30in</source>
         <comment>Paper format</comment>
         <translation>30 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="62"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="64"/>
         <source>Roll 36in</source>
         <comment>Paper format</comment>
         <translation>36 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="63"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="65"/>
         <source>Roll 42in</source>
         <comment>Paper format</comment>
         <translation>42 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="64"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="66"/>
         <source>Roll 44in</source>
         <comment>Paper format</comment>
         <translation>44 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="65"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="67"/>
         <source>Roll 48in</source>
         <comment>Paper format</comment>
         <translation>48 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="66"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="68"/>
         <source>Roll 62in</source>
         <comment>Paper format</comment>
         <translation>62 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="67"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="69"/>
         <source>Roll 72in</source>
         <comment>Paper format</comment>
         <translation>72 hüvelykes tekercs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="68"/>
+        <location filename="../../src/libs/vlayout/dialogs/vabstractlayoutdialog.cpp" line="70"/>
         <source>Custom</source>
         <comment>Paper format</comment>
         <translation>Egyéni</translation>
@@ -20245,84 +20379,84 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractMainWindow</name>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="170"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="172"/>
         <source>Confirm format rewriting</source>
         <translation>Formátum átírásának megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="171"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="173"/>
         <source>This file is using previous format version v%1. The current is v%2. Saving the file with this app version will update the format version for this file. This may prevent you from be able to open the file with older app versions. Do you really want to continue?</source>
         <translation>Ez a fájl a korábbi formátumverziót (v%1) használja. A jelenlegi a v%2. A fájl mentése ezzel az alkalmazásverzióval frissíti a fájl formátumverzióját. Ez megakadályozhatja, hogy a fájlt régebbi alkalmazásverziókkal nyissa meg. Valóban folytatni szeretné?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="204"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="206"/>
         <source>Comma-Separated Values</source>
         <translation>Vesszővel elválasztott értékek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="206"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="208"/>
         <source>values</source>
         <translation>értékek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="208"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="210"/>
         <source>Export to CSV</source>
         <translation>Exportálás CSV-be</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="298"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="300"/>
         <source>Cannot set permissions for %1 to writable.</source>
         <translation>A(z) %1 jogosultságai nem állíthatók írhatóra.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="299"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="301"/>
         <source>Could not save the file.</source>
         <translation>A fájl nem menthető.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="323"/>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="329"/>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="336"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="325"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="331"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="338"/>
         <source>Locking file</source>
         <translation>Fájl zárolása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="324"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="326"/>
         <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Ez a fájl már meg van nyitva egy másik ablakban. Hagyja figyelmen kívül, ha folytatni szeretné (nem ajánlott, adatsérülést okozhat).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="330"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="332"/>
         <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>A zárolási fájl nem hozható létre jogosultság hiánya miatt. Hagyja figyelmen kívül, ha folytatni szeretné (nem ajánlott, adatsérülést okozhat).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="337"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="339"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Ismeretlen hiba történt, például egy megtelt partíció megakadályozta a zárolási fájl kiírását. Hagyja figyelmen kívül, ha folytatni szeretné (nem ajánlott, adatsérülést okozhat).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="358"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="360"/>
         <source>This file already opened in another window.</source>
         <translation>A fájl már meg van nyitva egy másik ablakban.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="362"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="364"/>
         <source>The lock file could not be created, for lack of permissions.</source>
         <translation>A zárolási fájl nem hozható létre jogosultság hiánya miatt.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="366"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="368"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file.</source>
         <translation>Ismeretlen hiba történt, például egy megtelt partíció megakadályozta a zárolási fájl kiírását.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="280"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="282"/>
         <source>The file has no write permissions.</source>
         <translation>A fájlhoz nincs írási jogosultság.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="281"/>
+        <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="283"/>
         <source>Do you want to change the permissions?</source>
         <translation>Szeretné módosítani a jogosultságokat?</translation>
     </message>
@@ -20338,28 +20472,28 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractOperation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1719"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1721"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1732"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1734"/>
         <source>Layer</source>
         <translation>Réteg</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="773"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="775"/>
         <source>default</source>
         <translation>alapértelmezett</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1206"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1208"/>
         <source>delete operation</source>
         <translation>művelet törlése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1169"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1881"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1171"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vabstractoperation.cpp" line="1883"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -20367,35 +20501,35 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractPattern</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="1760"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="1761"/>
         <source>Can&apos;t find tool in table.</source>
         <translation>Az eszköz nem található a táblázatban.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2347"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2348"/>
         <source>Error creating or updating group</source>
         <translation>Hiba a csoport létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2369"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2370"/>
         <source>measurement</source>
         <translation>mérés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2701"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3583"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3650"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2702"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3584"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3651"/>
         <source>New layer</source>
         <translation>Új réteg</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2878"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3116"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2879"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3117"/>
         <source>Group</source>
         <translation>Csoport</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="804"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="805"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Hibás címkenév: &apos;%1&apos;.</translation>
     </message>
@@ -20403,7 +20537,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece.cpp" line="1483"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece.cpp" line="1485"/>
         <source>Piece &apos;%1&apos;. Not enough points to build seam allowance.</source>
         <translation>A(z) &apos;%1&apos; darab. Nincs elég pont a varrásráhagyás felépítéséhez.</translation>
     </message>
@@ -20411,7 +20545,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractPieceData</name>
     <message>
-        <location filename="../../src/libs/vlayout/vabstractpiece_p.h" line="53"/>
+        <location filename="../../src/libs/vlayout/vabstractpiece_p.h" line="55"/>
         <source>Detail</source>
         <translation>Darab</translation>
     </message>
@@ -20419,7 +20553,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractPoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/vabstractpoint.cpp" line="118"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/vabstractpoint.cpp" line="120"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -20427,595 +20561,595 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractShortcutManager</name>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="330"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
         <source>Zoom in</source>
         <comment>shortcut for action</comment>
         <translation>Nagyítás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="332"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
         <source>Zoom out</source>
         <comment>shortcut for action</comment>
         <translation>Kicsinyítés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="334"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
         <source>Zoom original</source>
         <comment>shortcut for action</comment>
         <translation>Eredeti méret</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="336"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
         <source>Zoom fit best</source>
         <comment>shortcut for action</comment>
         <translation>Legjobb illesztés nagyítása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="338"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Zoom fit best current</source>
         <comment>shortcut for action</comment>
         <translation>Legjobb illesztés nagyítása a jelenlegihez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
         <source>Increase point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Pontnevek betűméretének növelése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
         <source>Decrease point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Pontnevek betűméretének csökkentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="344"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
         <source>Original point name font size</source>
         <comment>shortcut for action</comment>
         <translation>Pontnevek eredeti betűmérete</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="346"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
         <source>Show all point names</source>
         <comment>shortcut for action</comment>
         <translation>Összes pontnév megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="348"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
         <source>Undo</source>
         <comment>shortcut for action</comment>
         <translation>Visszavonás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="350"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
         <source>Redo</source>
         <comment>shortcut for action</comment>
         <translation>Mégis</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="352"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
         <source>New</source>
         <comment>shortcut for action</comment>
         <translation>Új</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="354"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
         <source>Open</source>
         <comment>shortcut for action</comment>
         <translation>Megnyitás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="356"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
         <source>Save</source>
         <comment>shortcut for action</comment>
         <translation>Mentés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="358"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
         <source>Save as</source>
         <comment>shortcut for action</comment>
         <translation>Mentés másként</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="360"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
         <source>Draw mode</source>
         <comment>shortcut for action</comment>
         <translation>Rajz mód</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="362"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
         <source>Details mode</source>
         <comment>shortcut for action</comment>
         <translation>Alkatrészek mód</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="364"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
         <source>Graded mode</source>
         <comment>shortcut for action</comment>
         <translation>Gradációs mód</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="366"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
         <source>New pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Új szabásminta rész</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="368"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
         <source>Next pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Következő mintadarab</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="370"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
         <source>Previous pattern piece</source>
         <comment>shortcut for action</comment>
         <translation>Előző mintadarab</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="372"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
         <source>Interactive tools mode</source>
         <comment>shortcut for action</comment>
         <translation>Interaktív eszközök mód</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="374"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
         <source>Open Table of variables dialog</source>
         <comment>shortcut for action</comment>
         <translation>Változótábla párbeszédablak megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="376"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
         <source>Quit app</source>
         <comment>shortcut for action</comment>
         <translation>Kilépés az alkalmazásból</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="378"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
         <source>Activate last used tool</source>
         <comment>shortcut for action</comment>
         <translation>Az utoljára használt eszköz aktiválása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="380"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
         <source>Show curve details</source>
         <comment>shortcut for action</comment>
         <translation>Görbe részleteinek megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="382"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
         <source>Show/hide segment labels</source>
         <comment>shortcut for action</comment>
         <translation>Szakaszcímkék megjelenítése/elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="384"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
         <source>Open final measurements dialog</source>
         <comment>shortcut for action</comment>
         <translation>Végső mérések párbeszédablak megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="386"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
         <source>Reload piece labels</source>
         <comment>shortcut for action</comment>
         <translation>Darabcímkék újratöltése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="388"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
         <source>Case sensitive match</source>
         <comment>shortcut for action</comment>
         <translation>Kis- és nagybetűt megkülönböztető illesztés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="390"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
         <source>Whole word match</source>
         <comment>shortcut for action</comment>
         <translation>Teljes szó illesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="392"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
         <source>Regex match</source>
         <comment>shortcut for action</comment>
         <translation>Regex illesztés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="394"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
         <source>Search history</source>
         <comment>shortcut for action</comment>
         <translation>Keresési előzmények</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="396"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
         <source>Regex match by unicode properties</source>
         <comment>shortcut for action</comment>
         <translation>Regex illesztés Unicode-tulajdonságok szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="398"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
         <source>Find next match</source>
         <comment>shortcut for action</comment>
         <translation>Következő találat keresése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="400"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
         <source>Find previus match</source>
         <comment>shortcut for action</comment>
         <translation>Előző találat keresése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="402"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
         <source>Tool &apos;Point at distance and angle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Pont adott távolsággal és szöggel&quot; eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="404"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
         <source>Tool &apos;Line between points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Vonal két pont között” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="406"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
         <source>Tool &apos;Point at distance along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Pont adott távolságra a vonalon” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="408"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
         <source>Tool &apos;Special point on shoulder&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Speciális vállpont” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="410"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
         <source>Tool &apos;Point along perpendicular&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Pont a merőleges mentén” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="412"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
         <source>Tool &apos;Point along bisector&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Pont a szögfelező mentén” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="414"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
         <source>Tool &apos;Point at line intersection&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Vonalak metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="416"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
         <source>Tool &apos;Simple curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Egyszerű görbe” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="418"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
         <source>Tool &apos;Curve which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbe pontvezérléssel” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
         <source>Tool &apos;Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="424"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
         <source>Tool &apos;Curved path&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbeútvonal” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="426"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
         <source>Tool &apos;Curved path which uses point as control handle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbeútvonal pontvezérléssel” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="428"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
         <source>Tool &apos;Point of intersection circle and segment&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Kör és szakasz metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="430"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
         <source>Tool &apos;Workpiece tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Munkadarab” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="432"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
         <source>Tool &apos;Internal path tool&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Belső útvonal” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="434"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
         <source>Tool &apos;Perpendicular point along line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Merőleges pont a vonalon” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="436"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
         <source>Tool &apos;Triangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Háromszög” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="438"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
         <source>Tool &apos;Point from X and Y of two other points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Pont két másik pont X és Y koordinátájából” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="440"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
         <source>Tool &apos;Segmenting a simple curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Egyszerű görbe felosztása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="442"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
         <source>Tool &apos;Segment a curved path&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbeútvonal felosztása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="444"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
         <source>Tool &apos;Piece union&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Darabok egyesítése” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="446"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
         <source>Tool &apos;Duplicate piece&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Darab duplikálása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="448"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
         <source>Tool &apos;Segment an arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív felosztása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="450"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
         <source>Tool &apos;Point of intersection line and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Vonal és tengely metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="452"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
         <source>Tool &apos;Point of intersection curve and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbe és tengely metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="454"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
         <source>Tool &apos;Point of intersection arc and axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív és tengely metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="456"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
         <source>Tool &apos;Point of intersection arcs&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ívek metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="458"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
         <source>Tool &apos;Point of intersection circles&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Körök metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="460"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
         <source>Tool &apos;Point intersection curves&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbék metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="462"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
         <source>Tool &apos;Point from circle and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Kör és érintő metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="464"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
         <source>Tool &apos;Point from arc and tangent&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív és érintő metszéspontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="466"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
         <source>Tool &apos;Arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív adott ívhosszal” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="468"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
         <source>Tool &apos;True darts&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Szűkítők kiegyenlítése&quot; eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
         <source>Tool &apos;Dart cap&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Szűkítőpont” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="476"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
         <source>Tool &apos;Rectangle&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Téglalap” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="508"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="510"/>
         <source>Auto-arrange point names</source>
         <comment>shortcut for action</comment>
         <translation>Pontnevek automatikus elrendezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="510"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="512"/>
         <source>Tool &apos;Select&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Kijelölés” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="512"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="514"/>
         <source>Tool &apos;Curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbe” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="514"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="516"/>
         <source>Tool &apos;Segment a curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Görbe szegmentálása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="516"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="518"/>
         <source>Tool &apos;Spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Spirál” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="518"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="520"/>
         <source>Tool &apos;Slash and spread&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Vágás és forgatás” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="520"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="522"/>
         <source>Tool &apos;Move by batch&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Kötegelt mozgatás” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="522"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="524"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Hajtás” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="524"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="526"/>
         <source>Tool &apos;Flounce spiral&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Fodorspirál” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="526"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="528"/>
         <source>Tool &apos;Middle pleat&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Középső hajtás” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="470"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
         <source>Tool &apos;Rotate objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Objektumok elforgatása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="420"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="422"/>
         <source>Tool &apos;Armhole curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Karöltőgörbe” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="472"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="474"/>
         <source>Tool &apos;Dart rotation&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Szűkítőpont forgatása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="478"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
         <source>Tool &apos;Transfer&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Átvitel” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="480"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="482"/>
         <source>Tool &apos;Flipping objects by line&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Objektumok tükrözése vonal mentén” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="482"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="484"/>
         <source>Tool &apos;Flipping objects by axis&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Objektumok tükrözése tengely mentén” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="484"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="486"/>
         <source>Tool &apos;Move objects&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Objektumok mozgatása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="486"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="488"/>
         <source>Tool &apos;Midpoint between two points&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Két pont középpontja” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="488"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="490"/>
         <source>Export draw as</source>
         <comment>shortcut for action</comment>
         <translation>Rajz exportálása másként</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="490"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="492"/>
         <source>Export details as</source>
         <comment>shortcut for action</comment>
         <translation>Alkatrészek exportálása másként</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="492"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="494"/>
         <source>Tool &apos;Elliptical Arc&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Elliptikus ív” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="494"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="496"/>
         <source>Tool &apos;Insert node&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Csomópont beszúrása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="496"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="498"/>
         <source>Tool &apos;Place label&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Címke elhelyezése” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="498"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="500"/>
         <source>Tool &apos;Arc start&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív kezdete” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="500"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="502"/>
         <source>Tool &apos;Arc end&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Ív vége” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="502"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="504"/>
         <source>Tool &apos;Elliptical arc with given length&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Elliptikus ív adott ívhosszal” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="504"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="506"/>
         <source>Tool &apos;Parallel curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Párhuzamos görbe” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="506"/>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="508"/>
         <source>Tool &apos;Graduated curve&apos;</source>
         <comment>shortcut for action</comment>
         <translation>„Fokozatos görbe” eszköz</translation>
@@ -21024,62 +21158,62 @@ Szeretné folytatni?</translation>
 <context>
     <name>VAbstractTool</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="552"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="554"/>
         <source>black</source>
         <translation>fekete</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="545"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="547"/>
         <source>dark green</source>
         <translation>sötétzöld</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="527"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="529"/>
         <source>dark blue</source>
         <translation>sötétkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="524"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="526"/>
         <source>light blue</source>
         <translation>világoskék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="530"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="532"/>
         <source>pink</source>
         <translation>rózsaszín</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="533"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="535"/>
         <source>purple</source>
         <translation>lila</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="536"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="538"/>
         <source>yellow</source>
         <translation>sárga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="542"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="544"/>
         <source>light green</source>
         <translation>világoszöld</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="548"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="550"/>
         <source>brown</source>
         <translation>barna</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="539"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="541"/>
         <source>orange</source>
         <translation>narancssárga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="176"/>
+        <location filename="../../src/libs/vtools/tools/vabstracttool.cpp" line="178"/>
         <source>Edit wrong formula</source>
         <translation>Hibás képlet szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1666"/>
+        <location filename="../../src/libs/vtools/dialogs/dialogtoolbox.cpp" line="1668"/>
         <source>White</source>
         <translation>Fehér</translation>
     </message>
@@ -21087,52 +21221,52 @@ Szeretné folytatni?</translation>
 <context>
     <name>VApplication</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="625"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="627"/>
         <source>Error parsing file. Program will be terminated.</source>
         <translation>Fájl‑feldolgozási hiba. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="631"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="633"/>
         <source>Error bad id. Program will be terminated.</source>
         <translation>Hiba: hibás azonosító. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="639"/>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
         <translation>Hiba: az érték nem konvertálható. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="643"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="645"/>
         <source>Error empty parameter. Program will be terminated.</source>
         <translation>Hiba: üres paraméter. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="649"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="651"/>
         <source>Error wrong id. Program will be terminated.</source>
         <translation>Hiba: hibás azonosító. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="668"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="670"/>
         <source>Something&apos;s wrong!!</source>
         <translation>Valami nincs rendben!</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="682"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="684"/>
         <source>Parser error: %1. Program will be terminated.</source>
         <translation>Elemzési hiba: %1. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="687"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="689"/>
         <source>Exception thrown: %1. Program will be terminated.</source>
         <translation>Kivétel történt: %1. A program leáll.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="662"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="664"/>
         <source>Invalid notch.</source>
         <translation>Érvénytelen bevágás.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="674"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="676"/>
         <source>Formula warning: %1. Program will be terminated.</source>
         <translation>Képlet-figyelmeztetés: %1. A program leáll.</translation>
     </message>
@@ -21140,26 +21274,26 @@ Szeretné folytatni?</translation>
 <context>
     <name>VArc</name>
     <message>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="646"/>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="700"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="648"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="702"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="652"/>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="706"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="654"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="708"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too small. Optimize it to minimal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl kicsi. Optimalizálja a minimális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="663"/>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="717"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="665"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="719"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment (%2) is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza (%2) túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="668"/>
-        <location filename="../../src/libs/vgeometry/varc.cpp" line="722"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="670"/>
+        <location filename="../../src/libs/vgeometry/varc.cpp" line="724"/>
         <source>Curve &apos;%1&apos;. Length of a cut segment is too big. Optimize it to maximal value.</source>
         <translation>A(z) &apos;%1&apos; görbe. A levágott szakasz hossza túl nagy. Optimalizálja a maximális értékre.</translation>
     </message>
@@ -21167,37 +21301,37 @@ Szeretné folytatni?</translation>
 <context>
     <name>VBackgroundImageItem</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="421"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="423"/>
         <source>Hold</source>
         <translation>Rögzítés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="425"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="427"/>
         <source>Visible</source>
         <translation>Látható</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="430"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="432"/>
         <source>Show in Finder</source>
         <translation>Megjelenítés a Finderben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="432"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="434"/>
         <source>Show in Explorer</source>
         <translation>Megjelenítés az Intézőben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="438"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="440"/>
         <source>Save as …</source>
         <translation>Mentés másként …</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="450"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="452"/>
         <source>Reset transformation</source>
         <translation>Transzformáció visszaállítása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="453"/>
+        <location filename="../../src/libs/vtools/tools/backgroundimage/vbackgroundimageitem.cpp" line="455"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
@@ -21205,45 +21339,45 @@ Szeretné folytatni?</translation>
 <context>
     <name>VBackgroundPatternImage</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="100"/>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="186"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="102"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="188"/>
         <source>Unexpected mime type: %1</source>
         <translation>Váratlan MIME-típus: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="109"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="111"/>
         <source>Couldn&apos;t read the image. Error: %1</source>
         <translation>A kép nem olvasható. Hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="170"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="172"/>
         <source>No data.</source>
         <translation>Nincs adat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="176"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="178"/>
         <source>Invalid id.</source>
         <translation>Érvénytelen azonosító.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="192"/>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="220"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="194"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="222"/>
         <source>The image declares a canvas size that is too large to render safely.</source>
         <translation>A kép olyan nagy vászonméretet ad meg, amelyet nem lehet biztonságosan megjeleníteni.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="200"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="202"/>
         <source>Content type is empty.</source>
         <translation>A tartalomtípus üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="214"/>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="239"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="216"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="241"/>
         <source>Not image.</source>
         <translation>Nem kép.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="233"/>
+        <location filename="../../src/libs/ifc/xml/vbackgroundpatternimage.cpp" line="235"/>
         <source>Content type mismatch.</source>
         <translation>A tartalomtípus nem egyezik.</translation>
     </message>
@@ -21251,17 +21385,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VBoundary</name>
     <message>
-        <location filename="../../src/libs/vlayout/vboundary.cpp" line="344"/>
+        <location filename="../../src/libs/vlayout/vboundary.cpp" line="346"/>
         <source>Piece &apos;%1&apos;.</source>
         <translation>A(z) &apos;%1&apos; darab.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vboundary.cpp" line="352"/>
+        <location filename="../../src/libs/vlayout/vboundary.cpp" line="354"/>
         <source>Unable to insert notch for point &apos;%1&apos;.</source>
         <translation>Nem szúrható be bevágás a(z) &apos;%1&apos; pontnál.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vboundary.cpp" line="356"/>
+        <location filename="../../src/libs/vlayout/vboundary.cpp" line="358"/>
         <source>Unable to insert notch.</source>
         <translation>Nem szúrható be bevágás.</translation>
     </message>
@@ -21269,7 +21403,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VComboBoxDelegate</name>
     <message>
-        <location filename="../../src/libs/vwidgets/vcomboboxdelegate.cpp" line="38"/>
+        <location filename="../../src/libs/vwidgets/vcomboboxdelegate.cpp" line="40"/>
         <source>Select material</source>
         <translation>Válasszon anyagot</translation>
     </message>
@@ -21277,430 +21411,430 @@ Szeretné folytatni?</translation>
 <context>
     <name>VCommandLine</name>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="522"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="524"/>
         <source>Path to custom measure file (export mode).</source>
         <translation>Egyéni mérésfájl elérési útja (exportálás mód).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="523"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="525"/>
         <source>The measure file</source>
         <translation>A mérésfájl</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="527"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="529"/>
         <source>Format number</source>
         <translation>Formátumszám</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="653"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="655"/>
         <source>Template number</source>
         <translation>Sablonszám</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="602"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="604"/>
         <source>The unit</source>
         <translation>Az egység</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="432"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="434"/>
         <source>Unsupported paper units.</source>
         <translation>Nem támogatott papír-mértékegység.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="133"/>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="145"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="147"/>
         <source>Export options can be used with single input file only.</source>
         <translation>Az exportálási beállítások csak egyetlen bemeneti fájllal használhatók.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="108"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="110"/>
         <source>Test option can be used with single input file only.</source>
         <translation>A tesztbeállítás csak egyetlen bemeneti fájllal használható.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="514"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="516"/>
         <source>The base filename of exported layout files. Use it to enable console export mode.</source>
         <translation>Az exportált elrendezésfájlok alap fájlneve. Használja a konzolos exportálási mód engedélyezéséhez.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="515"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="517"/>
         <source>The base filename of layout files</source>
         <translation>Az elrendezésfájlok alap fájlneve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="520"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="522"/>
         <source>The destination folder</source>
         <translation>A célmappa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="60"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="62"/>
         <source>Pattern making program.</source>
         <translation>Mintakészítő program.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="63"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="65"/>
         <source>Pattern file.</source>
         <translation>Szabásminta fájl.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="575"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="577"/>
         <source>Page left margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
         <translation>Bal oldali margó a jelenlegi mértékegységben, pl. 3.0 (export mód). Ha nincs megadva, a program az alapértelmezett nyomtató értékét használja. Ha nem található nyomtató, az érték 0.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="580"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="582"/>
         <source>Page right margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
         <translation>Jobb oldali margó a jelenlegi mértékegységben, pl. 3.0 (export mód). Ha nincs megadva, a program az alapértelmezett nyomtató értékét használja. Ha nem található nyomtató, az érték 0.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="585"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="587"/>
         <source>Page top margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
         <translation>Felső margó a jelenlegi mértékegységben, pl. 3.0 (export mód). Ha nincs megadva, a program az alapértelmezett nyomtató értékét használja. Ha nem található nyomtató, az érték 0.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="590"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="592"/>
         <source>Page bottom margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
         <translation>Alsó margó a jelenlegi mértékegységben, pl. 3.0 (export mód). Ha nincs megadva, a program az alapértelmezett nyomtató értékét használja. Ha nem található nyomtató, az érték 0.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="517"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="519"/>
         <source>The path to output destination folder. By default the directory at which the application was started.</source>
         <translation>A kimeneti célmappa elérési útja. Alapértelmezés szerint az a könyvtár, ahonnan az alkalmazás elindult.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="604"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="606"/>
         <source>Run the program in a test mode. The program in this mode loads a single pattern file and silently quit without showing the main window. The key have priority before key &apos;%1&apos;.</source>
         <translation>A program futtatása tesztmódban. Ebben a módban a program betölt egy mintafájlt, és csendben kilép a főablak megjelenítése nélkül. Ez a kapcsoló elsőbbséget élvez a(z) &apos;%1&apos; kapcsolóval szemben.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="525"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="527"/>
         <source>Number corresponding to output format (default = 0, export mode):</source>
         <translation>A kimeneti formátumnak megfelelő szám (alapértelmezett = 0, exportálás mód):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="614"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="616"/>
         <source>Disable high dpi scaling. Call this option if has problem with scaling (by default scaling enabled). Alternatively you can use the %1 environment variable.</source>
         <translation>Nagy DPI-skálázás letiltása. Használja ezt a beállítást, ha probléma van a skálázással (alapértelmezés szerint a skálázás engedélyezve van). Másik lehetőségként használhatja a(z) %1 környezeti változót.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="529"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="531"/>
         <source>Export dxf in binary form.</source>
         <translation>DXF exportálása bináris formában.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="510"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="512"/>
         <source>Print the debug messages to the console too. They always go to the log file; this key only repeats them on the console.</source>
         <translation>A hibakeresési üzenetek kiírása a konzolra is. Ezek mindig a naplófájlba kerülnek; ez a kapcsoló csak megismétli őket a konzolon.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="531"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="533"/>
         <source>Number corresponding to compatibility mode for DXF AAMA/ASTM format (default = 0, export mode):</source>
         <translation>A DXF AAMA/ASTM formátum kompatibilitási módjának megfelelő szám (alapértelmezett = 0, exportálás mód):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="534"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="536"/>
         <source>Mode number</source>
         <translation>Mód száma</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="536"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="538"/>
         <source>Show/hide grainline when export layout.</source>
         <translation>Szálirány megjelenítése/elrejtése az elrendezés exportálásakor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="537"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="539"/>
         <source>Export text as paths.</source>
         <translation>Szöveg exportálása útvonalként.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="539"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="541"/>
         <source>Export only details. Export details as they positioned in the details mode. Any layout related options will be ignored.</source>
         <translation>Csak a darabok exportálása. A darabok exportálása úgy, ahogy a Darab módban el voltak helyezve. Az elrendezéssel kapcsolatos beállítások figyelmen kívül lesznek hagyva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="543"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="545"/>
         <source>Export only details that match a piece name regex.</source>
         <translation>Csak azon darabok exportálása, amelyek megfelelnek egy darabnév regexnek.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="544"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="546"/>
         <source>The name regex</source>
         <translation>A névregex</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="568"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="570"/>
         <source>Override the global curve approximation scale setting from the application preferences. The value must be between %1 and %2.</source>
         <translation>Felülírja a globális görbeközelítési méretarány beállítást az alkalmazás beállításaiból. Az értéknek %1 és %2 között kell lennie.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="573"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="575"/>
         <source>Curve approximation</source>
         <translation>Görbeközelítés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="610"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="612"/>
         <source>Make all parsing warnings into errors. Have effect only in console mode. Use to force Ostara to immediately terminate if a pattern contains a parsing warning.</source>
         <translation>Minden beolvasási figyelmeztetés hibává alakítása. Csak konzol módban hat. Arra használható, hogy az Ostara azonnal leálljon, ha a szabásminta beolvasási figyelmeztetést tartalmaz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="619"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="621"/>
         <source>Export to csv with header. By default disabled.</source>
         <translation>Exportálás CSV-be fejléccel. Alapértelmezés szerint letiltva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="621"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="623"/>
         <source>Specify codec that will be used to save data. List of supported codecs provided by Qt. Default value depend from system. On Windows, the codec will be based on a system locale. On Unix systems, the codec will might fall back to using the iconv library if no builtin codec for the locale can be found. Valid values for this installation:</source>
         <translation>Adja meg az adatok mentéséhez használt kodeket. A támogatott kodekek listáját a Qt biztosítja. Az alapértelmezett érték a rendszertől függ. Windowson a kodek a rendszer területi beállításán alapul. Unix-rendszereken a kodek visszaeshet az iconv könyvtár használatára, ha a területi beállításhoz nem található beépített kodek. Érvényes értékek ehhez a telepítéshez:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="630"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="632"/>
         <source>Codec name</source>
         <translation>Kodek neve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="633"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="635"/>
         <source>Specify csv separator character. Default value is &apos;%1&apos;. Valid characters:</source>
         <translation>Adja meg a CSV elválasztó karakterét. Az alapértelmezett érték a(z) &apos;%1&apos;. Érvényes karakterek:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="636"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="638"/>
         <source>Separator character</source>
         <translation>Elválasztó karakter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="639"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="641"/>
         <source>Calling this command enable exporting final measurements. Specify path to csv file with final measurements. The path must contain path to directory and name of file. It can be absolute or relatetive. In case of relative path will be used current working directory to calc a destination path.</source>
         <translation>Ennek a parancsnak a meghívása engedélyezi a végső mérések exportálását. Adja meg a végső méréseket tartalmazó CSV-fájl elérési útját. Az elérési útnak tartalmaznia kell a könyvtár elérési útját és a fájl nevét. Lehet abszolút vagy relatív. Relatív elérési út esetén a célútvonal kiszámításához a jelenlegi munkakönyvtár lesz használva.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="647"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="649"/>
         <source>Path to csv file</source>
         <translation>CSV-fájl elérési útja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="650"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="652"/>
         <source>Number corresponding to tiled pdf page template (default = 0, export mode with tiled pdf format):</source>
         <translation>A csempézett PDF oldalsablonjának megfelelő szám (alapértelmezett = 0, exportálás mód csempézett PDF formátummal):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="662"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="664"/>
         <source>Compute the fabric length of a cutting plan for every complete size of the measurements table, for each fabric width of --fabricWidth, and write the table as a CSV in --destination. Nothing is ever written to the pattern.</source>
         <translation>Kiszámítja egy szabászati terv szövethosszát a mérettáblázat minden teljes méretére, a --fabricWidth kapcsoló minden szövetszélességére, és a táblázatot CSV formátumban a --destination helyre írja. A szabásmintába soha nem ír semmit.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="667"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="669"/>
         <source>Name of the model this run measures. Written in the CSV.</source>
         <translation>A futás által mért modell neve. A CSV-be kerül.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="668"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="670"/>
         <source>Name</source>
         <translation>Név</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="670"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="672"/>
         <source>The member a piece group contributes, as &quot;Group name=Member name&quot;. Repeat once per group: a cutting plan takes exactly one member per group.</source>
         <translation>A darabcsoport által adott tag, „Csoportnév=Tag neve” formában. Csoportonként egyszer ismételje: egy szabászati terv csoportonként pontosan egy tagot vesz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="673"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="675"/>
         <source>Group=member</source>
         <translation>Csoport=tag</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="675"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="677"/>
         <source>Fabric width in centimetres. Comma separated to ask for several in one run.</source>
         <translation>Szövetszélesség centiméterben. Vesszővel elválasztva több is kérhető egy futásban.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="680"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="682"/>
         <source>Width in cm</source>
         <translation>Szövetszélesség cm-ben</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="681"/>
         <source>Lining width in centimetres. Defaults to the fabric width.</source>
         <translation>Bélésszélesség centiméterben. Alapértelmezésben a szövet szélessége.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="682"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="684"/>
         <source>Ask for the lining plan too: one run, two passes, two lengths in the table.</source>
         <translation>A bélés tervét is kérje: egy futás, két menet, két hossz a táblázatban.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="685"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="687"/>
         <source>Lay every piece the same way round.</source>
         <translation>Minden darab ugyanabban az irányban fekszik.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="687"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="689"/>
         <source>The plan is laid on folded fabric.</source>
         <translation>A terv hajtogatott szövetre kerül.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="689"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="691"/>
         <source>Space between two pieces, in centimetres (default 0).</source>
         <translation>Két darab közötti távolság centiméterben (alapértelmezés: 0).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="690"/>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="694"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="692"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="696"/>
         <source>Space in cm</source>
         <translation>Távolság cm-ben</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="693"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="695"/>
         <source>Space kept from the edges, in centimetres (default 0).</source>
         <translation>A szélektől megtartott távolság centiméterben (alapértelmezett 0).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="729"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="731"/>
         <source>The metrage options can be used with single input file only.</source>
         <translation>A metrázási beállítások csak egyetlen bemeneti fájllal használhatók.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="779"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="781"/>
         <source>Not a fabric width:</source>
         <translation>Ez nem szövetszélesség:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="799"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="801"/>
         <source>Not a lining width.</source>
         <translation>Ez nem bélésszélesség.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="578"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="580"/>
         <source>The left margin</source>
         <translation>A bal margó</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="583"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="585"/>
         <source>The right margin</source>
         <translation>A jobb margó</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="588"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="590"/>
         <source>The top margin</source>
         <translation>A felső margó</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="593"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="595"/>
         <source>The bottom margin</source>
         <translation>Az alsó margó</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="656"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="658"/>
         <source>Set tiled page orienatation to landscape (export mode). Default value if not set portrait.</source>
         <translation>A csempézett oldal tájolásának fekvőre állítása (exportálás mód). Ha nincs beállítva, az alapértelmezett az álló.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="559"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="561"/>
         <source>Use this option to override user material defined in pattern. The value must be in form &lt;number&gt;@&lt;user matrial name&gt;. The number should be in range from 1 to %1. For example, 1@Fabric2. The key can be used multiple times. Has no effect in GUI mode.</source>
         <translation>Használja ezt a beállítást a mintában meghatározott felhasználói anyag felülírásához. Az értéknek &lt;szám&gt;@&lt;felhasználói anyag neve&gt; formátumúnak kell lennie. A számnak 1 és %1 között kell lennie. Például: 1@Fabric2. A kapcsoló többször is használható. Grafikus felület módban nincs hatása.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="566"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="568"/>
         <source>User material</source>
         <translation>Felhasználói anyag</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="323"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="325"/>
         <source>Invalid user material &apos;%1&apos;. Separator is missing.</source>
         <translation>Érvénytelen felhasználói anyag: &apos;%1&apos;. Hiányzik az elválasztó.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="333"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="335"/>
         <source>Invalid user material &apos;%1&apos;. Wrong material number.</source>
         <translation>Érvénytelen felhasználói anyag: &apos;%1&apos;. Hibás anyagszám.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="595"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="597"/>
         <source>Set horizontal scale factor from 0.01 to 3.0 (default = 1.0, export mode).</source>
         <translation>Vízszintes méretezési tényező beállítása 0.01 és 3.0 között (alapértelmezett = 1.0, exportálás mód).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="596"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="598"/>
         <source>Horizontal scale</source>
         <translation>Vízszintes méretarány</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="598"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="600"/>
         <source>Set vertical scale factor from 0.01 to 3.0 (default = 1.0, export mode).</source>
         <translation>Függőleges méretezési tényező beállítása 0.01 és 3.0 között (alapértelmezett = 1.0, exportálás mód).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="599"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="601"/>
         <source>Vertical scale</source>
         <translation>Függőleges méretarány</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="385"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="387"/>
         <source>Invalid dimension A value.</source>
         <translation>Érvénytelen A dimenzió érték.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="400"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="402"/>
         <source>Invalid dimension B value.</source>
         <translation>Érvénytelen B dimenzió érték.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="415"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="417"/>
         <source>Invalid dimension C value.</source>
         <translation>Érvénytelen C dimenzió érték.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="547"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="549"/>
         <source>Set base for dimension A in the multisize measurements units (export mode).</source>
         <translation>Az A dimenzió alapértékének beállítása a méretsorozat-mérések mértékegységében (exportálás mód).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="548"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="550"/>
         <source>The dimension A base</source>
         <translation>Az A dimenzió alapértéke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="553"/>
         <source>Set base for dimension B in the multisize measurements units (export mode).</source>
         <translation>A B dimenzió alapértékének beállítása a méretsorozat-mérések mértékegységében (exportálás mód).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="552"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="554"/>
         <source>The dimension B base</source>
         <translation>A B dimenzió alapértéke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="555"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="557"/>
         <source>Set base for dimension C in the multisize measurements units (export mode).</source>
         <translation>A C dimenzió alapértékének beállítása a méretsorozat-mérések mértékegységében (exportálás mód).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="556"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="558"/>
         <source>The dimension C base</source>
         <translation>A C dimenzió alapértéke</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="446"/>
         <source>Invalid tiled page left margin.</source>
         <translation>Érvénytelen csempézett oldal bal margó.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="456"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="458"/>
         <source>Invalid tiled page right margin.</source>
         <translation>Érvénytelen csempézett oldal jobb margó.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="468"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="470"/>
         <source>Invalid tiled page top margin.</source>
         <translation>Érvénytelen csempézett oldal felső margó.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="480"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="482"/>
         <source>Invalid tiled page bottom margin.</source>
         <translation>Érvénytelen csempézett oldal alsó margó.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="601"/>
+        <location filename="../../src/app/ostara/core/vcmdexport.cpp" line="603"/>
         <source>Layout units (as paper&apos;s one except px, export mode). Default units cm.</source>
         <translation>Elrendezés mértékegysége (a papíréhoz hasonlóan, a px kivételével, exportálás mód). Alapértelmezett mértékegység: cm.</translation>
     </message>
@@ -21708,49 +21842,49 @@ Szeretné folytatni?</translation>
 <context>
     <name>VContainer</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="195"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="257"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="269"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="530"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="544"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="593"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="197"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="259"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="271"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="532"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="546"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="595"/>
         <source>Can&apos;t find object</source>
         <translation>Az objektum nem található</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="550"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="552"/>
         <source>Can&apos;t cast object to the requested type. Object id = %1, actual type = %2.</source>
         <translation>Az objektum nem alakítható át a kért típusra. Objektumazonosító = %1, tényleges típus = %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="578"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="580"/>
         <source>Can&apos;t cast object to the requested type. Name = &apos;%1&apos;, type = %2.</source>
         <translation>Az objektum nem konvertálható a kért típusra. Név = „%1”, típus = %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="588"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="812"/>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="863"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="590"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="814"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="865"/>
         <source>Can&apos;t cast object</source>
         <translation>Az objektum nem alakítható át</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="719"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="721"/>
         <source>Can&apos;t cast object. Name = &apos;%1&apos;, type = %2.</source>
         <translation>Az objektum nem konvertálható. Név = „%1”, típus = %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="729"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.h" line="731"/>
         <source>Can&apos;t find object. Type mismatch. Name = &apos;%1&apos;, existing type = %2, incoming type = %3.</source>
         <translation>Az objektum nem található. Típuseltérés. Név = „%1”, létező típus = %2, beérkező típus = %3.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="412"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="414"/>
         <source>Number of free id exhausted.</source>
         <translation>A szabad azonosítók száma kimerült.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="1083"/>
+        <location filename="../../src/libs/vpatterndb/vcontainer.cpp" line="1085"/>
         <source>Can&apos;t create a curve with type &apos;%1&apos;</source>
         <translation>Nem hozható létre &apos;%1&apos; típusú görbe</translation>
     </message>
@@ -21758,12 +21892,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VCubicBezierPath</name>
     <message>
-        <location filename="../../src/libs/vgeometry/vcubicbezierpath.cpp" line="242"/>
+        <location filename="../../src/libs/vgeometry/vcubicbezierpath.cpp" line="244"/>
         <source>Not enough points to create the spline.</source>
         <translation>Nincs elég pont a spline létrehozásához.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vcubicbezierpath.cpp" line="247"/>
+        <location filename="../../src/libs/vgeometry/vcubicbezierpath.cpp" line="249"/>
         <source>This spline does not exist.</source>
         <translation>Ez a spline nem létezik.</translation>
     </message>
@@ -21771,296 +21905,296 @@ Szeretné folytatni?</translation>
 <context>
     <name>VDependencyTreeModel</name>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="299"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="301"/>
         <source>Dependency tree</source>
         <translation>Függőségi fa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="907"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="909"/>
         <source>Piece &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; darab</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="992"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="994"/>
         <source>True darts</source>
         <comment>operation</comment>
         <translation>Szűkítők kiegyenlítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
         <source>Rotation</source>
         <comment>operation</comment>
         <translation>Forgatás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="996"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
         <source>Dart rotation</source>
         <comment>operation</comment>
         <translation>Szűkítő forgatása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="998"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1064"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1000"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1066"/>
         <source>Dart cap</source>
         <comment>operation</comment>
         <translation>Szűkítősapka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1000"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1002"/>
         <source>Rectangle</source>
         <comment>tool</comment>
         <translation>Téglalap</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1004"/>
         <source>Flipping by line</source>
         <comment>operation</comment>
         <translation>Tükrözés vonal mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1006"/>
         <source>Flipping by axis</source>
         <comment>operation</comment>
         <translation>Tükrözés tengely mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1006"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1008"/>
         <source>Move</source>
         <comment>operation</comment>
         <translation>Mozgatás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1008"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1010"/>
         <source>Transfer</source>
         <comment>operation</comment>
         <translation>Átvitel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1010"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1012"/>
         <source>Slash and spread</source>
         <comment>operation</comment>
         <translation>Vágás és szétnyitás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1012"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1014"/>
         <source>Move by batch</source>
         <comment>operation</comment>
         <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1014"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
         <source>Pleat</source>
         <comment>operation</comment>
         <translation>Pliszé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1016"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1058"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1018"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1060"/>
         <source>Middle pleat</source>
         <comment>operation</comment>
         <translation>Középső pliszé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1018"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1060"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1020"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1062"/>
         <source>Flounce spiral</source>
         <comment>operation</comment>
         <translation>Spirálfodros</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1020"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1022"/>
         <source>Union details</source>
         <comment>operation</comment>
         <translation>Alkatrészek egyesítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1036"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1038"/>
         <source>Base point</source>
         <translation>Alappont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1038"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1040"/>
         <source>Point at distance and angle</source>
         <translation>Pont adott távolsággal és szöggel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1040"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1042"/>
         <source>Point along line</source>
         <translation>Pont a vonal mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1044"/>
         <source>Shoulder point</source>
         <translation>Vállpont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1044"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1046"/>
         <source>Point along perpendicular</source>
         <translation>Pont a merőleges mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1046"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1048"/>
         <source>Bisector</source>
         <translation>Szögfelező</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1048"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1050"/>
         <source>Rectangle</source>
         <translation>Téglalap</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1050"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1052"/>
         <source>Transfer</source>
         <translation>Átvitel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1052"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
         <source>Slash and spread</source>
         <translation>Vágás és szétnyitás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1054"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1056"/>
         <source>Move by batch</source>
         <translation>Kötegelt mozgatás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1056"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1058"/>
         <source>Pleat</source>
         <translation>Pliszé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1066"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1068"/>
         <source>Point at line intersection</source>
         <translation>Vonalak metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1070"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1072"/>
         <source>Spline</source>
         <translation>Spline</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1072"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1074"/>
         <source>Arc</source>
         <translation>Ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1074"/>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1115"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1076"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1117"/>
         <source>Elliptical arc with given length</source>
         <translation>Elliptikus ív adott ívhosszal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1076"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1078"/>
         <source>Parallel curve</source>
         <translation>Párhuzamos görbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1078"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1080"/>
         <source>Graduated curve</source>
         <translation>Fokozatos görbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1080"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1082"/>
         <source>Spiral</source>
         <translation>Spirál</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1083"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1085"/>
         <source>Spline path</source>
         <translation>Spline útvonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1085"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1087"/>
         <source>Point of intersection circle and segment</source>
         <translation>Kör és szakasz metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1087"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1089"/>
         <source>Perpendicular point along line</source>
         <translation>Merőleges pont a vonalon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1089"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1091"/>
         <source>Point located at the triangle&apos;s right-angled corner, lying along the axis</source>
         <translation>A háromszög derékszögű sarkán, a tengely mentén elhelyezkedő pont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1091"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1093"/>
         <source>Point from X and Y of two other points</source>
         <translation>Pont két másik pont X és Y koordinátájából</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1093"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1095"/>
         <source>Point segmenting an arc</source>
         <translation>Ív felosztó pont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1095"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1097"/>
         <source>Point segmenting a spline</source>
         <translation>Spline-t felosztó pont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1097"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1099"/>
         <source>Point segmenting a spline path</source>
         <translation>Spline útvonalat felosztó pont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1099"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1101"/>
         <source>Point of intersection line and axis</source>
         <translation>Vonal és tengely metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1101"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1103"/>
         <source>Point of intersection curve and axis</source>
         <translation>Görbe és tengely metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1103"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1105"/>
         <source>Point of intersection arcs</source>
         <translation>Ívek metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1105"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1107"/>
         <source>Point of intersection circles</source>
         <translation>Körök metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1109"/>
         <source>Point of intersection curves</source>
         <translation>Görbék metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1109"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1111"/>
         <source>Point from circle and tangent</source>
         <translation>Kör és érintő metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1111"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1113"/>
         <source>Point from arc and tangent</source>
         <translation>Ív és érintő metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1113"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1115"/>
         <source>Elliptical arc</source>
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1117"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1119"/>
         <source>Line connecting two points</source>
         <translation>Két pontot összekötő vonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1141"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1143"/>
         <source>Union details operation creating piece &apos;%1&apos;. Source objects cannot be deleted while this operation exists</source>
         <translation>A(z) &apos;%1&apos; darabot létrehozó darabegyesítési művelet. A forrásobjektumok nem törölhetők, amíg ez a művelet létezik</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1151"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1153"/>
         <source>Union details operation. Source objects cannot be deleted while this operation exists</source>
         <translation>Darabegyesítési művelet. A forrásobjektumok nem törölhetők, amíg ez a művelet létezik</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1165"/>
+        <location filename="../../src/app/ostara/core/vdependencytreemodel.cpp" line="1167"/>
         <source>Line_%1_%2</source>
         <translation>Vonal_%1_%2</translation>
     </message>
@@ -22068,88 +22202,88 @@ Szeretné folytatni?</translation>
 <context>
     <name>VDomDocument</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="702"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="704"/>
         <source>Can&apos;t open file %1:
 %2.</source>
         <translation>A(z) %1 fájl nem nyitható meg:
 %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="855"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="857"/>
         <source>Can&apos;t open schema file %1:
 %2.</source>
         <translation>Nem sikerült megnyitni a(z) %1 sémafájlt: 
 %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="912"/>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="948"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="914"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="950"/>
         <source>Validation error file %3 in line %1 column %2</source>
         <translation>Érvényesítési hiba: %3 fájl, %1. sor, %2. oszlop</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1144"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1146"/>
         <source>Couldn&apos;t get node</source>
         <translation>A csomópont nem szerezhető meg</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="878"/>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="924"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="880"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="926"/>
         <source>Could not load schema file &apos;%1&apos;.</source>
         <translation>Nem sikerült betölteni a(z) „%1” sémafájlt.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="412"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="414"/>
         <source>Fail to write Canonical XML.</source>
         <translation>A kanonikus XML írása sikertelen.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="354"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="356"/>
         <source>Not unique id (%1)</source>
         <translation>Nem egyedi azonosító (%1)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="654"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="656"/>
         <source>This id (%1) is not unique.</source>
         <translation>Ez az azonosító (%1) nem egyedi.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="710"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="712"/>
         <source>Parsing error in file %3 at line %1, column %2</source>
         <translation>Elemzési hiba a(z) %3 fájlban a(z) %1. sor %2. oszlopában</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="773"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="775"/>
         <source>Refusing to save: the document has no content.</source>
         <translation>Mentés megtagadva: a dokumentumnak nincs tartalma.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="791"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="793"/>
         <source>Refusing to save: serialization produced no data.</source>
         <translation>Mentés megtagadva: a szerializálás nem adott adatot.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="885"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="887"/>
         <source>Schema file %3 invalid in line %1 column %2</source>
         <translation>A(z) %3 sémafájl érvénytelen: %1. sor, %2. oszlop</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="992"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="994"/>
         <source>Couldn&apos;t get version information.</source>
         <translation>A verzióinformáció nem szerezhető meg.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="998"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1000"/>
         <source>Too many tags &lt;%1&gt; in file.</source>
         <translation>Túl sok &lt;%1&gt; címke a fájlban.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1223"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1225"/>
         <source>Version &quot;%1&quot; invalid.</source>
         <translation>A(z) „%1” verzió érvénytelen.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1229"/>
+        <location filename="../../src/libs/ifc/xml/vdomdocument.cpp" line="1231"/>
         <source>Version &quot;0.0.0&quot; invalid.</source>
         <translation>A „0.0.0” verzió érvénytelen.</translation>
     </message>
@@ -22157,47 +22291,47 @@ Szeretné folytatni?</translation>
 <context>
     <name>VDrawTool</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="279"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="281"/>
         <source>Options</source>
         <translation>Beállítások</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="485"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="487"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="491"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="493"/>
         <source>Pending</source>
         <translation>Függőben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="537"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="539"/>
         <source>add objects to a layer</source>
         <translation>objektumok hozzáadása egy réteghez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="570"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="572"/>
         <source>remove objects from a layer</source>
         <translation>objektumok eltávolítása egy rétegből</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="661"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="663"/>
         <source>This id (%1) is not unique.</source>
         <translation>Ez az azonosító (%1) nem egyedi.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="372"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="374"/>
         <source>Add to layer</source>
         <translation>Hozzáadás a réteghez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="404"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="406"/>
         <source>Remove from layer</source>
         <translation>Eltávolítás a rétegből</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="456"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vdrawtool.cpp" line="458"/>
         <source>Show Point name</source>
         <translation>Pont nevének megjelenítése</translation>
     </message>
@@ -22213,52 +22347,52 @@ Szeretné folytatni?</translation>
 <context>
     <name>VFormula</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="360"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="362"/>
         <source>Error</source>
         <translation>Hiba</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="245"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="247"/>
         <source>Data container is empty</source>
         <translation>Az adattároló üres</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="260"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="262"/>
         <source>Math parser error: %1</source>
         <translation>Matematikai elemzési hiba: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="268"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="270"/>
         <source>Result is infinite</source>
         <translation>Az eredmény végtelen</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="272"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="274"/>
         <source>Result is NaN</source>
         <translation>Az eredmény NaN</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="276"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="278"/>
         <source>Result is zero</source>
         <translation>Az eredmény nulla</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="280"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="282"/>
         <source>Result less than zero</source>
         <translation>Az eredmény nullánál kisebb</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="290"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="292"/>
         <source>Formula is empty</source>
         <translation>A képlet üres</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="352"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="354"/>
         <source>This formula uses an object that has no name. Give it one to use it in a formula.</source>
         <translation>Ez a képlet egy névtelen objektumot használ. Adjon neki nevet, hogy a képletben használhassa.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="363"/>
+        <location filename="../../src/libs/vpatterndb/vformula.cpp" line="365"/>
         <source>Not evaluated</source>
         <translation>Nincs kiértékelve</translation>
     </message>
@@ -22285,7 +22419,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VFormulaProperty</name>
     <message>
-        <location filename="../../src/app/ostara/core/vformulaproperty.cpp" line="79"/>
+        <location filename="../../src/app/ostara/core/vformulaproperty.cpp" line="81"/>
         <source>Formula</source>
         <translation>Képlet</translation>
     </message>
@@ -22293,17 +22427,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VInteractiveTool</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="115"/>
+        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="117"/>
         <source>Cannot Delete Object</source>
         <translation>Az objektum nem törölhető</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="116"/>
+        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="118"/>
         <source>This object cannot be deleted because it is being used by other items.</source>
         <translation>Ez az objektum nem törölhető, mert más elemek használják.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="117"/>
+        <location filename="../../src/libs/vtools/tools/vinteractivetool.cpp" line="119"/>
         <source>Please resolve the dependencies before attempting to delete this object.</source>
         <translation>Kérjük, oldja fel a függőségeket, mielőtt megpróbálná törölni ezt az objektumot.</translation>
     </message>
@@ -22311,31 +22445,31 @@ Szeretné folytatni?</translation>
 <context>
     <name>VKnownMeasurementsDocument</name>
     <message>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="371"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="384"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="397"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="413"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="429"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="442"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="458"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="373"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="386"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="399"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="415"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="431"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="444"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="460"/>
         <source>Can&apos;t find measurement &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; mérés nem található</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="472"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="488"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="504"/>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="519"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="474"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="490"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="506"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="521"/>
         <source>Can&apos;t find image by id &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; azonosítójú kép nem található</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="536"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="538"/>
         <source>The measurement name is empty!</source>
         <translation>A mérés neve üres!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="581"/>
+        <location filename="../../src/libs/vformat/knownmeasurements/vknownmeasurementsdocument.cpp" line="583"/>
         <source>The image id is empty!</source>
         <translation>A kép azonosítója üres!</translation>
     </message>
@@ -22343,79 +22477,79 @@ Szeretné folytatni?</translation>
 <context>
     <name>VLayoutExporter</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="382"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="384"/>
         <source>Can&apos;t save file &apos;%1&apos;. Error: %2.</source>
         <translation>A(z) &apos;%1&apos; fájl nem menthető. Hiba: %2.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="644"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="646"/>
         <source>Cannot set printer page size</source>
         <translation>Nem állítható be a nyomtató oldalmérete</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="660"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="662"/>
         <source>Cannot set printer margins</source>
         <translation>Nyomtatás margóját nem lehet beállítani</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="667"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="669"/>
         <source>Can&apos;t open file &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; fájl nem nyitható meg</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="612"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="614"/>
         <source>Creating file &apos;%1&apos; failed! %2</source>
         <translation>A(z) &apos;%1&apos; fájl létrehozása sikertelen! %2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="490"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="492"/>
         <source>Can&apos;t create an AAMA dxf file.</source>
         <translation>Nem hozható létre AAMA DXF-fájl.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="320"/>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="357"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="322"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="359"/>
         <source>Can&apos;t create an image %1x%2 for &apos;%3&apos;. The image is too large or empty.</source>
         <translation>Nem hozható létre %1x%2 méretű kép a(z) &apos;%3&apos; számára. A kép túl nagy vagy üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="513"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="515"/>
         <source>Can&apos;t create an ASTM dxf file.</source>
         <translation>Nem hozható létre ASTM DXF-fájl.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="532"/>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="551"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="534"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="553"/>
         <source>Can&apos;t create an HP-GL file.</source>
         <translation>Nem hozható létre HP-GL fájl.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="684"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="686"/>
         <source>(flat) files</source>
         <translation>(sík) fájlok</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="685"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="687"/>
         <source>files</source>
         <translation>fájlok</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="694"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="696"/>
         <source>Image files</source>
         <translation>Képfájlok</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="724"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="726"/>
         <source>tiled</source>
         <translation>csempézett</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="726"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="728"/>
         <source>Numerical control</source>
         <translation>Numerikus vezérlés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="463"/>
+        <location filename="../../src/libs/vlayout/vlayoutexporter.cpp" line="465"/>
         <source>Can&apos;t create a flat dxf file.</source>
         <translation>Nem hozható létre sík DXF-fájl.</translation>
     </message>
@@ -22423,7 +22557,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VLayoutPiece</name>
     <message>
-        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="457"/>
+        <location filename="../../src/libs/vlayout/vlayoutpiece.cpp" line="459"/>
         <source>Piece %1 doesn&apos;t have shape.</source>
         <translation>A(z) %1 darabnak nincs alakzata.</translation>
     </message>
@@ -22431,7 +22565,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VLineColorProperty</name>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/plugins/vlinecolorproperty.cpp" line="118"/>
+        <location filename="../../src/libs/vpropertyexplorer/plugins/vlinecolorproperty.cpp" line="120"/>
         <source>White</source>
         <translation>Fehér</translation>
     </message>
@@ -22439,55 +22573,55 @@ Szeretné folytatni?</translation>
 <context>
     <name>VMeasurements</name>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="808"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="821"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="834"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="847"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="860"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="873"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="886"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="914"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="942"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="958"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="974"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="987"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1005"/>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1018"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="810"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="823"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="836"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="849"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="862"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="875"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="888"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="916"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="944"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="960"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="976"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="989"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1007"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1020"/>
         <source>Can&apos;t find measurement &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; mérés nem található</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1459"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1461"/>
         <source>The measurement name is empty!</source>
         <translation>A mérés neve üres!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1261"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1263"/>
         <source>None</source>
         <translation>Nincs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1263"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1265"/>
         <source>Height</source>
         <translation>Magasság</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1265"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1267"/>
         <source>Size</source>
         <translation>Méret</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1269"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1271"/>
         <source>Hip</source>
         <translation>Csípő</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1563"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1565"/>
         <source>Dimension is not valid</source>
         <translation>A dimenzió nem érvényes</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1267"/>
+        <location filename="../../src/libs/vformat/vmeasurements.cpp" line="1269"/>
         <source>Waist</source>
         <translation>Derék</translation>
     </message>
@@ -22495,182 +22629,182 @@ Szeretné folytatni?</translation>
 <context>
     <name>VNodePoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="491"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="493"/>
         <source>In layout</source>
         <translation>Az elrendezésben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="510"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="512"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="471"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="473"/>
         <source>Show Point name</source>
         <translation>Pont nevének megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="606"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="608"/>
         <source>by length</source>
         <translation>hossz szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="608"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="610"/>
         <source>by points intersetions</source>
         <translation>pontok metszéspontjai szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="610"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="612"/>
         <source>by first edge symmetry</source>
         <translation>első él szimmetriája szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="612"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="614"/>
         <source>by second edge symmetry</source>
         <translation>második él szimmetriája szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="614"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="616"/>
         <source>by first edge right angle</source>
         <translation>első él derékszöge szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="616"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="618"/>
         <source>by second edge right angle</source>
         <translation>második él derékszöge szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="538"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="540"/>
         <source>Passmark</source>
         <translation>Bevágásjel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="477"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="479"/>
         <source>Exclude</source>
         <translation>Kizárás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="494"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="496"/>
         <source>Force flipping</source>
         <translation>Tükrözés kényszerítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="504"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="506"/>
         <source>Show full piece</source>
         <translation>Teljes darab megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="515"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="517"/>
         <source>Pending</source>
         <translation>Függőben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="540"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="542"/>
         <source>None</source>
         <translation>Nincs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="576"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="578"/>
         <source>Check mark clockwise</source>
         <translation>Pipa alak, óramutató járása szerint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="578"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="580"/>
         <source>Turn point (for DXF)</source>
         <translation>Fordulópont (DXF-hez)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="596"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="598"/>
         <source>Seam allowance angle</source>
         <translation>Varrásráhagyás szöge</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="634"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="636"/>
         <source>Passmark angle</source>
         <translation>Bevágásjel szöge</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="646"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="648"/>
         <source>Straightforward</source>
         <translation>Egyenes</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="648"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="650"/>
         <source>Bisector</source>
         <translation>Szögfelező</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="650"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="652"/>
         <source>Intersection</source>
         <translation>Metszéspont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="653"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="655"/>
         <source>Intersection (only left)</source>
         <translation>Metszéspont (csak bal)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="656"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="658"/>
         <source>Intersection (only right)</source>
         <translation>Metszéspont (csak jobb)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="658"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="660"/>
         <source>Intersection 2</source>
         <translation>Metszéspont 2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="661"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="663"/>
         <source>Intersection 2 (only left)</source>
         <translation>Metszéspont 2 (csak bal)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="664"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="666"/>
         <source>Intersection 2 (only right)</source>
         <translation>Metszéspont 2 (csak jobb)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="558"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="560"/>
         <source>One line</source>
         <translation>Egy vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="560"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="562"/>
         <source>Two lines</source>
         <translation>Két vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="562"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="564"/>
         <source>Three lines</source>
         <translation>Három vonal</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="564"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="566"/>
         <source>T mark</source>
         <translation>T jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="566"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="568"/>
         <source>External V mark</source>
         <translation>Külső V jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="568"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="570"/>
         <source>Internal V mark</source>
         <translation>Belső V jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="574"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="576"/>
         <source>Check mark</source>
         <translation>Pipa jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="570"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="572"/>
         <source>U mark</source>
         <translation>U jel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="572"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="574"/>
         <source>Box mark</source>
         <translation>Doboz jel</translation>
     </message>
@@ -22678,105 +22812,105 @@ Szeretné folytatni?</translation>
 <context>
     <name>VPE::QtColorPicker</name>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="315"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="505"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="672"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="317"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="507"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="674"/>
         <source>Black</source>
         <translation>Fekete</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="506"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="673"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="508"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="675"/>
         <source>White</source>
         <translation>Fehér</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="507"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="674"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="509"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="676"/>
         <source>Red</source>
         <translation>Vörös</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="508"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="675"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="510"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="677"/>
         <source>Dark red</source>
         <translation>Sötétvörös</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="509"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="676"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="511"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="678"/>
         <source>Green</source>
         <translation>Zöld</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="510"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="677"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="512"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="679"/>
         <source>Dark green</source>
         <translation>Sötétzöld</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="511"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="678"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="513"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="680"/>
         <source>Blue</source>
         <translation>Kék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="512"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="679"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="514"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="681"/>
         <source>Dark blue</source>
         <translation>Sötétkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="513"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="680"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="515"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="682"/>
         <source>Cyan</source>
         <translation>Ciánkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="514"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="681"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="516"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="683"/>
         <source>Dark cyan</source>
         <translation>Sötét ciánkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="515"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="682"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="517"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="684"/>
         <source>Magenta</source>
         <translation>Bíbor</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="516"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="683"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="518"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="685"/>
         <source>Dark magenta</source>
         <translation>Sötétbíbor</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="517"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="684"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="519"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="686"/>
         <source>Yellow</source>
         <translation>Sárga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="518"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="685"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="520"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="687"/>
         <source>Dark yellow</source>
         <translation>Sötétsárga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="519"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="686"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="521"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="688"/>
         <source>Gray</source>
         <translation>Szürke</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="520"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="687"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="522"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="689"/>
         <source>Dark gray</source>
         <translation>Sötétszürke</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="521"/>
-        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="688"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="523"/>
+        <location filename="../../src/libs/vpropertyexplorer/qtcolorpicker.cpp" line="690"/>
         <source>Light gray</source>
         <translation>Világosszürke</translation>
     </message>
@@ -22797,27 +22931,27 @@ Szeretné folytatni?</translation>
 <context>
     <name>VPassmark</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="898"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="900"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;. Notch collapse.</source>
         <translation>Nem számítható ki bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. A bevágás összeomlott.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="907"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="909"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;. Cannot find intersection.</source>
         <translation>Nem számítható ki bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. Nem található metszéspont.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1246"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1248"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;. Seam allowance is empty.</source>
         <translation>Nem számítható ki bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. A varrásráhagyás üres.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1260"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1262"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;. Cannot find position for a notch.</source>
         <translation>Nem számítható ki bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. Nem található pozíció a bevágáshoz.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1278"/>
+        <location filename="../../src/libs/vpatterndb/vpassmark.cpp" line="1280"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;. Unable to fix a notch position.</source>
         <translation>Nem számítható ki bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban. A bevágás pozíciója nem javítható.</translation>
     </message>
@@ -22825,450 +22959,450 @@ Szeretné folytatni?</translation>
 <context>
     <name>VPattern</name>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="275"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="277"/>
         <source>The formula uses a name the pattern does not define: %1.</source>
         <translation>A képlet olyan nevet használ, amely nincs definiálva a szabásmintában: %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="969"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1013"/>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="90"/>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="118"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="971"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1015"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="92"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="120"/>
         <source>Error parsing file.</source>
         <translation>Fájl‑feldolgozási hiba.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="980"/>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="97"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="982"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="99"/>
         <source>Error can&apos;t convert value.</source>
         <translation>Hiba: az érték nem konvertálható.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="991"/>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="104"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="993"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="106"/>
         <source>Error empty parameter.</source>
         <translation>Hiba: üres paraméter.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1002"/>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="111"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="113"/>
         <source>Error wrong id.</source>
         <translation>Hiba: hibás azonosító.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1024"/>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="125"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1026"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="127"/>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation>Fájl‑feldolgozási hiba (std::bad_alloc).</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1043"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1045"/>
         <source>Error updating scene after parsing.</source>
         <translation>Hiba a jelenet frissítésekor az elemzés után.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="368"/>
+        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="371"/>
         <source>Error creating or updating detail</source>
         <translation>Hiba a darab létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="312"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="314"/>
         <source>Duplicate line role name &apos;%1&apos; in &lt;lineNames&gt;; second occurrence ignored.</source>
         <translation>„%1” vonalszerepnév duplikálva a &lt;lineNames&gt; elemben; a második előfordulás figyelmen kívül marad.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="470"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="472"/>
         <source>Error creating or updating single point</source>
         <translation>Hiba az egyetlen pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="516"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="522"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="518"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="524"/>
         <source>Error creating or updating point of end line</source>
         <translation>Hiba a vonal végpontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="566"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="572"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="568"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="574"/>
         <source>Error creating or updating point along line</source>
         <translation>Hiba a vonal menti pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="611"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="617"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="613"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="619"/>
         <source>Error creating or updating point of shoulder</source>
         <translation>Hiba a vállpont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="656"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="662"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="658"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="664"/>
         <source>Error creating or updating point of normal</source>
         <translation>Hiba a normális pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="701"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="707"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="703"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="709"/>
         <source>Error creating or updating point of bisector</source>
         <translation>Hiba a szögfelező pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="777"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="783"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="779"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="785"/>
         <source>Error creating or updating point of contact</source>
         <translation>Hiba az érintési pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="813"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="815"/>
         <source>Error creating or updating modeling point</source>
         <translation>Hiba a modellezési pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="921"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="923"/>
         <source>Error creating or updating height</source>
         <translation>Hiba a magasság létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="952"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="954"/>
         <source>Error creating or updating triangle</source>
         <translation>Hiba a háromszög létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="982"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="984"/>
         <source>Error creating or updating point of intersection</source>
         <translation>Hiba a metszéspont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1041"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1047"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1043"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1049"/>
         <source>Error creating or updating cut spline point</source>
         <translation>Hiba a spline-vágó pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1106"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1112"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1108"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1114"/>
         <source>Error creating or updating cut spline path point</source>
         <translation>Hiba a spline útvonalat vágó pont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1171"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1177"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1173"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1179"/>
         <source>Error creating or updating cut arc point</source>
         <translation>Hiba a vágott ív pontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1219"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1225"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1227"/>
         <source>Error creating or updating point of intersection line and axis</source>
         <translation>Hiba a vonal és tengely metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1287"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1293"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1289"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1295"/>
         <source>Error creating or updating point of intersection curve and axis</source>
         <translation>Hiba a görbe és tengely metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="733"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="739"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1734"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1740"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="745"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1736"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1742"/>
         <source>Error creating or updating the cap of a dart</source>
         <translation>Hiba a szűkítősapka létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1797"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1803"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1799"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1805"/>
         <source>Error creating or updating a rectangle</source>
         <translation>Hiba a téglalap létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="280"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="282"/>
         <source>Error creating or updating line</source>
         <translation>Hiba a vonal létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="128"/>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="194"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="130"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="196"/>
         <source>Error creating or updating simple curve</source>
         <translation>Hiba az egyszerű görbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="313"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="315"/>
         <source>Error creating or updating armhole curve</source>
         <translation>Hiba a karkivágásgörbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="381"/>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="461"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="383"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="463"/>
         <source>Error creating or updating curve path</source>
         <translation>Hiba a görbe útvonal létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="520"/>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="526"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="522"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="528"/>
         <source>Error creating or updating a parallel curve</source>
         <translation>Hiba a párhuzamos görbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="595"/>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="601"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="597"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="603"/>
         <source>Error creating or updating a graduated curve</source>
         <translation>Hiba a fokozatos görbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="708"/>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="714"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="710"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="716"/>
         <source>Error creating or updating a spiral</source>
         <translation>Hiba egy spirál létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="768"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="770"/>
         <source>Error creating or updating modeling simple curve</source>
         <translation>Hiba az egyszerű görbe modellezésének létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="793"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="795"/>
         <source>Error creating or updating modeling curve path</source>
         <translation>Hiba a modellezési görbe útvonal létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="113"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="119"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="342"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="348"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="115"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="121"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="344"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="350"/>
         <source>Error creating or updating simple arc</source>
         <translation>Hiba az egyszerű ív létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="262"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="268"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="264"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="270"/>
         <source>Error creating or updating elliptical arc with length</source>
         <translation>Hiba az elliptikus ív adott hosszal létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="295"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="297"/>
         <source>Error creating or updating modeling arc</source>
         <translation>Hiba az ív modellezésének létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="448"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="454"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="450"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="456"/>
         <source>Error creating or updating the operation that closes a dart</source>
         <translation>Hiba a szűkítőt lezáró művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="487"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="489"/>
         <source>A transfer without both of its merge points was ignored.</source>
         <translation>A két egyesítési pont nélküli átvitel figyelmen kívül maradt.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="557"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="563"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="560"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="566"/>
         <source>Error creating or updating the slash and spread operation</source>
         <translation>Hiba a Vágás és szétnyitás művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="597"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="603"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="609"/>
         <source>Error creating or updating the move by batch operation</source>
         <translation>Hiba a Kötegelt mozgatás művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="640"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="646"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="652"/>
         <source>Error creating or updating the flounce spiral</source>
         <translation>Hiba a spirálfodros létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="681"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="687"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="693"/>
         <source>Error creating or updating the pleat operation</source>
         <translation>Hiba a pliszéművelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="804"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="810"/>
         <source>A transfer refers to objects the pattern does not define, and was ignored.</source>
         <translation>Egy átvitel olyan objektumokra hivatkozik, amelyek nincsenek definiálva a szabásmintában: figyelmen kívül maradt.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1043"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1049"/>
         <source>Error creating or updating union details</source>
         <translation>Hiba a darabok egyesítésének létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1350"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1352"/>
         <source>Error creating or updating point of intersection arcs</source>
         <translation>Hiba az ívek metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1393"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1395"/>
         <source>Error creating or updating point of intersection circles</source>
         <translation>Hiba a körök metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1497"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1499"/>
         <source>Error creating or updating point from circle and tangent</source>
         <translation>Hiba a kör és érintő metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1528"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1530"/>
         <source>Error creating or updating point from arc and tangent</source>
         <translation>Hiba az ív és érintő metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1558"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1560"/>
         <source>Error creating or updating arc point</source>
         <translation>Hiba az ívpont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1588"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1590"/>
         <source>Error creating or updating curve point</source>
         <translation>Hiba a görbepont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1639"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1641"/>
         <source>Error creating or updating true darts</source>
         <translation>Hiba a szűkítők kiegyenlítésének létrehozásában/frissítésében</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1336"/>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1405"/>
-        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="108"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1338"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="1407"/>
+        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="110"/>
         <source>Wrong tag name &apos;%1&apos;.</source>
         <translation>Hibás címkenév: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="247"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="249"/>
         <source>Unknown point type &apos;%1&apos;.</source>
         <translation>Ismeretlen pont típus: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="870"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="872"/>
         <source>Unknown spline type &apos;%1&apos;.</source>
         <translation>Ismeretlen spline típus: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="965"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="971"/>
         <source>Unknown arc type &apos;%1&apos;.</source>
         <translation>Ismeretlen ív típus: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1049"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1055"/>
         <source>Unknown tools type &apos;%1&apos;.</source>
         <translation>Ismeretlen eszköz típus: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="874"/>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="876"/>
         <source>Error not unique id.</source>
         <translation>Hiba: nem egyedi azonosító.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1457"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="1459"/>
         <source>Error creating or updating point of intersection curves</source>
         <translation>Hiba a görbék metszéspontjának létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="200"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="202"/>
         <source>Error creating or updating simple interactive spline</source>
         <translation>Hiba az egyszerű interaktív spline létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="467"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="469"/>
         <source>Error creating or updating interactive spline path</source>
         <translation>Hiba az interaktív spline útvonal létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="253"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="255"/>
         <source>Error creating or updating cubic bezier curve</source>
         <translation>Hiba a köbös Bézier-görbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="657"/>
+        <location filename="../../src/app/ostara/xml/vpattern_splineparsers.cpp" line="659"/>
         <source>Error creating or updating cubic bezier path curve</source>
         <translation>Hiba a köbös Bézier útvonal-görbe létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="394"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="400"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="396"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="402"/>
         <source>Error creating or updating operation of rotation</source>
         <translation>Hiba a forgatási művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1115"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1121"/>
         <source>Unknown operation type &apos;%1&apos;.</source>
         <translation>Ismeretlen művelettípus: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="838"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="844"/>
         <source>Error creating or updating operation of flipping by line</source>
         <translation>Hiba a vonal menti tükrözési művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="524"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="526"/>
         <source>A transfer could not be rebuilt and was ignored: %1</source>
         <translation>Egy átvitelt nem sikerült újraépíteni, ezért figyelmen kívül maradt: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="873"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="879"/>
         <source>Error creating or updating operation of flipping by axis</source>
         <translation>Hiba a tengely menti tükrözési művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="922"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="928"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="934"/>
         <source>Error creating or updating operation of moving</source>
         <translation>Hiba a mozgatási művelet létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="738"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="740"/>
         <source>Error creating or updating point of line intersection</source>
         <translation>Hiba a vonalmetszéspont létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="173"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="179"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="175"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="181"/>
         <source>Error creating or updating simple elliptical arc</source>
         <translation>Hiba az egyszerű elliptikus ív létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1002"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1008"/>
         <source>Unknown elliptical arc type &apos;%1&apos;.</source>
         <translation>Ismeretlen elliptikus ív típus: &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="206"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="208"/>
         <source>Error creating or updating modeling elliptical arc</source>
         <translation>Hiba az elliptikus ív modellezésének létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="305"/>
+        <location filename="../../src/app/ostara/xml/vpattern_detailparser.cpp" line="307"/>
         <source>Detail</source>
         <translation>Darab</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1149"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1155"/>
         <source>Unnamed path</source>
         <translation>Névtelen útvonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1142"/>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1170"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1148"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1176"/>
         <source>Error creating or updating a piece path</source>
         <translation>Hiba a darabútvonal létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1143"/>
+        <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="1149"/>
         <source>Piece path doesn&apos;t contain nodes</source>
         <translation>A darabútvonal nem tartalmaz csomópontokat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="884"/>
-        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="890"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="886"/>
+        <location filename="../../src/app/ostara/xml/vpattern_pointparsers.cpp" line="892"/>
         <source>Error creating or updating place label</source>
         <translation>Hiba a címke létrehozásakor vagy frissítésekor</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="432"/>
+        <location filename="../../src/app/ostara/xml/vpattern_increments.cpp" line="434"/>
         <source>Can&apos;t find increment &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; növekmény nem található</translation>
     </message>
@@ -23276,7 +23410,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VPatternConverter</name>
     <message>
-        <location filename="../../src/libs/ifc/xml/vpatternconverter.cpp" line="565"/>
+        <location filename="../../src/libs/ifc/xml/vpatternconverter.cpp" line="567"/>
         <source>Error no unique id.</source>
         <translation>Hiba: nem egyedi azonosító.</translation>
     </message>
@@ -23319,32 +23453,32 @@ Szeretné folytatni?</translation>
 <context>
     <name>VPatternRecipe</name>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="328"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="330"/>
         <source>Invalid tag %1</source>
         <translation>Érvénytelen címke: %1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="381"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="383"/>
         <source>Can&apos;t find element by id &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; azonosítójú elem nem található</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="533"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="535"/>
         <source>Can&apos;t create history record for the tool.</source>
         <translation>Nem hozható létre előzményrekord az eszközhöz.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="567"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="569"/>
         <source>Reading final measurements error.</source>
         <translation>Hiba a végső mérések olvasásakor.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="568"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="570"/>
         <source>Value for final measurtement &apos;%1&apos; is infinite or NaN. Please, check your calculations.</source>
         <translation>A(z) &apos;%1&apos; végső mérés értéke végtelen vagy NaN. Kérjük, ellenőrizze a számításokat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="581"/>
+        <location filename="../../src/libs/vformat/vpatternrecipe.cpp" line="583"/>
         <source>Unable to create record for final measurement &apos;%1&apos;. Error: %2</source>
         <translation>Nem hozható létre rekord a(z) &apos;%1&apos; végső méréshez. Hiba: %2</translation>
     </message>
@@ -23352,20 +23486,20 @@ Szeretné folytatni?</translation>
 <context>
     <name>VPiece</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="300"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="317"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="302"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="319"/>
         <source>Main path of piece %1</source>
         <translation>A(z) %1 darab fő útvonala</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1420"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1460"/>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1539"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1434"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1474"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1553"/>
         <source>Cannot calculate a notch for point &apos;%1&apos; in piece &apos;%2&apos;.</source>
         <translation>Nem számítható ki bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1592"/>
+        <location filename="../../src/libs/vpatterndb/vpiece.cpp" line="1606"/>
         <source>Notch for point &apos;%1&apos; in piece &apos;%2&apos; will be disabled. Manual length is less than allowed value.</source>
         <translation>A bevágás a(z) &apos;%1&apos; pontnál a(z) &apos;%2&apos; darabban le lesz tiltva. A kézi hossz kisebb a megengedett értéknél.</translation>
     </message>
@@ -23378,12 +23512,12 @@ Szeretné folytatni?</translation>
         <translation>Párbeszédablak</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/vshortcutdialog.cpp" line="119"/>
+        <location filename="../../src/libs/vmisc/dialogs/vshortcutdialog.cpp" line="121"/>
         <source>Shortcut Already Used</source>
         <translation>A gyorsbillentyű már használatban van</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/dialogs/vshortcutdialog.cpp" line="120"/>
+        <location filename="../../src/libs/vmisc/dialogs/vshortcutdialog.cpp" line="122"/>
         <source>&quot;%1&quot; is already bound to &quot;%2&quot;</source>
         <translation>A(z) „%1” már a(z) „%2” művelethez van rendelve</translation>
     </message>
@@ -23391,7 +23525,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VSingleLineOutlineChar</name>
     <message>
-        <location filename="../../src/libs/vformat/vsinglelineoutlinechar.cpp" line="155"/>
+        <location filename="../../src/libs/vformat/vsinglelineoutlinechar.cpp" line="157"/>
         <source>Failed to open file for writing.</source>
         <translation>A fájl megnyitása írásra sikertelen.</translation>
     </message>
@@ -23399,14 +23533,14 @@ Szeretné folytatni?</translation>
 <context>
     <name>VSplinePath</name>
     <message>
-        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="719"/>
+        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="721"/>
         <source>Not enough points to create the spline.</source>
         <translation>Nincs elég pont a spline létrehozásához.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="724"/>
-        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="750"/>
-        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="774"/>
+        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="726"/>
+        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="752"/>
+        <location filename="../../src/libs/vgeometry/vsplinepath.cpp" line="776"/>
         <source>This spline does not exist.</source>
         <translation>Ez a spline nem létezik.</translation>
     </message>
@@ -23414,32 +23548,32 @@ Szeretné folytatni?</translation>
 <context>
     <name>VTableSearch</name>
     <message>
-        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="433"/>
+        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="435"/>
         <source>Match case</source>
         <translation>Kis- és nagybetű megkülönböztetése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="438"/>
+        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="440"/>
         <source>Words</source>
         <translation>Szavak</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="443"/>
+        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="445"/>
         <source>Regex</source>
         <translation>Regex</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="448"/>
+        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="450"/>
         <source>Match case and words</source>
         <translation>Kis- és nagybetű, valamint szavak megkülönböztetése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="453"/>
+        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="455"/>
         <source>Match case and regex</source>
         <translation>Kis- és nagybetű, valamint regex megkülönböztetése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="456"/>
+        <location filename="../../src/libs/vmisc/vtablesearch.cpp" line="458"/>
         <source>Search</source>
         <translation>Keresés</translation>
     </message>
@@ -23447,7 +23581,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolAbstractArc</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="695"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="697"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23455,8 +23589,8 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolAbstractBezier</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1209"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1260"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1211"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="1262"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23464,7 +23598,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolAbstractCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="272"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="274"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
@@ -23472,7 +23606,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolAbstractOffsetCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="838"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="840"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23480,18 +23614,18 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolAlongLine</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="221"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="224"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="223"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="226"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="227"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="229"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="255"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolalongline.cpp" line="257"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23499,22 +23633,22 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolArc</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="446"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="448"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="447"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="449"/>
         <source>Radius</source>
         <translation>Sugár</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="448"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="450"/>
         <source>Start angle</source>
         <translation>Kezdőszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="449"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarc.cpp" line="451"/>
         <source>End angle</source>
         <translation>Végszög</translation>
     </message>
@@ -23522,22 +23656,22 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolArcWithLength</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="427"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="429"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="428"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="430"/>
         <source>Radius</source>
         <translation>Sugár</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="429"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="431"/>
         <source>Start angle</source>
         <translation>Kezdőszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="430"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolarcwithlength.cpp" line="432"/>
         <source>End angle</source>
         <translation>Végszög</translation>
     </message>
@@ -23545,23 +23679,23 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolBasePoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="292"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="306"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="294"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="308"/>
         <source>Delete piece</source>
         <translation>Darab törlése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="294"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="296"/>
         <source>This piece cannot be deleted yet: the pattern is not fully solved.</source>
         <translation>Ez a darab egyelőre nem törölhető: a szabásminta nincs teljesen megoldva.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="295"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="297"/>
         <source>This piece cannot be deleted: %1 depends on it.</source>
         <translation>Ez a darab nem törölhető: %1 függ tőle.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="307"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.cpp" line="309"/>
         <source>This action will delete the piece %1.</source>
         <translation>Ez a művelet törli a %1 darabot.</translation>
     </message>
@@ -23569,32 +23703,32 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolCurveIntersectAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="152"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="154"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="450"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="452"/>
         <source>Error calculating point &apos;%1&apos;. There is no intersection with curve &apos;%2&apos; and axis through point &apos;%3&apos; with angle %4°</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. Nincs metszéspont a(z) &apos;%2&apos; görbével és a(z) &apos;%3&apos; ponton átmenő, %4°-os tengellyel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="849"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="851"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="850"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="852"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="851"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="853"/>
         <source>Segment 1</source>
         <translation>Szakasz 1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="852"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolcurveintersectaxis.cpp" line="854"/>
         <source>Segment 2</source>
         <translation>Szakasz 2</translation>
     </message>
@@ -23602,7 +23736,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolCut</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcut.cpp" line="503"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcut.cpp" line="505"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23610,42 +23744,42 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolCutArc</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="395"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="397"/>
         <source>Arc</source>
         <translation>Ív</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="396"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="398"/>
         <source>Elliptical arc</source>
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="397"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="399"/>
         <source>length</source>
         <translation>hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="398"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="400"/>
         <source>start angle</source>
         <translation>kezdőszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="399"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="401"/>
         <source>end angle</source>
         <translation>végszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="400"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="402"/>
         <source>radius</source>
         <translation>sugár</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="401"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="403"/>
         <source>radius1</source>
         <translation>sugár1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="402"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.cpp" line="404"/>
         <source>radius2</source>
         <translation>sugár2</translation>
     </message>
@@ -23653,12 +23787,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolCutSpline</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.cpp" line="508"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.cpp" line="510"/>
         <source>Curve</source>
         <translation>Görbe</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.cpp" line="509"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.cpp" line="511"/>
         <source>length</source>
         <translation>hossz</translation>
     </message>
@@ -23666,12 +23800,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolCutSplinePath</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.cpp" line="606"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.cpp" line="608"/>
         <source>Curve</source>
         <translation>Görbe</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.cpp" line="607"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.cpp" line="609"/>
         <source>length</source>
         <translation>hossz</translation>
     </message>
@@ -23679,7 +23813,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolDoublePoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooldoublepoint.cpp" line="527"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/tooldoublepoint/vtooldoublepoint.cpp" line="529"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23687,28 +23821,28 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolEllipticalArc</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="509"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="511"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="510"/>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="511"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="512"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="513"/>
         <source>Radius</source>
         <translation>Sugár</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="512"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="514"/>
         <source>Start angle</source>
         <translation>Kezdőszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="513"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="515"/>
         <source>End angle</source>
         <translation>Végszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="514"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarc.cpp" line="516"/>
         <source>Rotation</source>
         <translation>Forgatás</translation>
     </message>
@@ -23716,27 +23850,27 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolEllipticalArcWithLength</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="504"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="506"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="505"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="507"/>
         <source>Radius1</source>
         <translation>Sugár1</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="506"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="508"/>
         <source>Radius2</source>
         <translation>Sugár2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="507"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="509"/>
         <source>Start angle</source>
         <translation>Kezdőszög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="508"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolellipticalarcwithlength.cpp" line="510"/>
         <source>End angle</source>
         <translation>Végszög</translation>
     </message>
@@ -23744,7 +23878,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolFlippingByAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="169"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyaxis.cpp" line="171"/>
         <source>Flipping by axis</source>
         <translation>Tükrözés tengely mentén</translation>
     </message>
@@ -23752,7 +23886,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolFlippingByLine</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="170"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/flipping/vtoolflippingbyline.cpp" line="172"/>
         <source>flipping by line</source>
         <translation>tükrözés vonal mentén</translation>
     </message>
@@ -23760,7 +23894,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolGraduatedCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.cpp" line="175"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolgraduatedcurve.cpp" line="177"/>
         <source>Offset %1</source>
         <translation>Eltolás %1</translation>
     </message>
@@ -23768,17 +23902,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolHeight</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.cpp" line="304"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.cpp" line="306"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.cpp" line="305"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.cpp" line="307"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.cpp" line="337"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolheight.cpp" line="339"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23786,17 +23920,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolLine</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="626"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="628"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="627"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="629"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="657"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/vtoolline.cpp" line="659"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23804,12 +23938,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolLineIntersect</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.cpp" line="349"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.cpp" line="351"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.cpp" line="157"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoollineintersect.cpp" line="159"/>
         <source>Error calculating point &apos;%1&apos;. Lines (%2;%3) and (%4;%5) have no point of intersection</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) (%2;%3) és (%4;%5) vonalaknak nincs metszéspontjuk</translation>
     </message>
@@ -23817,22 +23951,22 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolLineIntersectAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="412"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="414"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="413"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="415"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="452"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="454"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="177"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollineintersectaxis.cpp" line="179"/>
         <source>Error calculating point &apos;%1&apos;. Line (%2;%3) doesn&apos;t have intersection with axis through point &apos;%4&apos; and angle %5°</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) (%2;%3) vonalnak nincs metszéspontja a(z) &apos;%4&apos; ponton átmenő, %5°-os tengellyel</translation>
     </message>
@@ -23840,17 +23974,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolLinePoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="263"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="265"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="264"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="266"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="363"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoollinepoint.cpp" line="365"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -23858,27 +23992,27 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolMove</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="488"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="490"/>
         <source>Rotation angle</source>
         <translation>Forgatási szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="485"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="487"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="373"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="375"/>
         <source>Center point</source>
         <translation>Középpont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="483"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="485"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="292"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolmove.cpp" line="294"/>
         <source>move</source>
         <translation>mozgatás</translation>
     </message>
@@ -23886,823 +24020,843 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolOptionsPropertyBrowser</name>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="285"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="287"/>
         <source>Base point</source>
         <translation>Alappont</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="294"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="296"/>
         <source>Point at distance and angle</source>
         <translation>Pont adott távolsággal és szöggel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="297"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="299"/>
         <source>Point at distance along line</source>
         <translation>Pont adott távolságra a vonalon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="300"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="302"/>
         <source>Arc</source>
         <translation>Ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="306"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="308"/>
         <source>Point along bisector</source>
         <translation>Pont a szögfelező mentén</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="309"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="311"/>
         <source>Cut arc tool</source>
         <translation>Vágott ív eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="318"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="320"/>
         <source>Perpendicular point along line</source>
         <translation>Merőleges pont a vonalon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="331"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="333"/>
         <source>Line between points</source>
         <translation>Vonal két pont között</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="358"/>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="367"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="360"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="369"/>
         <source>Curve tool</source>
         <translation>Görbe eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="920"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="973"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1026"/>
-        <source>Color</source>
-        <translation>Sziín</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="160"/>
-        <source>First point</source>
-        <translation>Első pont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="161"/>
-        <source>Second point</source>
-        <translation>Második pont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="303"/>
-        <source>Arc with given length</source>
-        <translation>Ív adott ívhosszal</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="408"/>
-        <source>True darts</source>
-        <translation>Szűkítők kiegyenlítése</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="346"/>
-        <source>Tool to make point from intersection two arcs</source>
-        <translation>Pont létrehozása két ív metszéspontjából</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="288"/>
-        <source>Arc point</source>
-        <translation>Ívpont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="291"/>
-        <source>Curve point</source>
-        <translation>Görbepont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="312"/>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="315"/>
-        <source>Tool segment a curve</source>
-        <translation>Görbe felosztása eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="334"/>
-        <source>Point at intersection of two lines</source>
-        <translation>Két vonal metszéspontja</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="337"/>
-        <source>Point along normal to line</source>
-        <translation>Pont a merőleges mentén</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="340"/>
-        <source>Point of contact</source>
-        <translation>Érintkezési pont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="343"/>
-        <source>Point of intersection two lines</source>
-        <translation>Két vonal metszéspontja</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="349"/>
-        <source>Tool to make point from intersection two circles</source>
-        <translation>Eszköz pont létrehozásához két kör metszéspontjából</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="355"/>
-        <source>Shoulder point</source>
-        <translation>Vállpont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="364"/>
-        <source>Armhole curve</source>
-        <translation>Karkivágásgörbe</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="374"/>
-        <source>Triangle</source>
-        <translation>Háromszög</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="396"/>
-        <source>Point of intersection line and axis</source>
-        <translation>Vonal és tengely metszéspontja</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="399"/>
-        <source>Point of intersection curve and axis</source>
-        <translation>Görbe és tengely metszéspontja</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="402"/>
-        <source>Tool to make point from circle and tangent</source>
-        <translation>Eszköz kör és érintő metszéspontjának létrehozásához</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="405"/>
-        <source>Tool to make point from arc and tangent</source>
-        <translation>Eszköz ív és érintő metszéspontjának létrehozásához</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="420"/>
-        <source>Tool rectangle</source>
-        <translation>Téglalap eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="432"/>
-        <source>Tool transfer</source>
-        <translation>Átvitel eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="435"/>
-        <source>Tool slash and spread</source>
-        <translation>Vágás és szétnyitás eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="438"/>
-        <source>Tool move by batch</source>
-        <translation>Kötegelt mozgatás eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="445"/>
-        <source>Tool pleat</source>
-        <translation>Pliszé eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="445"/>
-        <source>Tool middle pleat</source>
-        <translation>Középső pliszé eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="449"/>
-        <source>Flounce spiral</source>
-        <translation>Spirálfodros</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="461"/>
-        <source>Elliptical arc with length</source>
-        <translation>Elliptikus ív adott hosszal</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="464"/>
-        <source>Tool parallel curve</source>
-        <translation>Párhuzamos görbe eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="467"/>
-        <source>Tool graduated curve</source>
-        <translation>Fokozatos görbe eszköz</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="470"/>
-        <source>Spiral</source>
-        <translation>Spirál</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="190"/>
-        <source>Highest point</source>
-        <translation>Legmagasabb pont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="191"/>
-        <source>Lowest point</source>
-        <translation>Legalacsonyabb pont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="220"/>
-        <source>Leftmost point</source>
-        <translation>Bal szélső pont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="221"/>
-        <source>Rightmost point</source>
-        <translation>Jobb szélső pont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="922"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="975"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1028"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1541"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1545"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="446"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="462"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="529"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="594"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="626"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="635"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="651"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="683"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="798"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="801"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
-        <source>Point</source>
-        <translation>Pont</translation>
+        <source>Color</source>
+        <translation>Sziín</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="923"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="976"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1029"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1548"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="446"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="462"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="529"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="594"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="626"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="635"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="651"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="683"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
-        <source>Point name:</source>
-        <translation>Pont neve:</translation>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="162"/>
+        <source>First point</source>
+        <translation>Első pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="163"/>
+        <source>Second point</source>
+        <translation>Második pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="305"/>
+        <source>Arc with given length</source>
+        <translation>Ív adott ívhosszal</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="410"/>
+        <source>True darts</source>
+        <translation>Szűkítők kiegyenlítése</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="348"/>
+        <source>Tool to make point from intersection two arcs</source>
+        <translation>Pont létrehozása két ív metszéspontjából</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="290"/>
+        <source>Arc point</source>
+        <translation>Ívpont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="293"/>
+        <source>Curve point</source>
+        <translation>Görbepont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="314"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="317"/>
+        <source>Tool segment a curve</source>
+        <translation>Görbe felosztása eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="336"/>
+        <source>Point at intersection of two lines</source>
+        <translation>Két vonal metszéspontja</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="339"/>
+        <source>Point along normal to line</source>
+        <translation>Pont a merőleges mentén</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="342"/>
+        <source>Point of contact</source>
+        <translation>Érintkezési pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="345"/>
+        <source>Point of intersection two lines</source>
+        <translation>Két vonal metszéspontja</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="351"/>
+        <source>Tool to make point from intersection two circles</source>
+        <translation>Eszköz pont létrehozásához két kör metszéspontjából</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="357"/>
+        <source>Shoulder point</source>
+        <translation>Vállpont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="366"/>
+        <source>Armhole curve</source>
+        <translation>Karkivágásgörbe</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="376"/>
+        <source>Triangle</source>
+        <translation>Háromszög</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="398"/>
+        <source>Point of intersection line and axis</source>
+        <translation>Vonal és tengely metszéspontja</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="401"/>
+        <source>Point of intersection curve and axis</source>
+        <translation>Görbe és tengely metszéspontja</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="404"/>
+        <source>Tool to make point from circle and tangent</source>
+        <translation>Eszköz kör és érintő metszéspontjának létrehozásához</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="407"/>
+        <source>Tool to make point from arc and tangent</source>
+        <translation>Eszköz ív és érintő metszéspontjának létrehozásához</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="422"/>
+        <source>Tool rectangle</source>
+        <translation>Téglalap eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="434"/>
+        <source>Tool transfer</source>
+        <translation>Átvitel eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="437"/>
+        <source>Tool slash and spread</source>
+        <translation>Vágás és szétnyitás eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="440"/>
+        <source>Tool move by batch</source>
+        <translation>Kötegelt mozgatás eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="447"/>
+        <source>Tool pleat</source>
+        <translation>Pliszé eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="447"/>
+        <source>Tool middle pleat</source>
+        <translation>Középső pliszé eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="451"/>
+        <source>Flounce spiral</source>
+        <translation>Spirálfodros</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="463"/>
+        <source>Elliptical arc with length</source>
+        <translation>Elliptikus ív adott hosszal</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="466"/>
+        <source>Tool parallel curve</source>
+        <translation>Párhuzamos görbe eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="469"/>
+        <source>Tool graduated curve</source>
+        <translation>Fokozatos görbe eszköz</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="472"/>
+        <source>Spiral</source>
+        <translation>Spirál</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="192"/>
+        <source>Highest point</source>
+        <translation>Legmagasabb pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="193"/>
+        <source>Lowest point</source>
+        <translation>Legalacsonyabb pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="222"/>
+        <source>Leftmost point</source>
+        <translation>Bal szélső pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="223"/>
+        <source>Rightmost point</source>
+        <translation>Jobb szélső pont</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="924"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="977"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1030"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1551"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="293"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="360"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1088"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="356"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="365"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="410"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="427"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="446"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="462"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="529"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="553"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="594"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="626"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="635"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="651"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="663"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="683"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="810"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1543"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1547"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="295"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="343"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="362"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="401"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="358"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="367"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="412"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="429"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="464"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="531"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="596"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="628"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="653"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="685"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="800"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="803"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="962"/>
+        <source>Point</source>
+        <translation>Pont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="925"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="978"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1031"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1550"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="295"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="343"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="362"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="401"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="358"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="367"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="412"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="429"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="464"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="531"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="596"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="628"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="653"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="685"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="962"/>
+        <source>Point name:</source>
+        <translation>Pont neve:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="926"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="979"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1032"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1553"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="295"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="343"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="362"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="391"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="401"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1139"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="358"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="367"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="412"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="429"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="464"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="531"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="596"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="628"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="653"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="685"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="812"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="814"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="816"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="962"/>
         <source>Show Point name</source>
         <translation>Pont nevének megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="418"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="436"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="439"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="456"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="524"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="540"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="565"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="604"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="645"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="675"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="924"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="929"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="438"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="441"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="542"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="567"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="606"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="926"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="931"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
         <source>Line:</source>
         <translation>Vonal:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="426"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="530"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="849"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="852"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="891"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="895"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="944"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="948"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="997"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1001"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1378"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1381"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1501"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1504"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="528"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="536"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="540"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="681"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1177"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1180"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="420"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="458"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="567"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="647"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="428"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="532"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="851"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="854"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="893"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="897"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="946"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="950"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="999"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1003"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1380"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1383"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1503"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1506"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="577"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="585"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="589"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="726"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="730"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1228"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1231"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="422"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="569"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
         <source>Length:</source>
         <translation>Hossz:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="433"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="537"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1518"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1521"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="499"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="503"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="649"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="653"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1194"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1197"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="421"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="677"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="954"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="435"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="539"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1520"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1523"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="548"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="552"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="698"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="702"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1245"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1248"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="423"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="679"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="956"/>
         <source>Angle:</source>
         <translation>Szög:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="190"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="332"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="425"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1003"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="424"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="443"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="459"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="526"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="542"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="591"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="648"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="680"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="957"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="192"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="334"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="474"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1054"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="426"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="445"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="461"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="544"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="593"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="650"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="682"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="959"/>
         <source>Line type:</source>
         <translation>Vonaltípus:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="376"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="379"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="378"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="381"/>
         <source>Pattern piece:</source>
         <translation>Szabásminta rész:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="195"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="431"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1009"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="425"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="444"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="460"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="527"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="543"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="592"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="649"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="681"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="767"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="935"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="958"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="197"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="480"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1060"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="427"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="446"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="462"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="529"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="545"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="594"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="651"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="683"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="769"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="937"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="960"/>
         <source>Line color:</source>
         <translation>Vonal színe:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="428"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="530"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="430"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="532"/>
         <source>Base point:</source>
         <translation>Alappont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="447"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="463"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="595"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="652"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="666"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="449"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="465"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="597"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="654"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="668"/>
         <source>First point:</source>
         <translation>Első pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="448"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="464"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="596"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="653"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="667"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="450"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="466"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="598"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="655"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="669"/>
         <source>Second point:</source>
         <translation>Második pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="465"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="654"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="467"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="656"/>
         <source>Third point:</source>
         <translation>Harmadik pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="473"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="476"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="475"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="478"/>
         <source>Point 1 label:</source>
         <translation>1. pont neve:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="492"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="495"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="494"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="497"/>
         <source>Point 2 label:</source>
         <translation>2. pont neve:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="511"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="513"/>
         <source>First base point:</source>
         <translation>Első alappont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="512"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="514"/>
         <source>Second base point:</source>
         <translation>Második alappont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="513"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="515"/>
         <source>First dart point:</source>
         <translation>Első szűkítőpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="514"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="516"/>
         <source>Second dart point:</source>
         <translation>Második szűkítőpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="515"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="517"/>
         <source>Third dart point:</source>
         <translation>Harmadik szűkítőpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="703"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="706"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="705"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="708"/>
         <source>Draw the cap</source>
         <translation>A sapka megrajzolása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="766"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="934"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="768"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="936"/>
         <source>Type of line:</source>
         <translation>Vonaltípus:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="748"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="752"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="750"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="754"/>
         <source>Reverse the sense</source>
         <translation>Az irány megfordítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="723"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="726"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="725"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="728"/>
         <source>Notch</source>
         <translation>Bevágás</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="804"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="806"/>
         <source>Point B:</source>
         <translation>B pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="806"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="808"/>
         <source>Point C:</source>
         <translation>C pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="808"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="810"/>
         <source>Point D:</source>
         <translation>D pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="901"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="904"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="903"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="906"/>
         <source>Height:</source>
         <translation>Magasság:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="127"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="129"/>
         <source>Line style</source>
         <translation>Vonalstílus</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="133"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="135"/>
         <source>Arc style</source>
         <translation>Ívstílus</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="135"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="137"/>
         <source>Elliptical arc style</source>
         <translation>Elliptikus ív stílusa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="137"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="139"/>
         <source>Curve style</source>
         <translation>Görbe stílusa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="183"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="185"/>
         <source>Pleat</source>
         <translation>Pliszé</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="248"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="250"/>
         <source>Fold line</source>
         <translation>Hajtásvonal</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="252"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="254"/>
         <source>Draw the fold line</source>
         <translation>A hajtásvonal megrajzolása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="260"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="262"/>
         <source>Fold line type:</source>
         <translation>A hajtásvonal típusa:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="265"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="267"/>
         <source>Fold line color:</source>
         <translation>A hajtásvonal színe:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="413"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="419"/>
+        <source>Smoothing</source>
+        <translation>Simítás</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="424"/>
+        <source>Smooth the curves at the joints</source>
+        <translation>A görbék simítása az illesztéseknél</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="428"/>
+        <source>Suffix of the copies:</source>
+        <translation>A másolatok utótagja:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="432"/>
+        <source>Length change:</source>
+        <translation>Hosszváltozás:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="462"/>
         <source>Rotation display</source>
         <translation>Forgatási nézet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="418"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="467"/>
         <source>Show the rotation display</source>
         <translation>A forgatási nézet megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="483"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="487"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="733"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="737"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="532"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="536"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="782"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="786"/>
         <source>Pivot point:</source>
         <translation>Forgáspont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="591"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="596"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="640"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="645"/>
         <source>Closing divisor:</source>
         <translation>Zárási osztó:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="759"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="763"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="531"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="685"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="808"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="812"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="533"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="687"/>
         <source>First line point:</source>
         <translation>Első vonalpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="775"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="779"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="532"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="686"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="824"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="828"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="534"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="688"/>
         <source>Second line point:</source>
         <translation>Második vonalpont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="878"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="882"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="894"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="927"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="931"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="943"/>
         <source>Edit rotations</source>
         <translation>Forgatások szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="913"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="917"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="929"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="964"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="968"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="980"/>
         <source>Edit pleats</source>
         <translation>Pliszék szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="949"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="953"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="965"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1000"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1004"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1016"/>
         <source>Edit moves</source>
         <translation>Mozgatások szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="991"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="996"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1047"/>
         <source>Style</source>
         <translation>Stílus</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1055"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1106"/>
         <source>Outer edge start:</source>
         <translation>Külső él kezdete:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1057"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1108"/>
         <source>Inner edge end:</source>
         <translation>Belső él vége:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1059"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1110"/>
         <source>Outer edge end:</source>
         <translation>Külső él vége:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1073"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1077"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1124"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1128"/>
         <source>Points</source>
         <translation>Pontok</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="554"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="556"/>
         <source>First line (first point):</source>
         <translation>Első vonal (első pont):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="555"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="557"/>
         <source>First line (second point):</source>
         <translation>Első vonal (második pont):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="556"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="558"/>
         <source>Second line (first point):</source>
         <translation>Második vonal (első pont):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="557"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="559"/>
         <source>Second line (second point):</source>
         <translation>Második vonal (második pont):</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="569"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="572"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="571"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="574"/>
         <source>Additional angle degrees:</source>
         <translation>További szög fokban:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="719"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="722"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="815"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="818"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1484"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1487"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="607"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="610"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="721"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="724"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="817"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="820"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1486"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1489"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="609"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="612"/>
         <source>Radius:</source>
         <translation>Sugár:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="636"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="638"/>
         <source>X: vertical point:</source>
         <translation>X: függőleges pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="637"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="639"/>
         <source>Y: horizontal point:</source>
         <translation>Y: Vízszintes pont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="664"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="666"/>
         <source>First point of axis:</source>
         <translation>A tengely első pontja:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="665"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="667"/>
         <source>Second point of axis:</source>
         <translation>A tengely második pontja:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="684"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="686"/>
         <source>Axis point:</source>
         <translation>Tengelypont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="934"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="939"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="987"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="992"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1040"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1059"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1070"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1105"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1151"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1422"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1483"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1615"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="351"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="936"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="941"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="989"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="994"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1042"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1061"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1072"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1107"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1153"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1424"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1485"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1617"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="353"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="355"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="357"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1158"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="948"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="359"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1209"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="950"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="952"/>
         <source>Curve:</source>
         <translation>Görbe:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="352"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="354"/>
         <source>Tool to make point from intersection two curves</source>
         <translation>Pont létrehozása két görbe metszéspontjából</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="361"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="363"/>
         <source>Cubic bezier curve</source>
         <translation>Köbös Bézier-görbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="371"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="373"/>
         <source>Tool cubic bezier curve</source>
         <translation>Köbös Bézier-görbe eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="411"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="413"/>
         <source>Tool rotation</source>
         <translation>Forgatás eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="806"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="855"/>
         <source>Vertical axis</source>
         <translation>Függőleges tengely</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="807"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="856"/>
         <source>Horizontal axis</source>
         <translation>Vízszintes tengely</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="429"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="431"/>
         <source>Tool move</source>
         <translation>Mozgatás eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="423"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="425"/>
         <source>Tool flipping by line</source>
         <translation>Tükrözés vonal mentén eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="414"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="416"/>
         <source>Tool dart rotation</source>
         <translation>„Szűkítő forgatása” eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="417"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="419"/>
         <source>Dart cap</source>
         <translation>Szűkítősapka</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="426"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="428"/>
         <source>Tool flipping by axis</source>
         <translation>Tükrözés tengely mentén eszköz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="452"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="454"/>
         <source>Elliptical arc</source>
         <translation>Elliptikus ív</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="97"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="99"/>
         <source>(Unnamed)</source>
         <translation>(Névtelen)</translation>
     </message>
@@ -24722,178 +24876,66 @@ Szeretné folytatni?</translation>
         <translation>A szög beállítása tengellyel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="444"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="551"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="446"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="553"/>
         <source>Axis:</source>
         <translation>Tengely:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="685"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="688"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="781"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="784"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1163"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1166"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1293"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1296"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1423"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1426"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1616"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1619"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="687"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="690"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="783"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="786"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1165"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1168"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1295"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1298"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1425"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1428"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1618"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1621"/>
         <source>Create start point</source>
         <translation>A kezdőpont létrehozása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="702"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="705"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="798"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="801"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1180"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1183"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1310"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1313"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1440"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1443"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1633"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1636"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="704"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="707"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="800"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="803"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1182"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1185"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1312"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1315"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1442"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1445"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1635"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1638"/>
         <source>Create end point</source>
         <translation>A végpont létrehozása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="736"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="739"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="832"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="835"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1231"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1234"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1361"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1364"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="738"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="741"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="834"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="837"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1233"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1236"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1363"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1366"/>
         <source>First angle:</source>
         <translation>Első szög:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="753"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="756"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1248"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1251"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="755"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="758"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1250"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1253"/>
         <source>Second angle:</source>
         <translation>Második szög:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="770"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="866"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1049"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1060"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1071"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1140"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1152"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1282"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1412"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1535"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1650"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="333"/>
-        <source>Pen style:</source>
-        <translation>Ceruza stílusa:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="771"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="867"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1050"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1061"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1072"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1141"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1153"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1283"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1413"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1474"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1536"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1651"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="338"/>
-        <source>Color:</source>
-        <translation>Szín:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="918"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="971"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1024"/>
-        <source>Show the two segments instead of the curve</source>
-        <translation>A két szakasz megjelenítése a görbe helyett</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="919"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="972"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1025"/>
-        <source>Type of line</source>
-        <translation>Vonaltípus</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1041"/>
-        <source>First handle:</source>
-        <translation>Első fogantyú:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1045"/>
-        <source>Second handle:</source>
-        <translation>Második fogantyú:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1084"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1088"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1100"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1593"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1597"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1609"/>
-        <source>Edit curve</source>
-        <translation>A görbe szerkesztése</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1114"/>
-        <source>Start point</source>
-        <translation>Kezdőpont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1135"/>
-        <source>End point</source>
-        <translation>Végpont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1162"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1292"/>
-        <source>ElArc:</source>
-        <translation>Elliptikus ív:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1197"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1200"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1327"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1330"/>
-        <source>Radius 1:</source>
-        <translation>Sugár 1:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1214"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1217"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1344"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1347"/>
-        <source>Radius 2:</source>
-        <translation>Sugár 2:</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1457"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1460"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1160"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1163"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="882"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="885"/>
-        <source>Width:</source>
-        <translation>Szélesség:</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="772"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="868"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="921"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="974"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1027"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1051"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1062"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1073"/>
@@ -24901,147 +24943,259 @@ Szeretné folytatni?</translation>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1154"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1284"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1414"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1475"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1537"/>
         <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1652"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="292"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="340"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="359"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="388"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="398"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="81"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="85"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="355"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="364"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="409"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="426"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="445"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="461"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="516"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="528"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="544"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="552"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="593"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="625"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="634"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="650"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="662"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="682"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="769"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="936"/>
-        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="959"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="335"/>
+        <source>Pen style:</source>
+        <translation>Ceruza stílusa:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="773"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="869"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1052"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1063"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1074"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1143"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1155"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1285"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1415"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1476"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1538"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1653"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="340"/>
+        <source>Color:</source>
+        <translation>Szín:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="920"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="973"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1026"/>
+        <source>Show the two segments instead of the curve</source>
+        <translation>A két szakasz megjelenítése a görbe helyett</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="921"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="974"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1027"/>
+        <source>Type of line</source>
+        <translation>Vonaltípus</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1043"/>
+        <source>First handle:</source>
+        <translation>Első fogantyú:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1047"/>
+        <source>Second handle:</source>
+        <translation>Második fogantyú:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1086"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1090"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1102"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1595"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1599"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1611"/>
+        <source>Edit curve</source>
+        <translation>A görbe szerkesztése</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1116"/>
+        <source>Start point</source>
+        <translation>Kezdőpont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1137"/>
+        <source>End point</source>
+        <translation>Végpont</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1164"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1294"/>
+        <source>ElArc:</source>
+        <translation>Elliptikus ív:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1199"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1202"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1329"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1332"/>
+        <source>Radius 1:</source>
+        <translation>Sugár 1:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1216"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1219"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1346"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1349"/>
+        <source>Radius 2:</source>
+        <translation>Sugár 2:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1459"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1462"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1211"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="1214"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="884"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="887"/>
+        <source>Width:</source>
+        <translation>Szélesség:</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="774"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="870"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="923"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="976"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1029"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1053"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1064"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1075"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1144"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1156"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1286"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1416"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1477"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1539"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1654"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="294"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="342"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="361"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="390"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="400"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="83"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="87"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="357"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="366"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="411"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="428"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="447"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="463"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="518"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="530"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="546"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="554"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="595"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="627"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="636"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="652"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="664"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="684"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="771"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="938"/>
+        <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="961"/>
         <source>Notes:</source>
         <translation>Megjegyzések:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="455"/>
-        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="458"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="457"/>
+        <location filename="../../src/app/ostara/core/vtooloptionspropertybrowser.cpp" line="460"/>
         <source>Background image</source>
         <translation>Háttérkép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1122"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1124"/>
         <source>Point %1</source>
         <translation>Pont %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="283"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="339"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="387"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="397"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="285"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="341"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="389"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="399"/>
         <source>Take:</source>
         <translation>Vétel:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="684"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="780"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="877"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="881"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="886"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="284"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="686"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="782"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="879"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="883"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="888"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="286"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="288"/>
         <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="290"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="292"/>
         <source>Arc:</source>
         <translation>Ív:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="302"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="305"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="304"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="307"/>
         <source>First circle radius:</source>
         <translation>Első kör sugara:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="321"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="324"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="323"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="326"/>
         <source>Second circle radius:</source>
         <translation>Második kör sugara:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="349"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="351"/>
         <source>Vertical correction:</source>
         <translation>Függőleges korrekció:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="350"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="352"/>
         <source>Horizontal correction:</source>
         <translation>Vízszintes korrekció:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="369"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="372"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="371"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="374"/>
         <source>Circle radius:</source>
         <translation>Kör sugara:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="407"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="469"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="409"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="471"/>
         <source>Name:</source>
         <translation>Név:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="408"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="411"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="470"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="473"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="410"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="413"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="472"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="475"/>
         <source>Hold:</source>
         <translation>Rögzítés:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="425"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="428"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="487"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="490"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="427"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="430"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="489"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="492"/>
         <source>Visible:</source>
         <translation>Látható:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="442"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="447"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="504"/>
-        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="509"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="444"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="449"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="506"/>
+        <location filename="../../src/app/ostara/core/vtoppb_misc.cpp" line="511"/>
         <source>Opacity:</source>
         <translation>Átlátszatlanság:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="839"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="843"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="888"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="892"/>
         <source>Origin point:</source>
         <translation>Kiindulópont:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1265"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1268"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1395"/>
-        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1398"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="705"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="709"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1267"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1270"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1397"/>
+        <location filename="../../src/app/ostara/core/vtoppb_curves.cpp" line="1400"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="754"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="758"/>
         <source>Rotation angle:</source>
         <translation>Forgatási szög:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="801"/>
-        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="805"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="850"/>
+        <location filename="../../src/app/ostara/core/vtoppb_ops.cpp" line="854"/>
         <source>Axis type:</source>
         <translation>Tengely típusa:</translation>
     </message>
@@ -25049,7 +25203,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPlaceLabel</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/nodeDetails/vtoolplacelabel.cpp" line="55"/>
+        <location filename="../../src/libs/vtools/tools/nodeDetails/vtoolplacelabel.cpp" line="57"/>
         <source>place labels</source>
         <translation>Belső jelölések</translation>
     </message>
@@ -25057,7 +25211,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPointFromArcAndTangent</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.cpp" line="133"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromarcandtangent.cpp" line="135"/>
         <source>Error calculating point &apos;%1&apos;. Tangent to arc &apos;%2&apos; from point &apos;%3&apos; cannot be found</source>
         <translation>Hiba a(z) &apos;%1&apos; pont számításakor. A(z) &apos;%2&apos; ívhez a(z) &apos;%3&apos; pontból nem található érintő</translation>
     </message>
@@ -25065,7 +25219,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPointFromCircleAndTangent</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.cpp" line="141"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointfromcircleandtangent.cpp" line="143"/>
         <source>Error calculating point &apos;%1&apos;. Tangent to circle with center &apos;%2&apos; and radius &apos;%3&apos; from point &apos;%4&apos; cannot be found</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) &apos;%4&apos; pontból a(z) &apos;%2&apos; középpontú, &apos;%3&apos; sugarú körhöz húzott érintő nem található</translation>
     </message>
@@ -25073,22 +25227,22 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPointOfContact</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="379"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="381"/>
         <source>Radius</source>
         <translation>Sugár</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="380"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="382"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="412"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="414"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="225"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofcontact.cpp" line="227"/>
         <source>Error calculating point &apos;%1&apos;. Circle with center &apos;%2&apos; and radius &apos;%3&apos; doesn&apos;t have intersection with line (%4;%5)</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) &apos;%2&apos; középpontú, &apos;%3&apos; sugarú körnek nincs metszéspontja a(z) (%4;%5) vonallal</translation>
     </message>
@@ -25096,12 +25250,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPointOfIntersectionArcs</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectionarcs.cpp" line="153"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectionarcs.cpp" line="155"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectionarcs.cpp" line="528"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectionarcs.cpp" line="530"/>
         <source>Error calculating point &apos;%1&apos;. Arcs &apos;%2&apos; and &apos;%3&apos; have no point of intersection</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) &apos;%2&apos; és &apos;%3&apos; íveknek nincs metszéspontja</translation>
     </message>
@@ -25109,7 +25263,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPointOfIntersectionCircles</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncircles.cpp" line="149"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncircles.cpp" line="151"/>
         <source>Error calculating point &apos;%1&apos;. Circles with centers in points &apos;%2&apos; and &apos;%3&apos; have no point of intersection</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) &apos;%2&apos; és &apos;%3&apos; pontokban középponttal rendelkező köröknek nincs metszéspontja</translation>
     </message>
@@ -25117,32 +25271,32 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolPointOfIntersectionCurves</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="160"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="162"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="626"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="628"/>
         <source>Error calculating point &apos;%1&apos;. Curves &apos;%2&apos; and &apos;%3&apos; have no point of intersection</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A(z) &apos;%2&apos; és &apos;%3&apos; görbéknek nincs metszéspontja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1424"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1426"/>
         <source>Curve 1 segment 1</source>
         <translation>1. görbe 1. szakasza</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1425"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1427"/>
         <source>Curve 1 segment 2</source>
         <translation>1. görbe 2. szakasza</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1426"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1428"/>
         <source>Curve 2 segment 1</source>
         <translation>2. görbe 1. szakasza</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1427"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp" line="1429"/>
         <source>Curve 2 segment 2</source>
         <translation>2. görbe 2. szakasza</translation>
     </message>
@@ -25150,17 +25304,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolRotation</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="281"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="283"/>
         <source>Pivot point</source>
         <translation>Forgáspont</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="455"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="457"/>
         <source>Rotation angle</source>
         <translation>Forgatási szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="263"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/operation/vtoolrotation.cpp" line="265"/>
         <source>rotate</source>
         <translation>forgatás</translation>
     </message>
@@ -25168,113 +25322,113 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolSeamAllowance</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="401"/>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="413"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="403"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="415"/>
         <source>Current seam allowance</source>
         <translation>Jelenlegi varrásráhagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1602"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1608"/>
         <source>move grainline</source>
         <translation>szálirány mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1615"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1621"/>
         <source>resize grainline</source>
         <translation>szálirány átméretezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1627"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1633"/>
         <source>rotate grainline</source>
         <translation>szálirány forgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1713"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1719"/>
         <source>move information block</source>
         <translation>az információs blokk mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1743"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1749"/>
         <source>resize information block</source>
         <translation>az információs blokk átméretezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1941"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="1947"/>
         <source>move thumbnail</source>
         <translation>a miniatűr mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2096"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2102"/>
         <source>Delete place labels</source>
         <translation>Jelölések törlése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2151"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2157"/>
         <source>move annotation</source>
         <translation>a megjegyzés mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2172"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2178"/>
         <source>move seam allowance value</source>
         <translation>a varrásráhagyás értékének mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2186"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2192"/>
         <source>move seam allowance legend</source>
         <translation>a varrásráhagyás feliratának mozgatása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2235"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2241"/>
         <source>resize annotation</source>
         <translation>a megjegyzés átméretezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2716"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2722"/>
         <source>In layout</source>
         <translation>Az elrendezésben</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2717"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2723"/>
         <source>Hide main path</source>
         <translation>Fő útvonal elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2720"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2726"/>
         <source>Show full piece</source>
         <translation>Teljes darab megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2737"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2743"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2473"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2479"/>
         <source>apply save detail options</source>
         <translation>darab beállításai mentésének alkalmazása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2822"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2828"/>
         <source>multi deletion</source>
         <translation>többszörös törlés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2718"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2724"/>
         <source>Force flipping</source>
         <translation>Tükrözés kényszerítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2482"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2488"/>
         <source>This id (%1) is not unique.</source>
         <translation>Ez az azonosító (%1) nem egyedi.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2928"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2934"/>
         <source>Press Escape to leave the thumbnail</source>
         <translation>Nyomja meg az Esc billentyűt a miniatűr elhagyásához</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3708"/>
+        <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="3714"/>
         <source>Tool was used after deleting.</source>
         <translation>Az eszközt törlés után használták.</translation>
     </message>
@@ -25292,17 +25446,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolShoulderPoint</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.cpp" line="357"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.cpp" line="359"/>
         <source>Length</source>
         <translation>Hossz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.cpp" line="358"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.cpp" line="360"/>
         <source>Angle</source>
         <translation>Szög</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.cpp" line="386"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toollinepoint/vtoolshoulderpoint.cpp" line="388"/>
         <source>save tool options</source>
         <translation>eszköz beállításainak mentése</translation>
     </message>
@@ -25310,7 +25464,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolTriangle</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtooltriangle.cpp" line="160"/>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/vtooltriangle.cpp" line="162"/>
         <source>Error calculating point &apos;%1&apos;. Point of intersection cannot be found</source>
         <translation>Hiba a(z) &apos;%1&apos; pont kiszámításakor. A metszéspont nem található</translation>
     </message>
@@ -25318,12 +25472,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VToolUnionDetails</name>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtooluniondetails.cpp" line="1824"/>
+        <location filename="../../src/libs/vtools/tools/vtooluniondetails.cpp" line="1826"/>
         <source>union details</source>
         <translation>Alkatrészek egyesítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/tools/vtooluniondetails.cpp" line="1919"/>
+        <location filename="../../src/libs/vtools/tools/vtooluniondetails.cpp" line="1921"/>
         <source>This id (%1) is not unique.</source>
         <translation>Ez az azonosító (%1) nem egyedi.</translation>
     </message>
@@ -25331,691 +25485,691 @@ Szeretné folytatni?</translation>
 <context>
     <name>VTranslateVars</name>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="159"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="161"/>
         <source>sinh</source>
         <comment>hyperbolic sine function</comment>
         <translation>sinh</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="163"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="165"/>
         <source>cosh</source>
         <comment>hyperbolic cosine</comment>
         <translation>cosh</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="167"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="169"/>
         <source>tanh</source>
         <comment>hyperbolic tangens function</comment>
         <translation>tanh</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="171"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="173"/>
         <source>asinh</source>
         <comment>hyperbolic arcus sine function</comment>
         <translation>asinh</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="216"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="218"/>
         <source>log2</source>
         <comment>logarithm to the base 2</comment>
         <translation>log2</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="220"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="222"/>
         <source>log10</source>
         <comment>logarithm to the base 10</comment>
         <translation>log10</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="224"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="226"/>
         <source>log</source>
         <comment>logarithm to the base 10</comment>
         <translation>log</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="228"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="230"/>
         <source>ln</source>
         <comment>logarithm to base e (2.71828...)</comment>
         <translation>ln</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="232"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="234"/>
         <source>exp</source>
         <comment>e raised to the power of x</comment>
         <translation>exp</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="236"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="238"/>
         <source>sqrt</source>
         <comment>square root of a value</comment>
         <translation>sqrt</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="240"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="242"/>
         <source>sign</source>
         <comment>sign function -1 if x&lt;0; 1 if x&gt;0</comment>
         <translation>sign</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="245"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="247"/>
         <source>rint</source>
         <comment>round to nearest integer</comment>
         <translation>rint</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="271"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="273"/>
         <source>abs</source>
         <comment>absolute value</comment>
         <translation>abs</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="275"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="277"/>
         <source>min</source>
         <comment>min of all arguments</comment>
         <translation>perc</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="279"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="281"/>
         <source>max</source>
         <comment>max of all arguments</comment>
         <translation>max</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="283"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="285"/>
         <source>sum</source>
         <comment>sum of all arguments</comment>
         <translation>sum</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="287"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="289"/>
         <source>avg</source>
         <comment>mean value of all arguments</comment>
         <translation>avg</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="291"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="293"/>
         <source>fmod</source>
         <comment>Returns the floating-point remainder of numer/denom (rounded towards zero)</comment>
         <translation>fmod</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="69"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="71"/>
         <source>Line_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Line_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="70"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="72"/>
         <source>AngleLine_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>AngleLine_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="71"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="73"/>
         <source>Arc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Arc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="73"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="75"/>
         <source>Spl_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Spl_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="74"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="76"/>
         <source>SplPath</source>
         <comment>Do not add symbol _ to the end of the name</comment>
         <translation>SplPath</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="75"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="77"/>
         <source>RadiusArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>RadiusArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="78"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="80"/>
         <source>Angle1Arc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle1Arc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="79"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="81"/>
         <source>Angle2Arc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle2Arc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="82"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="84"/>
         <source>Angle1Spl_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle1Spl_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="83"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="85"/>
         <source>Angle2Spl_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle2Spl_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="85"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="87"/>
         <source>Angle1SplPath</source>
         <comment>Do not add symbol _ to the end of the name</comment>
         <translation>Angle1SplPath</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="87"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="89"/>
         <source>Angle2SplPath</source>
         <comment>Do not add symbol _ to the end of the name</comment>
         <translation>Angle2SplPath</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="88"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="90"/>
         <source>Seg_</source>
         <comment>Segment. Left symbol _ in the name</comment>
         <translation>Seg_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="89"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="91"/>
         <source>CurrentLength</source>
         <comment>Do not add space between words</comment>
         <translation>CurrentLength</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="104"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="106"/>
         <source>Curve_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Görbe_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="105"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="107"/>
         <source>Angle1Curve_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle1Görbe_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="106"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="108"/>
         <source>Angle2Curve_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle2Görbe_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="107"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="109"/>
         <source>Handle1Curve_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Fogantyú1Görbe_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="108"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="110"/>
         <source>Handle2Curve_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Fogantyú2Görbe_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="109"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="111"/>
         <source>Radius_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Sugár_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="176"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="178"/>
         <source>acosh</source>
         <comment>hyperbolic arcus cosine function</comment>
         <translation>acosh</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="92"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="94"/>
         <source>C1LengthSpl_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>C1LengthSpl_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="93"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="95"/>
         <source>C2LengthSpl_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>C2LengthSpl_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="95"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="97"/>
         <source>C1LengthSplPath</source>
         <comment>Do not add symbol _ to the end of the name</comment>
         <translation>C1LengthSplPath</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="97"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="99"/>
         <source>C2LengthSplPath</source>
         <comment>Do not add symbol _ to the end of the name</comment>
         <translation>C2LengthSplPath</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="91"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="93"/>
         <source>CurrentSeamAllowance</source>
         <comment>Do not add space between words</comment>
         <translation>CurrentSeamAllowance</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="119"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="121"/>
         <source>degTorad</source>
         <comment>converts degrees to radian</comment>
         <translation>degTorad</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="124"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="126"/>
         <source>radTodeg</source>
         <comment>converts radian to degrees</comment>
         <translation>radTodeg</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="129"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="131"/>
         <source>sin</source>
         <comment>sine function working with radians</comment>
         <translation>sin</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="134"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="136"/>
         <source>cos</source>
         <comment>cosine function working with radians</comment>
         <translation>cos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="139"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="141"/>
         <source>tan</source>
         <comment>tangens function working with radians</comment>
         <translation>tan</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="144"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="146"/>
         <source>asin</source>
         <comment>arcus sine function working with radians</comment>
         <translation>asin</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="149"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="151"/>
         <source>acos</source>
         <comment>arcus cosine function working with radians</comment>
         <translation>acos</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="154"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="156"/>
         <source>atan</source>
         <comment>arcus tangens function working with radians</comment>
         <translation>atan</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="186"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="188"/>
         <source>sinD</source>
         <comment>sine function working with degrees</comment>
         <translation>sinD</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="191"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="193"/>
         <source>cosD</source>
         <comment>cosine function working with degrees</comment>
         <translation>cosD</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="196"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="198"/>
         <source>tanD</source>
         <comment>tangens function working with degrees</comment>
         <translation>tanD</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="201"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="203"/>
         <source>asinD</source>
         <comment>arcus sine function working with degrees</comment>
         <translation>asinD</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="206"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="208"/>
         <source>acosD</source>
         <comment>arcus cosine function working with degrees</comment>
         <translation>acosD</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="211"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="213"/>
         <source>atanD</source>
         <comment>arcus tangens function working with degrees</comment>
         <translation>atanD</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="66"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="68"/>
         <source>M_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>M_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="67"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="69"/>
         <source>Increment_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Increment_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="72"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="74"/>
         <source>ElArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>ElArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="76"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="78"/>
         <source>Radius1ElArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Radius1ElArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="77"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="79"/>
         <source>Radius2ElArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Radius2ElArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="80"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="82"/>
         <source>Angle1ElArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle1ElArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="81"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="83"/>
         <source>Angle2ElArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Angle2ElArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="181"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="183"/>
         <source>atanh</source>
         <comment>hyperbolic arcus tangent function</comment>
         <translation>atanh</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="183"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="185"/>
         <source>hyperbolic arcus tangent function</source>
         <comment>function atanh</comment>
         <translation>hiperbolikus arkusztangens függvény</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="249"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="251"/>
         <source>r2cm</source>
         <comment>round to up to 1 decimal</comment>
         <translation>r2cm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="253"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="255"/>
         <source>csrCm</source>
         <comment>cut, split and rotate modeling operation. Takes cm units.</comment>
         <translation>csrCm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="262"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="264"/>
         <source>csrInch</source>
         <comment>cut, split and rotate modeling operation. Takes inch units.</comment>
         <translation>csrInch</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="98"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="100"/>
         <source>RotationElArc_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>RotationElArc_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="68"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="70"/>
         <source>Offset_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>Offset_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="126"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="128"/>
         <source>converts radian to degrees</source>
         <comment>function radTodeg</comment>
         <translation>radiánt fokká alakít</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="131"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="133"/>
         <source>sine function working with radians</source>
         <comment>function sin</comment>
         <translation>szinuszfüggvény radiánban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="136"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="138"/>
         <source>cosine function working with radians</source>
         <comment>function cos</comment>
         <translation>koszinuszfüggvény radiánban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="141"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="143"/>
         <source>tangens function working with radians</source>
         <comment>function tan</comment>
         <translation>tangensfüggvény radiánban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="146"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="148"/>
         <source>arcus sine function working with radians</source>
         <comment>function asin</comment>
         <translation>az arkuszszinusz függvény radiánokkal dolgozik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="151"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="153"/>
         <source>arcus cosine function working with radians</source>
         <comment>function acos</comment>
         <translation>az arkuszkoszinusz függvény radiánokkal dolgozik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="156"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="158"/>
         <source>arcus tangens function working with radians</source>
         <comment>function atan</comment>
         <translation>az arkusztangens függvény radiánokkal dolgozik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="160"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="162"/>
         <source>hyperbolic sine function</source>
         <comment>function sinh</comment>
         <translation>szinusz hiperbolikusz-függvény</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="164"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="166"/>
         <source>hyperbolic cosine</source>
         <comment>function cosh</comment>
         <translation>koszinusz hiperbolikusz</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="168"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="170"/>
         <source>hyperbolic tangens function</source>
         <comment>function tanh</comment>
         <translation>tangens hiperbolikusz-függvény</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="173"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="175"/>
         <source>hyperbolic arcus sine function</source>
         <comment>function asinh</comment>
         <translation>hiperbolikus arkuszszinusz függvény</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="178"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="180"/>
         <source>hyperbolic arcus cosine function</source>
         <comment>function acosh</comment>
         <translation>hiperbolikus arkuszkoszinusz függvény</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="188"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="190"/>
         <source>sine function working with degrees</source>
         <comment>function sinD</comment>
         <translation>szinuszfüggvény fokban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="193"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="195"/>
         <source>cosine function working with degrees</source>
         <comment>function cosD</comment>
         <translation>koszinuszfüggvény fokban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="198"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="200"/>
         <source>tangens function working with degrees</source>
         <comment>function tanD</comment>
         <translation>tangensfüggvény fokban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="203"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="205"/>
         <source>arcus sine function working with degrees</source>
         <comment>function asinD</comment>
         <translation>az arkuszszinusz függvény fokokkal dolgozik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="208"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="210"/>
         <source>arcus cosine function working with degrees</source>
         <comment>function acosD</comment>
         <translation>az arkuszkoszinusz függvény fokokkal dolgozik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="213"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="215"/>
         <source>arcus tangens function working with degrees</source>
         <comment>function atanD</comment>
         <translation>az arkusztangens függvény fokokkal dolgozik</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="217"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="219"/>
         <source>logarithm to the base 2</source>
         <comment>function log2</comment>
         <translation>kettes alapú logaritmus</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="221"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="223"/>
         <source>logarithm to the base 10</source>
         <comment>function log10</comment>
         <translation>tízes alapú logaritmus</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="225"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="227"/>
         <source>logarithm to the base 10</source>
         <comment>function log</comment>
         <translation>tízes alapú logaritmus</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="229"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="231"/>
         <source>logarithm to base e (2.71828...)</source>
         <comment>function ln</comment>
         <translation>e alapú logaritmus (2.71828...)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="233"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="235"/>
         <source>e raised to the power of x</source>
         <comment>function exp</comment>
         <translation>e az x-edik hatványon</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="237"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="239"/>
         <source>square root of a value</source>
         <comment>function sqrt</comment>
         <translation>egy érték négyzetgyöke</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="242"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="244"/>
         <source>sign function -1 if x&lt;0; 1 if x&gt;0</source>
         <comment>function sign</comment>
         <translation>előjelfüggvény: -1, ha x&lt;0; 1, ha x&gt;0</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="246"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="248"/>
         <source>round to nearest integer</source>
         <comment>function rint</comment>
         <translation>kerekítés a legközelebbi egészre</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="250"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="252"/>
         <source>round to up to 1 decimal</source>
         <comment>function r2cm</comment>
         <translation>kerekítés 1 tizedesjegyre</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="256"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="258"/>
         <source>cut, split and rotate modeling operation. Takes cm units.</source>
         <comment>function csrCm</comment>
         <translation>vágás, felosztás és forgatás modellezési művelet. cm mértékegységet használ.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="265"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="267"/>
         <source>cut, split and rotate modeling operation. Takes inch units.</source>
         <comment>function csrInch</comment>
         <translation>vágás, felosztás és forgatás modellezési művelet. hüvelyk mértékegységet használ.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="272"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="274"/>
         <source>absolute value</source>
         <comment>function abs</comment>
         <translation>abszolút érték</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="276"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="278"/>
         <source>min of all arguments</source>
         <comment>function min</comment>
         <translation>az összes argumentum minimuma</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="280"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="282"/>
         <source>max of all arguments</source>
         <comment>function max</comment>
         <translation>az összes argumentum maximuma</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="284"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="286"/>
         <source>sum of all arguments</source>
         <comment>function sum</comment>
         <translation>az összes argumentum összege</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="288"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="290"/>
         <source>mean value of all arguments</source>
         <comment>function avg</comment>
         <translation>az összes argumentum átlaga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="293"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="295"/>
         <source>Returns the floating-point remainder of numer/denom (rounded towards zero)</source>
         <comment>function fmod</comment>
         <translation>A numer/denom lebegőpontos maradékát adja vissza (nulla felé kerekítve)</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="299"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="301"/>
         <source>warning</source>
         <comment>Calculation warning</comment>
         <translation>warning</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="301"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="303"/>
         <source>Show a warning in calculations</source>
         <comment>function warning</comment>
         <translation>Figyelmeztetés megjelenítése a számításokban</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="319"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="321"/>
         <source>pi = 3.14159... - the ratio of a circle&apos;s circumference to its diameter</source>
         <comment>constant _pi</comment>
         <translation>π = 3,14159… - a kör kerületének és átmérőjének aránya</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="323"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="325"/>
         <source>e = 2.71828... - the base of the natural logarithm</source>
         <comment>constant _e</comment>
         <translation>e = 2,71828… - a természetes logaritmus alapja</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="326"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="328"/>
         <source>phi = 1.61803... - the golden ratio</source>
         <comment>constant _phi</comment>
         <translation>φ = 1,61803… - az aranymetszés</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="121"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="123"/>
         <source>converts degrees to radian</source>
         <comment>function degTorad</comment>
         <translation>fokot radiánná alakít</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="99"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="101"/>
         <source>PieceArea_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>PieceArea_</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="101"/>
+        <location filename="../../src/libs/vpatterndb/vtranslatevars.cpp" line="103"/>
         <source>PieceSeamLineArea_</source>
         <comment>Left symbol _ in the name</comment>
         <translation>PieceSeamLineArea_</translation>
@@ -26095,80 +26249,80 @@ Szeretné folytatni?</translation>
         <translation>Z-érték</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="278"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="833"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="280"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="835"/>
         <source>Background image</source>
         <translation>Háttérkép</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="392"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="394"/>
         <source>Hold</source>
         <translation>Rögzítés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="396"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="398"/>
         <source>Visible</source>
         <translation>Látható</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="400"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="402"/>
         <source>Reset transformation</source>
         <translation>Transzformáció visszaállítása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="403"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="405"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="406"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="408"/>
         <source>Hold All</source>
         <translation>Összes rögzítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="408"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="410"/>
         <source>Unhold All</source>
         <translation>Összes rögzítésének feloldása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="412"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="414"/>
         <source>Hide All</source>
         <translation>Összes elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="414"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="416"/>
         <source>Show All</source>
         <translation>Összes megjelenítése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="912"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="922"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="929"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="984"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="914"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="924"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="931"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="986"/>
         <source>Pixels</source>
         <translation>Képpont</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="913"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="919"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="930"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="981"/>
-        <source>Millimiters</source>
-        <translation>Milliméter</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="914"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="920"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="931"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="982"/>
-        <source>Centimeters</source>
-        <translation>Centiméter</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="915"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="921"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="932"/>
         <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="983"/>
+        <source>Millimiters</source>
+        <translation>Milliméter</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="916"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="922"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="933"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="984"/>
+        <source>Centimeters</source>
+        <translation>Centiméter</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="917"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="923"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="934"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetbackgroundimages.cpp" line="985"/>
         <source>Inches</source>
         <translation>Hüvelyk</translation>
     </message>
@@ -26206,27 +26360,27 @@ Szeretné folytatni?</translation>
         <translation>Áthelyezés a lehető legkésőbbi pozícióba az előzményekben</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="710"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="712"/>
         <source>Expand All</source>
         <translation>Összes kibontása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="711"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="713"/>
         <source>Collapse All</source>
         <translation>Összes összecsukása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="713"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="715"/>
         <source>Copy ID</source>
         <translation>Azonosító másolása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="715"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="717"/>
         <source>Go to Object</source>
         <translation>Ugrás az objektumra</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="717"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdependencies.cpp" line="719"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
@@ -26240,87 +26394,87 @@ Szeretné folytatni?</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="33"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="200"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1023"/>
         <source>Merge pieces into one</source>
         <translation>Darabok egyesítése egyetlen darabbá</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="307"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="335"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="309"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="337"/>
         <source>Unnamed</source>
         <translation>Névtelen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="545"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="547"/>
         <source>In layout</source>
         <translation>Az elrendezésben</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="556"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="558"/>
         <source>Select all</source>
         <translation>Összes kijelölése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="557"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="559"/>
         <source>Select none</source>
         <translation>Kijelölés törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="588"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="590"/>
         <source>Unlink all</source>
         <translation>Minden kapcsolat bontása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="698"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="700"/>
         <source>select all details</source>
         <translation>összes alkatész kijelölése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="704"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="706"/>
         <source>select none details</source>
         <translation>alkatrészek kijelölésének törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="771"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="799"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="773"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="801"/>
         <source>Select pieces to link (min 2, Enter to confirm, Esc to cancel)</source>
         <translation>Válassza ki az összekapcsolandó darabokat (min. 2, Enter a megerősítéshez, Esc a megszakításhoz)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="785"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="787"/>
         <source>This piece is already part of a group</source>
         <translation>Ez a darab már része egy csoportnak</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="805"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="807"/>
         <source>%1 piece(s) selected - Enter to confirm, Esc to cancel</source>
         <translation>%1 kijelölt darab - Enter a megerősítéshez, Esc a megszakításhoz</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="820"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="822"/>
         <source>Less than 2 pieces selected - cancelled</source>
         <translation>Kevesebb mint 2 darab van kijelölve - megszakítva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="833"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="835"/>
         <source>Click the common point (Esc to cancel)</source>
         <translation>Kattintson a közös pontra (Esc a megszakításhoz)</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="860"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="928"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="862"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="942"/>
         <source>Link pieces</source>
         <translation>Darabok összekapcsolása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="861"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="863"/>
         <source>The selected point is not common to the %1 pieces of the group</source>
         <translation>A kijelölt pont nem közös pontja a csoport mind a %1 darabjának</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="198"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1009"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="200"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="1023"/>
         <source>Cancel</source>
         <translation>Mégsem</translation>
     </message>
@@ -26330,12 +26484,12 @@ Szeretné folytatni?</translation>
         <translation>Az elrendezésben nem szereplők elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="607"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="609"/>
         <source>Delete piece</source>
         <translation>Darab törlése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="614"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetdetails.cpp" line="616"/>
         <source>Cannot find piece by id &apos;%1&apos;</source>
         <translation>A(z) &apos;%1&apos; azonosítójú darab nem található</translation>
     </message>
@@ -26343,269 +26497,281 @@ Szeretné folytatni?</translation>
 <context>
     <name>VWidgetGroups</name>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1714"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1743"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1716"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1745"/>
         <source>Delete</source>
         <translation>Törlés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1739"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1741"/>
         <source>Hide</source>
         <translation>Elrejtés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="337"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1791"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="339"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1793"/>
         <source>Add a layer</source>
         <translation>Réteg hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="347"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1794"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="349"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1796"/>
         <source>Add a group</source>
         <translation>Csoport hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="396"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1796"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="398"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1798"/>
         <source>Show the active layer on the canvas</source>
         <translation>Az aktív réteg megjelenítése a vásznon</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="604"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="606"/>
         <source>add a layer</source>
         <translation>réteg hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="650"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="652"/>
         <source>edit layer</source>
         <translation>réteg szerkesztése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="716"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="718"/>
         <source>add a group of layers</source>
         <translation>Rétegek csoportjának hozzáadása</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="768"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="770"/>
         <source>Group not empty</source>
         <translation>Nem üres csoport</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="769"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="771"/>
         <source>The group &quot;%1&quot; still holds %n layer(s). Move them to another group first, (the transfer button), then delete the group.</source>
-        <translation><numerusform>A(z) „%1” csoportban még %n réteg van. Először vigye át őket egy másik csoportba (az Átvitel gombbal), majd törölje a csoportot.</numerusform></translation>
+        <translation>
+            <numerusform>A(z) „%1” csoportban még %n réteg van. Először vigye át őket egy másik csoportba (az Átvitel gombbal), majd törölje a csoportot.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="796"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="798"/>
         <source>Empty group</source>
         <translation>Üres csoport</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="797"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="799"/>
         <source>The group &quot;%1&quot; holds no layer - there is nothing to transfer.</source>
         <translation>A(z) „%1” csoport egyetlen réteget sem tartalmaz - nincs mit átvinni.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="870"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="872"/>
         <source>The group &quot;%1&quot; holds no layer yet - there is nothing to show or hide.</source>
         <translation>A(z) „%1” csoport még egyetlen réteget sem tartalmaz - nincs mit megjeleníteni vagy elrejteni.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="928"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="930"/>
         <source>Layer not empty</source>
         <translation>Nem üres réteg</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="929"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="931"/>
         <source>The layer &quot;%1&quot; still contains %n object(s). Remove them from the layer first, then delete it.</source>
-        <translation><numerusform>A(z) „%1” réteg még %n objektumot tartalmaz. Először távolítsa el őket a rétegből, majd törölje a réteget.</numerusform></translation>
+        <translation>
+            <numerusform>A(z) „%1” réteg még %n objektumot tartalmaz. Először távolítsa el őket a rétegből, majd törölje a réteget.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="941"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="943"/>
         <source>Last layer</source>
         <translation>Utolsó réteg</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="942"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="944"/>
         <source>The layer &quot;%1&quot; is the only one of this piece. An object must always belong to a layer, so a piece keeps at least one - add another layer first, then delete this one.</source>
         <translation>A(z) „%1” réteg az egyetlen ebben a szabásmintadarabban. Egy objektumnak mindig réteghez kell tartoznia, ezért egy darab legalább egyet megtart - először adjon hozzá egy másik réteget, majd törölje ezt.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1096"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1098"/>
         <source>This is the only layer of this piece - there is no other layer to transfer to.</source>
         <translation>Ez az egyetlen réteg ebben a szabásmintadarabban - nincs másik réteg, ahová át lehetne vinni.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1102"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1104"/>
         <source>This layer holds no object - there is nothing to transfer.</source>
         <translation>Ez a réteg egyetlen objektumot sem tartalmaz - nincs mit átvinni.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1103"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1105"/>
         <source>This layer holds no object - there is nothing to remove.</source>
         <translation>Ez a réteg egyetlen objektumot sem tartalmaz - nincs mit eltávolítani.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1356"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1358"/>
         <source>%n object(s) selected - Enter to choose the layer they move to, Escape cancels.</source>
-        <translation><numerusform>%n objektum kijelölve - Enter a célréteg kiválasztásához, Esc megszakít.</numerusform></translation>
+        <translation>
+            <numerusform>%n objektum kijelölve - Enter a célréteg kiválasztásához, Esc megszakít.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1358"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1360"/>
         <source>%n object(s) selected - Enter to confirm, Escape cancels.</source>
-        <translation><numerusform>%n objektum kijelölve - Enter a megerősítéshez, Esc megszakít.</numerusform></translation>
+        <translation>
+            <numerusform>%n objektum kijelölve - Enter a megerősítéshez, Esc megszakít.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1366"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1368"/>
         <source>Select the objects to transfer, then press Enter to choose the layer they move to - Escape cancels. Magenta is this layer&apos;s content, and every object of it can move.</source>
         <translation>Válassza ki az átviendő objektumokat, majd nyomja meg az Entert a célréteg kiválasztásához - az Esc megszakítja. A magenta ennek a rétegnek a tartalma, és minden objektuma átvihető.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1376"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1378"/>
         <source>No object of this layer is shared with another layer - an object must always belong to at least one layer, so there is nothing to remove here.</source>
         <translation>Ebben a rétegben nincs olyan objektum, amely egy másik réteghez is tartozna - egy objektumnak mindig legalább egy réteghez kell tartoznia, ezért itt nincs mit eltávolítani.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1381"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1383"/>
         <source>Select the objects to remove, then press Enter to confirm - Escape cancels. Magenta is what can be removed: an object must always stay in one layer, so only what another layer holds can go.</source>
         <translation>Válassza ki az eltávolítandó objektumokat, majd nyomja meg az Entert a megerősítéshez - az Esc megszakítja. A magenta mutatja, mi távolítható el: egy objektumnak mindig maradnia kell egy rétegben, ezért csak azok távolíthatók el, amelyeket egy másik réteg is tartalmaz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1387"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1389"/>
         <source>Select the objects to add, then press Enter to confirm - Escape cancels. Magenta is this layer&apos;s content, so those cannot be added again.</source>
         <translation>Válassza ki a hozzáadandó objektumokat, majd nyomja meg az Entert a megerősítéshez - az Esc megszakítja. A magenta ennek a rétegnek a tartalma, ezért ezek nem adhatók hozzá újra.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1398"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1411"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1400"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1413"/>
         <source>This object is not in this layer.</source>
         <translation>Ez az objektum nincs ebben a rétegben.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1406"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1408"/>
         <source>This object belongs only to this layer - an object must always belong to at least one layer, so it cannot be removed.</source>
         <translation>Ez az objektum csak ehhez a réteghez tartozik - egy objektumnak mindig legalább egy réteghez kell tartoznia, ezért nem távolítható el.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1418"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1420"/>
         <source>This object is already in this layer - a layer holds an object once.</source>
         <translation>Ez az objektum már ebben a rétegben van - egy réteg egy objektumot csak egyszer tartalmaz.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1460"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1462"/>
         <source>remove objects from a layer</source>
         <translation>objektumok eltávolítása egy rétegből</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1460"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1462"/>
         <source>add objects to a layer</source>
         <translation>objektumok hozzáadása egy réteghez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1495"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1713"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1497"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1715"/>
         <source>Transfer</source>
         <translation>Átvitel</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1498"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1500"/>
         <source>%n object(s) will leave &quot;%1&quot;. Choose the layer they move to:</source>
-        <translation><numerusform>%n objektum el fogja hagyni a(z) „%1” réteget. Válassza ki a réteget, ahová átkerül:</numerusform></translation>
+        <translation>
+            <numerusform>%n objektum el fogja hagyni a(z) „%1” réteget. Válassza ki a réteget, ahová átkerül:</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1542"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1544"/>
         <source>transfer objects to another layer</source>
         <translation>objektumok átvitele egy másik rétegbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1740"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1742"/>
         <source>Show</source>
         <translation>Megjelenítés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1948"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1950"/>
         <source>Show or hide the layer</source>
         <translation>A réteg megjelenítése vagy elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1954"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1956"/>
         <source>The colour the layer draws with</source>
         <translation>A réteg rajzolási színe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1965"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1967"/>
         <source>Group: %1.</source>
         <translation>Csoport: %1.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1969"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1971"/>
         <source>Make this layer the active one</source>
         <translation>A réteg aktívvá tétele</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1982"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1984"/>
         <source>Rename the layer</source>
         <translation>A réteg átnevezése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1984"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1986"/>
         <source>Add objects to the layer</source>
         <translation>Objektumok hozzáadása a réteghez</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1988"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1990"/>
         <source>Move objects of this layer to another one</source>
         <translation>Átvitel egy másik rétegbe</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1990"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1992"/>
         <source>Remove objects from the layer</source>
         <translation>Objektumok eltávolítása a rétegből</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1994"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1996"/>
         <source>Delete the layer - allowed once it holds no object</source>
         <translation>A réteg törlése - akkor lehetséges, ha már nem tartalmaz objektumot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2010"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2012"/>
         <source>Show or hide every layer of the group</source>
         <translation>A csoport összes rétegének megjelenítése vagy elrejtése</translation>
     </message>
     <message numerus="yes">
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2022"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2024"/>
         <source>%n layer(s) in this group.</source>
-        <translation><numerusform>%n réteg ebben a csoportban.</numerusform></translation>
+        <translation>
+            <numerusform>%n réteg ebben a csoportban.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2031"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2033"/>
         <source>Rename the group and settle the layers it holds</source>
         <translation>A csoport átnevezése és a benne lévő rétegek rendezése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2033"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2035"/>
         <source>Move layers of this group to another one</source>
         <translation>A csoport rétegeinek átvitele egy másikba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2035"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="2037"/>
         <source>Delete the group - allowed once it holds no layer</source>
         <translation>A csoport törlése - akkor lehetséges, ha már nem tartalmaz réteget</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1711"/>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1742"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1713"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1744"/>
         <source>Edit</source>
         <translation>Szerkesztés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1745"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1747"/>
         <source>Hide All</source>
         <translation>Összes elrejtése</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1747"/>
+        <location filename="../../src/app/ostara/dialogs/vwidgetgroups.cpp" line="1749"/>
         <source>Show All</source>
         <translation>Összes megjelenítése</translation>
     </message>
@@ -26623,7 +26789,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolAlongLine</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/vistoolalongline.cpp" line="159"/>
+        <location filename="../../src/libs/vtools/visualization/line/vistoolalongline.cpp" line="161"/>
         <source>Length = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the length, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>Hossz = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a hossz kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26631,17 +26797,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolArc</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolarc.cpp" line="89"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolarc.cpp" line="91"/>
         <source>&lt;b&gt;Arc&lt;/b&gt;: radius = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the radius, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>&lt;b&gt;Ív&lt;/b&gt;: sugár = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a sugár kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolarc.cpp" line="109"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolarc.cpp" line="111"/>
         <source>&lt;b&gt;Arc&lt;/b&gt;: radius = %1%2, first angle = %3°; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the first angle, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;%5&lt;/b&gt; - skip</source>
         <translation>&lt;b&gt;Ív&lt;/b&gt;: sugár = %1%2, első szög = %3°; &lt;b&gt;Egérkattintás&lt;/b&gt; – az első szög kijelölésének befejezése, &lt;b&gt;%4&lt;/b&gt; – szög rögzítése, &lt;b&gt;%5&lt;/b&gt; – kihagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolarc.cpp" line="126"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolarc.cpp" line="128"/>
         <source>&lt;b&gt;Arc&lt;/b&gt;: radius = %1%2, first angle = %3°, second angle = %4°; &lt;b&gt;Mouse click&lt;/b&gt; - finish creating, &lt;b&gt;%5&lt;/b&gt; - sticking angle, &lt;b&gt;%6&lt;/b&gt; - sticking end, &lt;b&gt;%7&lt;/b&gt; - skip</source>
         <translation>&lt;b&gt;Ív&lt;/b&gt;: sugár = %1%2, első szög = %3°, második szög = %4°; &lt;b&gt;Egérkattintás&lt;/b&gt; – létrehozás befejezése, &lt;b&gt;%5&lt;/b&gt; – szög rögzítése, &lt;b&gt;%6&lt;/b&gt; – vég rögzítése, &lt;b&gt;%7&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26649,17 +26815,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolArcWithLength</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolarcwithlength.cpp" line="87"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolarcwithlength.cpp" line="89"/>
         <source>&lt;b&gt;Arc&lt;/b&gt;: radius = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the radius, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>&lt;b&gt;Ív&lt;/b&gt;: sugár = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a sugár kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolarcwithlength.cpp" line="107"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolarcwithlength.cpp" line="109"/>
         <source>&lt;b&gt;Arc&lt;/b&gt;: radius = %1%2, first angle = %3°; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the first angle, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;%5&lt;/b&gt; - skip</source>
         <translation>&lt;b&gt;Ív&lt;/b&gt;: sugár = %1%2, első szög = %3°; &lt;b&gt;Egérkattintás&lt;/b&gt; – az első szög kijelölésének befejezése, &lt;b&gt;%4&lt;/b&gt; – szög rögzítése, &lt;b&gt;%5&lt;/b&gt; – kihagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolarcwithlength.cpp" line="126"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolarcwithlength.cpp" line="128"/>
         <source>&lt;b&gt;Arc&lt;/b&gt;: radius = %1%2, first angle = %3°, arc length = %4%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish creating, &lt;b&gt;%5&lt;/b&gt; - skip</source>
         <translation>&lt;b&gt;Ív&lt;/b&gt;: sugár = %1%2, első szög = %3°, ívhossz = %4%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – létrehozás befejezése, &lt;b&gt;%5&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26675,17 +26841,17 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolCubicBezierPath</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolcubicbezierpath.cpp" line="280"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolcubicbezierpath.cpp" line="282"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select seven or more points</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon hét vagy több pontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolcubicbezierpath.cpp" line="290"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolcubicbezierpath.cpp" line="292"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select more points for complete segment</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon még pontokat a szakasz befejezéséhez</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolcubicbezierpath.cpp" line="284"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolcubicbezierpath.cpp" line="286"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select seven or more points, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon hét vagy több pontot, &lt;b&gt;%1&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
@@ -26693,7 +26859,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolCurveIntersectAxis</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/vistoolcurveintersectaxis.cpp" line="113"/>
+        <location filename="../../src/libs/vtools/visualization/line/vistoolcurveintersectaxis.cpp" line="115"/>
         <source>&lt;b&gt;Intersection curve and axis&lt;/b&gt;: angle = %1°; &lt;b&gt;%2&lt;/b&gt; - sticking angle, &lt;b&gt;%3&lt;/b&gt; - finish creation</source>
         <translation>&lt;b&gt;Görbe és tengely metszéspontja&lt;/b&gt;: szög = %1°; &lt;b&gt;%2&lt;/b&gt; – szög rögzítése, &lt;b&gt;%3&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
@@ -26701,7 +26867,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolCutArc</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolcutarc.cpp" line="106"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolcutarc.cpp" line="108"/>
         <source>Length = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the length, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>Hossz = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a hossz kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26709,7 +26875,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolCutSpline</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolcutspline.cpp" line="99"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolcutspline.cpp" line="101"/>
         <source>Length = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the length, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>Hossz = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a hossz kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26717,7 +26883,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolCutSplinePath</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolcutsplinepath.cpp" line="99"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolcutsplinepath.cpp" line="101"/>
         <source>Length = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the length, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>Hossz = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a hossz kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26781,7 +26947,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolEndLine</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/vistoolendline.cpp" line="84"/>
+        <location filename="../../src/libs/vtools/visualization/line/vistoolendline.cpp" line="86"/>
         <source>&lt;b&gt;Point at distance and angle&lt;/b&gt;: angle = %1°, length = %2%3; &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;%5&lt;/b&gt; - finish creation</source>
         <translation>&lt;b&gt;Pont adott távolsággal és szöggel&lt;/b&gt;: szög = %1°, hossz = %2%3; &lt;b&gt;%4&lt;/b&gt; – szög rögzítése, &lt;b&gt;%5&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
@@ -26789,7 +26955,7 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolGraduatedCurve</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolgraduatedcurve.cpp" line="126"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolgraduatedcurve.cpp" line="128"/>
         <source>&lt;b&gt;Graduated curve&lt;/b&gt;: offsets = %1; &lt;b&gt;Mouse click&lt;/b&gt; - selecting next width, &lt;b&gt;%2&lt;/b&gt; - negative width, &lt;b&gt;%3&lt;/b&gt; - finish</source>
         <translation>&lt;b&gt;Fokozatos görbe&lt;/b&gt;: eltolások = %1; &lt;b&gt;Egérkattintás&lt;/b&gt; – következő szélesség kijelölése, &lt;b&gt;%2&lt;/b&gt; – negatív szélesség, &lt;b&gt;%3&lt;/b&gt; – befejezés</translation>
     </message>
@@ -26805,12 +26971,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolMove</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="192"/>
+        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="194"/>
         <source>Length = %1%2, angle = %3°, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting a position</source>
         <translation>Hossz = %1%2, szög = %3°, &lt;b&gt;%4&lt;/b&gt; – szög rögzítése, &lt;b&gt;Egérkattintás&lt;/b&gt; – pozíció kijelölésének befejezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="198"/>
+        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolmove.cpp" line="200"/>
         <source>Length = %1%2, angle = %3°, rotation angle = %4°, &lt;b&gt;%5&lt;/b&gt; - sticking angle, &lt;b&gt;%6&lt;/b&gt; - change the pivot point, &lt;b&gt;Mouse click&lt;/b&gt; - finish creating</source>
         <translation>Hossz = %1%2, szög = %3°, forgatási szög = %4°, &lt;b&gt;%5&lt;/b&gt; - mágneses szög, &lt;b&gt;%6&lt;/b&gt; - a forgáspont módosítása, &lt;b&gt;Egérkattintás&lt;/b&gt; - a létrehozás befejezése</translation>
     </message>
@@ -26850,12 +27016,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolPointOfIntersectionCircles</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/vistoolpointofintersectioncircles.cpp" line="108"/>
+        <location filename="../../src/libs/vtools/visualization/line/vistoolpointofintersectioncircles.cpp" line="110"/>
         <source>Radius = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the second radius, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>Sugár = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – a második sugár kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/vistoolpointofintersectioncircles.cpp" line="124"/>
+        <location filename="../../src/libs/vtools/visualization/line/vistoolpointofintersectioncircles.cpp" line="126"/>
         <source>Radius = %1%2; &lt;b&gt;Mouse click&lt;/b&gt; - finish selecting the first radius, &lt;b&gt;%3&lt;/b&gt; - skip</source>
         <translation>Sugár = %1%2; &lt;b&gt;Egérkattintás&lt;/b&gt; – az első sugár kijelölésének befejezése, &lt;b&gt;%3&lt;/b&gt; – kihagyás</translation>
     </message>
@@ -26863,12 +27029,12 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolRotation</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="186"/>
+        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="188"/>
         <source>Rotating angle = %1°, length = %2%3, &lt;b&gt;%4&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish creation</source>
         <translation>Forgatási szög = %1°, hossz = %2%3, &lt;b&gt;%4&lt;/b&gt; - mágneses szög, &lt;b&gt;Egérkattintás&lt;/b&gt; - a létrehozás befejezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="196"/>
+        <location filename="../../src/libs/vtools/visualization/line/operation/vistoolrotation.cpp" line="198"/>
         <source>Rotating angle = %1°, &lt;b&gt;%2&lt;/b&gt; - sticking angle, &lt;b&gt;Mouse click&lt;/b&gt; - finish creation</source>
         <translation>Forgatási szög = %1°, &lt;b&gt;%2&lt;/b&gt; – szög rögzítése, &lt;b&gt;Egérkattintás&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
@@ -26892,22 +27058,22 @@ Szeretné folytatni?</translation>
 <context>
     <name>VisToolSplinePath</name>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="128"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="130"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select three or more points</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon három vagy több pontot</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="132"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="134"/>
         <source>&lt;b&gt;Curved path&lt;/b&gt;: select three or more points, &lt;b&gt;%1&lt;/b&gt; - finish creation</source>
         <translation>&lt;b&gt;Görbeútvonal&lt;/b&gt;: válasszon három vagy több pontot, &lt;b&gt;%1&lt;/b&gt; – létrehozás befejezése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="138"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="140"/>
         <source>Use &lt;b&gt;%1&lt;/b&gt; for sticking angle!</source>
         <translation>Használja a(z) &lt;b&gt;%1&lt;/b&gt; gombot a szög rögzítéséhez!</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="177"/>
+        <location filename="../../src/libs/vtools/visualization/path/vistoolsplinepath.cpp" line="179"/>
         <source>Point %1</source>
         <translation>Pont %1</translation>
     </message>
@@ -26998,7 +27164,7 @@ Szeretné folytatni?</translation>
     </message>
     <message>
         <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.ui" line="334"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="518"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="520"/>
         <source>Save</source>
         <translation>Mentés</translation>
     </message>
@@ -27023,131 +27189,131 @@ Szeretné folytatni?</translation>
         <translation>Új</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="121"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="123"/>
         <source>Images</source>
         <translation>Képek</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="123"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="125"/>
         <source>Watermark image</source>
         <translation>Vízjelkép</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="236"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="238"/>
         <source>File error.</source>
         <translation>Fájlhiba.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="323"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="478"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="325"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="480"/>
         <source>Watermark files</source>
         <translation>Vízjelfájlok</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="334"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="518"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="336"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="520"/>
         <source>Save as</source>
         <translation>Mentés másként</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="334"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="336"/>
         <source>watermark</source>
         <translation>vízjel</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="354"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="356"/>
         <source>Failed to lock. This file already opened in another window.</source>
         <translation>Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="365"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="367"/>
         <source>Could not save file</source>
         <translation>A fájl nem menthető</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="388"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="390"/>
         <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
         <translation>Zárolás sikertelen. A fájl már meg van nyitva egy másik ablakban. 2 programpéldány ütközést okozhat.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="416"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="418"/>
         <source>The document has no write permissions.</source>
         <translation>A dokumentumhoz nincs írási jogosultság.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="436"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="438"/>
         <source>Cannot set permissions for %1 to writable.</source>
         <translation>A(z) %1 jogosultságai nem állíthatók írhatóra.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="437"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="439"/>
         <source>Could not save the file.</source>
         <translation>A fájl nem menthető.</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="465"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="467"/>
         <source>Could not save the file</source>
         <translation>A fájl nem menthető</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="481"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="483"/>
         <source>Open file</source>
         <translation>Fájl megnyitása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="509"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="511"/>
         <source>Unsaved changes</source>
         <translation>Módosítások nem lettek elmentve</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="523"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="525"/>
         <source>Don&apos;t Save</source>
         <translation>Ne mentse</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="565"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="567"/>
         <source>read only</source>
         <translation>csak olvasható</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="596"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="598"/>
         <source>untitled.vwm</source>
         <translation>névtelen.vwm</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="612"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="614"/>
         <source>Confirm format rewriting</source>
         <translation>Formátum átírásának megerősítése</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="613"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="615"/>
         <source>This file is using previous format version v%1. The current is v%2. Saving the file with this app version will update the format version for this file. This may prevent you from be able to open the file with older app versions. Do you really want to continue?</source>
         <translation>Ez a fájl a korábbi formátumverziót (v%1) használja. A jelenlegi a v%2. A fájl mentése ezzel az alkalmazásverzióval frissíti a fájl formátumverzióját. Ez megakadályozhatja, hogy a fájlt régebbi alkalmazásverziókkal nyissa meg. Valóban folytatni szeretné?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="653"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="655"/>
         <source>File saved</source>
         <translation>Fájl mentve</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="696"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="702"/>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="709"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="698"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="704"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="711"/>
         <source>Locking file</source>
         <translation>Fájl zárolása</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="697"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="699"/>
         <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Ez a fájl már meg van nyitva egy másik ablakban. Hagyja figyelmen kívül, ha folytatni szeretné (nem ajánlott, adatsérülést okozhat).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="703"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="705"/>
         <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>A zárolási fájl nem hozható létre jogosultság hiánya miatt. Hagyja figyelmen kívül, ha folytatni szeretné (nem ajánlott, adatsérülést okozhat).</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="710"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="712"/>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
         <translation>Ismeretlen hiba történt, például egy megtelt partíció megakadályozta a zárolási fájl kiírását. Hagyja figyelmen kívül, ha folytatni szeretné (nem ajánlott, adatsérülést okozhat).</translation>
     </message>
@@ -27157,108 +27323,108 @@ Szeretné folytatni?</translation>
         <translation>Szín:</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="141"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="143"/>
         <source>Black</source>
         <comment>color</comment>
         <translation>Fekete</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="142"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="144"/>
         <source>Red</source>
         <comment>color</comment>
         <translation>Vörös</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="143"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="145"/>
         <source>Dark red</source>
         <comment>color</comment>
         <translation>Sötétvörös</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="144"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="146"/>
         <source>Green</source>
         <comment>color</comment>
         <translation>Zöld</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="145"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="147"/>
         <source>Dark green</source>
         <comment>color</comment>
         <translation>Sötétzöld</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="146"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="148"/>
         <source>Blue</source>
         <comment>color</comment>
         <translation>Kék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="147"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="149"/>
         <source>Dark blue</source>
         <comment>color</comment>
         <translation>Sötétkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="148"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="150"/>
         <source>Cyan</source>
         <comment>color</comment>
         <translation>Ciánkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="149"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="151"/>
         <source>Dark cyan</source>
         <comment>color</comment>
         <translation>Sötét ciánkék</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="150"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="152"/>
         <source>Magenta</source>
         <comment>color</comment>
         <translation>Bíbor</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="151"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="153"/>
         <source>Dark magenta</source>
         <comment>color</comment>
         <translation>Sötétbíbor</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="152"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="154"/>
         <source>Yellow</source>
         <comment>color</comment>
         <translation>Sárga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="153"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="155"/>
         <source>Dark yellow</source>
         <comment>color</comment>
         <translation>Sötétsárga</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="154"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="156"/>
         <source>Gray</source>
         <comment>color</comment>
         <translation>Szürke</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="155"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="157"/>
         <source>Dark gray</source>
         <comment>color</comment>
         <translation>Sötétszürke</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="156"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="158"/>
         <source>Light gray</source>
         <comment>color</comment>
         <translation>Világosszürke</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="417"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="419"/>
         <source>Do you want to change the permissions?</source>
         <translation>Szeretné módosítani a jogosultságokat?</translation>
     </message>
     <message>
-        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="510"/>
+        <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="512"/>
         <source>The watermark has been modified. Do you want to save your changes?</source>
         <translation>A vízjel módosult. Szeretné menteni a módosításokat?</translation>
     </message>
@@ -27319,27 +27485,27 @@ Szeretné folytatni?</translation>
 <context>
     <name>vNoisyHandler</name>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="248"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="250"/>
         <source>Warning</source>
         <translation>Figyelmeztetés</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="252"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="254"/>
         <source>Critical error</source>
         <translation>Kritikus hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="256"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="258"/>
         <source>Fatal error</source>
         <translation>Végzetes hiba</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="260"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="262"/>
         <source>Information</source>
         <translation>Információ</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="456"/>
+        <location filename="../../src/app/ostara/core/vapplication.cpp" line="458"/>
         <source>%1
 
 (%2 further messages were logged.)</source>

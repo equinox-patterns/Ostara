@@ -72,8 +72,7 @@ namespace
 enum MenuRow : int
 {
     MenuExistingTemplates = 0,
-    MenuCreateTemplate = 1,
-    MenuCustomMarks = 2
+    MenuCreateTemplate = 1
 };
 
 constexpr int kMenuWidth = 170;
@@ -222,7 +221,6 @@ void OExportTemplateEditor::RetranslateUI()
 
     m_menuList->item(MenuExistingTemplates)->setText(tr("Existing templates"));
     m_menuList->item(MenuCreateTemplate)->setText(tr("Create a template"));
-    m_menuList->item(MenuCustomMarks)->setText(tr("Custom marks"));
 
     // The sheet being previewed is not a property of the template - one template decorates any
     // tiled format — so the label presents the row as a way of looking, not as a setting.
@@ -278,11 +276,6 @@ void OExportTemplateEditor::RetranslateUI()
     if (m_coverPage != nullptr)
     {
         m_coverPage->RetranslateUI();
-    }
-
-    for (QLabel *label : m_placeholders)
-    {
-        label->setText(tr("Coming soon"));
     }
 }
 
@@ -753,7 +746,6 @@ QWidget *OExportTemplateEditor::MakeAssemblyMarksTab()
     m_menuList->setFixedWidth(kMenuWidth);
     m_menuList->addItem(QString()); // index 0 — existing templates
     m_menuList->addItem(QString()); // index 1 — create a template
-    m_menuList->addItem(QString()); // index 2 — custom marks
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
         switch (m_menuList->row(item))
         {
@@ -766,10 +758,6 @@ QWidget *OExportTemplateEditor::MakeAssemblyMarksTab()
                 // was last left on. Handing back the template opened in the library would leave
                 // its name in the field, and saving under another name would rename it.
                 NewTemplate();
-                break;
-
-            case MenuCustomMarks:
-                ShowMenuPage(MenuCustomMarks);
                 break;
 
             default:
@@ -791,7 +779,6 @@ QWidget *OExportTemplateEditor::MakeAssemblyMarksTab()
 
     m_stack->addWidget(m_templatesPage);          // index 0 — existing templates
     m_stack->addWidget(MakeCreateTemplatePage()); // index 1 — create a template
-    m_stack->addWidget(MakePlaceholderPage());    // index 2 — custom marks
     layout->addWidget(m_stack, 1);
 
     return page;
@@ -807,8 +794,7 @@ QWidget *OExportTemplateEditor::MakeCreateTemplatePage()
 
     // The name and the button that saves under it, above everything this page holds. This page is
     // where a template is made, so this is where it is named: the field has nothing to say on
-    // « Existing templates » or on « Custom marks », and standing above the tabs it would have
-    // claimed to belong to all three.
+    // « Existing templates », and standing above the tabs it would have claimed to belong to both.
     pageLayout->addWidget(MakeTopBar());
 
     m_splitter = new QSplitter(Qt::Horizontal);
@@ -1259,28 +1245,6 @@ QWidget *OExportTemplateEditor::MakePaginationGroup()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-QLabel *OExportTemplateEditor::MakePlaceholderLabel()
-{
-    auto *label = new QLabel();
-    label->setAlignment(Qt::AlignCenter);
-    m_placeholders.append(label);
-    return label;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
-QWidget *OExportTemplateEditor::MakePlaceholderPage()
-{
-    auto *page = new QWidget();
-
-    auto *layout = new QVBoxLayout(page);
-    layout->addWidget(MakePlaceholderLabel());
-
-    return page;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-
 void OExportTemplateEditor::ShowMenuPage(int row)
 {
     if (row < 0 || row >= m_stack->count())
@@ -1319,7 +1283,7 @@ void OExportTemplateEditor::ApplyMenuRow()
         // that exists is being edited.
         row = m_filePath.isEmpty() ? MenuCreateTemplate : -1;
     }
-    else if (page == MenuExistingTemplates || page == MenuCustomMarks)
+    else if (page == MenuExistingTemplates)
     {
         row = page;
     }

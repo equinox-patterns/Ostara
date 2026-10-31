@@ -171,9 +171,13 @@ void OAboutDialog::Fill()
         + Line(tr("Typeface:"), tr("Inter — Rasmus Andersson (The Inter Project Authors), "
                                    "SIL Open Font License 1.1"))
         + Line(tr("Nesting:"), tr("Clipper2 — Angus Johnson, Boost Software License 1.0"))
+        + Line(tr("Nesting engine:"), tr("Trame — Sophie Denys, GNU GPL v3"))
+        + Line(tr("Graph algorithms:"), tr("graaflib — Bob Luppes, MIT"))
+        + Line(tr("Property editor:"), tr("VPropertyExplorer — the Valentina project, LGPLv3"))
         + Line(tr("XML:"), tr("Xerces-C++ — The Apache Software Foundation, Apache License 2.0"))
         + Line(tr("DXF:"), tr("libdxfrw — Rallaz and contributors, GNU GPL v2 or later"))
         + Line(tr("Expression parser:"), tr("muParser — Ingo Berg, MIT"))
+        + Line(tr("Compression:"), tr("zlib — Jean-loup Gailly and Mark Adler, zlib licence"))
         + Line(tr("Framework:"),
                tr("Qt %1 — The Qt Company, LGPLv3").arg(QString::fromLatin1(QT_VERSION_STR)));
 

@@ -711,17 +711,6 @@ auto ODialogPleat::AskForEdge() -> bool
     // PleatMid.md, and OPleatRule).
     const OPleatPlan plan = MakePlan(true);
 
-    {
-        // ⚠️ TRACE TEMPORAIRE (15-10-2026) — à RETIRER une fois le pli milieu réglé.
-        QFile file(QStringLiteral("/tmp/ostara-pleatmid.log"));
-        if (file.open(QIODevice::Append | QIODevice::Text))
-        {
-            QTextStream(&file) << "[ODialogPleat] AskForEdge : mode=" << (Middle() ? "milieu" : "premier bras")
-                               << " echec=" << static_cast<int>(plan.failure) << " marques=" << plan.marks.size()
-                               << '\n';
-        }
-    }
-
     if (plan.failure == OPleatFailure::None)
     {
         return true; // every cap the operation asks for is built: nothing to ask
@@ -757,16 +746,6 @@ auto ODialogPleat::AskForEdge() -> bool
 
                 // That cap is the one the rule could not build: the point that carries its edge is asked for, and
                 // the gesture stops there until it has one.
-                {
-                    // ⚠️ TRACE TEMPORAIRE (15-10-2026) — à RETIRER une fois le pli milieu réglé.
-                    QFile file(QStringLiteral("/tmp/ostara-pleatmid.log"));
-                    if (file.open(QIODevice::Append | QIODevice::Text))
-                    {
-                        QTextStream(&file) << "[ODialogPleat] point demandé : pli=" << pleat << " bout=" << end
-                                           << " (0 = vert, 1 = rouge)\n";
-                    }
-                }
-
                 m_edgeDeparture = departure;
                 m_edgeRank = end;
                 m_step = Step::Edge;

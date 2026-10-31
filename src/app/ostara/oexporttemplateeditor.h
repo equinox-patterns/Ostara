@@ -163,8 +163,6 @@ private:
     QWidget *MakePreviewFormatRow();
     QWidget *MakeZoomRow();
     QWidget *MakeTopBar();
-    QLabel *MakePlaceholderLabel();
-    QWidget *MakePlaceholderPage();
     void ShowMenuPage(int row);
     void ShowTemplatesList();
     void NewTemplate();
@@ -311,9 +309,6 @@ private:
 
     /** The 50/50 split is asked for once, when there is a real width to divide. */
     bool m_splitterSized{false};
-
-    /** Placeholders, kept only so a language change can reach their text. */
-    QList<QLabel *> m_placeholders;
 };
 
 #endif // OEXPORTTEMPLATEEDITOR_H

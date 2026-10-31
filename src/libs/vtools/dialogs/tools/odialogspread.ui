@@ -193,7 +193,7 @@
           <item>
            <widget class="QLineEdit" name="lineEditCopySuffix">
             <property name="toolTip">
-             <string>The copies of curves, arcs and lines take the name of their source and this suffix, which is what makes them callable: a curve named portion2 becomes Courbe_portion2_Rotation.</string>
+             <string>The copies of curves, arcs and lines take the name of their source and this suffix, which is what makes them callable: a curve named portion2 becomes Curve_portion2_Rotation.</string>
             </property>
             <property name="text">
              <string>_Rotation</string>

@@ -114,6 +114,10 @@ OLicenceDialog::OLicenceDialog(QWidget *parent)
         {QStringLiteral("libdxfrw — GNU General Public License 2"), QStringLiteral("GPL-2.0.txt")},
         {QStringLiteral("muParser — MIT"), QStringLiteral("muparser-MIT.txt")},
         {QStringLiteral("zlib — zlib License"), QStringLiteral("zlib.txt")},
+        {QStringLiteral("graaflib — MIT"), QStringLiteral("graaflib-MIT.txt")},
+        {QStringLiteral("VPropertyExplorer — GNU Lesser General Public License 3"),
+         QStringLiteral("LGPL-3.0.txt")},
+        {QStringLiteral("Trame — GNU General Public License 3"), QStringLiteral("GPL-3.0.txt")},
         {QStringLiteral("Qt — GNU Lesser General Public License 3"),
          QStringLiteral("LGPL-3.0.txt")},
     };

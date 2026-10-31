@@ -524,10 +524,13 @@ auto OToolSpread::SmoothingText(const VContainer *data, const QVector<SourceItem
         const qreal delta = (after - before) * unit;
 
         const QString alias = object->GetAlias();
-        const QString name = alias.isEmpty() ? tr("Courbe %1").arg(rank) : alias;
+        //: Default name of a copied curve that carries no alias. %1 is its rank.
+        const QString name = alias.isEmpty() ? tr("Curve %1").arg(rank) : alias;
 
-        lines.append(tr("%1 : %2%3").arg(name, delta < 0 ? QString() : QStringLiteral("+"),
-                                         QLocale().toString(delta, 'f', 3) + QStringLiteral(" cm")));
+        //: %1 is the curve name, %2 its sign (empty or "+"), %3 the length change with its unit.
+        lines.append(tr("%1: %2%3").arg(name, delta < 0 ? QString() : QStringLiteral("+"),
+                                        QLocale().toString(delta, 'f', 3) + QLatin1Char(' ')
+                                            + UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
     }
 
     return lines.join('\n');

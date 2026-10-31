@@ -68,8 +68,10 @@
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QFuture>
+#include <QClipboard>
 #include <QMessageBox>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QSettings>
 #include <QTimer>
 #include <QtConcurrent>
@@ -78,6 +80,34 @@
 
 using namespace Qt::Literals::StringLiterals;
 using namespace std::chrono_literals;
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Tell the reader a pattern could not be opened, without the raw XML in their face.
+ *
+ * One sentence they can act on; the exception's own text — element, line, expected value — stays behind
+ * « Show details » and can be copied for a bug report. It is written to the log as well.
+ */
+static void ShowPatternOpenError(QWidget *parent, const QString &details)
+{
+    QMessageBox box(parent);
+    box.setIcon(QMessageBox::Critical);
+    box.setWindowTitle(QCoreApplication::translate("MainWindow", "Pattern could not be opened"));
+    box.setText(QCoreApplication::translate("MainWindow", "This pattern could not be opened."));
+    box.setInformativeText(
+        QCoreApplication::translate("MainWindow", "It may be damaged, or created with a newer version of Ostara."));
+    box.setDetailedText(details);
+
+    QPushButton *copy = box.addButton(QCoreApplication::translate("MainWindow", "Copy the details"),
+                                      QMessageBox::ActionRole);
+    box.addButton(QMessageBox::Close);
+
+    box.exec();
+
+    if (box.clickedButton() == copy)
+    {
+        QGuiApplication::clipboard()->setText(details);
+    }
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -897,8 +927,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         }
         catch (VException &e)
         {
-            qCCritical(vMainWindow, "%s\n\n%s\n\n%s", qUtf8Printable(tr("File error.")),
-                       qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+            const QString details = QStringLiteral("%1\n\n%2").arg(e.ErrorMessage(), e.DetailedInformation());
+            qCDebug(vMainWindow, "File error.\n\n%s", qUtf8Printable(details));
+            if (VApplication::IsGUIMode())
+            {
+                ShowPatternOpenError(this, details);
+            }
             Clear();
             if (not VApplication::IsGUIMode())
             {
@@ -1194,8 +1228,12 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
     }
     catch (VException &e)
     {
-        qCCritical(vMainWindow, "%s\n\n%s\n\n%s", qUtf8Printable(tr("File error.")), qUtf8Printable(e.ErrorMessage()),
-                   qUtf8Printable(e.DetailedInformation()));
+        const QString details = QStringLiteral("%1\n\n%2").arg(e.ErrorMessage(), e.DetailedInformation());
+        qCDebug(vMainWindow, "File error.\n\n%s", qUtf8Printable(details));
+        if (VApplication::IsGUIMode())
+        {
+            ShowPatternOpenError(this, details);
+        }
         VAbstractValApplication::VApp()->setOpeningPattern(); // End opening file
         Clear();
         if (not VApplication::IsGUIMode())

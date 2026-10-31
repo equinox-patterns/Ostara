@@ -58,3 +58,22 @@ Patch contributors:
 		* Testing
 	Serhii Olendarenko <sergey.olendarenko@gmail.com>
 		* Icons
+
+================================================================================
+COMPONENTS
+================================================================================
+
+Third-party work Ostara embeds or links, with the licence it is published under.
+
+	Qt 6 — The Qt Company, GNU Lesser General Public License 3.
+	Xerces-C++ — The Apache Software Foundation, Apache License 2.0.
+	Clipper2 — Angus Johnson, Boost Software License 1.0.
+	libdxfrw — Rallaz and contributors, GNU General Public License 2 or later.
+	muParser — Ingo Berg, MIT.
+	graaflib — Bob Luppes, MIT.
+	VPropertyExplorer — the Valentina project, GNU Lesser General Public License 3.
+	zlib — Jean-loup Gailly and Mark Adler, zlib licence.
+	Phosphor Icons — Tobias Fried and Helena Zhang, MIT.
+	Inter — Rasmus Andersson (The Inter Project Authors), SIL Open Font License 1.1.
+	Trame — Sophie Denys, GNU General Public License 3 (the nesting engine, linked
+	  statically into Ostara).

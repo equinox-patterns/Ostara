@@ -755,7 +755,6 @@ void MainWindow::ToolFlounceSpiral(bool checked)
     // Without this the scene is not in "pick a point" mode: a click on a point emits nothing, the dialog never
     // hears about it, and the tool looks dead. Every tool that starts from an existing point does it first.
     ToolSelectPointByRelease();
-    qDebug() << "FLOUNCE-DEBUG: ToolFlounceSpiral entre, checked =" << checked;
     const QString tooltip =
         tr("Select the point the inner spiral starts at, then fill in the width and the length of the flounce");
     SetToolButtonWithApply<ODialogFlounceSpiral>(checked, Tool::FlounceSpiral, QString(), tooltip,

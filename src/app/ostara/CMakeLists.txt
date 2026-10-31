@@ -216,6 +216,14 @@ if(APPLE)
         FILES_MATCHING PATTERN "*.txt"
     )
 
+    # Ce que la GPL et les licences tierces demandent de joindre, en clair dans le paquet : la
+    # notice (marque, origine, offre de source), l'inventaire des composants et le copyright.
+    install(FILES "${CMAKE_SOURCE_DIR}/NOTICE"
+                  "${CMAKE_SOURCE_DIR}/COPYRIGHT.md"
+                  "${CMAKE_SOURCE_DIR}/AUTHORS.txt"
+        DESTINATION "Ostara.app/Contents/Resources"
+    )
+
     # Install internal dylibs into Frameworks (before macdeployqt)
     install(FILES
         $<TARGET_FILE:VPropertyExplorerLib>
@@ -235,4 +243,9 @@ if(APPLE)
     install(SCRIPT ${deploy_script})
 else()
     install(TARGETS Ostara DESTINATION bin)
+    install(FILES "${CMAKE_SOURCE_DIR}/NOTICE"
+                  "${CMAKE_SOURCE_DIR}/COPYRIGHT.md"
+                  "${CMAKE_SOURCE_DIR}/AUTHORS.txt"
+        DESTINATION "share/doc/ostara"
+    )
 endif()

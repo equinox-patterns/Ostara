@@ -135,11 +135,6 @@ void MainWindow::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
     {
-        // Instrumentation laissée volontairement dans le journal : elle répond à la seule question
-        // qui compte quand l'interface ne se retraduit pas — l'événement est-il arrivé jusqu'ici ?
-        // Si cette ligne n'apparaît pas après une bascule de langue, c'est que Qt ne l'a pas posté
-        // (ou l'a posté sans le livrer), et c'est `Preferences()` qui fait le travail à la place.
-        qDebug() << "MainWindow::changeEvent - LanguageChange reçu";
         RetranslateAll();
     }
 
