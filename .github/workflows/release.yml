@@ -59,6 +59,12 @@ jobs:
       - name: Compiler
         run: cmake --build build --parallel "$(sysctl -n hw.ncpu)"
 
+      - name: Traductions Qt dans le catalogue
+        run: |
+          "$QT_ROOT_DIR/bin/lconvert" -i build/src/app/ostara/ostara_fr_FR.qm -o /tmp/ostara_fr.ts
+          grep -q "<source>&amp;Cancel</source>" /tmp/ostara_fr.ts \
+            || { echo "Traductions Qt absentes : les dialogues natifs resteraient en anglais"; exit 1; }
+
       - name: Empaqueter
         run: |
           cmake --install build --prefix stage
@@ -103,6 +109,15 @@ jobs:
 
       - name: Compiler
         run: cmake --build build --config Release --parallel 2
+
+      - name: Traductions Qt dans le catalogue
+        shell: pwsh
+        run: |
+          $qm = "build\src\app\ostara\ostara_fr_FR.qm"
+          & "$env:QT_ROOT_DIR\bin\lconvert.exe" -i $qm -o check_fr.ts
+          if (-not (Select-String -Path check_fr.ts -Pattern "<source>&amp;Cancel</source>" -Quiet)) {
+            throw "Traductions Qt absentes : les dialogues natifs resteraient en anglais"
+          }
 
       - name: Empaqueter
         shell: pwsh
@@ -169,6 +184,12 @@ jobs:
 
       - name: Compiler
         run: cmake --build build --parallel "$(nproc)"
+
+      - name: Traductions Qt dans le catalogue
+        run: |
+          "$QT_ROOT_DIR/bin/lconvert" -i build/src/app/ostara/ostara_fr_FR.qm -o /tmp/ostara_fr.ts
+          grep -q "<source>&amp;Cancel</source>" /tmp/ostara_fr.ts \
+            || { echo "Traductions Qt absentes : les dialogues natifs resteraient en anglais"; exit 1; }
 
       - name: AppImage
         run: |
