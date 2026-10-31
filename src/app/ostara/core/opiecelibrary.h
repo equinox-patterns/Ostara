@@ -120,7 +120,7 @@ auto Folders(const QString &rootPath) -> QList<Folder>;
  *
  * @param error the refusal, translated — a folder the reader asked for and did not get has to say why.
  */
-auto CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool;
+auto CreateFolder(const QString &parentPath, const QString &name, QString *error) -> bool;
 
 /// @brief Where the piece of @p sourcePath lands when moved into @p targetDirectory.
 auto TargetPath(const QString &sourcePath, const QString &targetDirectory) -> QString;

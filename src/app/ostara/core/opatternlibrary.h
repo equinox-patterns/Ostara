@@ -152,7 +152,7 @@ auto Search(const QString &rootPath, const QString &needle) -> QList<Entry>;
 auto ValidateChildName(const QString &parentPath, const QString &name, QString *error) -> bool;
 
 /// @brief Creates the folder @p name inside @p parentPath, after ValidateChildName.
-auto CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool;
+auto CreateFolder(const QString &parentPath, const QString &name, QString *error) -> bool;
 
 /// @brief Where @p sourcePath would land in @p targetDirectory — the name it already has, there.
 auto TargetPath(const QString &sourcePath, const QString &targetDirectory) -> QString;

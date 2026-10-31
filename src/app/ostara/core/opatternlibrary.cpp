@@ -302,9 +302,9 @@ auto OPatternLibrary::ValidateChildName(const QString &parentPath, const QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPatternLibrary::CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool
+auto OPatternLibrary::CreateFolder(const QString &parentPath, const QString &name, QString *error) -> bool
 {
-    return OLibraryStorage::CreateDirectory(parentPath, name, error);
+    return OLibraryStorage::CreateFolder(parentPath, name, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

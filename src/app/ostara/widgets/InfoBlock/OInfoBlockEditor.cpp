@@ -1023,7 +1023,7 @@ void OInfoBlockEditor::OnCreateClientFolder(bool checked)
     }
 
     QString error;
-    if (not OPatternLibrary::CreateDirectory(library, name, &error))
+    if (not OPatternLibrary::CreateFolder(library, name, &error))
     {
         QMessageBox::warning(this, tr("Pattern library"), error);
         return;
@@ -1404,7 +1404,7 @@ void OInfoBlockEditor::OnCreateCollectionFolder(bool checked)
     }
 
     QString error;
-    if (not OPatternLibrary::CreateDirectory(library, name, &error))
+    if (not OPatternLibrary::CreateFolder(library, name, &error))
     {
         QMessageBox::warning(this, tr("Pattern library"), error);
         return;

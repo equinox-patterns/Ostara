@@ -63,7 +63,7 @@ auto OLibraryStorage::ValidateChildName(const QString &parentPath, const QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OLibraryStorage::CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool
+auto OLibraryStorage::CreateFolder(const QString &parentPath, const QString &name, QString *error) -> bool
 {
     if (not ValidateChildName(parentPath, name, error))
     {

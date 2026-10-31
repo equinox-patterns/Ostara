@@ -106,7 +106,7 @@ void OLibraryFolderDialog::OnAccept()
     const QString name = m_nameEdit->text().trimmed();
 
     QString error;
-    if (not OLibraryStorage::CreateDirectory(m_parentPath, name, &error))
+    if (not OLibraryStorage::CreateFolder(m_parentPath, name, &error))
     {
         QMessageBox::warning(this, tr("New folder"), error);
         m_nameEdit->setFocus();

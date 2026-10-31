@@ -50,7 +50,7 @@ namespace OLibraryStorage
 auto ValidateChildName(const QString &parentPath, const QString &name, QString *error) -> bool;
 
 /// @brief Validates @p name the way ValidateChildName does, then makes the folder and returns its absolute path.
-auto CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool;
+auto CreateFolder(const QString &parentPath, const QString &name, QString *error) -> bool;
 
 /// @brief Where @p sourcePath lands when moved into @p targetDirectory: its own file name, there.
 auto TargetPath(const QString &sourcePath, const QString &targetDirectory) -> QString;

@@ -177,9 +177,9 @@ auto OPieceLibrary::Folders(const QString &rootPath) -> QList<Folder>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OPieceLibrary::CreateDirectory(const QString &parentPath, const QString &name, QString *error) -> bool
+auto OPieceLibrary::CreateFolder(const QString &parentPath, const QString &name, QString *error) -> bool
 {
-    return OLibraryStorage::CreateDirectory(parentPath, name, error);
+    return OLibraryStorage::CreateFolder(parentPath, name, error);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

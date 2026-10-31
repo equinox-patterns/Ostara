@@ -277,7 +277,7 @@ void OPatternFolderDialog::OnAccept()
         }
     }
 
-    if (not OPatternLibrary::CreateDirectory(m_parentPath, name, &error))
+    if (not OPatternLibrary::CreateFolder(m_parentPath, name, &error))
     {
         QMessageBox::warning(this, tr("New folder"), error);
         return;
