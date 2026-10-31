@@ -36,6 +36,7 @@
 #include "othumbnailconfigwidget.h"
 
 #include "../vmisc/def.h"
+#include "../vmisc/FactoryWidgets.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/ochildanchor.h"
@@ -1579,7 +1580,7 @@ void ODetailsPieceWidget::FinishPassmarkSelection()
         auto *dialog = new QDialog(this);
         dialog->setWindowTitle(tr("Choose Passmark Type"));
         auto *dlgLayout = new QVBoxLayout(dialog);
-        auto *combo = new QComboBox();
+        auto *combo = MakeComboBox(dialog);
         const struct
         {
             PassmarkLineType type;

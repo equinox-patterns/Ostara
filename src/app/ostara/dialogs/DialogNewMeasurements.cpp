@@ -28,10 +28,10 @@
 #include "widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
+#include "vmisc/FactoryWidgets.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
-#include <QListView>
 #include <QDialogButtonBox>
 #include <QGroupBox>
 #include <QLabel>
@@ -120,8 +120,7 @@ DialogNewMeasurements::DialogNewMeasurements(QWidget *parent)
     templateDesc->setObjectName(QStringLiteral("descLabel"));
     templateLayout->addWidget(templateDesc);
 
-    m_templateCombo = new QComboBox();
-    m_templateCombo->setView(new QListView());
+    m_templateCombo = MakeComboBox();
     m_templateCombo->addItem(tr("No template"));
 
     const QString libPath = VAbstractApplication::VApp()->Settings()->GetPathMeasurementLibrary();

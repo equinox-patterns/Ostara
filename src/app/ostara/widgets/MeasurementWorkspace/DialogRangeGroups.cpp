@@ -27,9 +27,9 @@
 #include "DialogRangeGroups.h"
 #include "MeasurementTablePanel.h" // for MeasurementRecord, RangeGroup, RangeDef
 #include "vtheme.h"
+#include "vmisc/FactoryWidgets.h"
 
 #include <QComboBox>
-#include <QListView>
 #include <QDialogButtonBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -257,15 +257,13 @@ void DialogRangeGroups::OnEditGroup(int row)
     m_rangesTable->setRowCount(static_cast<int>(rg.ranges.size()));
     for (int i = 0; i < static_cast<int>(rg.ranges.size()); ++i)
     {
-        auto *fromCombo = new QComboBox();
-        fromCombo->setView(new QListView());
+        auto *fromCombo = MakeComboBox();
         fromCombo->addItems(m_axisValues);
         int idx = static_cast<int>(m_axisValues.indexOf(rg.ranges.at(i).fromValue));
         if (idx >= 0) fromCombo->setCurrentIndex(idx);
         m_rangesTable->setCellWidget(i, 0, fromCombo);
 
-        auto *toCombo = new QComboBox();
-        toCombo->setView(new QListView());
+        auto *toCombo = MakeComboBox();
         toCombo->addItems(m_axisValues);
         idx = static_cast<int>(m_axisValues.indexOf(rg.ranges.at(i).toValue));
         if (idx >= 0) toCombo->setCurrentIndex(idx);
@@ -312,13 +310,11 @@ void DialogRangeGroups::OnAddRange()
     int row = m_rangesTable->rowCount();
     m_rangesTable->insertRow(row);
 
-    auto *fromCombo = new QComboBox();
-    fromCombo->setView(new QListView());
+    auto *fromCombo = MakeComboBox();
     fromCombo->addItems(m_axisValues);
     m_rangesTable->setCellWidget(row, 0, fromCombo);
 
-    auto *toCombo = new QComboBox();
-    toCombo->setView(new QListView());
+    auto *toCombo = MakeComboBox();
     toCombo->addItems(m_axisValues);
     // Default to same index as fromCombo (single-value range)
     toCombo->setCurrentIndex(fromCombo->currentIndex());

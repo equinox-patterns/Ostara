@@ -28,6 +28,7 @@
 
 #include "core/otranslation.h"
 #include "odecimalseparatorfilter.h"
+#include "vmisc/FactoryWidgets.h"
 
 #include <QComboBox>
 #include <QFormLayout>
@@ -37,7 +38,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QListView>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -176,8 +176,7 @@ void SizeGridPanel::SetupColumn(int index, const char *source)
     // Base dropdown
     col.baseLabel = new QLabel();
     OTranslation::SetText(this, col.baseLabel, QT_TRANSLATE_NOOP("SizeGridPanel", "Base:"));
-    col.baseCombo = new QComboBox();
-    col.baseCombo->setView(new QListView()); // bypass native macOS popup that ignores QSS
+    col.baseCombo = MakeComboBox();
     col.baseCombo->setEnabled(false); // empty until values are generated
     connect(col.baseCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &SizeGridPanel::OnGroupDataChanged);

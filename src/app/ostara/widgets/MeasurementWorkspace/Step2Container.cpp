@@ -33,6 +33,7 @@
 #include "core/otranslation.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
+#include "vmisc/FactoryWidgets.h"
 
 #include <QComboBox>
 #include <QFrame>
@@ -40,7 +41,6 @@
 #include <QIcon>
 #include <QLabel>
 #include <QLineEdit>
-#include <QListView>
 #include <QMenu>
 #include <QMessageBox>
 #include <QPainter>
@@ -390,9 +390,8 @@ void Step2Container::RebuildSizeSelectors()
         selectorBar->addWidget(groupLabel);
         m_sizeLabels.append(groupLabel);
 
-        auto *combo = new QComboBox();
+        auto *combo = MakeComboBox();
         combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-        combo->setView(new QListView()); // macOS popup QSS fix
 
         if (i < m_groupValues.size())
         {

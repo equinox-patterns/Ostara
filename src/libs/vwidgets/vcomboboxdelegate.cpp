@@ -29,6 +29,8 @@
 
 #include <QComboBox>
 
+#include "../vmisc/FactoryWidgets.h"
+
 //---------------------------------------------------------------------------------------------------------------------
 VComboBoxDelegate::VComboBoxDelegate(const QStringList &items, QObject *parent)
   : QItemDelegate(parent),
@@ -45,7 +47,7 @@ auto VComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem
     Q_UNUSED(option)
     Q_UNUSED(index)
 
-    auto *editor = new QComboBox(parent);
+    auto *editor = MakeComboBox(parent);
     editor->addItems(m_items);
 
     return editor;

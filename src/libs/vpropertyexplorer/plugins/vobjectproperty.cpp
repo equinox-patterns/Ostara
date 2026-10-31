@@ -25,6 +25,8 @@
 #include <QLocale>
 #include <QWidget>
 
+#include "vmisc/FactoryWidgets.h"
+
 #include "../vproperty_p.h"
 
 // Out-of-line destructor: keeps the scalar deleting destructor inside the DLL on MSVC,
@@ -76,7 +78,7 @@ auto VPE::VObjectProperty::createEditor(QWidget *parent, const QStyleOptionViewI
 {
     Q_UNUSED(options)
     Q_UNUSED(delegate)
-    auto *tmpEditor = new QComboBox(parent);
+    auto *tmpEditor = MakeComboBox(parent);
     tmpEditor->clear();
     tmpEditor->setLocale(parent->locale());
     FillList(tmpEditor, objects);

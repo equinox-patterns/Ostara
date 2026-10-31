@@ -29,11 +29,11 @@
 #include "DialogRangeGroups.h"
 #include "widgets/OSelectAllSpinBox.h"
 #include "core/otranslation.h"
+#include "vmisc/FactoryWidgets.h"
 
 #include <QButtonGroup>
 #include <QComboBox>
 #include <QFormLayout>
-#include <QListView>
 #include <QMouseEvent>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -310,8 +310,7 @@ void MeasurementDetailPanel::RebuildIncrementSections()
         vl->addWidget(gw.linearSpin);
 
         // Range group dropdown (shown when Par plages)
-        gw.rangeGroupCombo = new QComboBox();
-        gw.rangeGroupCombo->setView(new QListView());
+        gw.rangeGroupCombo = MakeComboBox();
         gw.rangeGroupCombo->setVisible(false);
         connect(gw.rangeGroupCombo, QOverload<int>::of(&QComboBox::currentIndexChanged),
                 this, [this, i](int){ OnRangeGroupChanged(i); });

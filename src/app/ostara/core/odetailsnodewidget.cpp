@@ -358,17 +358,22 @@ auto ODetailsNodeWidget::LoadFromNode() -> bool
     m_loading = true;
 
     // The two "Check mark" entries share their line type, so the combo is matched by index.
+    // A point that is not a passmark carries no meaningful line type — VPieceNode keeps the
+    // constructor default, OneLine — so the combo must show "None" instead of matching it.
     int entry = -1;
-    int index = 0;
-    for (const OSymbolShapes::PassmarkEntry &candidate : OSymbolShapes::Passmarks())
+    if (node.IsPassmark())
     {
-        if (candidate.type == node.GetPassmarkLineType() &&
-            candidate.clockwise == node.IsPassmarkClockwiseOpening())
+        int index = 0;
+        for (const OSymbolShapes::PassmarkEntry &candidate : OSymbolShapes::Passmarks())
         {
-            entry = index;
-            break;
+            if (candidate.type == node.GetPassmarkLineType() &&
+                candidate.clockwise == node.IsPassmarkClockwiseOpening())
+            {
+                entry = index;
+                break;
+            }
+            ++index;
         }
-        ++index;
     }
     m_typeCombo->setCurrentIndex(entry >= 0 ? entry + kFirstLineTypeIndex : 0);
 
