@@ -151,7 +151,10 @@ if(MSVC)
     add_compile_options(/WX)
     # windows.h définit max/min en macros : elles cassent std::numeric_limits<...>::max().
     # WIN32_LEAN_AND_MEAN évite d'importer les en-têtes dont le projet n'a pas besoin.
-    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN)
+    add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN _USE_MATH_DEFINES)
+    # MSVC traite les fonctions CRT « non sûres » comme des avertissements, et /WX en fait
+    # des erreurs : on les laisse passer, le code n'a pas de raison d'être réécrit pour ça.
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_WARNINGS)
 else()
     # GCC 12 remonte, sur le code hérité de Valentina, des avertissements que Clang (macOS)
     # ne produit pas : attributs Qt redondants, conversions de signe, comparaisons de
