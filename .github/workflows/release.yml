@@ -73,7 +73,7 @@ jobs:
           ln -s /Applications dmg/Applications
           VERSION="${GITHUB_REF_NAME#v}"
           hdiutil create -volname Ostara -srcfolder dmg -ov -format UDZO \
-            "Ostara-${VERSION}-macos-${{ matrix.arch }}.dmg"
+            "Ostara-${{ matrix.arch }}.dmg"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -204,7 +204,7 @@ jobs:
           ./linuxdeploy --appdir AppDir -e AppDir/usr/bin/Ostara \
             -d share/ostara.desktop -i Ostara.png --plugin qt --output appimage
           VERSION="${GITHUB_REF_NAME#v}"
-          mv Ostara*.AppImage "Ostara-${VERSION}-linux-x86_64.AppImage"
+          mv Ostara*.AppImage "Ostara.AppImage"
 
       - uses: actions/upload-artifact@v4
         with:
