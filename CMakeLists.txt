@@ -154,6 +154,10 @@ if(MSVC)
     add_compile_definitions(NOMINMAX WIN32_LEAN_AND_MEAN)
 else()
     add_compile_options(-Werror)
+    # GCC 12 produit des avertissements que Clang ne produit pas, sur du code hérité
+    # (attributs Qt redondants, comparaisons de flottants) : on garde -Werror, sauf pour
+    # ces trois familles, sinon la CI Linux ne peut pas construire.
+    add_compile_options(-Wno-error=attributes -Wno-error=float-equal -Wno-error=conversion)
 endif()
 
 # ═══════════════════════════════════════════════════════════════════════════════
