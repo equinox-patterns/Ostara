@@ -4,6 +4,8 @@ Ostara is a pattern making program: it draws and models patterns of clothing.
 
 It is a fork of Valentina, a pattern making program (see `AUTHORS.txt`).
 
+Source code: https://github.com/equinox-patterns/Ostara
+
 ## License
 
 Ostara is free software: you can redistribute it and/or modify it under the terms
