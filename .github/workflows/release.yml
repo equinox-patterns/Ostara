@@ -140,6 +140,11 @@ jobs:
           # xerces et zlib sont copiés à côté du binaire par CMake, pas dans dist :
           # sans eux l'exe ne démarre pas sur une machine vierge.
           Copy-Item (Join-Path (Split-Path $exe) "*.dll") dist\
+          # VPropertyExplorerLib et QMUParserLib sont des DLL construites dans leur
+          # propre dossier : l'exe les importe, elles n'étaient jamais copiées.
+          Get-ChildItem -Recurse -Path build -Filter *.dll |
+            Where-Object { $_.DirectoryName -like "*\Release" } |
+            ForEach-Object { Copy-Item $_.FullName dist\ -Force }
           windeployqt --release --no-translations --compiler-runtime dist\Ostara.exe
           # windeployqt ne trouve pas le CRT hors invite de commandes VS (VCINSTALLDIR vide),
           # il saute --compiler-runtime sans rien dire. On copie le redistribuable à la main.
@@ -151,6 +156,8 @@ jobs:
           Copy-Item (Join-Path $crtDll.Directory.FullName "*.dll") dist\
           if (-not (Test-Path dist\vcruntime140.dll)) { throw "CRT MSVC absent de dist" }
           if (-not (Test-Path dist\xerces-c_3_3.dll)) { throw "xerces absent de dist" }
+          if (-not (Get-ChildItem dist -Filter "VPropertyExplorerLib.dll")) { throw "VPropertyExplorerLib.dll absent de dist" }
+          if (-not (Get-ChildItem dist -Filter "QMUParserLib.dll")) { throw "QMUParserLib.dll absent de dist" }
           choco install nsis -y --no-progress
           $version = "$env:GITHUB_REF_NAME" -replace '^v',''
           & "C:\Program Files (x86)\NSIS\makensis.exe" "-DVERSION=$version" "-DDIST=$PWD\dist" "-DOUTDIR=$PWD" packaging\windows\installer.nsi
