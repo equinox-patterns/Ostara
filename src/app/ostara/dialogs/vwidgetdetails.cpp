@@ -903,7 +903,19 @@ void VWidgetDetails::OnNodeSelected(quint32 nodeId)
 //---------------------------------------------------------------------------------------------------------------------
 void VWidgetDetails::CompleteGroupCreation()
 {
-    OPieceGroupDialog dialog(m_data, static_cast<int>(m_selectedPiecesForGroup.size()), this);
+    // Only the members that count in the total are replaced by the group: a piece kept out of the
+    // total (its own « Exclude from total » flag) was not counted to begin with.
+    const auto *pieces = m_data->DataPieces();
+    int countedMembers = 0;
+    for (const quint32 pieceId : m_selectedPiecesForGroup)
+    {
+        if (pieces != nullptr && pieces->contains(pieceId) && m_data->IsPieceInLayout(pieceId)
+            && !pieces->value(pieceId).IsExcludedFromTotal())
+        {
+            countedMembers++;
+        }
+    }
+    OPieceGroupDialog dialog(m_data, countedMembers, this);
     if (dialog.exec() != QDialog::Accepted)
     {
         CancelGroupSelection();

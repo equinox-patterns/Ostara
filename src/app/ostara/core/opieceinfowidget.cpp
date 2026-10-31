@@ -59,6 +59,10 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
     numberRow->addWidget(m_numberSpin);
     m_totalLabel = new QLabel();
     numberRow->addWidget(m_totalLabel);
+    // Piece-only flag: the owner hands over its accessors, so a group page keeps it hidden.
+    m_excludedCheck = new QCheckBox(tr("Exclude from total"));
+    m_excludedCheck->setVisible(false);
+    numberRow->addWidget(m_excludedCheck);
     numberRow->addStretch();
     form->addRow(tr("Number"), numberRow);
     m_numberLabel = qobject_cast<QLabel *>(form->labelForField(numberRow));
@@ -113,6 +117,14 @@ OPieceInfoWidget::OPieceInfoWidget(QWidget *parent)
             return;
         }
         m_modifyPending([value](IPieceInfo &det) { det.SetPieceNumber(static_cast<uint>(value)); });
+    });
+
+    connect(m_excludedCheck, &QCheckBox::toggled, this, [this](bool excluded) {
+        if (m_loading || !m_setExcluded)
+        {
+            return;
+        }
+        m_setExcluded(excluded);
     });
 
     connect(m_fabricQtySpin, QOverload<int>::of(&QSpinBox::valueChanged), this, [this](int qty) {
@@ -186,6 +198,15 @@ void OPieceInfoWidget::SetModifyPending(std::function<void(std::function<void(IP
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OPieceInfoWidget::SetExcludedFromTotalHandlers(std::function<bool()> isExcluded,
+                                                    std::function<void(bool)> setExcluded)
+{
+    m_isExcluded = std::move(isExcluded);
+    m_setExcluded = std::move(setExcluded);
+    m_excludedCheck->setVisible(m_isExcluded != nullptr);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPieceInfoWidget::Show(const IPieceInfo &detail, const VContainer *data)
 {
     m_loading = true;
@@ -195,6 +216,13 @@ void OPieceInfoWidget::Show(const IPieceInfo &detail, const VContainer *data)
     // « Un groupe = 1 pièce » : the total counts standalone pieces + groups.
     m_totalLabel->setText(
         QStringLiteral("/ %1").arg(QString::number(data != nullptr ? data->GetEffectivePieceCount() : 0)));
+
+    // Only a piece page provides the accessors: a group keeps the checkbox hidden.
+    m_excludedCheck->setVisible(m_isExcluded != nullptr);
+    if (m_isExcluded)
+    {
+        m_excludedCheck->setChecked(m_isExcluded());
+    }
 
     m_fabricQtySpin->setValue(detail.GetCutFabricQty());
     m_fabricOnFoldCheck->setChecked(detail.IsCutFabricOnFold());
@@ -225,6 +253,7 @@ void OPieceInfoWidget::Clear()
 
     m_numberSpin->setValue(0);
     m_totalLabel->clear();
+    m_excludedCheck->setChecked(false);
     m_fabricQtySpin->setValue(0);
     m_fabricOnFoldCheck->setChecked(false);
     m_interfacingQtySpin->setValue(0);
@@ -253,6 +282,7 @@ void OPieceInfoWidget::RetranslateUI()
     m_fabricOnFoldCheck->setText(tr("On fold"));
     m_interfacingOnFoldCheck->setText(tr("On fold"));
     m_liningOnFoldCheck->setText(tr("On fold"));
+    m_excludedCheck->setText(tr("Exclude from total"));
     if (m_freeTextLabel)
     {
         m_freeTextLabel->setText(tr("Free text"));

@@ -326,6 +326,7 @@ void VPattern::ParseDetailElement(QDomElement &domElement, const Document &parse
             domElement, AttrSewLineOnDrawing,
             QString().setNum(VAbstractValApplication::VApp()->ValentinaSettings()->GetSewLineOnDrawing())));
         initData.detail.SetInLayout(GetParametrBool(domElement, AttrInLayout, trueStr));
+        initData.detail.SetExcludedFromTotal(GetParametrBool(domElement, AttrExcludedFromTotal, falseStr));
         initData.detail.SetUnited(GetParametrBool(domElement, VToolSeamAllowance::AttrUnited, falseStr));
         initData.detail.SetPriority(GetParametrUInt(domElement, VToolSeamAllowance::AttrPiecePriority, QChar('0')));
         initData.detail.SetGradedAlignH(GetParametrInt(domElement, AttrGradedAlignH, QStringLiteral("2")));

@@ -549,6 +549,18 @@ void ODetailsPieceWidget::ConnectControls()
     });
     m_foldlineWidget->SetModifyPending([this](std::function<void(VPiece &)> func) { ModifyPiece(func); });
     m_pieceInfoWidget->SetModifyPending([this](std::function<void(IPieceInfo &)> func) { ModifyPiece(func); });
+    // « Exclude from total » — a piece-only flag: the group page never calls this, so the checkbox of
+    // the shared number row stays hidden there (a group already counts as one piece).
+    m_pieceInfoWidget->SetExcludedFromTotalHandlers(
+        [this]() { return m_pendingDet.IsExcludedFromTotal(); },
+        [this](bool excluded)
+        {
+            const std::function<void(VPiece &)> mutate = [excluded](VPiece &det)
+            {
+                det.SetExcludedFromTotal(excluded);
+            };
+            ModifyPiece(mutate);
+        });
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::ShowStatusTip, this, &ODetailsPieceWidget::ShowStatusTip);
     connect(m_foldlineWidget, &ODetailsFoldLineWidget::HighlightNode, this,
             [this](quint32 nodeId, bool highlight)

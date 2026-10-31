@@ -48,7 +48,7 @@ class OPieceGroupDialog final : public QDialog
     Q_OBJECT // NOLINT
 
 public:
-    explicit OPieceGroupDialog(const VContainer *data, int memberCount, QWidget *parent = nullptr);
+    explicit OPieceGroupDialog(const VContainer *data, int countedMembers, QWidget *parent = nullptr);
     ~OPieceGroupDialog() override = default;
 
     /** @brief Builds the group from the step fields (id / pieceIds filled by the caller). */

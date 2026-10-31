@@ -1604,8 +1604,9 @@ auto VContainer::GetPieceGroupId(quint32 pieceId) const -> quint32
 auto VContainer::IsPieceInLayout(quint32 pieceId) const -> bool
 {
     // A member piece's in-layout state follows its GROUP (a group behaves like one piece). This is
-    // the single definition of "exportable": the export filter and the piece total both use it, so
-    // the total shown in a cartouche always matches what an export contains.
+    // the single definition of "exportable": the export filter uses it, and the piece total starts
+    // from it (GetEffectivePieceCount then leaves out the pieces the user kept out of that total),
+    // so the total shown in a cartouche always matches what an export contains.
     const quint32 groupId = GetPieceGroupId(pieceId);
     if (groupId != NULL_ID)
     {
@@ -1624,7 +1625,8 @@ auto VContainer::GetEffectivePieceCount() const -> int
 {
     // Only the units that go to the layout count: an excluded piece or group is not part of the
     // total. « Un groupe = 1 pièce » : a group of two or more members counts for 1, its members do
-    // not count on their own.
+    // not count on their own. On top of that, a piece can be kept out of the total without leaving
+    // the layout: its own flag, « Exclude from total » in the Property Browser, is the last word.
     const auto *groups = DataPieceGroups();
     QSet<quint32> memberIds;
     int count = 0;
@@ -1652,7 +1654,7 @@ auto VContainer::GetEffectivePieceCount() const -> int
     {
         for (auto it = pieces->cbegin(); it != pieces->cend(); ++it)
         {
-            if (!memberIds.contains(it.key()) && IsPieceInLayout(it.key()))
+            if (!memberIds.contains(it.key()) && IsPieceInLayout(it.key()) && !it.value().IsExcludedFromTotal())
             {
                 count++;
             }

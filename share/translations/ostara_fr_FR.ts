@@ -16236,6 +16236,12 @@ Load a measurement table that defines them, then insert the piece.</source>
         <translation>Numéro</translation>
     </message>
     <message>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="63"/>
+        <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="285"/>
+        <source>Exclude from total</source>
+        <translation>Exclure du total</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="69"/>
         <location filename="../../src/app/ostara/core/opieceinfowidget.cpp" line="260"/>
         <source>Fabric</source>

@@ -637,6 +637,18 @@ void VPiece::SetInLayout(bool inLayout)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VPiece::IsExcludedFromTotal() const -> bool
+{
+    return d->m_excludedFromTotal;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VPiece::SetExcludedFromTotal(bool excluded)
+{
+    d->m_excludedFromTotal = excluded;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VPiece::IsUnited() const -> bool
 {
     return d->m_united;

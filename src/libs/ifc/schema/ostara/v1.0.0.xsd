@@ -1239,6 +1239,7 @@
                         <xs:attribute name="uuid" type="uuid"/>
                         <xs:attribute name="bufferName" type="xs:string"/>
                         <xs:attribute name="inLayout" type="xs:boolean"/>
+                        <xs:attribute name="excludedFromTotal" type="xs:boolean"/>
                         <xs:attribute name="bufferInLayout" type="xs:boolean"/>
                         <xs:attribute name="forbidFlipping" type="xs:boolean"/>
                         <xs:attribute name="forceFlipping" type="xs:boolean"/>

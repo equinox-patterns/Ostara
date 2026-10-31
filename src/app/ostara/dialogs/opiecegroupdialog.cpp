@@ -34,7 +34,7 @@
 #include "opiecedialog_piecestep.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-OPieceGroupDialog::OPieceGroupDialog(const VContainer *data, int memberCount, QWidget *parent)
+OPieceGroupDialog::OPieceGroupDialog(const VContainer *data, int countedMembers, QWidget *parent)
   : QDialog(parent)
 {
     setWindowTitle(tr("Link pieces"));
@@ -46,9 +46,10 @@ OPieceGroupDialog::OPieceGroupDialog(const VContainer *data, int memberCount, QW
     // group is checking it for its members.
     layout->addWidget(m_step);
 
-    // Piece number total: the group replaces its memberCount standalone pieces by 1
-    // (a group of K members no longer counts as K pieces, it counts as 1).
-    m_step->SetPieceTotal(data != nullptr ? data->GetEffectivePieceCount() - memberCount + 1 : 0);
+    // Piece number total: the group replaces its counted members by 1 (a group of K members no
+    // longer counts as K pieces, it counts as 1). Only the members that count today are subtracted:
+    // a piece kept out of the total was already not counted.
+    m_step->SetPieceTotal(data != nullptr ? data->GetEffectivePieceCount() - countedMembers + 1 : 0);
 
     m_buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
     layout->addWidget(m_buttonBox);

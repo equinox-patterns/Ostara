@@ -97,6 +97,9 @@ public:
     auto IsInLayout() const -> bool;
     void SetInLayout(bool inLayout);
 
+    auto IsExcludedFromTotal() const -> bool;
+    void SetExcludedFromTotal(bool excluded);
+
     auto IsUnited() const -> bool;
     void SetUnited(bool united);
 

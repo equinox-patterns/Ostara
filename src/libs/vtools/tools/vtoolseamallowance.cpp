@@ -700,6 +700,10 @@ void VToolSeamAllowance::AddAttributes(VAbstractPattern *doc, QDomElement &domEl
     doc->SetAttribute(domElement, AttrMy, VAbstractValApplication::VApp()->fromPixel(piece.GetMy()));
     doc->SetAttributeOrRemoveIf<bool>(domElement, AttrInLayout, piece.IsInLayout(),
                                       [](bool inLayout) noexcept { return inLayout; });
+    // Written only when the piece is kept out of the total: false is the default, and the
+    // attribute absent means false (older files never carry it).
+    doc->SetAttributeOrRemoveIf<bool>(domElement, AttrExcludedFromTotal, piece.IsExcludedFromTotal(),
+                                      [](bool excluded) noexcept { return not excluded; });
     doc->SetAttribute(domElement, AttrForceFlipping, piece.IsForceFlipping());
     doc->SetAttributeOrRemoveIf<bool>(domElement,
                                       AttrSymmetricalCopy,

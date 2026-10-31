@@ -58,7 +58,9 @@ public:
     VPiecePath m_path; // NOLINT(misc-non-private-member-variables-in-classes)
 
     bool m_inLayout{true}; // NOLINT(misc-non-private-member-variables-in-classes)
-    bool m_united{false};  // NOLINT(misc-non-private-member-variables-in-classes)
+    /** @brief Left out of the piece total (it still goes to the layout and the export). */
+    bool m_excludedFromTotal{false}; // NOLINT(misc-non-private-member-variables-in-classes)
+    bool m_united{false};            // NOLINT(misc-non-private-member-variables-in-classes)
 
     QVector<CustomSARecord> m_customSARecords{}; // NOLINT(misc-non-private-member-variables-in-classes)
     QVector<quint32> m_internalPaths{};          // NOLINT(misc-non-private-member-variables-in-classes)

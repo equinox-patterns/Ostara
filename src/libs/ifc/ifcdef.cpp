@@ -170,6 +170,7 @@ const QString AttrSuffix = QStringLiteral("suffix");
 const QString AttrItem = QStringLiteral("item");
 const QString AttrIdObject = QStringLiteral("idObject");
 const QString AttrInLayout = QStringLiteral("inLayout");
+const QString AttrExcludedFromTotal = QStringLiteral("excludedFromTotal");
 const QString AttrForceFlipping = QStringLiteral("forceFlipping");
 const QString AttrSymmetricalCopy = QStringLiteral("symmetricalCopy");
 const QString AttrSewLineOnDrawing = QStringLiteral("sewLineOnDrawing");

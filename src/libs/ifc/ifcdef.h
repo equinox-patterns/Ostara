@@ -186,6 +186,7 @@ extern const QString AttrSuffix;
 extern const QString AttrItem;
 extern const QString AttrIdObject;
 extern const QString AttrInLayout;
+extern const QString AttrExcludedFromTotal;
 extern const QString AttrForceFlipping;
 extern const QString AttrSymmetricalCopy;
 extern const QString AttrSewLineOnDrawing;

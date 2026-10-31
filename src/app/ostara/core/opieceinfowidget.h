@@ -60,6 +60,11 @@ public:
     /** Callback that applies a piece-like mutation and commits it to the undo stack. */
     void SetModifyPending(std::function<void(std::function<void(IPieceInfo &)>)> callback);
 
+    /** Piece-only accessors for the « Exclude from total » checkbox of the number row. The owner that
+     *  provides them (the piece page) shows the checkbox; a group page leaves them unset and the
+     *  checkbox stays hidden — a group already counts as one piece and carries no such flag. */
+    void SetExcludedFromTotalHandlers(std::function<bool()> isExcluded, std::function<void(bool)> setExcluded);
+
     void Show(const IPieceInfo &detail, const VContainer *data);
     void Clear();
 
@@ -80,6 +85,9 @@ private:
     QSpinBox *m_numberSpin{nullptr};
     QLabel *m_numberLabel{nullptr};
     QLabel *m_totalLabel{nullptr};
+    QCheckBox *m_excludedCheck{nullptr};
+    std::function<bool()> m_isExcluded;
+    std::function<void(bool)> m_setExcluded;
 
     QTabWidget *m_cutTabs{nullptr};
     QLabel *m_quantityLabels[3]{};
