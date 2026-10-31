@@ -44,6 +44,7 @@
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/def.h"
+#include "../vformat/vmeasurements.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 
@@ -99,6 +100,19 @@ void MainWindow::UpdateUndoRedoActions(bool enabled)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::GradedModeAvailable() const -> bool
+{
+    // A .otu is a single-size table: it has no size axis, so there is nothing to grade along.
+    return not m_m.isNull() && m_m->Type() == MeasurementsType::Multisize;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::UpdateGradedModeAvailability(bool enable)
+{
+    ui->actionGraded->setEnabled(enable && GradedModeAvailable());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief SetEnableWidgets enable action button.
  * @param enable enable value.
@@ -125,7 +139,10 @@ void MainWindow::SetEnableWidgets(bool enable)
     UpdatePieceSaveAction();
     ui->actionDraw->setEnabled(enable);
     ui->actionDetails->setEnabled(enable);
-    ui->actionGraded->setEnabled(enable);
+    // Graded needs a multi-size measurements table (.omt): a single-size .otu carries no size
+    // axis to grade along, so the mode is unavailable — disabled up front, not refused by a
+    // dialog after the click.
+    UpdateGradedModeAvailability(enable);
     ui->actionExport->setEnabled(enable);
     ui->actionTable->setEnabled(enableOnDesignStage);
     ui->actionExportFinalMeasurementsToCSV->setEnabled(enable);

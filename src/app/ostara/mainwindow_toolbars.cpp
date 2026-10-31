@@ -91,6 +91,9 @@ void MainWindow::UpdateMeasurementState()
 {
     InitDimensionControls();
     UpdateMeasurementFileNameLabel();
+    // The measurements table also decides whether Graded has a size axis: loading another table
+    // on an open pattern must move the mode's availability with it.
+    UpdateGradedModeAvailability(doc != nullptr);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -344,8 +347,12 @@ void MainWindow::UpdateTopBarIcons()
         QIcon(QStringLiteral(":/icons/%1/polygon-fill_%1.svg").arg(themeDir)));
     ui->actionDetails->setIcon(
         QIcon(QStringLiteral(":/icons/%1/sliders-fill_%1.svg").arg(themeDir)));
-    ui->actionGraded->setIcon(
-        QIcon(QStringLiteral(":/icons/%1/stack-fill_%1.svg").arg(themeDir)));
+    // The action's disabled state (single-size .otu) must show the theme's disabled variant,
+    // like the top bar button — Qt's automatic greying is not the charte's disabled look.
+    QIcon gradedIcon(QStringLiteral(":/icons/%1/stack-fill_%1.svg").arg(themeDir));
+    gradedIcon.addFile(QStringLiteral(":/icons/%1/stack-fill_disabled.svg").arg(themeDir), QSize(),
+                       QIcon::Disabled, QIcon::Off);
+    ui->actionGraded->setIcon(gradedIcon);
     // Export mode reuses the Layout icon.
     ui->actionExport->setIcon(
         QIcon(QStringLiteral(":/icons/%1/printer-fill_%1.svg").arg(themeDir)));

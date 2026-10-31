@@ -121,6 +121,7 @@
         <file alias="square_accent.svg">themes/icons/light/square_accent.svg</file>
         <file alias="square_disabled.svg">themes/icons/light/square_disabled.svg</file>
         <file alias="square_light.svg">themes/icons/light/square_light.svg</file>
+        <file alias="stack-fill_disabled.svg">themes/icons/light/stack-fill_disabled.svg</file>
         <file alias="stack-fill_light.svg">themes/icons/light/stack-fill_light.svg</file>
         <file alias="stack-plus-fill_light.svg">themes/icons/light/stack-plus-fill_light.svg</file>
         <file alias="star-fill_accent.svg">themes/icons/light/star-fill_accent.svg</file>
@@ -251,6 +252,7 @@
         <file alias="square_dark.svg">themes/icons/dark/square_dark.svg</file>
         <file alias="square_disabled.svg">themes/icons/dark/square_disabled.svg</file>
         <file alias="stack-fill_dark.svg">themes/icons/dark/stack-fill_dark.svg</file>
+        <file alias="stack-fill_disabled.svg">themes/icons/dark/stack-fill_disabled.svg</file>
         <file alias="stack-plus-fill_dark.svg">themes/icons/dark/stack-plus-fill_dark.svg</file>
         <file alias="star-fill_accent.svg">themes/icons/dark/star-fill_accent.svg</file>
         <file alias="star-fill_dark.svg">themes/icons/dark/star-fill_dark.svg</file>

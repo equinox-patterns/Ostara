@@ -813,6 +813,13 @@ private:
     void UpdateUndoRedoActions(bool enabled);
 
     void SetEnableWidgets(bool enable);
+
+    /// Graded mode needs a multi-size measurements table (.omt): a single-size .otu carries no size
+    /// axis to grade along, so the mode is unavailable there.
+    auto GradedModeAvailable() const -> bool;
+    /// Enable/disable the Graded action from the measurements table, on top of @p enable.
+    void UpdateGradedModeAvailability(bool enable);
+
     void SetEnableTool(bool enable);
 
     /// Keep the top bar's save-piece button in step with what there is to save.

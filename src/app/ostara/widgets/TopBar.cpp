@@ -430,6 +430,16 @@ void TopBar::UpdateModeButtonIcons()
 
     SetIcon(m_btnDraw,    QStringLiteral("polygon"));
     SetIcon(m_btnDetails, QStringLiteral("sliders"));
-    SetIcon(m_btnGraded,  QStringLiteral("stack"));
     SetIcon(m_btnExport,  QStringLiteral("printer"));
+
+    // Graded is disabled when the pattern's measurements table is single-size (.otu): the mode
+    // needs a multi-size table. The disabled look comes from the theme's disabled set (Icons.md
+    // §2) — Qt's automatic greying fades a fill icon into something unreadable.
+    if (m_btnGraded)
+    {
+        QIcon graded(QStringLiteral(":/icons/%1/stack-fill_%1.svg").arg(theme));
+        graded.addFile(QStringLiteral(":/icons/%1/stack-fill_disabled.svg").arg(theme), QSize(),
+                       QIcon::Disabled, QIcon::Off);
+        m_btnGraded->setIcon(graded);
+    }
 }
