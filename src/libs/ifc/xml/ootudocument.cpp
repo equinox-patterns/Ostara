@@ -305,18 +305,18 @@ auto OOtuDocument::GetMType(const QString &name) const -> QString
     return mEl.attribute(AttrType, QStringLiteral("measurement"));
 }
 
-auto OOtuDocument::GetMValue(const QString &name) const -> double
+auto OOtuDocument::GetMeasurementValue(const QString &name) const -> double
 {
     QDomElement mEl = FindMElement(name);
     if (mEl.isNull())
     {
-        qCWarning(vOtuDoc) << "GetMValue: measurement" << name << "not found";
+        qCWarning(vOtuDoc) << "GetMeasurementValue: measurement" << name << "not found";
         return 0.0;
     }
     QDomElement valEl = mEl.firstChildElement(TagValue);
     if (valEl.isNull())
     {
-        qCWarning(vOtuDoc) << "GetMValue: no <value> element for measurement" << name;
+        qCWarning(vOtuDoc) << "GetMeasurementValue: no <value> element for measurement" << name;
         return 0.0;
     }
     // The value is stored as TEXT content of <value>, not as an attribute

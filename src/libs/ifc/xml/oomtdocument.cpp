@@ -538,18 +538,18 @@ auto OOmtDocument::GetMType(const QString &name) const -> QString
     return mEl.attribute(AttrType, QStringLiteral("measurement"));
 }
 
-auto OOmtDocument::GetMValue(const QString &name) const -> double
+auto OOmtDocument::GetMeasurementValue(const QString &name) const -> double
 {
     QDomElement mEl = FindMElement(name);
     if (mEl.isNull())
     {
-        qCWarning(vOmtDoc) << "GetMValue: measurement" << name << "not found";
+        qCWarning(vOmtDoc) << "GetMeasurementValue: measurement" << name << "not found";
         return 0.0;
     }
     QDomElement valEl = mEl.firstChildElement(TagValue);
     if (valEl.isNull())
     {
-        qCWarning(vOmtDoc) << "GetMValue: no <value> element for measurement" << name;
+        qCWarning(vOmtDoc) << "GetMeasurementValue: no <value> element for measurement" << name;
         return 0.0;
     }
     // The value is stored as TEXT content of <value>, not as an attribute
@@ -1013,7 +1013,7 @@ void OOmtDocument::ComputeGrid()
     QStringList mNames = GetAllMNames();
     for (const QString &mName : mNames)
     {
-        double anchorValue = GetMValue(mName);
+        double anchorValue = GetMeasurementValue(mName);
         QMap<QString, GroupIncrement> incs = GetMIncrements(mName);
 
         // Precompute RangeGroup ranges for non-linear groups

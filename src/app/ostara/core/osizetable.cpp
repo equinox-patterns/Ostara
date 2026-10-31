@@ -200,9 +200,9 @@ double OSizeTable::MeasurementValue(const QString &name) const
 {
     if (m_omtDoc != nullptr)
     {
-        return m_omtDoc->GetMValue(name);
+        return m_omtDoc->GetMeasurementValue(name);
     }
-    return m_otuDoc != nullptr ? m_otuDoc->GetMValue(name) : 0.0;
+    return m_otuDoc != nullptr ? m_otuDoc->GetMeasurementValue(name) : 0.0;
 }
 
 std::optional<double> OSizeTable::MeasurementValueAt(const QString &name,

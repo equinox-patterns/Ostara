@@ -30,8 +30,7 @@
 #include "crashhandler.h"
 
 #if defined(Q_OS_WIN)
-#define NOMINMAX
-#include <windows.h>
+#include <windows.h> // NOMINMAX est défini par le CMake
 #endif
 
 #if defined(Q_OS_MAC)

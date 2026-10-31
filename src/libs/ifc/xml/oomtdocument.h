@@ -143,7 +143,7 @@ public:
     auto GetMFullName(const QString &name) const -> QString;
     auto GetMDescription(const QString &name) const -> QString;
     auto GetMType(const QString &name) const -> QString;
-    auto GetMValue(const QString &name) const -> double;
+    auto GetMeasurementValue(const QString &name) const -> double;
     auto GetMIncrements(const QString &name) const -> QMap<QString, GroupIncrement>;
     auto GetMIncrement(const QString &name, const QString &group) const -> double;
     auto GetMSpecialUnits(const QString &name) const -> bool;

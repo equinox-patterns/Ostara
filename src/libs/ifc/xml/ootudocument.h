@@ -104,7 +104,7 @@ public:
     auto GetMFullName(const QString &name) const -> QString;
     auto GetMDescription(const QString &name) const -> QString;
     auto GetMType(const QString &name) const -> QString;
-    auto GetMValue(const QString &name) const -> double;
+    auto GetMeasurementValue(const QString &name) const -> double;
     auto GetMSpecialUnits(const QString &name) const -> bool;
     auto GetMCollapsed(const QString &name) const -> bool;
     void SetMCollapsed(const QString &name, bool collapsed);

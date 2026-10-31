@@ -680,7 +680,7 @@ void MeasurementWorkspace::SyncPanelsFromDocument()
         {
             fullNames.append(m_otuDoc->GetMFullName(name));
             descriptions.append(m_otuDoc->GetMDescription(name));
-            values.append(m_otuDoc->GetMValue(name));
+            values.append(m_otuDoc->GetMeasurementValue(name));
             increments.append(QMap<QString, GroupIncrement>{});  // no increments in solo mode
             types.append(m_otuDoc->GetMType(name));
         }
@@ -732,7 +732,7 @@ void MeasurementWorkspace::SyncPanelsFromDocument()
         {
             fullNames.append(m_omtDoc->GetMFullName(name));
             descriptions.append(m_omtDoc->GetMDescription(name));
-            anchorValues.append(m_omtDoc->GetMValue(name));
+            anchorValues.append(m_omtDoc->GetMeasurementValue(name));
             increments.append(m_omtDoc->GetMIncrements(name));
             types.append(m_omtDoc->GetMType(name));
         }
