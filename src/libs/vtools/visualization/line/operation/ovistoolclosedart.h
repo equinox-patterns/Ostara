@@ -71,6 +71,17 @@ private:
     quint32 m_targetPointId{NULL_ID};
     qreal m_divisor{1.};
 
+    /** @brief Draw the pivot with the operated objects, in their own colour.
+     *
+     *  The pivot is never an operated object: the dialogue takes it out of the list, because it is what the
+     *  others turn around. It is still the point the reader looks for — the one that says what the dart is
+     *  closed around — so it is echoed along with them. That covers the whole gesture (from the click that
+     *  picks it, while the two other points are chosen) and the pattern itself, once the tool is selected.
+     *
+     *  @param iPoint index of the last point taken from the pool; the pivot takes the next one, so the ghost
+     *  drawn afterwards never lands on it. */
+    void DrawPivotEcho(int &iPoint);
+
     /** @brief The angle the dart is closed with as far as it is known: NaN while the pivot or the moving
      *  point is missing, or when the divisor cannot divide. The cursor stands for the target until the user
      *  chooses it. */

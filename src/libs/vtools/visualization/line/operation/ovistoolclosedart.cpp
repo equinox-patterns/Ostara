@@ -60,6 +60,8 @@ void OVisToolCloseDart::RefreshGeometry()
         return;
     }
 
+    DrawPivotEcho(iPoint);
+
     // No angle before the pivot and the point that travels are both known. Until then the pattern is shown as
     // it is, and no ghost promises a rotation that is not decided yet.
     const qreal angle = ClosingAngle();
@@ -83,6 +85,32 @@ void OVisToolCloseDart::RefreshGeometry()
     }
 
     RefreshPreviewLines(decided);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OVisToolCloseDart::DrawPivotEcho(int &iPoint)
+{
+    const quint32 pivot = OriginPointId();
+
+    // Nothing to echo before the pivot is picked, and nothing to add when the pattern already echoes it as one
+    // of the operated objects: a second copy in the same place would only cost a redraw.
+    if (pivot == NULL_ID || Objects().contains(pivot))
+    {
+        return;
+    }
+
+    try
+    {
+        // Drawn by the very function that draws the operated objects, and with the same role: the pivot is not
+        // a different kind of thing, it is one more point of what the reader is looking at.
+        AddOriginPoint(pivot, iPoint);
+    }
+    catch (const VException &e)
+    {
+        // The pivot can be gone from the pattern. This runs on every mouse move, and an exception leaving here
+        // would end the application: the echo simply skips the point.
+        qCDebug(vVis, "Skipping the pivot echo: %s", e.ErrorMessage().toUtf8().constData());
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
