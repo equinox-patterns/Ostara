@@ -42,8 +42,9 @@ class VContainer;
  *
  * Two blocks cut from two patterns can agree on a name — `Em`, `Pro`, `Line_Em_Pro` — and a container holds one
  * object per name: the second piece would take the place of the first, silently. So a piece entering a pattern
- * whose names are already there is **marked**, and the mark is a suffix on **every** name it declares:
- * `Em__P1`. All of them or none: a piece half marked would have two namespaces and no coherence.
+ * whose names are already there is **marked**, and the mark is a suffix on **every name the pattern already
+ * answers to** — `Em__P1` — while a name of its own, which nobody else holds, keeps the name it was given. A
+ * token that mixes the two (`Line_A__P1_C`) is read label by label, so a half-marked piece stays coherent.
  *
  * `__P<n>` is a **mark, not a name**. It says which file the piece entered, so it is written when the piece
  * enters a file and **removed when the piece is saved back to the library** — a `.opiece` never carries one,

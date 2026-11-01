@@ -42,6 +42,7 @@ class OPieceImportDialog;
 
 class QComboBox;
 class QLabel;
+class QTableWidget;
 
 /**
  * @brief What a piece entering the pattern asks before it enters: the name it will wear, and every alias it carries.
@@ -81,6 +82,12 @@ public:
     /// @brief Le bloc choisi pour chaque valeur lue ailleurs : `jeton → nom du bloc`, vide quand rien n'a été demandé.
     auto ChosenReferences() const -> QHash<QString, QString>;
 
+    /// @brief Les incréments que le patron définit autrement, renommés : `#ancien → #nouveau`.
+    ///
+    /// Vide quand rien ne se dispute : un incrément que les deux fichiers définissent de la même façon est un
+    /// doublon, et il n'y a rien à demander.
+    auto IncrementTable() const -> QHash<QString, QString>;
+
 private slots:
     void CheckState();
 
@@ -88,6 +95,9 @@ private:
     Q_DISABLE_COPY_MOVE(OPieceImportDialog) // NOLINT
 
     void FillAliases();
+
+    /// @brief Les incréments en conflit : ce que chaque fichier en dit, et le nom que celui de la pièce prendra.
+    void FillIncrements();
 
     /// @brief Les valeurs lues ailleurs que plusieurs blocs peuvent satisfaire : un combo chacune, avant les alias.
     void FillReferences();
@@ -107,6 +117,8 @@ private:
     QSet<QString> m_taken{};
     QVector<OPieceImport::Reference> m_references{};
     QHash<QString, QComboBox *> m_referenceBoxes{};
+    QTableWidget *m_incrementTable{nullptr};
+    QLabel *m_incrementProblem{nullptr};
 };
 
 #endif // OPIECEIMPORTDIALOG_H

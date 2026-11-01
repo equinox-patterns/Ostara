@@ -55,12 +55,40 @@ namespace OPieceImport
 {
 /// An increment the pattern already holds and keeps. @p differentDefinition says the piece's copy would have said
 /// something else: nothing is decided, the reader is told and judges.
+///
+/// The two formulas are carried along because the reader **is asked** when they differ: one definition, one
+/// meaning, and a piece that divides by four a thigh girth the pattern already holds as a quarter of it computes
+/// every one of its widths four times too small — silently, everywhere, and the canvas shows a piece that is not
+/// the one that was saved.
 struct IncrementClash
 {
-    QString name{};
+    QString name{};             ///< le nom que les deux tables se disputent, `#Bassin`.
     bool previewCalculation{false};
     bool differentDefinition{false};
+    QString pieceFormula{};     ///< ce que la pièce dit de cet incrément.
+    QString hostFormula{};      ///< ce que le patron en dit déjà.
 };
+
+/**
+ * @brief The increments @p piece and @p host define **differently** — what a dialog has to ask, and nothing else.
+ *
+ * An increment both files define the same way is a **duplicate**, not a question: it is imported once and the
+ * piece's copy is dropped, which is what importing the same piece twice must do. Only a name both hold with two
+ * meanings is asked about, and it is asked **before** anything enters the pattern.
+ */
+auto IncrementConflicts(const OPieceDocument &piece, VAbstractPattern *host) -> QVector<IncrementClash>;
+
+/**
+ * @brief Rename the increments of @p piece, in its own tables and in every formula that cites them.
+ *
+ * The table is `ancien nom → nouveau nom`, as the dialog read it. Both tables of the piece are walked, and then
+ * every attribute of the envelope that carries a `#` — a formula cites an increment as a token, `#Bassin`, and a
+ * piece whose rows were renamed but whose formulas were not would read the pattern's increment instead of its own.
+ *
+ * The piece is modified in place, **before** it is prepared: the block that enters the pattern is a copy made
+ * after this call, so it inherits the renamed formulas and nothing has to be rewritten twice.
+ */
+void RenameIncrements(OPieceDocument &piece, const QHash<QString, QString> &renamed);
 
 struct IncrementReport
 {

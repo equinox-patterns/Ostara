@@ -36,7 +36,11 @@
 #include "xml/vpattern.h"
 
 #include <QCoreApplication>
+#include <QDomAttr>
+#include <QDomNamedNodeMap>
 #include <QDomNode>
+
+#include <functional>
 
 namespace
 {
@@ -84,10 +88,50 @@ auto DefinitionOf(const QDomElement &row) -> RowDefinition
             row.attribute(VAbstractPattern::AttrType), row.attribute(VAbstractPattern::AttrSpecialUnits)};
 }
 
+/// Whether two rows say the **same thing**. The description is not part of it: it is a note for the reader, not a
+/// definition, and two pieces that explain an ease differently would otherwise be asked to rename an increment that
+/// computes exactly the same value.
 auto SameDefinition(const RowDefinition &left, const RowDefinition &right) -> bool
 {
-    return left.formula == right.formula && left.description == right.description && left.type == right.type
-           && left.specialUnits == right.specialUnits;
+    return left.formula == right.formula && left.type == right.type && left.specialUnits == right.specialUnits;
+}
+
+/// @p expression with every increment token it cites renamed by @p renamed, a table of `#ancien → #nouveau`.
+///
+/// The token is what a formula reads — `#Bassin` — and the scan stops at the first character a name cannot hold,
+/// so `#Bassin` is never mistaken for the head of `#Bassin2`, and `#Bassin/4` becomes `#Bassin__P1/4`.
+auto RenameIncrementTokens(const QString &expression, const QHash<QString, QString> &renamed) -> QString
+{
+    if (renamed.isEmpty() || not expression.contains(QLatin1Char('#')))
+    {
+        return expression;
+    }
+
+    QString out;
+    out.reserve(expression.size());
+
+    for (int i = 0; i < expression.size();)
+    {
+        if (expression.at(i) != QLatin1Char('#'))
+        {
+            out += expression.at(i);
+            ++i;
+            continue;
+        }
+
+        int end = i + 1;
+        while (end < expression.size()
+               && (expression.at(end).isLetterOrNumber() || expression.at(end) == QLatin1Char('_')))
+        {
+            ++end;
+        }
+
+        const QString token = expression.mid(i, end - i);
+        out += renamed.value(token, token);
+        i = end;
+    }
+
+    return out;
 }
 
 /**
@@ -142,7 +186,8 @@ void ImportTable(const QDomElement &rows,
 
             if (not SameDefinition(DefinitionOf(existing), DefinitionOf(row)))
             {
-                report.clashes.append({name, previewCalculation, true});
+                report.clashes.append({name, previewCalculation, true, row.attribute(VAbstractPattern::AttrFormula),
+                                       existing.attribute(VAbstractPattern::AttrFormula)});
             }
 
             continue;
@@ -195,6 +240,133 @@ auto OPieceImport::ImportIncrements(const OPieceDocument &piece,
     ImportTable(piece.PreviewCalculations(), true, host, data, instanceName, report);
 
     return report;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceImport::IncrementConflicts(const OPieceDocument &piece, VAbstractPattern *host)
+    -> QVector<IncrementClash>
+{
+    QVector<IncrementClash> conflicts;
+
+    if (host == nullptr)
+    {
+        return conflicts;
+    }
+
+    // **Buste = Buste.** A piece already in the pattern keeps its increments, whatever the library file now says:
+    // the reader who changed an ease in `Buste` and imports `Buste` a second time — to work on another part of it —
+    // expects the two instances to share the increments they already share. The source is what decides, never the
+    // formula: a second `Buste` is not a second piece, and no question is asked of it.
+    //
+    // The same rule says nothing about `Pantalon`: another piece, another identity, and its increments are its own —
+    // so a formula that diverges **there** is a real question, and the dialog asks it.
+    if (const QString libraryId = piece.LibraryId(); not libraryId.isEmpty())
+    {
+        const QDomElement root = host->documentElement();
+        for (QDomElement draw = root.firstChildElement(VAbstractPattern::TagDraw); not draw.isNull();
+             draw = draw.nextSiblingElement(VAbstractPattern::TagDraw))
+        {
+            if (draw.attribute(OPieceDocument::AttrLibraryId) == libraryId)
+            {
+                return conflicts;
+            }
+        }
+    }
+
+    const auto Walk = [&conflicts, host](const QDomElement &rows, bool previewCalculation)
+    {
+        if (rows.isNull())
+        {
+            return;
+        }
+
+        for (QDomElement row = rows.firstChildElement(VAbstractPattern::TagIncrement); not row.isNull();
+             row = row.nextSiblingElement(VAbstractPattern::TagIncrement))
+        {
+            const QString name = row.attribute(VAbstractPattern::AttrName);
+            if (name.isEmpty())
+            {
+                continue;
+            }
+
+            const QDomElement existing = host->IncrementRow(name, previewCalculation);
+            if (existing.isNull() || SameDefinition(DefinitionOf(existing), DefinitionOf(row)))
+            {
+                continue; // absent de l'autre côté, ou défini de la même façon : un doublon, pas une question
+            }
+
+            conflicts.append({name, previewCalculation, true, row.attribute(VAbstractPattern::AttrFormula),
+                              existing.attribute(VAbstractPattern::AttrFormula)});
+        }
+    };
+
+    Walk(piece.Increments(), false);
+    Walk(piece.PreviewCalculations(), true);
+
+    return conflicts;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceImport::RenameIncrements(OPieceDocument &piece, const QHash<QString, QString> &renamed)
+{
+    if (renamed.isEmpty())
+    {
+        return;
+    }
+
+    QDomElement root = piece.documentElement();
+    if (root.isNull())
+    {
+        return;
+    }
+
+    // The rows first: what a formula cites is the **name**, so the tables are renamed before any formula is read.
+    for (const QString &tag : {VAbstractPattern::TagIncrements, VAbstractPattern::TagPreviewCalculations})
+    {
+        for (QDomElement rows = root.firstChildElement(tag); not rows.isNull(); rows = rows.nextSiblingElement(tag))
+        {
+            for (QDomElement row = rows.firstChildElement(VAbstractPattern::TagIncrement); not row.isNull();
+                 row = row.nextSiblingElement(VAbstractPattern::TagIncrement))
+            {
+                if (const auto known = renamed.constFind(row.attribute(VAbstractPattern::AttrName));
+                    known != renamed.constEnd())
+                {
+                    row.setAttribute(VAbstractPattern::AttrName, known.value());
+                }
+            }
+        }
+    }
+
+    // Then every formula the piece carries — the increments' own as much as the block's tools, which cite an
+    // increment as a token. Nothing else is touched: an attribute without a `#` cannot hold an increment's name.
+    //
+    // The walk is explicit: `elementsByTagName(u"*")` does **not** mean "every element" to Qt, it means "every
+    // element whose tag is a star" — nothing. This is the whole point of the pass, so it is read child by child.
+    std::function<void(const QDomElement &)> rewrite = [&renamed, &rewrite](const QDomElement &element)
+    {
+        QDomNamedNodeMap attributes = element.attributes();
+        for (int a = 0; a < attributes.size(); ++a)
+        {
+            QDomAttr attribute = attributes.item(a).toAttr();
+            if (attribute.isNull() || not attribute.value().contains(QLatin1Char('#')))
+            {
+                continue;
+            }
+
+            const QString renamedValue = RenameIncrementTokens(attribute.value(), renamed);
+            if (renamedValue != attribute.value())
+            {
+                attribute.setValue(renamedValue);
+            }
+        }
+
+        for (QDomElement child = element.firstChildElement(); not child.isNull(); child = child.nextSiblingElement())
+        {
+            rewrite(child);
+        }
+    };
+
+    rewrite(root);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

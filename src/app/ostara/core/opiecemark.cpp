@@ -1136,15 +1136,22 @@ auto OPieceMark::Collides(const QDomElement &root, const QSet<QString> &taken) -
 auto OPieceMark::TableFor(const QDomElement &root, const QSet<QString> &taken, int number) -> QHash<QString, QString>
 {
     QHash<QString, QString> renamed;
-    if (root.isNull() || number < 1 || not Collides(root, taken))
+    if (root.isNull() || number < 1)
     {
         return renamed;
     }
 
-    // All or nothing: every name the piece declares is marked, not only the ones that were taken.
+    // **Only the names that collide.** A piece brings sixty names and the pattern very often answers to a handful
+    // of them: marking the fifty others would give the reader `CoteDevant__P1` for a curve no other piece holds,
+    // and the mark is a disambiguator, not a decoration. A name kept free also keeps its own token — it is the
+    // tokens that **mix** a marked label with a free one (`Line_A__P1_C`) that the rewriting has to carry, and it
+    // does: a token is read label by label, never as a whole.
     for (const QString &name : DeclaredNames(root))
     {
-        renamed.insert(name, Marked(name, number));
+        if (AnswersTo(taken, name))
+        {
+            renamed.insert(name, Marked(name, number));
+        }
     }
 
     return renamed;

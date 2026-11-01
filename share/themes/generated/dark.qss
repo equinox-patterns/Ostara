@@ -586,6 +586,17 @@ QAbstractItemView::item:hover {
     color: #e5e5e5;
 }
 
+/* Les deux tables de la fenêtre d'import d'une pièce — les noms de ses objets, et les incréments qu'elle se
+   dispute avec le patron — ne se cliquent pas : on les lit, et on remplit les champs posés dessus. Le survol y
+   fait donc courir un fond rose sous la souris sans rien annoncer. Le délégué de la fenêtre efface bien l'état
+   `State_MouseOver`, mais la règle du thème est évaluée sur le widget : elle est neutralisée ici, une fois, pour
+   les deux thèmes. */
+QTableWidget#pieceAliasTable::item:hover,
+QTableWidget#pieceIncrementTable::item:hover {
+    background-color: transparent;
+    color: #e5e5e5;
+}
+
 QAbstractItemView::item:selected {
     background-color: #983e60;
     color: #e5e5e5;

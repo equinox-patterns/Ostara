@@ -208,6 +208,12 @@ auto OPieceInsert::Propose(const OPieceDocument &piece, VPattern *doc, VContaine
     proposal.collides = OPieceMark::Collides(root, taken);
     proposal.table = OPieceMark::TableFor(root, taken, proposal.number);
 
+    // Un incrément que le patron définit autrement n'est pas un objet à renommer : c'est un **sens** que deux
+    // pièces se disputent, et la géométrie de celle qui entre en dépend. La fenêtre d'import le demande avant
+    // que quoi que ce soit n'entre, parce que la règle « le premier import gagne » garderait sinon une définition
+    // qui ne veut pas dire la même chose — le tour de bassin du Buste divisé par quatre au lieu du tour entier.
+    proposal.incrementConflicts = OPieceImport::IncrementConflicts(piece, doc);
+
     return proposal;
 }
 

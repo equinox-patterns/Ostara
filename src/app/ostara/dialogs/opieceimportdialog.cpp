@@ -54,6 +54,12 @@ namespace
 constexpr int kObject = 0;
 constexpr int kAlias = 1;
 
+/// Les quatre colonnes des incréments en conflit : le nom, les deux définitions, et celui que la pièce prendra.
+constexpr int kIncrement = 0;
+constexpr int kPieceFormula = 1;
+constexpr int kHostFormula = 2;
+constexpr int kIncrementName = 3;
+
 /// A row tall enough for a field whose text is read, not clipped: the field keeps the theme's own height, and the
 /// table no longer cuts 4 px above and below it (see FillAliases).
 constexpr int kAliasRowHeight = 36;
@@ -107,6 +113,7 @@ OPieceImportDialog::OPieceImportDialog(const OPieceInsert::Proposal &proposal, c
     // L'ordre des trois moments de la dialogue : le nom, ce qui est lu ailleurs, puis les alias (§5).
     FillReferences();
     FillAliases();
+    FillIncrements();
     CheckState();
 }
 
@@ -199,6 +206,107 @@ void OPieceImportDialog::FillReferences()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OPieceImportDialog::IncrementTable() const -> QHash<QString, QString>
+{
+    QHash<QString, QString> table;
+    if (m_incrementTable == nullptr)
+    {
+        return table;
+    }
+
+    for (int row = 0; row < m_incrementTable->rowCount(); ++row)
+    {
+        const QTableWidgetItem *increment = m_incrementTable->item(row, kIncrement);
+        const auto *edit = qobject_cast<QLineEdit *>(m_incrementTable->cellWidget(row, kIncrementName));
+        if (increment == nullptr || edit == nullptr)
+        {
+            continue;
+        }
+
+        const QString before = increment->data(Qt::UserRole).toString();
+        const QString after = edit->text().trimmed();
+        if (after != before)
+        {
+            table.insert(before, after);
+        }
+    }
+
+    return table;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceImportDialog::FillIncrements()
+{
+    if (m_proposal.incrementConflicts.isEmpty())
+    {
+        return;
+    }
+
+    auto *group = new QGroupBox(tr("Increments"), this);
+    auto *layout = new QVBoxLayout(group);
+
+    auto *explain = new QLabel(tr("The pattern already holds these increments, and defines them differently. "
+                                  "The piece keeps its own definition under the name you give it, and its "
+                                  "formulas follow."),
+                               group);
+    explain->setWordWrap(true);
+    layout->addWidget(explain);
+
+    auto *table = new QTableWidget(group);
+    table->setColumnCount(4);
+    table->setHorizontalHeaderLabels({tr("Increment"), tr("This piece"), tr("The pattern"), tr("Name")});
+    table->verticalHeader()->setVisible(false);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table->setAlternatingRowColors(false);
+    table->verticalHeader()->setDefaultSectionSize(kAliasRowHeight);
+    table->setObjectName(QStringLiteral("pieceIncrementTable"));
+    table->setStyleSheet(QStringLiteral("QTableWidget#pieceIncrementTable::item { padding: 0px 8px; }"));
+    table->setItemDelegate(new NoHoverDelegate(table));
+    table->setRowCount(static_cast<int>(m_proposal.incrementConflicts.size()));
+
+    for (int row = 0; row < m_proposal.incrementConflicts.size(); ++row)
+    {
+        const OPieceImport::IncrementClash &conflict = m_proposal.incrementConflicts.at(row);
+
+        auto *name = new QTableWidgetItem(conflict.name);
+        name->setData(Qt::UserRole, conflict.name); // le nom d'avant : c'est lui que la table des renommages indexe
+        table->setItem(row, kIncrement, name);
+
+        auto *pieceFormula = new QTableWidgetItem(conflict.pieceFormula);
+        pieceFormula->setToolTip(conflict.pieceFormula);
+        table->setItem(row, kPieceFormula, pieceFormula);
+
+        auto *hostFormula = new QTableWidgetItem(conflict.hostFormula);
+        hostFormula->setToolTip(conflict.hostFormula);
+        table->setItem(row, kHostFormula, hostFormula);
+
+        // Ce que la pièce propose : son nom, marqué comme le sont ses objets quand le patron en tient déjà un.
+        auto *edit = new QLineEdit(OPieceMark::Marked(conflict.name, m_proposal.number), table);
+        edit->setValidator(new QRegularExpressionValidator(QRegularExpression(NameRegExp()), edit));
+        connect(edit, &QLineEdit::textChanged, this, &OPieceImportDialog::CheckState);
+        table->setCellWidget(row, kIncrementName, edit);
+    }
+
+    table->resizeColumnsToContents();
+    table->horizontalHeader()->setSectionResizeMode(kIncrementName, QHeaderView::Stretch);
+    table->setMinimumHeight(kAliasRowHeight * (static_cast<int>(m_proposal.incrementConflicts.size()) + 2));
+
+    layout->addWidget(table);
+
+    m_incrementProblem = new QLabel(group);
+    m_incrementProblem->setWordWrap(true);
+    m_incrementProblem->setVisible(false);
+    layout->addWidget(m_incrementProblem);
+
+    m_incrementTable = table;
+
+    if (auto *vertical = findChild<QVBoxLayout *>(QStringLiteral("verticalLayout")); vertical != nullptr)
+    {
+        vertical->insertWidget(vertical->count() - 1, group);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OPieceImportDialog::CheckState()
 {
     const QString name = InstanceName();
@@ -233,9 +341,33 @@ void OPieceImportDialog::CheckState()
     }
     SetProblem(ui->labelAliasProblem, aliasProblem);
 
+    QString incrementProblem;
+    if (m_incrementTable != nullptr)
+    {
+        QSet<QString> seenIncrements;
+        for (int row = 0; row < m_incrementTable->rowCount() && incrementProblem.isEmpty(); ++row)
+        {
+            const auto *edit = qobject_cast<QLineEdit *>(m_incrementTable->cellWidget(row, kIncrementName));
+            if (edit == nullptr)
+            {
+                continue;
+            }
+
+            const QString typed = edit->text().trimmed();
+            incrementProblem = AliasProblem(typed);
+            if (incrementProblem.isEmpty() && seenIncrements.contains(typed))
+            {
+                incrementProblem = tr("Two names cannot be the same.");
+            }
+            seenIncrements.insert(typed);
+        }
+        SetProblem(m_incrementProblem, incrementProblem);
+    }
+
     // Rien n'est écrit tant que tout n'est pas décidable : un nom déjà porté, une forme que le schéma refuse, ou
     // deux alias qui ne feraient qu'un laissent le bouton hors de portée.
-    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(problem.isEmpty() && aliasProblem.isEmpty());
+    ui->buttonBox->button(QDialogButtonBox::Ok)
+        ->setEnabled(problem.isEmpty() && aliasProblem.isEmpty() && incrementProblem.isEmpty());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

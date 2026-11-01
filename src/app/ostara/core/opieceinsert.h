@@ -27,6 +27,7 @@
 #define OPIECEINSERT_H
 
 #include "opiecedocument.h"
+#include "opieceimport.h"
 #include "opiecemark.h"
 
 #include "../vtools/undocommands/vundocommand.h"
@@ -72,6 +73,8 @@ struct Proposal
     QStringList roles{};                  ///< les noms de rôle de la pièce : hors du bloc, donc à dire à part.
     QVector<OPieceMark::Alias> aliases{}; ///< les alias de la pièce, dans l'ordre du fichier.
     QHash<QString, QString> table{};      ///< les noms d'avant et d'après — vide quand rien ne collide.
+    /// Les incréments que le patron définit **autrement** : deux sens pour un nom, et la géométrie qui suit.
+    QVector<OPieceImport::IncrementClash> incrementConflicts{};
 
     /// Le vrai quand la proposition a pu être lue : le patron et son conteneur étaient là.
     auto IsReady() const -> bool { return number > 0; }

@@ -908,7 +908,7 @@ auto MainWindow::InsertLibraryPiece(const QString &filePath) -> bool
     // elsewhere that several pieces can satisfy: a piece that asks nothing enters in one gesture, the gesture of
     // every other import.
     QHash<QString, QString> bound; // the piece's citations, rewritten to the instance chosen in the dialog
-    if (not proposal.aliases.isEmpty() || not ambiguous.isEmpty())
+    if (not proposal.aliases.isEmpty() || not ambiguous.isEmpty() || not proposal.incrementConflicts.isEmpty())
     {
         OPieceImportDialog dialog(proposal, blockNames, OPieceInsert::Keys(pattern), ambiguous, this);
         if (dialog.exec() != QDialog::Accepted)
@@ -918,6 +918,12 @@ auto MainWindow::InsertLibraryPiece(const QString &filePath) -> bool
 
         proposal.instanceName = dialog.InstanceName();
         proposal.table = dialog.Table();
+
+        // Un incrément que le patron définit autrement garde son sens : la pièce le renomme, et ses formules
+        // suivent le nom. Sans cela la règle « le premier import gagne » garderait la définition de l'autre pièce
+        // et la géométrie de celle qui entre serait calculée avec des valeurs qui ne veulent pas dire la même
+        // chose — un tour de bassin pris pour son quart, et la pièce entière quatre fois trop étroite.
+        OPieceImport::RenameIncrements(piece, dialog.IncrementTable());
 
         // Les citations de la pièce vers l'instance choisie : `Curve_dos` devient `Curve_dos__P1` quand c'est la
         // seconde instance qui est choisie, et **rien** quand c'est la première — ses noms sont ceux que la pièce
