@@ -828,8 +828,17 @@ auto VContainer::FormulaWithoutStaleHandles(const VContainer *container, const Q
                                    // The name of the object this token resolves to, and nothing else, is what a
                                    // formula may write. An object nobody named has no name to offer here: that one
                                    // is the guard's business, which reports it and asks for one.
+                                   //
+                                   // And it is written in its **simplified** form — `Curve_dos`, never `SplPath_dos`
+                                   // or `Spl_dos`. An alias still carries the head of its class, which `CreateAlias`
+                                   // builds as `GetTypeHead() + suffix`: writing that back undid the user's own word
+                                   // the moment she validated. She typed `Courbe_dos`, the tool stored `SplPath_dos`
+                                   // (relevé le 01-11-2026 sur l'outil Move), and the French frontend then showed the
+                                   // legacy head raw because `SplPath` is not a translated word. The container answers
+                                   // to the simplified form as well — `AddVariable` registers it — so the formula keeps
+                                   // resolving, and every tool that writes a formula goes through this one place.
                                    const QString &name = var->GetAlias();
-                                   return name.isEmpty() ? token : name;
+                                   return name.isEmpty() ? token : SimplifiedName(name);
                                });
 }
 
