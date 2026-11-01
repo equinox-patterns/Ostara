@@ -27,6 +27,7 @@
 #include "otoolspread.h"
 
 #include <QDomNode>
+#include <QColor>
 #include <QDomNodeList>
 #include <QMap>
 #include <QSharedPointer>
@@ -42,6 +43,7 @@
 #include "../../../undocommands/savetooloptions.h"
 #include "../vgeometry/vgobject.h"
 #include "../vpatterndb/vcontainer.h"
+#include "../vtheme/vtheme.h"
 #include "ooperationdestination.h"
 #include "ospreaddisplay.h"
 #include "ospreadtransform.h"
@@ -61,15 +63,188 @@ const QString OToolSpread::DefaultCopySuffix = QStringLiteral("_Rotation");
 
 namespace
 {
+/** @brief One line of the smoothing report: the curve it speaks of, and what the smoothing cost to it. */
+struct OSpreadSmoothingLine
+{
+    int rank{0};
+    quint32 id{NULL_ID};
+    QString label{};
+    qreal delta{0.};
+};
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The cost of the smoothing, one line per curve of the selection, in the order the selection was made.
+ *
+ * The lengths come in pixels; what the user reads is in the unit of the pattern, and the delta is what the chain cost
+ * to that very curve — a few tenths of a millimetre, sometimes a millimetre. */
+auto SmoothingLines(const VContainer *data, const QVector<SourceItem> &source,
+                    const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles)
+    -> QVector<OSpreadSmoothingLine>
+{
+    const OSpreadTransform plain(source, rotations, angles, data, false);
+    const OSpreadTransform smoothed(source, rotations, angles, data, true);
+
+    const auto unit = VAbstractValApplication::VApp()->fromPixel(1.);
+
+    QVector<OSpreadSmoothingLine> lines;
+    for (const auto &item : std::as_const(source))
+    {
+        if (item.id == NULL_ID)
+        {
+            continue;
+        }
+
+        const QSharedPointer<VGObject> object = data->GetGObject(item.id);
+        if (object.isNull())
+        {
+            continue;
+        }
+
+        // The report says what the smoothing DID, not what it looked at: a curve the chain did not take keeps the
+        // rigid image the rotations made, so it has no cost to show and no line to claim. The test is the one the
+        // transform uses before giving a curve the geometry of its segment (see OSpreadTransform::Smooth): a single
+        // cubic for a curve, one per sub-curve for a path.
+        qreal before = 0;
+        qreal after = 0;
+        if (object->getType() == GOType::Spline)
+        {
+            if (smoothed.SmoothedSize(item.id) != 1)
+            {
+                continue; // Not part of a chain: the rotations alone drew it, exactly as without the smoothing.
+            }
+
+            const QSharedPointer<VSpline> curve = data->GeometricObject<VSpline>(item.id);
+            before = plain.Image(*curve, QString()).GetLength();
+            after = smoothed.Image(*curve, QString()).GetLength();
+        }
+        else if (object->getType() == GOType::SplinePath)
+        {
+            const QSharedPointer<VSplinePath> path = data->GeometricObject<VSplinePath>(item.id);
+            if (smoothed.SmoothedSize(item.id) != path->CountSubSpl())
+            {
+                continue; // Not part of a chain, as above.
+            }
+
+            before = plain.Image(*path, QString()).GetLength();
+            after = smoothed.Image(*path, QString()).GetLength();
+        }
+        else
+        {
+            continue;
+        }
+
+        const int curveRank = smoothed.Rank(item.id);
+        if (curveRank == 0)
+        {
+            continue; // No rank, no line: the chain did not take it (see OSpreadTransform::Rank).
+        }
+
+        const QString alias = object->GetAlias();
+        //: Default name of a copied curve that carries no alias. %1 is its rank.
+        const QString label = alias.isEmpty() ? OToolSpread::tr("Curve %1").arg(curveRank) : alias;
+
+        lines.append({.rank = curveRank, .id = item.id, .label = label, .delta = (after - before) * unit});
+    }
+
+    return lines;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto DeltaText(qreal delta) -> QString
+{
+    //: %1 is the sign of a length change (empty or "+"), %2 the change with its unit.
+    return OToolSpread::tr("%1%2").arg(delta < 0 ? QString() : QStringLiteral("+"),
+                          QLocale().toString(delta, 'f', 3) + QLatin1Char(' ')
+                              + UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto MakeDestination(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
                      const QVector<qreal> &angles, VContainer *data, bool smooth) -> OOperationDestination<OSpreadTransform>
 {
-    return OOperationDestination<OSpreadTransform>(OSpreadTransform(source, rotations, angles, data, smooth));
+    OSpreadTransform transform(source, rotations, angles, data, smooth);
+    // The points no rotation carries have no image of their own: the operation references them (see
+    // OSpreadTransform), so the pattern keeps one point where a copy would put two.
+    const QVector<quint32> referenced = transform.ReferencedPoints();
+    return OOperationDestination<OSpreadTransform>(std::move(transform), std::move(referenced));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto EvaluateAngles(quint32 idTool, const QVector<OSpreadRotation> &rotations, VContainer *data) -> QVector<qreal>
+/** @brief The points the operation references, as OOperationLines::PointImage wants them: such a point is its own
+ *  image, so the map is the identity on it. Empty when every point of the selection is carried by a rotation. */
+auto ReferencedPoints(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
+                      const VContainer *data) -> QHash<quint32, quint32>
+{
+    QHash<quint32, quint32> referenced;
+    for (const quint32 id : OSpreadTransform(source, rotations, {}, data).ReferencedPoints())
+    {
+        referenced.insert(id, id);
+    }
+    return referenced;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The same points, as the layer wants them: what the operation does not copy is not what it produced, so
+ *  it stays out of the layer — a layer hiding it would hide the point the figure is read from. */
+auto ReferencedSet(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
+                   const VContainer *data) -> QSet<quint32>
+{
+    QSet<quint32> referenced;
+    for (const quint32 id : OSpreadTransform(source, rotations, {}, data).ReferencedPoints())
+    {
+        referenced.insert(id);
+    }
+    return referenced;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Drop the image a file may still carry for a source the operation references.
+ *
+ * A pattern written before the rule existed holds the copy of its pivot in the destination list, and a parse
+ * rebuilds exactly what that list names: the copy would then be looked for in the container, where nothing made
+ * it. The entry keeps its place — the two lists are read positionally — but names no object from now on, and the
+ * next write of the list takes the object out of the file. */
+void ClearReferencedImages(const QVector<SourceItem> &source, const QVector<OSpreadRotation> &rotations,
+                           const VContainer *data, QVector<DestinationItem> &destination)
+{
+    const QVector<quint32> referenced = OSpreadTransform(source, rotations, {}, data).ReferencedPoints();
+    const qsizetype count = qMin(source.size(), destination.size());
+    for (qsizetype i = 0; i < count; ++i)
+    {
+        if (not referenced.contains(source.at(i).id))
+        {
+            continue;
+        }
+
+        DestinationItem &image = destination[i];
+        image.id = NULL_ID;
+        image.mx = 0.;
+        image.my = 0.;
+        image.showLabel = false;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief True when a source the operation now references still holds an image of its own, written before the
+ *  rule existed or before the rotations were edited. Such an image is not an image any more, so the list must be
+ *  written again even when the selection did not change. */
+auto HoldsReferencedImage(const OOperationDestination<OSpreadTransform> &destination,
+                          const QVector<SourceItem> &source, const QVector<DestinationItem> &images) -> bool
+{
+    const qsizetype count = qMin(source.size(), images.size());
+    for (qsizetype i = 0; i < count; ++i)
+    {
+        if (destination.IsReferenced(source.at(i).id) && images.at(i).id != NULL_ID)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto EvaluateAngles(quint32 idTool, const QVector<OSpreadRotation> &rotations, const VContainer *data)
+    -> QVector<qreal>
 {
     QVector<qreal> angles;
     angles.reserve(rotations.size());
@@ -96,16 +271,21 @@ void CreateDisplay(OToolSpreadInitData &initData, const OSpreadPlan &plan)
 //---------------------------------------------------------------------------------------------------------------------
 /** @brief Create or refresh the two lines of every mark of the display.
  *
- * Their endpoints are objects, not source ids: the apex is the copy of the pivot, the base the copy of the start
- * point and the third vertex of the mark. That vertex is the start point itself for the first rotation, the one
- * place where a mark ends on a source object instead of an object of its own: a source object PointImage would
- * answer with the copy of, which is why the ends are resolved here. */
+ * Their endpoints are objects, not source ids: the apex is the image of the pivot — its copy, or the pivot itself
+ * when the rotations stop at it and copy nothing — the base the image of the start point, and the third vertex of
+ * the mark. That vertex is the start point itself for the first rotation, the one place where a mark ends on a
+ * source object instead of an object of its own: a source object PointImage would answer with the copy of, which
+ * is why the ends are resolved here. */
 void CreateDisplayLines(const OToolSpreadInitData &initData)
 {
     if (not initData.display.show)
     {
         return;
     }
+
+    // A pivot no rotation turns is not copied (see OSpreadTransform): its image is the point itself.
+    const QHash<quint32, quint32> referenced =
+        ReferencedPoints(initData.source, initData.rotations, initData.data);
 
     for (int k = 0; k < initData.rotations.size() && k < initData.display.marks.size(); ++k)
     {
@@ -118,9 +298,9 @@ void CreateDisplayLines(const OToolSpreadInitData &initData)
         }
 
         const quint32 apex =
-            OOperationLines::PointImage(rotation.pivotId, initData.source, initData.destination, {});
+            OOperationLines::PointImage(rotation.pivotId, initData.source, initData.destination, {}, referenced);
         const quint32 start =
-            OOperationLines::PointImage(rotation.startId, initData.source, initData.destination, {});
+            OOperationLines::PointImage(rotation.startId, initData.source, initData.destination, {}, referenced);
 
         OOperationLine line;
         line.typeLine = initData.display.typeLine;
@@ -259,6 +439,10 @@ void CreateDestination(OToolSpreadInitData &initData)
         destination.Update(initData.id, initData.source, initData.data, initData.destination);
     }
 
+    // What the operation does not copy stays out of the layer it makes: a point it references is not part of what
+    // it produced, and hiding it with the copies would hide a point the figure is read from.
+    initData.keptInPlace = ReferencedSet(initData.source, initData.rotations, initData.data);
+
     CreateDisplay(initData, OSpreadRule::Compose(initData.source, initData.rotations, angles, initData.data));
 }
 } // namespace
@@ -277,23 +461,30 @@ OToolSpread::OToolSpread(const OToolSpreadInitData &initData, QGraphicsItem *par
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolSpread::SyncDestination(const QVector<SourceItem> &source) -> QVector<DestinationItem>
 {
-    bool unchanged = false;
-    const QMap<QUuid, DestinationItem> existingByRecord = SyncDestinationPreamble(source, unchanged);
-    if (unchanged)
-    {
-        return m_destination;
-    }
-
     const QVector<qreal> angles = EvaluateAngles(m_id, m_rotations, getData());
     const OOperationDestination<OSpreadTransform> destination =
         MakeDestination(source, m_rotations, angles, getData(), m_smooth);
+
+    bool unchanged = false;
+    const QMap<QUuid, DestinationItem> existingByRecord = SyncDestinationPreamble(source, unchanged);
+    if (unchanged && not HoldsReferencedImage(destination, source, m_destination))
+    {
+        return m_destination;
+    }
 
     QVector<DestinationItem> newDestination;
     newDestination.reserve(source.size());
 
     for (const auto &srcItem : std::as_const(source))
     {
-        if (existingByRecord.contains(srcItem.recordId))
+        if (destination.IsReferenced(srcItem.id))
+        {
+            // A point no rotation carries has no image of its own: the operation references it. The entry stays,
+            // the two lists are read positionally, but it names no object — an image written before the rule
+            // existed or before the rotations were edited goes away with this list.
+            newDestination.append({.recordId = srcItem.recordId});
+        }
+        else if (existingByRecord.contains(srcItem.recordId))
         {
             newDestination.append(existingByRecord.value(srcItem.recordId));
         }
@@ -304,6 +495,12 @@ auto OToolSpread::SyncDestination(const QVector<SourceItem> &source) -> QVector<
     }
 
     return newDestination;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolSpread::KeptInPlace() const -> QSet<quint32>
+{
+    return ReferencedSet(m_source, m_rotations, getData());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -388,6 +585,7 @@ auto OToolSpread::Create(OToolSpreadInitData &initData) -> OToolSpread *
         initData.doc->FindFormulaDependencies(rotation.angle, initData.id, varData);
     }
 
+    ClearReferencedImages(initData.source, initData.rotations, initData.data, initData.destination);
     CreateDestination(initData);
 
     // The two points of every rotation are read by the copies, so the graph knows what the operation depends on.
@@ -427,7 +625,10 @@ auto OToolSpread::Create(OToolSpreadInitData &initData) -> OToolSpread *
     const QVector<qreal> lineAngles = EvaluateAngles(initData.id, initData.rotations, initData.data);
     ResolveLineGenerations(initData,
                            OSpreadRule::Compose(initData.source, initData.rotations, lineAngles, initData.data));
-    CreateDestinationLines(initData, {});
+
+    // A point the operation references instead of copying is its own image: an end of a line may be one, and the
+    // lookup would answer NULL_ID for it (see OOperationLines::PointImage).
+    CreateDestinationLines(initData, {}, ReferencedPoints(initData.source, initData.rotations, initData.data));
 
     // The lines of the rotation display, whose ends are objects rather than source ids.
     CreateDisplayLines(initData);
@@ -493,59 +694,59 @@ void OToolSpread::SetCopySuffixName(const QString &suffix)
 auto OToolSpread::SmoothingText(const VContainer *data, const QVector<SourceItem> &source,
                                 const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles) -> QString
 {
-    const OSpreadTransform plain(source, rotations, angles, data, false);
-    const OSpreadTransform smoothed(source, rotations, angles, data, true);
-
-    const auto unit = VAbstractValApplication::VApp()->fromPixel(1.);
-
     QStringList lines;
-    int rank = 0;
-    for (const auto &item : std::as_const(source))
+    for (const OSpreadSmoothingLine &line : SmoothingLines(data, source, rotations, angles))
     {
-        if (item.id == NULL_ID)
-        {
-            continue;
-        }
-
-        const QSharedPointer<VGObject> object = data->GetGObject(item.id);
-        if (object.isNull() || object->getType() != GOType::Spline)
-        {
-            continue;
-        }
-
-        ++rank;
-
-        const QSharedPointer<VSpline> curve = data->GeometricObject<VSpline>(item.id);
-        const qreal before = plain.Image(*curve, QString()).GetLength();
-        const qreal after = smoothed.Image(*curve, QString()).GetLength();
-
-        // The lengths come in pixels; what the user reads is in the unit of the pattern, and the delta is what the
-        // chain cost to that very curve — a few tenths of a millimetre, sometimes a millimetre.
-        const qreal delta = (after - before) * unit;
-
-        const QString alias = object->GetAlias();
-        //: Default name of a copied curve that carries no alias. %1 is its rank.
-        const QString name = alias.isEmpty() ? tr("Curve %1").arg(rank) : alias;
-
-        //: %1 is the curve name, %2 its sign (empty or "+"), %3 the length change with its unit.
-        lines.append(tr("%1: %2%3").arg(name, delta < 0 ? QString() : QStringLiteral("+"),
-                                        QLocale().toString(delta, 'f', 3) + QLatin1Char(' ')
-                                            + UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true)));
+        //: %1 is the curve name, %2 the length change with its unit.
+        lines.append(tr("%1: %2").arg(line.label, DeltaText(line.delta)));
     }
 
     return lines.join('\n');
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OToolSpread::SmoothingText() -> QString
+auto OToolSpread::SmoothingHtml(const VContainer *data, const QVector<SourceItem> &source,
+                                const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles,
+                                quint32 highlight) -> QString
+{
+    QStringList lines;
+    for (const OSpreadSmoothingLine &line : SmoothingLines(data, source, rotations, angles))
+    {
+        // The dot IS the identity of the curve: the label only says where it stands in the list.
+        const QString dot = QStringLiteral("<span style='color:%1'>\u25CF</span>")
+                                .arg(OSpreadColors::Color(line.rank).name(QColor::HexRgb));
+
+        //: %1 is the curve name, %2 the length change with its unit.
+        const QString text = tr("%1: %2").arg(line.label, DeltaText(line.delta));
+
+        lines.append(line.id == highlight ? QStringLiteral("%1 <b>%2</b>").arg(dot, text)
+                                         : QStringLiteral("%1 %2").arg(dot, text));
+    }
+
+    return lines.join(QStringLiteral("<br>"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OToolSpread::SmoothingHtml() -> QString
 {
     if (not m_smooth)
     {
         return {};
     }
 
-    const QVector<qreal> angles = EvaluateAngles(m_id, m_rotations, getData());
-    return SmoothingText(getData(), m_source, m_rotations, angles);
+    // The report speaks of the sources; the user clicks a copy. The two lists are read positionally, so the copy
+    // that was clicked names the curve its line has to be written in bold.
+    quint32 source = NULL_ID;
+    const qsizetype count = qMin(m_source.size(), m_destination.size());
+    for (qsizetype i = 0; i < count; ++i)
+    {
+        if (m_destination.at(i).id != NULL_ID && m_destination.at(i).id == LastSelectedObject())
+        {
+            source = m_source.at(i).id;
+        }
+    }
+
+    return SmoothingHtml(getData(), m_source, m_rotations, EvaluateAngles(m_id, m_rotations, getData()), source);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -717,6 +918,15 @@ auto OToolSpread::DisplayObjectIds(const QDomElement &domElement) const -> QSet<
 void OToolSpread::ShowVisualization(bool show)
 {
     ShowToolVisualization<OVisToolSpread>(show);
+
+    if (show)
+    {
+        // The preview is drawn again on every selection, and it may already exist — built by an earlier selection,
+        // or by the dialog — in which case ShowToolVisualization only shows it again. Its configuration, the smoothing
+        // above all, is what gives each copy its colour: it is re-asserted here, every time, or the preview would keep
+        // the flags of whatever built it first.
+        SetVisualization();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -744,15 +954,39 @@ void OToolSpread::SetVisualization()
         visual->SetInPattern(true);
         visual->SetObjects(SourceToObjects(m_source));
 
+        // The preview draws the lines of the operation on the images of their endpoints, never on the picked points:
+        // a line describes what the rotations made of it, like the curves and the points of the pair.
         QVector<QPair<quint32, quint32>> lines;
         lines.reserve(m_lines.size());
+        const auto imageOf = [this](quint32 sourceId) -> quint32
+        {
+            const qsizetype count = qMin(m_source.size(), m_destination.size());
+            for (qsizetype i = 0; i < count; ++i)
+            {
+                if (m_source.at(i).id == sourceId)
+                {
+                    return m_destination.at(i).id;
+                }
+            }
+            return sourceId; // Not a source of this operation: the preview shows the point it was given.
+        };
         for (const auto &line : std::as_const(m_lines))
         {
-            lines.append(qMakePair(line.point1, line.point2));
+            lines.append(qMakePair(imageOf(line.point1), imageOf(line.point2)));
         }
         visual->SetPreviewLines(lines);
 
         visual->SetRotations(SourceToObjects(m_source), m_rotations);
+
+        // The very angles the pattern uses: read from the formulas by the preview alone, a formula it cannot resolve
+        // turned the image by nothing, and the highlight fell on the objects the spread was built from.
+        visual->SetAngles(EvaluateAngles(m_id, m_rotations, getData()));
+
+        // The preview has to know the smoothing: it is what gives each copy its colour (see OSpreadColors), and a
+        // preview that draws the rigid image while the pattern shows the chain tells a different story than the
+        // report right beside it.
+        visual->SetSmooth(m_smooth);
+
         visual->SetMode(Mode::Show);
         visual->RefreshGeometry();
     }
@@ -803,6 +1037,11 @@ void OToolSpread::ReadToolAttributes(const QDomElement &domElement)
     m_display = OSpreadDisplay::Extract(domElement);
     m_smooth = VAbstractPattern::GetParametrBool(domElement, AttrSmooth, QStringLiteral("false"));
     m_copySuffix = VDomDocument::GetParametrString(domElement, AttrCopySuffix, DefaultCopySuffix);
+
+    // The element may carry the copy of a pivot, written before the operation stopped making one — or written by a
+    // file the rotations have changed since. Nothing in the container stands for it, so the list the tool holds
+    // says exactly what the one the parse built says (see ClearReferencedImages).
+    ClearReferencedImages(m_source, m_rotations, getData(), m_destination);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

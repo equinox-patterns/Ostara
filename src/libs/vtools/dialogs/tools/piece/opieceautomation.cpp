@@ -32,6 +32,8 @@
 #include "opieceautomation.h"
 
 #include "../../../tools/drawTools/toolcurve/vtoolabstractcurve.h"
+#include "../../../tools/drawTools/operation/vabstractoperation.h"
+#include "../../../tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcut.h"
 #include "../../../tools/drawTools/toolpoint/vabstractpoint.h"
 #include "../../../tools/vdatatool.h"
 #include "../../../../ifc/xml/vabstractpattern.h"
@@ -39,6 +41,7 @@
 #include "../vgeometry/vgeometrydef.h"
 #include "../vgeometry/vgobject.h"
 #include "../vgeometry/vpointf.h"
+#include "../vgeometry/vsplinepath.h"
 #include "../vmisc/typedef.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vpiecepath.h"
@@ -102,12 +105,204 @@ auto OPieceAutomation::PointIsOnCurve(quint32 pointId, quint32 curveId) const ->
         {
             return false;
         }
-        return curve->IsPointOnCurve(point->toQPointF());
+
+        const QPointF p = point->toQPointF();
+        if (curve->IsPointOnCurve(p))
+        {
+            return true;
+        }
+
+        // The test above walks the polyline, which is an approximation of the curve. A point cut from a curve
+        // the contour then walks in pieces can sit just outside it, and the answer would be "no" for a point
+        // that is on the curve to a thousandth of a millimetre. The curve itself answers exactly, and that is
+        // what the question is about: the pieces of a curve are not a licence to belong to it either, so a
+        // point that really is elsewhere stays refused.
+        const QVector<VSpline> cubics = CubicPieces(obj);
+        for (const VSpline &cubic : cubics)
+        {
+            if (NearestOnCubic(cubic, p) <= accuracyPointOnLine)
+            {
+                return true;
+            }
+        }
+
+        // The two ends are places, not points: the pattern's own tools place the objects that meet there within
+        // a fraction of a millimetre of each other, and a contour that loses the curve because of it is a
+        // contour that cannot be built.
+        if (not cubics.isEmpty())
+        {
+            const QPointF first = cubics.constFirst().GetP1().toQPointF();
+            const QPointF last = cubics.constLast().GetP4().toQPointF();
+            const qreal toFirst = QLineF(first, p).length();
+            const qreal toLast = QLineF(last, p).length();
+            if (qMin(toFirst, toLast) <= accuracyOnCurveEnd)
+            {
+                return true;
+            }
+        }
+
+        // A point cut on the curve — or on a curve this one is a piece of — belongs to it, even when the cut
+        // fell beyond its end: the tool prolongs the curve there, and no distance can tell.
+        return CutBelongsToFamily(pointId, curveId);
     }
     catch (const VExceptionBadId &)
     {
         return false;
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceAutomation::SetDocument(const VAbstractPattern *doc)
+{
+    m_doc = doc;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::ResolveCopy(quint32 id) const -> quint32
+{
+    if (m_doc == nullptr)
+    {
+        return id;
+    }
+
+    quint32 owner = NULL_ID;
+    try
+    {
+        owner = m_data->GetGObject(id)->getIdObject();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return id;
+    }
+
+    const auto *operation = qobject_cast<const VAbstractOperation *>(m_doc->getTool(owner));
+    if (operation == nullptr)
+    {
+        return id;
+    }
+
+    const quint32 source = operation->SourceOfImage(id);
+    return source == NULL_ID ? id : source;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::CutBelongsToFamily(quint32 pointId, quint32 curveId) const -> bool
+{
+    try
+    {
+        return CutBelongsToFamilyImpl(pointId, curveId);
+    }
+    catch (const VException &error)
+    {
+        return false;
+    }
+    catch (...)
+    {
+        return false;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::CutBelongsToFamilyImpl(quint32 pointId, quint32 curveId) const -> bool
+{
+    if (m_doc == nullptr)
+    {
+        return false;
+    }
+
+    const quint32 pointSource = ResolveCopy(pointId);
+    const auto *cut = qobject_cast<const VToolCut *>(m_doc->getTool(pointSource));
+    if (cut == nullptr || cut->BaseCurveId() == NULL_ID)
+    {
+        return false;
+    }
+
+    const quint32 base = cut->BaseCurveId();
+
+    // A curve that was cut is a piece of the curve it was cut from, and so on: the point belongs to the family
+    // as soon as one of the ancestors of the tested curve is the curve the point was cut on. A portion is drawn
+    // by the cut tool of the point that cut it, and it is the object's idObject that names that tool — the
+    // portion has an id of its own, and no tool bears it.
+    quint32 current = ResolveCopy(curveId);
+    for (int guard = 0; guard < 32 && current != NULL_ID; ++guard)
+    {
+        if (current == base)
+        {
+            return true;
+        }
+
+        quint32 owner = NULL_ID;
+        try
+        {
+            owner = m_data->GetGObject(current)->getIdObject();
+        }
+        catch (const VExceptionBadId &)
+        {
+            return false;
+        }
+
+        const auto *parent = qobject_cast<const VToolCut *>(m_doc->getTool(owner));
+        if (parent == nullptr)
+        {
+            return false;
+        }
+        current = ResolveCopy(parent->BaseCurveId());
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::CubicPieces(const QSharedPointer<VGObject> &curve) const -> QVector<VSpline>
+{
+    if (curve.isNull())
+    {
+        return {};
+    }
+
+    const QSharedPointer<VAbstractCurve> asCurve = qSharedPointerDynamicCast<VAbstractCurve>(curve);
+    if (asCurve.isNull())
+    {
+        return {};
+    }
+
+    if (const auto spline = qSharedPointerDynamicCast<VSpline>(curve))
+    {
+        return {*spline};
+    }
+
+    if (const auto path = qSharedPointerDynamicCast<VSplinePath>(curve))
+    {
+        QVector<VSpline> cubics;
+        cubics.reserve(path->CountSubSpl());
+        for (vsizetype k = 1; k <= path->CountSubSpl(); ++k) // GetSpline is 1-based.
+        {
+            cubics.append(path->GetSpline(k));
+        }
+        return cubics;
+    }
+
+    return {};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OPieceAutomation::NearestOnCubic(const VSpline &cubic, const QPointF &point) -> qreal
+{
+    // The closest place on the cubic, sampled densely enough that the sampling error is far below the
+    // tolerance the answer is compared with.
+    constexpr int steps = 256;
+    qreal best = std::numeric_limits<qreal>::max();
+    for (int i = 0; i <= steps; ++i)
+    {
+        QPointF firstHandle;
+        QPointF firstMiddle;
+        QPointF secondMiddle;
+        QPointF secondHandle;
+        const QPointF on = cubic.CutSplineAtParam(qreal(i) / qreal(steps), firstHandle, firstMiddle, secondMiddle,
+                                                  secondHandle);
+        best = qMin(best, QLineF(on, point).length());
+    }
+    return best;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -284,7 +479,8 @@ void OPieceAutomation::AutoExtendCurve(quint32 pointId)
         return;
     }
 
-    if (not PointIsOnCurve(pointId, prev.GetId()))
+    const bool onCurve = PointIsOnCurve(pointId, prev.GetId());
+    if (not onCurve)
     {
         return;
     }
@@ -536,6 +732,7 @@ void OPieceAutomation::HandleObjectChosen(quint32 id, const SceneObject &type)
             m_hasPrematureClosingCurve = false;
         }
     }
+
 
     if (id != LastId())
     {

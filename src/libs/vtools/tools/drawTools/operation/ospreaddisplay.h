@@ -89,8 +89,8 @@ struct OSpreadDisplay
     /** @brief The pen of every line of the display, and its colour. A solid line in black, which is what a file
      *  written before the display existed gets: the combos of the editor offer no "default", and the layer's own
      *  pen and colour are what they start on when the operation is created from the interface. */
-    QString typeLine{TypeLineLine};
-    QString lineColor{ColorBlack};
+    QString typeLine{TypeLineDashLine};
+    QString lineColor{ColorOrange};
 
     /** @brief One mark per rotation, indexed like the rotations whatever the rule accepted. */
     QVector<OSpreadMark> marks{};

@@ -79,6 +79,7 @@ public:
     void ChosenObject(quint32 id, const SceneObject &type) override;
 
 protected:
+    void showEvent(QShowEvent *event) override;
     void ShowVisualization() override;
     void SaveData() override;
     void changeEvent(QEvent *event) override;
@@ -89,12 +90,16 @@ protected:
 private slots:
     void ShowRotationDetails();
     void UpdateSmoothingSummary();
+    void KeepOnScreen();
     void SaveRotationName(const QString &text);
     void AngleChanged(bool valid);
     void LengthChanged(bool valid);
 
 private:
     Q_DISABLE_COPY_MOVE(ODialogSpread) // NOLINT
+
+    /** @brief True once the dialogue has been given its size: a resize by hand is then left alone. */
+    bool m_sized{false};
 
     Ui::DialogSpread *ui;
 

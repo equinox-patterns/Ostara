@@ -51,9 +51,28 @@ auto CurvePoint(VSAPoint candidate, const VContainer *data, const VPieceNode &no
     if (node.GetTypeTool() == Tool::NodePoint)
     {
         const auto p = static_cast<QPointF>(*data->GeometricObject<VPointF>(node.GetId()));
-        if (VAbstractCurve::IsPointOnCurve(curvePoints, p))
+
+        // A point that closes one end of the curve — a knot of the pattern, where several objects meet within a
+        // fraction of a millimetre — takes the place of that end: the point itself is off the curve, and the
+        // trimming looks for a place that the curve really reaches.
+        bool atEnd = false;
+        QPointF end = p;
+        if (not curvePoints.isEmpty())
         {
-            candidate = VSAPoint(p);
+            const QPointF first = curvePoints.constFirst();
+            const QPointF last = curvePoints.constLast();
+            const qreal toFirst = QLineF(first, p).length();
+            const qreal toLast = QLineF(last, p).length();
+            if (qMin(toFirst, toLast) <= accuracyOnCurveEnd)
+            {
+                atEnd = true;
+                end = toFirst <= toLast ? first : last;
+            }
+        }
+
+        if (atEnd || VAbstractCurve::IsPointOnCurve(curvePoints, p))
+        {
+            candidate = VSAPoint(end);
             candidate.SetSAAfter(node.GetSAAfter(data, *data->GetPatternUnit()));
             candidate.SetSABefore(node.GetSABefore(data, *data->GetPatternUnit()));
             candidate.SetAngleType(node.GetAngleType());

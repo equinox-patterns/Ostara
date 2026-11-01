@@ -1023,6 +1023,11 @@ void VAbstractOperation::Enable()
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::ObjectSelected(bool selected, quint32 objId)
 {
+    if (selected)
+    {
+        m_lastSelectedObject = objId; // what the reports of the tool read (see LastSelectedObject)
+    }
+
     emit ChangedToolSelection(selected, objId, m_id);
 }
 

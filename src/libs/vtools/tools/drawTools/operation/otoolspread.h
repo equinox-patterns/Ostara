@@ -116,6 +116,19 @@ public:
     static auto SmoothingText(const VContainer *data, const QVector<SourceItem> &source,
                               const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles) -> QString;
 
+    /** @brief The same report, as rich text: one line per curve, opened by a dot of its identifying colour.
+     *
+     *  A selection has no name to read — the curves are called "Curve 1", "Curve 2" — so the report identifies
+     *  them by a colour, the same one in the property browser and in the tool's dialog. @a highlight names the copy
+     *  the user clicked on the canvas: its line is written in bold, which is what tells which dot is the curve
+     *  under the mouse. Ten colours, assigned by rank; the list wraps when a selection is longer. */
+    static auto SmoothingHtml(const VContainer *data, const QVector<SourceItem> &source,
+                              const QVector<OSpreadRotation> &rotations, const QVector<qreal> &angles,
+                              quint32 highlight = NULL_ID) -> QString;
+
+    /** @brief The same, with the angles the operation holds, and the copy the user last clicked as the highlight. */
+    auto SmoothingHtml() -> QString;
+
     auto IsDisplayShown() const -> bool { return m_display.show; }
     void SetDisplayShown(bool show);
 
@@ -158,6 +171,11 @@ protected:
     auto ExtraLineIds() const -> QVector<quint32> override;
 
     auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;
+
+    /** @brief The points the operation references instead of copying: a pivot no rotation turns stays where it is,
+     *  so its image is the point itself. A layer leaves them where they are — it hides what the operation
+     *  produced, and hiding the pivot would hide the point the figure is read from. */
+    auto KeptInPlace() const -> QSet<quint32> override;
 
 private:
     Q_DISABLE_COPY_MOVE(OToolSpread) // NOLINT

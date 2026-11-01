@@ -56,6 +56,13 @@ public:
     /** @brief Whether the preview shows the smoothed copies, exactly as the operation will build them. */
     void SetSmooth(bool smooth) { m_smooth = smooth; }
 
+    /** @brief The angles the rotations really hold, resolved by the tool itself.
+     *
+     *  The preview used to read them from the formulas on its own, and a formula it could not resolve turned the
+     *  image by nothing: the copies then sat exactly on the objects they come from, and the highlight fell on what
+     *  looked like the selection. The tool hands the same numbers it uses for the pattern. */
+    void SetAngles(const QVector<qreal> &angles) { m_angles = angles; }
+
     /** @brief Tell the preview that the spread is already in the pattern.
      *
      *  The pattern then draws the objects the operation spread, where they stand, and the trace of their origin laid
@@ -75,6 +82,7 @@ private:
     QVector<quint32> m_sourceIds{};
     QVector<OSpreadRotation> m_rotations{};
     bool m_smooth{false};
+    QVector<qreal> m_angles{};
 
     /** The dots of the gesture, one pool per role: **green for the start point** of a pair, **red for its pivot**.
      *  The colour IS the name, exactly as a pleat names the two ends of its departure line, and the pair is thus
@@ -95,7 +103,10 @@ private:
     /** @brief The dots of the pairs: green on the start point, red on the pivot, and nothing for the second one
      *  while it is still to be picked. Drawn on every refresh, including the ones where the transform has nothing to
      *  show yet — that is exactly when the gesture needs to be read. */
-    void DrawPairPoints();
+    /** @brief The green and red dots of every rotation, laid on the images the operation GENERATED — `B35__R`,
+     *  `B33__R` — and not on the points that were picked: the preview highlights the result, the pattern already
+     *  draws the selection. @a transform is null when there is no rotation to draw yet. */
+    void DrawPairPoints(const OSpreadTransform *transform);
 
     template <class Item> auto AddTransformedCurve(quint32 id, int i, const OSpreadTransform &transform) -> int;
 };

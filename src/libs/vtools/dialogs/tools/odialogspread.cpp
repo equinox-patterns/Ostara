@@ -26,6 +26,9 @@
 
 #include "odialogspread.h"
 
+#include <QScreen>
+#include <QTimer>
+
 
 #include "../../tools/drawTools/operation/otoolspread.h"
 #include "../../tools/drawTools/operation/ospreadtransform.h"
@@ -127,10 +130,11 @@ ODialogSpread::ODialogSpread(const VContainer *data, VAbstractPattern *doc, quin
     // rotations all change it, and the summary under the checkbox is what says by how much.
     connect(ui->checkBoxSmooth, &QCheckBox::toggled, this, &ODialogSpread::UpdateSmoothingSummary);
 
-    // The pen of the display's lines, and their colour: one style for every line of every rotation. The combos
-    // start on what the layer the display goes into draws with, its own pen and colour, so a mark looks like
-    // the rest of the layer until the user says otherwise.
-    const QString layerPen = m_doc->GetActiveGroupPenStyle();
+    // The pen of the display's lines, and their colour: one style for every line of every rotation. The combos start
+    // on the mark's own default — orange, long dashes — and NOT on the layer the display will join: a mark is a
+    // construction line, and it has to read as one whatever the layer happens to draw with. The user changes it if
+    // he wants to, the dialog remembers what he chose (see the display of the operation).
+    const QString layerPen = TypeLineDashLine;
 
     m_displayTypeLine = MakeComboBox(this);
     m_displayTypeLine->setMinimumWidth(kPenIconWidth);
@@ -146,7 +150,7 @@ ODialogSpread::ODialogSpread(const VContainer *data, VAbstractPattern *doc, quin
     m_displayColor->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     m_displayColor->setIconSize(QSize(kColorIconSize, kColorIconSize));
     InitColorCombo(m_displayColor);
-    SetColorComboCurrentName(m_displayColor, m_doc->GetActiveGroupColor());
+    SetColorComboCurrentName(m_displayColor, ColorOrange);
 
     ui->formLayoutDisplay->addRow(tr("Line type:"), m_displayTypeLine);
     ui->formLayoutDisplay->addRow(tr("Line color:"), m_displayColor);
@@ -216,6 +220,66 @@ void ODialogSpread::SetSmooth(bool smooth)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODialogSpread::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent(event);
+
+    if (m_sized)
+    {
+        return; // The user's own size and place are theirs once the dialogue has been shown.
+    }
+    m_sized = true;
+
+    const QScreen *current = screen();
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    // Four fifths of the room the screen offers: tall enough to work in, never taller than what the screen has.
+    // What does not fit scrolls, and the buttons are outside the scrolling, so they stay where they are. The
+    // maximum is what makes the promise hold: the layout can ask for more, it cannot get it.
+    const QRect available = current->availableGeometry();
+    setMaximumHeight(available.height() - 40);
+    resize(width(), qBound(minimumHeight(), available.height() * 4 / 5, available.height() - 40));
+
+    // And it has to sit where the screen is. The window manager places the dialogue *after* it is shown, and
+    // does it again a moment later: the place is therefore asserted three times, the last one once the window
+    // is really on screen. Every call is a no-op when the dialogue is already whole.
+    KeepOnScreen();
+    QTimer::singleShot(0, this, &ODialogSpread::KeepOnScreen);
+    QTimer::singleShot(150, this, &ODialogSpread::KeepOnScreen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogSpread::KeepOnScreen()
+{
+    const QScreen *current = screen();
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    const QRect available = current->availableGeometry();
+    const int margin = 20;
+
+    // A dialogue taller than the screen cannot be kept on it: it is made to fit first.
+    if (height() > available.height() - 2 * margin)
+    {
+        resize(width(), available.height() - 2 * margin);
+    }
+
+    // The dialogue is CENTRED on the screen rather than pushed up until it fits: a dialogue sitting on the
+    // bottom edge is as unusable as one under it, and the user has to look for its buttons every time.
+    const QRect frame = frameGeometry();
+    const QPoint clientOffset = pos() - frame.topLeft();
+    const QPoint target
+        = available.center() - QPoint(frame.width() / 2, frame.height() / 2) + clientOffset;
+    move(target);
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODialogSpread::UpdateSmoothingSummary()
 {
     const bool on = IsSmooth();
@@ -233,7 +297,16 @@ void ODialogSpread::UpdateSmoothingSummary()
         angles.append(VisLine::FindValFromUser(rotation.angle, data.DataVariables()));
     }
 
-    ui->labelSmoothingSummary->setText(OToolSpread::SmoothingText(&data, SourceObjects(), m_rotations, angles));
+    // Rich text: one line per curve, opened by the dot of the colour that identifies it — the same dot the property
+    // browser shows when a copy is clicked, a name being no help here (the curves are "Curve 1", "Curve 2").
+    const QString text = OToolSpread::SmoothingText(&data, SourceObjects(), m_rotations, angles);
+    ui->labelSmoothingSummary->setText(OToolSpread::SmoothingHtml(&data, SourceObjects(), m_rotations, angles));
+    ui->labelSmoothingSummary->setToolTip(text);
+
+    // A line per curve: a long selection would make the row as tall as the dialogue. Four lines are enough to
+    // see what the smoothing costs, the rest is in the tooltip.
+    const int line = ui->labelSmoothingSummary->fontMetrics().lineSpacing();
+    ui->labelSmoothingSummary->setMaximumHeight(line * 4);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

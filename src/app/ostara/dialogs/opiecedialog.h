@@ -65,11 +65,16 @@ public:
 public slots:
     void ChosenObject(quint32 id, const SceneObject &type) override;
     void DialogAccepted() override;
+    void showEvent(QShowEvent *event) override;
 
 protected:
     auto IsValid() const -> bool override;
 
 private:
+    /** @brief The dialogue is kept whole on the screen: a dialogue whose buttons are under the screen cannot be
+     *  finished, whatever its content says. */
+    void KeepOnScreen();
+
     void BuildPreviewPiece();
     void UpdateButtons();
     void OnPatternNext();

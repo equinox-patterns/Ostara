@@ -194,11 +194,20 @@ protected:
     QVector<SourceItem> m_source;
     QVector<DestinationItem> m_destination;
 
+    /** @brief The object of the operation the user clicked last, NULL_ID when none.
+     *
+     *  An operation is one tool with many images: clicking one of them opens this tool's options, and nothing else
+     *  says which image the click landed on. The tools whose reports speak of their objects — the smoothing of a
+     *  slash-and-spread — need that answer to point the line of the object at hand. */
+    auto LastSelectedObject() const -> quint32 { return m_lastSelectedObject; }
+
     /** @brief Lines attached to the operation, each one with the id of the line it produced. A line is
      *  not a geometric object: it is carried by two point ids and rebuilt on every parse. */
     QVector<OOperationLine> m_lines{};
 
     QMap<quint32, VAbstractSimple *> operatedObjects{};
+
+    quint32 m_lastSelectedObject{NULL_ID};
 
     bool m_hasLinkedGroup{false};
     QString m_groupName{};

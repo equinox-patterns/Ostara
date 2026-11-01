@@ -36,6 +36,7 @@
 #include <QVector>
 
 #include "../vmisc/def.h"
+#include "../vgeometry/vspline.h"
 #include "../vpatterndb/vpiecenode.h"
 
 class VContainer;
@@ -48,6 +49,8 @@ class VContainer;
  * (OPieceDialog) drive this module. It never touches widgets: the hosts keep
  * their own view (a QListWidget, a preview) and react to ListChanged().
  */
+class VAbstractPattern;
+
 class OPieceAutomation final : public QObject
 {
     Q_OBJECT
@@ -58,6 +61,10 @@ public:
     // ---- A. Curve geometry (read-only) ----
     auto GetCurveEndPoints(quint32 curveId, QPointF &start, QPointF &end) const -> bool;
     auto PointIsOnCurve(quint32 pointId, quint32 curveId) const -> bool;
+
+    /** @brief The pattern the tool reads its cuts from. Without it, a point is only ever a place, and a point a
+     *  cut prolonged past the end of its curve is a place that is not on the curve. */
+    void SetDocument(const VAbstractPattern *doc);
     auto ComputeReverseFromEntry(const QPointF &entry, quint32 curveId, bool &reverse) const -> bool;
     auto ComputeReverseFromExit(quint32 exitPointId, quint32 curveId, bool &reverse) const -> bool;
     auto CurvePointParam(quint32 curveId, quint32 pointId) const -> qreal;
@@ -89,6 +96,24 @@ signals:
     void ToolTipMessage(const QString &msg);
 
 private:
+    /** @brief The cubics a curve is made of: itself for a spline, its sub-curves for a path, nothing for an
+     *  arc — an arc is asked with its own geometry, not with cubics. */
+    auto CubicPieces(const QSharedPointer<VGObject> &curve) const -> QVector<VSpline>;
+
+    /** @brief True when @a pointId is a cut of @a curveId, or of a curve @a curveId is a piece of. A cut that
+     *  falls beyond the end of its curve — the tool prolongs it — is on that curve all the same. */
+    auto CutBelongsToFamily(quint32 pointId, quint32 curveId) const -> bool;
+    auto CutBelongsToFamilyImpl(quint32 pointId, quint32 curveId) const -> bool;
+
+    /** @brief The pattern object @a id comes from: a copy of a slash-and-spread, or a mirror of any operation,
+     *  belongs to the family of the object it copies. Returns @a id itself when it is not a copy. */
+    auto ResolveCopy(quint32 id) const -> quint32;
+
+    const VAbstractPattern *m_doc{nullptr};
+
+    /** @brief The distance from @a point to the closest place on @a cubic. */
+    static auto NearestOnCubic(const VSpline &cubic, const QPointF &point) -> qreal;
+
     void AppendNode(const VPieceNode &node);
     void RemoveNodeById(quint32 id);
     void ApplyReverseToCurveRows(quint32 curveId, bool reverse);

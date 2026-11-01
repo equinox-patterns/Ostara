@@ -92,6 +92,14 @@ Q_DECLARE_METATYPE(VLayoutPassmark) // NOLINT
 
 constexpr qreal accuracyPointOnLine = MmToPixel(0.1555);
 
+/** @brief How close to an END of a curve a point has to be to be taken as that end.
+ *
+ *  An end of a curve is a place where several objects meet, and the pattern's own tools place them within a
+ *  fraction of a millimetre of each other: a point drawn on a construction line lands a third of a millimetre
+ *  from the curve end it is meant to close, and the contour then loses the curve. Wider than
+ *  @c accuracyPointOnLine for that reason, and no wider: it only ever applies to the two ends. */
+constexpr qreal accuracyOnCurveEnd = MmToPixel(0.5);
+
 Q_REQUIRED_RESULT inline auto VFuzzyComparePoints(const QPointF &p1, const QPointF &p2,
                                                   qreal accuracy = accuracyPointOnLine) -> bool;
 inline auto VFuzzyComparePoints(const QPointF &p1, const QPointF &p2, qreal accuracy) -> bool

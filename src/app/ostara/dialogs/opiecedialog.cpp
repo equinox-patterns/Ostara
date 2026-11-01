@@ -26,6 +26,9 @@
 
 #include "opiecedialog.h"
 
+#include <QScreen>
+#include <QTimer>
+
 #include "opiecedialog_patternstep.h"
 #include "opiecedialog_piecestep.h"
 #include "../vtools/visualization/path/vistoolpiece.h"
@@ -46,6 +49,10 @@ OPieceDialog::OPieceDialog(const VContainer *data, VAbstractPattern *doc, quint3
     SCASSERT(doc != nullptr)
 
     vis = new VisToolPiece(&this->data);
+
+    // The contour recognises a point that was cut on a curve — and a cut that the tool prolonged past its end —
+    // only if it can read the cuts of the pattern.
+    m_automation.SetDocument(m_doc);
 
     connect(&m_automation, &OPieceAutomation::ToolTipMessage, this,
             [this](const QString &msg) { emit ToolTip(msg); });
@@ -84,6 +91,45 @@ OPieceDialog::OPieceDialog(const VContainer *data, VAbstractPattern *doc, quint3
 
     UpdateButtons();
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceDialog::showEvent(QShowEvent *event)
+{
+    DialogTool::showEvent(event);
+
+    // The window manager places the dialogue after it is shown, and does it again a moment later: the place is
+    // asserted on both, and every call is a no-op once the dialogue is already whole.
+    KeepOnScreen();
+    QTimer::singleShot(0, this, &OPieceDialog::KeepOnScreen);
+    QTimer::singleShot(150, this, &OPieceDialog::KeepOnScreen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OPieceDialog::KeepOnScreen()
+{
+    const QScreen *current = screen();
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    const QRect available = current->availableGeometry();
+    const int margin = 20;
+
+    if (height() > available.height() - 2 * margin)
+    {
+        resize(width(), available.height() - 2 * margin);
+    }
+
+    // Centred on the screen rather than pushed up until it fits: a dialogue on the bottom edge is as unusable
+    // as one under it.
+    const QRect frame = frameGeometry();
+    const QPoint clientOffset = pos() - frame.topLeft();
+    const QPoint target
+        = available.center() - QPoint(frame.width() / 2, frame.height() / 2) + clientOffset;
+    move(target);
+}
+
 
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceDialog::ChosenObject(quint32 id, const SceneObject &type)

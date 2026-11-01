@@ -430,7 +430,9 @@ template <class Tool> auto SmoothGroup() -> PropertyDesc
 
                 auto *summary = new VPE::VLabelProperty(
                     T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length change:")));
-                summary->setValue(t->SmoothingText());
+                // Rich text: one line per curve, opened by the dot of the colour that identifies it. Clicking a copy
+                // on the canvas puts that very curve's line in bold, which is what makes a dot readable as "this one".
+                summary->setValue(t->SmoothingHtml());
 
                 group->addChild(smooth);
                 group->addChild(suffix);
