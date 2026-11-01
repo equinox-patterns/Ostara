@@ -2443,15 +2443,15 @@ Arvoja ja välejä ei tuoda.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="659"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="670"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2295"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2301"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2295"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2301"/>
         <source>Empty field.</source>
         <translation>Kenttä on tyhjä.</translation>
     </message>
@@ -2472,82 +2472,82 @@ Arvoja ja välejä ei tuoda.</translation>
         <translation>Jäsentämis virhe: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1299"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1316"/>
         <source>Increment name is empty.</source>
         <translation>Lisäyksen nimen kenttä on täyttämättä.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1304"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1321"/>
         <source>Imported file must not contain the same name twice.</source>
         <translation>Tuodussa tiedostossa ei saa olla samaa nimeä kahdesti.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1309"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1326"/>
         <source>Increment &apos;%1&apos; doesn&apos;t match regex pattern.</source>
         <translation>Lisäys ”%1” ei vastaa merkistön koodausta.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1314"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1331"/>
         <source>Increment &apos;%1&apos; already present in the file.</source>
         <translation>Lisäys ”%1” on jo tiedostossa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1337"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1354"/>
         <source>Name</source>
         <comment>increment column</comment>
         <translation>Nimi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1339"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1356"/>
         <source>Calculated value</source>
         <comment>increment column</comment>
         <translation>Laskettu arvo</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1341"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1358"/>
         <source>Formula</source>
         <comment>increment column</comment>
         <translation>Matemaattinen kaava</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1343"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
         <source>Description</source>
         <comment>increment column</comment>
         <translation>Kuvaus</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
         <source>Increments require at least 2 columns.</source>
         <translation>Lisäystä syötettäessä on täytettävä vähintään 2 saraketta.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1394"/>
         <source>Error in row %1. The increment name is empty.</source>
         <translation>Virhe rivillä %1. Lisäyksen nimi on täyttämättä.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1397"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1414"/>
         <source>Increment &apos;%1&apos; already exists in the other table.</source>
         <translation>Lisäys ”%1” on jo toisessa taulukossa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1425"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1442"/>
         <source>Error in row %1. %2</source>
         <translation>Virhe rivillä %1. %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1591"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1657"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1608"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1674"/>
         <source>Comma-Separated Values</source>
         <translation>Taulukkolaskennan tekstimuoto</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1659"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1676"/>
         <source>values</source>
         <translation>arvot</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2324"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2384"/>
         <source>Edit increment</source>
         <translation>Muokkaa lisäystä</translation>
     </message>
@@ -2611,22 +2611,22 @@ Arvoja ja välejä ei tuoda.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="74"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="521"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1152"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1183"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1169"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1200"/>
         <source>0 results</source>
         <translation>0 tulosta löytyi</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="255"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="702"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1662"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1679"/>
         <source>Export to CSV</source>
         <translation>Vie .csv-muotoon</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="271"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="712"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1595"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1612"/>
         <source>Import from CSV</source>
         <translation>Tuo .csv-tiedostosta</translation>
     </message>
@@ -2637,22 +2637,22 @@ Arvoja ja välejä ei tuoda.</translation>
         <translation>Mittayksiköt:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1238"/>
         <source>Millimeters</source>
         <translation>Millimetriä</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1224"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1241"/>
         <source>Inches</source>
         <translation>Tuumaa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1227"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1244"/>
         <source>Centimeters</source>
         <translation>Senttimetriä</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1236"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1253"/>
         <source>Degrees</source>
         <translation>Astetta</translation>
     </message>
@@ -8894,7 +8894,7 @@ mutta sitä ei löytynyt. Ostara käyttää .omt/.otu-muotoa. Valitse, miten jat
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="849"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="869"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="877"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="970"/>
         <source>Piece library</source>
         <translation>Osakirjasto</translation>
     </message>
@@ -8904,17 +8904,17 @@ mutta sitä ei löytynyt. Ostara käyttää .omt/.otu-muotoa. Valitse, miten jat
         <translation>Lataa mittaustaulukko</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="935"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="941"/>
         <source>Loading the piece. Please, wait.</source>
         <translation>Ladataan osaa. Odota hetki.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="970"/>
         <source>This piece holds no block to insert.</source>
         <translation>Tämä osa ei sisällä yhtään lisättävää lohkoa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="990"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="996"/>
         <source>Piece inserted: %1</source>
         <translation>Osa lisätty: %1</translation>
     </message>
@@ -16175,27 +16175,27 @@ Tätä toimintoa ei voi peruuttaa.</translation>
 <context>
     <name>OPieceImport</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="283"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="455"/>
         <source>The piece does not say which unit its lengths are written in, and a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
         <translation>Osa ei kerro, missä yksikössä sen pituudet on kirjoitettu, ja osa kirjoitetaan millimetreinä, senttimetreinä tai tuumina. Sitä ei voi lukea sellaisenaan.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="287"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="459"/>
         <source>The piece says its lengths are written in %1, which is not a unit a piece may carry: a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
         <translation>Osa sanoo, että sen pituudet on kirjoitettu yksikössä %1, joka ei ole yksikkö, jota osalla voi olla: osa kirjoitetaan millimetreinä, senttimetreinä tai tuumina. Sitä ei voi lukea sellaisenaan.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="298"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="470"/>
         <source>The piece is in %1 and this pattern is in %2. A pattern holds one unit from end to end, and a piece is never converted: import it into a pattern of its own unit.</source>
         <translation>Osa on yksikössä %1 ja tämä kaava on yksikössä %2. Kaavalla on yksi yksikkö alusta loppuun, eikä osaa koskaan muunneta: tuo se oman yksikkönsä kaavaan.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="329"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="501"/>
         <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
         <translation>Tällä kaavalla ei ole vielä mittataulukkoa, ja osa luetaan taulukkoa vasten: sen kaavat lasketaan taulukon mittojen avulla. Lataa mittataulukko ja lisää osa sitten.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="361"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="533"/>
         <source>The measurement table of this pattern does not define every measurement the piece reads.
 
 Missing: %1
@@ -16208,7 +16208,7 @@ Puuttuu: %1
 Lataa mittataulukko, joka määrittelee ne, ja lisää osa sitten.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="698"/>
         <source>This piece reads %1, and no piece of this pattern declares it. Import the piece it comes from first.</source>
         <translation>Tämä osa lukee kohteen %1, eikä mikään tämän kaavan osa ilmoita sitä. Tuo ensin osa, josta se tulee.</translation>
     </message>
@@ -16241,78 +16241,105 @@ Lataa mittataulukko, joka määrittelee ne, ja lisää osa sitten.</translation>
         <translation>Kaavan osan objektien nimet</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="102"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="125"/>
         <source>Insert the piece</source>
         <translation>Lisää osa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="178"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="202"/>
         <source>Reference pieces</source>
         <translation>Viiteosat</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="190"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="214"/>
         <source>Read %1 from:</source>
         <comment>the piece this one reads values in</comment>
         <translation>Lue %1 kohteesta:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="208"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="334"/>
         <source>The piece needs a name.</source>
         <translation>Osa tarvitsee nimen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="212"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="338"/>
         <source>A piece of this pattern already wears this name.</source>
         <translation>Tämän kaavan osa kantaa jo tätä nimeä.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="230"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="356"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="378"/>
         <source>Two names cannot be the same.</source>
         <translation>Kaksi nimeä ei voi olla samoja.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="395"/>
         <source>Object</source>
         <translation>Objekti</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="395"/>
         <source>Name</source>
         <translation>Nimi</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="301"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="262"/>
+        <source>Increments</source>
+        <translation>Lisäys</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="265"/>
+        <source>The pattern already holds these increments, and defines them differently. The piece keeps its own definition under the name you give it, and its formulas follow.</source>
+        <translation>Kaava sisältää jo nämä lisäykset, mutta määrittelee ne toisin. Osa säilyttää oman määritelmänsä antamallasi nimellä, ja sen kaavat seuraavat.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>Increment</source>
+        <translation>Lisäys</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>This piece</source>
+        <translation>Tämä osa</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>The pattern</source>
+        <translation>Kaava</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="452"/>
         <source>Line</source>
         <translation>Viiva</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="303"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="454"/>
         <source>Arc</source>
         <translation>Kaari</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="305"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="456"/>
         <source>Elliptical arc</source>
         <translation>Ellipsikaari</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="310"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="461"/>
         <source>Curve</source>
         <translation>Käyrä</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="325"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="476"/>
         <source>A name cannot be empty.</source>
         <translation>Nimi ei voi olla tyhjä.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="330"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="481"/>
         <source>A name cannot hold a space nor a reserved character.</source>
         <translation>Nimi ei voi sisältää välilyöntiä eikä varattua merkkiä.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="335"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="486"/>
         <source>The pattern already answers to %1.</source>
         <translation>Kaava vastaa jo nimeen %1.</translation>
     </message>
@@ -16373,7 +16400,7 @@ Lataa mittataulukko, joka määrittelee ne, ja lisää osa sitten.</translation>
 <context>
     <name>OPieceInsert</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="265"/>
+        <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="271"/>
         <source>Insert the piece &quot;%1&quot;</source>
         <translation>Lisää osa ”%1”</translation>
     </message>
@@ -20534,8 +20561,8 @@ Haluatko jatkaa?</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2702"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3584"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3651"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3588"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3655"/>
         <source>New layer</source>
         <translation>Uusi taso</translation>
     </message>

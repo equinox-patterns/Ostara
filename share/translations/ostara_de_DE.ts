@@ -2443,15 +2443,15 @@ Werte und Intervalle werden nicht importiert.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="659"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="670"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2295"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2301"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2295"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2301"/>
         <source>Empty field.</source>
         <translation>Leeres Eingabefeld.</translation>
     </message>
@@ -2472,82 +2472,82 @@ Werte und Intervalle werden nicht importiert.</translation>
         <translation>Auswertungsfehler: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1299"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1316"/>
         <source>Increment name is empty.</source>
         <translation>Erhöhungsname ist leer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1304"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1321"/>
         <source>Imported file must not contain the same name twice.</source>
         <translation>Importierte Datei darf die selbe Bezeichnung nicht zweimal enthalten.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1309"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1326"/>
         <source>Increment &apos;%1&apos; doesn&apos;t match regex pattern.</source>
         <translation>Erhöhung &apos;%1&apos; stimmt nicht mit dem Regex-Muster überein.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1314"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1331"/>
         <source>Increment &apos;%1&apos; already present in the file.</source>
         <translation>Erhöhung &apos;%1&apos; ist bereits in der Datei vorhanden.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1337"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1354"/>
         <source>Name</source>
         <comment>increment column</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1339"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1356"/>
         <source>Calculated value</source>
         <comment>increment column</comment>
         <translation>Berechneter Wert</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1341"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1358"/>
         <source>Formula</source>
         <comment>increment column</comment>
         <translation>Formel</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1343"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
         <source>Description</source>
         <comment>increment column</comment>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
         <source>Increments require at least 2 columns.</source>
         <translation>Erhöhungen erfordern mindestens 2 Spalten.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1394"/>
         <source>Error in row %1. The increment name is empty.</source>
         <translation>Fehler in Zeile %1. Der Erhöhungsname ist leer.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1397"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1414"/>
         <source>Increment &apos;%1&apos; already exists in the other table.</source>
         <translation>Das Inkrement „%1“ existiert bereits in der anderen Tabelle.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1425"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1442"/>
         <source>Error in row %1. %2</source>
         <translation>Fehler in Zeile %1. %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1591"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1657"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1608"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1674"/>
         <source>Comma-Separated Values</source>
         <translation>Komma-Separierte Werte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1659"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1676"/>
         <source>values</source>
         <translation>Werte</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2324"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2384"/>
         <source>Edit increment</source>
         <translation>Zuwachs bearbeiten</translation>
     </message>
@@ -2611,22 +2611,22 @@ Werte und Intervalle werden nicht importiert.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="74"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="521"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1152"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1183"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1169"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1200"/>
         <source>0 results</source>
         <translation>0 Ergebnisse</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="255"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="702"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1662"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1679"/>
         <source>Export to CSV</source>
         <translation>Als CSV exportieren</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="271"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="712"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1595"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1612"/>
         <source>Import from CSV</source>
         <translation>Aus CSV importieren</translation>
     </message>
@@ -2637,22 +2637,22 @@ Werte und Intervalle werden nicht importiert.</translation>
         <translation>Einheiten:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1238"/>
         <source>Millimeters</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1224"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1241"/>
         <source>Inches</source>
         <translation>Inch</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1227"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1244"/>
         <source>Centimeters</source>
         <translation>Zentimeter</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1236"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1253"/>
         <source>Degrees</source>
         <translation>Grad</translation>
     </message>
@@ -8526,7 +8526,7 @@ sie wurde jedoch nicht gefunden. Ostara verwendet das Format .omt/.otu. Wählen 
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="849"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="869"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="877"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="970"/>
         <source>Piece library</source>
         <translation>Schnittteilbibliothek</translation>
     </message>
@@ -8536,17 +8536,17 @@ sie wurde jedoch nicht gefunden. Ostara verwendet das Format .omt/.otu. Wählen 
         <translation>Eine Maßtabelle laden</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="935"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="941"/>
         <source>Loading the piece. Please, wait.</source>
         <translation>Schnittteil wird geladen. Bitte warten.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="970"/>
         <source>This piece holds no block to insert.</source>
         <translation>Dieses Schnittteil enthält keinen Block zum Einfügen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="990"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="996"/>
         <source>Piece inserted: %1</source>
         <translation>Schnittteil eingefügt: %1</translation>
     </message>
@@ -16175,27 +16175,27 @@ Diese Aktion kann nicht rückgängig gemacht werden.</translation>
 <context>
     <name>OPieceImport</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="283"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="455"/>
         <source>The piece does not say which unit its lengths are written in, and a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
         <translation>Das Schnittteil gibt nicht an, in welcher Einheit seine Längen geschrieben sind, und ein Schnittteil wird in Millimetern, Zentimetern oder Zoll geschrieben. Es kann so nicht gelesen werden.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="287"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="459"/>
         <source>The piece says its lengths are written in %1, which is not a unit a piece may carry: a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
         <translation>Das Schnittteil gibt an, dass seine Längen in %1 geschrieben sind, was keine Einheit ist, die ein Schnittteil tragen kann: ein Schnittteil wird in Millimetern, Zentimetern oder Zoll geschrieben. Es kann so nicht gelesen werden.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="298"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="470"/>
         <source>The piece is in %1 and this pattern is in %2. A pattern holds one unit from end to end, and a piece is never converted: import it into a pattern of its own unit.</source>
         <translation>Das Schnittteil ist in %1 und dieses Schnittmuster in %2. Ein Schnittmuster hat durchgehend eine einzige Einheit, und ein Schnittteil wird nie umgerechnet: Importieren Sie es in ein Schnittmuster seiner Einheit.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="329"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="501"/>
         <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
         <translation>Dieses Schnittmuster hat noch keine Maßtabelle, und ein Schnittteil wird gegen eine Tabelle gelesen: seine Formeln werden mit den Maßen der Tabelle ausgewertet. Laden Sie eine Maßtabelle und fügen Sie dann das Schnittteil ein.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="361"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="533"/>
         <source>The measurement table of this pattern does not define every measurement the piece reads.
 
 Missing: %1
@@ -16204,7 +16204,7 @@ Load a measurement table that defines them, then insert the piece.</source>
         <translation>Die Maßtabelle dieses Schnittmusters definiert nicht alle Maße, die das Schnittteil liest.\n\nFehlende: %1\n\nLaden Sie eine Maßtabelle, die sie definiert, und fügen Sie dann das Schnittteil ein.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="698"/>
         <source>This piece reads %1, and no piece of this pattern declares it. Import the piece it comes from first.</source>
         <translation>Dieses Schnittteil liest %1, und kein Schnittteil dieses Schnittmusters deklariert es. Importieren Sie zuerst das Schnittteil, aus dem es stammt.</translation>
     </message>
@@ -16237,78 +16237,105 @@ Load a measurement table that defines them, then insert the piece.</source>
         <translation>Namen der Objekte des Schnittteils</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="102"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="125"/>
         <source>Insert the piece</source>
         <translation>Schnittteil einfügen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="178"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="202"/>
         <source>Reference pieces</source>
         <translation>Referenzschnittteile</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="190"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="214"/>
         <source>Read %1 from:</source>
         <comment>the piece this one reads values in</comment>
         <translation>%1 lesen aus:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="208"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="334"/>
         <source>The piece needs a name.</source>
         <translation>Das Schnittteil braucht einen Namen.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="212"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="338"/>
         <source>A piece of this pattern already wears this name.</source>
         <translation>Ein Schnittteil dieses Schnittmusters trägt diesen Namen bereits.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="230"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="356"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="378"/>
         <source>Two names cannot be the same.</source>
         <translation>Zwei Namen dürfen nicht identisch sein.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="395"/>
         <source>Object</source>
         <translation>Objekt</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="395"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="301"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="262"/>
+        <source>Increments</source>
+        <translation>Weitere Maße</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="265"/>
+        <source>The pattern already holds these increments, and defines them differently. The piece keeps its own definition under the name you give it, and its formulas follow.</source>
+        <translation>Das Schnittmuster enthält diese Maße bereits, definiert sie aber anders. Das Schnittteil behält seine eigene Definition unter dem Namen, den Sie ihm geben, und seine Formeln folgen.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>Increment</source>
+        <translation>Weiteres Maß</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>This piece</source>
+        <translation>Dieses Schnittteil</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>The pattern</source>
+        <translation>Das Schnittmuster</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="452"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="303"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="454"/>
         <source>Arc</source>
         <translation>Bogen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="305"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="456"/>
         <source>Elliptical arc</source>
         <translation>Elliptischer Bogen</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="310"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="461"/>
         <source>Curve</source>
         <translation>Kurve</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="325"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="476"/>
         <source>A name cannot be empty.</source>
         <translation>Ein Name darf nicht leer sein.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="330"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="481"/>
         <source>A name cannot hold a space nor a reserved character.</source>
         <translation>Ein Name darf weder ein Leerzeichen noch ein reserviertes Zeichen enthalten.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="335"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="486"/>
         <source>The pattern already answers to %1.</source>
         <translation>Das Schnittmuster trägt bereits den Namen %1.</translation>
     </message>
@@ -16369,7 +16396,7 @@ Load a measurement table that defines them, then insert the piece.</source>
 <context>
     <name>OPieceInsert</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="265"/>
+        <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="271"/>
         <source>Insert the piece &quot;%1&quot;</source>
         <translation>Schnittteil „%1“ einfügen</translation>
     </message>
@@ -20529,8 +20556,8 @@ Möchten Sie fortfahren?</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2702"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3584"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3651"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3588"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3655"/>
         <source>New layer</source>
         <translation>Neue Ebene</translation>
     </message>

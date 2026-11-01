@@ -1098,7 +1098,6 @@ void DialogIncrements::AddNewIncrement(IncrementType type)
     QTableWidget *table = incrementMode ? ui->tableWidgetIncrement : ui->tableWidgetPC;
 
     const QString name = GetCustomName();
-    qint32 currentRow = -1;
 
     // A group line is no anchor: the new increment goes to the end of its table, exactly as when nothing is
     // selected. Anchoring on a heading would file the row outside every group by accident.
@@ -1106,14 +1105,11 @@ void DialogIncrements::AddNewIncrement(IncrementType type)
 
     if (anchor.isEmpty())
     {
-        currentRow = table->rowCount();
         incrementMode ? m_patternDoc->AddEmptyIncrement(name, type)
                       : m_patternDoc->AddEmptyPreviewCalculation(name, type);
     }
     else
     {
-        currentRow = table->currentRow() + 1;
-
         incrementMode ? m_patternDoc->AddEmptyIncrementAfter(anchor, name, type)
                       : m_patternDoc->AddEmptyPreviewCalculationAfter(anchor, name, type);
     }
@@ -1121,7 +1117,28 @@ void DialogIncrements::AddNewIncrement(IncrementType type)
     m_hasChanges = true;
     LocalUpdateTree();
 
-    table->selectRow(currentRow);
+    // **Found by its name, never by its rank.** The table is rebuilt in the document's order, where a row no group
+    // holds comes first — so the new increment is drawn at the top even when the document put it last, and the
+    // index the document gave it points at another line entirely. `RowOfIncrement` is how MoveUp/MoveDown find the
+    // row they moved; the gesture that creates one asks the same question.
+    if (const int added = RowOfIncrement(table, name); added != -1)
+    {
+        // **The current cell, not only the selection.** The panel below reads `currentRow()`, and `selectRow()`
+        // changes the selection without moving the current row: the row was highlighted while the panel still
+        // spoke of the line that was current before — a group heading, whose name is not an increment, so the
+        // fields stayed greyed. Moving the current cell lights the row and fills the panel in the same gesture.
+        table->setCurrentCell(added, 0);
+
+        // **And the panel, asked directly.** Moving the current cell emits the selection change the panel listens
+        // to, but the signal can leave before the current index has moved — the panel then reads the row that was
+        // current a moment ago, a group heading, and switches its fields off. Asking it here, once the index has
+        // moved, makes the gesture whole: the row is chosen, and its fields are already editable.
+        ShowTableIncrementDetails(table);
+    }
+    else
+    {
+        table->clearSelection();
+    }
     table->repaint(); // Force repain to fix paint artifacts on Mac OS
 }
 
@@ -1794,6 +1811,13 @@ void DialogIncrements::FillIncrementsTable(QTableWidget *table,
         {
             AddGroupCell(table, desc.groupId, desc.name, groups.value(desc.groupId).collapsed, row);
 
+            // **A heading is always visible**, and it is said here because it cannot be inherited: the hidden state
+            // belongs to the row **index**, outlives `clearContents()` and `setRowCount()`, and a heading that
+            // lands on an index hidden by the fill before — a row of a folded group, a free row that moved up —
+            // would stay invisible for good. That is a group that "disappears" from the table while the document
+            // still holds it: nothing else ever shows it again.
+            table->setRowHidden(row, false);
+
             // Everything this line owns is hidden while it is folded. The heading stays — what it hides is one
             // gesture away — and the rows are hidden rather than left out, so no index moves under the reader.
             folded = groups.value(desc.groupId).collapsed;
@@ -1889,7 +1913,43 @@ void DialogIncrements::RemoveIncrement()
     m_hasChanges = true;
     LocalUpdateTree();
 
-    table->rowCount() > 0 ? table->selectRow(0) : EnableDetails(table, false);
+    // **The next increment, never the neighbouring line.** The panel below shows what the *current* row holds: it
+    // must therefore land on an increment, not on a group heading — and on the one that took the place of the row
+    // that just went, which is the row now sitting at that index. When the table has none left, the panel is
+    // cleared and switched off; leaving it on the name of something that no longer exists is what it used to do.
+    const auto IsIncrement = [table](int index) -> bool
+    {
+        return index >= 0 && index < table->rowCount() && RowGroupId(table, index) == NULL_ID
+               && not RowIncrementName(table, index).isEmpty();
+    };
+
+    int next = -1;
+    for (int candidate = row; candidate < table->rowCount() && next == -1; ++candidate)
+    {
+        if (IsIncrement(candidate))
+        {
+            next = candidate;
+        }
+    }
+    for (int candidate = row - 1; candidate >= 0 && next == -1; --candidate)
+    {
+        if (IsIncrement(candidate))
+        {
+            next = candidate;
+        }
+    }
+
+    if (next != -1)
+    {
+        table->setCurrentCell(next, 0);
+        ShowTableIncrementDetails(table);
+    }
+    else
+    {
+        table->clearSelection();
+        EnableDetails(table, false); // clears the fields as well as switching them off
+    }
+
     table->repaint(); // Force repain to fix paint artifacts on Mac OS X
 }
 

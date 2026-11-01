@@ -2443,15 +2443,15 @@ Valorile și intervalele nu vor fi importate.</translation>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="659"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="670"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2295"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2301"/>
         <source>Error</source>
         <translation>Eroare</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="636"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2235"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2241"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2295"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2301"/>
         <source>Empty field.</source>
         <translation>Câmp gol.</translation>
     </message>
@@ -2472,82 +2472,82 @@ Valorile și intervalele nu vor fi importate.</translation>
         <translation>Eroare Parser: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1299"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1316"/>
         <source>Increment name is empty.</source>
         <translation>Câmpul „numele adaosului” nu este completat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1304"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1321"/>
         <source>Imported file must not contain the same name twice.</source>
         <translation>Fișierul importat nu trebuie să conțină de două ori același nume.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1309"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1326"/>
         <source>Increment &apos;%1&apos; doesn&apos;t match regex pattern.</source>
         <translation>Adaosul „%1” nu corespunde sistemului de codare a caracterelor.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1314"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1331"/>
         <source>Increment &apos;%1&apos; already present in the file.</source>
         <translation>Adaosul „%1” este deja utilizat în fișier.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1337"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1354"/>
         <source>Name</source>
         <comment>increment column</comment>
         <translation>Nume</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1339"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1356"/>
         <source>Calculated value</source>
         <comment>increment column</comment>
         <translation>Valoare calculată</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1341"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1358"/>
         <source>Formula</source>
         <comment>increment column</comment>
         <translation>Formula</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1343"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
         <source>Description</source>
         <comment>increment column</comment>
         <translation>Descriere</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1360"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
         <source>Increments require at least 2 columns.</source>
         <translation>Minim 2 coloane trebuie completate la introducerea unui adaos.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1377"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1394"/>
         <source>Error in row %1. The increment name is empty.</source>
         <translation>Eroare în linia %1. Numele adaosului nu este completat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1397"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1414"/>
         <source>Increment &apos;%1&apos; already exists in the other table.</source>
         <translation>Adaosul „%1” există deja în celălalt tabel.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1425"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1442"/>
         <source>Error in row %1. %2</source>
         <translation>Eroare la linia %1. %2</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1591"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1657"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1608"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1674"/>
         <source>Comma-Separated Values</source>
         <translation>Format text tabelar</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1659"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1676"/>
         <source>values</source>
         <translation>valori</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2324"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="2384"/>
         <source>Edit increment</source>
         <translation>Editează adaosul</translation>
     </message>
@@ -2611,22 +2611,22 @@ Valorile și intervalele nu vor fi importate.</translation>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="74"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="521"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1152"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1183"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1169"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1200"/>
         <source>0 results</source>
         <translation>0 rezultate</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="255"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="702"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1662"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1679"/>
         <source>Export to CSV</source>
         <translation>Exportă în format .csv</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="271"/>
         <location filename="../../src/app/ostara/dialogs/dialogincrements.ui" line="712"/>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1595"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1612"/>
         <source>Import from CSV</source>
         <translation>Importă dintr-un fișier .csv</translation>
     </message>
@@ -2637,22 +2637,22 @@ Valorile și intervalele nu vor fi importate.</translation>
         <translation>Unități:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1221"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1238"/>
         <source>Millimeters</source>
         <translation>Milimetri</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1224"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1241"/>
         <source>Inches</source>
         <translation>Inci</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1227"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1244"/>
         <source>Centimeters</source>
         <translation>Centimetrii</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1236"/>
+        <location filename="../../src/app/ostara/dialogs/dialogincrements.cpp" line="1253"/>
         <source>Degrees</source>
         <translation>Grade</translation>
     </message>
@@ -8896,7 +8896,7 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="849"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="869"/>
         <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="877"/>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="970"/>
         <source>Piece library</source>
         <translation>Bibliotecă de piese</translation>
     </message>
@@ -8906,17 +8906,17 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
         <translation>Încarcă un tabel de măsurători</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="935"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="941"/>
         <source>Loading the piece. Please, wait.</source>
         <translation>Se încarcă piesa. Vă rugăm să așteptați.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="964"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="970"/>
         <source>This piece holds no block to insert.</source>
         <translation>Această piesă nu conține niciun bloc de inserat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="990"/>
+        <location filename="../../src/app/ostara/mainwindow_pattern.cpp" line="996"/>
         <source>Piece inserted: %1</source>
         <translation>Piesă inserată: %1</translation>
     </message>
@@ -16184,27 +16184,27 @@ Această acțiune este ireversibilă.</translation>
 <context>
     <name>OPieceImport</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="283"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="455"/>
         <source>The piece does not say which unit its lengths are written in, and a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
         <translation>Piesa nu spune în ce unitate sunt scrise lungimile ei, iar o piesă se scrie în milimetri, centimetri sau țoli. Nu poate fi citită ca atare.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="287"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="459"/>
         <source>The piece says its lengths are written in %1, which is not a unit a piece may carry: a piece is written in millimetres, centimetres or inches. It cannot be read as it stands.</source>
         <translation>Piesa spune că lungimile ei sunt scrise în %1, care nu este o unitate pe care o piesă o poate purta: o piesă se scrie în milimetri, centimetri sau țoli. Nu poate fi citită ca atare.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="298"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="470"/>
         <source>The piece is in %1 and this pattern is in %2. A pattern holds one unit from end to end, and a piece is never converted: import it into a pattern of its own unit.</source>
         <translation>Piesa este în %1 și acest tipar este în %2. Un tipar ține o singură unitate de la un capăt la altul, iar o piesă nu este niciodată convertită: importați-o într-un tipar de unitatea ei.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="329"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="501"/>
         <source>This pattern has no measurement table yet, and a piece is read against one: its formulas are evaluated with the measurements of the table. Load a measurement table, then insert the piece.</source>
         <translation>Acest tipar nu are încă un tabel de măsurători, iar o piesă se citește față de unul: formulele ei sunt evaluate cu măsurătorile din tabel. Încărcați un tabel de măsurători, apoi inserați piesa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="361"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="533"/>
         <source>The measurement table of this pattern does not define every measurement the piece reads.
 
 Missing: %1
@@ -16217,7 +16217,7 @@ Lipsesc: %1
 Încărcați un tabel de măsurători care le definește, apoi inserați piesa.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="526"/>
+        <location filename="../../src/app/ostara/core/opieceimport.cpp" line="698"/>
         <source>This piece reads %1, and no piece of this pattern declares it. Import the piece it comes from first.</source>
         <translation>Această piesă citește %1, iar nicio piesă din acest tipar nu îl declară. Importați mai întâi piesa din care provine.</translation>
     </message>
@@ -16250,78 +16250,105 @@ Lipsesc: %1
         <translation>Numele obiectelor piesei</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="102"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="125"/>
         <source>Insert the piece</source>
         <translation>Inserează piesa</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="178"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="202"/>
         <source>Reference pieces</source>
         <translation>Piese de referință</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="190"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="214"/>
         <source>Read %1 from:</source>
         <comment>the piece this one reads values in</comment>
         <translation>Citește %1 din:</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="208"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="334"/>
         <source>The piece needs a name.</source>
         <translation>Piesa are nevoie de un nume.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="212"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="338"/>
         <source>A piece of this pattern already wears this name.</source>
         <translation>O piesă din acest tipar poartă deja acest nume.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="230"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="356"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="378"/>
         <source>Two names cannot be the same.</source>
         <translation>Două nume nu pot fi identice.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="395"/>
         <source>Object</source>
         <translation>Obiect</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="245"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="395"/>
         <source>Name</source>
         <translation>Nume</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="301"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="262"/>
+        <source>Increments</source>
+        <translation>Adaosuri</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="265"/>
+        <source>The pattern already holds these increments, and defines them differently. The piece keeps its own definition under the name you give it, and its formulas follow.</source>
+        <translation>Tiparul conține deja aceste adaosuri, dar le definește altfel. Piesa își păstrează propria definiție sub numele pe care îl dai, iar formulele ei o urmează.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>Increment</source>
+        <translation>Adaos</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>This piece</source>
+        <translation>Această piesă</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="274"/>
+        <source>The pattern</source>
+        <translation>Tiparul</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="452"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="303"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="454"/>
         <source>Arc</source>
         <translation>Curbura</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="305"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="456"/>
         <source>Elliptical arc</source>
         <translation>Arc eliptic</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="310"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="461"/>
         <source>Curve</source>
         <translation>Curbură</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="325"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="476"/>
         <source>A name cannot be empty.</source>
         <translation>Un nume nu poate fi gol.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="330"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="481"/>
         <source>A name cannot hold a space nor a reserved character.</source>
         <translation>Un nume nu poate conține spațiu sau caracter rezervat.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="335"/>
+        <location filename="../../src/app/ostara/dialogs/opieceimportdialog.cpp" line="486"/>
         <source>The pattern already answers to %1.</source>
         <translation>Tiparul răspunde deja la %1.</translation>
     </message>
@@ -16382,7 +16409,7 @@ Lipsesc: %1
 <context>
     <name>OPieceInsert</name>
     <message>
-        <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="265"/>
+        <location filename="../../src/app/ostara/core/opieceinsert.cpp" line="271"/>
         <source>Insert the piece &quot;%1&quot;</source>
         <translation>Inserează piesa „%1”</translation>
     </message>
@@ -20547,8 +20574,8 @@ Doriți să continuați?</translation>
     </message>
     <message>
         <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="2702"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3584"/>
-        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3651"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3588"/>
+        <location filename="../../src/libs/ifc/xml/vabstractpattern.cpp" line="3655"/>
         <source>New layer</source>
         <translation>Strat nou</translation>
     </message>

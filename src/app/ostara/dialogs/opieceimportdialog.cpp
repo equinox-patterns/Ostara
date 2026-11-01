@@ -77,6 +77,23 @@ constexpr int kAliasListMaxHeight = 560;
  * typed in. Clearing the state before the base delegate paints leaves the row exactly as it is; the selected
  * row keeps its colour, because the selection state is left alone.
  */
+/// Ces deux tables se lisent, elles ne se cliquent pas : le survol du thème (`QAbstractItemView::item:hover`)
+/// promènerait une bande teintée sous la souris pour annoncer un geste qui n'existe pas. La règle est neutralisée
+/// dans la feuille (`template.qss.in`), et l'état n'est même plus calculé ici : un survol qui n'existe pas ne peut
+/// être peint par aucun thème, ni par celui du jour ni par un autre.
+void NoHover(QTableWidget *table)
+{
+    if (table == nullptr)
+    {
+        return;
+    }
+
+    table->setMouseTracking(false);
+    table->viewport()->setMouseTracking(false);
+    table->setAttribute(Qt::WA_Hover, false);
+    table->viewport()->setAttribute(Qt::WA_Hover, false);
+}
+
 class NoHoverDelegate : public QStyledItemDelegate
 {
 public:
@@ -260,6 +277,7 @@ void OPieceImportDialog::FillIncrements()
     table->setAlternatingRowColors(false);
     table->verticalHeader()->setDefaultSectionSize(kAliasRowHeight);
     table->setObjectName(QStringLiteral("pieceIncrementTable"));
+    NoHover(table);
     table->setStyleSheet(QStringLiteral("QTableWidget#pieceIncrementTable::item { padding: 0px 8px; }"));
     table->setItemDelegate(new NoHoverDelegate(table));
     table->setRowCount(static_cast<int>(m_proposal.incrementConflicts.size()));
@@ -382,6 +400,7 @@ void OPieceImportDialog::FillAliases()
     // the text was cut at both ends. The table gets a taller row, and its own item rule without vertical padding
     // gives the field the whole height; the name it carries is what decides the import, and it has to be read.
     ui->tableAliases->setObjectName(QStringLiteral("pieceAliasTable"));
+    NoHover(ui->tableAliases);
     ui->tableAliases->verticalHeader()->setDefaultSectionSize(kAliasRowHeight);
 
     // No hover row here: the delegate below drops the state before painting, and the row stays as it is.

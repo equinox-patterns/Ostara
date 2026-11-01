@@ -3404,7 +3404,11 @@ auto VAbstractPattern::IncrementRowGroups(bool previewCalculation) -> QMap<QStri
             const quint32 groupId = GetParametrUInt(increment, AttrGroupId, NULL_ID_STR);
             if (groupId != NULL_ID)
             {
-                rowGroups.insert(increment.attribute(AttrName), groupId);
+                // The key is the name **the container answers to**, not the bytes of the file: an increment is
+                // read under `GetParametrString(...).simplified()` (`vpattern_increments.cpp`), so a stray space
+                // in the attribute would detach every row of a group from its heading at once, while the file,
+                // the group and the rows stayed coherent. One side normalises, so both do.
+                rowGroups.insert(increment.attribute(AttrName).simplified(), groupId);
             }
         }
     }
