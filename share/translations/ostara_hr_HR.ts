@@ -18999,6 +18999,11 @@ u %2</translation>
         <source>Put the tool into the selected group</source>
         <translation>Stavi alat u odabranu grupu</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="0"/>
+        <source>Double-click a group name to rename it.</source>
+        <translation>Dvokliknite naziv grupe da biste je preimenovali.</translation>
+    </message>
 </context>
 <context>
     <name>QApplication</name>

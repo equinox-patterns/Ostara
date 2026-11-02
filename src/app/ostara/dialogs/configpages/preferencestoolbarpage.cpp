@@ -35,9 +35,11 @@
 
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QIcon>
 #include <QListWidget>
 #include <QPushButton>
+#include <QStyledItemDelegate>
 #include <QToolButton>
 #include <QVBoxLayout>
 
@@ -45,6 +47,32 @@ namespace
 {
 constexpr int kIconSize = 22;
 constexpr int kButtonSize = 28;
+
+/** @brief Height of a row that opens an in-place editor — the height the tables of the application already
+ *  use for the same gesture (Layers dock, size ranges, outputs).
+ *
+ *  A list row is not the rect its editor gets: the editor is laid inside the *text* rect of the item, which
+ *  is the row minus the padding the stylesheet gives `QAbstractItemView::item`. At the natural height of a
+ *  row (text + 8 px of padding here) the field was handed 15 px for the 25 px it needs, its own padding and
+ *  border ate the rest, and its text was clipped to 5 px — "the line is tiny, the text is cropped". The row
+ *  has to hold the field: 36 − 8 leaves 28 px, three more than a `QLineEdit` asks for. */
+constexpr int kGroupRowHeight = 36;
+
+class OToolBarGroupDelegate : public QStyledItemDelegate
+{
+public:
+    explicit OToolBarGroupDelegate(QObject *parent)
+        : QStyledItemDelegate(parent)
+    {
+    }
+
+    auto sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const -> QSize override
+    {
+        QSize hint = QStyledItemDelegate::sizeHint(option, index);
+        hint.setHeight(qMax(hint.height(), kGroupRowHeight));
+        return hint;
+    }
+};
 
 auto ThemedIcon(const QString &name) -> QIcon
 {
@@ -103,6 +131,8 @@ void PreferencesToolBarPage::BuildUi()
     m_groupList->setMaximumWidth(260);
     // A double click opens the editor of the name — that is the whole renaming gesture.
     m_groupList->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+    // The names are renamed in place, and the editor takes the room the row gives it: see kGroupRowHeight.
+    m_groupList->setItemDelegate(new OToolBarGroupDelegate(m_groupList));
     connect(m_groupList, &QListWidget::currentRowChanged, this, [this]() { ReloadTools(); });
     connect(m_groupList, &QListWidget::itemChanged, this, &PreferencesToolBarPage::RenameGroup);
 
@@ -123,6 +153,12 @@ void PreferencesToolBarPage::BuildUi()
     groupLayout->addLayout(groupButtons);
     groupLayout->addWidget(m_groupList);
 
+    // Renaming a group opens an editor on the row itself, and nothing on screen says so: the sentence says it.
+    m_groupHint = new QLabel(m_groupBox);
+    m_groupHint->setObjectName(QStringLiteral("toolBarGroupHint"));
+    m_groupHint->setWordWrap(true);
+    groupLayout->addWidget(m_groupHint);
+
     connect(m_addGroup, &QToolButton::clicked, this, &PreferencesToolBarPage::AddGroup);
     connect(m_upGroup, &QToolButton::clicked, this, [this]() { MoveGroup(-1); });
     connect(m_downGroup, &QToolButton::clicked, this, [this]() { MoveGroup(1); });
@@ -141,7 +177,6 @@ void PreferencesToolBarPage::BuildUi()
     toolLayout->addWidget(m_toolList);
 
     connect(m_toolList, &QListWidget::currentRowChanged, this, [this]() { UpdateButtons(); });
-    connect(m_hiddenList, &QListWidget::currentRowChanged, this, [this]() { UpdateButtons(); });
 
     connect(m_upTool, &QToolButton::clicked, this, [this]() { MoveTool(-1); });
     connect(m_downTool, &QToolButton::clicked, this, [this]() { MoveTool(1); });
@@ -156,6 +191,11 @@ void PreferencesToolBarPage::BuildUi()
     m_hiddenBox = new QGroupBox(this);
     m_hiddenList = new QListWidget(m_hiddenBox);
     m_hiddenList->setIconSize(QSize(kIconSize, kIconSize));
+
+    // Connected here, and not next to the list above: this widget does not exist yet at that point, and a
+    // connect on a null pointer is only a warning in the log — Qt drops it in silence, so the page never
+    // hears its selection change and the "+" button below is never re-evaluated (it stayed greyed for good).
+    connect(m_hiddenList, &QListWidget::currentRowChanged, this, [this]() { UpdateButtons(); });
 
     m_assignTool = MakeToolButton(m_hiddenBox, QStringLiteral("toolBarAssignToolBtn"));
     connect(m_assignTool, &QToolButton::clicked, this, &PreferencesToolBarPage::AssignTool);
@@ -494,6 +534,7 @@ void PreferencesToolBarPage::UpdateButtons()
 void PreferencesToolBarPage::RetranslateUi()
 {
     m_groupBox->setTitle(tr("Groups"));
+    m_groupHint->setText(tr("Double-click a group name to rename it."));
     m_hiddenBox->setTitle(tr("Tools not shown"));
     m_defaults->setText(tr("Restore defaults"));
 

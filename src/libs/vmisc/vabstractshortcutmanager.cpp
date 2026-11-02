@@ -110,7 +110,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 99, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Convert all actions.");
 
     switch (type)
     {
@@ -150,14 +150,16 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "detailsmode"_L1;
         case VShortcutAction::GradedMode:
             return "gradedmode"_L1;
+        case VShortcutAction::ExportMode:
+            return "exportmode"_L1;
         case VShortcutAction::NewPatternPiece:
             return "newpatternpiece"_L1;
         case VShortcutAction::NextPatternPiece:
             return "nextpatternpiece"_L1;
         case VShortcutAction::PreviusPatternPiece:
             return "previuspatternpiece"_L1;
-        case VShortcutAction::InteractiveTools:
-            return "interactivetools"_L1;
+        case VShortcutAction::SavePiece:
+            return "savepiece"_L1;
         case VShortcutAction::TableOfVariables:
             return "tableofvariables"_L1;
         case VShortcutAction::Quit:
@@ -166,26 +168,8 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "lasttool"_L1;
         case VShortcutAction::CurveDetails:
             return "curvedetails"_L1;
-        case VShortcutAction::ShowSegmentLabels:
-            return "showsegmentlabels"_L1;
         case VShortcutAction::FinalMeasurements:
             return "finalmeasurements"_L1;
-        case VShortcutAction::ReloadPieceLabels:
-            return "reloadpiecelabels"_L1;
-        case VShortcutAction::CaseSensitiveMatch:
-            return "casesensitivematch"_L1;
-        case VShortcutAction::WholeWordMatch:
-            return "wholewordmatch"_L1;
-        case VShortcutAction::RegexMatch:
-            return "regexmatch"_L1;
-        case VShortcutAction::SearchHistory:
-            return "searchhistory"_L1;
-        case VShortcutAction::RegexMatchUnicodeProperties:
-            return "regexmatchunicodeproperties"_L1;
-        case VShortcutAction::FindNext:
-            return "findnext"_L1;
-        case VShortcutAction::FindPrevious:
-            return "findprevious"_L1;
         case VShortcutAction::ToolEndLine:
             return "toolendline"_L1;
         case VShortcutAction::ToolLine:
@@ -200,16 +184,12 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolbisector"_L1;
         case VShortcutAction::ToolLineIntersect:
             return "toolLineintersect"_L1;
-        case VShortcutAction::ToolSpline:
-            return "toolspline"_L1;
         case VShortcutAction::ToolCubicBezier:
             return "toolcubicbezier"_L1;
         case VShortcutAction::ToolArmholeCurve:
             return "toolarmholecurve"_L1;
         case VShortcutAction::ToolArc:
             return "toolarc"_L1;
-        case VShortcutAction::ToolSplinePath:
-            return "toolsplinepath"_L1;
         case VShortcutAction::ToolCubicBezierPath:
             return "toolcubicbezierpath"_L1;
         case VShortcutAction::ToolPointOfContact:
@@ -224,10 +204,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "tooltriangle"_L1;
         case VShortcutAction::ToolPointOfIntersection:
             return "toolpointofintersection"_L1;
-        case VShortcutAction::ToolCutSpline:
-            return "toolcutspline"_L1;
-        case VShortcutAction::ToolCutSplinePath:
-            return "toolcutsplinepath"_L1;
         case VShortcutAction::ToolUnionDetails:
             return "tooluniondetails"_L1;
         case VShortcutAction::ToolDuplicateDetail:
@@ -272,6 +248,10 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolmove"_L1;
         case VShortcutAction::ToolMidpoint:
             return "toolmidpoint"_L1;
+        case VShortcutAction::ExportTemplates:
+            return "exporttemplates"_L1;
+        case VShortcutAction::ExportImage:
+            return "exportimage"_L1;
         case VShortcutAction::ExportDrawAs:
             return "exportdrawas"_L1;
         case VShortcutAction::ExportDetailsAs:
@@ -292,8 +272,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolparallelcurve"_L1;
         case VShortcutAction::ToolGraduatedCurve:
             return "toolgraduatedcurve"_L1;
-        case VShortcutAction::AutoArrangeLabels:
-            return "autoarrangelabels"_L1;
         case VShortcutAction::ToolArrow:
             return "toolarrow"_L1;
         case VShortcutAction::ToolCurve:
@@ -324,7 +302,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 99, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Translate all actions.");
 
     switch (type)
     {
@@ -364,14 +342,16 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Details mode", "shortcut for action");
         case VShortcutAction::GradedMode:
             return tr("Graded mode", "shortcut for action");
+        case VShortcutAction::ExportMode:
+            return tr("Export mode", "shortcut for action");
         case VShortcutAction::NewPatternPiece:
             return tr("New pattern piece", "shortcut for action");
         case VShortcutAction::NextPatternPiece:
             return tr("Next pattern piece", "shortcut for action");
         case VShortcutAction::PreviusPatternPiece:
             return tr("Previous pattern piece", "shortcut for action");
-        case VShortcutAction::InteractiveTools:
-            return tr("Interactive tools mode", "shortcut for action");
+        case VShortcutAction::SavePiece:
+            return tr("Save piece to library", "shortcut for action");
         case VShortcutAction::TableOfVariables:
             return tr("Open Table of variables dialog", "shortcut for action");
         case VShortcutAction::Quit:
@@ -380,26 +360,8 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Activate last used tool", "shortcut for action");
         case VShortcutAction::CurveDetails:
             return tr("Show curve details", "shortcut for action");
-        case VShortcutAction::ShowSegmentLabels:
-            return tr("Show/hide segment labels", "shortcut for action");
         case VShortcutAction::FinalMeasurements:
             return tr("Open final measurements dialog", "shortcut for action");
-        case VShortcutAction::ReloadPieceLabels:
-            return tr("Reload piece labels", "shortcut for action");
-        case VShortcutAction::CaseSensitiveMatch:
-            return tr("Case sensitive match", "shortcut for action");
-        case VShortcutAction::WholeWordMatch:
-            return tr("Whole word match", "shortcut for action");
-        case VShortcutAction::RegexMatch:
-            return tr("Regex match", "shortcut for action");
-        case VShortcutAction::SearchHistory:
-            return tr("Search history", "shortcut for action");
-        case VShortcutAction::RegexMatchUnicodeProperties:
-            return tr("Regex match by unicode properties", "shortcut for action");
-        case VShortcutAction::FindNext:
-            return tr("Find next match", "shortcut for action");
-        case VShortcutAction::FindPrevious:
-            return tr("Find previus match", "shortcut for action");
         case VShortcutAction::ToolEndLine:
             return tr("Tool 'Point at distance and angle'", "shortcut for action");
         case VShortcutAction::ToolLine:
@@ -414,16 +376,12 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Point along bisector'", "shortcut for action");
         case VShortcutAction::ToolLineIntersect:
             return tr("Tool 'Point at line intersection'", "shortcut for action");
-        case VShortcutAction::ToolSpline:
-            return tr("Tool 'Simple curve'", "shortcut for action");
         case VShortcutAction::ToolCubicBezier:
             return tr("Tool 'Curve which uses point as control handle'", "shortcut for action");
         case VShortcutAction::ToolArmholeCurve:
             return tr("Tool 'Armhole curve'", "shortcut for action");
         case VShortcutAction::ToolArc:
             return tr("Tool 'Arc'", "shortcut for action");
-        case VShortcutAction::ToolSplinePath:
-            return tr("Tool 'Curved path'", "shortcut for action");
         case VShortcutAction::ToolCubicBezierPath:
             return tr("Tool 'Curved path which uses point as control handle'", "shortcut for action");
         case VShortcutAction::ToolPointOfContact:
@@ -438,10 +396,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Triangle'", "shortcut for action");
         case VShortcutAction::ToolPointOfIntersection:
             return tr("Tool 'Point from X and Y of two other points'", "shortcut for action");
-        case VShortcutAction::ToolCutSpline:
-            return tr("Tool 'Segmenting a simple curve'", "shortcut for action");
-        case VShortcutAction::ToolCutSplinePath:
-            return tr("Tool 'Segment a curved path'", "shortcut for action");
         case VShortcutAction::ToolUnionDetails:
             return tr("Tool 'Piece union'", "shortcut for action");
         case VShortcutAction::ToolDuplicateDetail:
@@ -486,6 +440,10 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Move objects'", "shortcut for action");
         case VShortcutAction::ToolMidpoint:
             return tr("Tool 'Midpoint between two points'", "shortcut for action");
+        case VShortcutAction::ExportTemplates:
+            return tr("Export templates", "shortcut for action");
+        case VShortcutAction::ExportImage:
+            return tr("Export as image", "shortcut for action");
         case VShortcutAction::ExportDrawAs:
             return tr("Export draw as", "shortcut for action");
         case VShortcutAction::ExportDetailsAs:
@@ -506,8 +464,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Parallel curve'", "shortcut for action");
         case VShortcutAction::ToolGraduatedCurve:
             return tr("Tool 'Graduated curve'", "shortcut for action");
-        case VShortcutAction::AutoArrangeLabels:
-            return tr("Auto-arrange point names", "shortcut for action");
         case VShortcutAction::ToolArrow:
             return tr("Tool 'Select'", "shortcut for action");
         case VShortcutAction::ToolCurve:

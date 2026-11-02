@@ -1064,6 +1064,12 @@ QLabel#patternGroupHint {
     color: #7f7f7f;
 }
 
+/* Tool bar page (Settings) — the gesture of renaming a group, said under the list: a double click opens the
+   editor, and nothing on screen tells it. Same secondary tone as the other hints. */
+QLabel#toolBarGroupHint {
+    color: #7f7f7f;
+}
+
 /* Presets d'angle (0/90/180/270°) sous les champs de formule angle */
 QPushButton#anglePresetBtn0,
 QPushButton#anglePresetBtn90,

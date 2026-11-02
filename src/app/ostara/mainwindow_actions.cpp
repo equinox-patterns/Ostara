@@ -65,9 +65,11 @@ void MainWindow::InitActionShortcuts()
     m_shortcutActions.insert(VShortcutAction::DrawMode, ui->actionDraw);
     m_shortcutActions.insert(VShortcutAction::DetailsMode, ui->actionDetails);
     m_shortcutActions.insert(VShortcutAction::GradedMode, ui->actionGraded);
+    m_shortcutActions.insert(VShortcutAction::ExportMode, ui->actionExport);
     m_shortcutActions.insert(VShortcutAction::NewPatternPiece, ui->actionNewDraw);
     m_shortcutActions.insert(VShortcutAction::NextPatternPiece, ui->actionNextPatternPiece);
     m_shortcutActions.insert(VShortcutAction::PreviusPatternPiece, ui->actionPreviousPatternPiece);
+    m_shortcutActions.insert(VShortcutAction::SavePiece, ui->actionSavePiece);
     m_shortcutActions.insert(VShortcutAction::TableOfVariables, ui->actionTable);
     m_shortcutActions.insert(VShortcutAction::Quit, ui->actionExit);
     m_shortcutActions.insert(VShortcutAction::LastTool, ui->actionLast_tool);
@@ -576,6 +578,11 @@ void MainWindow::InitToolButtons()
         connect(action, &QAction::triggered, this, slotFunction);
     };
 
+    // The two Export-mode tools: they were mapped to their QAction but never registered, so they had no
+    // shortcut at all. Their slot is applied on the action itself (see the connects in the .ui actions).
+    m_shortcutActions.insert(VShortcutAction::ExportTemplates, ui->actionExportTemplates);
+    m_shortcutActions.insert(VShortcutAction::ExportImage, ui->actionExportImage);
+
     InitToolButton(VShortcutAction::ToolArrow, ui->actionToolSelect, &MainWindow::ArrowTool);
     // ApplicationShortcut so "V" also fires while a tool dialog (a separate window) has focus.
     ui->actionToolSelect->setShortcutContext(Qt::ApplicationShortcut);
@@ -586,10 +593,8 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolNormal, ui->actionNormalTool, &MainWindow::ToolNormal);
     InitToolButton(VShortcutAction::ToolBisector, ui->actionBisectorTool, &MainWindow::ToolBisector);
     InitToolButton(VShortcutAction::ToolLineIntersect, ui->actionLineIntersectTool, &MainWindow::ToolLineIntersect);
-    InitToolButton(VShortcutAction::ToolSpline, ui->actionSplineTool, &MainWindow::ToolSpline);
     InitToolButton(VShortcutAction::ToolCubicBezier, ui->actionCubicBezierTool, &MainWindow::ToolCubicBezier);
     InitToolButton(VShortcutAction::ToolArc, ui->actionArcTool, &MainWindow::ToolArc);
-    InitToolButton(VShortcutAction::ToolSplinePath, ui->actionSplinePathTool, &MainWindow::ToolSplinePath);
     InitToolButton(VShortcutAction::ToolCurve, ui->actionCurveTool, &MainWindow::ToolCurve);
     InitToolButton(VShortcutAction::ToolCubicBezierPath, ui->actionCubicBezierPathTool,
                    &MainWindow::ToolCubicBezierPath);
@@ -600,9 +605,6 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolTriangle, ui->actionTriangleTool, &MainWindow::ToolTriangle);
     InitToolButton(VShortcutAction::ToolPointOfIntersection, ui->actionPointOfIntersectionTool,
                    &MainWindow::ToolPointOfIntersection);
-    InitToolButton(VShortcutAction::ToolCutSpline, ui->actionSplineCutPointTool, &MainWindow::ToolCutSpline);
-    InitToolButton(VShortcutAction::ToolCutSplinePath, ui->actionSplinePathCutPointTool,
-                   &MainWindow::ToolCutSplinePath);
     InitToolButton(VShortcutAction::ToolCutCurve, ui->actionCutCurveTool, &MainWindow::ToolCutCurve);
     InitToolButton(VShortcutAction::ToolUnionDetails, ui->actionUnionDetailsTool, &MainWindow::ToolUnionDetails);
     InitToolButton(VShortcutAction::ToolDuplicateDetail, ui->actionDuplicateDetailTool,

@@ -18978,6 +18978,11 @@ to %2</source>
         <source>Put the tool into the selected group</source>
         <translation>Τοποθέτηση εργαλείου στην επιλεγμένη ομάδα</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="0"/>
+        <source>Double-click a group name to rename it.</source>
+        <translation>Κάντε διπλό κλικ στο όνομα μιας ομάδας για να τη μετονομάσετε.</translation>
+    </message>
 </context>
 <context>
     <name>QApplication</name>

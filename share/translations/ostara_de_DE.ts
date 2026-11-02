@@ -18983,6 +18983,11 @@ nach %2</translation>
         <source>Put the tool into the selected group</source>
         <translation>Werkzeug in die ausgewählte Gruppe legen</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="0"/>
+        <source>Double-click a group name to rename it.</source>
+        <translation>Doppelklicken Sie auf den Namen einer Gruppe, um sie umzubenennen.</translation>
+    </message>
 </context>
 <context>
     <name>QApplication</name>

@@ -41,7 +41,7 @@
 VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
   : VAbstractShortcutManager{parent}
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 99, "Check if all actions were used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Check if all actions were used.");
 
     AddShortcut({VShortcutAction::ZoomIn, KeyBindingsToStringList(QKeySequence::ZoomIn), {}});
     AddShortcut({VShortcutAction::ZoomOut, KeyBindingsToStringList(QKeySequence::ZoomOut), {}});
@@ -80,6 +80,8 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut(
         {VShortcutAction::GradedMode, {QKeySequence(Qt::ControlModifier | Qt::Key_G).toString()}, {}});
     AddShortcut(
+        {VShortcutAction::ExportMode, {QKeySequence(Qt::ControlModifier | Qt::Key_R).toString()}, {}});
+    AddShortcut(
         {VShortcutAction::NewPatternPiece,
          {QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_N).toString()},
          {}});
@@ -89,32 +91,17 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::PreviusPatternPiece,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_PageUp).toString()},
                  {}});
+    AddShortcut({VShortcutAction::SavePiece,
+                 {QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_S).toString()},
+                 {}});
     AddShortcut({VShortcutAction::TableOfVariables,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_T).toString()},
                  {}});
     AddShortcut({VShortcutAction::Quit, KeyBindingsToStringList(QKeySequence::Quit), {}});
     AddShortcut({VShortcutAction::CurveDetails, {QKeySequence(Qt::Key_F2).toString()}, {}});
-    AddShortcut({VShortcutAction::ShowSegmentLabels, {}, {}});
     AddShortcut({VShortcutAction::FinalMeasurements,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_I).toString()},
                  {}});
-    AddShortcut({VShortcutAction::ReloadPieceLabels, {QKeySequence(Qt::Key_F9).toString()}, {}});
-
-    AddShortcut({VShortcutAction::CaseSensitiveMatch,
-                 {QKeySequence(Qt::AltModifier | Qt::Key_C).toString()},
-                 {}});
-    AddShortcut(
-        {VShortcutAction::WholeWordMatch, {QKeySequence(Qt::AltModifier | Qt::Key_W).toString()}, {}});
-    AddShortcut(
-        {VShortcutAction::RegexMatch, {QKeySequence(Qt::AltModifier | Qt::Key_X).toString()}, {}});
-    AddShortcut(
-        {VShortcutAction::SearchHistory, {QKeySequence(Qt::AltModifier | Qt::Key_Down).toString()}, {}});
-    AddShortcut({VShortcutAction::RegexMatchUnicodeProperties,
-                 {QKeySequence(Qt::AltModifier | Qt::Key_U).toString()},
-                 {}});
-    AddShortcut({VShortcutAction::FindNext, {QKeySequence(Qt::Key_F3).toString()}, {}});
-    AddShortcut(
-        {VShortcutAction::FindPrevious, {QKeySequence(Qt::ShiftModifier | Qt::Key_F3).toString()}, {}});
     AddShortcut({VShortcutAction::LastTool, {QKeySequence(Qt::Key_L).toString()}, {}});
     AddShortcut({VShortcutAction::ToolEndLine, {}, {}});
     AddShortcut({VShortcutAction::ToolLine, {}, {}});
@@ -123,11 +110,9 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolNormal, {}, {}});
     AddShortcut({VShortcutAction::ToolBisector, {}, {}});
     AddShortcut({VShortcutAction::ToolLineIntersect, {}, {}});
-    AddShortcut({VShortcutAction::ToolSpline, {}, {}});
     AddShortcut({VShortcutAction::ToolCubicBezier, {}, {}});
     AddShortcut({VShortcutAction::ToolArmholeCurve, {}, {}});
     AddShortcut({VShortcutAction::ToolArc, {}, {}});
-    AddShortcut({VShortcutAction::ToolSplinePath, {}, {}});
     AddShortcut({VShortcutAction::ToolCubicBezierPath, {}, {}});
     AddShortcut({VShortcutAction::ToolPointOfContact, {}, {}});
     AddShortcut({VShortcutAction::ToolPiece, {}, {}});
@@ -135,8 +120,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolHeight, {}, {}});
     AddShortcut({VShortcutAction::ToolTriangle, {}, {}});
     AddShortcut({VShortcutAction::ToolPointOfIntersection, {}, {}});
-    AddShortcut({VShortcutAction::ToolCutSpline, {}, {}});
-    AddShortcut({VShortcutAction::ToolCutSplinePath, {}, {}});
     AddShortcut({VShortcutAction::ToolUnionDetails, {}, {}});
     AddShortcut({VShortcutAction::ToolDuplicateDetail, {}, {}});
     AddShortcut({VShortcutAction::ToolCutArc, {}, {}});
@@ -159,6 +142,8 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolFlippingByAxis, {}, {}});
     AddShortcut({VShortcutAction::ToolMove, {}, {}});
     AddShortcut({VShortcutAction::ToolMidpoint, {}, {}});
+    AddShortcut({VShortcutAction::ExportTemplates, {}, {}});
+    AddShortcut({VShortcutAction::ExportImage, {}, {}});
     AddShortcut({VShortcutAction::ExportDrawAs, {}, {}});
     AddShortcut({VShortcutAction::ExportDetailsAs, {}, {}});
     AddShortcut({VShortcutAction::ToolEllipticalArc, {}, {}});
@@ -169,9 +154,6 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::ToolEllipticalArcWithLength, {}, {}});
     AddShortcut({VShortcutAction::ToolParallelCurve, {}, {}});
     AddShortcut({VShortcutAction::ToolGraduatedCurve, {}, {}});
-    AddShortcut({VShortcutAction::AutoArrangeLabels,
-                 {QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_A).toString()},
-                 {}});
     AddShortcut({VShortcutAction::ToolArrow, {QKeySequence(Qt::Key_V).toString()}, {}});
     AddShortcut({VShortcutAction::ToolCurve, {}, {}});
     AddShortcut({VShortcutAction::ToolCutCurve, {}, {}});

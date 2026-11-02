@@ -78,6 +78,7 @@ private:
     bool m_reloading{false};
 
     QGroupBox *m_groupBox{nullptr};
+    QLabel *m_groupHint{nullptr};
     QGroupBox *m_toolBox{nullptr};
     QGroupBox *m_hiddenBox{nullptr};
 

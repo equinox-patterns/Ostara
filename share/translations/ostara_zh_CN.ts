@@ -18974,6 +18974,11 @@ to %2</source>
         <source>Put the tool into the selected group</source>
         <translation>将工具放入所选组</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="0"/>
+        <source>Double-click a group name to rename it.</source>
+        <translation>双击组名称即可重命名。</translation>
+    </message>
 </context>
 <context>
     <name>QApplication</name>

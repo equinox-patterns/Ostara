@@ -8364,7 +8364,7 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="836"/>
         <source>Zoom fit best current</source>
-        <translation>Zoom optimal</translation>
+        <translation>Zoom optimal sur la pièce active</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="839"/>
@@ -18917,6 +18917,51 @@ vers %2</translation>
         <source>Restore defaults</source>
         <translation>Réinitialiser</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>File</source>
+        <translation>Fichier</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>Edit</source>
+        <translation>Édition</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>View</source>
+        <translation>Affichage</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>Pieces</source>
+        <translation>Pièces</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>Modes</source>
+        <translation>Modes</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>Tools</source>
+        <translation>Outils</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>Export</source>
+        <translation>Export</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.cpp" line="0"/>
+        <source>Section: %1</source>
+        <translation>Section : %1</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencesshortcutspage.ui" line="0"/>
+        <source>Search</source>
+        <translation>Rechercher</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesToolBarPage</name>
@@ -18989,6 +19034,11 @@ vers %2</translation>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="507"/>
         <source>Put the tool into the selected group</source>
         <translation>Mettre l&apos;outil dans le groupe sélectionné</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/configpages/preferencestoolbarpage.cpp" line="0"/>
+        <source>Double-click a group name to rename it.</source>
+        <translation>Double-cliquez sur le nom d&apos;un groupe pour le renommer.</translation>
     </message>
 </context>
 <context>
@@ -20608,6 +20658,30 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VAbstractShortcutManager</name>
     <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="0"/>
+        <source>Export mode</source>
+        <comment>shortcut for action</comment>
+        <translation>Mode Export</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="0"/>
+        <source>Save piece to library</source>
+        <comment>shortcut for action</comment>
+        <translation>Enregistrer la pièce dans la bibliothèque</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="0"/>
+        <source>Export templates</source>
+        <comment>shortcut for action</comment>
+        <translation>Exporter les modèles</translation>
+    </message>
+    <message>
+        <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="0"/>
+        <source>Export as image</source>
+        <comment>shortcut for action</comment>
+        <translation>Exporter en image</translation>
+    </message>
+    <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="524"/>
         <source>Tool &apos;Pleat&apos;</source>
         <comment>shortcut for action</comment>
@@ -20647,7 +20721,7 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="340"/>
         <source>Zoom fit best current</source>
         <comment>shortcut for action</comment>
-        <translation>Zoom optimal</translation>
+        <translation>Zoom optimal sur la pièce active</translation>
     </message>
     <message>
         <location filename="../../src/libs/vmisc/vabstractshortcutmanager.cpp" line="342"/>
