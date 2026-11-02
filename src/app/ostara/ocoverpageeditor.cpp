@@ -123,14 +123,9 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
                 ApplyMenuRow();
                 return;
             }
-            // The answer is carried out: what was saved is saved, and what was refused is put back
-            // to the version on disk, so the page the user comes back to shows what is saved and
-            // not what was abandoned. A save that did not happen has already stopped the caller
-            // above, and a reload that fails leaves the flag alone.
-            if (HasUnsavedChanges())
-            {
-                DiscardUnsavedChanges();
-            }
+            // Nothing to do here: the question carries its « don't save » out itself, by putting
+            // the template back in its saved state (see OTemplateDocumentEdits). A save that did
+            // not happen has already stopped the caller above.
         }
 
         switch (row)

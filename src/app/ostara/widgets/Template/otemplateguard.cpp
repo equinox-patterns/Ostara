@@ -54,6 +54,11 @@ auto OTemplateGuard::ConfirmDiscardChanges(QWidget *parent, const QString &title
 
     if (answer == QMessageBox::Discard)
     {
+        // The answer is carried out, not merely recorded. A document that cannot be put back —
+        // its file gone, unreadable — keeps its work and its flag: the caller carries on, and the
+        // next close asks again. Saying nothing there would be the silent loss the question exists
+        // to prevent.
+        document->DiscardUnsavedChanges();
         return true;
     }
 

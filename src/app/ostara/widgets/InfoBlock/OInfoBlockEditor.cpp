@@ -146,18 +146,17 @@ void OInfoBlockEditor::OpenRow(int row)
     // Asking for « Create new » while already there is not leaving — it is starting over, and
     // NewTemplate has its own question for that.
     const bool leavingEditor = m_menu->CurrentPage() == kEditorPage && row != MenuCreateTemplate;
-    if (leavingEditor)
+    if (leavingEditor && !ConfirmDiscardChanges())
     {
-        if (!ConfirmDiscardChanges())
-        {
-            // The click has already moved the highlight: put it back on the page still open, or
-            // the menu would name one the editor never showed.
-            ApplyMenuRow();
-            return;
-        }
-        // What was saved is saved, and what was given up is answered for: the page the user comes
-        // back to must not ask again about a change that is already decided.
-        SetModified(false);
+        // The click has already moved the highlight: put it back on the page still open, or the
+        // menu would name one the editor never showed.
+        //
+        // Nothing else to undo, whatever the answer was: the question carries its own answer out —
+        // a save writes the template, and a « don't save » puts it back in its saved state. Marking
+        // the flag clean here instead, as this used to, left refused work lying in the editor while
+        // claiming the file had it.
+        ApplyMenuRow();
+        return;
     }
 
     switch (row)
@@ -1463,13 +1462,9 @@ void OInfoBlockEditor::NewTemplate()
         return;
     }
 
-    m_template = OPieceCartoucheTemplate(tr("Template 1"));
-    m_filePath.clear();
+    ApplyTemplate(OPieceCartoucheTemplate(tr("Template 1")), QString());
+
     m_menu->ShowPage(kEditorPage);
-    m_nameEdit->setText(m_template.Name());
-    m_languageRow->SetLanguages(m_template.Languages());
-    RefreshSectionList();
-    SelectSection(-1);
     ApplyMenuRow();
     SetModified(false);
 }
@@ -1509,13 +1504,9 @@ void OInfoBlockEditor::LoadFile(const QString &filePath)
         return;
     }
 
-    m_template = tpl;
-    m_filePath = filePath;
+    ApplyTemplate(tpl, filePath);
+
     m_menu->ShowPage(kEditorPage);
-    m_nameEdit->setText(m_template.Name());
-    m_languageRow->SetLanguages(m_template.Languages());
-    RefreshSectionList();
-    SelectSection(-1);
     ApplyMenuRow();
     SetModified(false);
 }
@@ -1703,6 +1694,53 @@ auto OInfoBlockEditor::HasUnsavedChanges() const -> bool
 {
     return IsModified();
 }
+
+void OInfoBlockEditor::ApplyTemplate(const OPieceCartoucheTemplate &tpl, const QString &filePath)
+{
+    m_template = tpl;
+    m_filePath = filePath;
+    m_nameEdit->setText(m_template.Name());
+    m_languageRow->SetLanguages(m_template.Languages());
+    RefreshSectionList();
+    SelectSection(-1);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OInfoBlockEditor::DiscardUnsavedChanges() -> bool
+{
+    // What « don't save » means, and it has to be carried out: the template was going back to the
+    // version on disk, not merely losing the right to be saved. Clicking « Create new » or opening
+    // another file replaced the document anyway, so the hole only showed on the gesture this lot
+    // added — leaving the editor page for a library, where nothing brings the work back.
+    if (m_filePath.isEmpty())
+    {
+        // Nothing on disk to go back to: the template a template nobody has saved starts from.
+        ApplyTemplate(OPieceCartoucheTemplate(tr("Template 1")), QString());
+        ApplyMenuRow();
+        SetModified(false);
+        return true;
+    }
+
+    OPieceCartoucheTemplate tpl;
+    QString error;
+    if (!OPieceCartoucheStorage::Load(m_filePath, &tpl, &error))
+    {
+        // The file that held the saved state cannot be read: there is nothing to go back to, so
+        // nothing is thrown away. The template keeps its flag and the close prompt will speak again.
+        QMessageBox::warning(this, tr("Discard changes"),
+                             tr("The saved template could not be read back, so the changes were kept.\n\n%1")
+                                 .arg(error));
+        return false;
+    }
+
+    ApplyTemplate(tpl, m_filePath);
+    ApplyMenuRow();
+    SetModified(false);
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 
 void OInfoBlockEditor::SaveDocument()
 {

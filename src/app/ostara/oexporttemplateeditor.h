@@ -121,7 +121,7 @@ public:
      * Back to the file when there is one, to a blank template when there is not. False when the file
      * could not be re-read: the work is then still unsaved, and it must not be called abandoned.
      */
-    auto DiscardUnsavedChanges() -> bool;
+    auto DiscardUnsavedChanges() -> bool override;
 
 signals:
     /**

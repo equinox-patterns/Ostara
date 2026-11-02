@@ -81,6 +81,7 @@ public:
     // What the shared prompt asks of the document it guards.
     auto HasUnsavedChanges() const -> bool override;
     void SaveDocument() override;
+    auto DiscardUnsavedChanges() -> bool override;
 
     /// Re-translate all fixed literals (called on QEvent::LanguageChange).
     void RetranslateUI();
@@ -161,6 +162,12 @@ private:
     void ShowThumbnailPage();
     void ShowFoldLineTextPage();
     void LoadFile(const QString &filePath);
+    /**
+     * @brief Puts a template into the editor: the document, the name field, the languages and the
+     * section list. The page is not touched — which page shows it belongs to the gesture that called.
+     */
+    void ApplyTemplate(const OPieceCartoucheTemplate &tpl, const QString &filePath);
+
     void OnAddSection(const QString &typeId);
     void OnAddClient();
     void OnRemoveClient();

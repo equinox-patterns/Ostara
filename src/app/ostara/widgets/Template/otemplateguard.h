@@ -35,10 +35,15 @@ class QWidget;
  * @brief What the guard needs of the document an editor is showing: whether there is unsaved work,
  *        and how to save it.
  *
- * **Two methods, because those are the two things the question needs** — not a base class for the
- * editors, which would have made each of them the other's shape to share one dialog. Any editor
- * that can answer these two can ask the question, and a third family costs two methods rather
+ * **Three methods, because those are the three things the question needs** — not a base class for
+ * the editors, which would have made each of them the other's shape to share one dialog. Any editor
+ * that can answer these three can ask the question, and a third family costs three methods rather
  * than a second copy of the prompt.
+ *
+ * The third is the answer « don't save », and it is here because **that answer has to be carried
+ * out, not merely recorded**: the prompt says the work will be abandoned, so something has to
+ * abandon it. Every caller used to do it itself, and one of them did not — it marked the document
+ * clean over work still on screen, which is the opposite of what the user answered.
  */
 class OTemplateDocumentEdits
 {
@@ -60,6 +65,18 @@ public:
      * the folder could not be written, has left the change unsaved and says so there.
      */
     virtual void SaveDocument() = 0;
+
+    /**
+     * @brief Puts the document back in its saved state, without asking anything.
+     *
+     * What « don't save » means: back to the file the document came from, or to the blank document
+     * it started as when it was never written.
+     *
+     * @return false when the saved state could not be read back. The work is then still unsaved and
+     *         must not be called abandoned — the document keeps its flag, and the next close asks
+     *         again, which is the truth of the situation.
+     */
+    virtual auto DiscardUnsavedChanges() -> bool = 0;
 };
 
 namespace OTemplateGuard
@@ -69,7 +86,8 @@ namespace OTemplateGuard
  *
  * Three answers, and the one the keyboard reaches first is the one that keeps the work. Choosing
  * to save and failing to does not carry on: leaving then would lose exactly what the user asked
- * to keep.
+ * to keep. Choosing not to save **is carried out** — the document is put back in its saved state,
+ * so coming back to it shows what is saved and not what was refused.
  *
  * @param title what the document is called in the prompt, in the caller's own words.
  */

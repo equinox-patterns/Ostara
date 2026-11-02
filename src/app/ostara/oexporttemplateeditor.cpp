@@ -244,30 +244,17 @@ OExportTemplateEditor::OExportTemplateEditor(QWidget *parent) : QWidget(parent)
         const bool leavingCoverPage = (left == TabCoverPage);
         OTemplateDocumentEdits *leaving =
             leavingCoverPage ? static_cast<OTemplateDocumentEdits *>(m_coverPage) : this;
+        // The question is asked about **the document that tab holds**, and it carries its own answer
+        // out: a save writes that document, a « don't save » puts it back in its saved state. It
+        // returns false on « cancel » and on a save that did not happen — leaving then would lose
+        // exactly what was asked for.
         if (!ConfirmDiscardChanges(leaving))
         {
-            // Cancelled, or a save that did not happen: the tab is already back on the work.
+            // The tab is already back on the work.
             return;
         }
 
-        // The answer is **carried out**, not merely recorded. A « don't save » leaves the document
-        // bit-for-bit as it was and still unsaved, which is how the caller recognises it: what it
-        // abandoned is put back to the version on disk, so coming back to the tab shows what is
-        // saved and not what was refused. A « save » has already cleared the flag, and has nothing
-        // left to undo here.
-        if (leaving->HasUnsavedChanges())
-        {
-            if (leavingCoverPage)
-            {
-                m_coverPage->DiscardUnsavedChanges();
-            }
-            else
-            {
-                DiscardUnsavedChanges();
-            }
-        }
-
-        // Answered for — the switch the user asked for may happen now.
+        // Answered — the switch the user asked for may happen now.
         moveTo(index);
     });
 }
@@ -840,14 +827,9 @@ QWidget *OExportTemplateEditor::MakeAssemblyMarksTab()
                 ApplyMenuRow();
                 return;
             }
-            // What was saved is saved, and what was given up is put back: the page the user comes
-            // back to must not show work that was refused, nor ask again about a question already
-            // answered. This row leaves the marks' editor and nothing else — the cover page is a
-            // document of its own, on its own tab, and it is not this gesture's business.
-            if (HasUnsavedChanges())
-            {
-                DiscardUnsavedChanges();
-            }
+            // Nothing to do here either: the question put the marks back in their saved state. This
+            // row leaves the marks' editor and nothing else — the cover page is a document of its
+            // own, on its own tab, and it is not this gesture's business.
         }
 
         switch (m_menuList->row(item))
