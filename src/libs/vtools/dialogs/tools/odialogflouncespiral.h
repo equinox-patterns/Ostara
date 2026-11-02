@@ -73,6 +73,10 @@ public:
     auto GetPenStyle() const -> QString;
     auto GetColor() const -> QString;
 
+    /// The defaults the window opens the dialog on: the pen and the colour of the layer the figure will join.
+    void SetPenStyle(const QString &value);
+    void SetColor(const QString &value);
+
     void SetNotes(const QString &notes);
     auto GetNotes() const -> QString;
 

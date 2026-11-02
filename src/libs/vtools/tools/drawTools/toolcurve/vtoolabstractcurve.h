@@ -118,6 +118,20 @@ public:
     void SetReplacedBySegments(bool replaced);
     auto IsReplacedBySegments() const -> bool;
 
+    /** @brief Delete the curve together with the points it created, as one gesture.
+     *
+     *  "Add first point" and "add end point" — the two switches of an arc, an elliptical arc, a graduated or a
+     *  parallel curve, the arrival point of a spiral — hang a point of their own under the curve. That point has
+     *  no meaning without the curve it sits on, so it leaves with it: otherwise it stays behind on a curve that
+     *  no longer exists, and the user has to delete it in a second step.
+     *
+     *  It only stays — and the whole deletion is refused — when something else holds it, a line or a formula
+     *  that would be left pointing at nothing. */
+    void PerformDelete() override;
+
+    /// Removable when nothing but this curve's own end points depends on it, and nothing depends on them.
+    auto IsRemovable() const -> RemoveStatus override;
+
     // The axis contract — AxisSlotCount/AxisSlot/PreviewAxis/CommitAxis/RevertAxis — lives on VDrawTool, so
     // that any tool with an angle can offer it: a curve handle, the angle of a point placed by direction.
     // VToolSpline and VToolSplinePath are the two curves that fill it in (see AngleParAxe.md).
@@ -180,9 +194,18 @@ protected:
     void SetSceneType(SceneObject newSceneType);
 
     /// Id of the tool materializing one end of this curve, NULL_ID when there is none. A curve does not own its
-    /// end points: they are tools of their own, hung under it in the pattern graph, and this is how it finds
-    /// them back — to show or hide their name, or to delete one.
+    /// end points in the file: they are tools of their own, hung under it in the pattern graph, and this is how it
+    /// finds them back — to show or hide their name, or to delete one. The ones the curve itself created are found
+    /// by CurvePointIds, and they are the ones PerformDelete takes along.
     auto FindPointId(bool isStart) const -> quint32;
+
+    /// Ids of the points this curve created with itself — the ones that leave with it. Empty for a curve whose
+    /// ends are only the knots of its own geometry: a spline, a spline path, a cubic bezier.
+    virtual auto CurvePointIds() const -> QVector<quint32>;
+
+    /// The two ids, without NULL_ID and without a duplicate — a curve whose two ends are one and the same tool
+    /// takes it along once.
+    static auto DistinctPointIds(quint32 first, quint32 second) -> QVector<quint32>;
 
     static auto CorrectedSpline(const VSpline &spline, const SplinePointPosition &position, const QPointF &pos)
         -> VSpline;
@@ -413,6 +436,10 @@ protected:
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+    /// An arc names the two points it can create with tools of their own (OToolArcPoint), not with the curve points
+    /// an offset curve hangs under itself — which is why it looks for them itself.
+    auto CurvePointIds() const -> QVector<quint32> override;
 
 private:
     auto FindPointId(bool isStart) const -> quint32;

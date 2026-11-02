@@ -604,6 +604,105 @@ auto VToolAbstractCurve::FindPointId(bool isStart) const -> quint32
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractCurve::DistinctPointIds(quint32 first, quint32 second) -> QVector<quint32>
+{
+    QVector<quint32> ids;
+    for (const quint32 pointId : {first, second})
+    {
+        if (pointId != NULL_ID && !ids.contains(pointId))
+        {
+            ids.append(pointId);
+        }
+    }
+    return ids;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractCurve::CurvePointIds() const -> QVector<quint32>
+{
+    return DistinctPointIds(FindPointId(true), FindPointId(false));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractCurve::IsRemovable() const -> RemoveStatus
+{
+    if (!doc->IsPatternGraphComplete())
+    {
+        return RemoveStatus::Pending; // Data not ready yet
+    }
+
+    VPatternGraph const *patternGraph = doc->PatternGraph();
+    SCASSERT(patternGraph != nullptr)
+
+    auto Filter = [](const VNode &node) -> bool
+    { return node.type != VNodeType::MODELING_TOOL && node.type != VNodeType::MODELING_OBJECT; };
+
+    const auto dependencies = patternGraph->TryGetDependentNodes(m_id, 1000, Filter);
+    if (!dependencies)
+    {
+        return RemoveStatus::Pending; // Lock timeout
+    }
+
+    // The points the curve created are not users of it: they were born with it and leave with it. Anything else
+    // that depends on the curve still holds it, exactly as before the curve carried its own ends.
+    const QVector<quint32> ownPoints = CurvePointIds();
+    for (const VNode &node : *dependencies)
+    {
+        if (!ownPoints.contains(node.id))
+        {
+            return RemoveStatus::Blocked;
+        }
+    }
+
+    // And those points only follow the curve while nothing was hung on them: a line, another curve, a formula.
+    // Their users would be left pointing at nothing, so the whole gesture is refused rather than half of it.
+    for (const quint32 pointId : ownPoints)
+    {
+        const auto pointUsers = patternGraph->TryGetDependentNodes(pointId, 1000, Filter);
+        if (!pointUsers)
+        {
+            return RemoveStatus::Pending; // Lock timeout
+        }
+
+        if (!pointUsers->isEmpty())
+        {
+            return RemoveStatus::Blocked;
+        }
+    }
+
+    return RemoveStatus::Removable;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolAbstractCurve::PerformDelete()
+{
+    const QVector<quint32> ownPoints = CurvePointIds();
+    if (ownPoints.isEmpty())
+    {
+        VDrawTool::PerformDelete(); // An ordinary curve: it goes alone
+        return;
+    }
+
+    QUndoStack *undoStack = VAbstractApplication::VApp()->getUndoStack();
+    SCASSERT(undoStack != nullptr)
+
+    // One gesture, one undo: the points first, then the curve they sit on. Deleted apart, they would be left
+    // hanging on a curve that no longer exists, and one Ctrl+Z would bring back half a tool.
+    undoStack->beginMacro(tr("delete the curve and its points"));
+
+    for (const quint32 pointId : ownPoints)
+    {
+        auto *delPoint = new DelTool(doc, pointId);
+        connect(delPoint, &DelTool::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
+        undoStack->push(delPoint);
+    }
+
+    VDrawTool::PerformDelete();
+
+    undoStack->endMacro();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolAbstractCurve::GroupVisibility(quint32 object, bool visible)
 {
     Q_UNUSED(object)
@@ -1316,6 +1415,12 @@ auto VToolAbstractArc::FindPointId(bool isStart) const -> quint32
     }
 
     return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractArc::CurvePointIds() const -> QVector<quint32>
+{
+    return DistinctPointIds(FindPointId(true), FindPointId(false));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

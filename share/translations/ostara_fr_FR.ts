@@ -23727,6 +23727,11 @@ Voulez-vous continuer ?</translation>
         <source>Length</source>
         <translation>Longueur</translation>
     </message>
+    <message>
+        <location filename="../../src/libs/vtools/tools/drawTools/toolcurve/vtoolabstractcurve.cpp" line="691"/>
+        <source>delete the curve and its points</source>
+        <translation>supprimer la courbe et ses points</translation>
+    </message>
 </context>
 <context>
     <name>VToolAbstractOffsetCurve</name>

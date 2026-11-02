@@ -283,6 +283,18 @@ auto ODialogFlounceSpiral::GetColor() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void ODialogFlounceSpiral::SetPenStyle(const QString &value)
+{
+    ChangeCurrentData(ui->comboBoxPenStyle, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogFlounceSpiral::SetColor(const QString &value)
+{
+    SetColorComboCurrentName(m_color, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODialogFlounceSpiral::SetNotes(const QString &notes)
 {
     ui->plainTextEditToolNotes->setPlainText(notes);
