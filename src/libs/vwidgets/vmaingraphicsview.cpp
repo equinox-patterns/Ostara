@@ -660,6 +660,10 @@ void VMainGraphicsView::EnsureToolVisible(const QRectF &rect)
  */
 void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
 {
+    // **Le pan qui vient de commencer ne transmet RIEN à la scène.** Vrai dès qu'une des deux
+    // branches de panoramique s'arme, et lu une seule fois, en bas.
+    bool panStarted = false;
+
     // Space + LeftButton = pan (same as middle button)
     if (m_isSpacePanActive && event->button() == Qt::LeftButton)
     {
@@ -667,10 +671,18 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
         m_oldCursor = viewport()->cursor();
         QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
         m_isSpacePanDrag = true;
+        panStarted = true;
         event->accept();
         viewport()->setCursor(Qt::ClosedHandCursor);
-        QGuiApplication::changeOverrideCursor(Qt::ClosedHandCursor);
-        QGraphicsView::mousePressEvent(event);
+
+        // ⚠️ **Aucun appel à `QGraphicsView::mousePressEvent` ici, et c'est la correction.** Ce
+        // handler de base livre TOUJOURS la pression à la scène avant de regarder le mode de
+        // glissement (Qt 6.11, `qgraphicsview.cpp:3211-3251` : envoi à la scène, puis
+        // `if (isAccepted) return;`). Un clic pendant le pan sélectionnait donc l'objet sous la
+        // souris et posait son grab — et, sur un item déplaçable, il le déplaçait. Le panoramique
+        // d'Ostara n'a pas besoin de ce handler : il est écrit à la main dans `mouseMoveEvent`
+        // (`hBar`/`vBar->setValue`), pas par le hand-scroll de Qt. Le `ScrollHandDrag` n'est ici
+        // qu'un DRAPEAU d'état, lu par `mouseMoveEvent`.
         return;
     }
 
@@ -722,16 +734,23 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
                 m_oldCursor = viewport()->cursor();
                 QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
                 m_isMiddlePanActive = true;
+                panStarted = true;
                 event->accept();
                 viewport()->setCursor(Qt::ClosedHandCursor);
-                QGuiApplication::setOverrideCursor(Qt::ClosedHandCursor);
             }
             break;
         }
         default:
             break;
     }
-    QGraphicsView::mousePressEvent(event);
+
+    // ⚠️ **Le pan ne va pas plus loin.** Le panoramique est en code à la main, et une pression
+    // livrée à la scène pendant qu'il court sélectionne l'objet sous la souris — c'est le défaut
+    // qui restait. Le clic n'a de sens ici que pour les branches qui n'ont pas démarré un pan.
+    if (!panStarted)
+    {
+        QGraphicsView::mousePressEvent(event);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -802,23 +821,31 @@ void VMainGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
     // Check before resetting drag mode
     bool const wasSpacePanDrag = m_isSpacePanDrag && event->button() == Qt::LeftButton;
+    bool const wasMiddlePan = m_isMiddlePanActive && event->button() == Qt::MiddleButton;
 
-    QGraphicsView::mouseReleaseEvent(event); // First because need to hide a rubber band
+    // ⚠️ **Symétrie du press.** La pression d'un pan n'est jamais allée à la scène, donc son
+    // relâchement n'y va pas non plus : la scène recevait un `release` sans `press`, et le
+    // `QGraphicsView::mouseReleaseEvent` de base fermait un geste que personne n'avait ouvert.
+    // Il reste appelé partout ailleurs, où il sert — c'est lui qui referme une bande de sélection.
+    if (!wasSpacePanDrag && !wasMiddlePan)
+    {
+        QGraphicsView::mouseReleaseEvent(event); // First because need to hide a rubber band
+    }
     QGraphicsView::setDragMode(QGraphicsView::NoDrag);
     if (event->button() == Qt::MiddleButton)
     {
         viewport()->setCursor(m_oldCursor);
-        if (m_isMiddlePanActive)
+        if (wasMiddlePan)
         {
             m_isMiddlePanActive = false;
-            QGuiApplication::restoreOverrideCursor();
         }
     }
     if (wasSpacePanDrag)
     {
         m_isSpacePanDrag = false;
-        viewport()->setCursor(Qt::OpenHandCursor); // Space still held
-        QGuiApplication::changeOverrideCursor(Qt::OpenHandCursor);
+        // Open hand only while the key is still held: if Espace went up first, the key release has
+        // already put the real cursor back, and setting the hand here would leave it for good.
+        viewport()->setCursor(m_isSpacePanActive ? Qt::OpenHandCursor : m_preSpaceCursor);
     }
     else if (event->button() == Qt::LeftButton)
     {
@@ -837,7 +864,6 @@ void VMainGraphicsView::keyPressEvent(QKeyEvent *event)
     {
         m_preSpaceCursor = viewport()->cursor();
         viewport()->setCursor(Qt::OpenHandCursor);
-        QGuiApplication::setOverrideCursor(Qt::OpenHandCursor);
         m_isSpacePanActive = true;
         event->accept();
         return;
@@ -858,10 +884,15 @@ void VMainGraphicsView::keyReleaseEvent(QKeyEvent *event)
         if (m_isSpacePanDrag)
         {
             QGraphicsView::setDragMode(QGraphicsView::NoDrag);
-            m_isSpacePanDrag = false;
+
+            // ⚠️ **`m_isSpacePanDrag` reste VRAI.** Il ne dit pas « je panote » (c'est le mode de
+            // glissement, qu'on vient de remettre à `NoDrag`) mais « une pression de pan est partie
+            // et n'a pas encore été relâchée » — c'est au relâchement du BOUTON de la refermer.
+            // L'effacer ici, c'est ce qui faisait que le relâchement du bouton ne savait plus que la
+            // pression avait été retenue, livrait un `release` sans `press` à la scène, et laissait
+            // la main fermée quand Espace partait avant le bouton.
         }
         viewport()->setCursor(m_preSpaceCursor);
-        QGuiApplication::restoreOverrideCursor();
         event->accept();
         return;
     }
@@ -882,7 +913,6 @@ void VMainGraphicsView::focusOutEvent(QFocusEvent *event)
         m_isMiddlePanActive = false;
         QGraphicsView::setDragMode(QGraphicsView::NoDrag);
         viewport()->setCursor(wasMiddlePan ? m_oldCursor : m_preSpaceCursor);
-        QGuiApplication::restoreOverrideCursor();
     }
     QGraphicsView::focusOutEvent(event);
 }
