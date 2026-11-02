@@ -103,11 +103,30 @@ signals:
     void FoldLineTextChanged();
 
 private:
+    /**
+     * The eight rows of the left menu — **and the rows are not the pages**: the library is row 0
+     * and page 1, the editor is row 1 and page 0 (see NameMenuRows and ApplyMenuRow).
+     */
+    enum MenuRow : int
+    {
+        MenuExistingTemplates = 0,
+        MenuCreateTemplate = 1,
+        MenuLogos = 2,
+        MenuClients = 3,
+        MenuCollections = 4,
+        MenuAnnotations = 5,
+        MenuThumbnail = 6,
+        MenuFoldlineText = 7
+    };
+
     void SetupUI();
     void SetupEditorPage();
     void SetupLanguageRow();
 
-    /// Names the seven rows of the left menu.
+    /// Opens one row of the menu. A click and OpenOnPage both come through here.
+    void OpenRow(int row);
+
+    /// Names the eight rows of the left menu.
     void NameMenuRows();
     void SetupTemplatesPage();
     void SetupLogosPage();

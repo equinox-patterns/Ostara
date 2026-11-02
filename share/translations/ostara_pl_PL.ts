@@ -8067,8 +8067,8 @@ ale nie można go znaleźć. Ostara używa formatu .omt/.otu. Wybierz sposób po
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Nacięcia montażowe</translation>
+        <source>PDF layout</source>
+        <translation>Układ strony PDF</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13790,8 +13790,8 @@ Forma większa od niego jest cięta na kawałki na brzegach maty, do złożenia 
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Nacięcia montażowe:</translation>
+        <source>PDF layout:</source>
+        <translation>Układ strony PDF:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13964,6 +13964,10 @@ To pierwsza rzecz do zmniejszenia, gdy plan nie mieści się w 500 x 500 cm: sam
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>Układ strony PDF</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Nacięcia montażowe</translation>

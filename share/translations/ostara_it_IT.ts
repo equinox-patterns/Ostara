@@ -8689,8 +8689,8 @@ ma è introvabile. Ostara usa il formato .omt/.otu. Scegli come procedere:</tran
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Tacche di unione</translation>
+        <source>PDF layout</source>
+        <translation>Impaginazione PDF</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13781,8 +13781,8 @@ Un pezzo più grande di essa viene tagliato in pezzi ai bordi del tappetino, da 
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Tacche di assemblaggio:</translation>
+        <source>PDF layout:</source>
+        <translation>Impaginazione PDF:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13955,6 +13955,10 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>Impaginazione PDF</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Tacche di assemblaggio</translation>

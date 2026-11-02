@@ -8058,8 +8058,8 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Illesztési bevágások</translation>
+        <source>PDF layout</source>
+        <translation>PDF-elrendezés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13772,8 +13772,8 @@ A nála nagyobb darab a szőnyeg széleinél darabokra vágódik, amelyeket kira
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Illesztési bevágások:</translation>
+        <source>PDF layout:</source>
+        <translation>PDF-elrendezés:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13946,6 +13946,10 @@ Ezt kell először csökkenteni, amikor a terv nem fér el 500 x 500 cm-ben: rit
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>PDF-elrendezés</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Illesztési bevágások</translation>

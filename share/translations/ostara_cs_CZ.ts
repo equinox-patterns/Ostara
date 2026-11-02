@@ -8691,8 +8691,8 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Značky sestavení</translation>
+        <source>PDF layout</source>
+        <translation>Rozvržení PDF</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13790,8 +13790,8 @@ Díl, který je větší než ona, se na okrajích podložky rozřeže na kusy, 
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Zářezy pro sestavení:</translation>
+        <source>PDF layout:</source>
+        <translation>Rozvržení PDF:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13964,6 +13964,10 @@ To je první věc, kterou je třeba zmenšit, když se plán nevejde do 500 x 50
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>Rozvržení PDF</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Zářezy pro sestavení</translation>

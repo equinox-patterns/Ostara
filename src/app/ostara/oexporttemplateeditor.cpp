@@ -178,7 +178,7 @@ OExportTemplateEditor::OExportTemplateEditor(QWidget *parent) : QWidget(parent)
     connect(m_coverPage, &OCoverPageEditor::TemplateSaved, this,
             &OExportTemplateEditor::TemplateSaved);
     m_tabs->addTab(m_coverPage, QString());            // index 0 — cover page
-    m_tabs->addTab(MakeAssemblyMarksTab(), QString()); // index 1 — assembly marks
+    m_tabs->addTab(MakeAssemblyMarksTab(), QString()); // index 1 — PDF layout
     outer->addWidget(m_tabs);
 
     RetranslateUI();
@@ -196,6 +196,80 @@ OExportTemplateEditor::OExportTemplateEditor(QWidget *parent) : QWidget(parent)
     // The editor has just filled itself in from its own defaults, and that is not an edit.
     // Opening the window on a template nobody has touched must not offer to save it.
     SetModified(false);
+
+    // **Leaving the tab one is editing is the moment to ask about it** — the same rule as the left
+    // menu of this window and of the two other template editors. A tab switch is also what fires the
+    // focus-out of a half-typed field (:1010, :1134), so it is the very moment the question has to
+    // be asked.
+    //
+    // **The question comes before the move, not after.** Qt has already changed the page by the time
+    // currentChanged is emitted, so the switch is put back first and only then asked about: a window
+    // that has already left answers a question the user has not given yet — Sophie saw the cover
+    // page behind a dialog asking whether to leave the layout. The move back happens inside the
+    // signal, before anything is painted, so nothing flickers.
+    //
+    // The two documents are counted separately — the question concerns the tab being left, and the
+    // assembly marks' flag says nothing about the cover page. Once the answer is given, the document
+    // left behind records it, so the close prompt does not ask a second time about work already
+    // answered for; that is exactly what the two other editors do with their own menu.
+    m_previousTab = m_tabs->currentIndex();
+    connect(m_tabs, &QTabWidget::currentChanged, this, [this](int index) {
+        if (m_restoringTab)
+        {
+            m_previousTab = index;
+            return;
+        }
+
+        const int left = m_previousTab;
+        if (index == left)
+        {
+            return;
+        }
+
+        const bool leftUnsavedTab = (left == TabCoverPage) ? m_coverPage->IsModified() : m_modified;
+        if (!leftUnsavedTab)
+        {
+            m_previousTab = index;
+            return;
+        }
+
+        // Back where the work is, before asking. The handler lets this move through without asking.
+        const auto moveTo = [this](int tab) {
+            m_restoringTab = true;
+            m_tabs->setCurrentIndex(tab);
+            m_restoringTab = false;
+        };
+        moveTo(left);
+
+        const bool leavingCoverPage = (left == TabCoverPage);
+        OTemplateDocumentEdits *leaving =
+            leavingCoverPage ? static_cast<OTemplateDocumentEdits *>(m_coverPage) : this;
+        if (!ConfirmDiscardChanges(leaving))
+        {
+            // Cancelled, or a save that did not happen: the tab is already back on the work.
+            return;
+        }
+
+        // The answer is **carried out**, not merely recorded. A « don't save » leaves the document
+        // bit-for-bit as it was and still unsaved, which is how the caller recognises it: what it
+        // abandoned is put back to the version on disk, so coming back to the tab shows what is
+        // saved and not what was refused. A « save » has already cleared the flag, and has nothing
+        // left to undo here.
+        if (leaving->HasUnsavedChanges())
+        {
+            if (leavingCoverPage)
+            {
+                m_coverPage->DiscardUnsavedChanges();
+            }
+            else
+            {
+                DiscardUnsavedChanges();
+            }
+        }
+
+        // Answered for — the switch the user asked for may happen now.
+        moveTo(index);
+    });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -213,7 +287,7 @@ void OExportTemplateEditor::OpenOnTab(int tab)
 void OExportTemplateEditor::RetranslateUI()
 {
     m_tabs->setTabText(TabCoverPage, tr("Cover page"));
-    m_tabs->setTabText(TabAssemblyMarks, tr("Assembly marks"));
+    m_tabs->setTabText(TabAssemblyMarks, tr("PDF layout"));
 
     m_nameLabel->setText(tr("Name:"));
     m_nameEdit->setPlaceholderText(tr("Template name"));
@@ -747,6 +821,35 @@ QWidget *OExportTemplateEditor::MakeAssemblyMarksTab()
     m_menuList->addItem(QString()); // index 0 — existing templates
     m_menuList->addItem(QString()); // index 1 — create a template
     connect(m_menuList, &QListWidget::itemClicked, this, [this](QListWidgetItem *item) {
+        // **Leaving the template one is editing is the moment to ask about it — not arriving on
+        // it.** The row this guards opens the library, which is consulted rather than edited, and
+        // nothing in this menu leads back to the template held in memory: clicking it used to walk
+        // away in silence and leave the work in progress behind, with the close prompt as the only
+        // question — and far too late. The two other template editors ask at this same moment.
+        //
+        // Asking for « Create a template » while already there is not leaving — it is starting
+        // over, and NewTemplate has its own question for that.
+        const bool leavingEditor = m_stack->currentIndex() == MenuCreateTemplate
+                                   && m_menuList->row(item) != MenuCreateTemplate;
+        if (leavingEditor)
+        {
+            if (!ConfirmDiscardChanges(this))
+            {
+                // The click has already moved the highlight: put it back on the page still open,
+                // or the menu would name one the editor never showed.
+                ApplyMenuRow();
+                return;
+            }
+            // What was saved is saved, and what was given up is put back: the page the user comes
+            // back to must not show work that was refused, nor ask again about a question already
+            // answered. This row leaves the marks' editor and nothing else — the cover page is a
+            // document of its own, on its own tab, and it is not this gesture's business.
+            if (HasUnsavedChanges())
+            {
+                DiscardUnsavedChanges();
+            }
+        }
+
         switch (m_menuList->row(item))
         {
             case MenuExistingTemplates:
@@ -1303,34 +1406,61 @@ void OExportTemplateEditor::ApplyMenuRow()
 
 //---------------------------------------------------------------------------------------------------------------------
 
-auto OExportTemplateEditor::ConfirmDiscardChanges() -> bool
+auto OExportTemplateEditor::ConfirmDiscardChanges(OTemplateDocumentEdits *document) -> bool
 {
-    if (!m_modified)
+    // One question, asked by the socle, and **about the document the gesture actually leaves**:
+    // this window holds two — its assembly marks and the cover page of its first tab — and asking
+    // about the wrong one either misses real work or offers to save a template the user is not
+    // touching.
+    return OTemplateGuard::ConfirmDiscardChanges(this, tr("Unsaved template"), document);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OExportTemplateEditor::HasUnsavedChanges() const -> bool
+{
+    return m_modified;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OExportTemplateEditor::SaveDocument()
+{
+    // Only the marks: the cover page is a document of its own, saved by its own answer.
+    SaveAssemblyMarksTemplate();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OExportTemplateEditor::DiscardUnsavedChanges() -> bool
+{
+    if (m_filePath.isEmpty())
     {
+        // Nothing on disk to go back to: the template a template nobody has saved starts from, and
+        // no name — the field is where the name lives, and it was never written anywhere.
+        SetTemplate(OExportTemplate());
+        m_nameEdit->clear();
+        ApplyMenuRow();
+        SetModified(false);
         return true;
     }
 
-    // Three answers, and the one the keyboard reaches first is the one that keeps the work.
-    const auto answer =
-        QMessageBox::warning(this, tr("Unsaved template"),
-                             tr("This template has been changed and not saved.\n\n"
-                                "Save it before leaving it?"),
-                             QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-                             QMessageBox::Save);
-
-    if (answer == QMessageBox::Cancel)
+    OExportTemplate tpl;
+    QString error;
+    if (!OExportTemplateStorage::Load(m_filePath, &tpl, &error))
     {
+        // The file that held the saved state cannot be read: there is nothing to go back to, so
+        // nothing is thrown away. The document keeps its flag and the close prompt will speak again.
+        QMessageBox::warning(this, tr("Discard changes"),
+                             tr("The saved template could not be read back, so the changes were kept.\n\n%1")
+                                 .arg(error));
         return false;
     }
 
-    if (answer == QMessageBox::Save)
-    {
-        SaveTemplate();
-        // A save that did not happen — no name, a name already taken, a folder that cannot be
-        // written — has left the change unsaved, and leaving now would lose it.
-        return !m_modified;
-    }
-
+    SetTemplate(tpl);
+    m_nameEdit->setText(QFileInfo(m_filePath).completeBaseName());
+    ApplyMenuRow();
+    SetModified(false);
     return true;
 }
 
@@ -1340,7 +1470,7 @@ void OExportTemplateEditor::NewTemplate()
 {
     // Asking for a new template is asking to leave whatever is being edited, and this editor never
     // saves on its own. Without this, the click threw the changes away in silence.
-    if (!ConfirmDiscardChanges())
+    if (!ConfirmDiscardChanges(this))
     {
         return;
     }
@@ -1526,7 +1656,7 @@ void OExportTemplateEditor::LoadTemplate(const QString &filePath)
     // Opening a template replaces the one in memory just as surely as « Create a template » does,
     // so it asks the same question — and it asks it BEFORE reading the file, so a cancelled open
     // leaves nothing half-done.
-    if (!ConfirmDiscardChanges())
+    if (!ConfirmDiscardChanges(this))
     {
         return;
     }

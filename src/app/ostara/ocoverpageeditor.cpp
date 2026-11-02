@@ -123,9 +123,14 @@ OCoverPageEditor::OCoverPageEditor(QWidget *parent) : QWidget(parent)
                 ApplyMenuRow();
                 return;
             }
-            // What was thrown away is gone, and what was saved is saved: either way the page the
-            // user comes back to must not ask again about changes that are already answered for.
-            SetModified(false);
+            // The answer is carried out: what was saved is saved, and what was refused is put back
+            // to the version on disk, so the page the user comes back to shows what is saved and
+            // not what was abandoned. A save that did not happen has already stopped the caller
+            // above, and a reload that fails leaves the flag alone.
+            if (HasUnsavedChanges())
+            {
+                DiscardUnsavedChanges();
+            }
         }
 
         switch (row)
@@ -556,19 +561,15 @@ void OCoverPageEditor::NewTemplate()
         return;
     }
 
-    // No file behind it, and this is the line that matters. With a path left over from a template
-    // opened a moment ago, saving under a different name would move that template's file rather
-    // than write a new one — the old name would survive, the old template would not.
-    m_filePath.clear();
-    m_nameEdit->clear();
-
     // A default-constructed template is exactly what a new one is: no information, and the
     // application's own language — which is what a template that declares none is read as, so a
-    // new one starts where an old one would land.
-    m_template = OCoverPageTemplate();
-    m_template.languages = {DefaultUiLanguage()};
-    m_languageRow->SetLanguages(m_template.languages);
-    RefreshAllBands();
+    // new one starts where an old one would land. **No file behind it**, and this is the part that
+    // matters: with a path left over from a template opened a moment ago, saving under a different
+    // name would move that template's file rather than write a new one — the old name would
+    // survive, the old template would not.
+    OCoverPageTemplate fresh;
+    fresh.languages = {DefaultUiLanguage()};
+    ApplyTemplate(fresh, QString());
 
     ShowMenuPage(MenuCreateTemplate);
     ApplyMenuRow();
@@ -587,6 +588,54 @@ auto OCoverPageEditor::IsModified() const -> bool
 void OCoverPageEditor::SetModified(bool modified)
 {
     m_modified = modified;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+void OCoverPageEditor::ApplyTemplate(const OCoverPageTemplate &tpl, const QString &filePath)
+{
+    // The name the file carries, not the one written inside it: the file is what the library lists
+    // and what the favourite points at, so the field follows the file rather than the two being left
+    // to disagree. No file, no name.
+    m_filePath = filePath;
+    m_nameEdit->setText(filePath.isEmpty() ? QString() : QFileInfo(filePath).completeBaseName());
+    m_template = tpl;
+    m_languageRow->SetLanguages(m_template.languages);
+    RefreshAllBands();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OCoverPageEditor::DiscardUnsavedChanges() -> bool
+{
+    if (m_filePath.isEmpty())
+    {
+        // Nothing on disk to go back to: the blank template « Create a template » gives, with the
+        // application's own language — which is how a template that declares none is read.
+        OCoverPageTemplate blank;
+        blank.languages = {DefaultUiLanguage()};
+        ApplyTemplate(blank, QString());
+        ApplyMenuRow();
+        SetModified(false);
+        return true;
+    }
+
+    OCoverPageTemplate tpl;
+    QString error;
+    if (!OCoverPageTemplateStorage::Load(m_filePath, &tpl, &error))
+    {
+        // The file that held the saved state cannot be read: there is nothing to go back to, so
+        // nothing is thrown away. The document keeps its flag and the close prompt will speak again.
+        QMessageBox::warning(this, tr("Discard changes"),
+                             tr("The saved template could not be read back, so the changes were kept.\n\n%1")
+                                 .arg(error));
+        return false;
+    }
+
+    ApplyTemplate(tpl, m_filePath);
+    ApplyMenuRow();
+    SetModified(false);
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -676,14 +725,7 @@ void OCoverPageEditor::LoadTemplate(const QString &filePath)
         return;
     }
 
-    // The name the file carries, not the one written inside it: the file is what the library
-    // lists and what the favourite points at, so the field follows the file rather than the two
-    // being free to disagree.
-    m_filePath = filePath;
-    m_nameEdit->setText(QFileInfo(filePath).completeBaseName());
-    m_template = tpl;
-    m_languageRow->SetLanguages(m_template.languages);
-    RefreshAllBands();
+    ApplyTemplate(tpl, filePath);
 
     ShowMenuPage(MenuCreateTemplate);
     ApplyMenuRow();

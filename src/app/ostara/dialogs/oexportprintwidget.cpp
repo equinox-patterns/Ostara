@@ -750,7 +750,7 @@ void OExportPrintWidget::Retranslate()
     renameByData(QStringLiteral("single"), tr("Single size"));
     m_rangeLabel->setText(tr("Size range:"));
     m_modelLabel->setText(tr("Print model:"));
-    m_marksLabel->setText(tr("Assembly marks:"));
+    m_marksLabel->setText(tr("PDF layout:"));
     m_coverLabel->setText(tr("Cover page:"));
     m_marginLabel->setText(tr("Document margin:"));
     m_gapLabel->setText(tr("Space between pieces:"));

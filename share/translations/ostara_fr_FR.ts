@@ -8728,8 +8728,8 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Crans d&apos;assemblage</translation>
+        <source>PDF layout</source>
+        <translation>Mise en page PDF</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13785,8 +13785,8 @@ Une pièce plus grande que lui est découpée en morceaux aux bords du tapis, à
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Crans d&apos;assemblage :</translation>
+        <source>PDF layout:</source>
+        <translation>Mise en page PDF :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13959,9 +13959,13 @@ C&apos;est la première chose à réduire quand le plan ne tient pas dans 500 x 
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>Mise en page PDF</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
-        <translation>Crans d&apos;assemblage</translation>
+        <translation>Repères d&apos;assemblage</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="218"/>
@@ -14020,7 +14024,7 @@ C&apos;est la première chose à réduire quand le plan ne tient pas dans 500 x 
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="233"/>
         <source>Dash:</source>
-        <translation>Tiret :</translation>
+        <translation>Pointillé :</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="234"/>
@@ -14117,7 +14121,7 @@ C&apos;est la première chose à réduire quand le plan ne tient pas dans 500 x 
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="323"/>
         <source>Dashed</source>
-        <translation>Tireté</translation>
+        <translation>Pointillés</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="490"/>

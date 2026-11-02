@@ -8001,8 +8001,8 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Cranuri de asamblare</translation>
+        <source>PDF layout</source>
+        <translation>Aspect pagină PDF</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13790,8 +13790,8 @@ O piesă mai mare decât ea este tăiată în bucăți la marginile planșetei, 
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Semne de asamblare:</translation>
+        <source>PDF layout:</source>
+        <translation>Aspect pagină PDF:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13964,6 +13964,10 @@ Este primul lucru de redus când planul nu încape în 500 x 500 cm: piesele în
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>Aspect pagină PDF</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Semne de asamblare</translation>

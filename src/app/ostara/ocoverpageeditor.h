@@ -96,6 +96,18 @@ public:
     auto HasUnsavedChanges() const -> bool override;
     void SaveDocument() override;
 
+    /**
+     * @brief Puts the template back in its saved state, without asking anything.
+     *
+     * What « don't save » means, and it has to be carried out: Sophie — *« je clique sur ne pas
+     * enregistrer, mais si je reclique sur la tab, les modifications ne sont pas annulées »*. A flag
+     * marked clean over work still on screen says the opposite of what was answered.
+     *
+     * Back to the file when there is one, to a blank template when there is not. False when the file
+     * could not be re-read: the work is then still unsaved, and it must not be called abandoned.
+     */
+    auto DiscardUnsavedChanges() -> bool;
+
 signals:
     /**
      * @brief A template was written — the moment what a cover page is drawn with has changed.
@@ -163,6 +175,14 @@ private:
     void NewTemplate();
     void SetModified(bool modified);
     void LoadTemplate(const QString &filePath);
+
+    /**
+     * @brief Puts a template into the editor: the document, the name field, the languages, the bands.
+     *
+     * The page is not touched — which page shows it belongs to the gesture that called, and three of
+     * the four callers stay where they are.
+     */
+    void ApplyTemplate(const OCoverPageTemplate &tpl, const QString &filePath);
 
     /** @brief Asks before throwing away changes that were never saved. True = carry on. */
     auto ConfirmDiscardChanges() -> bool;

@@ -31,6 +31,7 @@
 #include "core/oexportmarksettings.h"
 #include "core/oexportpaginationsettings.h"
 #include "core/oexporttemplate.h"
+#include "widgets/Template/otemplateguard.h"
 #include "../vmisc/def.h"
 
 #include <QList>
@@ -80,7 +81,7 @@ class OExportTemplatesPage;
  * The shell and the preview are what exist here. The pages of the menu and the form of the
  * Edition pane are not written yet, and say so on screen.
  */
-class OExportTemplateEditor : public QWidget
+class OExportTemplateEditor : public QWidget, public OTemplateDocumentEdits
 {
     Q_OBJECT
 
@@ -103,6 +104,24 @@ public:
 
     /** @brief Saves the template, under the name in the field. Reports its own failures. */
     void SaveTemplate();
+
+    // What the shared prompt asks of the document it guards. **The document here is the assembly
+    // marks**, not the cover page: the window holds two templates, and the second one is a document
+    // of its own that answers these same questions for itself.
+    auto HasUnsavedChanges() const -> bool override;
+    void SaveDocument() override;
+
+    /**
+     * @brief Puts the assembly marks back in their saved state, without asking anything.
+     *
+     * What « don't save » means, and it has to be carried out: Sophie — *« je clique sur ne pas
+     * enregistrer, mais si je reclique sur la tab, les modifications ne sont pas annulées »*. A flag
+     * marked clean over work still on screen says the opposite of what was answered.
+     *
+     * Back to the file when there is one, to a blank template when there is not. False when the file
+     * could not be re-read: the work is then still unsaved, and it must not be called abandoned.
+     */
+    auto DiscardUnsavedChanges() -> bool;
 
 signals:
     /**
@@ -189,8 +208,14 @@ private:
     void LoadTemplate(const QString &filePath);
     void SetModified(bool modified);
 
-    /** @brief Asks before throwing away changes that were never saved. True = carry on. */
-    auto ConfirmDiscardChanges() -> bool;
+    /**
+     * @brief Asks before the document given is thrown away. True = carry on.
+     *
+     * The document is a parameter because this window holds two: its own assembly marks, and the
+     * cover page it shows on its first tab. A gesture that leaves one of them asks about that one,
+     * and saves that one — not the pair.
+     */
+    auto ConfirmDiscardChanges(OTemplateDocumentEdits *document) -> bool;
 
     /**
      * @brief Puts the menu's highlight where the editor actually is.
@@ -213,6 +238,12 @@ private:
     void SetTemplate(const OExportTemplate &tpl);
 
     QTabWidget *m_tabs{nullptr};
+
+    /// The tab the user is coming from — a switch hands over the new one only, and the question
+    /// asked on leaving concerns the one left behind.
+    int m_previousTab{-1};
+    /// Set while a cancelled switch is put back, so restoring the tab does not ask again.
+    bool m_restoringTab{false};
 
     /**
      * Tab 0, and the only part of this window that is not about a plan's decor. It keeps its own

@@ -869,7 +869,7 @@
   </action>
   <action name="actionPdfEditorAssemblyMarks">
    <property name="text">
-    <string>Assembly marks</string>
+    <string>PDF layout</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

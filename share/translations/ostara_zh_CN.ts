@@ -7995,8 +7995,8 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>对位剪口</translation>
+        <source>PDF layout</source>
+        <translation>PDF 版式</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13774,8 +13774,8 @@ A piece larger than it is cut into pieces at the mat borders, to be put back tog
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>拼合记号:</translation>
+        <source>PDF layout:</source>
+        <translation>PDF 版式：</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13948,6 +13948,10 @@ It is the first thing to reduce when the plan does not fit in 500 x 500 cm: the 
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>PDF 版式</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>对位剪口</translation>

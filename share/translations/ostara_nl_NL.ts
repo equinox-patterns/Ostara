@@ -8689,8 +8689,8 @@ maar het is niet te vinden. Ostara gebruikt de indeling .omt/.otu. Kies hoe u ve
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Montageknipjes</translation>
+        <source>PDF layout</source>
+        <translation>PDF-lay-out</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13781,8 +13781,8 @@ Een patroondeel dat groter is dan de mat wordt aan de randen van de mat in stukk
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Pasmerken:</translation>
+        <source>PDF layout:</source>
+        <translation>PDF-lay-out:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13955,6 +13955,10 @@ Het is het eerste dat u verkleint wanneer het plan niet in 500 x 500 cm past: de
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>PDF-lay-out</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Pasmerken</translation>

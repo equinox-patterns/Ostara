@@ -78,6 +78,12 @@
 
 namespace
 {
+// The two pages that are not named after their row: the page a template is edited on is page 0
+// while its row is row 1, and the list of templates is page 1 for row 0. Everywhere else a page and
+// its row carry the same number — see NameMenuRows and ApplyMenuRow.
+constexpr int kEditorPage = 0;
+constexpr int kLibraryPage = 1;
+
 // L'historique : les patrons de la bibliothèque qui nomment le client (ou la collection) choisi. Les mêmes
 // colonnes que la fenêtre de la bibliothèque, moins les actions : ici on ne range pas un patron, on va le
 // chercher sur le disque.
@@ -105,47 +111,9 @@ void OInfoBlockEditor::SetupUI()
     outer->setContentsMargins(0, 0, 0, 0);
     outer->setSpacing(0);
 
-    // The menu and the pages it opens — the shared pair. What each row opens is decided here.
+    // The menu and the pages it opens — the shared pair. What each row opens is decided in OpenRow.
     m_menu = new OTemplateEditorMenu();
-    connect(m_menu, &OTemplateEditorMenu::RowClicked, this, [this](int row) {
-        if (row == 0)
-        {
-            ShowTemplatesList();
-        }
-        else if (row == 1)
-        {
-            NewTemplate();
-        }
-        else if (row == 2)
-        {
-            ShowLogosPage();
-        }
-        else if (row == 3)
-        {
-            ShowClientsPage();
-        }
-        else if (row == 4)
-        {
-            ShowCollectionsPage();
-        }
-        else if (row == 5)
-        {
-            ShowAnnotationsPage();
-        }
-        else if (row == 6)
-        {
-            ShowThumbnailPage();
-        }
-        else if (row == 7)
-        {
-            ShowFoldLineTextPage();
-        }
-
-        // Last, and whatever happened. An action that ran has just moved the page this reads; one
-        // that was cancelled by the unsaved-changes prompt has left it alone — and in that case the
-        // click has already moved the highlight, so the menu would name a page never opened.
-        ApplyMenuRow();
-    });
+    connect(m_menu, &OTemplateEditorMenu::RowClicked, this, &OInfoBlockEditor::OpenRow);
     outer->addWidget(m_menu);
 
     SetupEditorPage();        // index 0
@@ -161,23 +129,94 @@ void OInfoBlockEditor::SetupUI()
     // changes and not when it is shown, and rows without names are a column of nothing.
     NameMenuRows();
 
-    m_menu->HighlightRow(1);
+    m_menu->HighlightRow(MenuCreateTemplate);
     NewTemplate();
+}
+
+void OInfoBlockEditor::OpenRow(int row)
+{
+    // **Leaving the template one is editing is the moment to ask about it — not arriving on it.**
+    // Nothing in this menu leads back to the template held in memory: the rows open libraries and
+    // settings, which are consulted rather than edited, and « Existing templates » only leads to
+    // loading a file from disk. Walking away in silence, as this editor did, left the work in
+    // progress with no way back to it and no question asked — the close prompt was the only one,
+    // and it comes far too late. The cover page editor has asked this since its first version;
+    // this is the same question, asked at the same moment.
+    //
+    // Asking for « Create new » while already there is not leaving — it is starting over, and
+    // NewTemplate has its own question for that.
+    const bool leavingEditor = m_menu->CurrentPage() == kEditorPage && row != MenuCreateTemplate;
+    if (leavingEditor)
+    {
+        if (!ConfirmDiscardChanges())
+        {
+            // The click has already moved the highlight: put it back on the page still open, or
+            // the menu would name one the editor never showed.
+            ApplyMenuRow();
+            return;
+        }
+        // What was saved is saved, and what was given up is answered for: the page the user comes
+        // back to must not ask again about a change that is already decided.
+        SetModified(false);
+    }
+
+    switch (row)
+    {
+        case MenuExistingTemplates:
+            ShowTemplatesList();
+            break;
+
+        case MenuCreateTemplate:
+            NewTemplate();
+            break;
+
+        case MenuLogos:
+            ShowLogosPage();
+            break;
+
+        case MenuClients:
+            ShowClientsPage();
+            break;
+
+        case MenuCollections:
+            ShowCollectionsPage();
+            break;
+
+        case MenuAnnotations:
+            ShowAnnotationsPage();
+            break;
+
+        case MenuThumbnail:
+            ShowThumbnailPage();
+            break;
+
+        case MenuFoldlineText:
+            ShowFoldLineTextPage();
+            break;
+
+        default:
+            break;
+    }
+
+    // Last, and whatever happened. An action that ran has just moved the page this reads; one that
+    // was cancelled by the unsaved-changes prompt has left it alone — and in that case the click
+    // has already moved the highlight, so the menu would name a page never opened.
+    ApplyMenuRow();
 }
 
 void OInfoBlockEditor::NameMenuRows()
 {
     // Eight fixed entries — and **the rows are not the pages**. The library is the first row and the
     // editor's own page the second, where the pages themselves are stacked the other way round:
-    // which row opens which page is decided in SetupUI, and everything else here counts rows.
-    m_menu->SetRowLabel(0, tr("Existing templates"));
-    m_menu->SetRowLabel(1, tr("Create new"));
-    m_menu->SetRowLabel(2, tr("Logo"));
-    m_menu->SetRowLabel(3, tr("Clients"));
-    m_menu->SetRowLabel(4, tr("Collections"));
-    m_menu->SetRowLabel(5, tr("Annotations"));
-    m_menu->SetRowLabel(6, tr("Thumbnail"));
-    m_menu->SetRowLabel(7, tr("Foldline text"));
+    // which row opens which page is decided in OpenRow, and everything else here counts rows.
+    m_menu->SetRowLabel(MenuExistingTemplates, tr("Existing templates"));
+    m_menu->SetRowLabel(MenuCreateTemplate, tr("Create new"));
+    m_menu->SetRowLabel(MenuLogos, tr("Logo"));
+    m_menu->SetRowLabel(MenuClients, tr("Clients"));
+    m_menu->SetRowLabel(MenuCollections, tr("Collections"));
+    m_menu->SetRowLabel(MenuAnnotations, tr("Annotations"));
+    m_menu->SetRowLabel(MenuThumbnail, tr("Thumbnail"));
+    m_menu->SetRowLabel(MenuFoldlineText, tr("Foldline text"));
 }
 
 void OInfoBlockEditor::RetranslateUI()
@@ -186,7 +225,7 @@ void OInfoBlockEditor::RetranslateUI()
     // rebuild below (menu, section list) resolves in the new language.
     OPieceCartoucheCatalogue::InvalidateCache();
 
-    // Left menu — six fixed entries.
+    // Left menu — eight fixed entries.
     NameMenuRows();
 
     // Editor page — top bar.
@@ -1426,7 +1465,7 @@ void OInfoBlockEditor::NewTemplate()
 
     m_template = OPieceCartoucheTemplate(tr("Template 1"));
     m_filePath.clear();
-    m_menu->ShowPage(0);
+    m_menu->ShowPage(kEditorPage);
     m_nameEdit->setText(m_template.Name());
     m_languageRow->SetLanguages(m_template.Languages());
     RefreshSectionList();
@@ -1444,43 +1483,12 @@ void OInfoBlockEditor::ShowTemplatesList()
 //---------------------------------------------------------------------------------------------------------------------
 void OInfoBlockEditor::OpenOnPage(int page)
 {
-    switch (page)
-    {
-        case 0:
-            m_menu->HighlightRow(0);
-            ShowTemplatesList();
-            break;
-        case 1:
-            m_menu->HighlightRow(1);
-            NewTemplate();
-            break;
-        case 2:
-            m_menu->HighlightRow(2);
-            ShowLogosPage();
-            break;
-        case 3:
-            m_menu->HighlightRow(3);
-            ShowClientsPage();
-            break;
-        case 4:
-            m_menu->HighlightRow(4);
-            ShowCollectionsPage();
-            break;
-        case 5:
-            m_menu->HighlightRow(5);
-            ShowAnnotationsPage();
-            break;
-        case 6:
-            m_menu->HighlightRow(6);
-            ShowThumbnailPage();
-            break;
-        case 7:
-            m_menu->HighlightRow(7);
-            ShowFoldLineTextPage();
-            break;
-        default:
-            break;
-    }
+    // This entry point numbers its pages like the rows — 0 = Existing templates, 1 = Create new,
+    // 2 = Logo … 7 = Foldline text — because that is what the main window's menu asks for, and it is
+    // NOT how the pages of the stack are numbered (the editor is page 0 for row 1). Handing the
+    // number to OpenRow is therefore exact, and it is what makes a jump from the main menu ask the
+    // same question as a click before leaving a template that is not saved.
+    OpenRow(page);
 }
 
 void OInfoBlockEditor::LoadFile(const QString &filePath)
@@ -1503,7 +1511,7 @@ void OInfoBlockEditor::LoadFile(const QString &filePath)
 
     m_template = tpl;
     m_filePath = filePath;
-    m_menu->ShowPage(0);
+    m_menu->ShowPage(kEditorPage);
     m_nameEdit->setText(m_template.Name());
     m_languageRow->SetLanguages(m_template.Languages());
     RefreshSectionList();
@@ -1670,12 +1678,12 @@ void OInfoBlockEditor::ApplyMenuRow()
     int row = -1;
     switch (m_menu->CurrentPage())
     {
-        case 0: // the editor page
-            row = m_filePath.isEmpty() ? 1 : -1;
+        case kEditorPage:
+            row = m_filePath.isEmpty() ? MenuCreateTemplate : -1;
             break;
 
-        case 1: // the library list — row 0, and the page numbers are offset by one from there on
-            row = 0;
+        case kLibraryPage: // the library list — row 0, and the page numbers are offset by one from there on
+            row = MenuExistingTemplates;
             break;
 
         default:

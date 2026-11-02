@@ -7999,8 +7999,8 @@ mutta sitä ei löytynyt. Ostara käyttää .omt/.otu-muotoa. Valitse, miten jat
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Kokoamismerkit</translation>
+        <source>PDF layout</source>
+        <translation>PDF-asettelu</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13781,8 +13781,8 @@ Sitä suurempi osa leikataan paloiksi alustan reunoilla ja kootaan uudelleen kui
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Kohdistusmerkit:</translation>
+        <source>PDF layout:</source>
+        <translation>PDF-asettelu:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13955,6 +13955,10 @@ Se on ensimmäinen asia, jota pienennetään, kun asettelu ei mahdu 500 x 500 cm
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>PDF-asettelu</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Kohdistusmerkit</translation>

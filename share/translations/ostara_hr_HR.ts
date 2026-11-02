@@ -8691,8 +8691,8 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Oznake sastavljanja</translation>
+        <source>PDF layout</source>
+        <translation>Raspored PDF-a</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13790,8 +13790,8 @@ Dio veći od nje reže se u komade na rubovima podloge, koje treba sastaviti kao
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Oznake sastavljanja:</translation>
+        <source>PDF layout:</source>
+        <translation>Raspored PDF-a:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13964,6 +13964,10 @@ To je prvo što treba smanjiti kada plan ne stane u 500 x 500 cm: sami dijelovi 
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>Raspored PDF-a</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Oznake sastavljanja</translation>

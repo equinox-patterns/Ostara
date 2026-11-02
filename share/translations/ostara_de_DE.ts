@@ -8689,8 +8689,8 @@ sie wurde jedoch nicht gefunden. Ostara verwendet das Format .omt/.otu. Wählen 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="872"/>
-        <source>Assembly marks</source>
-        <translation>Montagemarken</translation>
+        <source>PDF layout</source>
+        <translation>PDF-Layout</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="880"/>
@@ -13781,8 +13781,8 @@ Ein Schnittteil, das größer ist als sie, wird an den Mattenrändern in Stücke
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="753"/>
-        <source>Assembly marks:</source>
-        <translation>Montagemarken:</translation>
+        <source>PDF layout:</source>
+        <translation>PDF-Layout:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprintwidget.cpp" line="754"/>
@@ -13955,6 +13955,10 @@ Er ist das Erste, was verringert wird, wenn der Plan nicht in 500 x 500 cm passt
     </message>
     <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="216"/>
+        <source>PDF layout</source>
+        <translation>PDF-Layout</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexporttemplateeditor.cpp" line="240"/>
         <source>Assembly marks</source>
         <translation>Montagemarken</translation>

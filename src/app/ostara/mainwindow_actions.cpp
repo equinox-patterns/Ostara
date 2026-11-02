@@ -408,7 +408,7 @@ void MainWindow::CreateActions()
     connect(ui->actionInfoBlockThumbnail, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(6); });
     connect(ui->actionInfoBlockFoldLineText, &QAction::triggered, this, [this]() { ActionInfoBlock_triggered(7); });
 
-    // 0 = Cover page, 1 = Assembly marks — the two tabs of the PDF editor.
+    // 0 = Cover page, 1 = PDF layout — the two tabs of the PDF editor.
     connect(ui->actionPdfEditorCoverPage, &QAction::triggered, this,
             [this]() { ActionExportTemplates_triggered(0); });
     connect(ui->actionPdfEditorAssemblyMarks, &QAction::triggered, this,
