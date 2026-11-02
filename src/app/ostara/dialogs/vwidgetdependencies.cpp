@@ -45,7 +45,7 @@
 #include "../vwidgets/vgraphicssimpletextitem.h"
 #include "../vwidgets/vsimplecurve.h"
 #include "../vwidgets/vsimplepoint.h"
-#include "../widgets/omenuglyph.h"
+#include "omenuglyph.h"
 
 #include <QClipboard>
 #include <QGraphicsItem>

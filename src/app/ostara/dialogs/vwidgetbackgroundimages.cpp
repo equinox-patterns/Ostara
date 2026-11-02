@@ -46,7 +46,7 @@
 #include "../vtools/undocommands/image/zvaluemovebackgroundimage.h"
 #include "../vwidgets/vmousewheelwidgetadjustmentguard.h"
 #include "ui_vwidgetbackgroundimages.h"
-#include "../widgets/omenuglyph.h"
+#include "omenuglyph.h"
 
 #include <QMenu>
 #include <QPushButton>

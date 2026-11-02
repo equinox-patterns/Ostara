@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "vdrawtool.h"
+#include "../vtheme/omenuglyph.h"
 #include "../vtheme/vtheme.h"
 
 #include <QDialog>
@@ -275,10 +276,11 @@ void VDrawTool::RunContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 it
     QMenu menu;
 
     // Build menu structure
-    QAction const *actionOption = nullptr;
+    QAction *actionOption = nullptr;
     if (withOptions)
     {
-        actionOption = menu.addAction(VTheme::ThemedIcon(QStringLiteral("gear-six")), VDrawTool::tr("Options"));
+        actionOption = menu.addAction(VDrawTool::tr("Options"));
+        OMenuGlyph::SetGlyph(actionOption, QStringLiteral("gear-six"));
     }
 
     // add the menu "add to group" to the context menu
@@ -289,6 +291,11 @@ void VDrawTool::RunContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 it
 
     QAction *actionShowLabel = CreateShowLabelAction(menu, itemType, itemId);
     QAction *actionRemove = CreateRemoveAction(menu);
+
+    // A row of a menu under the cursor has an accent background in both themes, and the glyph of the active
+    // theme (#2b2b2b in light) dies on it: under the cursor every entry takes the dark set of the same name
+    // (Icons.md §2, "règle ligne foncée"). Installed once for the whole menu, submenu titles included.
+    OMenuGlyph::InstallHover(&menu, &menu);
 
     // Execute menu and handle selection
     QAction const *selectedAction = menu.exec(event->screenPos());
@@ -371,7 +378,8 @@ auto VDrawTool::CreateAddToGroupMenu(QMenu &menu, quint32 itemId) -> QActionGrou
         return actionsAddToGroup;
     }
 
-    QMenu *menuAddToGroup = menu.addMenu(VTheme::ThemedIcon(QStringLiteral("plus")), tr("Add to layer"));
+    QMenu *menuAddToGroup = menu.addMenu(tr("Add to layer"));
+    OMenuGlyph::SetGlyph(menuAddToGroup->menuAction(), QStringLiteral("plus"));
 
     auto list = QStringList(groupsNotContainingItem.values());
     list.sort(Qt::CaseInsensitive);
@@ -403,7 +411,8 @@ auto VDrawTool::CreateRemoveFromGroupMenu(QMenu &menu, quint32 itemId) -> QActio
         return actionsRemoveFromGroup;
     }
 
-    QMenu *menuRemoveFromGroup = menu.addMenu(VTheme::ThemedIcon(QStringLiteral("minus")), tr("Remove from layer"));
+    QMenu *menuRemoveFromGroup = menu.addMenu(tr("Remove from layer"));
+    OMenuGlyph::SetGlyph(menuRemoveFromGroup->menuAction(), QStringLiteral("minus"));
 
     auto list = QStringList(groupsContainingItem.values());
     list.sort(Qt::CaseInsensitive);
@@ -460,7 +469,15 @@ auto VDrawTool::CreateShowLabelAction(QMenu &menu, GOType itemType, quint32 item
 
     if (itemType == GOType::Point)
     {
-        actionShowLabel->setChecked(IsLabelVisible(itemId));
+        const bool visible = IsLabelVisible(itemId);
+        actionShowLabel->setChecked(visible);
+
+        // Same convention as the node menu of the Details mode: the glyph marks the entry that is ON, and an
+        // entry that is off carries none — this is a toggle, not an icon with two states.
+        if (visible)
+        {
+            OMenuGlyph::SetGlyph(actionShowLabel, QStringLiteral("check"));
+        }
     }
     else
     {
@@ -484,7 +501,8 @@ auto VDrawTool::CreateRemoveAction(QMenu &menu) -> QAction *
 {
     using namespace Qt::Literals::StringLiterals;
 
-    QAction *actionRemove = menu.addAction(VTheme::ThemedIcon(QStringLiteral("trash")), VDrawTool::tr("Delete"));
+    QAction *actionRemove = menu.addAction(VDrawTool::tr("Delete"));
+    OMenuGlyph::SetGlyph(actionRemove, QStringLiteral("trash"));
     RemoveStatus const status = IsRemovable();
     actionRemove->setEnabled(status == RemoveStatus::Removable || status == RemoveStatus::Blocked);
 

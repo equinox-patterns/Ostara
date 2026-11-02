@@ -43,7 +43,7 @@
 #include "../vdispatch/qt_dispatch.h"
 #include "otranslation.h"
 #include "vtheme.h"
-#include "../widgets/omenuglyph.h"
+#include "omenuglyph.h"
 #include "../vmisc/commandoptions.h"
 #include "../vmisc/vsysexits.h"
 #include "../vmisc/vvalentinasettings.h"

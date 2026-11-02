@@ -15,6 +15,10 @@ set(VTHEME_SOURCES
     vtoolstyle.cpp
     vpatternpiecestyle.h
     vpatternpiecestyle.cpp
+    # The glyphs of a menu (rest icon of the theme, dark variant under the cursor): one implementation,
+    # used by the application's docks and by the drawing tools alike.
+    omenuglyph.h
+    omenuglyph.cpp
 )
 
 add_library(VThemeLib STATIC ${VTHEME_SOURCES})
