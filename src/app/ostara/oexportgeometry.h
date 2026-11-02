@@ -186,16 +186,34 @@ struct OExportPieceGeometry
     /// can be true while the direction belongs to the group. The masking is done on the item.
     OExportCuttingDirection::Direction direction{};
 
-    /// Whether this piece is cut ON THE FOLD — its fold line is one of its own edges.
+    /// Whether this piece HAS a fold line — one of its own edges.
     ///
     /// **Read on the LINE, never on the marking's type**: `FoldLineType` is born at
     /// `TwoArrowsTextAbove`, so "the type is not None" is true of every piece ever created — the
     /// error that left the guard silent the first time (§15.2). What says a piece has a fold is
     /// `SeamAllowanceMirrorLine` being there, and that is how the canvas reads it too.
     ///
-    /// On a folded plan such a piece is laid **folded**, with that line glued to the fabric's fold;
-    /// on a flat plan it is laid unfolded, as it always was.
+    /// It says the pattern DECLARES a fold, not that the cut lays it folded: a piece whose
+    /// « Show unfolded piece » is checked keeps its line but is cut whole. See @ref laidFolded.
     bool onFold{false};
+
+    /// Whether this piece is LAID FOLDED on folded fabric — half the shape, its fold line on the
+    /// fabric's fold.
+    ///
+    /// **The patternmaker's choice wins**: a fold line whose « Show unfolded piece » is unchecked
+    /// is laid folded; the same line with it checked is cut whole, and belongs to the flat band.
+    /// False on a flat plan, where everything is unfolded.
+    ///
+    /// ⚠️ Not the same as @ref onFold, which only says the line is there. The projector, for one,
+    /// keeps `onFold` (its cartouche still says "Cut 1 on fold") while laying the piece unfolded.
+    bool laidFolded{false};
+
+    /// Whether this piece is laid in the FLAT band — a whole piece, cut on a single layer.
+    ///
+    /// True for a piece the patternmaker unfolded, and for the odd remainder of a cut: on folded
+    /// fabric an even cut is posed in two layers (`Cut/2` poses), and `Cut%2` is cut flat. That
+    /// is the rule « cut 3 → 2 + 1 ».
+    bool flatBand{false};
 
     /// Whether this geometry is the **mirrored twin** of a piece cut on the fold.
     ///

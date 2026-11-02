@@ -102,6 +102,25 @@ struct OExportFoldedZone
     /// Le côté du rectangle où le tissu est plié. L'autre côté est une lisière (ou une cassure de
     /// lisière), donc une matière à ne pas traverser.
     bool foldOnTheLeft{true};
+
+    /// Une zone PLATE : une seule épaisseur, aucune ligne de pli à tracer.
+    ///
+    /// C'est la bande des pièces entières — celles que le modéliste a dépliées, et le reste impair
+    /// d'un cut. Elle n'a pas de pli, donc pas de `foldOnTheLeft` à lire : le canvas n'y trace
+    /// aucune ligne de pli.
+    bool folded{true};
+
+    /// Combien de placements cette zone porte, dans l'ordre où ils sont rangés.
+    ///
+    /// ⚠️ **C'est ce compte qui dit à quelle bande appartient une pièce**, et rien d'autre. La
+    /// géométrie ne peut pas le dire : `OExportPlacement::y` est le point de PLACEMENT, pas le haut
+    /// de la pièce, et `originY`/`extentY` sont mesurés AVANT rotation. Une pièce taillée dans le
+    /// biais a une boîte tournée qui n'a plus aucun rapport avec ces deux nombres — elle était donc
+    /// classée dans une autre bande et sortait de son canvas.
+    ///
+    /// Les placements sont rangés zone par zone, dans l'ordre de cette liste : un compte suffit, et
+    /// il est exact.
+    int placementCount{0};
 };
 
 /// @brief The result of one nesting run.

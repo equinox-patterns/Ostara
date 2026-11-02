@@ -96,6 +96,22 @@ namespace
 /// submission that deadlocks the pool.
 constexpr int kExportNestingThreads = 1;
 
+/// Le rectangle que l'export d'image rend : **TOUT ce que le canvas dessine**, pas le bac.
+///
+/// ⚠️ Le PNG (et le SVG) rendait `drawnRect`, le rectangle du TISSU. Or les cadres des canvas, les
+/// flèches de pli et les valeurs largeur × hauteur sont posés **hors du bac** — au-dessus de chaque
+/// bande, et dans les vides qui les séparent. Rendre le seul bac les coupait : Sophie voyait à
+/// l'écran ce que le fichier ne contenait pas.
+///
+/// ⚠️ **Ce n'est pas `drawnRect` qui change.** Il reste le tissu, et c'est lui qui donne la longueur
+/// de métrage, le plan de correction et la barre de statut. Seul le rectangle RENDU s'élargit à ce
+/// qui est dessiné ; l'échelle, elle, ne bouge pas — l'image est plus grande, pas étirée.
+auto RenderedRect(const QGraphicsScene &scene, const QRectF &fallback) -> QRectF
+{
+    const QRectF items = scene.itemsBoundingRect();
+    return items.isValid() && !items.isEmpty() ? items : fallback;
+}
+
 /// L'écart entre le plan de tissu et celui de la doublure, en PIXELS — la scène est en pixels à
 /// `PrintDPI`, comme tout le reste.
 ///
@@ -284,14 +300,19 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
     // et une paire n'additionne pas ses yards — on n'achète pas deux étoffes sur un seul chiffre.
     // La note de pli, elle, ouvre la moitié qu'elle concerne, dans la même unité que la laize qui
     // suit — 70 puis 140 — pour que le rapport « moitié » se vérifie sans conversion mentale.
-    const auto figuresOf = [](qreal widthMm, qreal lengthMm, bool folded) -> QString
+    const auto figuresOf = [](qreal widthMm, qreal lengthMm, bool folded, qreal canvasWidthMm) -> QString
     {
         QString text;
 
-        if (folded)
+        // ⚠️ **La moitié de la laize n'est plus la largeur du canevas dès qu'une bande plate
+        // s'ajoute.** Le canevas vaut `colonne pliée + bande plate` — plus que la moitié, et
+        // strictement moins que la laize. La ligne ne s'écrit donc que lorsque le canevas EST la
+        // moitié : sur un plan entièrement plié, elle garde son mot d'hier, et sur un plan mixte
+        // elle se tait plutôt que de mentir.
+        if (folded && qAbs(canvasWidthMm * 2.0 - widthMm) < 0.5)
         {
             text += MainWindow::tr("Canvas: half fabric width %1")
-                        .arg(OLengthUnits::Format(widthMm / 2.0, Unit::Cm))
+                        .arg(OLengthUnits::Format(canvasWidthMm, Unit::Cm))
                     + QStringLiteral(" · ");
         }
 
@@ -310,7 +331,7 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
     if (not output.liningPlan)
     {
         return figuresOf(output.documentWidthMm, FromPixel(drawing.drawnRect.height(), Unit::Mm),
-                         output.foldedFabric)
+                         output.foldedFabric, FromPixel(drawing.drawnRect.width(), Unit::Mm))
                + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
     }
 
@@ -328,14 +349,15 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
     const QString fabric =
         QStringLiteral("<b>%1</b> : ").arg(MainWindow::tr("Fabric"))
         + figuresOf(output.documentWidthMm, FromPixel(drawing.drawnRect.height(), Unit::Mm),
-                    output.foldedFabric);
+                    output.foldedFabric, FromPixel(drawing.drawnRect.width(), Unit::Mm));
 
     // Le métrage de la doublure est celui de SON plan, lu dans son propre résultat : c'est le bac de
     // la doublure, et il n'a rien à voir avec celui du tissu.
     const QString lining =
         QStringLiteral("<b>%1</b> : ").arg(MainWindow::tr("Lining"))
         + figuresOf(output.documentLiningWidthMm,
-                    FromPixel(output.liningResult.usedHeightPx, Unit::Mm), output.foldedFabric);
+                    FromPixel(output.liningResult.usedHeightPx, Unit::Mm), output.foldedFabric,
+                    FromPixel(output.liningResult.binWidthPx, Unit::Mm));
 
     return fabric + QStringLiteral(" / ") + lining
            + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
@@ -1983,8 +2005,13 @@ void MainWindow::ExportActiveOutputToImage()
         return;
     }
 
+    // ⚠️ Le dialogue s'ouvre sur la MÊME étendue que le fichier : ce qui est dessiné, pas le seul
+    // bac. Annoncer la hauteur du tissu pour écrire une image plus haute serait un chiffre faux.
+    const OExportDrawing referenceDrawing = ComputeExportDrawing(*reference);
+    QGraphicsScene referenceScene;
+    DrawExportDrawing(&referenceScene, *reference, referenceDrawing);
     const OExportPlanImage::Plan referencePlan =
-        OExportPlanImage::PlanOf(ComputeExportDrawing(*reference).drawnRect);
+        OExportPlanImage::PlanOf(RenderedRect(referenceScene, referenceDrawing.drawnRect));
 
     // Le dossier de la gamme quand elle en a un — la règle d'`ExportFolder`, celle du PDF : les deux
     // exports d'une même génération atterrissent côte à côte.
@@ -2039,7 +2066,16 @@ void MainWindow::ExportActiveOutputToImage()
         }
 
         const OExportDrawing drawing = ComputeExportDrawing(*output);
-        const OExportPlanImage::Plan plan = OExportPlanImage::PlanOf(drawing.drawnRect);
+
+        QGraphicsScene scene;
+        DrawExportDrawing(&scene, *output, drawing);
+
+        // ⚠️ **Le plan rendu est ce qui est DESSINÉ, jamais le seul bac.** Les cadres des canvas,
+        // les flèches de pli et les valeurs largeur × hauteur sont hors du tissu — au-dessus de
+        // chaque bande et dans les vides entre elles. Rendre `drawnRect` les coupait en haut et en
+        // bas : le fichier ne contenait pas ce que l'écran montrait.
+        const OExportPlanImage::Plan plan =
+            OExportPlanImage::PlanOf(RenderedRect(scene, drawing.drawnRect));
 
         // An SVG's page IS a physical size, and PrintDPI is what expresses it; a PNG's pixels ARE
         // the size, so its resolution is the user's. One figure for the whole run — the size was
@@ -2047,9 +2083,6 @@ void MainWindow::ExportActiveOutputToImage()
         const OExportPlanImage::Target target = OExportPlanImage::SizeFor(
             plan, options.TargetMm(), options.Axis(),
             options.Format() == OExportPlanImageWriter::Format::Svg ? PrintDPI : options.Dpi());
-
-        QGraphicsScene scene;
-        DrawExportDrawing(&scene, *output, drawing);
 
         const QString path = QDir(options.Directory()).filePath(row.name);
         if (OExportPlanImageWriter::Write(path, &scene, plan, target, options.Format(), output->name))

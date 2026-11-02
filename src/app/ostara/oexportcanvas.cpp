@@ -27,6 +27,10 @@
 #include "oexportcanvas.h"
 
 #include <QFontMetricsF>
+#include <QGraphicsPathItem>
+#include <QPainterPath>
+
+#include <algorithm>
 
 #include "core/ogratedsizestyles.h"
 #include "core/oexporttemplate.h"
@@ -1810,6 +1814,30 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // transformations de scène — verrait autre chose que ce que le plan mesure.
     const QTransform originMatrix = QTransform::fromTranslate(seat.origin.x(), seat.origin.y());
 
+    // ── Les BANDES du plan plié, et le vide qui les sépare à l'écran ─────────────────────────────
+    //
+    // ⚠️ **Une bande = un canvas, et la séparation ne vit QUE ici.** Le run additionne des hauteurs,
+    // il ne connaît aucun vide : le métrage, `usedHeightPx` et les fichiers DXF/HPGL ne voient rien
+    // de ce qui suit. Ce sont deux choses que le dessin décide seul, et il les décide ensemble :
+    //
+    //   1. chaque bande est un canvas fermé, à ses propres dimensions ;
+    //   2. les bandes sont écartées d'un vide lisible, et **leurs pièces suivent leur bande**.
+    //
+    // ⚠️ **Décaler le cadre sans décaler ses pièces ne veut rien dire** : une pièce sortirait de son
+    // canvas. Le décalage est donc une propriété de la BANDE, appliquée au cadre comme aux pièces —
+    // d'où ces deux variables déclarées ici, avant les pièces, qui sont dessinées plus bas.
+    QVector<QRectF> bandRects;
+    QVector<int> placementBand;   ///< la bande de CHAQUE placement, dans l'ordre du run
+    qreal bandGapPx = 0.0;    ///< le pas d'une bande à la suivante : le vide, et le titre dedans
+    qreal bandLeadPx = 0.0;   ///< la place du titre au-dessus de la PREMIÈRE bande
+    // ⚠️ **La bande d'une pièce ne se devine PAS depuis sa géométrie.** `OExportPlacement::y` est
+    // le point de placement, pas le haut de la pièce, et `originY`/`extentY` sont mesurés avant
+    // rotation : une pièce taillée dans le BIAIS a une boîte tournée qui n'a plus aucun rapport
+    // avec eux, et elle était classée dans une autre bande — donc dessinée hors de son canvas.
+    // C'est la nidification qui sait à quelle zone elle a confié chaque pièce ; `placementBand` ne
+    // fait que lire ce qu'elle a rangé, dans l'ordre où elle l'a rangé.
+
+
     // Le premier plan d'un run — et le seul, dans tous les cas sauf la paire — vide la scène. Le
     // second s'ajoute au premier : deux appels, une seule scène.
     if (seat.clearScene)
@@ -1915,12 +1943,18 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     }
     else
     {
-        auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
-        bin->setPen(QPen(Qt::black, 1));
-        bin->setBrush(QBrush(Qt::white));
-        bin->setZValue(kBinZ);
-        bin->setPos(seat.origin);
-        scene->addItem(bin);
+        // ⚠️ **Pas de bac autour d'un plan à plusieurs bandes.** Ce rectangle enfermerait les vides
+        // qui les séparent et redirait, en un seul trait, le contraire de ce que les canvas
+        // montrent : chaque bande a le sien, et c'est lui qui porte le fond blanc.
+        if (result.foldedZones.size() < 2)
+        {
+            auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
+            bin->setPen(QPen(Qt::black, 1));
+            bin->setBrush(QBrush(Qt::white));
+            bin->setZValue(kBinZ);
+            bin->setPos(seat.origin);
+            scene->addItem(bin);
+        }
 
         // ── La grille des tapis d'un plotter ──────────────────────────────────────────────────────
         //
@@ -2001,24 +2035,242 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         zonePen.setCapStyle(Qt::FlatCap);
         zonePen.setDashPattern({20.0, 10.0});
 
+        // ── Chaque BANDE est son propre CANVAS, et les canvas sont écartés ─────────────────────
+        //
+        // ⚠️ **Une bande = un canvas.** Ce n'est pas décoratif : c'est la seule façon de lire d'un
+        // coup d'œil que le plan vaut la SOMME des hauteurs et non celle d'un bac unique. Le run,
+        // lui, ne connaît aucun vide — `usedHeightPx`, le métrage et les fichiers DXF/HPGL sont
+        // ceux du plan continu, et rien ici ne les touche.
+        //
+        // ⚠️ **On regroupe par HAUT de zone.** L/R partagent le même haut : ils sont une bande, donc
+        // un canvas. Le pli simple en est une autre, la bande mixte une troisième.
         for (const OExportFoldedZone &zone : result.foldedZones)
         {
-            if (result.foldedZones.size() > 1)
+            bool merged = false;
+            for (QRectF &band : bandRects)
             {
-                auto *rect = new QGraphicsRectItem(zone.rect);
-                rect->setPen(zonePen);
-                rect->setBrush(Qt::NoBrush);
-                rect->setZValue(kBinZ);
-                rect->setPos(seat.origin);
-                scene->addItem(rect);
+                if (qAbs(band.top() - zone.rect.top()) < 0.5)
+                {
+                    band = band.united(zone.rect);
+                    merged = true;
+                    break;
+                }
+            }
+            if (!merged)
+            {
+                bandRects.append(zone.rect);
+            }
+        }
+        std::sort(bandRects.begin(), bandRects.end(),
+                  [](const QRectF &left, const QRectF &right) { return left.top() < right.top(); });
+
+        const qreal cmPerPx = 1.0 / ToPixel(1.0, Unit::Cm);
+
+        // Le titre se dimensionne sur le PLAN, et le vide se dimensionne sur le TITRE : il doit tenir
+        // dehors, au-dessus du cadre. C'est cet ordre-là, et c'est pour ça que les deux se calculent
+        // après les bandes et avant de les dessiner.
+        //
+        // ⚠️ **En pixels de SCÈNE, jamais en points.** Un `QGraphicsSimpleTextItem` sans police prend
+        // la taille par défaut, rendue à l'échelle de l'écran : sur un plan de deux mètres, le titre
+        // faisait trois pixels. Proportionné à la largeur du canvas, il grossit avec le plan.
+        qreal widestBand = 0.0;
+        for (const QRectF &band : bandRects)
+        {
+            widestBand = std::max(widestBand, band.width());
+        }
+        const int labelPx = qMax(12, qRound(widestBand * 0.025));
+        // ⚠️ **Aucune place réservée au-dessus de la PREMIÈRE bande — `Canvas = Tissu`.** Le cadre de
+        // la première bande commence exactement au bord du tissu, à l'origine du bac. Réserver une
+        // hauteur pour son titre décalait ce cadre et faisait grandir tout le dessin : c'est ce que
+        // Sophie a vu. Ce n'était pas une séparation, c'était un agrandissement.
+        bandLeadPx = 0.0;
+        bandGapPx = labelPx * 1.9;    // un cadre, puis son titre, puis le cadre suivant
+
+        // La bande de chaque placement, lue dans l'ordre où le run les a rangés : chaque zone dit
+        // combien elle en porte, et la liste des zones suit exactement la liste des placements.
+        // Aucune géométrie là-dedans, donc rien que la rotation puisse fausser.
+        placementBand.clear();
+        placementBand.reserve(result.placements.size());
+        for (const OExportFoldedZone &zone : result.foldedZones)
+        {
+            int band = 0;
+            for (int i = 0; i < bandRects.size(); ++i)
+            {
+                if (qAbs(bandRects.at(i).top() - zone.rect.top()) < 0.5)
+                {
+                    band = i;
+                    break;
+                }
+            }
+            for (int k = 0; k < zone.placementCount; ++k)
+            {
+                placementBand.append(band);
+            }
+        }
+        // Un compte qui ne retombe pas sur le nombre de placements ne déplace RIEN : mieux vaut
+        // une séparation absente qu'une pièce posée dans une bande qui n'est pas la sienne.
+        if (placementBand.size() != result.placements.size())
+        {
+            placementBand.clear();
+        }
+
+        for (int index = 0; index < bandRects.size(); ++index)
+        {
+            const qreal shiftY = bandLeadPx + static_cast<qreal>(index) * bandGapPx;
+            const QRectF canvas = bandRects.at(index).translated(0.0, shiftY);
+
+            // Le canvas : un cadre FERMÉ, avec son propre fond blanc. Les bandes ne se touchent plus.
+            auto *frame = new QGraphicsRectItem(canvas);
+            frame->setPen(QPen(Qt::black, 1));
+            frame->setBrush(QBrush(Qt::white));
+            frame->setZValue(kBinZ);
+            frame->setPos(seat.origin);
+            scene->addItem(frame);
+
+            // ── Le titre, PAR SECTION ────────────────────────────────────────────────────────────
+            //
+            // ⚠️ **Une bande à deux plis a DEUX titres.** Un seul titre pour les deux était
+            // mensonger : sur une laize de 140, L/R annonçait « 70 × 54,8 » alors que chaque moitié
+            // fait 35 — la largeur affichée ne correspondait à aucune section. Chaque section dit
+            // maintenant SA largeur et SA longueur, et chacune se pose au-dessus de sa moitié :
+            // **L collé à gauche, R collé à droite**.
+            int zoneCount = 0;
+            for (const OExportFoldedZone &zone : result.foldedZones)
+            {
+                if (qAbs(zone.rect.top() - bandRects.at(index).top()) < 0.5)
+                {
+                    ++zoneCount;
+                }
             }
 
-            const qreal foldX = zone.foldOnTheLeft ? zone.rect.left() : zone.rect.right();
-            auto *fold = new QGraphicsLineItem(foldX, zone.rect.top(), foldX, zone.rect.bottom());
-            fold->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
-            fold->setZValue(kBinZ);
-            fold->setPos(seat.origin);
-            scene->addItem(fold);
+            // Le titre est AU-DESSUS du cadre, et sans fond : pas de rectangle derrière lui, pas de
+            // place réservée dans le tissu. Le canvas reste exactement le rectangle de tissu.
+            QFont labelFont;
+            labelFont.setPixelSize(labelPx);
+
+            for (const OExportFoldedZone &zone : result.foldedZones)
+            {
+                if (qAbs(zone.rect.top() - bandRects.at(index).top()) >= 0.5)
+                {
+                    continue;
+                }
+
+                const QRectF section = zone.rect.translated(0.0, shiftY);
+                auto *label = new QGraphicsSimpleTextItem(
+                    QStringLiteral("%1 × %2 cm")
+                        .arg(section.width() * cmPerPx, 0, 'f', 1)
+                        .arg(section.height() * cmPerPx, 0, 'f', 1));
+                label->setFont(labelFont);
+                label->setBrush(Qt::black);
+                label->setZValue(100.0);   // au-dessus des pièces : un titre se lit
+
+                // ── La flèche de pli, et le bloc qu'elle forme avec le texte ─────────────────────
+                //
+                // ⚠️ **Un U couché, une SEULE pointe.** Deux traits parallèles qui s'écartent du
+                // pli, reliés par un demi-tour posé SUR le bord du pli — le cul —, et la pointe au
+                // bout du trait du HAUT, tournée vers l'intérieur : le tissu part, se replie au pli,
+                // et revient. Deux pointes liraient « ça va des deux côtés », ce qui n'est pas ce
+                // qu'on dessine en couture.
+                //
+                // ⚠️ **Le bloc est ancré CÔTÉ PLI** : pli à gauche, le U ouvre la marche et le texte
+                // le suit ; pli à droite, le texte d'abord et le U ferme la marche, cul au bord.
+                const qreal textTop = canvas.top() - labelPx * 1.15;
+                const qreal textWidth = label->boundingRect().width();
+                const qreal arrowWidth = labelPx * 3.0;   // la largeur se voit : c'est le sens
+                const qreal arrowHeight = labelPx * 0.9;
+                const qreal gap = labelPx * 0.35;
+                const qreal margin = labelPx * 0.2;
+
+                const bool foldOnLeft = zone.foldOnTheLeft;
+                qreal arrowLeft = 0.0;
+                qreal textLeft = 0.0;
+                if (foldOnLeft)
+                {
+                    arrowLeft = section.left() + margin;
+                    textLeft = arrowLeft + arrowWidth + gap;
+                }
+                else
+                {
+                    arrowLeft = section.right() - margin - arrowWidth;
+                    textLeft = arrowLeft - gap - textWidth;
+                }
+
+                label->setPos(seat.origin + QPointF(textLeft, textTop));
+                scene->addItem(label);
+
+                // Le U : deux traits parallèles, reliés par le cul posé sur le bord du pli.
+                const qreal centreY = textTop + label->boundingRect().height() * 0.5;
+                const qreal upperY = centreY - arrowHeight * 0.5;
+                const qreal lowerY = centreY + arrowHeight * 0.5;
+                const qreal bendX = foldOnLeft ? arrowLeft : arrowLeft + arrowWidth;
+                const qreal tipX = foldOnLeft ? arrowLeft + arrowWidth : arrowLeft;
+                QPen arrowPen(Qt::black, qMax(1.0, labelPx * 0.09));
+                arrowPen.setCapStyle(Qt::FlatCap);
+
+                QPainterPath uTurn;
+                uTurn.moveTo(tipX, lowerY);
+                uTurn.lineTo(bendX, lowerY);
+                uTurn.lineTo(bendX, upperY);
+                uTurn.lineTo(tipX, upperY);
+
+                auto *arrow = new QGraphicsPathItem(uTurn);
+                arrow->setPen(arrowPen);
+                arrow->setBrush(Qt::NoBrush);
+                arrow->setZValue(100.0);
+                arrow->setPos(seat.origin);
+                scene->addItem(arrow);
+
+                // La pointe, au bout du trait du HAUT, tournée vers l'intérieur.
+                const qreal direction = foldOnLeft ? 1.0 : -1.0;
+                const qreal headLength = labelPx * 0.55;
+                const qreal headHalf = labelPx * 0.32;
+                QPainterPath head;
+                head.moveTo(tipX, upperY);
+                head.lineTo(tipX - direction * headLength, upperY - headHalf);
+                head.lineTo(tipX - direction * headLength, upperY + headHalf);
+                head.closeSubpath();
+
+                auto *arrowHead = new QGraphicsPathItem(head);
+                arrowHead->setPen(arrowPen);
+                arrowHead->setBrush(QBrush(Qt::black));
+                arrowHead->setZValue(100.0);
+                arrowHead->setPos(seat.origin);
+                scene->addItem(arrowHead);
+            }
+
+            // Les zones de la bande, DÉCALÉES avec elle : le trait de pli est une ligne physique, il
+            // suit sa bande. Leur contour pointillé ne se dessine qu'à partir de deux — une bande
+            // d'une seule zone EST le canvas, son cadre le dit déjà.
+            for (const OExportFoldedZone &zone : result.foldedZones)
+            {
+                if (qAbs(zone.rect.top() - bandRects.at(index).top()) >= 0.5)
+                {
+                    continue;
+                }
+
+                const QRectF outline = zone.rect.translated(0.0, shiftY);
+                if (zoneCount > 1)
+                {
+                    auto *rect = new QGraphicsRectItem(outline);
+                    rect->setPen(zonePen);
+                    rect->setBrush(Qt::NoBrush);
+                    rect->setZValue(kBinZ);
+                    rect->setPos(seat.origin);
+                    scene->addItem(rect);
+                }
+
+                if (!zone.folded)
+                {
+                    continue;   // une bande plate n'a pas de pli à tracer
+                }
+
+                const qreal foldX = zone.foldOnTheLeft ? outline.left() : outline.right();
+                auto *fold = new QGraphicsLineItem(foldX, outline.top(), foldX, outline.bottom());
+                fold->setPen(QPen(Qt::black, 1, Qt::DashDotLine));
+                fold->setZValue(kBinZ);
+                fold->setPos(seat.origin);
+                scene->addItem(fold);
+            }
         }
     }
 
@@ -2075,8 +2327,21 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // engine did not put it would be exported somewhere else than it is shown.
                 // The note on the alignment shift — it belongs to the origin, not after the
                 // rotation — travelled with the code, to PieceMatrix.
+                // ⚠️ **Une pièce suit SA bande.** Les canvas sont écartés à l'écran (voir plus
+                // haut), et une pièce laissée à sa place vraie sortirait du canvas qui la porte.
+                // Le décalage est donc inséré ICI, une fois, dans la matrice de placement : il
+                // entraîne le contour, le décor, la grainline et les étiquettes d'un seul coup,
+                // parce qu'ils sont tous construits à partir de cette matrice.
+                //
+                // ⚠️ **Affichage seulement.** Ce décalage ne remonte nulle part : ni dans
+                // `result.placements`, ni dans la hauteur, ni dans le métrage, ni dans les fichiers.
+                // `i` est l'indice du placement dans le run : c'est lui qui porte la bande, pas la
+                // géométrie de la pièce (voir `placementBand` plus haut).
+                const QTransform bandMatrix = QTransform::fromTranslate(
+                    0.0, bandLeadPx + static_cast<qreal>(placementBand.value(i, 0)) * bandGapPx);
                 const QTransform placementMatrix =
-                    OExportFootprint::PieceMatrix(placement, geometry.alignDelta) * originMatrix;
+                    OExportFootprint::PieceMatrix(placement, geometry.alignDelta) * bandMatrix
+                    * originMatrix;
 
                 // The placement is baked into the piece's own matrix rather than into a
                 // transform on the item: an item transform would drag the bounding rect,

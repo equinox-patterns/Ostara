@@ -910,8 +910,31 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // résolveur de direction emploie déjà. Jamais sur `FoldLineType` : il naît à
             // `TwoArrowsTextAbove`, donc « le type n'est pas None » est vrai de toute pièce jamais
             // créée. C'est le défaut qui a rendu le garde-fou muet.
-            geometry.onFold = not OExportCuttingDirection::FoldLine(resolved).isNull();
-            geometry.piece.SetShowFullPiece(not (m_foldedFabric and geometry.onFold));
+            // ⚠️ **Le pli se lit sur la LIGNE, et le choix du modéliste décide de la pose.**
+            //
+            // `onFold` dit seulement que la pièce PORTE un pli — le projecteur s'en sert encore
+            // pour son cartouche (« Cut 1 on fold ») alors qu'il la pose dépliée. Ce qui décide
+            // de la COUPE, c'est `laidFolded` :
+            //   - foldline + « Afficher la pièce dépliée » DÉCOCHÉE → pliée, moitié sur le pli ;
+            //   - foldline + la case COCHÉE                           → entière, bande plate ;
+            //   - pas de foldline                                     → pièce normale, deux épaisseurs.
+            //
+            // Le getter du contour honore `ShowFullPiece` : c'est donc la MÊME pièce que l'écran
+            // dessine et que le moteur nidifie, et rien ne peut diverger.
+            // ⚠️ Sur `geometry.piece`, JAMAIS sur `resolved` : la copie vers `geometry.piece` a déjà
+            // eu lieu plus haut, et muter le local ne changeait rien — le drapeau partait à la
+            // poubelle et la pièce sortait à moitié. C'est l'erreur qui a coûté ce chantier.
+            //
+            // ⚠️ Et « au pli » se lit par `FoldLine` — la SEULE lecture du pli, celle que le
+            // résolveur de direction emploie déjà. Jamais sur `FoldLineType` : il naît à
+            // `TwoArrowsTextAbove`, donc « le type n'est pas None » est vrai de toute pièce jamais
+            // créée. C'est le défaut qui a rendu le garde-fou muet.
+            const bool hasFoldLine = not OExportCuttingDirection::FoldLine(resolved).isNull();
+            const bool shownFull = resolved.IsShowFullPiece();
+            geometry.onFold = hasFoldLine;
+            geometry.laidFolded = m_foldedFabric and hasFoldLine and not shownFull;
+            geometry.flatBand = m_foldedFabric and hasFoldLine and shownFull;
+            geometry.piece.SetShowFullPiece(not (m_foldedFabric and geometry.laidFolded));
 
             // ⚠️ **La variante sans marges suit, à la ligne près.** Une pièce au pli se déplie ou se
             // plie selon la destination, et les deux versions doivent raconter la même chose : un
@@ -1018,36 +1041,55 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         // Forced alignment point, resolved against `target` while it still holds THIS size.
         geometry.alignPointX = OGraded::UnitAlignPointX(id, piece, target);
 
-        // ── La quantité ─────────────────────────────────────────────────────────────────────────
+        // ── La quantité, et la BANDE de chaque copie ─────────────────────────────────────────
         //
-        // Elle a été lue à l'entrée de la boucle, avec le cut : le membre d'abord, sinon le groupe.
-        // Il n'y a plus de repli « sinon 1 » ici — une pièce sans quantité a déjà quitté le plan —
-        // et ce qui reste vaut donc au moins 1.
+        // La quantité a été lue à l'entrée de la boucle, avec le cut : le membre d'abord, sinon le
+        // groupe. Il n'y a plus de repli « sinon 1 » ici — une pièce sans quantité a déjà quitté le
+        // plan — et ce qui reste vaut donc au moins 1.
         //
         // Un run d'impression garde une entrée par pièce : une feuille porte une silhouette, et
         // c'est le moteur qui décide où. Seul un plan de coupe répète.
-        int quantity = cutQuantity;
-        if (OExportFormat::IsCutting(m_format))
+        //
+        // ── Et sur du tissu PLIÉ, chaque copie sait dans quelle BANDE elle va ────────────────
+        //
+        // Trois cas, et c'est le choix du modéliste qui les sépare :
+        //
+        //  - AU PLI (foldline, « Afficher la pièce dépliée » décochée) : toutes les copies sur le
+        //    pli, une pose donne UNE pièce entière — `Cut` poses ;
+        //  - ENTIÈRE (foldline, la case cochée) : toutes les copies en bande PLATE, une pose donne
+        //    une pièce — `Cut` poses ;
+        //  - NORMALE (pas de foldline) : les copies PAIRES sur le pli (deux épaisseurs, une pose
+        //    donne deux pièces), le RESTE IMPAIR en bande plate — `Cut/2` poses pliées et
+        //    `Cut%2` poses plates. C'est la règle « cut 3 → 2 + 1 ».
+        //
+        // ⚠️ Le reste impair est coupé dans UNE seule épaisseur. Poser `ceil(Cut/2)` sur deux
+        // épaisseurs en donnait une de trop — c'est ce que ce découpage répare.
+        //
+        // Hors tissu plié, tout est posé à plat, comme avant : `Cut` poses.
+        int foldedPoses = cutQuantity;
+        int flatPoses = 0;
+        if (OExportFormat::IsCutting(m_format) and m_foldedFabric)
         {
-            // ── Et sur du tissu plié, la moitié ──────────────────────────────────────────────
-            //
-            // ⚠️ **Une pièce hors pli se coupe dans les DEUX épaisseurs** : une seule pose donne
-            // donc deux pièces, la seconde étant le miroir de la première — c'est le pli qui la
-            // fait. Poser « cut » fois en donnerait le double. C'est la moitié qu'on pose,
-            // **arrondie au-dessus** : 1 reste 1 (la pièce sera coupée en double, et c'est sans
-            // conséquence), 3 devient 2, 5 devient 3. Décidé.
-            //
-            // Une pièce **au pli** ne se divise pas : une pose sur le pli donne UNE pièce entière,
-            // pas deux — le pli n'y ajoute pas une seconde pièce, il complète la première.
-            if (m_foldedFabric and not geometry.onFold)
+            if (geometry.laidFolded)
             {
-                quantity = (quantity + 1) / 2;
+                foldedPoses = cutQuantity;
+            }
+            else if (geometry.flatBand)
+            {
+                foldedPoses = 0;
+                flatPoses = cutQuantity;
+            }
+            else
+            {
+                foldedPoses = cutQuantity / 2;
+                flatPoses = cutQuantity % 2;
             }
         }
 
-        for (int copy = 0; copy < quantity; ++copy)
-        {
+        int copyIndex = 0;
+        const auto emitCopy = [&](int pose, bool flatBand) {
             OExportPieceGeometry one = geometry;
+            one.flatBand = flatBand;
 
             // ⚠️ Chaque copie a **son propre nom ET sa propre clé**. `Footprint::compute` regroupe
             // sur le nom pour une pièce isolée : même nom = une seule empreinte, et la copie
@@ -1057,16 +1099,16 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // ⚠️ Et pas de suffixe `_1` : `NestedSvgWriter::stripDedupSuffix` le RETIRE pour
             // retrouver le transform — deux copies nommées ainsi retomberaient sur le même
             // placement à la relecture.
-            if (copy > 0)
+            if (copyIndex > 0)
             {
-                const QString suffix = QStringLiteral("-c%1").arg(copy + 1);
+                const QString suffix = QStringLiteral("-c%1").arg(copyIndex + 1);
                 one.name = geometry.name + suffix;
                 one.key = geometry.key + suffix;
             }
 
             // Une copie sur deux en miroir, quand la copie symétrique est demandée — le motif de
             // HandleSymmetricalCopy (dans l'ancien moteur de nesting), qui retourne les index impairs.
-            if (copy % 2 == 1 && piece.IsSymmetricalCopy())
+            if (pose % 2 == 1 && piece.IsSymmetricalCopy())
             {
                 const QPointF centre = one.piece.DetailBoundingRect().center();
                 one.piece.Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
@@ -1108,7 +1150,7 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
             // le dessin — le canvas ne dessine que ce que le nesting a gardé. Les deux clés
             // diffèrent, sans quoi `Footprint::compute` les unirait en une seule empreinte, et la
             // pose serait une fois et demie.
-            if (m_foldedFabric and one.onFold)
+            if (m_foldedFabric and one.laidFolded)
             {
                 OExportPieceGeometry twin = one;
                 twin.name = one.name + QStringLiteral("-m");
@@ -1122,6 +1164,15 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
 
                 layer.pieces.append(twin);
             }
+        };
+
+        for (int pose = 0; pose < foldedPoses; ++pose, ++copyIndex)
+        {
+            emitCopy(pose, false);
+        }
+        for (int pose = 0; pose < flatPoses; ++pose, ++copyIndex)
+        {
+            emitCopy(pose, true);
         }
     }
 }

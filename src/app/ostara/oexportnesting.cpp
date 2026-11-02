@@ -192,6 +192,13 @@ struct PieceTalk
     std::vector<double> angles{}; ///< les angles de sa direction — jamais vide sur un plan de coupe
     double foldAngle{0.0};        ///< sa rotation au pli, dans son bon sens
 
+    /// Vrai quand la pièce va dans la bande PLATE — une seule épaisseur.
+    ///
+    /// C'est la pièce que le modéliste a dépliée, et le reste IMPAIR d'un cut : sur du tissu plié,
+    /// les copies paires se posent sur deux épaisseurs et la dernière, seule, se coupe à plat.
+    /// Une pièce plate n'est jamais ancrée à un pli ; le planificateur la pose dans son propre bac.
+    bool flatBand{false};
+
     /// Le côté que sa rotation au pli appelle : vrai quand il faut un pli sur le bord DROIT.
     /// **C'est une donnée du patron**, pas un choix : la pièce est dessinée pour un pli, et la
     /// retourner la met à l'envers — sur un tissu à motif, c'est un plan faux.
@@ -522,9 +529,20 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                       const OExportNestingParams &params, const std::vector<Bin::Zone> &zones,
                       const Engine::Config &config, QVector<OExportPlacement> *placements,
                       std::vector<int> *orderedRanks, QVector<OExportFoldedZone> *foldedZones,
-                      double *usedHeightPx, QString *error, bool *abandoned) -> bool
+                      double *usedHeightPx, QString *error, bool *abandoned,
+                      bool flatPiecesBelongHere = false) -> bool
 {
     const double columnPx = params.binWidthPx;
+
+    // ⚠️ **Le miroir n'est JAMAIS un critère premier.** Il n'est acceptable que lorsqu'il fait
+    // gagner de la longueur ; sous un centimètre, il n'y a rien à gagner. Décision de Sophie
+    // (02-11-2026) : « miroir c'est uniquement si nécessaire, si ça crée un gain, ce n'est pas la
+    // priorité, jamais ».
+    //
+    // ⚠️ C'est une LONGUEUR DE TISSU, pas un epsilon de calcul. Les comparaisons se faisaient à
+    // `1e-6` près, et deux arrangements miroirs ne se nidifient jamais au pixel près : le côté qui
+    // miroitait trois pièces sur quatre l'emportait pour un dixième de millimètre.
+    const double kMirrorGainPx = ToPixel(10.0, Unit::Mm);
     // ── Les poses au pli, et leurs deux variantes ──────────────────────────────────────────────
     //
     // Une pièce au pli arrive en DEUX empreintes : elle-même, et son miroir. Une seule sera posée —
@@ -729,6 +747,21 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
             const std::vector<Seat> seats{
                 Seat{foldOnTheLeft, columnPx, SeatMargins(foldOnTheLeft, params.marginPx)}};
             std::vector<int> assignment(static_cast<std::size_t>(talks.size()), 0);
+            // Une pièce de la bande plate n'appartient pas à ce plan : `-1` est le siège « nulle
+            // part », et `evaluate` l'ignore. Sans ceci elle serait comptée dans la colonne pliée
+            // et le moteur refuserait de la poser — deux fois.
+            //
+            // ⚠️ **Ce refus est un choix d'appelant, pas une loi du plan.** Il ne vaut que tant que
+            // quelqu'un d'autre la range ; `flatPiecesBelongHere` le lève pour le candidat à une
+            // seule colonne, où la bande plate n'existe pas et où ces pièces sont des pièces comme
+            // les autres.
+            for (int rank = 0; rank < talks.size(); ++rank)
+            {
+                if (talks.at(rank).flatBand && !flatPiecesBelongHere)
+                {
+                    assignment[static_cast<std::size_t>(rank)] = -1;
+                }
+            }
             ZonePlan trial[3];
             if (!evaluate(seats, assignment, trial, height))
             {
@@ -755,9 +788,18 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         double flippedHeight = 0.0;
         if (singleEdge(false, &flipped, &flippedHeight))
         {
+            // ⚠️ **Les deux côtés sont IMAGES MIROIRS, donc le même tissu.** Un rectangle à pli a
+            // une marge nulle côté pli et une marge pleine côté lisière ; retourner le pli retourne
+            // les deux marges, et la largeur utile reste la même. Le meilleur plan possible est donc
+            // identique à la réflexion près, et l'écart de hauteur que le moteur rend entre les deux
+            // n'est pas une économie : c'est son heuristique qui tombe autrement.
+            //
+            // **C'est donc le nombre de miroirs qui tranche**, pas la hauteur. Un seuil de longueur
+            // ici (1 cm, puis 1e-6 avant lui) laissait gagner un arrangement qui miroitait trois
+            // pièces sur quatre — et Sophie le voyait, à juste titre : rien ne le justifiait.
+            // À nombre de miroirs égal, la hauteur départage.
             const int mirrored = mirrorsOf(flipped);
-            if (flippedHeight < bestHeight - 1e-6
-                || (std::abs(flippedHeight - bestHeight) <= 1e-6 && mirrored < bestMirrors))
+            if (mirrored < bestMirrors || (mirrored == bestMirrors && flippedHeight < bestHeight))
             {
                 bestHeight = flippedHeight;
                 best[kLeftZone] = flipped;
@@ -807,6 +849,13 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         // **les deux variantes ensemble**, puisque c'est le côté du rectangle qui décide laquelle
         // sera posée. Tout le reste dans la bande du bas.
         std::vector<int> assignment(static_cast<std::size_t>(talks.size()), kBelowZone);
+        for (int rank = 0; rank < talks.size(); ++rank)
+        {
+            if (talks.at(rank).flatBand && !flatPiecesBelongHere)
+            {
+                assignment[static_cast<std::size_t>(rank)] = -1;
+            }
+        }
         const auto settle = [&](int pose, int seat) {
             const FoldPose &foldPose = poses.at(pose);
             if (foldPose.natural >= 0)
@@ -907,12 +956,22 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         while (improved)
         {
             improved = false;
-            for (int rank = 0; rank < talks.size() && !improved; ++rank)
+            // ⚠️ **Un tour = une PASSE, pas un seul déplacement.** La boucle repartait de zéro
+            // après chaque gain (`&& !improved`), donc chaque pièce déplacée coûtait un balayage
+            // complet : le nombre de nidifications d'essai grandissait comme le CARRÉ du nombre de
+            // pièces, et c'est ce qui faisait passer un run de 22 s à plus d'une minute selon la
+            // taille. Un tour applique maintenant tous les gains qu'il trouve, et la passe suivante
+            // revérifie. Même optimum atteint, sans le balayage répété.
+            for (int rank = 0; rank < talks.size(); ++rank)
             {
+                if (talks.at(rank).flatBand && !flatPiecesBelongHere)
+                {
+                    continue;   // la bande plate a son propre bac, pas celui-ci
+                }
                 const int pose = talks.at(rank).onFold ? poseOfRank.at(rank) : -1;
                 const int from = assignment.at(static_cast<std::size_t>(rank));
 
-                for (int seat = 0; seat < 3 && !improved; ++seat)
+                for (int seat = 0; seat < 3; ++seat)
                 {
                     if (seat == from || !canMove(rank, seat))
                     {
@@ -958,9 +1017,32 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                         continue;
                     }
 
-                    if (trialHeight < height - 1e-9
-                        || (std::abs(trialHeight - height) <= 1e-9
-                            && mirrorsOfPlans(trialPlans) < mirrorsOfPlans(plans)))
+                    // ⚠️ **C'est ICI que le miroir reprenait le dessus.** Un déplacement qui pose
+                    // une pose du mauvais côté force sa variante miroir ; il était accepté dès
+                    // qu'il gagnait `1e-9` de longueur, donc pour un dixième de millimètre, et la
+                    // boucle en enchaîne plusieurs. Le miroir revenait par la porte de service,
+                    // après avoir été écarté à la porte d'entrée.
+                    //
+                    // Trois cas, et un seul seuil : un miroir de plus doit acheter `kMirrorGainPx`
+                    // de longueur ; un miroir de moins s'accepte à longueur égale ; à nombre de
+                    // miroirs constant, la longueur décide seule.
+                    const int trialMirrors = mirrorsOfPlans(trialPlans);
+                    const int currentMirrors = mirrorsOfPlans(plans);
+                    bool accept = false;
+                    if (trialMirrors > currentMirrors)
+                    {
+                        accept = trialHeight < height - kMirrorGainPx;
+                    }
+                    else if (trialMirrors < currentMirrors)
+                    {
+                        accept = trialHeight <= height + 1e-9;
+                    }
+                    else
+                    {
+                        accept = trialHeight < height - 1e-9;
+                    }
+
+                    if (accept)
                     {
                         assignment = std::move(trial);
                         for (int z = 0; z < 3; ++z)
@@ -969,14 +1051,21 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                         }
                         height = trialHeight;
                         improved = true;
+                        // On passe à la pièce suivante : `from` vient d'être consommé, et un
+                        // second déplacement sur la même pièce se ferait sur une répartition
+                        // périmée. La passe suivante la reverra.
+                        break;
                     }
                 }
             }
         }
 
-        // Entre les deux variantes : longueur d'abord, puis le moins de miroirs.
-        if (!bestTwoOk || height < bestTwoHeight - 1e-6
-            || (std::abs(height - bestTwoHeight) <= 1e-6
+        // Entre les deux variantes : longueur d'abord, puis le moins de miroirs — et le miroir ne
+        // paie pas `kMirrorGainPx`, comme partout ailleurs. Les deux variantes ont exactement les
+        // mêmes largeurs et la même hauteur théorique : ce qui les sépare est l'arrangement, donc
+        // une différence de nidification de quelques dixièmes, jamais une vraie économie.
+        if (!bestTwoOk || height < bestTwoHeight - kMirrorGainPx
+            || (height <= bestTwoHeight + kMirrorGainPx
                 && mirrorsOfPlans(plans) < bestTwoMirrors))
         {
             bestTwoOk = true;
@@ -991,10 +1080,16 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         }
         }
 
-        // Contre le plan à un bord : strictement moins, ou à égalité moins de miroirs. Un plan à
-        // deux bandes est plus complexe ; il ne s'impose donc que s'il fait gagner quelque chose.
+        // Contre le plan à un bord : il doit faire gagner une longueur RÉELLE.
+        //
+        // ⚠️ Le seuil était `1e-6` — un epsilon de calcul, pas une longueur de tissu. Un plan à
+        // deux bords découpe la colonne en trois rectangles, et le canvas en montre trois ; il ne
+        // peut pas s'imposer pour un centième de pixel d'arrondi. En dessous d'un centimètre de
+        // longueur gagnée, le tissu n'y gagne rien de mesurable et le plan devient illisible : le
+        // bord unique reste, même s'il est un cheveu plus long.
+        const double kBandGainPx = ToPixel(10.0, Unit::Mm);
         if (bestTwoOk
-            && (bestTwoHeight < bestHeight - 1e-6
+            && (bestTwoHeight < bestHeight - kBandGainPx
                 || (std::abs(bestTwoHeight - bestHeight) <= 1e-6 && bestTwoMirrors < bestMirrors)))
         {
             bestHeight = bestTwoHeight;
@@ -1039,6 +1134,7 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         OExportFoldedZone zone;
         zone.rect = QRectF(0.0, 0.0, columnPx, bestHeight);
         zone.foldOnTheLeft = bestFoldOnTheLeft;
+        zone.placementCount = static_cast<int>(best[kLeftZone].ranks.size());
         foldedZones->append(zone);
         return true;
     }
@@ -1075,9 +1171,168 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
                                                   : (seat.zone == kRightZone ? rightWidth : columnPx),
                            plan.usedHeightPx);
         zone.foldOnTheLeft = seat.zone != kRightZone;
+        zone.placementCount = static_cast<int>(plan.ranks.size());
         foldedZones->append(zone);
     }
 
+    return true;
+}
+/// Le plan d'un tissu plié qui porte **aussi** des pièces dépliées.
+///
+/// **Une seule nidification, et la pièce dépliée est une pièce comme les autres.** Elle se range dans
+/// le plan plié, à sa largeur réelle, et le moteur la pose où il veut — c'est-à-dire dans la bande du
+/// bas, avec les pièces qui ne sont pas au pli. La bande mixte est donc mixte : elle ne contient pas
+/// que la pièce dépliée.
+///
+/// ⚠️ **Une colonne à part pour les pièces dépliées n'est qu'un SECOURS.** Le plan plié les excluait
+/// (`flatPiecesBelongHere`), et la bande plate était alors posée sous lui : elle ne coûtait pas la
+/// laize entière (49,6 cm et non 180) mais elle coûtait toute sa hauteur, et sa moitié droite
+/// restait vide. C'est ce vide que Sophie voyait. Le secours ne sert plus que si le plan plié refuse
+/// de les porter — une colonne trop étroite pour une pièce dépliée.
+///
+/// ⚠️ **On ne nidifie pas les deux pour arbitrer.** Le faire doublait le temps du run (22 s → 45 s,
+/// et plus d'une minute sur les grandes tailles) pour économiser une bande. Le plan plié passe
+/// d'abord ; le secours ne se calcule que s'il a échoué.
+///
+/// ⚠️ **Le vide entre les deux bandes du secours n'existe qu'au DESSIN.** Il ne coûte ni largeur,
+/// ni hauteur, ni métrage, et les fichiers DXF/HPGL ne le connaissent pas.
+auto PlanMixedFabric(const Footprint::Result &footprint, const QVector<PieceTalk> &talks,
+                     const OExportNestingParams &params, const std::vector<Bin::Zone> &zones,
+                     const Engine::Config &config, QVector<OExportPlacement> *placements,
+                     std::vector<int> *orderedRanks, QVector<OExportFoldedZone> *foldedZones,
+                     double *usedHeightPx, double *binWidthPx, QString *error, bool *abandoned)
+    -> bool
+{
+    std::vector<int> flatRanks;
+    for (int rank = 0; rank < talks.size(); ++rank)
+    {
+        if (talks.at(rank).flatBand)
+        {
+            flatRanks.push_back(rank);
+        }
+    }
+
+    // Rien de déplié : le plan plié d'hier, mot pour mot.
+    if (flatRanks.empty())
+    {
+        *binWidthPx = params.binWidthPx;
+        return PlanFoldedFabric(footprint, talks, params, zones, config, placements, orderedRanks,
+                                foldedZones, usedHeightPx, error, abandoned);
+    }
+
+    // ── A. Une seule colonne : la pièce dépliée est une pièce comme les autres ─────────────────
+    //
+    // ⚠️ **Elle ne paie pas de bande de trop** : elle se range dans la colonne pliée, à sa largeur
+    // réelle, et le moteur la pose où il veut. C'est le candidat qui doit gagner chaque fois que la
+    // bande séparée n'apporte rien.
+    QVector<OExportPlacement> singlePlacements;
+    std::vector<int> singleRanks;
+    QVector<OExportFoldedZone> singleZones;
+    double singleHeight = 0.0;
+    QString singleError;
+    bool singleAbandoned = false;
+    const bool singleOk = PlanFoldedFabric(footprint, talks, params, zones, config,
+                                           &singlePlacements, &singleRanks, &singleZones,
+                                           &singleHeight, &singleError, &singleAbandoned, true);
+
+    // ⚠️ **Ce retour est le gain de temps, pas une préférence.** Comparer deux hauteurs obligeait à
+    // nidifier tout le patron deux fois : un run de 22 s en faisait 45, et une grande taille passait
+    // la minute. Le plan plié gagne dès qu'il tient, et le secours ne se calcule que s'il échoue.
+    if (singleOk)
+    {
+        *placements = singlePlacements;
+        *orderedRanks = singleRanks;
+        *foldedZones = singleZones;
+        *usedHeightPx = singleHeight;
+        *binWidthPx = params.binWidthPx;
+        return true;
+    }
+
+    // ── B. Le plan plié, puis la bande plate sous lui ─────────────────────────────────────────
+    //
+    // ⚠️ **On ne sépare PAS les pièces au pli en deux bandes.** C'est ce qui cassait le run : le
+    // plan existant a une boucle de secours qui déplace une pièce quand une bande est pleine, et
+    // une bande fabriquée à part la perd. Ici, L/R/B restent ensemble et se replient comme avant.
+    QVector<OExportPlacement> foldedPlacements;
+    std::vector<int> foldedOrderedRanks;
+    QVector<OExportFoldedZone> foldedZonesOut;
+    double foldedHeight = 0.0;
+    QString stackedError;
+    bool stackedAbandoned = false;
+    bool stackedOk = PlanFoldedFabric(footprint, talks, params, zones, config, &foldedPlacements,
+                                      &foldedOrderedRanks, &foldedZonesOut, &foldedHeight,
+                                      &stackedError, &stackedAbandoned);
+
+    double flatNeed = 0.0;
+    for (const int rank : flatRanks)
+    {
+        flatNeed = std::max(flatNeed, talks.at(rank).widthPx + 2.0 * params.marginPx);
+    }
+
+    QVector<OExportPlacement> flatPlacements;
+    std::vector<int> flatRanksOut;
+    double flatHeight = 0.0;
+    if (stackedOk)
+    {
+        ZonePlan flatPlan;
+        flatPlan.ranks = flatRanks;
+        OExportNestingParams flatParams = params;
+        flatParams.binWidthPx = flatNeed;
+        stackedOk = NestRanks(footprint, ConstraintsFor(talks, flatRanks, true), flatNeed,
+                              Bin::Margins::Uniform(params.marginPx), flatParams, zones, config,
+                              &flatPlan, &stackedError, &stackedAbandoned);
+        if (stackedOk)
+        {
+            flatPlacements = ToExportPlacements(flatPlan.placements, flatPlan.polygons);
+            flatRanksOut = flatPlan.ranks;
+            flatHeight = flatPlan.usedHeightPx;
+        }
+    }
+
+    // ── Le secours n'a pas tenu non plus : c'est un vrai refus ────────────────────────────────
+    if (!stackedOk)
+    {
+        *error = stackedError.isEmpty() ? singleError : stackedError;
+        *abandoned = stackedAbandoned || singleAbandoned;
+        return false;
+    }
+
+    // ── L'assemblage de B : la bande pliée en haut, la bande plate sous elle ──────────────────
+    placements->clear();
+    orderedRanks->clear();
+    foldedZones->clear();
+
+    for (const OExportPlacement &placement : foldedPlacements)
+    {
+        placements->append(placement);
+    }
+    for (const int rank : foldedOrderedRanks)
+    {
+        orderedRanks->push_back(rank);
+    }
+    for (const OExportFoldedZone &zone : foldedZonesOut)
+    {
+        foldedZones->append(zone);
+    }
+
+    for (const OExportPlacement &placement : flatPlacements)
+    {
+        OExportPlacement moved = placement;
+        moved.y += foldedHeight;
+        placements->append(moved);
+    }
+    for (const int rank : flatRanksOut)
+    {
+        orderedRanks->push_back(rank);
+    }
+    OExportFoldedZone flatZone;
+    flatZone.rect = QRectF(0.0, foldedHeight, flatNeed, flatHeight);
+    flatZone.folded = false;
+    flatZone.placementCount = static_cast<int>(flatPlacements.size());
+    foldedZones->append(flatZone);
+
+    *usedHeightPx = foldedHeight + flatHeight;
+    *binWidthPx = std::max(params.binWidthPx, flatNeed);
     return true;
 }
 } // namespace
@@ -1232,7 +1487,8 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
                     // pli n'a plus qu'une orientation par paroi, celle qui met sa foldline verticale
                     // avec le corps dans le tissu. L'autre le mettrait dehors.
                     PieceTalk talk;
-                    talk.onFold = piece.onFold;
+                    talk.onFold = piece.laidFolded;
+                    talk.flatBand = piece.flatBand;
                     talk.mirrored = piece.mirrored;
                     talk.name = piece.name;
                     talk.id = piece.id;
@@ -1361,8 +1617,10 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         QVector<OExportPlacement> cutPlacements;
         std::vector<int> cutRanks;
         double cutHeightPx = 0.0;
-        if (!PlanFoldedFabric(footprint, talks, params, zones, config, &cutPlacements, &cutRanks,
-                              &result.foldedZones, &cutHeightPx, &result.error, &result.abandoned))
+        double cutBinWidthPx = params.binWidthPx;
+        if (!PlanMixedFabric(footprint, talks, params, zones, config, &cutPlacements, &cutRanks,
+                             &result.foldedZones, &cutHeightPx, &cutBinWidthPx, &result.error,
+                             &result.abandoned))
         {
             return result;   // abandonné ou en erreur : les deux sont déjà posés dans le résultat
         }
@@ -1374,6 +1632,11 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             result.keys.append(footprint.keys.at(static_cast<std::size_t>(rank)));
         }
         result.usedHeightPx = cutHeightPx;
+        // ⚠️ **La largeur du plan n'est plus forcément la demi-laize.** Dès qu'une bande plate
+        // s'ajoute à la colonne pliée, le plan est plus large que la colonne — et c'est CETTE
+        // largeur que lisent le canvas, l'image, le PDF et le fichier de découpe. La laize, elle,
+        // reste `documentWidthMm` : c'est le métrage qui la lit, pas le plan.
+        result.binWidthPx = cutBinWidthPx;
 
         result.ok = true;
         return result;
