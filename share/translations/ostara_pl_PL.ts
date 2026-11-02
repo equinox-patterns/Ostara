@@ -7421,8 +7421,8 @@ ale nie można go znaleźć. Ostara używa formatu .omt/.otu. Wybierz sposób po
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Otwórz plik z wykrojem</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Otwórz wykrój z biblioteki</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

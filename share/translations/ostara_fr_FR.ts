@@ -7510,8 +7510,8 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Ouvrir un fichier de patron</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Ouvrir un patron depuis la bibliothèque</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

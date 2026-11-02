@@ -7412,8 +7412,8 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Minta megnyitása fájlból</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Szabásminta megnyitása a szabásmintakönyvtárból</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

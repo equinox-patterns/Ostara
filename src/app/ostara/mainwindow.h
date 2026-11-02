@@ -468,10 +468,8 @@ private slots:
     bool hasOpenPattern() const;
     bool on_actionSaveAs_triggered(); // NOLINT(modernize-use-trailing-return-type)
     bool on_actionSave_triggered();   // NOLINT(modernize-use-trailing-return-type)
+    /// @brief File > Open, Cmd+O, the Dock menu and the Welcome screen: la bibliothèque d'abord, l'ordinateur ensuite.
     void on_actionOpen_triggered();
-
-    /// @brief L'ouverture depuis l'écran d'accueil : la bibliothèque d'abord, l'ordinateur ensuite.
-    void OpenPatternFromLibrary();
 
     void ActionAddBackgroundImage();
 

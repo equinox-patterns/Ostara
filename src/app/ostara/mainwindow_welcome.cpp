@@ -130,9 +130,9 @@ void MainWindow::InitWelcomePage()
 {
     // Pattern signals
     connect(m_welcomeScreen, &WelcomeScreen::NewPatternClicked, this, &MainWindow::on_actionNew_triggered);
-    // L'écran d'accueil demande où ouvrir — la bibliothèque d'abord. File > Open, lui, garde le panneau du
-    // système : deux gestes, deux intentions (l'un cherche un patron rangé, l'autre un fichier).
-    connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::OpenPatternFromLibrary);
+    // L'écran d'accueil et File > Open tombent sur le même geste : on demande *où* ouvrir, la bibliothèque
+    // d'abord, l'ordinateur ensuite. Le panneau du système reste à un clic, dans « Parcourir les fichiers… ».
+    connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::on_actionOpen_triggered);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentPattern, this,
             [this](const QString &path) { LoadPattern(path); });
 

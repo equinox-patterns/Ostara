@@ -404,7 +404,7 @@
     <string>&amp;Open</string>
    </property>
    <property name="toolTip">
-    <string>Open file with pattern</string>
+    <string>Open a pattern from the library</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>

@@ -7421,8 +7421,8 @@ ten však nebyl nalezen. Ostara používá formát .omt/.otu. Zvolte, jak postup
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Otevřít soubor se střihem</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Otevřít střih z knihovny</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

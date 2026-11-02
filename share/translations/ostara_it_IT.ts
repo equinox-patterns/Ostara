@@ -7419,8 +7419,8 @@ ma è introvabile. Ostara usa il formato .omt/.otu. Scegli come procedere:</tran
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Apri file con modello</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Apri un cartamodello dalla libreria</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

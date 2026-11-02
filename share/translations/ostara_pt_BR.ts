@@ -7419,8 +7419,8 @@ mas ele não foi encontrado. Ostara usa o formato .omt/.otu. Escolha como proced
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Abrir arquivo com molde</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Abrir um molde da biblioteca</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

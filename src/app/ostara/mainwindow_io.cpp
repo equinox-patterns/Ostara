@@ -389,7 +389,7 @@ auto MainWindow::on_actionSaveAs_triggered() -> bool
     // the same they always were: one name, then the same forcing, the same lock, the same write.
     QString fileName;
     OSavePatternDialog saveDialog(OPatternLibrary::DefaultDirectory(), newFileName, patternPath, this);
-    saveDialog.exec(); // ce qui compte est ce qu'elle a répondu, pas le code de retour du dialogue
+    saveDialog.exec(); // ce qui compte est ce qu'elle a répondu, pas le code de retour du dialog
     switch (saveDialog.ChosenDestination())
     {
         case OSavePatternDialog::Destination::Library:
@@ -502,54 +502,20 @@ auto MainWindow::on_actionSave_triggered() -> bool
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief on_actionOpen_triggered ask user select pattern file.
+ * @brief on_actionOpen_triggered asks *where* to open: the pattern library first, the computer second.
+ *
+ * File > Open, its Cmd+O shortcut, its toolbar button, the macOS Dock menu and the Welcome screen's
+ * "Open a pattern" all land here — one gesture, one dialog. Ostara has a pattern library, so looking for a
+ * stored pattern is the common case; the system panel is one click away inside the dialog ("Browse files…"),
+ * which is also the only door left for a legacy `.val`, since the library lists `.ostara` alone.
  */
 void MainWindow::on_actionOpen_triggered()
-{
-    // Switch to editor first so the file dialog opens over the canvas,
-    // not over the WelcomeScreen. Idempotent if editor is already visible.
-    ShowEditor();
-
-    qCDebug(vMainWindow, "Openning new file.");
-    const QString filter(tr("Pattern files") + QStringLiteral(" (*.ostara *.val)"));
-    // Get list last open files
-    const QStringList files = VAbstractValApplication::VApp()->ValentinaSettings()->GetRecentFileList();
-    QString dir;
-    if (files.isEmpty())
-    {
-        dir = QDir::homePath();
-    }
-    else
-    {
-        // Absolute path to last open file
-        dir = QFileInfo(files.constFirst()).absolutePath();
-    }
-    qCDebug(vMainWindow, "Run QFileDialog::getOpenFileName: dir = %s.", qUtf8Printable(dir));
-    const QString filePath = QFileDialog::getOpenFileName(this, tr("Open file"), dir, filter, nullptr,
-                                                          VAbstractApplication::VApp()->NativeFileDialog());
-    if (filePath.isEmpty())
-    {
-        // If we came from WelcomeScreen (no pattern open), return to it
-        if (not hasOpenPattern())
-        {
-            emit patternClosed();
-        }
-        return;
-    }
-    LoadPattern(filePath);
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief on_actionOpen_triggered's counterpart for the welcome screen: the library first, the computer second.
- */
-void MainWindow::OpenPatternFromLibrary()
 {
     OPatternOpenDialog dialog(OPatternLibrary::DefaultDirectory(), this);
     if (dialog.exec() != QDialog::Accepted)
     {
-        // L'écran d'accueil est toujours là : rien n'a été demandé, rien ne bouge.
+        // Nothing was asked, so nothing moves: the pattern being edited stays put, and a Welcome screen that
+        // opened the dialog stays on screen.
         return;
     }
 
@@ -559,9 +525,12 @@ void MainWindow::OpenPatternFromLibrary()
         return;
     }
 
+    // Only now: showing the editor before the dialog would hide the Welcome screen under an empty canvas
+    // if the dialog were then refused.
     ShowEditor();
     LoadPattern(filePath);
 }
+
 
 //---------------------------------------------------------------------------------------------------------------------
 /**

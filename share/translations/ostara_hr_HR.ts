@@ -7421,8 +7421,8 @@ no ona nije pronađena. Ostara koristi format .omt/.otu. Odaberite kako nastavit
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Otvori datoteku s krojem</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Otvori kroj iz biblioteke</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

@@ -7419,8 +7419,8 @@ maar het is niet te vinden. Ostara gebruikt de indeling .omt/.otu. Kies hoe u ve
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Open bestand met patroon</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Een patroon openen uit de patroonbibliotheek</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

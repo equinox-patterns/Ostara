@@ -7421,8 +7421,8 @@ but it could not be found. Ostara uses the .omt/.otu format. Choose how to proce
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Відкрити файл з лекалами</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Відкрити креслення з бібліотеки</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>

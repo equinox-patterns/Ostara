@@ -7419,8 +7419,8 @@ mutta sitä ei löytynyt. Ostara käyttää .omt/.otu-muotoa. Valitse, miten jat
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="407"/>
-        <source>Open file with pattern</source>
-        <translation>Avaa tiedosto kaavan kanssa</translation>
+        <source>Open a pattern from the library</source>
+        <translation>Avaa kaava kaavakirjastosta</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="421"/>
