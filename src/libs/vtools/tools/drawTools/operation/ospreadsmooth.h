@@ -381,16 +381,18 @@ public:
                     = pieces.last().p4 - endTaken * QLineF(pieces.last().p4, pieces.last().p3).length();
             }
 
-            // Curvature at a knot: |handle x far| / |handle|^3, with the handle taken in the direction of
-            // travel and @a far the control point the piece bends against.
-            const auto curvature = [](const QPointF &handle, const QPointF &far) -> qreal
+            // Curvature at a knot: |handle x against| / |handle|^3, with the handle taken in the direction of
+            // travel and @p against the control point the piece bends against.
+            // ⚠️ The second control point is not named `far`: `windef.h` defines `far` as an empty macro, so MSVC
+            // reads `far.y()` as `.y()` and stops the Windows build there.
+            const auto curvature = [](const QPointF &handle, const QPointF &against) -> qreal
             {
                 const qreal length = std::hypot(handle.x(), handle.y());
                 if (length < 1e-12)
                 {
                     return 0.;
                 }
-                return (handle.x() * far.y() - handle.y() * far.x()) / (length * length * length);
+                return (handle.x() * against.y() - handle.y() * against.x()) / (length * length * length);
             };
 
             // Each junction in turn: the turn the rotation left is shared until both sides end with the same
