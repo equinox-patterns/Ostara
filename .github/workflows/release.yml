@@ -10,6 +10,13 @@ on:
         type: choice
         default: all
         options: [all, macos, windows, linux]
+      # Permet de reconstruire un paquet sans déplacer ni recréer d'étiquette : le
+      # numéro inscrit dans l'installeur Windows vient du nom de la référence Git
+      # (« v1.1.0 » → « 1.1.0 »), donc un lancement depuis une branche inscrirait le
+      # nom de la branche dans le registre Windows. Vide = comportement d'origine.
+      version:
+        description: 'Version à inscrire dans le paquet Windows (défaut : depuis le tag ou la branche)'
+        required: false
 
 jobs:
   macos:
@@ -125,6 +132,8 @@ jobs:
 
       - name: Empaqueter
         shell: pwsh
+        env:
+          VERSION_INPUT: ${{ inputs.version }}
         run: |
           New-Item -ItemType Directory -Force dist | Out-Null
           $exe = "build\src\app\ostara\Release\Ostara.exe"
@@ -150,16 +159,62 @@ jobs:
           # il saute --compiler-runtime sans rien dire. On copie le redistribuable à la main.
           $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
           $vs = & $vswhere -latest -products * -property installationPath
-          $crtDll = Get-ChildItem (Join-Path $vs "VC\Redist\MSVC") -Recurse -Filter vcruntime140.dll |
-            Where-Object { $_.FullName -match '\\x64\\' } | Select-Object -First 1
+          # Le dossier VC\Redist\MSVC contient plusieurs générations (14.29 = VS2019,
+          # 14.30 et au-delà = VS2022) et Get-ChildItem les rend dans l'ordre
+          # alphabétique : « -First 1 » prenait donc la PLUS ANCIENNE. L'app, Xerces et
+          # Qt étant compilés avec le CRT de VS2022, ils en trouvaient un de VS2019 à
+          # l'exécution. En v1.1.0 cela tuait Ostara au démarrage sur tout Windows :
+          # lecture d'adresse nulle dans msvcp140 pendant XMLPlatformUtils::Initialize,
+          # code 0xC0000005, avant même que le journal existe. Rabnest y échappait
+          # seulement parce qu'il n'appelle jamais Xerces.
+          # FileVersion arrive sous la forme « 14.29.30157.0 built by: cloudtest » :
+          # seul le premier mot est convertible en [version], le reste fait échouer le
+          # tri. On isole donc le numéro avant de comparer.
+          #
+          # Le chemin est ancré sur « <version>\x64\Microsoft.VC14x.CRT\ » : à côté du
+          # CRT du bureau, le redistribuable contient aussi « onecore\x64\… » (sous-
+          # ensemble d'API OneCore) et « spectre\x64\… » (bibliothèques atténuées pour
+          # /Qspectre). Un simple « \x64\ » les attrapait tous les deux.
+          $crtCandidates = Get-ChildItem (Join-Path $vs "VC\Redist\MSVC") -Recurse -Filter vcruntime140.dll |
+            Where-Object { $_.FullName -match '\\MSVC\\[0-9][0-9.]*\\x64\\Microsoft\.VC14[0-9]\.CRT\\' }
+          if (-not $crtCandidates) {
+            # Repli : n'importe quel x64, sauf les deux variantes ci-dessus.
+            $crtCandidates = Get-ChildItem (Join-Path $vs "VC\Redist\MSVC") -Recurse -Filter vcruntime140.dll |
+              Where-Object { $_.FullName -match '\\x64\\' -and $_.FullName -notmatch '\\(onecore|spectre)\\' }
+          }
+          $crtDll = $crtCandidates |
+            Sort-Object { [version](($_.VersionInfo.FileVersion -split ' ')[0]) } -Descending |
+            Select-Object -First 1
           if (-not $crtDll) { throw "CRT x64 introuvable dans le redistribuable Visual Studio" }
           Copy-Item (Join-Path $crtDll.Directory.FullName "*.dll") dist\
           if (-not (Test-Path dist\vcruntime140.dll)) { throw "CRT MSVC absent de dist" }
+          $crtVersion = [version]((Get-Item dist\vcruntime140.dll).VersionInfo.FileVersion -split ' ')[0]
+          if ($crtVersion -lt [version]'14.30') {
+            throw "CRT trop ancien dans dist : $crtVersion (VS2019 = 14.29, VS2022 = 14.30+)"
+          }
+          # Le binaire doit démarrer : --version construit QApplication puis sort en 0.
+          # Sans cette sonde, un CRT incompatible produisait quand même un installeur,
+          # et la panne n'apparaissait que chez l'utilisatrice, sans message.
+          $probe = Start-Process -FilePath "$PWD\dist\Ostara.exe" -ArgumentList '--version' `
+            -Wait -PassThru -NoNewWindow
+          if ($probe.ExitCode -ne 0) {
+            throw "Ostara.exe ne démarre pas (code $($probe.ExitCode), CRT $crtVersion)"
+          }
           if (-not (Test-Path dist\xerces-c_3_3.dll)) { throw "xerces absent de dist" }
           if (-not (Get-ChildItem dist -Filter "VPropertyExplorerLib.dll")) { throw "VPropertyExplorerLib.dll absent de dist" }
           if (-not (Get-ChildItem dist -Filter "QMUParserLib.dll")) { throw "QMUParserLib.dll absent de dist" }
           choco install nsis -y --no-progress
-          $version = "$env:GITHUB_REF_NAME" -replace '^v',''
+          # Le numéro vient du tag (« v1.1.0 » → « 1.1.0 »). L'entrée « version » de
+          # workflow_dispatch prend le dessus quand elle est fournie, et une branche de
+          # reconstruction (« rebuilt/v1.1.0 ») est comprise de la même façon : on ne
+          # garde que le dernier segment, sans le « v ». Sans cela, reconstruire depuis
+          # une branche inscrirait le nom de la branche dans « Ajout/Suppression de
+          # programmes », puisque l'installeur tire sa version de la référence Git.
+          $version = if ($env:VERSION_INPUT) {
+            $env:VERSION_INPUT
+          } else {
+            ($env:GITHUB_REF_NAME -split '/')[-1] -replace '^v',''
+          }
           & "C:\Program Files (x86)\NSIS\makensis.exe" "-DVERSION=$version" "-DDIST=$PWD\dist" "-DOUTDIR=$PWD" packaging\windows\installer.nsi
 
       - uses: actions/upload-artifact@v4
