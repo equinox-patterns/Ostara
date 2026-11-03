@@ -47,6 +47,7 @@
 class OCheckableRowListWidget;
 class QCheckBox;
 class QComboBox;
+class QLabel;
 class QLineEdit;
 class QPushButton;
 class QRadioButton;
@@ -71,6 +72,7 @@ public:
         bool axisStepNeeded = false;           // step 1 (choose the size axis) shown
         QString declaredAxis;                  // axis to use when step 1 is skipped
         QStringList takenNames;                // range names already used in the pattern
+        QMap<QString, QString> takenNameTables; // those names -> the measurements table each one belongs to
         QString exportPath;                    // default export folder (software level) — prefill
         QString patternNameToken;              // autogen file-name prefix: pattern name field, else pattern FILE base name; may be empty
         bool editing = false;                  // Edit mode: prefill step 3 from @p initial
@@ -141,6 +143,7 @@ private:
     QComboBox *m_minCombo = nullptr;      // step 3
     QComboBox *m_maxCombo = nullptr;      // step 3
     QLineEdit *m_nameEdit = nullptr;      // step 3
+    QLabel *m_nameHint = nullptr;         // step 3: why the name cannot be kept, said under the field
 
     QPushButton *m_nextButton = nullptr;
     QPushButton *m_okButton = nullptr;

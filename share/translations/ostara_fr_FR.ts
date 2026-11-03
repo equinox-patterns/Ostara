@@ -14520,6 +14520,16 @@ Cette action ne peut pas être annulée.</translation>
         <source>Select folder</source>
         <translation>Sélectionner un dossier</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="457"/>
+        <source>This pattern already has a size range named "%1".</source>
+        <translation>Ce patron a déjà un size range nommé « %1 ».</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/dialogs/ogradedrangedialog.cpp" line="470"/>
+        <source>This pattern already has a size range named "%1" (measurement table "%2").</source>
+        <translation>Ce patron a déjà un size range nommé « %1 » (tableau de mesures « %2 »).</translation>
+    </message>
 </context>
 <context>
     <name>OGradedSizeStylesDialog</name>

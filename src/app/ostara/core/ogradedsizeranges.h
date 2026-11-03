@@ -68,6 +68,20 @@ auto CurrentContext(VAbstractPattern *doc) -> Context;
 auto MatchesContext(const QString &canonical, const QString &axis, const Context &context) -> bool;
 
 /**
+ * @brief Whether two stored table paths name the same measurement table.
+ *
+ * A path is not an identity: the same table is written with a `..` in the way, with another case on
+ * Windows or on a default macOS volume, or in a folder that was renamed since. And a pattern that
+ * travels — another computer, another system — keeps absolute paths that cannot resolve at all.
+ * Compared as strings, any of those makes every range of the table disappear from the dock while
+ * their names stay taken, which is the worst of both: invisible, and unusable.
+ *
+ * So: the paths as written, then their canonical form when both resolve, then, when one of them is
+ * not on this machine, the file name — the only thing left of a table that came from elsewhere.
+ */
+auto SameMeasurementTable(const QString &stored, const QString &current) -> bool;
+
+/**
  * @brief Whether a range belongs to a context.
  *
  * The rule the dock has always listed by. Everything that enumerates the stored ranges —

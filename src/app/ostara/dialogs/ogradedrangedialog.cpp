@@ -35,6 +35,7 @@
 #include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -302,6 +303,15 @@ void OGradedRangeDialog::BuildStep2Page()
     nameRow->addWidget(m_nameEdit, 1);
     layout->addLayout(nameRow);
 
+    // The name is the range's key: a name the pattern already carries is refused, and that was refused
+    // **silently** — OK stayed greyed with nothing said, which reads as a broken button. Said here, under
+    // the field the reader is typing in.
+    m_nameHint = new QLabel(m_step2);
+    m_nameHint->setWordWrap(true);
+    m_nameHint->setVisible(false);
+    m_nameHint->setObjectName(QStringLiteral("sizeRangeNameHint"));
+    layout->addWidget(m_nameHint);
+
     // Ligne 2 — the size interval (min/max) and the frozen other axes.
     auto *rangeGroup = new QGroupBox(tr("Size range"), m_step2);
     auto *rangeLayout = new QFormLayout(rangeGroup);
@@ -438,9 +448,29 @@ void OGradedRangeDialog::CheckState()
     }
 
     const QString name = m_nameEdit->text().trimmed();
-    const bool nameOk = !name.isEmpty() && !m_config.takenNames.contains(name);
+    const bool nameTaken = !name.isEmpty() && m_config.takenNames.contains(name);
+    const bool nameOk = !name.isEmpty() && !nameTaken;
     const bool rangeOk = OSizeRangeAxis::IsOrdered(m_minCombo, m_maxCombo);
     m_okButton->setEnabled(nameOk && rangeOk);
+
+    if (m_nameHint != nullptr)
+    {
+        QString hint;
+        if (nameTaken)
+        {
+            // Which table it belongs to, when that is known: a range of *another* table keeping the name is
+            // exactly the case the reader cannot see, and the plain sentence would leave her searching for a
+            // range the dock does not even list.
+            const QString table = QFileInfo(m_config.takenNameTables.value(name)).fileName();
+            hint = table.isEmpty()
+                       ? tr("This pattern already has a size range named \"%1\".").arg(name)
+                       : tr("This pattern already has a size range named \"%1\" (measurement table "
+                            "\"%2\").")
+                             .arg(name, table);
+        }
+        m_nameHint->setText(hint);
+        m_nameHint->setVisible(nameTaken);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

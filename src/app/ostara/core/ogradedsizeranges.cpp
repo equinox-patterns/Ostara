@@ -35,6 +35,8 @@
 #include "../vpatterndb/osizerange.h"
 #include "../widgets/MeasurementWorkspace/MeasurementLibraryScanner.h"
 
+#include <QFileInfo>
+
 namespace OGradedSizeRanges
 {
 
@@ -72,9 +74,33 @@ auto CurrentContext(VAbstractPattern *doc) -> Context
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto SameMeasurementTable(const QString &stored, const QString &current) -> bool
+{
+    if (stored == current)
+    {
+        return true;
+    }
+    if (stored.isEmpty() || current.isEmpty())
+    {
+        return false;
+    }
+
+    const QString storedCanonical = QFileInfo(stored).canonicalFilePath();
+    const QString currentCanonical = QFileInfo(current).canonicalFilePath();
+    if (!storedCanonical.isEmpty() && !currentCanonical.isEmpty())
+    {
+        return storedCanonical == currentCanonical;
+    }
+
+    // One of the two cannot be resolved here: the table came from another computer, or from another
+    // system, and its stored path means nothing on this one. Its file name is what is left.
+    return QFileInfo(stored).fileName().compare(QFileInfo(current).fileName(), Qt::CaseInsensitive) == 0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto MatchesContext(const QString &canonical, const QString &axis, const Context &context) -> bool
 {
-    if (!context.canonical.isEmpty() && canonical != context.canonical)
+    if (!context.canonical.isEmpty() && !SameMeasurementTable(canonical, context.canonical))
     {
         return false;
     }

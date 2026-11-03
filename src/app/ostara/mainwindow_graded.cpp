@@ -304,7 +304,7 @@ bool MainWindow::EnterGradedMode()
     QStringList stale;
     for (auto it = existing->cbegin(); it != existing->cend(); ++it)
     {
-        if (it->measurement != canonical)
+        if (not OGradedSizeRanges::SameMeasurementTable(it->measurement, canonical))
         {
             continue;
         }
@@ -407,6 +407,14 @@ QString MainWindow::CreateGradedRange(const QString &canonical, const QStringLis
     QStringList takenNames = existing != nullptr ? existing->keys() : QStringList();
     takenNames.removeAll(staleNameToDrop); // a dropped stale range may reuse its name
     config.takenNames = takenNames;
+    if (existing != nullptr)
+    {
+        for (auto it = existing->cbegin(); it != existing->cend(); ++it)
+        {
+            config.takenNameTables.insert(it.key(), it->measurement);
+        }
+    }
+    config.takenNameTables.remove(staleNameToDrop);
     config.exportPath = settings->GetPathLayoutExport();
     config.patternNameToken = GradedPatternNameToken();
 
@@ -697,6 +705,11 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
     QStringList takenNames = existing->keys();
     takenNames.removeAll(rangeName); // the edited range may keep its name
     config.takenNames = takenNames;
+    for (auto it = existing->cbegin(); it != existing->cend(); ++it)
+    {
+        config.takenNameTables.insert(it.key(), it->measurement);
+    }
+    config.takenNameTables.remove(rangeName);
     config.editing = true;
     config.initial = stored;
     auto *settings = VAbstractApplication::VApp()->Settings();

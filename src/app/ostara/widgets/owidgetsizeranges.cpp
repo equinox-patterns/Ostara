@@ -47,6 +47,7 @@
 
 #include "MeasurementWorkspace/MeasurementLibraryScanner.h"
 #include "core/ogradedsizerangename.h"
+#include "core/ogradedsizeranges.h"
 #include "core/ogradedfavorites.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vmisc/vabstractapplication.h"
@@ -383,18 +384,21 @@ void OWidgetSizeRanges::Populate()
     // A range is listed only when BOTH conditions hold: it belongs to the current
     // measurements table and (when the table declares a grading axis) to that
     // axis. Ranges outside this (table, axis) context stay stored — just hidden.
+    // The rule is the core's, not a comparison of two strings written here: a table
+    // is the same table when its path says so, canonically, or — a table that came
+    // from another machine — by its file name. Compared as strings, a pattern that
+    // travelled kept its ranges in the file and lost them from this list.
+    OGradedSizeRanges::Context filterContext;
+    filterContext.canonical = m_tableFilterMeasurement;
+    filterContext.axis = m_tableFilterAxis;
+
     QStringList names;
     const QStringList storedNames = ranges->keys();
     names.reserve(storedNames.size());
     for (const QString &rangeName : storedNames)
     {
         const OSizerange range = ranges->value(rangeName);
-        if (not m_tableFilterMeasurement.isEmpty() &&
-            range.measurement != m_tableFilterMeasurement)
-        {
-            continue;
-        }
-        if (not m_tableFilterAxis.isEmpty() && range.sizeAxis != m_tableFilterAxis)
+        if (not OGradedSizeRanges::MatchesContext(range.measurement, range.sizeAxis, filterContext))
         {
             continue;
         }
