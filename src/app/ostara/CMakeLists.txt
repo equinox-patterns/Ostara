@@ -258,3 +258,23 @@ else()
         FILES_MATCHING PATTERN "*.txt"
     )
 endif()
+
+# ═══════════════════════════════════════════════════════════
+# Windows
+# ═══════════════════════════════════════════════════════════
+if(WIN32)
+    # Sous-système GUI. Sans lui, Windows ouvre une fenêtre noire devant l'application au
+    # double-clic, et c'est elle qui porte le processus : la fermer ferme Ostara. Rabnest
+    # le pose depuis le début (Rabnest/CMakeLists.txt) ; Ostara jamais, et la 1.1.0 livrée
+    # montrait cette console.
+    # Le mode console reste utilisable : WinAttachConsole() (main.cpp) rattache le processus
+    # au terminal quand on lance l'exe depuis un shell, donc --export et --version répondent.
+    set_target_properties(Ostara PROPERTIES WIN32_EXECUTABLE TRUE)
+
+    # L'icône est compilée dans l'exécutable, comme pour Rabnest : les raccourcis du bureau et
+    # du menu Démarrer, ainsi que la fiche « Applications et fonctionnalités », lisent l'icône
+    # de l'exécutable. Sans ressource, l'Explorateur affiche l'icône générique du programme.
+    target_sources(Ostara PRIVATE "${CMAKE_SOURCE_DIR}/share/icons/app/ostara.rc")
+    set_source_files_properties("${CMAKE_SOURCE_DIR}/share/icons/app/ostara.rc" PROPERTIES
+        COMPILE_FLAGS "-I\"${CMAKE_SOURCE_DIR}/share/icons/app\"")
+endif()

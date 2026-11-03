@@ -1,0 +1,8 @@
+// L'icône de l'exécutable Windows : elle est COMPILÉE dans le binaire, pas posée à côté, sinon
+// l'Explorateur affiche l'icône générique du programme. Les raccourcis du bureau et du menu
+// Démarrer, ainsi que la fiche « Applications et fonctionnalités », lisent tous l'icône de
+// l'exécutable — d'où l'intérêt qu'elle soit dedans.
+//
+// ostara.ico est engendré depuis Ostara.icns, lui-même rendu depuis Ostara.svg ; sept tailles,
+// 16 à 256 px. Même schéma que Rabnest (share/icons/app/rabnest.rc).
+IDI_ICON1 ICON DISCARDABLE "ostara.ico"
