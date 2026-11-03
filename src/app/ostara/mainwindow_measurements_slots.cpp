@@ -65,10 +65,16 @@ void MainWindow::LoadAndConnectMeasurements(const QString &path)
     }
     doc->SetMPath(RelativeMPath(patternPath, path));
     m_watcher->addPath(path);
+    // The title first, and only then the modified flag. `setWindowModified(true)` is what Qt cannot do
+    // silently: the window title has to carry a "[*]" placeholder, and it prints
+    // "QWidget::setWindowModified: The window title does not contain a '[*]' placeholder" otherwise. The
+    // welcome screen's title — "Ostara" — is the one title in the app without it, and loading a measurement
+    // table from there is allowed: the action is never disabled. So the flag came first, the title three
+    // lines later, and the reader got the modal on top of a load that had worked.
+    UpdateWindowTitle();
     PatternChangesWereSaved(false);
     ui->actionEditMeasurements->setEnabled(true);
     doc->LiteParseTree(Document::FullLiteParse);
-    UpdateWindowTitle();
     UpdateMeasurementFileNameLabel();
     const QString msg = tr("Measurements loaded");
     statusBar()->showMessage(msg, 5000);
