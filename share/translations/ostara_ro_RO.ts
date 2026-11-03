@@ -9030,8 +9030,8 @@ Ostara folosește formatul .omt/.otu. Alegeți cum să procedați:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1141"/>
-        <source>Replace with existing .%1</source>
-        <translation>Înlocuiește cu fișierul .%1 existent</translation>
+        <source>Use an existing .omt/.otu</source>
+        <translation type="unfinished">Înlocuiește cu fișierul .%1 existent</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="488"/>

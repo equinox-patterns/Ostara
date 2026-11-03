@@ -290,6 +290,39 @@ void ODockManager::applyDockPreferences()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+bool ODockManager::anyDrawDockVisible() const
+{
+    // isVisible() is not enough, and that is what made this bug invisible to the code: a layout restored
+    // from a saved state can place a dock entirely outside the window — one was found at (-969, -625) —
+    // and Qt still reports it visible, it is simply never painted. A dock counts only if it overlaps the
+    // window it belongs to.
+    const auto onScreen = [this](const QDockWidget *dock)
+    {
+        if (!dock->isVisible())
+        {
+            return false;
+        }
+        const QRect onHost(dock->mapTo(const_cast<QMainWindow *>(m_host), QPoint(0, 0)), dock->size());
+        return m_host->rect().intersects(onHost);
+    };
+
+    return onScreen(m_ui->dockWidgetOptions) || onScreen(m_ui->dockWidgetGroups) ||
+           onScreen(m_ui->dockWidgetMessages);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODockManager::restoreDefaultDockVisibility()
+{
+    m_optionsActive = true;
+    m_groupsActive = true;
+    m_patternMessagesActive = true;
+    m_backgroundImagesActive = false;
+    m_dependenciesActive = false;
+    applyDockPreferences();
+    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void ODockManager::syncVisibilityFromDocks()
 {
     m_groupsActive = m_ui->dockWidgetGroups->isVisible();
@@ -419,6 +452,19 @@ void ODockManager::applyModeDocks(Draw mode)
     if (m_optionsStack == nullptr || m_groupsStack == nullptr || m_actionOptions == nullptr)
     {
         return;
+    }
+
+    // The editor must never open without its docks. A restored layout can carry a visibility state that
+    // hides every one of them — that is what the welcome screen captures when it hides them all — and the
+    // flags read back from such a state would show an empty Draw mode. The default set takes over instead
+    // of leaving a canvas with nothing around it. Sophie, 03-11-2026.
+    if (!m_optionsActive && !m_groupsActive && !m_patternMessagesActive)
+    {
+        m_optionsActive = true;
+        m_groupsActive = true;
+        m_patternMessagesActive = true;
+        m_backgroundImagesActive = false;
+        m_dependenciesActive = false;
     }
 
     switch (mode)

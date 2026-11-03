@@ -9026,8 +9026,8 @@ Az Ostara a .omt/.otu formátumot használja. Válassza ki, hogyan szeretne tov�
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1141"/>
-        <source>Replace with existing .%1</source>
-        <translation>Csere a meglévő .%1 fájlra</translation>
+        <source>Use an existing .omt/.otu</source>
+        <translation type="unfinished">Csere a meglévő .%1 fájlra</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="488"/>

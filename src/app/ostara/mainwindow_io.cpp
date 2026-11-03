@@ -195,6 +195,14 @@ void MainWindow::ReadSettings()
         if (dockLayoutRestored)
         {
             m_dockManager->syncVisibilityFromDocks();
+
+            // A restored layout with none of the Draw docks on screen is not something the reader can work
+            // in: it is what a session that ended at the wrong moment saved, and every later start then
+            // opened an empty Draw mode. The default set takes over instead of trusting it.
+            if (!m_dockManager->anyDrawDockVisible())
+            {
+                m_dockManager->restoreDefaultDockVisibility();
+            }
         }
 
         // Text under tool buton icon
@@ -587,7 +595,12 @@ void MainWindow::on_actionOpen_triggered()
     // Only now: showing the editor before the dialog would hide the Welcome screen under an empty canvas
     // if the dialog were then refused.
     ShowEditor();
-    LoadPattern(filePath);
+    if (!LoadPattern(filePath))
+    {
+        // The opening was refused — no usable measurement table, or the reader gave it up. An empty editor
+        // is not an answer: back to the welcome screen, from where the file can be tried again.
+        ShowWelcomeScreen();
+    }
 }
 
 
@@ -1164,69 +1177,71 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             const QString suffix = fi.suffix().toLower();
             if (suffix == QStringLiteral("vst") || suffix == QStringLiteral("vit"))
             {
-                const bool isMulti = (suffix == QStringLiteral("vst"));
-                const QString targetExt = isMulti ? QStringLiteral(".omt") : QStringLiteral(".otu");
 
-                QMessageBox msgBox(this);
-                msgBox.setWindowTitle(tr("Legacy measurement file"));
-                msgBox.setText(tr("The pattern is linked to a legacy Tape file:\n\n%1\n\n"
-                                   "Ostara uses .omt/.otu format. Choose how to proceed:")
-                                   .arg(fi.fileName()));
-                auto *convertBtn = msgBox.addButton(tr("Convert this file"), QMessageBox::AcceptRole);
-                auto *replaceBtn = msgBox.addButton(tr("Replace with existing .%1").arg(targetExt),
-                                                     QMessageBox::ActionRole);
-                msgBox.addButton(QMessageBox::Cancel);
-                msgBox.exec();
-
+                // Asked again as long as the reader has not settled the question: abandoning the conversion
+                // used to drop the whole opening and leave an empty Draw mode behind. Only the Cancel button
+                // ends it — and the caller then returns to the Welcome screen.
                 QString newPath;
-                if (msgBox.clickedButton() == convertBtn)
+                bool aborted = false;
+                while (newPath.isEmpty())
                 {
-                    // Open MeasurementWindow for conversion, block until saved
-                    auto *mw = new MeasurementWindow(this);
-                    mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
-                    mw->SetModeless(true);
-                    mw->LoadFile(fixedMPath);
+                    QMessageBox msgBox(this);
+                    msgBox.setWindowTitle(tr("Legacy measurement file"));
+                    msgBox.setText(tr("The pattern is linked to a legacy Tape file:\n\n%1\n\n"
+                                       "Ostara uses .omt/.otu format. Choose how to proceed:")
+                                       .arg(fi.fileName()));
+                    auto *convertBtn = msgBox.addButton(tr("Convert this file"), QMessageBox::AcceptRole);
+                    // "Replace with existing .omt" read as "your .vst will be converted in place": a reader
+                    // thought she would lose the file she had just opened. The label says what the button
+                    // does — point the pattern at a table that already exists. Sophie, 03-11-2026.
+                    auto *replaceBtn = msgBox.addButton(tr("Use an existing .omt/.otu"),
+                                                         QMessageBox::ActionRole);
+                    msgBox.addButton(QMessageBox::Cancel);
+                    msgBox.exec();
 
-                    QString savedPath;
-                    QEventLoop loop;
-                    connect(mw, &MeasurementWindow::measurementsSaved, &loop, [&](const QString &p) {
-                        savedPath = p;
-                        loop.quit();
-                    });
-                    connect(mw, &QObject::destroyed, &loop, &QEventLoop::quit);
-                    mw->setAttribute(Qt::WA_DeleteOnClose);
-                    mw->show();
-                    loop.exec();
+                    if (msgBox.clickedButton() == convertBtn)
+                    {
+                        // Open MeasurementWindow for conversion, block until saved
+                        auto *mw = new MeasurementWindow(this);
+                        mw->SetOrigin(MeasurementWorkspace::Origin::FromDraw);
+                        mw->SetModeless(true);
+                        mw->LoadFile(fixedMPath);
 
-                    if (savedPath.isEmpty())
-                    {
-                        VAbstractValApplication::VApp()->setOpeningPattern();
-                        Clear();
-                        return false;
+                        QString savedPath;
+                        QEventLoop loop;
+                        connect(mw, &MeasurementWindow::measurementsSaved, &loop, [&](const QString &p) {
+                            savedPath = p;
+                            loop.quit();
+                        });
+                        connect(mw, &QObject::destroyed, &loop, &QEventLoop::quit);
+                        mw->setAttribute(Qt::WA_DeleteOnClose);
+                        mw->show();
+                        loop.exec();
+
+                        // Nothing saved: the conversion was abandoned, not the opening. Back to the question
+                        // instead of dropping the reader on an empty canvas.
+                        newPath = savedPath;
                     }
-                    newPath = savedPath;
+                    else if (msgBox.clickedButton() == replaceBtn)
+                    {
+                        // Open dialog to pick an existing .omt/.otu
+                        DialogOpenMeasurements dlg(this);
+                        if (dlg.exec() == QDialog::Accepted)
+                        {
+                            newPath = dlg.selectedPath();
+                        }
+                        // Refused or empty: the question is asked again.
+                    }
+                    else
+                    {
+                        // Cancel: the reader gives the opening up.
+                        aborted = true;
+                        break;
+                    }
                 }
-                else if (msgBox.clickedButton() == replaceBtn)
+
+                if (aborted)
                 {
-                    // Open dialog to pick an existing .omt/.otu
-                    DialogOpenMeasurements dlg(this);
-                    if (dlg.exec() != QDialog::Accepted)
-                    {
-                        VAbstractValApplication::VApp()->setOpeningPattern();
-                        Clear();
-                        return false;
-                    }
-                    newPath = dlg.selectedPath();
-                    if (newPath.isEmpty())
-                    {
-                        VAbstractValApplication::VApp()->setOpeningPattern();
-                        Clear();
-                        return false;
-                    }
-                }
-                else
-                {
-                    // Cancel
                     VAbstractValApplication::VApp()->setOpeningPattern();
                     Clear();
                     return false;

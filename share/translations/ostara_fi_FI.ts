@@ -9028,8 +9028,8 @@ Ostara käyttää .omt/.otu-muotoa. Valitse, miten edetään:</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_io.cpp" line="1141"/>
-        <source>Replace with existing .%1</source>
-        <translation>Korvaa olemassa olevalla .%1-tiedostolla</translation>
+        <source>Use an existing .omt/.otu</source>
+        <translation type="unfinished">Korvaa olemassa olevalla .%1-tiedostolla</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/mainwindow_measurements.cpp" line="488"/>

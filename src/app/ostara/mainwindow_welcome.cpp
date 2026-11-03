@@ -207,6 +207,14 @@ void MainWindow::ShowEditor()
     // restored layout, never read back from it.
     m_dockManager->applyDockPreferences();
 
+    // And whatever the restored layout said, the editor never opens with nothing around the canvas: a dock
+    // can be "visible" to Qt while sitting entirely outside the window, which is how a saved layout made
+    // every launch after a build look like an empty Draw mode. Sophie, 03-11-2026.
+    if (!m_dockManager->anyDrawDockVisible())
+    {
+        m_dockManager->restoreDefaultDockVisibility();
+    }
+
     // LayoutPages dock is hidden except in Layout mode
 
     // The editor's docks carry sizes of their own, and restoring a layout saved on a bigger window grows

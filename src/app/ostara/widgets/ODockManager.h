@@ -99,6 +99,16 @@ public:
     /** @brief Sync boolean members from the docks' actual visibility. */
     void syncVisibilityFromDocks();
 
+    /// @brief True when at least one of the docks the Draw mode is built around is on screen.
+    ///
+    /// A saved layout can be restored with every one of them hidden — a session closed at the wrong
+    /// moment saves exactly that, and every later start then opens an empty Draw mode. The caller uses
+    /// this to reject such a layout instead of trusting it.
+    bool anyDrawDockVisible() const;
+
+    /// @brief Puts the default Draw layout back: Options, Layers with its messages tabbed under it.
+    void restoreDefaultDockVisibility();
+
     /** @brief Hide every editor dock (WelcomeScreen state). */
     void hideAllDocks();
 
