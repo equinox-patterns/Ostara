@@ -80,6 +80,9 @@
 #include "../vtools/tools/nodeDetails/vtoolplacelabel.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
+#include "../vpatterndb/vcontainer.h"
+
+#include <QScopeGuard>
 
 using namespace Qt::Literals::StringLiterals;
 
@@ -407,6 +410,20 @@ void VPattern::ParseCurrentPP()
     {
         return;
     }
+
+    // This is a read, so it reads like every other one: under the parse guard. Without it, the formulas this
+    // block already holds are judged as if they were being written — and a pattern written before Ostara asks
+    // for a name on its lines and curves names them by the pair of points they join ("AngleLine_A1_A3"). Those
+    // formulas are read fine everywhere else, because a parse never asks them to be named. Here it did: the very
+    // first mouse move of a base-point drag opened the "broken formula" modal, refused to give a name to an
+    // object the reader never named, and undid the drag — the drag being the only thing she asked for.
+    const bool wasParsing = VContainer::IsParseInProgress();
+    VContainer::SetParseInProgress(true);
+    auto parseGuard = qScopeGuard(
+        [wasParsing]()
+        {
+            VContainer::SetParseInProgress(wasParsing);
+        });
 
     ParseDrawElement(domElement, Document::LiteParse);
     emit CheckLayout();
