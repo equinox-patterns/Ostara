@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Le type de fichier, côté Linux : sans cette déclaration, un .pattern reste un fichier
+     inconnu pour le gestionnaire de fichiers — aucune icône, aucun « ouvrir avec ». -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-ostara-pattern">
+    <comment>Ostara pattern</comment>
+    <comment xml:lang="fr">Patron Ostara</comment>
+    <sub-class-of type="text/xml"/>
+    <generic-icon name="application-x-ostara-pattern"/>
+    <glob pattern="*.ostara"/>
+  </mime-type>
+</mime-info>

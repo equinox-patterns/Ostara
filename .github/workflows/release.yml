@@ -215,7 +215,12 @@ jobs:
           } else {
             ($env:GITHUB_REF_NAME -split '/')[-1] -replace '^v',''
           }
-          & "C:\Program Files (x86)\NSIS\makensis.exe" "-DVERSION=$version" "-DDIST=$PWD\dist" "-DOUTDIR=$PWD" packaging\windows\installer.nsi
+          # APPICON : NSIS veut un .ico à lui pour l'icône de l'installeur et du
+          # désinstalleur — celle compilée dans Ostara.exe ne lui sert pas. Le chemin
+          # est passé explicitement plutôt que laissé au répertoire courant.
+          & "C:\Program Files (x86)\NSIS\makensis.exe" "-DVERSION=$version" "-DDIST=$PWD\dist" `
+            "-DOUTDIR=$PWD" "-DAPPICON=$PWD\share\icons\app\ostara.ico" `
+            packaging\windows\installer.nsi
 
       - uses: actions/upload-artifact@v4
         with:

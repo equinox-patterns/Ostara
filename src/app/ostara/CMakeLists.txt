@@ -257,6 +257,34 @@ else()
         DESTINATION "share/doc/ostara/licenses"
         FILES_MATCHING PATTERN "*.txt"
     )
+
+    # ── Types de fichiers ─────────────────────────────────────────────────────
+    # Trois pièces, et il faut les trois : le XML MIME déclare le type, l'icône du
+    # thème le dessine, le .desktop dit que l'application sait l'ouvrir. Sans elles,
+    # un `.ostara` reste un fichier inconnu dans le gestionnaire de fichiers — le
+    # pendant exact du registre Windows, et macOS le fait déjà dans son Info.plist.
+    #
+    # `Exec=Ostara %F` (dans le .desktop) est ce qui passe le fichier à l'application
+    # quand on double-clique dessus.
+    install(FILES "${CMAKE_SOURCE_DIR}/share/ostara.desktop" DESTINATION share/applications)
+    install(FILES "${CMAKE_SOURCE_DIR}/share/icons/app/Ostara.svg"
+        DESTINATION share/icons/hicolor/scalable/apps
+        RENAME Ostara.svg
+    )
+
+    foreach(mimeType IN ITEMS pattern measurements cartouche)
+        install(FILES "${CMAKE_SOURCE_DIR}/share/mime/application-x-ostara-${mimeType}.xml"
+            DESTINATION share/mime/packages
+        )
+        install(FILES
+                "${CMAKE_SOURCE_DIR}/share/icons/hicolor/scalable/mimetypes/application-x-ostara-${mimeType}.svg"
+            DESTINATION share/icons/hicolor/scalable/mimetypes
+        )
+        install(FILES
+                "${CMAKE_SOURCE_DIR}/share/icons/hicolor/64x64/mimetypes/application-x-ostara-${mimeType}.png"
+            DESTINATION share/icons/hicolor/64x64/mimetypes
+        )
+    endforeach()
 endif()
 
 # ═══════════════════════════════════════════════════════════

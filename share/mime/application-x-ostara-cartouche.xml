@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Le type de fichier, côté Linux : sans cette déclaration, un .cartouche reste un fichier
+     inconnu pour le gestionnaire de fichiers — aucune icône, aucun « ouvrir avec ». -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-ostara-cartouche">
+    <comment>Ostara cartouche template</comment>
+    <comment xml:lang="fr">Modèle de cartouche Ostara</comment>
+    <sub-class-of type="text/xml"/>
+    <generic-icon name="application-x-ostara-cartouche"/>
+    <glob pattern="*.oct"/>
+  </mime-type>
+</mime-info>
