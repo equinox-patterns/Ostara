@@ -101,6 +101,14 @@ void MainWindow::showEvent(QShowEvent *event)
         return;
     }
 
+    if (!m_isInitialized)
+    {
+        // Deferred to the next event-loop turn: at this point the window is being mapped, and the frame
+        // margins — title bar, borders — are not known yet. They are part of what must fit inside the
+        // available area, so measuring now would clamp the client area only and still overflow.
+        QTimer::singleShot(0, this, [this]() { FitMainWindowToScreen(); });
+    }
+
 #if defined(Q_OS_WIN32) && QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     m_taskbarButton->setWindow(windowHandle());
 #endif

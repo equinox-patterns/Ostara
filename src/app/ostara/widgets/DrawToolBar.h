@@ -41,6 +41,13 @@ class DrawToolBar : public QDockWidget
     Q_OBJECT
 
 public:
+    /// @brief Gives the palette a readable opening width when the user has never set one.
+    ///
+    /// RestoreSavedWidth() runs while the dock is being created, before the dock area exists, and the
+    /// width it asks for is lost when the mode layout settles: the palette falls back to its 40 px floor
+    /// — one column, elided group names. Called again once the editor is laid out, and only when no width
+    /// has ever been saved, so a width the user chose is never overridden.
+    void ApplyDefaultWidthIfUnset();
     explicit DrawToolBar(QWidget *parent = nullptr);
     ~DrawToolBar() override;
 

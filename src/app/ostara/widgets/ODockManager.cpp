@@ -189,6 +189,26 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     connect(m_actionCoverPage, &QAction::triggered, this,
             [this](bool checked) { m_coverPageActive = checked; });
     m_ui->menuWindow->addAction(m_actionCoverPage);
+
+    // Default layout of a fresh install — Sophie, 03-11-2026: three docks, two rows of height.
+    //   Options, then Layers with Warning messages tabbed under it.
+    // Background images and the dependency tree stay hidden; the Window menu still opens them.
+    //
+    // The .ui declares every dock visible and syncVisibilityFromDocks() reads the docks themselves, so
+    // without this the first show puts all nine on screen — their stacked minimum heights push the main
+    // window past the bottom of a 1080p screen, which is exactly what the client's screenshots showed.
+    m_optionsActive = true;
+    m_groupsActive = true;
+    m_patternMessagesActive = true;
+    m_backgroundImagesActive = false;
+    m_dependenciesActive = false;
+
+    m_ui->dockWidgetBackgroundImages->hide();
+    m_ui->dockWidgetDependencies->hide();
+
+    // One tab for Layers and its messages: two docks of height instead of three.
+    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -314,6 +334,13 @@ void ODockManager::restoreEditorDockState()
     {
         qWarning() << "ODockManager: failed to restore editor dock state";
     }
+
+    // A restored state carries the visibility of the moment it was captured — including the transient one
+    // where every dock is on screen, which is what the first entry showed. The stored preferences must win,
+    // so they are applied again here, before anything syncs the flags back from the docks. The default tab —
+    // Layers with its warning messages under it — is re-asserted for the same reason: restoreState() lays
+    // the docks out again from the captured state, tabs included.
+    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

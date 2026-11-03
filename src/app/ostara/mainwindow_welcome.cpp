@@ -200,10 +200,27 @@ void MainWindow::ShowEditor()
     // Restore dock layout saved by ShowWelcomeScreen() (or from ReadSettings at startup)
     m_dockManager->restoreEditorDockState();
 
-    // Sync boolean members with actual dock state after restore
-    m_dockManager->syncVisibilityFromDocks();
+    // The restored state carries the visibility of the moment it was captured — on the first entry that is
+    // the transient "every dock on screen", before any mode has run. Reading the flags back from those docks
+    // (the old syncVisibilityFromDocks() call here) turned that accident into the preference, and every mode
+    // change then re-showed all five docks. The stored preference is the reference: it is applied over the
+    // restored layout, never read back from it.
+    m_dockManager->applyDockPreferences();
 
     // LayoutPages dock is hidden except in Layout mode
+
+    // The editor's docks carry sizes of their own, and restoring a layout saved on a bigger window grows
+    // the window past the screen — the welcome screen fits, then the first pattern overflows. Clamp again
+    // once the layout has settled.
+    QTimer::singleShot(0, this, [this]() { FitMainWindowToScreen(); });
+    QTimer::singleShot(150, this,
+                       [this]()
+                       {
+                           // The palette's opening width is lost while the dock area is being built: the
+                           // request is made once the layout has settled, and only if the user never chose
+                           // a width of their own.
+                           m_drawToolBar->ApplyDefaultWidthIfUnset();
+                       });
 
     UpdateWindowTitle();
 }

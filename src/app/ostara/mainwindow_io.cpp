@@ -73,6 +73,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSettings>
+#include <QScreen>
 #include <QTimer>
 #include <QtConcurrent>
 #include <chrono>
@@ -110,6 +111,60 @@ static void ShowPatternOpenError(QWidget *parent, const QString &details)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief Keep the main window inside the screen's available area.
+ *
+ * The default size in mainwindow.ui is 1380x1051 — wider and taller than many laptop screens — and a restored
+ * geometry may come from a larger display. Windows then puts the bottom of the window under the taskbar, and the
+ * only way out is to minimise and restore so that the window manager re-lays it out.
+ *
+ * The frame (title bar, borders) is part of what has to fit: clamping the client area alone still leaves the
+ * window over the taskbar by the height of its own title bar. That is why this runs after the window is mapped.
+ *
+ * Sophie, 03-11-2026: a 1024x768 screen. The size is clamped only when it does not fit; a window that already
+ * fits is left exactly where the user put it, and one that hangs off an edge is moved back inside.
+ */
+void MainWindow::FitMainWindowToScreen()
+{
+    if (isHidden())
+    {
+        return;
+    }
+
+    const QScreen *screen = this->screen();
+    if (screen == nullptr)
+    {
+        return;
+    }
+
+    const QRect available = screen->availableGeometry();
+    QRect frame = frameGeometry();
+
+    const int frameWidth = qMax(0, frame.width() - width());
+    const int frameHeight = qMax(0, frame.height() - height());
+    const int maxWidth = qMax(1, available.width() - frameWidth);
+    // Nine tenths of the height, not all of it: a window whose bottom touches the taskbar reads as
+    // maximised and leaves no air around the canvas. Sophie, 03-11-2026.
+    const int maxHeight = qMax(1, (available.height() - frameHeight) * 9 / 10);
+
+    if (width() > maxWidth || height() > maxHeight)
+    {
+        resize(qMin(width(), maxWidth), qMin(height(), maxHeight));
+        frame = frameGeometry();
+        // Centred vertically now that it no longer fills the screen.
+        const int centred = available.top() + qMax(0, (available.height() - frame.height()) / 2);
+        move(frame.left(), centred);
+        frame = frameGeometry();
+    }
+
+    const int x = qBound(available.left(), frame.left(), qMax(available.left(), available.right() - frame.width() + 1));
+    const int y = qBound(available.top(), frame.top(), qMax(available.top(), available.bottom() - frame.height() + 1));
+    if (x != frame.left() || y != frame.top())
+    {
+        move(x, y);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ReadSettings read setting for app.
  */
@@ -121,7 +176,7 @@ void MainWindow::ReadSettings()
     if (settings->status() == QSettings::NoError)
     {
         restoreGeometry(settings->GetGeometry());
-        restoreState(settings->GetToolbarsState(), kToolbarStateVersion);
+        const bool dockLayoutRestored = restoreState(settings->GetToolbarsState(), kToolbarStateVersion);
 
         // Load per-mode dock layouts so the first entry into a mode after startup
         // restores its own sizes/visibility instead of inheriting the current mode's.
@@ -133,10 +188,14 @@ void MainWindow::ReadSettings()
         m_dockManager->setGradedModeDockState(settings->GetModeToolbarsState(Draw::Graded));
         m_dockManager->setExportModeDockState(settings->GetModeToolbarsState(Draw::Export));
 
-        // Dock visibility is handled by saveState()/restoreState() — sync the
-        // boolean members from actual dock state so ShowEditor() can restore
-        // correctly after ShowWelcomeScreen() hides everything.
-        m_dockManager->syncVisibilityFromDocks();
+        // Dock visibility is handled by saveState()/restoreState(). The boolean members are read back from
+        // the docks ONLY when a saved layout was actually restored: with no saved state the docks are still
+        // as mainwindow.ui declares them — all nine visible — and copying that into the preference replaced
+        // the default layout of a fresh install (Options, Layers with its messages tabbed under it).
+        if (dockLayoutRestored)
+        {
+            m_dockManager->syncVisibilityFromDocks();
+        }
 
         // Text under tool buton icon
         ToolBarStyles();
@@ -681,6 +740,13 @@ void MainWindow::on_actionNew_triggered()
     // Switch to editor first so the dialog opens over the canvas,
     // not over the WelcomeScreen.
     ShowEditor();
+
+    // The editor is shown *before* the dialog, so whatever the mode left on screen is what the reader sees
+    // behind it. Without applying the Draw layout here, the background is the union of every mode's docks and
+    // the tool palette is built on the width it happens to have — it visibly reshuffles itself when the dialog
+    // closes. Sophie, 03-11-2026: applied now, not at validation.
+    switchScene(Draw::Calculation);
+    m_dockManager->applyModeDocks(Draw::Calculation);
 
     // The dialog, and the piece it may carry. It is asked again as long as that piece cannot enter: a pattern was
     // asked for **from a piece**, and a pattern born without it is not what was asked for — the empty block the

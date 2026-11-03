@@ -255,6 +255,41 @@ void DrawToolBar::SetMode(const Draw mode)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DrawToolBar::ApplyDefaultWidthIfUnset()
+{
+    if (m_currentMode != Draw::Calculation)
+    {
+        return;
+    }
+
+    const int twoColumns = 2 * (kButtonSize + kSpacing) + kMargins;
+
+    QSettings s;
+    int target = s.value(QStringLiteral("toolbar/drawWidth"), -1).toInt();
+    if (target <= 0)
+    {
+        // Nothing was ever chosen: the readable opening width — two columns, and the longest group name.
+        target = qMax(ComputeDefaultWidth(), twoColumns);
+    }
+    else if (width() == target)
+    {
+        return; // already there, nothing to force
+    }
+
+
+    // resizeDocks() alone does not hold: the dock area takes the width back on the next layout pass and
+    // the palette falls to its 40 px floor. Fixing the width for one turn makes the layout honour it;
+    // the constraint is released immediately after, so the palette stays resizable exactly as before.
+    setFixedWidth(target);
+    QTimer::singleShot(0, this,
+                       [this]()
+                       {
+                           setMinimumWidth(kMinPaletteWidth);
+                           setMaximumWidth(QWIDGETSIZE_MAX);
+                       });
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DrawToolBar::ReloadIcons()
 {
     // Every button takes its icon from the catalogue: the tools that borrow another tool's artwork,
@@ -280,9 +315,16 @@ void DrawToolBar::RestoreSavedWidth()
     }
     QSettings s;
     const int savedWidth = s.value(QStringLiteral("toolbar/drawWidth"), -1).toInt();
-    if (savedWidth <= 0)
+
+    // No saved width means a fresh install: instead of returning and letting Qt shrink the dock to its
+    // floor — one column of icons with elided group names — open at a readable width. Sophie, 03-11-2026:
+    // at least two icons per row, and no cropped group name. This is an opening width, not a floor: the
+    // palette stays freely resizable, its floor is still kMinPaletteWidth.
+    int width = savedWidth;
+    if (width <= 0)
     {
-        return;
+        const int twoColumns = 2 * (kButtonSize + kSpacing) + kMargins;
+        width = qMax(ComputeDefaultWidth(), twoColumns);
     }
 
     // QDockWidget::resize() is ignored when docked —QMainWindow controls dock
@@ -290,11 +332,11 @@ void DrawToolBar::RestoreSavedWidth()
     // parentWidget() returns the internal dock container, not the main window.
     QMetaObject::invokeMethod(
         this,
-        [this, savedWidth]()
+        [this, width]()
         {
             if (auto *mw = qobject_cast<QMainWindow *>(window()))
             {
-                mw->resizeDocks({this}, {savedWidth}, Qt::Horizontal);
+                mw->resizeDocks({this}, {width}, Qt::Horizontal);
             }
         },
         Qt::QueuedConnection);
@@ -323,8 +365,17 @@ void DrawToolBar::resizeEvent(QResizeEvent *event)
     // with stale widths that would corrupt the saved value).
     if (!m_settingMode && m_currentMode == Draw::Calculation)
     {
-        QSettings s;
-        s.setValue(QStringLiteral("toolbar/drawWidth"), width());
+        // The dock area resizes the palette while the window is laid out — before the user has touched
+        // anything — and those widths were persisted as if they had been chosen. A fresh install then
+        // reopened at the 40 px floor, one column of icons, and the default width could never apply.
+        // A width narrower than two columns is not a choice worth keeping: it is not written, and the
+        // opening default stands until the user really narrows the palette.
+        const int twoColumns = 2 * (kButtonSize + kSpacing) + kMargins;
+        if (width() >= twoColumns)
+        {
+            QSettings s;
+            s.setValue(QStringLiteral("toolbar/drawWidth"), width());
+        }
     }
 
     if (m_building || m_currentMode != Draw::Calculation)
@@ -575,6 +626,11 @@ void DrawToolBar::BuildLayout()
             // Only delete widgets that are NOT our persistent tool buttons
             if (child->widget()->objectName() != QStringLiteral("drawToolBtn"))
             {
+                // deleteLater() only removes it on the next event-loop turn: until then the widget stays
+                // visible at its old geometry. Two rebuilds in quick succession — SetMode(), then the
+                // resizeEvent that follows it — painted both layouts on top of each other: doubled group
+                // headers, icons criss-crossing. Hiding first makes the old one disappear at once.
+                child->widget()->hide();
                 child->widget()->deleteLater();
             }
         }
@@ -589,6 +645,10 @@ void DrawToolBar::BuildLayout()
         {
             if (w->objectName() != QStringLiteral("drawToolBtn"))
             {
+                // Same reason as the layout cleanup above: deleteLater() leaves the widget visible at its
+                // old position until the next event-loop turn, and this pass is where the group headers and
+                // the overflow carets are collected — the caret was still drawn under the new one.
+                w->hide();
                 w->deleteLater();
             }
         }

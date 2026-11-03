@@ -558,6 +558,18 @@ private slots:
 private:
     // cppcheck-suppress unknownMacro
     Q_DISABLE_COPY_MOVE(MainWindow) // NOLINT
+
+    /// @brief Keep the window inside the screen's available area.
+    ///
+    /// The default size in `mainwindow.ui` (1380x1051) is larger than many laptop screens, and a restored
+    /// geometry may come from a larger display: the bottom of the window then lands under the taskbar, and
+    /// the only way out is to minimise and restore so that Windows re-lays it out. Sophie, 03-11-2026.
+    ///
+    /// Called once, from `showEvent`, on the next event-loop turn: the frame margins (title bar, borders)
+    /// only exist once the window is mapped, and they are part of what has to fit — clamping the client
+    /// area alone still leaves the window over the taskbar by the height of its own title bar.
+    void FitMainWindowToScreen();
+
     /** @brief ui keeps information about user interface */
     Ui::MainWindow *ui;
 
