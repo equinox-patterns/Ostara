@@ -526,15 +526,14 @@ auto MainWindow::on_actionSave_triggered() -> bool
         return on_actionSaveAs_triggered();
     }
 
-    // A .val source is never rewritten in place: Save always redirects to a fresh .ostara,
-    // so the "format rewrite" warning (a Valentina in-place-save relic) is obsolete here.
-    const QString originalPath = VAbstractValApplication::VApp()->GetPatternPath();
-    QString savePath = originalPath;
-    // If the current file is a .val, convert the path to .ostara
+    const QString savePath = VAbstractValApplication::VApp()->GetPatternPath();
+
+    // A .val is only ever read, never rewritten: saving one creates a new .ostara beside it. Which name, and
+    // in which folder, is the reader's decision — Save must not drop an .ostara next to her .val without a
+    // word. Save As asks exactly that: same folder, same name, .val replaced by .ostara.
     if (savePath.endsWith(".val"_L1))
     {
-        savePath.chop(4);
-        savePath += ".ostara"_L1;
+        return on_actionSaveAs_triggered();
     }
 
     if (not CheckFilePermissions(savePath, this))
@@ -546,10 +545,6 @@ auto MainWindow::on_actionSave_triggered() -> bool
     bool const result = SavePattern(savePath, error);
     if (result)
     {
-        // SavePattern() already switched the current path to savePath (the .ostara). Remove the
-        // autosave of the path that was open *before* the redirect, or a stale "foo.val.autosave"
-        // (with upgraded content) is left orphaned next to the .val and could feed a crash restore.
-        QFile::remove(originalPath + AutosavePrefix());
         m_curFileFormatVersion = FormatVersion(1, 0, 0);
         m_curFileFormatVersionStr = QStringLiteral("1.0.0");
     }

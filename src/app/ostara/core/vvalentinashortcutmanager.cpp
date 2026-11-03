@@ -33,6 +33,8 @@
 
 #include <QKeySequence>
 
+#include <algorithm>
+
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include "../vmisc/compatibility.h"
 #endif
@@ -91,13 +93,37 @@ VValentinaShortcutManager::VValentinaShortcutManager(QObject *parent)
     AddShortcut({VShortcutAction::PreviusPatternPiece,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_PageUp).toString()},
                  {}});
+    // Ctrl+Shift+S is Save As on Windows and Linux (QKeySequence::SaveAs): with it here as well, both actions
+    // answered the same gesture and Qt refused the shortcut as ambiguous. The library keeps the S mnemonics'
+    // sibling, L, which nothing else claims. macOS never saw the clash — there Save As is Cmd+Shift+S and a
+    // literal Ctrl+Shift+S belonged to this action alone.
     AddShortcut({VShortcutAction::SavePiece,
-                 {QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_S).toString()},
+                 {QKeySequence(Qt::ControlModifier | Qt::ShiftModifier | Qt::Key_L).toString()},
                  {}});
     AddShortcut({VShortcutAction::TableOfVariables,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_T).toString()},
                  {}});
-    AddShortcut({VShortcutAction::Quit, KeyBindingsToStringList(QKeySequence::Quit), {}});
+    // QKeySequence::Quit carries Ctrl+Q on X11, GNOME and KDE, and Cmd+Q on macOS — but on Windows Qt offers
+    // only the "Exit" media key. Quit then has no typeable gesture at all, and the menu displays that key name
+    // instead of the Ctrl+Q it advertises. Add Ctrl+Q whenever the platform gives Quit no command modifier.
+    QStringList quitShortcuts = KeyBindingsToStringList(QKeySequence::Quit);
+    const bool hasCommandKey =
+        std::any_of(quitShortcuts.cbegin(), quitShortcuts.cend(),
+                    [](const QString &key)
+                    {
+                        const QKeySequence sequence = QKeySequence::fromString(key);
+                        if (sequence.isEmpty())
+                        {
+                            return false;
+                        }
+                        const Qt::KeyboardModifiers modifiers = sequence[0].keyboardModifiers();
+                        return modifiers.testFlag(Qt::ControlModifier) || modifiers.testFlag(Qt::MetaModifier);
+                    });
+    if (not hasCommandKey)
+    {
+        quitShortcuts.prepend(QKeySequence(Qt::ControlModifier | Qt::Key_Q).toString());
+    }
+    AddShortcut({VShortcutAction::Quit, quitShortcuts, {}});
     AddShortcut({VShortcutAction::CurveDetails, {QKeySequence(Qt::Key_F2).toString()}, {}});
     AddShortcut({VShortcutAction::FinalMeasurements,
                  {QKeySequence(Qt::ControlModifier | Qt::Key_I).toString()},
