@@ -27715,4 +27715,83 @@ Envoyez ce fichier à votre contact Ostara.</translation>
         <translation>Ouvrir le dossier</translation>
     </message>
 </context>
+<context>
+    <name>OPieceCartoucheStorage</name>
+    <message>
+        <source>Ostara could not create the folder that holds your clients:
+%1</source>
+        <translation>Ostara n&apos;a pas pu créer le dossier qui contient vos clients :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not create the folder that holds your collections:
+%1</source>
+        <translation>Ostara n&apos;a pas pu créer le dossier qui contient vos collections :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not create the folder that holds your annotation styles:
+%1</source>
+        <translation>Ostara n&apos;a pas pu créer le dossier qui contient vos styles d&apos;annotations :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not write %1:
+%2</source>
+        <translation>Ostara n&apos;a pas pu écrire %1 :
+%2</translation>
+    </message>
+    <message>
+        <source>Ostara could not read %1:
+%2</source>
+        <translation>Ostara n&apos;a pas pu lire %1 :
+%2</translation>
+    </message>
+    <message>
+        <source>This file is not an Ostara cartouche template.</source>
+        <translation>Ce fichier n&apos;est pas un modèle de cartouche Ostara.</translation>
+    </message>
+</context>
+<context>
+    <name>OLogoLibrary</name>
+    <message>
+        <source>Ostara could not create the folder that holds your logos:
+%1</source>
+        <translation>Ostara n&apos;a pas pu créer le dossier qui contient vos logos :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not replace the existing logo file:
+%1</source>
+        <translation>Ostara n&apos;a pas pu remplacer le fichier de logo existant :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not copy the logo file:
+%1</source>
+        <translation>Ostara n&apos;a pas pu copier le fichier de logo :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not remove the logo file:
+%1</source>
+        <translation>Ostara n&apos;a pas pu supprimer le fichier de logo :
+%1</translation>
+    </message>
+</context>
+<context>
+    <name>OSymbolLibrary</name>
+    <message>
+        <source>Ostara could not create the folder that holds your symbols:
+%1</source>
+        <translation>Ostara n&apos;a pas pu créer le dossier qui contient vos symboles :
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not write %1:
+%2</source>
+        <translation>Ostara n&apos;a pas pu écrire %1 :
+%2</translation>
+    </message>
+</context>
 </TS>

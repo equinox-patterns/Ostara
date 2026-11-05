@@ -25,6 +25,7 @@
  *************************************************************************/
 
 #include "ologolibrary.h"
+#include <QCoreApplication>
 
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
@@ -188,7 +189,9 @@ auto OLogoLibrary::Add(const QString &srcPath, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Cannot create the logos folder.");
+            *error = QCoreApplication::translate("OLogoLibrary",
+                                             "Ostara could not create the folder that holds your logos:\n%1")
+                         .arg(QDir::toNativeSeparators(Directory()));
         }
         return false;
     }
@@ -201,7 +204,9 @@ auto OLogoLibrary::Add(const QString &srcPath, QString *error) -> bool
         {
             if (error != nullptr)
             {
-                *error = QStringLiteral("Cannot replace the existing logo file.");
+                *error = QCoreApplication::translate("OLogoLibrary",
+                                             "Ostara could not replace the existing logo file:\n%1")
+                         .arg(QDir::toNativeSeparators(dest));
             }
             return false;
         }
@@ -209,7 +214,8 @@ auto OLogoLibrary::Add(const QString &srcPath, QString *error) -> bool
         {
             if (error != nullptr)
             {
-                *error = QStringLiteral("Cannot copy the logo file.");
+                *error = QCoreApplication::translate("OLogoLibrary", "Ostara could not copy the logo file:\n%1")
+                             .arg(dest);
             }
             return false;
         }
@@ -242,7 +248,8 @@ auto OLogoLibrary::Remove(const QString &fileName, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Cannot remove the logo file.");
+            *error = QCoreApplication::translate("OLogoLibrary", "Ostara could not remove the logo file:\n%1")
+                         .arg(path);
         }
         return false;
     }

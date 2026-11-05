@@ -25,6 +25,7 @@
  *************************************************************************/
 
 #include "OPieceCartoucheStorage.h"
+#include <QCoreApplication>
 
 #include "core/ofontfaces.h"
 
@@ -286,7 +287,8 @@ auto SaveClients(const QList<ClientEntry> &clients, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -295,7 +297,8 @@ auto SaveClients(const QList<ClientEntry> &clients, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -309,7 +312,9 @@ auto AddClient(QString *error) -> QString
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Cannot create the clients folder.");
+            *error = QCoreApplication::translate("OPieceCartoucheStorage",
+                                                 "Ostara could not create the folder that holds your clients:\n%1")
+                         .arg(dir);
         }
         return {};
     }
@@ -417,7 +422,8 @@ auto SaveCollections(const QList<CollectionEntry> &collections, QString *error) 
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -426,7 +432,8 @@ auto SaveCollections(const QList<CollectionEntry> &collections, QString *error) 
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -440,7 +447,9 @@ auto AddCollection(QString *error) -> QString
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Cannot create the collections folder.");
+            *error = QCoreApplication::translate("OPieceCartoucheStorage",
+                                                 "Ostara could not create the folder that holds your collections:\n%1")
+                         .arg(dir);
         }
         return {};
     }
@@ -589,7 +598,8 @@ auto SaveAnnotationStyles(const QList<AnnotationStyleEntry> &styles, QString *er
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -598,7 +608,8 @@ auto SaveAnnotationStyles(const QList<AnnotationStyleEntry> &styles, QString *er
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -613,7 +624,10 @@ auto AddAnnotationStyle(QString *error) -> QString
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Cannot create the annotation styles folder.");
+            *error = QCoreApplication::translate("OPieceCartoucheStorage",
+                                                 "Ostara could not create the folder that holds your annotation "
+                                                 "styles:\n%1")
+                         .arg(dir);
         }
         return {};
     }
@@ -741,7 +755,8 @@ auto Load(const QString &filePath, OPieceCartoucheTemplate *tpl, QString *error)
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OPieceCartoucheStorage", "Ostara could not read %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -761,7 +776,8 @@ auto Load(const QString &filePath, OPieceCartoucheTemplate *tpl, QString *error)
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Not a cartouche template file.");
+            *error = QCoreApplication::translate("OPieceCartoucheStorage",
+                                                 "This file is not an Ostara cartouche template.");
         }
         return false;
     }

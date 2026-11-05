@@ -26,6 +26,7 @@
  *************************************************************************/
 
 #include "osymbollibrary.h"
+#include <QCoreApplication>
 
 #include "osymbolshapes.h"
 
@@ -294,7 +295,9 @@ auto OSymbolLibrary::Save(const Library &library, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = QStringLiteral("Cannot create the symbols folder.");
+            *error = QCoreApplication::translate("OSymbolLibrary",
+                                             "Ostara could not create the folder that holds your "
+                                             "symbols:\n%1").arg(QDir::toNativeSeparators(Directory()));
         }
         return false;
     }
@@ -304,7 +307,8 @@ auto OSymbolLibrary::Save(const Library &library, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OSymbolLibrary", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
@@ -314,7 +318,8 @@ auto OSymbolLibrary::Save(const Library &library, QString *error) -> bool
     {
         if (error != nullptr)
         {
-            *error = file.errorString();
+            *error = QCoreApplication::translate("OSymbolLibrary", "Ostara could not write %1:\n%2")
+                         .arg(QDir::toNativeSeparators(file.fileName()), file.errorString());
         }
         return false;
     }
