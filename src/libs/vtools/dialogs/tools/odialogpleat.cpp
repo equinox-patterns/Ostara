@@ -45,6 +45,9 @@
 #include <QPushButton>
 #include <QSignalBlocker>
 #include <QTabBar>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QScrollArea>
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
@@ -201,6 +204,27 @@ ODialogPleat::ODialogPleat(const VContainer *data, VAbstractPattern *doc, quint3
     EnableDetails(false);
     RefreshCapLabels();
     RefreshFoldLineState();
+
+    // The content can ask for more height than a small screen gives it: ~996 px of layout minimum where a
+    // 1024×768 screen leaves 989, so the frame ended 25 px below the edge, the buttons could not be clicked, and
+    // the window could not be made smaller — its minimum was the content's. There, and only there, the pages
+    // scroll: the buttons stay outside the area and the window opens as tall as the screen allows. On a screen
+    // where the content fits, nothing is wrapped and the dialog behaves exactly as it always did.
+    const QScreen *screen = QGuiApplication::primaryScreen();
+    const bool tooTall = screen != nullptr
+                         && sizeHint().height() > screen->availableGeometry().height() * 8 / 10;
+    if (tooTall)
+    {
+        m_preferredHeight = sizeHint().height();
+
+        auto *pages = new QScrollArea(this);
+        pages->setWidgetResizable(true);
+        pages->setFrameShape(QFrame::NoFrame);
+        ui->verticalLayout_2->removeWidget(ui->tabWidget);
+        pages->setWidget(ui->tabWidget);
+        ui->verticalLayout_2->insertWidget(0, pages);
+    }
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------

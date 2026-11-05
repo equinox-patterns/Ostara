@@ -174,7 +174,23 @@ void DialogTool::showEvent(QShowEvent *event)
         }
     }
 
+    // A dialog taller than the screen puts its buttons out of reach - they sit at the bottom of the frame, and a
+    // frame that runs past the edge takes them with it. The frame has to fit the usable area; the content scrolls
+    // where it can, and where it cannot the layout's own minimum decides and nothing is gained.
+    if (const QScreen *screen = this->screen())
+    {
+        const QRect available = screen->availableGeometry();
+        const int chrome = frameGeometry().height() - height();
+        // Four fifths of the usable height at most, whatever the system: what the window would cover beyond that
+        // belongs to the pattern behind it. A dialog whose pages scroll asks for its natural height and is capped
+        // here; the others keep their own minimum, which nothing can go below.
+        const int maxHeight = qMax(0, available.height() * 8 / 10 - chrome);
+        const int wanted = m_preferredHeight > 0 ? qMin(maxHeight, m_preferredHeight) : qMin(height(), maxHeight);
+        resize(width(), qMax(wanted, minimumSizeHint().height()));
+    }
+
     PlaceDialog();
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -189,8 +205,13 @@ void DialogTool::PlaceDialog()
     if (const QScreen *screen = this->screen())
     {
         const QRect available = screen->availableGeometry();
-        const int x = available.x() + (available.width() - frameGeometry().width()) / 2;
-        const int y = available.y() + (available.height() - frameGeometry().height()) * 15 / 100;
+        // A dialog as large as the screen has no free space to slide in: the 15 % is taken from what is left,
+        // and a frame wider or taller than the area keeps its top-left corner on the screen instead of hanging
+        // over the edge.
+        const int roomX = qMax(0, available.width() - frameGeometry().width());
+        const int roomY = qMax(0, available.height() - frameGeometry().height());
+        const int x = available.x() + roomX / 2;
+        const int y = available.y() + roomY * 15 / 100;
         move(x, y);
     }
 }

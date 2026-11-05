@@ -183,6 +183,14 @@ protected:
     /** @brief data container with data */
     VContainer data;
 
+    /** @brief Height the content would like, when it scrolls and the window must not take it whole.
+     *
+     * A dialog whose pages are in a scroll area no longer has a minimum that says how tall it wants to be —
+     * its minimum collapses, and it would open at the height the .ui declares, often far too small. This is
+     * the natural height, measured before the pages were wrapped, that showEvent takes when the screen allows
+     * it. Zero means "whatever sizeHint() says". */
+    int m_preferredHeight{0};
+
     VAbstractPattern *m_doc;
 
     /** @brief isInitialized true if window is initialized */
