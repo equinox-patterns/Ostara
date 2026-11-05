@@ -9672,6 +9672,32 @@ Cette action ne peut pas être annulée.</translation>
         <source>There is no piece to export. Switch a piece on in the Details dock, then try again.</source>
         <translation>Il n&apos;y a aucune pièce à exporter. Activez une pièce dans le dock Pièces, puis réessayez.</translation>
     </message>
+    <message>
+        <source>"%1" could not be written to:
+%2
+
+Check that the folder allows writing, and that the file is not open in another program.</source>
+        <translation>« %1 » n&apos;a pas pu être écrit dans :
+%2
+
+Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
+    </message>
+    <message>
+        <source>Check that the folder allows writing, and that none of the files is open in another program.</source>
+        <translation>Vérifiez que le dossier autorise l&apos;écriture et qu&apos;aucun des fichiers n&apos;est ouvert dans un autre programme.</translation>
+    </message>
+    <message>
+        <source>This size range needs its measurements table loaded. Load it from the Measurements menu, then try again.</source>
+        <translation>Cette gamme a besoin de son tableau de mesures. Chargez-le depuis le menu Mesures, puis réessayez.</translation>
+    </message>
+    <message>
+        <source>Ostara could not create the export folder. Check that you are allowed to write in the chosen folder, or choose another one.</source>
+        <translation>Ostara n&apos;a pas pu créer le dossier d&apos;export. Vérifiez que vous pouvez écrire dans le dossier choisi, ou choisissez-en un autre.</translation>
+    </message>
+    <message>
+        <source>The SVG file could not be written. Check that the folder allows writing, and that the file is not open in another program.</source>
+        <translation>Le fichier SVG n&apos;a pas pu être écrit. Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>

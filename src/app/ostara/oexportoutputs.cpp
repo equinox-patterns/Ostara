@@ -1857,7 +1857,9 @@ void MainWindow::ExportOutputToPdf(quint32 id)
                            gradedDrawing))
     {
         QMessageBox::warning(this, tr("Export mode"),
-                             tr("\"%1\" could not be exported.").arg(existing->name));
+                             tr("\"%1\" could not be written to:\n%2\n\nCheck that the folder allows writing, "
+                                "and that the file is not open in another program.")
+                                 .arg(existing->name, QDir::toNativeSeparators(dialog.FullPath())));
         return;
     }
 
@@ -1898,7 +1900,9 @@ void MainWindow::ExportOutputToPlotterSvg(quint32 id)
     if (!OExportPlotterSvg::Write(dialog.FullPath(), *existing, pattern, doc))
     {
         QMessageBox::warning(this, tr("Export mode"),
-                             tr("\"%1\" could not be exported.").arg(existing->name));
+                             tr("\"%1\" could not be written to:\n%2\n\nCheck that the folder allows writing, "
+                                "and that the file is not open in another program.")
+                                 .arg(existing->name, QDir::toNativeSeparators(dialog.FullPath())));
         return;
     }
 
@@ -2126,6 +2130,8 @@ void MainWindow::ExportActiveOutputToImage()
     }
     lines << tr("%n file(s) could not be written:", "", static_cast<int>(failed.size()));
     lines << failed;
+    lines << QString();
+    lines << tr("Check that the folder allows writing, and that none of the files is open in another program.");
 
     QMessageBox::warning(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
 }
