@@ -107,7 +107,7 @@ auto VCommandLine::IsTestModeEnabled() const -> bool
     const bool r = IsOptionSet(LONG_OPTION_TEST);
     if (r && parser.positionalArguments().size() != 1)
     {
-        qCritical() << translate("VCommandLine", "Test option can be used with single input file only.") << "/n";
+        qCritical() << translate("VCommandLine", "Test option can be used with single input file only.") << "\n";
         const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
     }
     return r;
@@ -132,7 +132,7 @@ auto VCommandLine::IsExportEnabled() const -> bool
     const bool r = IsOptionSet(LONG_OPTION_BASENAME);
     if (r && parser.positionalArguments().size() != 1)
     {
-        qCritical() << translate("VCommandLine", "Export options can be used with single input file only.") << "/n";
+        qCritical() << translate("VCommandLine", "Export options can be used with single input file only.") << "\n";
         const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
     }
     return r;
@@ -144,7 +144,7 @@ auto VCommandLine::IsExportFMEnabled() const -> bool
     const bool r = IsOptionSet(LONG_OPTION_CSVEXPORTFM);
     if (r && parser.positionalArguments().size() != 1)
     {
-        qCritical() << translate("VCommandLine", "Export options can be used with single input file only.") << "/n";
+        qCritical() << translate("VCommandLine", "Export options can be used with single input file only.") << "\n";
         const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
     }
     return r;
@@ -729,7 +729,7 @@ auto VCommandLine::IsMetrageEnabled() const -> bool
     if (r && parser.positionalArguments().size() != 1)
     {
         qCritical() << translate("VCommandLine", "The metrage options can be used with single input file only.")
-                    << "/n";
+                    << "\n";
         const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
     }
     return r;
@@ -778,7 +778,7 @@ auto VCommandLine::OptMetrageFabricWidths() const -> QVector<qreal>
             }
             else
             {
-                qCritical() << translate("VCommandLine", "Not a fabric width:") << text << "/n";
+                qCritical() << translate("VCommandLine", "Not a fabric width:") << text << "\n";
                 const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
             }
         }
@@ -798,7 +798,7 @@ auto VCommandLine::OptMetrageLiningWidth() const -> qreal
     const qreal mm = OExportUnitFormat::Parse(OptionValue(LONG_OPTION_METRAGE_LINING_WIDTH).trimmed(), Unit::Cm, &ok);
     if (not ok || mm <= 0.0)
     {
-        qCritical() << translate("VCommandLine", "Not a lining width.") << "/n";
+        qCritical() << translate("VCommandLine", "Not a lining width.") << "\n";
         const_cast<VCommandLine *>(this)->parser.showHelp(V_EX_USAGE);
     }
     return mm;

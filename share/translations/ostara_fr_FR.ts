@@ -7337,6 +7337,17 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
 <context>
     <name>MainWindow</name>
     <message>
+        <location filename="../../src/app/ostara/mainwindow_export.cpp" line="260"/>
+        <source>Nothing was written to this folder:
+%1
+
+It does not allow writing — a read-only key, a protected share, a folder that asks for rights. Choose another folder.</source>
+        <translation>Rien n&apos;a été écrit dans ce dossier :
+%1
+
+Il n&apos;autorise pas l&apos;écriture — clé en lecture seule, partage protégé, dossier qui réclame des droits. Choisissez un autre dossier.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow.ui" line="554"/>
         <source>Save piece to library</source>
         <translation>Enregistrer la pièce dans la bibliothèque</translation>
@@ -23093,6 +23104,11 @@ Voulez-vous continuer ?</translation>
 </context>
 <context>
     <name>VPattern</name>
+    <message>
+        <location filename="../../src/app/ostara/xml/vpattern.cpp" line="874"/>
+        <source>Two objects would carry the same identifier, so the file was not written.</source>
+        <translation>Deux objets porteraient le même identifiant : le fichier n&apos;a pas été écrit.</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="687"/>
         <location filename="../../src/app/ostara/xml/vpattern_curveparsers.cpp" line="693"/>

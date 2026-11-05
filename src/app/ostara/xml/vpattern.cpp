@@ -873,6 +873,14 @@ auto VPattern::SaveDocument(const QString &fileName, QString &error) -> bool
     }
     catch (const VExceptionWrongId &e)
     {
+        // The out-parameter is the detail the "Could not save the file" dialog shows under its message. Returning
+        // false without filling it opened that dialog over an empty line, which told the reader neither what was
+        // wrong nor what to do about it.
+        error = tr("Two objects would carry the same identifier, so the file was not written.");
+        if (const QString detail = e.ErrorMessage(); !detail.isEmpty())
+        {
+            error += QStringLiteral("\n") + detail;
+        }
         qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error not unique id.")), qUtf8Printable(e.ErrorMessage()),
                    qUtf8Printable(e.DetailedInformation()));
         return false;
