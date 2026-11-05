@@ -320,9 +320,7 @@ MainWindow::MainWindow(QWidget *parent)
         {QStringLiteral("place_label"),                  ui->actionPlaceLabelTool},
         {QStringLiteral("union"),                        ui->actionUnionDetailsTool},
         {QStringLiteral("duplicate_detail"),             ui->actionDuplicateDetailTool},
-        {QStringLiteral("detail_export"),                ui->actionDetailExportAs},
         {QStringLiteral("export_templates"),             ui->actionExportTemplates},
-        {QStringLiteral("export_image"),                 ui->actionExportImage},
     });
     InitToolButtons();
     InitActionShortcuts();

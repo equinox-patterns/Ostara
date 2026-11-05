@@ -282,7 +282,6 @@ void MainWindow::SetEnableTool(bool enable)
     ui->actionEllipticalArcTool->setEnabled(drawTools);
     ui->actionInsertNodeTool->setEnabled(drawTools);
     ui->actionPlaceLabelTool->setEnabled(drawTools);
-    ui->actionExportDraw->setEnabled(drawTools);
     ui->actionArcStartPointTool->setEnabled(drawTools);
     ui->actionArcEndPointTool->setEnabled(drawTools);
     ui->actionEllipticalArcWithLengthTool->setEnabled(drawTools);
@@ -296,7 +295,6 @@ void MainWindow::SetEnableTool(bool enable)
 
     // Modeling Tools
     ui->actionUnionDetailsTool->setEnabled(modelingTools);
-    ui->actionDetailExportAs->setEnabled(modelingTools);
     ui->actionDuplicateDetailTool->setEnabled(modelingTools);
 
 }
@@ -418,7 +416,6 @@ void MainWindow::CreateActions()
 
     // Straight to the slot, with no lambda: unlike the PDF export, this one takes no id — the
     // button speaks for the plan the canvas is showing, and nothing else.
-    connect(ui->actionExportImage, &QAction::triggered, this, &MainWindow::ExportActiveOutputToImage);
 
     connect(ui->actionAbout_Qt, &QAction::triggered, this, [this]() { QMessageBox::aboutQt(this, tr("About Qt")); });
 
@@ -581,7 +578,6 @@ void MainWindow::InitToolButtons()
     // The two Export-mode tools: they were mapped to their QAction but never registered, so they had no
     // shortcut at all. Their slot is applied on the action itself (see the connects in the .ui actions).
     m_shortcutActions.insert(VShortcutAction::ExportTemplates, ui->actionExportTemplates);
-    m_shortcutActions.insert(VShortcutAction::ExportImage, ui->actionExportImage);
 
     InitToolButton(VShortcutAction::ToolArrow, ui->actionToolSelect, &MainWindow::ArrowTool);
     // ApplicationShortcut so "V" also fires while a tool dialog (a separate window) has focus.
@@ -637,8 +633,6 @@ void MainWindow::InitToolButtons()
     InitToolButton(VShortcutAction::ToolFlippingByAxis, ui->actionFlippingByAxisTool, &MainWindow::ToolFlippingByAxis);
     InitToolButton(VShortcutAction::ToolMove, ui->actionMoveTool, &MainWindow::ToolMove);
     InitToolButton(VShortcutAction::ToolMidpoint, ui->actionMidpointTool, &MainWindow::ToolMidpoint);
-    InitToolButton(VShortcutAction::ExportDrawAs, ui->actionExportDraw, &MainWindow::ExportDrawAs);
-    InitToolButton(VShortcutAction::ExportDetailsAs, ui->actionDetailExportAs, &MainWindow::ExportDetailsAs);
     InitToolButton(VShortcutAction::ToolEllipticalArc, ui->actionEllipticalArcTool, &MainWindow::ToolEllipticalArc);
     InitToolButton(VShortcutAction::ToolInsertNode, ui->actionInsertNodeTool, &MainWindow::ToolInsertNode);
     InitToolButton(VShortcutAction::ToolPlaceLabel, ui->actionPlaceLabelTool, &MainWindow::ToolPlaceLabel);

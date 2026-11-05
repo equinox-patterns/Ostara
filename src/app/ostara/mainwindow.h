@@ -225,8 +225,6 @@ private slots:
     void ToolBarStyles();
     void ToolboxIconSize();
     void Preferences();
-    void ExportDrawAs(bool checked);
-    void ExportDetailsAs(bool checked);
 
     void ArrowTool(bool checked);
     void ToolEndLine(bool checked);
@@ -447,7 +445,6 @@ private slots:
      *  No id, where ExportOutputToPdf takes one: the dock names a generation, and a button of
      *  the toolbar can only speak for what is on screen. What it reads is the mode's own rule,
      *  ActiveVisibleOutput(), so the button and the canvas cannot mean two different plans. */
-    void ExportActiveOutputToImage();
 
     /**
      * @brief Write several generations of the current context in one go — the dock's
@@ -1248,7 +1245,6 @@ private:
 
     void StoreDimensions();
 
-    void ExportDraw(const QString &fileName);
 
     void NewBackgroundImageItem(const VBackgroundPatternImage &image);
     auto InitBackgroundImageItem(const VBackgroundPatternImage &image) -> VBackgroundImageItem *;

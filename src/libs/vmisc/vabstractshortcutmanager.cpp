@@ -110,7 +110,7 @@ auto VAbstractShortcutManager::GetShortcutsList() const -> QList<VAbstractShortc
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Convert all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 85, "Convert all actions.");
 
     switch (type)
     {
@@ -250,12 +250,6 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
             return "toolmidpoint"_L1;
         case VShortcutAction::ExportTemplates:
             return "exporttemplates"_L1;
-        case VShortcutAction::ExportImage:
-            return "exportimage"_L1;
-        case VShortcutAction::ExportDrawAs:
-            return "exportdrawas"_L1;
-        case VShortcutAction::ExportDetailsAs:
-            return "exportdetailsas"_L1;
         case VShortcutAction::ToolEllipticalArc:
             return "toolellipticalarc"_L1;
         case VShortcutAction::ToolInsertNode:
@@ -302,7 +296,7 @@ auto VAbstractShortcutManager::ShortcutActionToString(VShortcutAction type) -> Q
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
 {
-    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 88, "Translate all actions.");
+    Q_STATIC_ASSERT_X(static_cast<int>(VShortcutAction::LAST_ONE_DO_NOT_USE) == 85, "Translate all actions.");
 
     switch (type)
     {
@@ -442,12 +436,6 @@ auto VAbstractShortcutManager::ReadableName(VShortcutAction type) -> QString
             return tr("Tool 'Midpoint between two points'", "shortcut for action");
         case VShortcutAction::ExportTemplates:
             return tr("Export templates", "shortcut for action");
-        case VShortcutAction::ExportImage:
-            return tr("Export as image", "shortcut for action");
-        case VShortcutAction::ExportDrawAs:
-            return tr("Export draw as", "shortcut for action");
-        case VShortcutAction::ExportDetailsAs:
-            return tr("Export details as", "shortcut for action");
         case VShortcutAction::ToolEllipticalArc:
             return tr("Tool 'Elliptical Arc'", "shortcut for action");
         case VShortcutAction::ToolInsertNode:
