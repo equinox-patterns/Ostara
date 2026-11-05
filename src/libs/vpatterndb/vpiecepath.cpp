@@ -1139,7 +1139,10 @@ auto VPiecePath::IsVisible(const QHash<QString, QSharedPointer<VInternalVariable
 
         if (qIsInf(result) || qIsNaN(result))
         {
-            qWarning() << QObject::tr("Visibility trigger contains error and will be ignored");
+            // Signed: the path stays displayed while its visibility formula is in error — a warning no longer
+            // opens a box, so an unsigned one would reach nobody.
+            qWarning() << VAbstractValApplication::warningMessageSignature
+                       << QObject::tr("Visibility trigger contains error and will be ignored");
         }
         else if (qFuzzyIsNull(result))
         {
@@ -1149,7 +1152,9 @@ auto VPiecePath::IsVisible(const QHash<QString, QSharedPointer<VInternalVariable
     catch (qmu::QmuParserError &e)
     {
         qDebug() << "Parser error: " << e.GetMsg();
-        qWarning() << QObject::tr("Visibility trigger contains error and will be ignored");
+        // Same message as above, other branch: the formula could not even be parsed.
+        qWarning() << VAbstractValApplication::warningMessageSignature
+                   << QObject::tr("Visibility trigger contains error and will be ignored");
     }
     return visible;
 }

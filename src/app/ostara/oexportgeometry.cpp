@@ -40,6 +40,7 @@
 #include "../vformat/vdimensions.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/def.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vpatterndb/vcontainer.h"
@@ -801,8 +802,11 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
         catch (const VException &e)
         {
             // A piece whose contour cannot be built is not nestable — it is dropped,
-            // and said out loud rather than silently missing from the result.
-            qWarning() << "Export mode: piece" << piece.GetName() << "skipped -" << e.ErrorMessage();
+            // and said out loud rather than silently missing from the result. The signature routes it to the
+            // "Pattern messages" pane: a warning no longer opens a modal box, so an unsigned message would reach
+            // nobody — and this one says a piece of her plan does not exist.
+            qWarning() << VAbstractValApplication::warningMessageSignature << "Export mode: piece"
+                       << piece.GetName() << "skipped -" << e.ErrorMessage();
             if (m_diagnostics.size() < kMaxDiagnostics)
             {
                 m_diagnostics.append(QStringLiteral("piece '%1': %2").arg(piece.GetName(), e.ErrorMessage()));

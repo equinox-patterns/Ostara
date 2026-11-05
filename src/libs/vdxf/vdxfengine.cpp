@@ -30,6 +30,8 @@
 
 #include "vdxfengine.h"
 
+#include "../vmisc/vabstractapplication.h"
+
 #include <QApplication>
 #include <QByteArray>
 #include <QColor>
@@ -2120,7 +2122,10 @@ auto VDxfEngine::SplicePathInContour(QVector<VLayoutPoint> &contour, const QVect
             }
         }
 
-        qWarning() << "VDxfEngine: a cut path end does not lie on the outline (" << best
+        // Signed: the export goes through and only its fidelity is in question, so nothing justifies a modal
+        // box — but the pane must say it, since the DXF she gets is not exactly the one she drew.
+        qWarning() << VAbstractApplication::warningMessageSignature
+                   << "VDxfEngine: a cut path end does not lie on the outline (" << best
                    << "mm off) - snapped to the nearest segment.";
         contour.insert(nearest + 1, point);
         return nearest + 1;

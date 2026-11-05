@@ -36,6 +36,7 @@
 #include "../vformat/vdimensions.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/def.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
 #include "../vpatterndb/opiecegroup.h"
 #include "../vpatterndb/vcontainer.h"
@@ -409,7 +410,10 @@ auto MainWindow::DoMetrageBatch(const VCommandLinePtr &expParams) -> bool
                 // ⚠️ `CutQuantity` retombe sur la quantité du **GROUPE** quand la pièce n'a pas la
                 // sienne (oexportcuttingguard.cpp:80-95). Si ce message sort, c'est donc que ni l'une
                 // ni l'autre n'est renseignée — et là le membre n'est pas coupé du tout.
-                qWarning() << tr("Careful: \"%1\" has no %2 cut — neither its own nor its group's — so it "
+                // Signature obligatoire : le métrage tourne en mode console, où aucune boîte ne s'ouvre.
+                // Sans elle, ce message — le plus grave du lot — n'atteignait personne.
+                qWarning() << VAbstractValApplication::warningMessageSignature
+                           << tr("Careful: \"%1\" has no %2 cut — neither its own nor its group's — so it "
                                  "is not cut at all: the run will measure the plan WITHOUT it.")
                                   .arg(pieces->value(member).GetName(),
                                        material == OExportCuttingGuard::Material::Lining ? tr("lining")

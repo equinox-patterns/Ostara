@@ -223,7 +223,9 @@ bool WriteSvg(const QString &fileName, const QList<QGraphicsItem *> &pieces,
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        qWarning() << "Can't open file for SVG export" << fileName;
+        // Signed: the caller ignores our return value, so the pane is the only place this reaches her.
+        qWarning() << VAbstractValApplication::warningMessageSignature << "Can't open file for SVG export"
+                   << fileName;
         return false;
     }
 

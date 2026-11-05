@@ -30,6 +30,8 @@
 #include "vplacelabelitem.h"
 #include "vplacelabelitem_p.h"
 
+#include "../vmisc/vabstractapplication.h"
+
 #include <QObject>
 #include <QPainterPath>
 #include <QPolygonF>
@@ -145,7 +147,10 @@ auto VPlaceLabelItem::IsVisible() const -> bool
 
     if (qIsInf(d->isVisible) || qIsNaN(d->isVisible))
     {
-        qWarning() << QObject::tr("Visibility trigger contains error and will be ignored");
+        // Signed: the label stays displayed while its visibility formula is in error, and a warning no longer
+        // opens a box — unsigned, this one would reach nobody.
+        qWarning() << VAbstractApplication::warningMessageSignature
+                   << QObject::tr("Visibility trigger contains error and will be ignored");
     }
     else if (qFuzzyIsNull(d->isVisible))
     {

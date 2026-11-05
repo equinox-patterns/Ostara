@@ -231,17 +231,23 @@ static bool noisyBoxPending = false;
 static int noisyBoxSuppressed = 0;
 
 //---------------------------------------------------------------------------------------------------------------------
-/// @return true when the box was really shown. Nothing is displayed while a file dialog is up, or for a warning
-///         about the pattern itself, and the caller has to know: the messages counted behind this one are then
-///         still unreported.
-inline auto ShowNoisyMessageBox(QtMsgType type, const QString &logMsg, bool isPatternMessage) -> bool
+/// @return true when the box was really shown. Nothing is displayed while a file dialog is up. A warning about the
+///         pattern itself never opens a box; the caller has to know whether something was shown, because the
+///         messages counted behind this one are then still unreported.
+inline auto ShowNoisyMessageBox(QtMsgType type, const QString &logMsg) -> bool
 {
     // fixme: trying to make sure there are no save/load dialogs are opened, because error message
     //  during them will lead to crash
     const bool topWinAllowsPop = (QApplication::activeModalWidget() == nullptr) ||
                                  !QApplication::activeModalWidget()->inherits("QFileDialog");
 
-    if (topWinAllowsPop && (not isPatternMessage || (type == QtCriticalMsg || type == QtFatalMsg)))
+    // Only a rupture earns a modal box. A warning never does, whatever it says: Qt itself raises them
+    // for a monitor handle it cannot find ("monitorData … defaulting to 96 DPI") or for a window title
+    // without the "[*]" marker, and in both cases the application goes on behaving exactly the same —
+    // the box only interrupts the work to announce that nothing happened. Warnings go to the log, and
+    // the ones that carry the [PATTERN MESSAGE] signature go to the "Pattern messages" pane, where they
+    // can be read when the reader wants them.
+    if (topWinAllowsPop && (type == QtCriticalMsg || type == QtFatalMsg))
     {
         QMessageBox messageBox;
         switch (type)
@@ -450,7 +456,7 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
             }
             else
             {
-                auto ShowMessageBox = [type, logMsg, isPatternMessage]()
+                auto ShowMessageBox = [type, logMsg]()
                 {
                     const int extra = noisyBoxSuppressed;
                     const bool shown
@@ -460,8 +466,7 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
                                                                                       "were logged.)")
                                                               .arg(logMsg)
                                                               .arg(extra)
-                                                        : logMsg,
-                                              isPatternMessage);
+                                                        : logMsg);
                     // Only what this box has just reported is spent. A message logged while it was on screen —
                     // or while a file dialog is up, when nothing is shown at all — is still unreported, and the
                     // next box has to count it.

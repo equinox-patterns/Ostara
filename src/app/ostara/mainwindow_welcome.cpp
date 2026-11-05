@@ -176,8 +176,12 @@ void MainWindow::ShowWelcomeScreen()
     SetEnableWidgets(false);
     ui->actionClosePattern->setEnabled(false);
 
-    // Neutral window title
-    setWindowTitle(tr("Ostara"));
+    // Neutral window title. The "[*]" marker stays in the string but Qt never displays it (it only
+    // replaces it with "*" when the window is modified): it makes this title legal for
+    // setWindowModified() — the only title of the application without it, and the one that made Qt
+    // warn ("The window title does not contain a '[*]' placeholder") whenever the modified state was
+    // raised while the welcome screen's title was still in place.
+    setWindowTitle(tr("Ostara") + QStringLiteral("[*]"));
     setWindowFilePath(QString());
     setWindowModified(false);
 
