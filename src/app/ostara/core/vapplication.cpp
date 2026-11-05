@@ -101,6 +101,10 @@ Q_LOGGING_CATEGORY(vApp, "v.application") // NOLINT
 
 QT_WARNING_POP
 
+// Defined further down, once the report writer it calls is in scope. The fatal path below needs it before that
+// point, and a declaration inside the anonymous namespace would make a second, distinct function.
+inline auto ShowNoisyMessageBox(QtMsgType type) -> bool;
+
 namespace
 {
 // ::exit(), called from VApplication::notify()'s fatal-exception catch blocks, runs Qt's own static/atexit
@@ -112,7 +116,18 @@ QAtomicInt g_terminatingOnFatalException{0};
 
 Q_NORETURN void TerminateOnFatalException(int exitCode)
 {
+    // The box that announces a critical is deferred to the next event-loop turn (see noisyFailureMsgHandler),
+    // and ::exit() below runs before that turn ever comes: the reader saw Ostara disappear without a word, and
+    // the report was never written. This is the last moment anything can be shown, so it is shown here, and
+    // synchronously - the way the QtFatalMsg path already does it. The guard goes up first, so that whatever
+    // the box or Qt's own teardown emits from here on is dropped instead of processed.
     g_terminatingOnFatalException.storeRelease(1);
+
+    if (VApplication::IsGUIMode())
+    {
+        ShowNoisyMessageBox(QtFatalMsg);
+    }
+
     ::exit(exitCode); // NOLINT(concurrency-mt-unsafe)
 }
 } // namespace
@@ -307,6 +322,15 @@ inline auto ShowNoisyMessageBox(QtMsgType type) -> bool
     // nothing happened. Warnings go to the log; the ones carrying the [PATTERN MESSAGE] signature go to the
     // "Pattern messages" pane.
     if (!topWinAllowsPop || (type != QtCriticalMsg && type != QtFatalMsg))
+    {
+        return false;
+    }
+
+    // The fatal path shows its box synchronously (see TerminateOnFatalException), and that box pumps a nested
+    // event loop of its own. A critical whose box was deferred just before then arrives inside that loop and
+    // would open a second box stacked on the first, over an application that is already on its way out. Once
+    // termination has begun, only the fatal box is allowed on screen.
+    if (type != QtFatalMsg && g_terminatingOnFatalException.loadAcquire() != 0)
     {
         return false;
     }
@@ -597,6 +621,7 @@ VApplication::VApplication(int &argc, char **argv)
     // ses propres libellés — c'est ce qui laissait des surfaces entières dans la langue du premier
     // affichage, dock Options en tête.
     OTranslation::InstallWatcher();
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------
