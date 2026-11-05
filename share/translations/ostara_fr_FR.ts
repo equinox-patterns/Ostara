@@ -27651,13 +27651,52 @@ Voulez-vous continuer ?</translation>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/core/vapplication.cpp" line="458"/>
-        <source>%1
+        <source>Ostara could not complete this operation.</source>
+        <translation>Ostara n'a pas pu terminer cette opération.</translation>
+    </message>
+    <message>
+        <source>Ostara has to close.</source>
+        <translation>Ostara doit se fermer.</translation>
+    </message>
+    <message>
+        <source>The report holds the technical details the support needs. Save it, then send it to your Ostara contact — without it, the cause cannot be found.</source>
+        <translation>Le rapport contient les détails techniques dont le support a besoin. Enregistrez-le, puis envoyez-le à votre contact Ostara — sans lui, la cause ne peut pas être trouvée.</translation>
+    </message>
+    <message>
+        <source>Save the report</source>
+        <translation>Enregistrer le rapport</translation>
+    </message>
+    <message>
+        <source>Report saved</source>
+        <translation>Rapport enregistré</translation>
+    </message>
+    <message>
+        <source>Report not saved</source>
+        <translation>Rapport non enregistré</translation>
+    </message>
+    <message>
+        <source>The report is saved here:</source>
+        <translation>Le rapport est enregistré ici :</translation>
+    </message>
+    <message>
+        <source>The report could not be written.</source>
+        <translation>Le rapport n'a pas pu être écrit.</translation>
+    </message>
+    <message>
+        <source>The session log is here: %1
 
-(%2 further messages were logged.)</source>
-        <translation>%1
+Send this file to your Ostara contact.</source>
+        <translation>Le journal de la session se trouve ici : %1
 
-(%2 messages supplémentaires ont été enregistrés.)</translation>
+Envoyez ce fichier à votre contact Ostara.</translation>
+    </message>
+    <message>
+        <source>Attach this file to a message to your Ostara contact. It holds the Ostara version, the system, the screens and the session log; it does not contain your pattern.</source>
+        <translation>Joignez ce fichier à un message à votre contact Ostara. Il contient la version d'Ostara, le système, les écrans et le journal de la session ; il ne contient pas votre patron.</translation>
+    </message>
+    <message>
+        <source>Open the folder</source>
+        <translation>Ouvrir le dossier</translation>
     </message>
 </context>
 </TS>

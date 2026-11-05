@@ -64,6 +64,9 @@ public:
 
     void StartLogging();
     auto LogFile() -> QTextStream *;
+    // The path of the session log. Public because the diagnostic report offered by an error box copies it, and
+    // the report is written from the message handler, which is not a member.
+    static auto LogPath() -> QString;
 
     auto KnownMeasurementsDatabase() -> VKnownMeasurementsDatabase * override;
     void RestartKnownMeasurementsDatabaseWatcher();
@@ -103,7 +106,6 @@ private:
 
     bool m_appCloseEventSent{false};
 
-    static auto LogPath() -> QString;
     void BeginLogging();
     void SendAppCloseStatistic();
 };

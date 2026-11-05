@@ -54,6 +54,7 @@
 #include <QAtomicInt>
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QDesktopServices>
 #include <QDir>
 #include <QEvent>
 #include <QFile>
@@ -69,10 +70,13 @@
 #include <QStandardPaths>
 #include <QStringList>
 #include <QStyleFactory>
+#include <QSysInfo>
 #include <QTemporaryFile>
+#include <QTextStream>
 #include <QThread>
 #include <QTimer>
 #include <QUuid>
+#include <QUrl>
 #include <QtDebug>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -219,75 +223,147 @@ inline void LogMessageDetails(QtMsgType type, const QMessageLogContext &context,
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief One noisy box at a time, and no nesting.
+/** @brief One error box at a time, and no nesting.
  *
  * Showing the box runs its own event loop, which processes the messages queued before it - and each of those
  * used to schedule its own box, opened from inside the first. The nesting has no end: the process dies at 255
- * levels with "Too many nested CFRunLoopRuns". Messages logged while a box is planned or on screen are counted
- * and reported with that box instead. */
-// Both are touched from the GUI thread only: a message logged from another thread is dispatched to the GUI
-// thread just above, and returns there. They need no protection for that reason.
+ * levels with "Too many nested CFRunLoopRuns". A message logged while a box is planned or on screen now stays in
+ * the log alone - which is exactly where the report offered by the box takes it from. */
+// Touched from the GUI thread only: a message logged from another thread is dispatched to the GUI thread just
+// above, and returns there. It needs no protection for that reason.
 static bool noisyBoxPending = false;
-static int noisyBoxSuppressed = 0;
 
 //---------------------------------------------------------------------------------------------------------------------
-/// @return true when the box was really shown. Nothing is displayed while a file dialog is up. A warning about the
-///         pattern itself never opens a box; the caller has to know whether something was shown, because the
-///         messages counted behind this one are then still unreported.
-inline auto ShowNoisyMessageBox(QtMsgType type, const QString &logMsg) -> bool
+/// @brief Writes what the error box offers: the environment of the run, then the session log.
+///
+/// The report is the only artefact the support can work from, so it carries what a bug report asks for - the
+/// version, the system, the screens - and the log, which already contains every message of the session. It never
+/// carries the pattern: the log holds its path and its name, not its content.
+/// @return the path of the report, or an empty string when it could not be written.
+auto WriteDiagnosticReport() -> QString
+{
+    const QString folder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+    if (folder.isEmpty() || !QDir().mkpath(folder))
+    {
+        return {};
+    }
+
+    const QString reportPath =
+        folder
+        + QStringLiteral("/ostara-report-%1.txt")
+              .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd-hhmmss")));
+
+    QFile report(reportPath);
+    if (!report.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        return {};
+    }
+
+    QTextStream out(&report);
+    out << "Ostara " << AppDisplayVersion() << "\n";
+    out << "Qt " << QT_VERSION_STR << "\n";
+    out << "System: " << QSysInfo::prettyProductName() << " (" << QSysInfo::currentCpuArchitecture() << ")\n";
+    out << "Screens: " << QGuiApplication::screens().size() << "\n";
+    out << "Log file: " << VApplication::LogPath() << "\n";
+    out << "\n--- session log ---\n";
+
+    // The log is written line by line and flushed, but ask for the tail to be on disk before copying it.
+    if (auto *stream = VApplication::VApp()->LogFile())
+    {
+        stream->flush();
+    }
+
+    QFile log(VApplication::LogPath());
+    if (log.open(QIODevice::ReadOnly))
+    {
+        out << QString::fromUtf8(log.readAll());
+    }
+    else
+    {
+        out << "(the session log could not be read)\n";
+    }
+
+    return reportPath;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The rupture box: one sentence about what happened, and a report the reader can send to the support.
+ *
+ * The technical text never reaches the reader. A message written for a developer - a parser exception, an
+ * identifier, "QWidget::setWindowModified" - teaches nothing about what to do next, and the sentence that does is
+ * the same whatever failed. It stays in the log, which the report copies.
+ * @return true when the box was really shown. Nothing is displayed while a file dialog is up.
+ */
+inline auto ShowNoisyMessageBox(QtMsgType type) -> bool
 {
     // fixme: trying to make sure there are no save/load dialogs are opened, because error message
     //  during them will lead to crash
     const bool topWinAllowsPop = (QApplication::activeModalWidget() == nullptr) ||
                                  !QApplication::activeModalWidget()->inherits("QFileDialog");
 
-    // Only a rupture earns a modal box. A warning never does, whatever it says: Qt itself raises them
-    // for a monitor handle it cannot find ("monitorData … defaulting to 96 DPI") or for a window title
-    // without the "[*]" marker, and in both cases the application goes on behaving exactly the same —
-    // the box only interrupts the work to announce that nothing happened. Warnings go to the log, and
-    // the ones that carry the [PATTERN MESSAGE] signature go to the "Pattern messages" pane, where they
-    // can be read when the reader wants them.
-    if (topWinAllowsPop && (type == QtCriticalMsg || type == QtFatalMsg))
+    // Only a rupture earns a modal box, and a warning never does whatever it says: Qt itself raises warnings for a
+    // monitor handle it cannot find or for a window title without the "[*]" marker, and in both cases the
+    // application goes on behaving exactly the same - the box would only interrupt the work to announce that
+    // nothing happened. Warnings go to the log; the ones carrying the [PATTERN MESSAGE] signature go to the
+    // "Pattern messages" pane.
+    if (!topWinAllowsPop || (type != QtCriticalMsg && type != QtFatalMsg))
     {
-        QMessageBox messageBox;
-        switch (type)
-        {
-            case QtWarningMsg:
-                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Warning"));
-                messageBox.setIcon(QMessageBox::Warning);
-                break;
-            case QtCriticalMsg:
-                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Critical error"));
-                messageBox.setIcon(QMessageBox::Critical);
-                break;
-            case QtFatalMsg:
-                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Fatal error"));
-                messageBox.setIcon(QMessageBox::Critical);
-                break;
-            case QtInfoMsg:
-                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Information"));
-                messageBox.setIcon(QMessageBox::Information);
-                break;
-            case QtDebugMsg:
-            default:
-                break;
-        }
+        return false;
+    }
 
-        messageBox.setText(VAbstractValApplication::ClearMessage(logMsg));
-        messageBox.setStandardButtons(QMessageBox::Ok);
-        messageBox.setWindowModality(Qt::ApplicationModal);
-        messageBox.setModal(true);
+    auto Tr = [](const char *text) { return QCoreApplication::translate("vNoisyHandler", text); };
+
+    const bool fatal = type == QtFatalMsg;
+
+    QMessageBox messageBox;
+    messageBox.setIcon(QMessageBox::Critical);
+    messageBox.setWindowTitle(Tr(fatal ? "Fatal error" : "Critical error"));
+    messageBox.setText(Tr(fatal ? "Ostara has to close." : "Ostara could not complete this operation."));
+    messageBox.setInformativeText(
+        Tr("The report holds the technical details the support needs. Save it, then send it to your Ostara contact — "
+           "without it, the cause cannot be found."));
+    QAbstractButton *const saveButton = messageBox.addButton(Tr("Save the report"), QMessageBox::ActionRole);
+    messageBox.addButton(QMessageBox::Close);
+    messageBox.setWindowModality(Qt::ApplicationModal);
+    messageBox.setModal(true);
 #ifndef QT_NO_CURSOR
-        QGuiApplication::setOverrideCursor(Qt::ArrowCursor);
+    QGuiApplication::setOverrideCursor(Qt::ArrowCursor);
 #endif
-        messageBox.exec();
+    messageBox.exec();
 #ifndef QT_NO_CURSOR
-        QGuiApplication::restoreOverrideCursor();
+    QGuiApplication::restoreOverrideCursor();
 #endif
+
+    if (messageBox.clickedButton() != saveButton)
+    {
         return true;
     }
 
-    return false;
+    const QString reportPath = WriteDiagnosticReport();
+    const bool saved = !reportPath.isEmpty();
+    const QString folder = QFileInfo(saved ? reportPath : VApplication::LogPath()).absolutePath();
+
+    QMessageBox confirmation;
+    confirmation.setIcon(saved ? QMessageBox::Information : QMessageBox::Warning);
+    confirmation.setWindowTitle(saved ? Tr("Report saved") : Tr("Report not saved"));
+    confirmation.setText(saved ? Tr("The report is saved here:") : Tr("The report could not be written."));
+    confirmation.setInformativeText(
+        saved ? reportPath + "\n\n"
+                    + Tr("Attach this file to a message to your Ostara contact. It holds the Ostara version, the "
+                         "system, the screens and the session log; it does not contain your pattern.")
+              : Tr("The session log is here: %1\n\nSend this file to your Ostara contact.").arg(folder));
+    QAbstractButton *const openButton = confirmation.addButton(Tr("Open the folder"), QMessageBox::ActionRole);
+    confirmation.addButton(QMessageBox::Close);
+    confirmation.setWindowModality(Qt::ApplicationModal);
+    confirmation.setModal(true);
+    confirmation.exec();
+
+    if (confirmation.clickedButton() == openButton)
+    {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(folder));
+    }
+
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -444,72 +520,39 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         type = QtDebugMsg;
     }
 
-    QString logMsg = msg;
-    const bool isPatternMessage = VAbstractApplication::IsWarningMessage(msg);
-    if (isPatternMessage)
-    {
-        logMsg = logMsg.remove(VAbstractValApplication::warningMessageSignature);
-    }
-
     LogMessageDetails(type, context, msg);
 
     if (isGuiThread)
     {
-        // A warning never takes the slot. Were it to set noisyBoxPending, a critical logged right behind it in
-        // the same event-loop turn would be counted as one of its "further messages", and the box that finally
-        // appeared would carry the warning's text — the critical's own sentence would never be read. For a
-        // warning the box is not shown at all (see ShowNoisyMessageBox), so arming the slot only loses messages.
-        if ((type == QtCriticalMsg || type == QtFatalMsg) && VApplication::IsGUIMode())
+        // A warning never takes the slot: no box is shown for it (see ShowNoisyMessageBox), so arming the slot
+        // would only swallow the critical logged right behind it in the same event-loop turn.
+        if ((type == QtCriticalMsg || type == QtFatalMsg) && VApplication::IsGUIMode() && !noisyBoxPending)
         {
-            if (noisyBoxPending)
+            auto ShowMessageBox = [type]()
             {
-                // Already planned or on screen: a second box would run its event loop from inside the first,
-                // and the messages waiting behind it would open one more each. See noisyBoxPending.
-                ++noisyBoxSuppressed;
+                ShowNoisyMessageBox(type);
+                // Cleared once the box is closed, not before: a message logged while it is on screen must not
+                // open a second box nested inside it.
+                noisyBoxPending = false;
+            };
+
+            noisyBoxPending = true;
+
+            if (type == QtFatalMsg)
+            {
+                // A fatal message aborts right below. The dialog must be shown synchronously here or it
+                // will never appear.
+                ShowMessageBox();
             }
             else
             {
-                auto ShowMessageBox = [type, logMsg]()
-                {
-                    const int extra = noisyBoxSuppressed;
-                    const bool shown
-                        = ShowNoisyMessageBox(type,
-                                              extra > 0 ? QCoreApplication::translate("vNoisyHandler",
-                                                                                      "%1\n\n(%2 further messages "
-                                                                                      "were logged.)")
-                                                              .arg(logMsg)
-                                                              .arg(extra)
-                                                        : logMsg);
-                    // Only what this box has just reported is spent. A message logged while it was on screen —
-                    // or while a file dialog is up, when nothing is shown at all — is still unreported, and the
-                    // next box has to count it.
-                    if (shown)
-                    {
-                        noisyBoxSuppressed -= extra;
-                    }
-                    // Cleared once the box is closed, not before: a message logged while it is on screen
-                    // belongs to this burst, not to a new box nested inside it.
-                    noisyBoxPending = false;
-                };
-
-                noisyBoxPending = true;
-
-                if (type == QtFatalMsg)
-                {
-                    // A fatal message aborts right below. The dialog must be shown synchronously here or it
-                    // will never appear.
-                    ShowMessageBox();
-                }
-                else
-                {
-                    // Never pop a modal dialog synchronously from whatever call stack logged the message (e.g. in
-                    // the middle of a QGraphicsItem geometry rebuild or a tool dialog's Apply handler): the nested
-                    // event loop from QMessageBox::exec() then pumps events over not-yet-consistent state, which
-                    // has repeatedly caused crashes in this codebase (see e.g. commits 714cd5d89, 06f755ed6).
-                    // Defer to the next event loop iteration, where the stack that logged the message has fully
-                    // unwound.
-                    QTimer::singleShot(0, qApp, ShowMessageBox);
-                }
+                // Never pop a modal dialog synchronously from whatever call stack logged the message (e.g. in
+                // the middle of a QGraphicsItem geometry rebuild or a tool dialog's Apply handler): the nested
+                // event loop from QMessageBox::exec() then pumps events over not-yet-consistent state, which
+                // has repeatedly caused crashes in this codebase (see e.g. commits 714cd5d89, 06f755ed6).
+                // Defer to the next event loop iteration, where the stack that logged the message has fully
+                // unwound.
+                QTimer::singleShot(0, qApp, ShowMessageBox);
             }
         }
 
