@@ -1308,7 +1308,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
             if (VApplication::IsGUIMode())
             {
-                QMessageBox::warning(this, tr("Export mode"), stopped.error, QMessageBox::Ok, QMessageBox::Ok);
+                QMessageBox::warning(this, tr("Export mode"), tr("The export stopped:\n\n%1").arg(stopped.error),
+                                     QMessageBox::Ok, QMessageBox::Ok);
             }
             return;
         }
@@ -1335,7 +1336,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
         if (VApplication::IsGUIMode())
         {
-            QMessageBox::warning(this, tr("Export mode"), message + QStringLiteral("\n\n") + stopped.diagnostic,
+            // The diagnostic is the exporter's own wording: it is labelled as technical instead of being dropped
+            // into the sentence as if it were meant for the reader.
+            QMessageBox::warning(this, tr("Export mode"),
+                                 message + QStringLiteral("\n\n")
+                                     + tr("Technical detail: %1").arg(stopped.diagnostic),
                                  QMessageBox::Ok, QMessageBox::Ok);
         }
     };

@@ -9730,6 +9730,18 @@ It may have been moved, renamed, or deleted. Load another table from the Measure
 
 Il a peut-être été déplacé, renommé ou supprimé. Chargez un autre tableau depuis le menu Mesures.</translation>
     </message>
+    <message>
+        <source>The export stopped:
+
+%1</source>
+        <translation>L&apos;export s&apos;est arrêté :
+
+%1</translation>
+    </message>
+    <message>
+        <source>Technical detail: %1</source>
+        <translation>Détail technique : %1</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
