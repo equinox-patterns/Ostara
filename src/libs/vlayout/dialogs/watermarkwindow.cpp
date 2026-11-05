@@ -558,6 +558,8 @@ void WatermarkWindow::UpdateWindowTitle()
         // #endif /*Q_OS_WIN32*/
     }
 
+    // GetWatermarkFileName() already ends with the "[*]" placeholder — see its own implementation. Appending
+    // another one here would make Qt collapse the pair into a literal "[*]" that the title bar then displays.
     if (isFileWritable)
     {
         setWindowTitle(GetWatermarkFileName());

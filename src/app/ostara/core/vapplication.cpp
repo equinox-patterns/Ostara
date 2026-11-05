@@ -435,6 +435,15 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         type = QtDebugMsg;
     }
 
+    // Qt's Windows platform plugin announces, when a screen cannot be matched to a monitor handle, that it
+    // falls back to 96 DPI ("monitorData: Unable to obtain handle for monitor '\\\\.\\DISPLAY2', defaulting
+    // to 96 DPI"). Nothing changes for the reader, and the message says so itself. It stays in the log at
+    // debug level, where a genuine DPI problem can still be traced, but it is not a warning about their work.
+    if ((type == QtWarningMsg) && msg.contains(QStringLiteral("Unable to obtain handle for monitor")))
+    {
+        type = QtDebugMsg;
+    }
+
     QString logMsg = msg;
     const bool isPatternMessage = VAbstractApplication::IsWarningMessage(msg);
     if (isPatternMessage)
@@ -446,7 +455,11 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
 
     if (isGuiThread)
     {
-        if ((type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg) && VApplication::IsGUIMode())
+        // A warning never takes the slot. Were it to set noisyBoxPending, a critical logged right behind it in
+        // the same event-loop turn would be counted as one of its "further messages", and the box that finally
+        // appeared would carry the warning's text — the critical's own sentence would never be read. For a
+        // warning the box is not shown at all (see ShowNoisyMessageBox), so arming the slot only loses messages.
+        if ((type == QtCriticalMsg || type == QtFatalMsg) && VApplication::IsGUIMode())
         {
             if (noisyBoxPending)
             {
