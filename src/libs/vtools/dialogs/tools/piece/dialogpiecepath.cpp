@@ -214,12 +214,17 @@ void DialogPiecePath::DetachHiddenCreationWidgets()
 
     // La liste des nœuds n'est plus montrée : c'est le modèle que CreatePath() relit, pas un
     // widget d'édition. On la retire de la disposition pour ne pas laisser de case vide.
+    // ⚠️ takeAt() ne détache que l'élément de disposition : le widget reste un enfant de la
+    // dialog, *visible*, et continue de se peindre à son ancienne géométrie — la liste des
+    // nœuds réapparaissait donc par-dessus le formulaire, sur toutes les plateformes. Il faut
+    // la masquer explicitement, comme RemoveFormRow le fait pour ses deux widgets.
     for (int i = ui->verticalLayout->count() - 1; i >= 0; --i)
     {
         if (QLayoutItem *item = ui->verticalLayout->itemAt(i);
             item != nullptr && item->widget() == ui->listWidget)
         {
-            ui->verticalLayout->takeAt(i);
+            ui->listWidget->hide();
+            delete ui->verticalLayout->takeAt(i);
         }
     }
 
