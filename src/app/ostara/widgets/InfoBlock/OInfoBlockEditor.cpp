@@ -1033,7 +1033,8 @@ void OInfoBlockEditor::OnCreateClientFolder(bool checked)
     const QString name = m_clientNameEdit->text().trimmed();
     if (name.isEmpty())
     {
-        QMessageBox::information(this, tr("Pattern library"), tr("Name the client first: the folder takes its name."));
+        // Same channel as the "linked" branch just below: this page already reports through its status message.
+        emit StatusMessage(tr("Name the client first: the folder takes its name."));
         return;
     }
 
@@ -1054,8 +1055,7 @@ void OInfoBlockEditor::OnCreateClientFolder(bool checked)
         }
         else
         {
-            QMessageBox::information(this, tr("Pattern library"),
-                                     tr("Rename the client or the folder, so that the two can be told apart."));
+            emit StatusMessage(tr("Rename the client or the folder, so that the two can be told apart."));
         }
         return;
     }
@@ -1415,8 +1415,7 @@ void OInfoBlockEditor::OnCreateCollectionFolder(bool checked)
     const QString name = m_collectionNameEdit->text().trimmed();
     if (name.isEmpty())
     {
-        QMessageBox::information(this, tr("Pattern library"),
-                                 tr("Name the collection first: the folder takes its name."));
+        emit StatusMessage(tr("Name the collection first: the folder takes its name."));
         return;
     }
 
@@ -1435,8 +1434,7 @@ void OInfoBlockEditor::OnCreateCollectionFolder(bool checked)
         }
         else
         {
-            QMessageBox::information(this, tr("Pattern library"),
-                                     tr("Rename the collection or the folder, so that the two can be told apart."));
+            emit StatusMessage(tr("Rename the collection or the folder, so that the two can be told apart."));
         }
         return;
     }

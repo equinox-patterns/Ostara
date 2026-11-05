@@ -254,10 +254,10 @@ void OPatternFolderDialog::OnAccept()
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         if (answer != QMessageBox::Yes)
         {
-            // Nothing changed: the reader said no, the cursor goes back to the name. A box on top of that would
-            // only be one more click before doing what the status line already asks.
-            VAbstractValApplication::ShowStatusMessage(
-                tr("Rename the folder or the client, so that the two can be told apart."));
+            // The window is modal, on top of another modal one: a status line on the main window would be hidden
+            // behind both, so the sentence stays in a box.
+            QMessageBox::information(this, tr("New folder"),
+                                     tr("Rename the folder or the client, so that the two can be told apart."));
             m_nameEdit->setFocus();
             return;
         }
@@ -273,8 +273,8 @@ void OPatternFolderDialog::OnAccept()
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         if (answer != QMessageBox::Yes)
         {
-            VAbstractValApplication::ShowStatusMessage(
-                tr("Rename the folder or the collection, so that the two can be told apart."));
+            QMessageBox::information(this, tr("New folder"),
+                                     tr("Rename the folder or the collection, so that the two can be told apart."));
             m_nameEdit->setFocus();
             return;
         }

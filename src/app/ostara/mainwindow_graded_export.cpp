@@ -832,8 +832,7 @@ void MainWindow::ExportAllGradedRanges(const QString &dirPath)
 
     if (names.isEmpty())
     {
-        QMessageBox::information(this, tr("Graded mode"), tr("No size range to export."),
-                                 QMessageBox::Ok);
+        VAbstractValApplication::ShowStatusMessage(tr("No size range to export."));
         return;
     }
 

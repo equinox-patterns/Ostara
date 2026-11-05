@@ -255,8 +255,9 @@ void DialogManageMeasurements::SetupUI()
             if (!dstPath.isEmpty())
             {
                 if (QFile::copy(path, dstPath))
-                    VAbstractValApplication::ShowStatusMessage(
-                        tr("File exported to:\n%1").arg(dstPath).simplified());
+                    // Modal window with no status area of its own: the box is the only place the reader can see
+                    // that the copy landed.
+                    QMessageBox::information(this, tr("Export successful"), tr("File exported to:\n%1").arg(dstPath));
                 else
                     QMessageBox::warning(this, tr("Export error"),
                         tr("Could not copy file to the selected destination."));

@@ -819,7 +819,8 @@ void OPieceLibraryDialog::ExportPiece(int row)
         return;
     }
 
-    VAbstractValApplication::ShowStatusMessage(tr("Piece exported to:\n%1").arg(target).simplified());
+    // Modal window: see the same note in the pattern library dialog.
+    m_stateLabel->setText(tr("Piece exported to:\n%1").arg(target));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
