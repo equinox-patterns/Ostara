@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "dialogtool.h"
+#include <QMessageBox>
 #include "../vmisc/vabstractvalapplication.h"
 
 #include "../dialogtoolbox.h"
@@ -134,10 +135,13 @@ void DialogTool::closeEvent(QCloseEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogTool::RefuseStep(const QString &message)
 {
-    // The status line is where this dialog talks to the reader at every step; a refusal belongs there, not in a
-    // modal box dropped in the middle of a pick. The signature sends it to the warning pane as well.
     emit ToolTip(message);
-    qWarning() << VAbstractValApplication::warningMessageSignature + message;
+
+    // The window is what the reader wants for a refusal: it stops on the mistake instead of letting the next click
+    // land somewhere unintended. Over the main window, because this dialog is not on screen yet while points are
+    // being picked. The log gets a line too, but without the pane signature: the box already says it.
+    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), windowTitle(), message);
+    qWarning() << message;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

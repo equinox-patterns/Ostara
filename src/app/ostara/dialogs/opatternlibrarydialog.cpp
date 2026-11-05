@@ -673,7 +673,7 @@ void OPatternLibraryDialog::ExportEntry(int row)
 
     // The window is modal: a status line on the main window would be hidden behind it, so the word goes in the
     // dialog's own state label — the same one that already says when the list is empty or filtered.
-    m_stateLabel->setText(tr("Pattern exported to:\n%1").arg(target));
+    QMessageBox::information(this, tr("Export successful"), tr("Pattern exported to:\n%1").arg(target));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

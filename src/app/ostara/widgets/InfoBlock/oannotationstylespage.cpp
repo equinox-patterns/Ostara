@@ -576,9 +576,7 @@ void OAnnotationStylesPage::PersistStyles()
     QString err;
     if (!OPieceCartoucheStorage::SaveAnnotationStyles(m_styleEntries, &err))
     {
-        // Called from three edit paths: the status line says it, the log keeps it.
-        emit StatusMessage(err);
-        qWarning() << "Saving the annotation styles failed:" << err;
+        QMessageBox::critical(this, tr("Annotations"), err);
     }
 }
 

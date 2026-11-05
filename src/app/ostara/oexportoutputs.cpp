@@ -1871,8 +1871,8 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
     RememberExportFolder(dialog.Directory());
 
-    VAbstractValApplication::ShowStatusMessage(
-        tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()).simplified());
+    QMessageBox::information(this, tr("Export mode"),
+                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1914,8 +1914,8 @@ void MainWindow::ExportOutputToPlotterSvg(quint32 id)
     // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
     RememberExportFolder(dialog.Directory());
 
-    VAbstractValApplication::ShowStatusMessage(
-        tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()).simplified());
+    QMessageBox::information(this, tr("Export mode"),
+                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1980,8 +1980,9 @@ void MainWindow::ExportOutputToCuttingFile(quint32 id)
         return;
     }
 
-    VAbstractValApplication::ShowStatusMessage(
-        tr("\"%1\" was exported to\n%2").arg(existing->name, written.join(QLatin1Char('\n'))).simplified());
+    QMessageBox::information(
+        this, tr("Export mode"),
+        tr("\"%1\" was exported to\n%2").arg(existing->name, written.join(QLatin1Char('\n'))));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2126,7 +2127,7 @@ void MainWindow::ExportActiveOutputToImage()
 
     if (failed.isEmpty())
     {
-        VAbstractValApplication::ShowStatusMessage(lines.join(QStringLiteral(" · ")));
+        QMessageBox::information(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
         return;
     }
 

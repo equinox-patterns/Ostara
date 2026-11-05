@@ -820,7 +820,7 @@ void OPieceLibraryDialog::ExportPiece(int row)
     }
 
     // Modal window: see the same note in the pattern library dialog.
-    m_stateLabel->setText(tr("Piece exported to:\n%1").arg(target));
+    QMessageBox::information(this, tr("Export successful"), tr("Piece exported to:\n%1").arg(target));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

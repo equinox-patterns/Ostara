@@ -283,9 +283,7 @@ void OLogoLibraryPage::PersistEntry(const QString &fileName, const QString &name
     QString err;
     if (!OLogoLibrary::Save(entries, &err))
     {
-        // Called on every edit of a logo's name or notes: a modal box here would open on each keystroke.
-        emit StatusMessage(err);
-        qWarning() << "Saving the logo library failed:" << err;
+        QMessageBox::critical(this, tr("Logo"), err);
         return;
     }
 

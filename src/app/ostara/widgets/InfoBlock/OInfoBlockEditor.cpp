@@ -960,10 +960,7 @@ void OInfoBlockEditor::PersistClients()
     QString err;
     if (!OPieceCartoucheStorage::SaveClients(m_clientEntries, &err))
     {
-        // Called on every field change: a modal box here opened on each keystroke. The status line says the same
-        // thing, stays visible, and lets the reader finish the field before the next attempt.
-        emit StatusMessage(err);
-        qWarning() << "Saving the clients failed:" << err;
+        QMessageBox::critical(this, tr("Client"), err);
     }
 }
 
@@ -1036,8 +1033,7 @@ void OInfoBlockEditor::OnCreateClientFolder(bool checked)
     const QString name = m_clientNameEdit->text().trimmed();
     if (name.isEmpty())
     {
-        // Same channel as the "linked" branch just below: this page already reports through its status message.
-        emit StatusMessage(tr("Name the client first: the folder takes its name."));
+        QMessageBox::information(this, tr("Pattern library"), tr("Name the client first: the folder takes its name."));
         return;
     }
 
@@ -1058,7 +1054,8 @@ void OInfoBlockEditor::OnCreateClientFolder(bool checked)
         }
         else
         {
-            emit StatusMessage(tr("Rename the client or the folder, so that the two can be told apart."));
+            QMessageBox::information(this, tr("Pattern library"),
+                                     tr("Rename the client or the folder, so that the two can be told apart."));
         }
         return;
     }
@@ -1346,9 +1343,7 @@ void OInfoBlockEditor::PersistCollections()
     QString err;
     if (!OPieceCartoucheStorage::SaveCollections(m_collectionEntries, &err))
     {
-        // Same reason as PersistClients: this runs on every change.
-        emit StatusMessage(err);
-        qWarning() << "Saving the collections failed:" << err;
+        QMessageBox::critical(this, tr("Collection"), err);
     }
 }
 
@@ -1420,7 +1415,8 @@ void OInfoBlockEditor::OnCreateCollectionFolder(bool checked)
     const QString name = m_collectionNameEdit->text().trimmed();
     if (name.isEmpty())
     {
-        emit StatusMessage(tr("Name the collection first: the folder takes its name."));
+        QMessageBox::information(this, tr("Pattern library"),
+                                 tr("Name the collection first: the folder takes its name."));
         return;
     }
 
@@ -1439,7 +1435,8 @@ void OInfoBlockEditor::OnCreateCollectionFolder(bool checked)
         }
         else
         {
-            emit StatusMessage(tr("Rename the collection or the folder, so that the two can be told apart."));
+            QMessageBox::information(this, tr("Pattern library"),
+                                     tr("Rename the collection or the folder, so that the two can be told apart."));
         }
         return;
     }

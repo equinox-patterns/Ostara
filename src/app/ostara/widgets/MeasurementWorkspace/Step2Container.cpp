@@ -631,10 +631,11 @@ void Step2Container::OnImportStructure()
 
     if (skippedCount > 0)
     {
-        // This page lives in a modal window: the message goes in its own hint label, not behind it.
-        m_hintLabel->setText(
-            tr("%1 measurement(s)/group(s) imported; %2 skipped (name already exists).")
-                .arg(importedCount).arg(skippedCount));
+        QMessageBox::information(this,
+                                 tr("Import complete"),
+                                 tr("%1 measurement(s)/group(s) imported.\n"
+                                    "%2 measurement(s)/group(s) skipped (name already exists).")
+                                     .arg(importedCount).arg(skippedCount));
     }
 }
 

@@ -796,9 +796,9 @@ void VWidgetGroups::ActionTransferLayerGroup(quint32 id)
 
     if (content.isEmpty())
     {
-        VAbstractValApplication::ShowStatusMessage(
-            tr("The group \"%1\" holds no layer - there is nothing to transfer.")
-                .arg(m_doc->GetLayerGroupName(id)));
+        QMessageBox::information(this, tr("Empty group"),
+                                 tr("The group \"%1\" holds no layer - there is nothing to transfer.")
+                                     .arg(m_doc->GetLayerGroupName(id)));
         return;
     }
 
