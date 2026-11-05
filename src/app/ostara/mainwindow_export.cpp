@@ -243,26 +243,44 @@ void MainWindow::ExportDetailsAs(bool checked)
 
         ExportData(listDetails);
 
-        // Say it worked, and where it landed — the same word Graded mode and Export mode already
-        // give. The export path is not a single file for every format (a tiled PDF is a page per
-        // file), so the claim is checked rather than asserted: the named file when it is there, the
-        // folder it went to otherwise. A dialog that says "exported" over a write that failed would
-        // be worse than no dialog at all.
-        const QString suffix = VLayoutExporter::ExportFormatSuffix(m_dialogSaveLayout->Format());
-        const QString fileName = m_dialogSaveLayout->FileName() + suffix;
-        const QFileInfo exported(m_dialogSaveLayout->Path() + '/'_L1 + fileName);
-        if (exported.exists())
+        // ExportData() reports nothing about what it wrote: the exporter returns void, and a tiled PDF writes one
+        // file per page. The claim is therefore checked on the folder — at least one non-empty file whose name
+        // starts with the requested base name. It used to be enough that the folder existed, which announced
+        // "exported" over a write that had failed (a read-only key, a protected share, a folder needing rights).
+        // A dialog that says "exported" over a write that failed is worse than no dialog at all.
+        const QString baseName = m_dialogSaveLayout->FileName();
+        const QDir folder(m_dialogSaveLayout->Path());
+
+        QStringList written;
+        const QFileInfoList candidates = folder.entryInfoList(QStringList{baseName + '*'}, QDir::Files);
+        for (const QFileInfo &candidate : candidates)
+        {
+            if (candidate.size() > 0)
+            {
+                written << candidate.fileName();
+            }
+        }
+
+        if (written.isEmpty())
+        {
+            QMessageBox::warning(this, tr("Detail mode"),
+                                 tr("Nothing was written to this folder:\n%1\n\nIt does not allow writing — a "
+                                    "read-only key, a protected share, a folder that asks for rights. Choose "
+                                    "another folder.")
+                                     .arg(folder.absolutePath()),
+                                 QMessageBox::Ok);
+        }
+        else if (written.size() == 1)
         {
             QMessageBox::information(this, tr("Detail mode"),
                                      tr("The file \"%1\" was successfully exported to:\n%2")
-                                         .arg(fileName, exported.absolutePath()),
+                                         .arg(written.constFirst(), folder.absolutePath()),
                                      QMessageBox::Ok);
         }
-        else if (exported.dir().exists())
+        else
         {
             QMessageBox::information(this, tr("Detail mode"),
-                                     tr("The files were successfully exported to:\n%1")
-                                         .arg(exported.absolutePath()),
+                                     tr("The files were successfully exported to:\n%1").arg(folder.absolutePath()),
                                      QMessageBox::Ok);
         }
         m_dialogSaveLayout.clear();
