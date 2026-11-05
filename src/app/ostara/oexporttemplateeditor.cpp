@@ -1433,8 +1433,8 @@ auto OExportTemplateEditor::DiscardUnsavedChanges() -> bool
     {
         // The file that held the saved state cannot be read: there is nothing to go back to, so
         // nothing is thrown away. The document keeps its flag and the close prompt will speak again.
-        QMessageBox::warning(this, tr("Discard changes"),
-                             tr("The saved template could not be read back, so the changes were kept.\n\n%1")
+        QMessageBox::warning(this, tr("Changes kept"),
+                             tr("The saved template could not be read back, so your changes were kept.\n\n%1")
                                  .arg(error));
         return false;
     }
@@ -1605,7 +1605,8 @@ void OExportTemplateEditor::SaveAssemblyMarksTemplate()
     if (!OExportTemplateStorage::Save(tpl, target, &error))
     {
         QMessageBox::critical(this, tr("Save template"),
-                              tr("Could not save the template.\n\n%1").arg(error));
+                              tr("Ostara could not save the template.\n\n%1\n\nCheck that the folder allows writing, "
+                                 "and that the file is not open in another program.").arg(error));
         return;
     }
 
@@ -1648,7 +1649,8 @@ void OExportTemplateEditor::LoadTemplate(const QString &filePath)
     if (!OExportTemplateStorage::Load(filePath, &tpl, &error))
     {
         QMessageBox::critical(this, tr("Open template"),
-                              tr("Could not open the template.\n\n%1").arg(error));
+                              tr("Ostara could not open the template.\n\n%1\n\nThe file may have been moved, "
+                                 "renamed, or written by a newer version of Ostara.").arg(error));
         return;
     }
 

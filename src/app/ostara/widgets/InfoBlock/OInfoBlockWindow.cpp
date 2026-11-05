@@ -82,7 +82,7 @@ void OInfoBlockWindow::closeEvent(QCloseEvent *event)
     {
         const auto answer = QMessageBox::warning(
             this, tr("Information block"), tr("The template has unsaved changes. Do you want to save them?"),
-            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
         if (answer == QMessageBox::Save)
         {
             m_editor->OnSave();

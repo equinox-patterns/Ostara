@@ -10913,6 +10913,42 @@ Choisissez un autre nom.</translation>
 
 %1</translation>
     </message>
+    <message>
+        <source>Changes kept</source>
+        <translation>Modifications conservées</translation>
+    </message>
+    <message>
+        <source>The saved template could not be read back, so your changes were kept.
+
+%1</source>
+        <translation>Le modèle enregistré n&apos;a pas pu être relu : vos modifications ont été conservées.
+
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not save the template.
+
+%1
+
+Check that the folder allows writing, and that the file is not open in another program.</source>
+        <translation>Ostara n&apos;a pas pu enregistrer le modèle.
+
+%1
+
+Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
+    </message>
+    <message>
+        <source>Ostara could not open the template.
+
+%1
+
+The file may have been moved, renamed, or written by a newer version of Ostara.</source>
+        <translation>Ostara n&apos;a pas pu ouvrir le modèle.
+
+%1
+
+Le fichier a peut-être été déplacé, renommé, ou écrit par une version plus récente d&apos;Ostara.</translation>
+    </message>
 </context>
 <context>
     <name>OCoverPageTemplatesPage</name>
@@ -14313,6 +14349,42 @@ Choisissez un autre nom.</translation>
 
 %1</translation>
     </message>
+    <message>
+        <source>Changes kept</source>
+        <translation>Modifications conservées</translation>
+    </message>
+    <message>
+        <source>The saved template could not be read back, so your changes were kept.
+
+%1</source>
+        <translation>Le modèle enregistré n&apos;a pas pu être relu : vos modifications ont été conservées.
+
+%1</translation>
+    </message>
+    <message>
+        <source>Ostara could not save the template.
+
+%1
+
+Check that the folder allows writing, and that the file is not open in another program.</source>
+        <translation>Ostara n&apos;a pas pu enregistrer le modèle.
+
+%1
+
+Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
+    </message>
+    <message>
+        <source>Ostara could not open the template.
+
+%1
+
+The file may have been moved, renamed, or written by a newer version of Ostara.</source>
+        <translation>Ostara n&apos;a pas pu ouvrir le modèle.
+
+%1
+
+Le fichier a peut-être été déplacé, renommé, ou écrit par une version plus récente d&apos;Ostara.</translation>
+    </message>
 </context>
 <context>
     <name>OExportTemplateWindow</name>
@@ -15181,6 +15253,18 @@ Choisissez un autre nom.</translation>
         <source>Cartouche template (*.oct)</source>
         <translation>Modèle de cartouche (*.oct)</translation>
     </message>
+    <message>
+        <source>Changes kept</source>
+        <translation>Modifications conservées</translation>
+    </message>
+    <message>
+        <source>The saved template could not be read back, so your changes were kept.
+
+%1</source>
+        <translation>Le modèle enregistré n&apos;a pas pu être relu : vos modifications ont été conservées.
+
+%1</translation>
+    </message>
 </context>
 <context>
     <name>OInfoBlockPreview</name>
@@ -15476,6 +15560,26 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
         <location filename="../../src/app/ostara/core/olibrarystorage.cpp" line="185"/>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
+    </message>
+    <message>
+        <source>Ostara could not create this folder:
+%1
+
+Check that you are allowed to write in the folder that holds it.</source>
+        <translation>Ostara n&apos;a pas pu créer ce dossier :
+%1
+
+Vérifiez que vous avez le droit d&apos;écrire dans le dossier qui le contient.</translation>
+    </message>
+    <message>
+        <source>Ostara could not move this file to:
+%1
+
+Check that the folder allows writing, and that the file is not open elsewhere.</source>
+        <translation>Ostara n&apos;a pas pu déplacer ce fichier vers :
+%1
+
+Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert ailleurs.</translation>
     </message>
 </context>
 <context>

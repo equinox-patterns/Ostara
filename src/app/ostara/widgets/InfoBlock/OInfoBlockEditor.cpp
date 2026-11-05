@@ -1731,8 +1731,8 @@ auto OInfoBlockEditor::DiscardUnsavedChanges() -> bool
     {
         // The file that held the saved state cannot be read: there is nothing to go back to, so
         // nothing is thrown away. The template keeps its flag and the close prompt will speak again.
-        QMessageBox::warning(this, tr("Discard changes"),
-                             tr("The saved template could not be read back, so the changes were kept.\n\n%1")
+        QMessageBox::warning(this, tr("Changes kept"),
+                             tr("The saved template could not be read back, so your changes were kept.\n\n%1")
                                  .arg(error));
         return false;
     }

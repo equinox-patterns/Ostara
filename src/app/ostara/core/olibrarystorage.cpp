@@ -75,7 +75,10 @@ auto OLibraryStorage::CreateFolder(const QString &parentPath, const QString &nam
     {
         if (error != nullptr)
         {
-            *error = QCoreApplication::translate("OLibraryStorage", "The folder could not be created.");
+            *error = QCoreApplication::translate("OLibraryStorage",
+                                                 "Ostara could not create this folder:\n%1\n\nCheck that you are "
+                                                 "allowed to write in the folder that holds it.")
+                         .arg(QDir::toNativeSeparators(path));
         }
         return false;
     }
@@ -136,7 +139,10 @@ auto OLibraryStorage::Transfer(const QString &sourcePath, const QString &targetD
 
     if (error != nullptr)
     {
-        *error = QCoreApplication::translate("OLibraryStorage", "The file could not be moved there.");
+        *error = QCoreApplication::translate("OLibraryStorage",
+                                             "Ostara could not move this file to:\n%1\n\nCheck that the folder "
+                                             "allows writing, and that the file is not open elsewhere.")
+                     .arg(QDir::toNativeSeparators(target));
     }
     return false;
 }
