@@ -156,7 +156,8 @@ void OExportImageListDialog::OnAccept()
     const QVector<Row> chosen = Chosen();
     if (chosen.isEmpty())
     {
-        QMessageBox::warning(this, tr("Export"), tr("No generation is ticked."));
+        QMessageBox::warning(this, tr("Export"),
+                             tr("No generation is ticked. Tick at least one line to generate."));
         return;
     }
 

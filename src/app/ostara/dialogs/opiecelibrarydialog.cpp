@@ -841,7 +841,7 @@ void OPieceLibraryDialog::DeletePiece(int row)
     QString error;
     if (not OPieceLibrary::Remove(summary.path, &error))
     {
-        QMessageBox::warning(this, tr("Error"), error);
+        QMessageBox::warning(this, tr("Piece library"), error);
         return;
     }
 

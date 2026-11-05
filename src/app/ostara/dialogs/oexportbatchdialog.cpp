@@ -235,7 +235,8 @@ void OExportBatchDialog::OnAccept()
     const QFileInfo folder(page->Directory());
     if (!folder.isDir())
     {
-        QMessageBox::warning(this, tr("Export"), tr("That folder does not exist."));
+        QMessageBox::warning(this, tr("Export"),
+                             tr("That folder does not exist. Choose another one, or create it."));
         page->FocusDirectory();
         return;
     }
@@ -243,7 +244,8 @@ void OExportBatchDialog::OnAccept()
     const QVector<OExportBatchPage::Row> chosen = page->Chosen();
     if (chosen.isEmpty())
     {
-        QMessageBox::warning(this, tr("Export"), tr("No generation is ticked."));
+        QMessageBox::warning(this, tr("Export"),
+                             tr("No generation is ticked. Tick at least one line to generate."));
         return;
     }
 

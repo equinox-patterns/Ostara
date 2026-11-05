@@ -3348,6 +3348,16 @@ Cette action ne peut pas être annulée.</translation>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
+    <message>
+        <source>Ostara could not delete this file:
+%1
+
+It may be open in another program, or the folder may not allow deleting.</source>
+        <translation>Ostara n&apos;a pas pu supprimer ce fichier :
+%1
+
+Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise pas la suppression.</translation>
+    </message>
 </context>
 <context>
     <name>DialogMeasurementLink</name>
@@ -10910,6 +10920,16 @@ Cette action ne peut pas être annulée.</translation>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
     </message>
+    <message>
+        <source>Ostara could not delete this file:
+%1
+
+It may be open in another program, or the folder may not allow deleting.</source>
+        <translation>Ostara n&apos;a pas pu supprimer ce fichier :
+%1
+
+Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise pas la suppression.</translation>
+    </message>
 </context>
 <context>
     <name>OCoverSizeRangeChooser</name>
@@ -12964,6 +12984,14 @@ Cette action ne peut pas être annulée.</translation>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
+    <message>
+        <source>That folder does not exist. Choose another one, or create it.</source>
+        <translation>Ce dossier n&apos;existe pas. Choisissez-en un autre, ou créez-le.</translation>
+    </message>
+    <message>
+        <source>No generation is ticked. Tick at least one line to generate.</source>
+        <translation>Rien n&apos;est coché à générer. Cochez au moins une ligne à produire.</translation>
+    </message>
 </context>
 <context>
     <name>OExportBatchPage</name>
@@ -13261,6 +13289,10 @@ Ajoutez une génération aux favoris depuis le dock Sorties pour garder sa recet
         <source>Browse...</source>
         <translation>Parcourir…</translation>
     </message>
+    <message>
+        <source>That folder does not exist. Choose another one, or create it.</source>
+        <translation>Ce dossier n&apos;existe pas. Choisissez-en un autre, ou créez-le.</translation>
+    </message>
 </context>
 <context>
     <name>OExportGenerationListWidget</name>
@@ -13448,6 +13480,10 @@ Décochez un membre pour l&apos;écarter de ce run. Tout coché est ce qu&apos;u
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
+    <message>
+        <source>That folder does not exist. Choose another one, or create it.</source>
+        <translation>Ce dossier n&apos;existe pas. Choisissez-en un autre, ou créez-le.</translation>
+    </message>
 </context>
 <context>
     <name>OExportImageListDialog</name>
@@ -13477,6 +13513,10 @@ Décochez un membre pour l&apos;écarter de ce run. Tout coché est ce qu&apos;u
         <location filename="../../src/app/ostara/dialogs/oexportimagelistdialog.cpp" line="189"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
+    </message>
+    <message>
+        <source>No generation is ticked. Tick at least one line to generate.</source>
+        <translation>Rien n&apos;est coché à générer. Cochez au moins une ligne à produire.</translation>
     </message>
 </context>
 <context>
@@ -14302,6 +14342,16 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/oexporttemplatespage.cpp" line="363"/>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
+    </message>
+    <message>
+        <source>Ostara could not delete this file:
+%1
+
+It may be open in another program, or the folder may not allow deleting.</source>
+        <translation>Ostara n&apos;a pas pu supprimer ce fichier :
+%1
+
+Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise pas la suppression.</translation>
     </message>
 </context>
 <context>
@@ -15197,6 +15247,16 @@ Cette action ne peut pas être annulée.</translation>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OInfoBlockTemplatesPage.cpp" line="394"/>
         <source>Could not delete the file.</source>
         <translation>Impossible de supprimer le fichier.</translation>
+    </message>
+    <message>
+        <source>Ostara could not delete this file:
+%1
+
+It may be open in another program, or the folder may not allow deleting.</source>
+        <translation>Ostara n&apos;a pas pu supprimer ce fichier :
+%1
+
+Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise pas la suppression.</translation>
     </message>
 </context>
 <context>

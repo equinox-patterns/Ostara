@@ -290,7 +290,8 @@ void OExportImageDialog::Choose(Scope scope)
     const QFileInfo folder(Directory());
     if (!folder.isDir())
     {
-        QMessageBox::warning(this, tr("Export"), tr("That folder does not exist."));
+        QMessageBox::warning(this, tr("Export"),
+                                 tr("That folder does not exist. Choose another one, or create it."));
         m_pathEdit->setFocus();
         return;
     }

@@ -25,6 +25,7 @@
  *************************************************************************/
 
 #include "OInfoBlockTemplatesPage.h"
+#include <QDir>
 
 #include "OPieceCartoucheStorage.h"
 
@@ -391,7 +392,9 @@ void OInfoBlockTemplatesPage::OnCellClicked(int row, int column)
             }
             else
             {
-                QMessageBox::warning(this, tr("Error"), tr("Could not delete the file."));
+                QMessageBox::warning(this, tr("Template"),
+                                 tr("Ostara could not delete this file:\n%1\n\nIt may be open in another program, "
+                        "or the folder may not allow deleting.").arg(QDir::toNativeSeparators(entry.path)));
             }
             break;
         }

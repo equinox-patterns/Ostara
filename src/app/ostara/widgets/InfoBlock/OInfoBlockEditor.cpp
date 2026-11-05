@@ -960,7 +960,10 @@ void OInfoBlockEditor::PersistClients()
     QString err;
     if (!OPieceCartoucheStorage::SaveClients(m_clientEntries, &err))
     {
-        QMessageBox::critical(this, tr("Client"), err);
+        // Called on every field change: a modal box here opened on each keystroke. The status line says the same
+        // thing, stays visible, and lets the reader finish the field before the next attempt.
+        emit StatusMessage(err);
+        qWarning() << "Saving the clients failed:" << err;
     }
 }
 
@@ -1343,7 +1346,9 @@ void OInfoBlockEditor::PersistCollections()
     QString err;
     if (!OPieceCartoucheStorage::SaveCollections(m_collectionEntries, &err))
     {
-        QMessageBox::critical(this, tr("Collection"), err);
+        // Same reason as PersistClients: this runs on every change.
+        emit StatusMessage(err);
+        qWarning() << "Saving the collections failed:" << err;
     }
 }
 
