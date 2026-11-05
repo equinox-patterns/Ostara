@@ -10032,6 +10032,38 @@ Do you want to save changes before closing?</source>
         <translation>Le tableau de mensurations a été modifié.
 Voulez-vous enregistrer les modifications avant de fermer ?</translation>
     </message>
+    <message>
+        <source>This .vst file could not be converted. It may be damaged, or written by a version of Valentina that Ostara does not know.</source>
+        <translation>Ce fichier .vst n&apos;a pas pu être converti. Il est peut-être endommagé, ou écrit par une version de Valentina que cet Ostara ne connaît pas.</translation>
+    </message>
+    <message>
+        <source>Ostara could not open this file:
+%1
+
+Check that it is still there, and that you are allowed to read it.</source>
+        <translation>Ostara n&apos;a pas pu ouvrir ce fichier :
+%1
+
+Vérifiez qu&apos;il est toujours là et que vous avez le droit de le lire.</translation>
+    </message>
+    <message>
+        <source>This .vit file could not be read: it may be damaged.
+
+Technical detail: %1</source>
+        <translation>Ce fichier .vit n&apos;a pas pu être lu : il est peut-être endommagé.
+
+Détail technique : %1</translation>
+    </message>
+    <message>
+        <source>Ostara does not know this file:
+%1
+
+It reads measurement tables in .omt, .otu, .vst and .vit.</source>
+        <translation>Ostara ne connaît pas ce fichier :
+%1
+
+Il lit les tableaux de mesures aux formats .omt, .otu, .vst et .vit.</translation>
+    </message>
 </context>
 <context>
     <name>MeasurementWorkspace</name>

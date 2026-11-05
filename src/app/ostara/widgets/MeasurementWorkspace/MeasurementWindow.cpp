@@ -25,6 +25,7 @@
  *************************************************************************/
 
 #include "MeasurementWindow.h"
+#include <QDir>
 #include "xml/oomtdocument.h"
 #include "xml/ootudocument.h"
 #include "xml/oomtconverter.h"
@@ -194,7 +195,8 @@ bool MeasurementWindow::LoadFile(const QString &filePath)
         if (!result.document)
         {
             QMessageBox::warning(this, tr("Conversion error"),
-                                 tr("Unable to convert .vst file."));
+                                 tr("This .vst file could not be converted. It may be damaged, or written by a "
+                                    "version of Valentina that Ostara does not know."));
             return false;
         }
         // Load the document first so the workspace is on Step 2 when the message appears
@@ -224,7 +226,8 @@ bool MeasurementWindow::LoadFile(const QString &filePath)
         if (!file.open(QFile::ReadOnly | QFile::Text))
         {
             QMessageBox::warning(this, tr("Read error"),
-                                 tr("Unable to open file %1.").arg(filePath));
+                                 tr("Ostara could not open this file:\n%1\n\nCheck that it is still there, and "
+                                    "that you are allowed to read it.").arg(QDir::toNativeSeparators(filePath)));
             return false;
         }
         QDomDocument vitDoc;
@@ -233,7 +236,8 @@ bool MeasurementWindow::LoadFile(const QString &filePath)
         if (!parseResult)
         {
             QMessageBox::warning(this, tr("XML error"),
-                                 tr("Invalid .vit file: %1").arg(parseResult.errorMessage));
+                                 tr("This .vit file could not be read: it may be damaged.\n\nTechnical detail: %1")
+                                     .arg(parseResult.errorMessage));
             return false;
         }
 
@@ -281,7 +285,8 @@ bool MeasurementWindow::LoadFile(const QString &filePath)
     }
 
     QMessageBox::warning(this, tr("Unsupported format"),
-                         tr("File %1 is not a recognized format.").arg(filePath));
+                         tr("Ostara does not know this file:\n%1\n\nIt reads measurement tables in .omt, .otu, "
+                            ".vst and .vit.").arg(QDir::toNativeSeparators(filePath)));
     return false;
 }
 
@@ -327,17 +332,23 @@ bool MeasurementWindow::HandleClose()
     // Case 1: document with no file path (converted .vst/.vit or new — never saved)
     if (m_workspace->FilePath().isEmpty())
     {
+        // Cancel is a real answer: without it, closing the window meant choosing between losing the table and
+        // saving it, with no way back.
         auto result = QMessageBox::warning(this,
             tr("Unsaved table"),
             tr("The measurement table was not saved.\n"
                "If you close without saving, data will be lost."),
-            QMessageBox::Discard | QMessageBox::Save,
+            QMessageBox::Discard | QMessageBox::Save | QMessageBox::Cancel,
             QMessageBox::Save);
 
         if (result == QMessageBox::Discard)
         {
             // Close without saving — don't emit measurementsSaved
             return true;
+        }
+        else if (result == QMessageBox::Cancel)
+        {
+            return false;
         }
         else
         {
