@@ -26,6 +26,7 @@
  *************************************************************************/
 
 #include "opiecelibrarydialog.h"
+#include "../../../libs/vmisc/vabstractvalapplication.h"
 
 #include "olibraryfolderdialog.h"
 
@@ -818,7 +819,7 @@ void OPieceLibraryDialog::ExportPiece(int row)
         return;
     }
 
-    QMessageBox::information(this, tr("Export successful"), tr("Piece exported to:\n%1").arg(target));
+    VAbstractValApplication::ShowStatusMessage(tr("Piece exported to:\n%1").arg(target).simplified());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

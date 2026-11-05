@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "vwidgetdetails.h"
+#include "../../../libs/vmisc/vabstractvalapplication.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -858,8 +859,7 @@ void VWidgetDetails::OnNodeSelected(quint32 nodeId)
         const VPiece piece = m_data->GetPiece(pid);
         if (not OPieceCommonPoint::PieceHasNodeWithSource(piece, sourceId, m_data))
         {
-            QMessageBox::information(
-                this, tr("Link pieces"),
+            VAbstractValApplication::ShowStatusMessage(
                 tr("The selected point is not common to the %1 pieces of the group")
                     .arg(m_selectedPiecesForGroup.size()));
             return;  // stay in NodeSelecting — let the user click another point

@@ -671,7 +671,7 @@ void OPatternLibraryDialog::ExportEntry(int row)
         return;
     }
 
-    QMessageBox::information(this, tr("Export successful"), tr("Pattern exported to:\n%1").arg(target));
+    VAbstractValApplication::ShowStatusMessage(tr("Pattern exported to:\n%1").arg(target).simplified());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

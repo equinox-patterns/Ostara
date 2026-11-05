@@ -25,6 +25,7 @@
  *************************************************************************/
 
 #include "Step2Container.h"
+#include "../../../../libs/vmisc/vabstractvalapplication.h"
 #include "MeasurementTablePanel.h"
 #include "MeasurementDetailPanel.h"
 #include "MeasurementLibraryScanner.h"
@@ -630,11 +631,11 @@ void Step2Container::OnImportStructure()
 
     if (skippedCount > 0)
     {
-        QMessageBox::information(this,
-            tr("Import complete"),
+        VAbstractValApplication::ShowStatusMessage(
             tr("%1 measurement(s)/group(s) imported.\n"
                "%2 measurement(s)/group(s) skipped (name already exists).")
-                .arg(importedCount).arg(skippedCount));
+                .arg(importedCount).arg(skippedCount)
+                .simplified());
     }
 }
 

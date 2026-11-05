@@ -194,10 +194,8 @@ void DialogLineIntersect::ChosenObject(quint32 id, const SceneObject &type)
                     }
                     else
                     {
-                        QMessageBox::warning(
-                            this, tr("Line intersect"),
-                            tr("These two lines are parallel, no intersection possible. "
-                               "Please choose 2 non-parallel lines."));
+                        RefuseStep(tr("These two lines are parallel, no intersection possible. "
+                                      "Please choose 2 non-parallel lines."));
 
                         number = 0;
                         prepare = false;

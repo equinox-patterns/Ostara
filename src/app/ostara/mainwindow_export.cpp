@@ -272,16 +272,15 @@ void MainWindow::ExportDetailsAs(bool checked)
         }
         else if (written.size() == 1)
         {
-            QMessageBox::information(this, tr("Detail mode"),
-                                     tr("The file \"%1\" was successfully exported to:\n%2")
-                                         .arg(written.constFirst(), folder.absolutePath()),
-                                     QMessageBox::Ok);
+            VAbstractValApplication::ShowStatusMessage(
+                tr("The file \"%1\" was successfully exported to:\n%2")
+                    .arg(written.constFirst(), folder.absolutePath())
+                    .simplified());
         }
         else
         {
-            QMessageBox::information(this, tr("Detail mode"),
-                                     tr("The files were successfully exported to:\n%1").arg(folder.absolutePath()),
-                                     QMessageBox::Ok);
+            VAbstractValApplication::ShowStatusMessage(
+                tr("The files were successfully exported to:\n%1").arg(folder.absolutePath()).simplified());
         }
         m_dialogSaveLayout.clear();
     }

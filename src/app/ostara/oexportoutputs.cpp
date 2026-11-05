@@ -1864,8 +1864,8 @@ void MainWindow::ExportOutputToPdf(quint32 id)
     // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
     RememberExportFolder(dialog.Directory());
 
-    QMessageBox::information(this, tr("Export mode"),
-                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+    VAbstractValApplication::ShowStatusMessage(
+        tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()).simplified());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1905,8 +1905,8 @@ void MainWindow::ExportOutputToPlotterSvg(quint32 id)
     // Le dossier vient d'être choisi : c'est celui que le prochain export proposera.
     RememberExportFolder(dialog.Directory());
 
-    QMessageBox::information(this, tr("Export mode"),
-                             tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()));
+    VAbstractValApplication::ShowStatusMessage(
+        tr("\"%1\" was exported to\n%2").arg(existing->name, dialog.FullPath()).simplified());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1970,9 +1970,8 @@ void MainWindow::ExportOutputToCuttingFile(quint32 id)
         return;
     }
 
-    QMessageBox::information(
-        this, tr("Export mode"),
-        tr("\"%1\" was exported to\n%2").arg(existing->name, written.join(QLatin1Char('\n'))));
+    VAbstractValApplication::ShowStatusMessage(
+        tr("\"%1\" was exported to\n%2").arg(existing->name, written.join(QLatin1Char('\n'))).simplified());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2117,7 +2116,7 @@ void MainWindow::ExportActiveOutputToImage()
 
     if (failed.isEmpty())
     {
-        QMessageBox::information(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
+        VAbstractValApplication::ShowStatusMessage(lines.join(QStringLiteral(" · ")));
         return;
     }
 

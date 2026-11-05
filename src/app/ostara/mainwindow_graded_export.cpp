@@ -782,10 +782,10 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
     }
     if (showDialogs)
     {
-        QMessageBox::information(this, tr("Graded mode"),
-                                 tr("The file \"%1\" was successfully exported to:\n%2")
-                                     .arg(baseName, QFileInfo(filePath).absolutePath()),
-                                 QMessageBox::Ok);
+        VAbstractValApplication::ShowStatusMessage(
+            tr("The file \"%1\" was successfully exported to:\n%2")
+                .arg(baseName, QFileInfo(filePath).absolutePath())
+                .simplified());
     }
     return true;
 }
@@ -892,6 +892,6 @@ void MainWindow::ExportAllGradedRanges(const QString &dirPath)
     }
     else
     {
-        QMessageBox::information(this, tr("Graded mode"), text, QMessageBox::Ok);
+        VAbstractValApplication::ShowStatusMessage(text.simplified());
     }
 }

@@ -233,7 +233,7 @@ void MainWindow::ExportSeveralOutputs()
     {
         if (!lines.isEmpty())
         {
-            QMessageBox::information(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
+            VAbstractValApplication::ShowStatusMessage(lines.join(QStringLiteral(" · ")));
         }
         return;
     }

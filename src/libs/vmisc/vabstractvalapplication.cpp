@@ -28,6 +28,9 @@
  **
  *************************************************************************/
 #include "vabstractvalapplication.h"
+
+#include <QMainWindow>
+#include <QStatusBar>
 #include "customevents.h"
 #include "vvalentinasettings.h"
 
@@ -90,6 +93,18 @@ auto VAbstractValApplication::ValentinaSettings() -> VValentinaSettings *
     SCASSERT(settings != nullptr)
 
     return qobject_cast<VValentinaSettings *>(settings);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractValApplication::ShowStatusMessage(const QString &message, int timeoutMs)
+{
+    auto *main = qobject_cast<QMainWindow *>(VAbstractValApplication::VApp()->getMainWindow());
+    if (main == nullptr || main->statusBar() == nullptr)
+    {
+        return;
+    }
+    main->statusBar()->showMessage(message, timeoutMs);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

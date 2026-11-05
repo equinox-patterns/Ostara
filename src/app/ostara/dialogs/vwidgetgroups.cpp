@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "vwidgetgroups.h"
+#include "../../../libs/vmisc/vabstractvalapplication.h"
 #include "../ifc/ifcdef.h"
 #include "../vmisc/compatibility.h"
 #include "vtheme.h"
@@ -795,9 +796,9 @@ void VWidgetGroups::ActionTransferLayerGroup(quint32 id)
 
     if (content.isEmpty())
     {
-        QMessageBox::information(this, tr("Empty group"),
-                                 tr("The group \"%1\" holds no layer - there is nothing to transfer.")
-                                     .arg(m_doc->GetLayerGroupName(id)));
+        VAbstractValApplication::ShowStatusMessage(
+            tr("The group \"%1\" holds no layer - there is nothing to transfer.")
+                .arg(m_doc->GetLayerGroupName(id)));
         return;
     }
 

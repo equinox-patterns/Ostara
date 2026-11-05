@@ -127,6 +127,12 @@ public:
 
     static auto VApp() -> VAbstractValApplication *;
 
+    /** @brief Say something short in the status bar of the main window, without interrupting anything.
+     *
+     * This is what replaces a confirmation box: the reader gets the word, and keeps working. Does nothing when
+     * there is no main window yet (command line, or before the window exists). */
+    static void ShowStatusMessage(const QString &message, int timeoutMs = 5000);
+
 protected:
     QString m_customerName{};
     QDate m_customerBirthDate{};

@@ -26,6 +26,7 @@
  *************************************************************************/
 
 #include "DialogManageMeasurements.h"
+#include "../../../libs/vmisc/vabstractvalapplication.h"
 #include "vtheme.h"
 #include "vabstractapplication.h"
 #include "vcommonsettings.h"
@@ -254,8 +255,8 @@ void DialogManageMeasurements::SetupUI()
             if (!dstPath.isEmpty())
             {
                 if (QFile::copy(path, dstPath))
-                    QMessageBox::information(this, tr("Export successful"),
-                        tr("File exported to:\n%1").arg(dstPath));
+                    VAbstractValApplication::ShowStatusMessage(
+                        tr("File exported to:\n%1").arg(dstPath).simplified());
                 else
                     QMessageBox::warning(this, tr("Export error"),
                         tr("Could not copy file to the selected destination."));

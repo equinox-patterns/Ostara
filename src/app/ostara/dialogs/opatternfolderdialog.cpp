@@ -25,6 +25,7 @@
  *************************************************************************/
 
 #include "opatternfolderdialog.h"
+#include "../../../libs/vmisc/vabstractvalapplication.h"
 
 #include "core/opatternlibrary.h"
 #include "widgets/InfoBlock/OPieceCartoucheStorage.h"
@@ -253,8 +254,10 @@ void OPatternFolderDialog::OnAccept()
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         if (answer != QMessageBox::Yes)
         {
-            QMessageBox::information(this, tr("New folder"),
-                                     tr("Rename the folder or the client, so that the two can be told apart."));
+            // Nothing changed: the reader said no, the cursor goes back to the name. A box on top of that would
+            // only be one more click before doing what the status line already asks.
+            VAbstractValApplication::ShowStatusMessage(
+                tr("Rename the folder or the client, so that the two can be told apart."));
             m_nameEdit->setFocus();
             return;
         }
@@ -270,8 +273,8 @@ void OPatternFolderDialog::OnAccept()
                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         if (answer != QMessageBox::Yes)
         {
-            QMessageBox::information(this, tr("New folder"),
-                                     tr("Rename the folder or the collection, so that the two can be told apart."));
+            VAbstractValApplication::ShowStatusMessage(
+                tr("Rename the folder or the collection, so that the two can be told apart."));
             m_nameEdit->setFocus();
             return;
         }
