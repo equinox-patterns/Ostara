@@ -1974,8 +1974,9 @@ void MainWindow::ExportOutputToCuttingFile(quint32 id)
         // échoué laisserait croire que rien n'est sorti — ou que tout l'est, si le premier fichier est
         // passé. Les deux cas se ressemblent à l'écran, et un seul est vrai.
         QMessageBox::warning(this, tr("Export mode"),
-                             tr("\"%1\" could not be exported.").arg(existing->name)
-                                 + QStringLiteral("\n\n") + failed.join(QLatin1Char('\n')));
+                             tr("\"%1\" could not be written. These files are missing:\n\n%2\n\nCheck that the "
+                                "folder allows writing, and that none of them is open in another program.")
+                                 .arg(existing->name, failed.join(QLatin1Char('\n'))));
         return;
     }
 

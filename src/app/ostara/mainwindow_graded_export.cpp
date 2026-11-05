@@ -476,7 +476,10 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
         if (showDialogs)
         {
             QMessageBox::warning(this, tr("Graded mode"),
-                                 error.isEmpty() ? tr("The graded export failed.") : error,
+                                 error.isEmpty()
+                                     ? tr("The graded export failed. Check that the folder allows writing, and try "
+                                          "again.")
+                                     : error,
                                  QMessageBox::Ok);
         }
         return false;

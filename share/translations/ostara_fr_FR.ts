@@ -9766,6 +9766,22 @@ Check that every piece has a main path and a seam allowance, then try again.</so
 
 Vérifiez que chaque pièce a un contour principal et une valeur de couture, puis réessayez.</translation>
     </message>
+    <message>
+        <source>"%1" could not be written. These files are missing:
+
+%2
+
+Check that the folder allows writing, and that none of them is open in another program.</source>
+        <translation>« %1 » n&apos;a pas pu être écrit. Ces fichiers manquent :
+
+%2
+
+Vérifiez que le dossier autorise l&apos;écriture et qu&apos;aucun n&apos;est ouvert dans un autre programme.</translation>
+    </message>
+    <message>
+        <source>The graded export failed. Check that the folder allows writing, and try again.</source>
+        <translation>L&apos;export gradé a échoué. Vérifiez que le dossier autorise l&apos;écriture, puis réessayez.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
