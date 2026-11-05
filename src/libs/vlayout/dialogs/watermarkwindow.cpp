@@ -387,8 +387,9 @@ auto WatermarkWindow::on_actionSaveAs_triggered() -> bool
     {
         qDebug("Failed to lock %s", qUtf8Printable(fileName));
         qDebug("Error type: %d", lock->GetLockError());
-        qCritical("%s", qUtf8Printable(tr("Failed to lock. This file already opened in another window. Expect "
-                                          "collissions when run 2 copies of the program.")));
+        // The save itself went through; only the lock could not be taken. Not a rupture, but worth the log.
+        qWarning("%s", qUtf8Printable(tr("Failed to lock. This file already opened in another window. Expect "
+                                         "collissions when run 2 copies of the program.")));
     }
 
     return result;

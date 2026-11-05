@@ -1599,7 +1599,7 @@ auto VPatternRecipe::GroupOperationSource(VAbstractOperation *tool, quint32 id, 
         }
         catch (const VExceptionBadId &e)
         {
-            qCritical() << e.ErrorMessage() << Q_FUNC_INFO;
+            qWarning() << e.ErrorMessage();
             continue;
         }
 

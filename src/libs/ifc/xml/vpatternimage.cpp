@@ -52,14 +52,14 @@ auto VPatternImage::FromFile(const QString &fileName) -> VPatternImage
 
     if (not IsMimeTypeImage(mime))
     {
-        qCritical() << tr("Unexpected mime type: %1").arg(mime.name());
+        qWarning() << tr("Unexpected mime type: %1").arg(mime.name());
         return {};
     }
 
     QFile file(fileName);
     if (not file.open(QIODevice::ReadOnly))
     {
-        qCritical() << tr("Couldn't read the image. Error: %1").arg(file.errorString());
+        qWarning() << tr("Couldn't read the image. Error: %1").arg(file.errorString());
         return {};
     }
 
@@ -146,7 +146,7 @@ auto VPatternImage::GetPixmap() const -> QPixmap
     QImage const image = imageReader.read();
     if (image.isNull())
     {
-        qCritical() << tr("Couldn't read the image. Error: %1").arg(imageReader.errorString());
+        qWarning() << tr("Couldn't read the image. Error: %1").arg(imageReader.errorString());
         return {};
     }
 
@@ -177,7 +177,7 @@ auto VPatternImage::GetPixmap(const QSize &size) const -> QPixmap
     QImage const image = imageReader.read();
     if (image.isNull())
     {
-        qCritical() << tr("Couldn't read the image. Error: %1").arg(imageReader.errorString());
+        qWarning() << tr("Couldn't read the image. Error: %1").arg(imageReader.errorString());
         return {};
     }
 

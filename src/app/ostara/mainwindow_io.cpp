@@ -1486,9 +1486,10 @@ auto MainWindow::SavePatternAs(const QString &fileName) -> bool
     {
         qCDebug(vMainWindow, "Failed to lock %s", qUtf8Printable(fileName));
         qCDebug(vMainWindow, "Error type: %d", m_lock->GetLockError());
-        qCCritical(vMainWindow, "%s",
-                   qUtf8Printable(tr("Failed to lock. This file already opened in another window. Expect "
-                                     "collissions when run 2 copies of the program.")));
+        // The pattern was saved; only the lock could not be taken. See the same case in the watermark window.
+        qCWarning(vMainWindow, "%s",
+                  qUtf8Printable(tr("Failed to lock. This file already opened in another window. Expect "
+                                    "collissions when run 2 copies of the program.")));
     }
 
     return result;

@@ -35,6 +35,7 @@
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../vmisc/def.h"
+#include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatterngraph.h"
@@ -314,9 +315,12 @@ void VPattern::ParseLineNamesElement(const QDomElement &domElement)
         // different pairKey would cause data corruption in d->variables.
         if (seenSuffixes.contains(name))
         {
-            qCCritical(vXML, "%s", qUtf8Printable(tr("Duplicate line role name '%1' in <lineNames>; "
-                                                     "second occurrence ignored.")
-                                                      .arg(name)));
+            // The parse goes on without that second occurrence, so this is not a rupture: it belongs in the
+            // warning pane, where the reader can still see that their file carries a duplicate.
+            qCWarning(vXML, "%s", qUtf8Printable(VAbstractValApplication::warningMessageSignature
+                                                 + tr("Duplicate line role name '%1' in <lineNames>; "
+                                                      "second occurrence ignored.")
+                                                       .arg(name)));
             continue;
         }
         seenSuffixes.insert(name);
