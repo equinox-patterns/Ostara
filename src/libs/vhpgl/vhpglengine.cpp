@@ -173,13 +173,13 @@ auto VHPGLEngine::GenerateHPGL(const QVector<VLayoutPiece> &details) -> bool
 {
     if (details.isEmpty())
     {
-        qCritical() << "VHPGLEngine::GenerateHPGL(), details list is empty";
+        qDebug() << "VHPGLEngine::GenerateHPGL(), details list is empty";
         return false;
     }
 
     if (not m_size.isValid())
     {
-        qCritical() << "VHPGLEngine::GenerateHPGL(), size is not valid";
+        qDebug() << "VHPGLEngine::GenerateHPGL(), size is not valid";
         return false;
     }
 
@@ -211,13 +211,13 @@ auto VHPGLEngine::GenerateHPGL2(const QVector<VLayoutPiece> &details) -> bool
 {
     if (details.isEmpty())
     {
-        qCritical() << "VHPGLEngine::ExportToHPGL2(), details list is empty";
+        qDebug() << "VHPGLEngine::ExportToHPGL2(), details list is empty";
         return false;
     }
 
     if (not m_size.isValid())
     {
-        qCritical() << "VHPGLEngine::ExportToHPGL2(), size is not valid";
+        qDebug() << "VHPGLEngine::ExportToHPGL2(), size is not valid";
         return false;
     }
 

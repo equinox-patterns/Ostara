@@ -154,7 +154,7 @@ void VSingleLineOutlineChar::ExportCorrections(const QString &dirPath) const
     QFile jsonFile(filename);
     if (!jsonFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        qCritical() << tr("Failed to open file for writing.");
+        qDebug() << QStringLiteral("Failed to open file for writing:") << filename;
         return;
     }
 

@@ -65,7 +65,9 @@ void MainWindow::PlaceBackgroundImage(const QPointF &pos, const QString &fileNam
     DialogAddBackgroundImage dialog(fileName, this);
     if (dialog.exec() == QDialog::Rejected)
     {
-        qCritical() << tr("Unable to add background image");
+        // The dialog was rejected: the reader changed their mind, which is not an error. It stays in the log so a
+        // "my image never got added" can still be traced.
+        qDebug() << "Background image dialog rejected; nothing was added.";
         return;
     }
 

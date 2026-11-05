@@ -740,8 +740,10 @@ auto VApplication::notify(QObject *receiver, QEvent *event) -> bool
     }
     catch (const VExceptionToolWasDeleted &e)
     {
-        qCCritical(vApp, "%s\n\n%s\n\n%s",
-                   qUtf8Printable(QStringLiteral("Unhadled deleting tool. Continue use object after deleting")),
+        // A developer invariant, not something the reader can act on: the object was deleted while a tool still
+        // held it. The termination that follows is announced by the fatal box (see TerminateOnFatalException).
+        qCDebug(vApp, "%s\n\n%s\n\n%s",
+                qUtf8Printable(QStringLiteral("Unhandled deleting tool. The object is used after being deleted")),
                    qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         TerminateOnFatalException(V_EX_DATAERR);
     }

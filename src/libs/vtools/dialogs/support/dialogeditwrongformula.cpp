@@ -383,7 +383,9 @@ void DialogEditWrongFormula::ValChanged(int row)
     }
     catch (const VExceptionBadId &e)
     {
-        qCritical() << qUtf8Printable(e.ErrorMessage());
+        // Raw diagnostic ("ExceptionBadId: ... id="). The dialog says what it has to say in its own labels; this is
+        // for whoever reads the log.
+        qDebug() << qUtf8Printable(e.ErrorMessage());
     }
 }
 
