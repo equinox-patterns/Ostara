@@ -3358,6 +3358,16 @@ It may be open in another program, or the folder may not allow deleting.</source
 
 Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise pas la suppression.</translation>
     </message>
+    <message>
+        <source>Ostara could not copy this table to:
+%1
+
+Check that the folder allows writing, and that a file of that name is not already there.</source>
+        <translation>Ostara n&apos;a pas pu copier ce tableau vers :
+%1
+
+Vérifiez que le dossier autorise l&apos;écriture et qu&apos;un fichier de ce nom n&apos;y est pas déjà.</translation>
+    </message>
 </context>
 <context>
     <name>DialogMeasurementLink</name>
@@ -9702,6 +9712,24 @@ Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est 
         <source>None of the selected nodes could be placed in the piece. Pick a point on the piece outline, then try again.</source>
         <translation>Aucun des nœuds sélectionnés n&apos;a pu être placé dans la pièce. Choisissez un point sur le contour de la pièce, puis réessayez.</translation>
     </message>
+    <message>
+        <source>Graded mode needs a multi-size measurements table (.omt). Load one from the Measurements menu, then try again.</source>
+        <translation>Le mode Gradation a besoin d&apos;un tableau de mesures multi-tailles (.omt). Chargez-en un depuis le menu Mesures, puis réessayez.</translation>
+    </message>
+    <message>
+        <source>This piece holds no block to insert. Open the pattern it was built from, save the piece again from there, then import it.</source>
+        <translation>Cette pièce ne contient aucun bloc à insérer. Ouvrez le patron dont elle vient, enregistrez-la à nouveau depuis là, puis importez-la.</translation>
+    </message>
+    <message>
+        <source>The measurement table this pattern uses is not at:
+%1
+
+It may have been moved, renamed, or deleted. Load another table from the Measurements menu.</source>
+        <translation>Le tableau de mesures qu&apos;utilise ce patron n&apos;est pas à cet endroit :
+%1
+
+Il a peut-être été déplacé, renommé ou supprimé. Chargez un autre tableau depuis le menu Mesures.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
@@ -10139,6 +10167,20 @@ Il lit les tableaux de mesures aux formats .omt, .otu, .vst et .vit.</translatio
 Do you want to overwrite it?</source>
         <translation>Un fichier nommé « %1 » existe déjà à cet emplacement.
 Voulez-vous le remplacer ?</translation>
+    </message>
+    <message>
+        <source>Ostara could not save this table:
+%1
+
+%2
+
+Check that the folder allows writing, and that the file is not open in another program.</source>
+        <translation>Ostara n&apos;a pas pu enregistrer ce tableau :
+%1
+
+%2
+
+Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
     </message>
 </context>
 <context>

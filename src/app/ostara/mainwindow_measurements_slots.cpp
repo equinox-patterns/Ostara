@@ -30,6 +30,7 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+#include <QDir>
 #include "ui_mainwindow.h"
 #include "../vformat/vmeasurements.h"
 #include "../vmisc/vabstractvalapplication.h"
@@ -141,7 +142,9 @@ void MainWindow::OnEditMeasurements()
     if (absoluteMPath.isEmpty() || !QFileInfo::exists(absoluteMPath))
     {
         QMessageBox::warning(this, tr("File not found"),
-            tr("The measurement file could not be found at:\n%1").arg(absoluteMPath));
+                             tr("The measurement table this pattern uses is not at:\n%1\n\nIt may have been moved, "
+                                "renamed, or deleted. Load another table from the Measurements menu.")
+                                 .arg(QDir::toNativeSeparators(absoluteMPath)));
         return;
     }
 

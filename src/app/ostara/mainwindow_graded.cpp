@@ -288,7 +288,7 @@ bool MainWindow::EnterGradedMode()
     if (not LoadGradedTableAxes(&axes, &axisValues))
     {
         QMessageBox::information(this, tr("Graded mode"),
-                                 tr("Graded mode needs a multi-size measurements table (.omt)."),
+                                 tr("Graded mode needs a multi-size measurements table (.omt). Load one from the Measurements menu, then try again."),
                                  QMessageBox::Ok);
         return false;
     }
@@ -591,7 +591,7 @@ bool MainWindow::AddGradedRange()
     if (not LoadGradedTableAxes(&axes, &axisValues))
     {
         QMessageBox::information(this, tr("Graded mode"),
-                                 tr("Graded mode needs a multi-size measurements table (.omt)."),
+                                 tr("Graded mode needs a multi-size measurements table (.omt). Load one from the Measurements menu, then try again."),
                                  QMessageBox::Ok);
         return false;
     }
