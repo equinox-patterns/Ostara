@@ -35,7 +35,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSharedPointer>
@@ -294,7 +293,7 @@ void ODialogTransfert::ShowDialog(bool click)
     {
         if (SourceObjects().isEmpty() && GetLineSources().isEmpty())
         {
-            Refuse(tr("Select the objects to transfer first"));
+            RefuseStep(tr("Select the objects to transfer first"));
             return;
         }
 
@@ -342,7 +341,7 @@ void ODialogTransfert::ChosenObject(quint32 id, const SceneObject &type)
         case Step::Origin:
             if (type != SceneObject::Point)
             {
-                Refuse(tr("Click a point of the part: it is the point the portion is anchored on"));
+                RefuseStep(tr("Click a point of the part: it is the point the portion is anchored on"));
                 return;
             }
 
@@ -353,7 +352,7 @@ void ODialogTransfert::ChosenObject(quint32 id, const SceneObject &type)
             {
                 // No part at all: there is nowhere to put the portion. Say it now rather than open a dialog with
                 // an empty list the user cannot answer.
-                Refuse(tr("This pattern has no part that could receive the portion."));
+                RefuseStep(tr("This pattern has no part that could receive the portion."));
                 return;
             }
 
@@ -372,7 +371,7 @@ void ODialogTransfert::ChosenObject(quint32 id, const SceneObject &type)
         case Step::Target:
             if (type != SceneObject::Point)
             {
-                Refuse(tr("Click the point of the host part that receives the merge point"));
+                RefuseStep(tr("Click the point of the host part that receives the merge point"));
                 return;
             }
 
@@ -406,7 +405,7 @@ void ODialogTransfert::DialogAccepted()
     const QString host = GetHostPartName();
     if (host.isEmpty())
     {
-        Refuse(tr("Choose the part that receives the portion"));
+        RefuseStep(tr("Choose the part that receives the portion"));
         return;
     }
 
@@ -416,7 +415,7 @@ void ODialogTransfert::DialogAccepted()
 
     if (m_doc->PatternBlockMapper()->GetActive() != host)
     {
-        Refuse(tr("The part %1 could not be activated").arg(host));
+        RefuseStep(tr("The part %1 could not be activated").arg(host));
         return;
     }
 
@@ -517,12 +516,3 @@ void ODialogTransfert::FillHostLayers(const QString &partName)
     CheckState();
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogTransfert::Refuse(const QString &message)
-{
-    emit ToolTip(message); // the status line keeps saying it once the box is gone
-
-    // Over the main window, not over this dialog: the merge points are picked while the dialog is not on
-    // screen. One button, and the step is still the one to answer — there is nothing to choose.
-    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Transfer"), message);
-}

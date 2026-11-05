@@ -881,7 +881,7 @@ auto VPattern::SaveDocument(const QString &fileName, QString &error) -> bool
         {
             error += QStringLiteral("\n") + detail;
         }
-        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error not unique id.")), qUtf8Printable(e.ErrorMessage()),
+        qCWarning(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error not unique id.")), qUtf8Printable(e.ErrorMessage()),
                    qUtf8Printable(e.DetailedInformation()));
         return false;
     }

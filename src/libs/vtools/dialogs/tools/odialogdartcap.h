@@ -219,7 +219,6 @@ private:
      *
      * The status line alone is too discreet for a click that does nothing: the user does not read it and
      * believes the tool is stuck. One button, and the step is still the one to answer. */
-    void Refuse(const QString &message);
 
     /** @brief Show the dart and the cap as far as they are known. */
     void RefreshPreview();

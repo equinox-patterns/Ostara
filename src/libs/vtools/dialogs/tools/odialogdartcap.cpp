@@ -34,7 +34,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QPointF>
 #include <QPushButton>
@@ -375,7 +374,7 @@ void ODialogDartCap::TakeFirstPoint(quint32 id)
 {
     if (id == m_apexId)
     {
-        Refuse(tr("The two points of the opening are two different points, and neither of them is the point of "
+        RefuseStep(tr("The two points of the opening are two different points, and neither of them is the point of "
                   "the dart."));
         return;
     }
@@ -397,7 +396,7 @@ void ODialogDartCap::TakeSecondPoint(quint32 id)
 {
     if (id == m_apexId || id == m_firstPointId)
     {
-        Refuse(tr("The two points of the opening are two different points, and neither of them is the point of "
+        RefuseStep(tr("The two points of the opening are two different points, and neither of them is the point of "
                   "the dart."));
         return;
     }
@@ -447,7 +446,7 @@ void ODialogDartCap::TakeExtendPoint(quint32 id)
         m_extendPointId = NULL_ID;
         m_comboExtendPoint->setCurrentIndex(-1);
         flagPoint = false;
-        Refuse(tr("The cap of this dart cannot be built from this point: the line it carries does not meet the "
+        RefuseStep(tr("The cap of this dart cannot be built from this point: the line it carries does not meet the "
                   "axis of the dart. Choose another point of the line to extend."));
         RefreshPreview();
         CheckState();
@@ -489,15 +488,6 @@ void ODialogDartCap::ShowStepPrompt()
     emit ToolTip(StepPrompt());
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogDartCap::Refuse(const QString &message)
-{
-    emit ToolTip(message); // the status line keeps saying it once the box is gone
-
-    // Over the main window, not over this dialog: the dialog is not on screen yet while the points are picked.
-    // One button, and the step is still the one to answer: there is nothing to choose.
-    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Dart cap"), message);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogDartCap::RefreshPreview()

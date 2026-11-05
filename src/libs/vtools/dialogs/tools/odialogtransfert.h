@@ -141,7 +141,6 @@ private:
 
     /** @brief Say what is expected without closing anything: the tooltip line, and a box over the main
      *  window while the dialog is still hidden. */
-    void Refuse(const QString &message);
 };
 
 #endif // ODIALOGTRANSFERT_H

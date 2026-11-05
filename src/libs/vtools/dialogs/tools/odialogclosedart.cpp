@@ -33,7 +33,6 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QPointF>
 #include <QPointer>
@@ -341,7 +340,7 @@ void ODialogCloseDart::TakePivot(quint32 id)
         }
         else
         {
-            Refuse(tr("This point cannot be the pivot point. Please, select another point"));
+            RefuseStep(tr("This point cannot be the pivot point. Please, select another point"));
             return;
         }
     }
@@ -372,7 +371,7 @@ void ODialogCloseDart::TakeMovingPoint(quint32 id)
 {
     if (id == GetOrigPointId())
     {
-        Refuse(tr("The Moving point must be another point than the pivot point"));
+        RefuseStep(tr("The Moving point must be another point than the pivot point"));
         return;
     }
 
@@ -393,7 +392,7 @@ void ODialogCloseDart::TakeTargetPoint(quint32 id)
 {
     if (id == GetOrigPointId() || id == GetMovingPointId())
     {
-        Refuse(tr("The Target point must be a third point, different from the pivot and the Moving point"));
+        RefuseStep(tr("The Target point must be a third point, different from the pivot and the Moving point"));
         return;
     }
 
@@ -401,7 +400,7 @@ void ODialogCloseDart::TakeTargetPoint(quint32 id)
     if (std::any_of(SourceObjects().begin(), SourceObjects().end(),
                     [id](const SourceItem &sItem) { return sItem.id == id; }))
     {
-        Refuse(tr("The Target point does not move, so it cannot be one of the objects to rotate either. "
+        RefuseStep(tr("The Target point does not move, so it cannot be one of the objects to rotate either. "
                   "Remove it from the selection, or choose another point"));
         return;
     }
@@ -418,15 +417,6 @@ void ODialogCloseDart::TakeTargetPoint(quint32 id)
     m_swallowRelease = false;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-void ODialogCloseDart::Refuse(const QString &message)
-{
-    emit ToolTip(message); // the status line keeps saying it once the box is gone
-
-    // Over the main window, not over this dialog: the dialog is not on screen yet while the points are picked.
-    // One button, and the step is still the one to answer: there is nothing to choose.
-    QMessageBox::information(VAbstractValApplication::VApp()->getMainWindow(), tr("Dart rotation"), message);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogCloseDart::OnSourceObjectsSet()

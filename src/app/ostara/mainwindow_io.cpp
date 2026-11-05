@@ -1149,13 +1149,13 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 Clear();
                 if (path.isEmpty())
                 {
-                    qCCritical(vMainWindow, "%s",
-                               qUtf8Printable(tr("The pattern reads measurements and no table was chosen.")));
+                    qCWarning(vMainWindow, "%s",
+                              qUtf8Printable(tr("The pattern reads measurements and no table was chosen.")));
                 }
                 else
                 {
-                    qCCritical(vMainWindow, "%s",
-                               qUtf8Printable(tr("The measurements file '%1' could not be found.").arg(path)));
+                    qCWarning(vMainWindow, "%s",
+                              qUtf8Printable(tr("The measurements file '%1' could not be found.").arg(path)));
                 }
                 if (not VApplication::IsGUIMode())
                 {
@@ -1248,10 +1248,10 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
 
             if (not LoadMeasurements(fileName, fixedMPath))
             {
-                qCCritical(vMainWindow, "%s",
-                           qUtf8Printable(tr("The measurements file '%1' could not be found or "
-                                             "provides not enough information.")
-                                              .arg(fixedMPath)));
+                qCWarning(vMainWindow, "%s",
+                          qUtf8Printable(tr("The measurements file '%1' could not be found or "
+                                            "provides not enough information.")
+                                             .arg(fixedMPath)));
                 VAbstractValApplication::VApp()->setOpeningPattern(); // End opening file
                 Clear();
                 if (not VApplication::IsGUIMode())

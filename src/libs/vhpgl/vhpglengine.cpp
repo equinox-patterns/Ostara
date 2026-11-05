@@ -198,7 +198,7 @@ auto VHPGLEngine::GenerateHPGL(const QVector<VLayoutPiece> &details) -> bool
     }
     else
     {
-        qCritical() << "VHPGLEngine::GenerateHPGL(), cannot open file " << m_fileName << ". Reason " << data.error()
+        qWarning() << "VHPGLEngine::GenerateHPGL(), cannot open file " << m_fileName << ". Reason " << data.error()
                     << ".";
         return false;
     }
@@ -237,7 +237,7 @@ auto VHPGLEngine::GenerateHPGL2(const QVector<VLayoutPiece> &details) -> bool
     }
     else
     {
-        qCritical() << "VHPGLEngine::ExportToHPGL2(), cannot open file " << m_fileName << ". Reason " << data.error()
+        qWarning() << "VHPGLEngine::ExportToHPGL2(), cannot open file " << m_fileName << ". Reason " << data.error()
                     << ".";
         return false;
     }

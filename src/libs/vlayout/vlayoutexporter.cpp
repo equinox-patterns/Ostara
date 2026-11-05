@@ -462,7 +462,7 @@ void VLayoutExporter::ExportToFlatDXF(QGraphicsScene *scene, const QList<QGraphi
         scene->render(&painter, m_imageRect, m_imageRect, Qt::IgnoreAspectRatio);
         if (not painter.end())
         {
-            qCritical() << tr("Can't create a flat dxf file.") << generator.ErrorString();
+            qWarning() << tr("Can't create a flat dxf file.") << generator.ErrorString();
         }
     }
 
@@ -489,7 +489,7 @@ void VLayoutExporter::ExportToAAMADXF(const QVector<VLayoutPiece> &details) cons
     generator.SetShowMainPath(m_showMainPath);
     if (not generator.ExportToAAMA(details))
     {
-        qCritical() << tr("Can't create an AAMA dxf file.") << generator.ErrorString();
+        qWarning() << tr("Can't create an AAMA dxf file.") << generator.ErrorString();
     }
 }
 
@@ -512,7 +512,7 @@ void VLayoutExporter::ExportToASTMDXF(const QVector<VLayoutPiece> &details) cons
     generator.SetShowMainPath(m_showMainPath);
     if (not generator.ExportToASTM(details))
     {
-        qCritical() << tr("Can't create an ASTM dxf file.") << generator.ErrorString();
+        qWarning() << tr("Can't create an ASTM dxf file.") << generator.ErrorString();
     }
 }
 
@@ -531,7 +531,7 @@ void VLayoutExporter::ExportToHPGL(const QVector<VLayoutPiece> &details) const
     generator.SetBoundaryTogetherWithNotches(m_togetherWithNotches);
     if (not generator.ExportToHPGL(details))
     {
-        qCritical() << tr("Can't create an HP-GL file.");
+        qWarning() << tr("Can't create an HP-GL file.");
     }
 }
 
@@ -550,7 +550,7 @@ void VLayoutExporter::ExportToHPGL2(const QVector<VLayoutPiece> &details) const
     generator.SetBoundaryTogetherWithNotches(m_togetherWithNotches);
     if (not generator.ExportToHPGL2(details))
     {
-        qCritical() << tr("Can't create an HP-GL file.");
+        qWarning() << tr("Can't create an HP-GL file.");
     }
 }
 

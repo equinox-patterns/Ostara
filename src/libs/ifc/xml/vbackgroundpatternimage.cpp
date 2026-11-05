@@ -99,7 +99,7 @@ auto VBackgroundPatternImage::FromFile(const QString &fileName, bool builtIn) ->
 
     if (not IsMimeTypeImage(mime))
     {
-        qCritical() << tr("Unexpected mime type: %1").arg(mime.name());
+        qWarning() << tr("Unexpected mime type: %1").arg(mime.name());
         return {};
     }
 
@@ -108,7 +108,7 @@ auto VBackgroundPatternImage::FromFile(const QString &fileName, bool builtIn) ->
         QFile file(fileName);
         if (not file.open(QIODevice::ReadOnly))
         {
-            qCritical() << tr("Couldn't read the image. Error: %1").arg(file.errorString());
+            qWarning() << tr("Couldn't read the image. Error: %1").arg(file.errorString());
             return {};
         }
 
@@ -185,7 +185,7 @@ auto VBackgroundPatternImage::ComputeValid() const -> bool
 
         if (not IsMimeTypeImage(mime))
         {
-            qCritical() << tr("Unexpected mime type: %1").arg(mime.name());
+            qWarning() << tr("Unexpected mime type: %1").arg(mime.name());
             return false;
         }
 

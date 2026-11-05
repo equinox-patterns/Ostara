@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "dialogtool.h"
+#include "../vmisc/vabstractvalapplication.h"
 
 #include "../dialogtoolbox.h"
 #include "../vmisc/FactoryWidgets.h"
@@ -128,6 +129,15 @@ void DialogTool::closeEvent(QCloseEvent *event)
 {
     DialogRejected();
     event->accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogTool::RefuseStep(const QString &message)
+{
+    // The status line is where this dialog talks to the reader at every step; a refusal belongs there, not in a
+    // modal box dropped in the middle of a pick. The signature sends it to the warning pane as well.
+    emit ToolTip(message);
+    qWarning() << VAbstractValApplication::warningMessageSignature + message;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
