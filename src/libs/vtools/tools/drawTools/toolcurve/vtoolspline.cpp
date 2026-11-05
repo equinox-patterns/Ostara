@@ -206,7 +206,7 @@ auto VToolSpline::Create(VToolSplineInitData &initData, const QSharedPointer<VSp
             = QObject::tr("Curve '%1' with id %2 has not unique name.").arg(curveName).arg(initData.id);
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
-            : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
+            : qWarning() << errorMsg; // internal invariant: the log is enough
     }
 
     VPatternGraph *patternGraph = initData.doc->PatternGraph();

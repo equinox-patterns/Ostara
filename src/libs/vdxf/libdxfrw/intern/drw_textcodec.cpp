@@ -131,7 +131,7 @@ void DRW_TextCodec::setCodePage(const std::string &c, bool dxfFormat)
                                      .arg(cp.c_str());
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VException(errorMsg)
-            : qWarning() << VAbstractApplication::warningMessageSignature + errorMsg;
+            : qWarning() << errorMsg; // internal: the codec fell back, the export goes on
 
         if (version < DRW::AC1021 && cp == "UTF-8")
         {
