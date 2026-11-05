@@ -188,9 +188,10 @@ void MainWindow::ExportDetailsAs(bool checked)
 
     if (detailsInLayout.isEmpty())
     {
-        QMessageBox::information(this, tr("Layout mode"),
-                                 tr("You don't have enough details to export. Please, "
-                                    "include at least one detail in layout."),
+        // "Layout mode" no longer exists: this is the Details export, and the title has to name it.
+        QMessageBox::information(this, tr("Detail mode"),
+                                 tr("There is no piece to export. Switch a piece on in the Details dock, then try "
+                                    "again."),
                                  QMessageBox::Ok, QMessageBox::Ok);
         return;
     }

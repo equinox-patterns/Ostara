@@ -9668,6 +9668,10 @@ Cette action ne peut pas être annulée.</translation>
         <source>Select the tip of the dart (the point inside the piece), then the two points of its opening, and the point that carries the edge when no curve does - then &lt;b&gt;%1&lt;/b&gt; to confirm</source>
         <translation>Sélectionner la pointe de la pince (le point à l&apos;intérieur de la pièce), puis les deux points de son ouverture, et le point qui porte le bord quand aucune courbe ne le fait - puis &lt;b&gt;%1&lt;/b&gt; pour valider</translation>
     </message>
+    <message>
+        <source>There is no piece to export. Switch a piece on in the Details dock, then try again.</source>
+        <translation>Il n&apos;y a aucune pièce à exporter. Activez une pièce dans le dock Pièces, puis réessayez.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
