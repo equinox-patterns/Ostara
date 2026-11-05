@@ -37,6 +37,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPair>
 #include <QPushButton>
 #include <QStyledItemDelegate>
 #include <QTableWidget>
@@ -332,12 +333,13 @@ auto DialogRangeGroups::ValidateRanges(const QVector<RangeDef> &ranges) const ->
         return false;
     }
 
-    // Build covered set from ranges
-    QSet<QString> covered;
+    // Resolve every range to its indices on the axis
+    QVector<QPair<int, int> > indices;
+    indices.reserve(ranges.size());
     for (const auto &rd : ranges)
     {
-        int fromIdx = static_cast<int>(m_axisValues.indexOf(rd.fromValue));
-        int toIdx = static_cast<int>(m_axisValues.indexOf(rd.toValue));
+        const int fromIdx = static_cast<int>(m_axisValues.indexOf(rd.fromValue));
+        const int toIdx = static_cast<int>(m_axisValues.indexOf(rd.toValue));
         if (fromIdx < 0 || toIdx < 0 || fromIdx > toIdx)
         {
             QMessageBox::warning(const_cast<DialogRangeGroups *>(this),
@@ -345,42 +347,73 @@ auto DialogRangeGroups::ValidateRanges(const QVector<RangeDef> &ranges) const ->
                                  tr("Invalid range: %1 → %2.").arg(rd.fromValue, rd.toValue));
             return false;
         }
-        for (int i = fromIdx; i <= toIdx; ++i)
+        indices.append(qMakePair(fromIdx, toIdx));
+    }
+
+    // A range group is a chain of ranges. An increment applies to the steps a range
+    // spans, so consecutive ranges may either be adjacent (the next one starts right
+    // after the previous one ends) or share exactly one boundary value: the node where
+    // the increment changes. A shared boundary is a junction, not a second membership:
+    // going up from it takes the next range's increment, going down takes its own.
+    // Anything else is a gap (an uncovered step) or an overlap of several sizes (two
+    // ranges driving the same steps).
+    for (int r = 0; r + 1 < static_cast<int>(indices.size()); ++r)
+    {
+        const int curFrom = indices.at(r).first;
+        const int curTo = indices.at(r).second;
+        const int nextFrom = indices.at(r + 1).first;
+        const int nextTo = indices.at(r + 1).second;
+
+        if (nextFrom <= curFrom)
         {
-            covered.insert(m_axisValues.at(i));
+            QMessageBox::warning(const_cast<DialogRangeGroups *>(this),
+                                 tr("Validation"),
+                                 tr("Ranges must be ordered from the smallest size to the largest: "
+                                    "%1 → %2 then %3 → %4.")
+                                     .arg(m_axisValues.at(curFrom), m_axisValues.at(curTo),
+                                          m_axisValues.at(nextFrom), m_axisValues.at(nextTo)));
+            return false;
+        }
+        if (nextFrom > curTo + 1)
+        {
+            QStringList missing;
+            for (int i = curTo + 1; i < nextFrom; ++i)
+            {
+                missing << m_axisValues.at(i);
+            }
+            QMessageBox::warning(const_cast<DialogRangeGroups *>(this),
+                                 tr("Validation"),
+                                 tr("All values must be covered. Missing values: %1")
+                                     .arg(missing.join(QStringLiteral(", "))));
+            return false;
+        }
+        if (nextFrom < curTo)
+        {
+            QStringList shared;
+            for (int i = nextFrom; i <= curTo; ++i)
+            {
+                shared << m_axisValues.at(i);
+            }
+            QMessageBox::warning(const_cast<DialogRangeGroups *>(this),
+                                 tr("Validation"),
+                                 tr("Ranges %1 → %2 and %3 → %4 share more than their boundary "
+                                    "(%5). Two consecutive ranges may share a single value only.")
+                                     .arg(m_axisValues.at(curFrom), m_axisValues.at(curTo),
+                                          m_axisValues.at(nextFrom), m_axisValues.at(nextTo),
+                                          shared.join(QStringLiteral(", "))));
+            return false;
         }
     }
 
-    // Check all values are covered
-    QSet<QString> allValues(m_axisValues.begin(), m_axisValues.end());
-    if (covered != allValues)
-    {
-        QSet<QString> missing = allValues - covered;
-        QStringList missingList(missing.begin(), missing.end());
-        missingList.sort();
-        QMessageBox::warning(const_cast<DialogRangeGroups *>(this),
-                             tr("Validation"),
-                             tr("All values must be covered. Missing values: %1")
-                                 .arg(missingList.join(QStringLiteral(", "))));
-        return false;
-    }
-
-    // Check no overlaps (each value covered exactly once)
-    // Since we already verified covered == allValues, and each value has a unique index,
-    // overlaps would cause some values to appear multiple times without affecting coverage.
-    // Let's check by counting: covered size should equal sum of range sizes.
-    int totalInRanges = 0;
-    for (const auto &rd : ranges)
-    {
-        int fromIdx = static_cast<int>(m_axisValues.indexOf(rd.fromValue));
-        int toIdx = static_cast<int>(m_axisValues.indexOf(rd.toValue));
-        totalInRanges += (toIdx - fromIdx + 1);
-    }
-    if (totalInRanges != m_axisValues.size())
+    // The chain must span the whole axis. Adjacency is already checked, so these two
+    // endpoints guarantee that every value is covered.
+    const int lastIdx = static_cast<int>(m_axisValues.size()) - 1;
+    if (indices.first().first != 0 || indices.last().second != lastIdx)
     {
         QMessageBox::warning(const_cast<DialogRangeGroups *>(this),
                              tr("Validation"),
-                             tr("Ranges overlap. Each value must belong to a single range."));
+                             tr("Ranges must span all values, from %1 to %2.")
+                                 .arg(m_axisValues.first(), m_axisValues.last()));
         return false;
     }
 

@@ -5673,11 +5673,6 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <translation>Toutes les valeurs doivent être couvertes. Valeurs manquantes : %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="383"/>
-        <source>Ranges overlap. Each value must belong to a single range.</source>
-        <translation>Les plages se chevauchent. Chaque valeur doit appartenir à une seule plage.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="395"/>
         <source>Group name cannot be empty.</source>
         <translation>Le nom du groupe ne peut pas être vide.</translation>
@@ -5686,6 +5681,21 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="425"/>
         <source>A group named &quot;%1&quot; already exists.</source>
         <translation>Un groupe nommé « %1 » existe déjà.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="371"/>
+        <source>Ranges must be ordered from the smallest size to the largest: %1 → %2 then %3 → %4.</source>
+        <translation>Les plages doivent être ordonnées de la plus petite taille à la plus grande : %1 → %2 puis %3 → %4.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
+        <source>Ranges %1 → %2 and %3 → %4 share more than their boundary (%5). Two consecutive ranges may share a single value only.</source>
+        <translation>Les plages %1 → %2 et %3 → %4 partagent plus que leur borne (%5). Deux plages consécutives ne peuvent partager qu&apos;une seule valeur.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="415"/>
+        <source>Ranges must span all values, from %1 to %2.</source>
+        <translation>Les plages doivent couvrir toutes les valeurs, de %1 à %2.</translation>
     </message>
 </context>
 <context>

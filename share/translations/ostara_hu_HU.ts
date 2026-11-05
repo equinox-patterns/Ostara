@@ -5639,11 +5639,6 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <translation>Minden értéket le kell fedni. Hiányzó értékek: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="383"/>
-        <source>Ranges overlap. Each value must belong to a single range.</source>
-        <translation>A tartományok átfedik egymást. Minden érték csak egyetlen tartományhoz tartozhat.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="395"/>
         <source>Group name cannot be empty.</source>
         <translation>A csoport neve nem lehet üres.</translation>
@@ -5652,6 +5647,21 @@ de nem található. Az Ostara a .omt/.otu formátumot használja. Válassza ki, 
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="425"/>
         <source>A group named &quot;%1&quot; already exists.</source>
         <translation>Már létezik „%1” nevű csoport.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="371"/>
+        <source>Ranges must be ordered from the smallest size to the largest: %1 → %2 then %3 → %4.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
+        <source>Ranges %1 → %2 and %3 → %4 share more than their boundary (%5). Two consecutive ranges may share a single value only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="415"/>
+        <source>Ranges must span all values, from %1 to %2.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

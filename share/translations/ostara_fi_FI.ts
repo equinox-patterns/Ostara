@@ -5641,11 +5641,6 @@ mutta sitä ei löytynyt. Ostara käyttää .omt/.otu-muotoa. Valitse, miten jat
         <translation>Kaikki arvot on katettava. Puuttuvat arvot: %1</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="383"/>
-        <source>Ranges overlap. Each value must belong to a single range.</source>
-        <translation>Alueet menevät päällekkäin. Kunkin arvon on kuuluttava vain yhteen alueeseen.</translation>
-    </message>
-    <message>
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="395"/>
         <source>Group name cannot be empty.</source>
         <translation>Ryhmän nimi ei voi olla tyhjä.</translation>
@@ -5654,6 +5649,21 @@ mutta sitä ei löytynyt. Ostara käyttää .omt/.otu-muotoa. Valitse, miten jat
         <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="425"/>
         <source>A group named &quot;%1&quot; already exists.</source>
         <translation>Ryhmä ”%1” on jo olemassa.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="371"/>
+        <source>Ranges must be ordered from the smallest size to the largest: %1 → %2 then %3 → %4.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="399"/>
+        <source>Ranges %1 → %2 and %3 → %4 share more than their boundary (%5). Two consecutive ranges may share a single value only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/widgets/MeasurementWorkspace/DialogRangeGroups.cpp" line="415"/>
+        <source>Ranges must span all values, from %1 to %2.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
