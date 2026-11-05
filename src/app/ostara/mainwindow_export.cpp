@@ -203,7 +203,10 @@ void MainWindow::ExportDetailsAs(bool checked)
     }
     catch (VException &e)
     {
-        QMessageBox::warning(this, tr("Export details"), tr("Can't export details.") + " \n"_L1 + e.ErrorMessage(),
+        QMessageBox::warning(this, tr("Export details"),
+                             tr("Ostara could not prepare the pieces for export:\n\n%1\n\nCheck that every piece "
+                                "has a main path and a seam allowance, then try again.")
+                                 .arg(e.ErrorMessage()),
                              QMessageBox::Ok, QMessageBox::Ok);
         return;
     }

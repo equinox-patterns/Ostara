@@ -205,7 +205,8 @@ auto PreferencesFoldersPage::Apply() -> QStringList
             {
                 QMessageBox::warning(
                     this, tr("Files left behind"),
-                    tr("%n file(s) could not be moved to « %1 » and stay in the old folder.", "",
+                    tr("%n file(s) could not be moved to « %1 » and stay in the old folder. Check that the "
+                       "destination allows writing, then change the folder again.", "",
                            static_cast<int>(failed.size()))
                         .arg(QDir::toNativeSeparators(wanted)),
                     QMessageBox::Ok);

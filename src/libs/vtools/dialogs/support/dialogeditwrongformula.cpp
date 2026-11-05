@@ -1190,7 +1190,8 @@ void DialogEditWrongFormula::RenameObject()
     // explains would leave the row looking as if nothing had happened.
     if (not QRegularExpression(NameRegExp()).match(suffix).hasMatch())
     {
-        QMessageBox::warning(this, title, tr("The name %1 cannot be used in a formula.").arg(suffix));
+        QMessageBox::warning(this, title,
+                                 tr("The name %1 cannot be used in a formula. Choose another one.").arg(suffix));
         return;
     }
 
@@ -1222,7 +1223,8 @@ void DialogEditWrongFormula::RenameObject()
     {
         if (i.key() != reference && i.value() == suffix)
         {
-            QMessageBox::warning(this, title, tr("The name %1 is already used by another line.").arg(suffix));
+            QMessageBox::warning(this, title,
+                                 tr("The name %1 is already used by another line. Choose another one.").arg(suffix));
             return;
         }
     }

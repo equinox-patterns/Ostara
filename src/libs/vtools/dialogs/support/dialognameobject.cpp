@@ -125,7 +125,8 @@ void DialogNameObject::AcceptCurrent()
     // can carry is the pattern's own, asked here before anything is written.
     if (not QRegularExpression(NameRegExp()).match(name).hasMatch())
     {
-        QMessageBox::warning(this, windowTitle(), tr("The name %1 cannot be used in a formula.").arg(name));
+        QMessageBox::warning(this, windowTitle(),
+                             tr("The name %1 cannot be used in a formula. Choose another one.").arg(name));
         return;
     }
 

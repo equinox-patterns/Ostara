@@ -1308,6 +1308,14 @@
         <source>Area of piece</source>
         <translation>Surface de la pièce</translation>
     </message>
+    <message>
+        <source>The name %1 cannot be used in a formula. Choose another one.</source>
+        <translation>Le nom %1 ne peut pas être utilisé dans une formule. Choisissez-en un autre.</translation>
+    </message>
+    <message>
+        <source>The name %1 is already used by another line. Choose another one.</source>
+        <translation>Le nom %1 est déjà utilisé par une autre ligne. Choisissez-en un autre.</translation>
+    </message>
 </context>
 <context>
     <name>DialogEllipticalArc</name>
@@ -3681,6 +3689,10 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
         <location filename="../../src/libs/vtools/dialogs/support/dialognameobject.cpp" line="134"/>
         <source>The name %1 is already used. Choose another one.</source>
         <translation>Le nom %1 est déjà utilisé. Choisissez-en un autre.</translation>
+    </message>
+    <message>
+        <source>The name %1 cannot be used in a formula. Choose another one.</source>
+        <translation>Le nom %1 ne peut pas être utilisé dans une formule. Choisissez-en un autre.</translation>
     </message>
 </context>
 <context>
@@ -9741,6 +9753,18 @@ Il a peut-être été déplacé, renommé ou supprimé. Chargez un autre tableau
     <message>
         <source>Technical detail: %1</source>
         <translation>Détail technique : %1</translation>
+    </message>
+    <message>
+        <source>Ostara could not prepare the pieces for export:
+
+%1
+
+Check that every piece has a main path and a seam allowance, then try again.</source>
+        <translation>Ostara n&apos;a pas pu préparer les pièces pour l&apos;export :
+
+%1
+
+Vérifiez que chaque pièce a un contour principal et une valeur de couture, puis réessayez.</translation>
     </message>
 </context>
 <context>
@@ -16973,6 +16997,10 @@ Name the piece entering:</source>
         <source>Unit</source>
         <translation>Unité</translation>
     </message>
+    <message>
+        <source>A piece name cannot be empty nor hold a slash. Give it another name.</source>
+        <translation>Un nom de pièce ne peut être vide ni contenir de barre oblique. Donnez-lui un autre nom.</translation>
+    </message>
 </context>
 <context>
     <name>OPiecePatternStep</name>
@@ -19003,6 +19031,10 @@ vers %2</translation>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="506"/>
         <source>Choose another folder</source>
         <translation>Choisir un autre dossier</translation>
+    </message>
+    <message>
+        <source>%n file(s) could not be moved to « %1 » and stay in the old folder. Check that the destination allows writing, then change the folder again.</source>
+        <translation>%n fichier(s) n&apos;ont pas pu être déplacés vers « %1 » et restent dans l&apos;ancien dossier. Vérifiez que la destination autorise l&apos;écriture, puis changez à nouveau de dossier.</translation>
     </message>
 </context>
 <context>

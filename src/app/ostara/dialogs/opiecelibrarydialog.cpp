@@ -897,7 +897,8 @@ auto OPieceLibraryDialog::FreeImportPath(const QString &directory, const QString
         const QString trimmed = asked.trimmed();
         if (trimmed.isEmpty() || trimmed.contains(QLatin1Char('/')))
         {
-            QMessageBox::warning(this, tr("Import a piece"), tr("A piece name cannot be empty nor hold a slash."));
+            QMessageBox::warning(this, tr("Import a piece"),
+                                 tr("A piece name cannot be empty nor hold a slash. Give it another name."));
             continue;
         }
 
