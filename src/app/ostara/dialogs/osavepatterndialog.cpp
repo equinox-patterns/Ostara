@@ -29,6 +29,7 @@
 #include "opatternfolderdialog.h"
 
 #include "core/opatternlibrary.h"
+#include "core/olibrarystorage.h"
 #include "vtheme.h"
 #include "widgets/olibraryicondelegate.h"
 #include "widgets/olibrarytree.h"
@@ -213,7 +214,7 @@ void OSavePatternDialog::PopulateTree()
     if (not m_currentPath.isEmpty())
     {
         const QString folder = QFileInfo(m_currentPath).absolutePath();
-        if (folder == m_library || folder.startsWith(m_library + QDir::separator()))
+        if (OLibraryStorage::IsUnder(m_library, folder))
         {
             wanted = folder;
         }

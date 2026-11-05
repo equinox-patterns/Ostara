@@ -189,3 +189,49 @@ auto OLibraryStorage::Remove(const QString &filePath, QString *error) -> bool
 
     return true;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+/// @brief The path as Qt compares it: `'/'` separators, canonical when the file is there, cleaned otherwise.
+auto ComparablePath(const QString &path) -> QString
+{
+    const QString qtPath = QDir::fromNativeSeparators(path);
+    const QString canonical = QDir::fromNativeSeparators(QFileInfo(qtPath).canonicalFilePath());
+    return canonical.isEmpty() ? QDir::cleanPath(qtPath) : canonical;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OLibraryStorage::IsUnder(const QString &root, const QString &path) -> bool
+{
+    if (root.isEmpty() || path.isEmpty())
+    {
+        return false;
+    }
+
+#if defined(Q_OS_WIN)
+    const Qt::CaseSensitivity pathCase = Qt::CaseInsensitive;
+#else
+    const Qt::CaseSensitivity pathCase = Qt::CaseSensitive;
+#endif
+
+    const QString comparableRoot = ComparablePath(root);
+    const QString comparablePath = ComparablePath(path);
+    if (comparableRoot.isEmpty() || comparablePath.isEmpty())
+    {
+        return false;
+    }
+
+    if (comparablePath.compare(comparableRoot, pathCase) == 0)
+    {
+        return true;
+    }
+
+    QString prefix = comparableRoot;
+    if (!prefix.endsWith(QLatin1Char('/')))
+    {
+        prefix += QLatin1Char('/');
+    }
+    return comparablePath.startsWith(prefix, pathCase);
+}

@@ -73,6 +73,17 @@ auto Export(const QString &sourcePath, const QString &targetPath, QString *error
 
 /// @brief Removes the file, and says so when it refuses.
 auto Remove(const QString &filePath, QString *error) -> bool;
+
+/**
+ * @brief Whether @p path is @p root itself, or lives somewhere under it.
+ *
+ * Both sides are compared the way Qt writes them — with `'/'` — and never with `QDir::separator()`: that one is
+ * `'\\'` under Windows, so a prefix built with it never matched there, and every file inside a library was
+ * reported as outside it. Paths that exist are compared canonicalised (symlinks, `..`); the others are only
+ * cleaned, so a folder that is not there yet still answers sensibly. The comparison ignores case where the file
+ * system does.
+ */
+auto IsUnder(const QString &root, const QString &path) -> bool;
 } // namespace OLibraryStorage
 
 #endif // OLIBRARYSTORAGE_H
