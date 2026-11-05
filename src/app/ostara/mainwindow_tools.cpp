@@ -837,7 +837,8 @@ void MainWindow::ClosedDialogInsertNode(int result)
         if (not placed)
         {
             QMessageBox::information(this, tr("Insert node"),
-                                     tr("None of the selected nodes could be placed in the piece."));
+                                     tr("None of the selected nodes could be placed in the piece. Pick a point on "
+                                        "the piece outline, then try again."));
         }
     }
     ArrowTool(true);

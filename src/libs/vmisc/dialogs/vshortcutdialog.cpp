@@ -117,9 +117,9 @@ void VShortcutDialog::ButtonBoxClicked(QAbstractButton *button)
             if (!conflictingShortcut.isEmpty())
             {
                 QString const nativeShortcutString = VModifierKey::Sequence(sequence);
-                QMessageBox::warning(
-                    this, tr("Shortcut Already Used"),
-                    tr(R"("%1" is already bound to "%2")").arg(nativeShortcutString, conflictingShortcut));
+                QMessageBox::warning(this, tr("Shortcut Already Used"),
+                                     tr(R"("%1" is already bound to "%2". Choose another combination.)")
+                                         .arg(nativeShortcutString, conflictingShortcut));
                 return;
             }
         }

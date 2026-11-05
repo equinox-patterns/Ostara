@@ -9698,6 +9698,10 @@ Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est 
         <source>The SVG file could not be written. Check that the folder allows writing, and that the file is not open in another program.</source>
         <translation>Le fichier SVG n&apos;a pas pu être écrit. Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
     </message>
+    <message>
+        <source>None of the selected nodes could be placed in the piece. Pick a point on the piece outline, then try again.</source>
+        <translation>Aucun des nœuds sélectionnés n&apos;a pu être placé dans la pièce. Choisissez un point sur le contour de la pièce, puis réessayez.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
@@ -23761,6 +23765,10 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vmisc/dialogs/vshortcutdialog.cpp" line="122"/>
         <source>&quot;%1&quot; is already bound to &quot;%2&quot;</source>
         <translation>&quot;%1&quot; est déjà affecté à &quot;%2&quot;</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is already bound to &quot;%2&quot;. Choose another combination.</source>
+        <translation>&quot;%1&quot; est déjà utilisé par &quot;%2&quot;. Choisissez une autre combinaison.</translation>
     </message>
 </context>
 <context>
