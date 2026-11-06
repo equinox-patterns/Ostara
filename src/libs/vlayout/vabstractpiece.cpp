@@ -283,7 +283,12 @@ auto AngleByIntersection(const QVector<VRawSAPoint> &points,
 {
     {
         QVector<VRawSAPoint> step;
-        if (BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
+        // La marche d'un joint à marge nulle ne vaut que pour l'équerrage PAR DÉFAUT : quand un type
+        // est choisi (symétrie, intersection, angle droit), c'est SA construction qui doit sortir — la
+        // marche l'écrasait, d'où un écart de 1 à 10 mm avec la symétrie demandée. Garde et non retour
+        // vide : sans marche, on laisse simplement la routine continuer.
+        if (p.GetAngleType() == PieceNodeAngle::ByLength
+            && BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
         {
             return step;
         }
@@ -479,7 +484,12 @@ auto AngleBySecondSymmetry(const QVector<VRawSAPoint> &points,
 {
     {
         QVector<VRawSAPoint> step;
-        if (BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
+        // La marche d'un joint à marge nulle ne vaut que pour l'équerrage PAR DÉFAUT : quand un type
+        // est choisi (symétrie, intersection, angle droit), c'est SA construction qui doit sortir — la
+        // marche l'écrasait, d'où un écart de 1 à 10 mm avec la symétrie demandée. Garde et non retour
+        // vide : sans marche, on laisse simplement la routine continuer.
+        if (p.GetAngleType() == PieceNodeAngle::ByLength
+            && BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
         {
             return step;
         }
@@ -654,7 +664,12 @@ auto AngleBySecondRightAngle(QVector<VRawSAPoint> points,
 {
     {
         QVector<VRawSAPoint> step;
-        if (BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
+        // La marche d'un joint à marge nulle ne vaut que pour l'équerrage PAR DÉFAUT : quand un type
+        // est choisi (symétrie, intersection, angle droit), c'est SA construction qui doit sortir — la
+        // marche l'écrasait, d'où un écart de 1 à 10 mm avec la symétrie demandée. Garde et non retour
+        // vide : sans marche, on laisse simplement la routine continuer.
+        if (p.GetAngleType() == PieceNodeAngle::ByLength
+            && BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
         {
             return step;
         }
