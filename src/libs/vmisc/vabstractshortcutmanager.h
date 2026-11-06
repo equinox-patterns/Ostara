@@ -108,6 +108,8 @@ enum class VShortcutAction : quint8
     ToolMove,
     ToolMidpoint,
     ExportTemplates,
+    ExportImage,
+    ExportDetailsAs,
     ToolEllipticalArc,
     ToolInsertNode,
     ToolPlaceLabel,

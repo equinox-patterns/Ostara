@@ -883,6 +883,14 @@
     <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
+  <action name="actionExportImage">
+   <property name="text">
+    <string>Export as image...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
   <action name="actionInfoBlockTemplates">
    <property name="text">
     <string>Existing templates</string>
@@ -2094,6 +2102,20 @@
    </property>
    <property name="toolTip">
     <string>Internal mark</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionDetailExportAs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Export details skiping the Layout stage</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>

@@ -564,6 +564,9 @@ auto PreferencesShortcutsPage::SectionOf(VShortcutAction action) -> Section
             return Section::Tools;
         // Export
         case VShortcutAction::ExportTemplates:
+        case VShortcutAction::ExportImage:
+        case VShortcutAction::ExportDetailsAs:
+            return Section::Export;
         case VShortcutAction::LAST_ONE_DO_NOT_USE:
             break;
         default:

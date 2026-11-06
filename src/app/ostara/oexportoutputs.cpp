@@ -98,6 +98,19 @@ constexpr int kExportNestingThreads = 1;
 
 /// Le rectangle que l'export d'image rend : **TOUT ce que le canvas dessine**, pas le bac.
 ///
+/// ⚠️ Le PNG (et le SVG) rendait `drawnRect`, le rectangle du TISSU. Or les cadres des canvas, les
+/// flèches de pli et les valeurs largeur × hauteur sont posés **hors du bac** — au-dessus de chaque
+/// bande, et dans les vides qui les séparent. Rendre le seul bac les coupait : Sophie voyait à
+/// l'écran ce que le fichier ne contenait pas.
+///
+/// ⚠️ **Ce n'est pas `drawnRect` qui change.** Il reste le tissu, et c'est lui qui donne la longueur
+/// de métrage, le plan de correction et la barre de statut. Seul le rectangle RENDU s'élargit à ce
+/// qui est dessiné ; l'échelle, elle, ne bouge pas — l'image est plus grande, pas étirée.
+auto RenderedRect(const QGraphicsScene &scene, const QRectF &fallback) -> QRectF
+{
+    const QRectF items = scene.itemsBoundingRect();
+    return items.isValid() && !items.isEmpty() ? items : fallback;
+}
 
 /// L'écart entre le plan de tissu et celui de la doublure, en PIXELS — la scène est en pixels à
 /// `PrintDPI`, comme tout le reste.
@@ -1972,6 +1985,163 @@ void MainWindow::ExportOutputToCuttingFile(quint32 id)
         tr("\"%1\" was exported to\n%2").arg(existing->name, written.join(QLatin1Char('\n'))));
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ExportActiveOutputToImage()
+{
+    // A click that arrives after the mode was left must not photograph another mode's scene —
+    // the same guard, on the same thing, that ShowExportOutput opens on.
+    if (VAbstractValApplication::VApp()->GetDrawMode() != Draw::Export)
+    {
+        return;
+    }
+
+    // What the canvas is showing, read by the rule the mode already has. The scope button speaks
+    // for the plan on screen and for no other — a toolbar button has no row to point at.
+    const OExportOutput *active = ActiveVisibleOutput();
+
+    const QVector<quint32> ids = VisibleExportOutputIds();
+    if (ids.isEmpty())
+    {
+        return; // nothing the dock lists, so nothing to offer and nothing to write
+    }
+
+    // Step 1 opens its size field on the plan of the generation on show — the only figure that is
+    // not a guess. Without one, on the first the dock lists: the dialog still has to open on
+    // something, and what it carries is a starting point for a field about to be changed.
+    const OExportOutput *reference =
+        active != nullptr ? active : m_exportOutputs.Find(ids.constFirst());
+    if (reference == nullptr)
+    {
+        return;
+    }
+
+    // ⚠️ Le dialogue s'ouvre sur la MÊME étendue que le fichier : ce qui est dessiné, pas le seul
+    // bac. Annoncer la hauteur du tissu pour écrire une image plus haute serait un chiffre faux.
+    const OExportDrawing referenceDrawing = ComputeExportDrawing(*reference);
+    QGraphicsScene referenceScene;
+    DrawExportDrawing(&referenceScene, *reference, referenceDrawing);
+    const OExportPlanImage::Plan referencePlan =
+        OExportPlanImage::PlanOf(RenderedRect(referenceScene, referenceDrawing.drawnRect));
+
+    // Le dossier de la gamme quand elle en a un — la règle d'`ExportFolder`, celle du PDF : les deux
+    // exports d'une même génération atterrissent côte à côte.
+    OExportImageDialog options(ExportFolder(*reference), referencePlan, active != nullptr, this);
+    if (options.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // Step 2: which generations, and under which names. One line for one generation is the same
+    // question as one line for six, so it is the same dialog.
+    QVector<OExportImageListDialog::Row> rows;
+    if (options.Chosen() == OExportImageDialog::Scope::Active)
+    {
+        // The button that answers this is dead when nothing is shown, so the pointer is not
+        // expected to be null — reading it anyway costs one line and cannot be a crash.
+        if (active != nullptr)
+        {
+            rows.append({active->id, active->name});
+        }
+    }
+    else
+    {
+        for (const quint32 id : ids)
+        {
+            if (const OExportOutput *output = m_exportOutputs.Find(id))
+            {
+                rows.append({output->id, output->name});
+            }
+        }
+    }
+
+    OExportImageListDialog list(rows, options.Format(), this);
+    if (list.exec() != QDialog::Accepted)
+    {
+        return;
+    }
+
+    // The run. Every generation is drawn into **a scene of its own** — the canvas holds the one on
+    // show and no other, so a batch cannot borrow it — and a scene built here carries no correction
+    // holder: that one is mounted on the displayed scene alone, which is why no image can hold a
+    // dashed frame and four handles meant for the hand.
+    QStringList written;
+    QStringList failed;
+
+    for (const OExportImageListDialog::Row &row : list.Chosen())
+    {
+        const OExportOutput *output = m_exportOutputs.Find(row.id);
+        if (output == nullptr)
+        {
+            continue;
+        }
+
+        const OExportDrawing drawing = ComputeExportDrawing(*output);
+
+        QGraphicsScene scene;
+        DrawExportDrawing(&scene, *output, drawing);
+
+        // ⚠️ **Le plan rendu est ce qui est DESSINÉ, jamais le seul bac.** Les cadres des canvas,
+        // les flèches de pli et les valeurs largeur × hauteur sont hors du tissu — au-dessus de
+        // chaque bande et dans les vides entre elles. Rendre `drawnRect` les coupait en haut et en
+        // bas : le fichier ne contenait pas ce que l'écran montrait.
+        const OExportPlanImage::Plan plan =
+            OExportPlanImage::PlanOf(RenderedRect(scene, drawing.drawnRect));
+
+        // An SVG's page IS a physical size, and PrintDPI is what expresses it; a PNG's pixels ARE
+        // the size, so its resolution is the user's. One figure for the whole run — the size was
+        // asked for once — and each generation's own proportions give it its other side.
+        const OExportPlanImage::Target target = OExportPlanImage::SizeFor(
+            plan, options.TargetMm(), options.Axis(),
+            options.Format() == OExportPlanImageWriter::Format::Svg ? PrintDPI : options.Dpi());
+
+        const QString path = QDir(options.Directory()).filePath(row.name);
+        if (OExportPlanImageWriter::Write(path, &scene, plan, target, options.Format(), output->name))
+        {
+            written.append(row.name);
+        }
+        else
+        {
+            // A generation that cannot be written does not stop the others. Its line is said at the
+            // end with the rest, which is the only place that knows which generation it was.
+            failed.append(row.name);
+        }
+    }
+
+    // Le dossier où le run vient d'écrire — s'il a écrit quelque chose : c'est celui que le prochain
+    // export proposera.
+    if (!written.isEmpty())
+    {
+        RememberExportFolder(options.Directory());
+    }
+
+    // ONE dialog for the whole run, whatever its length: a box per file would be a box the user
+    // has to dismiss six times to learn one thing.
+    QStringList lines;
+    if (!written.isEmpty())
+    {
+        lines << tr("%n file(s) written to %1", "", static_cast<int>(written.size()))
+                     .arg(options.Directory());
+        lines << QString();
+        lines << written;
+    }
+
+    if (failed.isEmpty())
+    {
+        QMessageBox::information(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
+        return;
+    }
+
+    if (!lines.isEmpty())
+    {
+        lines << QString();
+    }
+    lines << tr("%n file(s) could not be written:", "", static_cast<int>(failed.size()));
+    lines << failed;
+    lines << QString();
+    lines << tr("Check that the folder allows writing, and that none of the files is open in another program.");
+
+    QMessageBox::warning(this, tr("Export mode"), lines.join(QLatin1Char('\n')));
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 auto MainWindow::ExportMarksOf(const OExportOutput &output, OExportTemplate &marks, bool &framed) const
