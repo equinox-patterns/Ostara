@@ -672,7 +672,7 @@ void OToolDartCap::ApplyFigureVisibility()
     // the dock's own comment), so the point C is left alone and the rest follows the flag. Read here and not only
     // where the flag is set: every parse rebuilds the items of the figure — a fresh item is drawn — so the flags have
     // to be given back to them at each pass. A hidden layer does not enter here: it hides the item of the operation,
-    // and the whole figure goes with it (VAbstractOperation::GroupVisibility).
+    // and the whole figure goes with it (OToolDartCap::GroupVisibility, the figure being one thing).
     for (const OPleatMarkDisplay &mark : std::as_const(m_display.marks))
     {
         for (const quint32 id : {mark.curve1, mark.curve2, mark.side1, mark.side2})
@@ -1095,6 +1095,19 @@ void OToolDartCap::ChangeLabelPosition(quint32 id, const QPointF &pos)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolDartCap::GroupVisibility(quint32 object, bool visible)
+{
+    // The figure is one thing here: a layer names the point the operation stands for, or one part of the figure, and
+    // the tracés follow it — the cap's sides, the pleat's folds, the marks of a slash-and-spread, the two edges of a
+    // flounce. Hiding them one by one would leave the rest of the figure drawn on a hidden layer, which is the
+    // question this override answers. The base class hides the single image a layer names (see its own comment).
+    if (operatedObjects.contains(object))
+    {
+        setVisible(visible);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OToolDartCap::ExtraPointIds() const -> QVector<quint32>
 {
     return OPleatDisplay::PointImages(m_display, getData());
@@ -1184,7 +1197,7 @@ void OToolDartCap::SetCapDrawn(bool drawn)
     // The command and the parse FIRST, and the visibility after them: the parse rebuilds what the figure changed and
     // hands a fresh item to anything it adds — a fresh item is drawn — so the tracés would come back for the time of
     // it. Hidden after, the last word is ours. The layer pass of `SaveOptionsAndReparse` does not show them any more:
-    // it hides the item of the operation, not the objects of its figure (VAbstractOperation::GroupVisibility).
+    // it hides the item of the operation, not the objects of its figure (OToolDartCap::GroupVisibility).
     SaveOptionsAndReparse(false, drawn ? tr("draw the cap") : tr("stop drawing the cap"));
 
     // Taken off the canvas at once, and not a parse later: the box is what asks for the tracés, and the eye must see

@@ -557,22 +557,37 @@ auto VAbstractOperation::ExtraLayerableObjects(const QDomElement &toolElement) c
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::GroupVisibility(quint32 object, bool visible)
 {
-    // A layer's eye is ONE eye for the whole figure, and the figure is drawn by the items the operation PARENTS — the
-    // point C, its two sides, its crank, the lines it makes. So the answer is given by the item that carries them, and
-    // Qt composes the two questions by itself: a hidden parent hides every child, and a child's own flag still says
-    // what the figure shows when the layer comes back — the sides of a cap that is not drawn stay off, the halves a
-    // crank cuts stay off.
-    //
-    // Hiding the objects one by one was the other way, and it could not work: a side carried by a CURVE is no tool of
-    // its own — a layer names it by an id no tool answers (see OToolDartCap::AttachFigureToLayer) — so the only object
-    // of the figure a layer could reach was the point, and the two tracés of a cap stayed drawn on a hidden layer. The
-    // point is what brings the question here; this item is what carries the whole figure.
-    if (!operatedObjects.contains(object))
+    // A layer that names the operation itself gives ONE eye for the whole figure, and the figure is drawn by the
+    // items the operation PARENTS: Qt composes the two questions by itself, a hidden parent hiding every child.
+    if (object == m_id)
+    {
+        setVisible(visible);
+        return;
+    }
+
+    // A layer that names an image gives the eye to that image, and to it alone. The figure is one thing only for the
+    // tools that draw it as one — the cap, the pleat, the slash-and-spread, the flounce — and those override this
+    // method. For a rotation, a move or a flipping, every image is an object of its own, read by the layers by its
+    // own id: hiding the operation here took the whole figure off the canvas because ONE image was named by ONE
+    // hidden layer. Measured on a real pattern: fifteen of the sixteen operations of a piece vanished from the draw
+    // scene, while the details scene — which never reads the layers — kept showing every piece. Valentina hides the
+    // object the layer names, and so does this.
+    if (not operatedObjects.contains(object))
     {
         return;
     }
 
-    setVisible(visible);
+    m_objectVisible.insert(object, visible);
+    ApplyObjectVisibility(object);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::ApplyObjectVisibility(quint32 objectId)
+{
+    if (QGraphicsItem *item = OperatedItem(objectId); item != nullptr)
+    {
+        item->setVisible(m_objectVisible.value(objectId, true) && not m_objectReplaced.value(objectId, false));
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -584,13 +599,16 @@ auto VAbstractOperation::OperatedItem(quint32 objectId) const -> QGraphicsItem *
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::SetOperatedObjectReplaced(quint32 objectId, bool replaced)
 {
-    // The item carries the flag of its own visibility; Qt composes it with the operation's. A layer that hides
-    // the operation hides the copy anyway, and a copy given back stays hidden by its parent until the layer
-    // comes back — which is exactly what the layers already expect from a hidden object.
-    if (QGraphicsItem *item = OperatedItem(objectId); item != nullptr)
+    // The cut answers for the replacement only: the layer's eye is the other answer, and it is kept as it was.
+    // Showing the copy here because the cut does not replace it put it back on the canvas a parse after the
+    // layer that holds it was masked (see the two flags' comment in the header).
+    if (not operatedObjects.contains(objectId))
     {
-        item->setVisible(!replaced);
+        return;
     }
+
+    m_objectReplaced.insert(objectId, replaced);
+    ApplyObjectVisibility(objectId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

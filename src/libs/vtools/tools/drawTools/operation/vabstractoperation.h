@@ -32,6 +32,7 @@
 #define VABSTRACTOPERATION_H
 
 #include <QGraphicsLineItem>
+#include <QHash>
 #include <QMap>
 #include <QMetaObject>
 #include <QSet>
@@ -206,6 +207,21 @@ protected:
     QVector<OOperationLine> m_lines{};
 
     QMap<quint32, VAbstractSimple *> operatedObjects{};
+
+    /** @brief What the layers say about ONE copy, and what a cut did to it. Two questions, two answers.
+     *
+     *  The eye of a layer is answered on every parse, and a cut replaces the curve it cuts on every parse too —
+     *  in either order. Each answer is therefore kept, and the item is shown only when both agree: a copy is
+     *  drawn when a layer that holds it is visible AND no cut has taken its place. Writing the item's flag
+     *  straight from either answer was wrong: the cut's "not replaced" put a copy back on the canvas that a
+     *  masked layer had just hidden (measured on a real pattern: seven copies stayed drawn on layers nobody
+     *  could see). VToolAbstractCurve keeps its two flags in m_groupVisible and m_replacedBySegments, for the
+     *  very same reason. */
+    QHash<quint32, bool> m_objectVisible{};
+    QHash<quint32, bool> m_objectReplaced{};
+
+    /** @brief Show or hide one copy from the two answers above. */
+    void ApplyObjectVisibility(quint32 objectId);
 
     quint32 m_lastSelectedObject{NULL_ID};
 

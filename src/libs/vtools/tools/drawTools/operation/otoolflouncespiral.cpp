@@ -703,6 +703,19 @@ auto OToolFlounceSpiral::PointId(OFlounceSpiralPoint::Role role) const -> quint3
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OToolFlounceSpiral::GroupVisibility(quint32 object, bool visible)
+{
+    // The figure is one thing here: a layer names the point the operation stands for, or one part of the figure, and
+    // the tracés follow it — the cap's sides, the pleat's folds, the marks of a slash-and-spread, the two edges of a
+    // flounce. Hiding them one by one would leave the rest of the figure drawn on a hidden layer, which is the
+    // question this override answers. The base class hides the single image a layer names (see its own comment).
+    if (operatedObjects.contains(object))
+    {
+        setVisible(visible);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OToolFlounceSpiral::ExtraPointIds() const -> QVector<quint32>
 {
     QVector<quint32> ids;

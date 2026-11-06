@@ -200,6 +200,12 @@ protected:
     auto ExtraCurveIds() const -> QVector<quint32> override;
     auto ExtraLineIds() const -> QVector<quint32> override;
 
+    /** @brief The figure is ONE thing: a layer names one of its objects and the whole figure follows it.
+     *  The base class hides the one image the layer names, which is what a rotation, a move or a flipping
+     *  needs; here the images are the parts of a single figure, and hiding them one by one would leave the
+     *  rest of it drawn on a hidden layer. */
+    void GroupVisibility(quint32 object, bool visible) override;
+
     auto FigureFollowsLiteParse(const QDomElement &oldElement, const QDomElement &newElement) const -> bool override;
 
     auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;

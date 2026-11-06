@@ -205,6 +205,12 @@ protected:
     auto ExtraCurveIds() const -> QVector<quint32> override;
     auto ExtraLineIds() const -> QVector<quint32> override;
 
+    /** @brief The figure is ONE thing: a layer names one of its objects and the whole figure follows it.
+     *  The base class hides the one image the layer names, which is what a rotation, a move or a flipping
+     *  needs; here the images are the parts of a single figure, and hiding them one by one would leave the
+     *  rest of it drawn on a hidden layer. */
+    void GroupVisibility(quint32 object, bool visible) override;
+
     auto DisplayObjectIds(const QDomElement &domElement) const -> QSet<quint32> override;
 
     /** @brief Read the figure again on every parse.
@@ -285,7 +291,7 @@ private:
      *  greyed when no cap is drawn. The point C stays either way: it is what the tool was, and the old tool said so
      *  in the very box that draws the sides ("the point exists either way, the two tracés are what the box adds").
      *  Re-applied after EVERY parse, because the layer pass sets every object of the operation visible again
-     *  (VAbstractOperation::GroupVisibility). */
+     *  (OToolDartCap::GroupVisibility). */
     void ApplyFigureVisibility();
 
     /** @brief Write the tool's options and ask for the parse that makes the canvas follow them.
