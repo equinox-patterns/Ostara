@@ -64,9 +64,8 @@ auto GetSeamPassmarkSAPoint(const VPiecePassmarkData &passmarkData, const QVecto
                                          passmarkData.saWidth,
                                          &needRollback);
 
-    if (needRollback && not seamAllowance.isEmpty())
+    if (ekvPoints.isEmpty() && needRollback && not seamAllowance.isEmpty())
     {
-        ekvPoints.clear();
         ekvPoints += VRawSAPoint(seamAllowance.at(seamAllowance.size() - 1));
     }
 
@@ -75,19 +74,103 @@ auto GetSeamPassmarkSAPoint(const VPiecePassmarkData &passmarkData, const QVecto
         return PassmarkStatus::Error; // Something wrong
     }
 
+    // The corner of the allowance comes first, in every case. A rollback says where the allowance contour has to
+    // start so it can be walked from this notch — it says nothing about the shape of the joint, and taking the last
+    // point of the contour as the notch's point put it anywhere on the outline instead of on the corner. That is
+    // why the allowance notch of a rollback joint was not the bisector of the corner.
+    {
+        const QLineF beforeMargin = VAbstractPiece::ParallelLine(passmarkData.previousSAPoint,
+                                                                 passmarkData.passmarkSAPoint,
+                                                                 passmarkData.saWidth);
+        const QLineF afterMargin = VAbstractPiece::ParallelLine(passmarkData.passmarkSAPoint,
+                                                                passmarkData.nextSAPoint,
+                                                                passmarkData.saWidth);
+
+        QPointF corner;
+        if (beforeMargin.intersects(afterMargin, &corner) != QLineF::NoIntersection)
+        {
+            // A true zero on one side changes what the corner of the allowance is. With two margins the allowance
+            // turns at the point where the two offset lines meet — that is the corner. With one margin at zero there
+            // is no such turn: the allowance leaves the seam line by a step, and the two offset lines meet *past*
+            // that step, off the contour. The corner is then the far end of the step, which EkvPoint already hands
+            // back at exactly one margin from the node — the same point the intersection notches pick, and the one
+            // that reads as a real corner on screen (client pattern: this is what made A42 and A47 bisectors start
+            // beside the corner instead of on it).
+            const bool beforeZero =
+                qFuzzyIsNull(passmarkData.passmarkSAPoint.GetSABefore(passmarkData.saWidth));
+            const bool afterZero = qFuzzyIsNull(passmarkData.passmarkSAPoint.GetSAAfter(passmarkData.saWidth));
+
+            if (beforeZero != afterZero)
+            {
+                const qreal width = beforeZero ? passmarkData.passmarkSAPoint.GetSAAfter(passmarkData.saWidth)
+                                               : passmarkData.passmarkSAPoint.GetSABefore(passmarkData.saWidth);
+                const QPointF node = passmarkData.passmarkSAPoint.ToQPointF();
+
+                qreal best = -1;
+                for (const auto &ekvPoint : std::as_const(ekvPoints))
+                {
+                    const QPointF candidate = ekvPoint.ToQPointF();
+                    const qreal distance = QLineF(node, candidate).length();
+                    if (distance <= accuracyPointOnLine)
+                    {
+                        continue;
+                    }
+
+                    const qreal delta = qAbs(distance - width);
+                    if (best < 0 || delta < best)
+                    {
+                        best = delta;
+                        point = candidate;
+                    }
+                }
+
+                // Only accept a real step end: it stands exactly one margin from the node. If EkvPoint offers no
+                // such point, the joint has no step after all and the two offset lines give the corner.
+                if (best >= 0 && best <= accuracyPointOnLine)
+                {
+                    return needRollback ? PassmarkStatus::Rollback : PassmarkStatus::Common;
+                }
+            }
+
+            point = corner;
+            return needRollback ? PassmarkStatus::Rollback : PassmarkStatus::Common;
+        }
+    }
+
     if (ekvPoints.size() > 1)
     {
-        // Prong shape case. Select the closest point to a seam line.
-        point = ekvPoints.at(0).ToQPointF();
-        qreal minDistance = QLineF(passmarkData.passmarkSAPoint, point).length();
+        // The notch stands at the corner of the allowance: the one point both margins agree on. Each margin is a
+        // line parallel to its own edge, and the corner is where those two lines meet — nothing else. EkvPoint also
+        // hands back the two feet (one allowance from the node on either edge), and anchoring on a foot instead of
+        // the corner is what threw the bisector off by tens of degrees as soon as the corner was not square.
+        const QLineF beforeMargin = VAbstractPiece::ParallelLine(passmarkData.previousSAPoint,
+                                                                 passmarkData.passmarkSAPoint,
+                                                                 passmarkData.saWidth);
+        const QLineF afterMargin = VAbstractPiece::ParallelLine(passmarkData.passmarkSAPoint,
+                                                                passmarkData.nextSAPoint,
+                                                                passmarkData.saWidth);
 
-        for (const QPointF &p : std::as_const(ekvPoints))
+        QPointF corner;
+        const auto intersection = beforeMargin.intersects(afterMargin, &corner);
+        if (intersection != QLineF::NoIntersection)
         {
-            qreal const distance = QLineF(passmarkData.passmarkSAPoint, p).length();
-            if (distance < minDistance)
+            point = corner;
+        }
+        else
+        {
+            // Parallel margins: the joint is straight, so any foot is as good as another. Take the farthest one,
+            // which is the one the allowance actually reaches.
+            point = ekvPoints.constFirst().ToQPointF();
+            qreal best = QLineF(passmarkData.passmarkSAPoint, point).length();
+            for (const auto &ekvPoint : std::as_const(ekvPoints))
             {
-                point = p;
-                minDistance = distance;
+                const QPointF candidate = ekvPoint.ToQPointF();
+                const qreal distance = QLineF(passmarkData.passmarkSAPoint, candidate).length();
+                if (distance > best)
+                {
+                    point = candidate;
+                    best = distance;
+                }
             }
         }
     }
@@ -95,6 +178,7 @@ auto GetSeamPassmarkSAPoint(const VPiecePassmarkData &passmarkData, const QVecto
     {
         point = ekvPoints.constFirst().ToQPointF();
     }
+
 
     return needRollback ? PassmarkStatus::Rollback : PassmarkStatus::Common;
 }
@@ -293,21 +377,34 @@ auto FixNotchPoint(const QVector<QPointF> &seamAllowance, const VPiecePassmarkDa
     // Point is on seam allowance
     if (VAbstractCurve::IsPointOnCurve(seamAllowance, axis.p2()))
     { // Fixing distortion
-        // Fall back to the axis end point so the notch follows the (possibly manual) angle even when the refinement
-        // below cannot pick a unique intersection. Valid because entering this branch guarantees axis.p2() is on the
-        // curve.
-        *notch = axis.p2();
+        // The point is already on the allowance, so it *is* the anchor: snapping it onto the nearest point of the
+        // contour removes the sampling distortion without moving it anywhere else. Valentina lengthened the axis and
+        // re-intersected instead; on a contour running almost along that axis — the step a true zero margin leaves —
+        // the crossing it took was 28 px back along the edge, and the notch went with it (A47, client pattern).
+        auto NearestOnSegment = [](const QPointF &p, const QPointF &a, const QPointF &b) -> QPointF
+        {
+            const QPointF ab = b - a;
+            const qreal length2 = QPointF::dotProduct(ab, ab);
+            if (qFuzzyIsNull(length2))
+            {
+                return a;
+            }
+            return a + qBound(0., QPointF::dotProduct(p - a, ab) / length2, 1.) * ab;
+        };
 
-        axis.setLength(axis.length() + accuracyPointOnLine * 10);
-        const QVector<QPointF> points = VAbstractCurve::CurveIntersectLine(seamAllowance, axis);
-        if (points.size() == 1)
+        auto best = axis.p2();
+        qreal bestDistance = -1;
+        for (qint32 i = 0; i < seamAllowance.size() - 1; ++i)
         {
-            *notch = points.constFirst();
+            const QPointF candidate = NearestOnSegment(axis.p2(), seamAllowance.at(i), seamAllowance.at(i + 1));
+            if (const qreal distance = QLineF(axis.p2(), candidate).length(); bestDistance < 0 || distance < bestDistance)
+            {
+                bestDistance = distance;
+                best = candidate;
+            }
         }
-        else if (points.size() > 1)
-        {
-            ForwardNotch(points, axis, data.passmarkSAPoint, notch);
-        }
+
+        *notch = best;
         return true;
     }
 
@@ -762,6 +859,12 @@ auto VPassmark::SAPassmark(const QVector<QPointF> &seamAllowance, const QVector<
     // DumpPassmarkData(m_data, QStringLiteral("passmarkData.json.XXXXXX")); // Uncomment for dumping test data
 
     QVector<QLineF> lines = SAPassmarkBaseLine(seamAllowance, rotatedSeamAllowance, side);
+    {
+        QLineF e1(m_data.passmarkSAPoint.ToQPointF(), m_data.previousSAPoint.ToQPointF());
+        QLineF e2(m_data.passmarkSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
+    }
+
+
     if (lines.isEmpty())
     {
         return lines;
@@ -871,6 +974,7 @@ auto VPassmark::FindIntersection(const QLineF &line, const QVector<QPointF> &sea
 //---------------------------------------------------------------------------------------------------------------------
 auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, qreal width) const -> QLineF
 {
+
     line.setLength(line.length() * 100); // Hope 100 is enough
 
     // DumpVector(path, QStringLiteral("points.json.XXXXXX")); // Uncomment for dumping test data
@@ -881,9 +985,37 @@ auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, 
 
     if (not intersections.isEmpty())
     {
-        if (intersections.constLast() != m_data.passmarkSAPoint)
+        // The notch starts on the allowance edge, one margin away from the node: that distance is the single
+        // property the crossing must have. The requested line is infinite, so it crosses the contour anywhere the
+        // piece happens to be — the neighbouring node itself, the far end of the edge, or the node again where the
+        // allowance runs along the seam. Valentina kept the list's last crossing, which on the client pattern put
+        // Col' notch 226 px away at the other end of its edge (it looked like it had disappeared) and dropped PB2's
+        // on the node instead of on its allowance. The crossing one margin from the node is the one that belongs to
+        // this corner, and it is the only one the allowance edge can offer.
+        const QPointF node = m_data.passmarkSAPoint.ToQPointF();
+        QPointF anchor;
+        qreal bestDelta = -1;
+        for (const QPointF &candidate : intersections)
         {
-            line = QLineF(intersections.constLast(), m_data.passmarkSAPoint);
+            const qreal delta = qAbs(QLineF(node, candidate).length() - width);
+            if (bestDelta < 0 || delta < bestDelta)
+            {
+                bestDelta = delta;
+                anchor = candidate;
+            }
+        }
+
+        {
+            QVector<QPointF> allc;
+            for (const QPointF &c : intersections)
+            {
+                allc += c;
+            }
+        }
+
+        if (QLineF(anchor, node).length() > accuracyPointOnLine)
+        {
+            line = QLineF(anchor, node);
 
             bool ok = false;
             const qreal length = PassmarkLength(m_data, width, ok);
@@ -894,6 +1026,29 @@ auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, 
             line.setLength(length);
 
             return line;
+        }
+
+        // The allowance meets the seam line exactly at the node: this side is a true zero, so there is no margin
+        // for the notch to cross and the intersection *is* the node. Valentina only ever escaped this through its
+        // floor on local widths (minSAWidth, a hundredth of a pixel), which held the allowance a hair away and let
+        // the same comparison pass; the true zero keeps it honest, and the notch must not be dropped for it — the
+        // mark is still owed to this node.
+        //
+        // What the notch is missing is the distance the allowance used to give it, not its direction: the line it
+        // was asked to stand on still carries that, and the mark keeps it. Start the base line at the node and lay
+        // the notch's own length along it, exactly as the built line does on a side that has an allowance, so the
+        // crossbar closes it at the same distance and the same angle.
+        QLineF unit(line.p1(), line.p2());
+        unit.setLength(1.); // A null line keeps its length, so the guard below still holds.
+        const QPointF direction = unit.p2() - unit.p1();
+        if (not direction.isNull())
+        {
+            bool ok = false;
+            const qreal length = PassmarkLength(m_data, width, ok);
+            if (ok)
+            {
+                return {m_data.passmarkSAPoint, m_data.passmarkSAPoint - direction * length};
+            }
         }
 
         const QString errorMsg =
@@ -943,6 +1098,16 @@ auto VPassmark::PassmarkStraightforwardBaseLine(const QPointF &seamPassmarkSAPoi
                           m_data.passmarkSAPoint.y());
             line.setAngle(m_data.passmarkSAPoint.GetPasskmarkAngle() + 180);
         }
+        else if (const QLineF seam(m_data.previousSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
+                 not seam.isNull())
+        {
+            // No seam allowance on either side: the notch has no distance to run along, its base point being
+            // the node itself. Take the direction from the seam and draw the notch across it — a marker is
+            // exactly that — instead of leaving an invisible notch and asking for a manual angle.
+            const QPointF start = m_data.passmarkSAPoint.ToQPointF();
+            line = QLineF(start, start + QPointF(100., 100.));
+            line.setAngle(seam.angle() - 90.);
+        }
         else
         {
             const QString errorMsg = QObject::tr(
@@ -967,28 +1132,17 @@ auto VPassmark::PassmarkBisectorBaseLine(PassmarkStatus seamPassmarkType, const 
 
     if (seamPassmarkType == PassmarkStatus::Common)
     {
-        if (m_data.passmarkSAPoint.GetAngleType() == PieceNodeAngle::ByFirstEdgeSymmetry)
-        {
-            edge1 = QLineF(seamPassmarkSAPoint, seamAllowance.at(seamAllowance.size() - 2));
-            edge2 = QLineF(seamPassmarkSAPoint, seamAllowance.at(1));
-        }
-        else
-        {
-            const QLineF bigLine1 = VAbstractPiece::ParallelLine(m_data.previousSAPoint,
-                                                                 m_data.passmarkSAPoint,
-                                                                 m_data.saWidth);
-            const QLineF bigLine2 = VAbstractPiece::ParallelLine(m_data.passmarkSAPoint,
-                                                                 m_data.nextSAPoint,
-                                                                 m_data.saWidth);
-
-            edge1 = QLineF(seamPassmarkSAPoint, bigLine1.p1());
-            edge2 = QLineF(seamPassmarkSAPoint, bigLine2.p2());
-        }
+        // The joint's own edges: from the node towards the points on either side. The margins must not enter the
+        // direction — a bisector bisects the joint, and the squaring of the node or the width of the allowance
+        // has no say in where the joint is.
+        edge1 = QLineF(m_data.passmarkSAPoint.ToQPointF(), m_data.previousSAPoint.ToQPointF());
+        edge2 = QLineF(m_data.passmarkSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
     }
     else if (seamPassmarkType == PassmarkStatus::Rollback)
     {
-        edge1 = QLineF(seamPassmarkSAPoint, seamAllowance.at(seamAllowance.size() - 2));
-        edge2 = QLineF(seamPassmarkSAPoint, seamAllowance.at(1));
+        // A rollback only says where the allowance contour starts, not what the joint looks like: same edges.
+        edge1 = QLineF(m_data.passmarkSAPoint.ToQPointF(), m_data.previousSAPoint.ToQPointF());
+        edge2 = QLineF(m_data.passmarkSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
     }
     else
     { // Should never happen
@@ -1004,16 +1158,33 @@ auto VPassmark::PassmarkBisectorBaseLine(PassmarkStatus seamPassmarkType, const 
         return {};
     }
 
-    edge1.setAngle(edge1.angle() + edge1.angleTo(edge2) / 2.);
-    edge1.setLength(length);
+    // Direction: from the margin's corner back to the point. That is the joint's own bisector whenever both
+    // margins are equal — the corner of the allowance then lies on the bisector of the joint — so the notch still
+    // bisects the corner, and it is also exactly what "straightforward" builds, which is why the two rules are one
+    // and the same on a corner. When the two margins differ, though, the corner sits off that bisector (measured on
+    // the client pattern: 52° off for a true zero on one side, enough for the notch to leave the corner sideways and
+    // end without ever reaching the seam), and the only direction that keeps the notch on its corner is the one
+    // from the corner to the point.
+    const qreal bisectorAngle = edge1.angle() + edge1.angleTo(edge2) / 2.;
 
-    return {edge1};
+    QLineF notch(seamPassmarkSAPoint, m_data.passmarkSAPoint.ToQPointF());
+
+    if (notch.length() <= accuracyPointOnLine)
+    {   // No allowance on either side: the corner sits on the point itself, so only the joint can give a direction.
+        notch = QLineF(seamPassmarkSAPoint, seamPassmarkSAPoint + QPointF(1., 1.));
+        notch.setAngle(bisectorAngle);
+    }
+
+    notch.setLength(length);
+
+    return {notch};
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 auto VPassmark::PassmarkIntersectionBaseLine(const QVector<QPointF> &path, PassmarkSide side) const -> QVector<QLineF>
 {
     QVector<QLineF> lines;
+
     if ((m_data.passmarkAngleType == PassmarkAngleType::Intersection ||
          m_data.passmarkAngleType == PassmarkAngleType::IntersectionOnlyLeft) &&
         (side == PassmarkSide::All || side == PassmarkSide::Left))
@@ -1274,7 +1445,12 @@ auto VPassmark::SAPassmarkBaseLine(const QVector<QPointF> &seamAllowance, const 
                                        ? rotatedSeamAllowance
                                        : seamAllowance;
 
-    if (not FixNotchPoint(path, m_data, &seamPassmarkSAPoint))
+    // The anchor is built from previous/passmark/next, which live in the piece's own coordinates: it has to be fixed
+    // against that same contour. The rotated copy is only a walk order (it starts at the notch so a rollback can be
+    // walked), and on a joint with a true zero margin it degenerates to three points — fixing the anchor against it
+    // dragged notches off the allowance entirely (A47, client pattern: a point on a fake triangle instead of the
+    // corner of the step).
+    if (not FixNotchPoint(seamAllowance, m_data, &seamPassmarkSAPoint))
     {
         const QString errorMsg =
             QCoreApplication::translate("VPassmark",
@@ -1288,6 +1464,20 @@ auto VPassmark::SAPassmarkBaseLine(const QVector<QPointF> &seamAllowance, const 
 
     if (m_data.passmarkAngleType == PassmarkAngleType::Straightforward)
     {
+        // On a straight run the notch stands square to the seam, and the anchor-to-node direction is that square.
+        // At a corner it is not: the anchor sits on one of the two edges, so anchor-to-node runs *along* that
+        // edge and the notch comes out lying on the seam instead of marking the corner. There the notch has to
+        // bisect the joint — which is exactly what "bisector" builds, and why the two rules are one and the same
+        // on a corner.
+        const QLineF beforeEdge(m_data.previousSAPoint.ToQPointF(), m_data.passmarkSAPoint.ToQPointF());
+        const QLineF afterEdge(m_data.passmarkSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
+
+        if (seamPassmarkType == PassmarkStatus::Common && not beforeEdge.isNull() && not afterEdge.isNull() &&
+            qAbs(beforeEdge.angleTo(afterEdge)) > 5.)
+        {
+            return PassmarkBisectorBaseLine(seamPassmarkType, seamPassmarkSAPoint, path);
+        }
+
         return PassmarkStraightforwardBaseLine(seamPassmarkSAPoint);
     }
 
