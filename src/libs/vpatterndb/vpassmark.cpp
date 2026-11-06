@@ -520,6 +520,41 @@ auto FixNotchPoint(const QVector<QPointF> &seamAllowance, const VPiecePassmarkDa
     }
 
     // Point is not on seam allowance
+    // La marge est DESSINÉE en polyligne, son coin est CALCULÉ analytiquement : les deux diffèrent de la
+    // finesse de l'échantillonnage, une fraction de millimètre. Ce n'est pas une ancre perdue — le contour
+    // est juste là — et le rayon de 500 cm part alors du point de couture en rasant l'arête au lieu de la
+    // traverser : il ne trouve aucun croisement et le cran disparaissait (`BaDvtterM`, Bas Robe Devant,
+    // 32/160 : coin analytique à 0,88 px du coin dessiné, tolérance 0,59). On recale l'ancre tant que
+    // l'écart reste sous le demi-millimètre ; au-delà, le rayon de Valentina reste seul juge.
+    {
+        qreal nearest = -1;
+        QPointF nearestPoint;
+        for (qsizetype i = 0; i + 1 < seamAllowance.size(); ++i)
+        {
+            const QPointF a = seamAllowance.at(i);
+            const QPointF b = seamAllowance.at(i + 1);
+            const QPointF ab = b - a;
+            const qreal length2 = QPointF::dotProduct(ab, ab);
+            QPointF candidate = a;
+            if (not qFuzzyIsNull(length2))
+            {
+                candidate = a + qBound(0., QPointF::dotProduct(axis.p2() - a, ab) / length2, 1.) * ab;
+            }
+            const qreal distance = QLineF(axis.p2(), candidate).length();
+            if (nearest < 0 || distance < nearest)
+            {
+                nearest = distance;
+                nearestPoint = candidate;
+            }
+        }
+
+        if (nearest >= 0 && nearest <= MmToPixel(0.5))
+        {
+            *notch = nearestPoint;
+            return true;
+        }
+    }
+
     axis.setLength(ToPixel(500, Unit::Cm));
     const QVector<QPointF> points = VAbstractCurve::CurveIntersectLine(seamAllowance, axis);
 

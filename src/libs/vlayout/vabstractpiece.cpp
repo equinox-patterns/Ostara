@@ -1619,6 +1619,7 @@ auto VAbstractPiece::Equidistant(QVector<VSAPoint> points, qreal width, const QS
             = EkvPoint(ekvPoints, points.at(i - 1), points.at(i), points.at(i + 1), points.at(i), width);
     }
 
+    const QVector<VRawSAPoint> ekvBeforeRollback = ekvPoints;
     if (needRollback)
     {
         QT_WARNING_PUSH
@@ -1652,6 +1653,18 @@ auto VAbstractPiece::Equidistant(QVector<VSAPoint> points, qreal width, const QS
         }
 
         QT_WARNING_POP
+    }
+
+    // **Un rollback ne peut pas avaler le contour.** Il sert à faire démarrer la marge au cran : il coupe
+    // la fin du tracé à la première rencontre avec la ligne de coupe. Sur un joint à marge nulle, la
+    // marche construite pour ce joint EST sur cette ligne de coupe — la première rencontre tombe donc
+    // tout de suite, et un contour de 262 points ressortait à 4. La pièce perdait alors sa marge
+    // (« La marge de couture est invalide », Parementure devant - Retournée et Thermocollant Par devant
+    // en 34/160 et 42/160) et ses crans avec. Un contour fermé de trois points n'est jamais un contour :
+    // dans ce cas on garde celui d'avant le rollback, qui est valide.
+    if (needRollback && ekvPoints.size() * 2 < ekvBeforeRollback.size())
+    {
+        ekvPoints = ekvBeforeRollback;
     }
 
     QVector<VLayoutPoint> cleaned;
