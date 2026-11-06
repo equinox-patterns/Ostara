@@ -974,6 +974,31 @@ auto VPassmark::FindIntersection(const QLineF &line, const QVector<QPointF> &sea
 //---------------------------------------------------------------------------------------------------------------------
 auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, qreal width) const -> QLineF
 {
+    const QPointF node = m_data.passmarkSAPoint.ToQPointF();
+
+    // A joint with a true zero on one side has no corner where the two margin lines meet: the allowance leaves the
+    // seam by a step, and its corner is the end of that step. When this side does carry a margin, that corner is the
+    // anchor — the crossing the requested line finds lands just past the step, on the extension of the margin line
+    // (A42, client pattern: 38.86 px instead of 37.80, and the notch read as detached from the corner, while the
+    // Intersection 2 notch, which happened to land on the step end, was right).
+    const bool beforeZero = qFuzzyIsNull(m_data.passmarkSAPoint.GetSABefore(m_data.saWidth));
+    const bool afterZero = qFuzzyIsNull(m_data.passmarkSAPoint.GetSAAfter(m_data.saWidth));
+
+    if (beforeZero != afterZero && not qFuzzyIsNull(width))
+    {
+        QPointF stepEnd;
+        if (GetSeamPassmarkSAPoint(m_data, path, stepEnd) != PassmarkStatus::Error)
+        {
+            QLineF notch(stepEnd, node);
+            bool ok = false;
+            const qreal length = PassmarkLength(m_data, width, ok);
+            if (ok && notch.length() > accuracyPointOnLine)
+            {
+                notch.setLength(length);
+                return notch;
+            }
+        }
+    }
 
     line.setLength(line.length() * 100); // Hope 100 is enough
 
@@ -992,7 +1017,6 @@ auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, 
         // Col' notch 226 px away at the other end of its edge (it looked like it had disappeared) and dropped PB2's
         // on the node instead of on its allowance. The crossing one margin from the node is the one that belongs to
         // this corner, and it is the only one the allowance edge can offer.
-        const QPointF node = m_data.passmarkSAPoint.ToQPointF();
         QPointF anchor;
         qreal bestDelta = -1;
         for (const QPointF &candidate : intersections)
@@ -1005,13 +1029,6 @@ auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, 
             }
         }
 
-        {
-            QVector<QPointF> allc;
-            for (const QPointF &c : intersections)
-            {
-                allc += c;
-            }
-        }
 
         if (QLineF(anchor, node).length() > accuracyPointOnLine)
         {
