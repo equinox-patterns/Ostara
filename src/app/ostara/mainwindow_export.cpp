@@ -158,7 +158,16 @@ void MainWindow::ExportDetailsAs(bool checked)
         // valeurs de couture, et c'est la géométrie des pièces qui change — pas un calque. La
         // préparation est donc refaite quand il est choisi, même si le contour principal, lui, ne
         // l'est pas. Voir PrepareDetailsForLayout.
-        const bool showMainPath = m_dialogSaveLayout->IsShowMainPath();
+        // ⚠️ **Cette option est une option DXF-AAMA/ASTM.** Sa case n'est même pas visible pour les
+        // autres formats — mais elle est enregistrée, puis relue et appliquée pour TOUS. Cochée une
+        // fois dans un export DXF, elle restait donc vraie et forçait `SetHideMainPath(false)` sur les
+        // exports SVG, PDF, etc. : une pièce dont le contour principal est masqué ressortait avec son
+        // contour, sans que rien dans la dialogue ne l'ait demandé. Elle ne vaut plus que pour les
+        // formats qui la montrent.
+        const LayoutExportFormats exportFormat = m_dialogSaveLayout->Format();
+        const bool showMainPath = m_dialogSaveLayout->IsShowMainPath()
+                                  && (exportFormat == LayoutExportFormats::DXF_AAMA
+                                      || exportFormat == LayoutExportFormats::DXF_ASTM);
         const bool noSeamAllowance = m_dialogSaveLayout->DxfCompatibility() == DXFApparelCompatibility::CLO3D;
         if (showMainPath || noSeamAllowance)
         {
