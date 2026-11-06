@@ -384,7 +384,48 @@ auto VBoundary::InsertDisconnect(QList<VBoundarySequenceItemData> &sequence, int
     QVector<VLayoutPoint> sub2;
     if (!VAbstractPiece::SubdividePath(boundary, connectionPoint, sub1, sub2))
     {
-        return false;
+        // Le contour dans lequel le cran s'insère n'est pas toujours celui sur lequel il a été
+        // ancré : une pièce affichée en entier est mise en miroir, et ses points passent par
+        // `CorrectEquidistantPoints`, qui les déplace d'une fraction de pixel. L'ancre tombe alors à
+        // un demi-millimètre du contour — le même point, vu par deux chemins. Sans ce recalage
+        // le cran était abandonné et la pièce partait au placement sans sa marque (mesuré sur le
+        // patron de Sophie : BaDvtterM à 0,88 px, BaDosD' à 0,99 px, pour une tolérance de 0,59).
+        // Au-delà d'un demi-millimètre, l'ancre est réellement ailleurs : le cran reste refusé.
+        const double snapPx = MmToPixel(0.5);
+        double nearest = snapPx;
+        bool snapped = false;
+        QPointF target = connectionPoint;
+        for (int k = 0; k < boundary.size(); ++k)
+        {
+            const QLineF seg(boundary.at(k).ToQPointF(), boundary.at((k + 1) % boundary.size()).ToQPointF());
+            double t = 0.0;
+            const double len2 = seg.length() * seg.length();
+            if (len2 > 0.0)
+            {
+                t = ((connectionPoint.x() - seg.x1()) * (seg.x2() - seg.x1())
+                     + (connectionPoint.y() - seg.y1()) * (seg.y2() - seg.y1()))
+                    / len2;
+            }
+            const QPointF candidate = seg.pointAt(qBound(0.0, t, 1.0));
+            const double distance = QLineF(candidate, connectionPoint).length();
+            if (distance < nearest)
+            {
+                nearest = distance;
+                target = candidate;
+                snapped = true;
+            }
+        }
+
+        if (!snapped)
+        {
+            return false;
+        }
+
+        connectionPoint = target;
+        if (!VAbstractPiece::SubdividePath(boundary, connectionPoint, sub1, sub2))
+        {
+            return false;
+        }
     }
 
     sequence.removeAt(i);

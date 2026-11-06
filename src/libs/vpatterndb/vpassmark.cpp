@@ -500,34 +500,22 @@ auto FixNotchPoint(const QVector<QPointF> &seamAllowance, const VPiecePassmarkDa
     // Point is on seam allowance
     if (VAbstractCurve::IsPointOnCurve(seamAllowance, axis.p2()))
     { // Fixing distortion
-        // The point is already on the allowance, so it *is* the anchor: snapping it onto the nearest point of the
-        // contour removes the sampling distortion without moving it anywhere else. Valentina lengthened the axis and
-        // re-intersected instead; on a contour running almost along that axis — the step a true zero margin leaves —
-        // the crossing it took was 28 px back along the edge, and the notch went with it (A47, client pattern).
-        auto NearestOnSegment = [](const QPointF &p, const QPointF &a, const QPointF &b) -> QPointF
+        // **La méthode de Valentina, remise telle quelle.** Le point est déjà sur la marge : on rallonge
+        // l'axe et on recoupe. La projection « sur le point le plus proche du contour », que j'avais mise
+        // à la place, peut choisir un AUTRE morceau du contour — sur une courbe, le point le plus proche
+        // n'est pas forcément celui de l'arête — et le cran partait alors se placer sur le point voisin
+        // (R6 se posait comme s'il était sur R5, patron de Sophie).
+        *notch = axis.p2();
+        axis.setLength(axis.length() + accuracyPointOnLine * 10);
+        const QVector<QPointF> points = VAbstractCurve::CurveIntersectLine(seamAllowance, axis);
+        if (points.size() == 1)
         {
-            const QPointF ab = b - a;
-            const qreal length2 = QPointF::dotProduct(ab, ab);
-            if (qFuzzyIsNull(length2))
-            {
-                return a;
-            }
-            return a + qBound(0., QPointF::dotProduct(p - a, ab) / length2, 1.) * ab;
-        };
-
-        auto best = axis.p2();
-        qreal bestDistance = -1;
-        for (qint32 i = 0; i < seamAllowance.size() - 1; ++i)
-        {
-            const QPointF candidate = NearestOnSegment(axis.p2(), seamAllowance.at(i), seamAllowance.at(i + 1));
-            if (const qreal distance = QLineF(axis.p2(), candidate).length(); bestDistance < 0 || distance < bestDistance)
-            {
-                bestDistance = distance;
-                best = candidate;
-            }
+            *notch = points.constFirst();
         }
-
-        *notch = best;
+        else if (points.size() > 1)
+        {
+            ForwardNotch(points, axis, data.passmarkSAPoint, notch);
+        }
         return true;
     }
 
@@ -964,6 +952,61 @@ auto VPassmark::SAPassmark(const VPiece &piece, const VContainer *data, Passmark
     QVector<QPointF> seamAllowance;
     CastTo(piece.FullSeamAllowancePoints(data), seamAllowance);
 
+    // **« Tout droit » : le cran de marge est la PROLONGATION du cran du contour principal.**
+    // Même ligne, aucune rotation, aucun déplacement. Deux points comptent et j'avais les deux faux :
+    //   • le croisement retenu est celui qui est DEVANT le point, dans le sens sortant de la
+    //     prolongation — pas celui qui se trouve derrière, sur le contour opposé ;
+    //   • le cran renvoyé est COURT (sa longueur de cran), pas le segment entier du point au contour,
+    //     qui barrait la pièce d'un trait.
+    if (m_data.passmarkAngleType == PassmarkAngleType::Straightforward)
+    {
+        const QVector<QLineF> mainLines = BuiltInSAPassmarkBaseLine(piece, piece.SeamMirrorLine(data));
+        if (not mainLines.isEmpty())
+        {
+            const QPointF node = m_data.passmarkSAPoint.ToQPointF();
+            const QLineF main = mainLines.constFirst();
+            // Sens SORTANT : on part du cran du contour principal et on prolonge vers l'extérieur.
+            const QPointF outward = main.p1() - main.p2();
+            QLineF ray(node, node + outward);
+            ray.setLength(ToPixel(500, Unit::Cm));
+
+            const qreal marginWidth = m_data.passmarkSAPoint.MaxLocalSA(m_data.saWidth);
+            qreal best = -1;
+            QPointF anchor;
+            for (const QPointF &candidate : VAbstractCurve::CurveIntersectLine(seamAllowance, ray))
+            {
+                const QPointF v = candidate - node;
+                if (QPointF::dotProduct(v, outward) <= 0.)
+                {
+                    continue; // derrière le point : ce n'est pas le bord de ce côté
+                }
+                const qreal distance = std::hypot(v.x(), v.y());
+                if (distance <= accuracyPointOnLine)
+                {
+                    continue;
+                }
+                const qreal delta = qAbs(distance - marginWidth);
+                if (best < 0 || delta < best)
+                {
+                    best = delta;
+                    anchor = candidate;
+                }
+            }
+
+            if (best >= 0)
+            {
+                bool ok = false;
+                const qreal length = PassmarkLength(m_data, marginWidth, ok);
+                if (ok)
+                {
+                    QLineF notch(anchor, node);
+                    notch.setLength(length);
+                    return {notch};
+                }
+            }
+        }
+    }
+
     return SAPassmark(seamAllowance, rotatedSeamAllowance, side);
 }
 
@@ -1112,11 +1155,17 @@ auto VPassmark::PassmarkIntersection(const QVector<QPointF> &path, QLineF line, 
         QPointF stepEnd;
         if (GetSeamPassmarkSAPoint(m_data, path, stepEnd) != PassmarkStatus::Error)
         {
-            QLineF notch = AllowanceCornerBisector(path, stepEnd, m_data);
-            if (notch.isNull())
-            {
-                notch = QLineF(stepEnd, node);
-            }
+            // **La direction reste celle de la ligne DEMANDÉE** — celle du côté gauche ou droit choisi
+            // par l'utilisateur. La remplacer par la bissectrice du contour écrasait ce choix : un
+            // « Intersection droite » sortait en bissectrice (BaDosD', BaDvtter, BaDvtterM sur le
+            // patron de Sophie), alors que les mêmes crans avec une marge non nulle étaient justes.
+            // Seule l'ANCRE est propre au joint à marge nulle — le bout de la marche, qui est le coin
+            // de la marge ; elle reste.
+            // **Le sens compte : de la marge vers la couture.** Le cran part du bout de la marche (le
+            // coin de la marge) et va VERS le point, donc vers l'intérieur de la pièce — c'est la
+            // construction de Valentina (`QLineF(ancre, point)`). Le prendre dans le sens de la ligne
+            // demandée le faisait sortir de la pièce (BaDosD', BaDvtter, BaDvtterM).
+            QLineF notch(stepEnd, node);
 
             bool ok = false;
             const qreal length = PassmarkLength(m_data, width, ok);
@@ -1232,6 +1281,13 @@ auto VPassmark::PassmarkStraightforwardBaseLine(const QPointF &seamPassmarkSAPoi
     }
 
     auto line = QLineF(seamPassmarkSAPoint, m_data.passmarkSAPoint);
+
+    // ⚠️ **Un joint presque droit n'a pas de croisement de marges exploitable.** Quand les deux arêtes
+    // sont quasi parallèles, les deux lignes de marge se croisent très loin : l'ancre partait à 55 px
+    // du point là où la marge vaut 37,8 px (R6, Top V2 Devant — le cran se dessinait comme s'il était
+    // sur le point voisin, R5). On ramène l'ancre à la distance de la marge, sur la direction trouvée :
+    // la direction reste celle du calcul, seule la distance est remise juste.
+
 
     if (line.isNull())
     {
@@ -1613,6 +1669,13 @@ auto VPassmark::SAPassmarkBaseLine(const QVector<QPointF> &seamAllowance, const 
         VAbstractApplication::VApp()->IsPedantic()
             ? throw VExceptionInvalidNotch(errorMsg)
             : qWarning() << VAbstractValApplication::warningMessageSignature + errorMsg;
+        // **Le cran s'arrête là.** L'ancre n'est pas sur le contour : continuer construisait une
+        // ligne de cran à partir d'un point qui n'appartient pas à la pièce. Cette pointe entrait
+        // dans la forme que le placement avale — mesurée à 2026 px du contour sur le patron de
+        // Sophie — et le moteur de placement cherchait sans fin : le run ne rendait plus la main.
+        // Les autres échecs de ce calcul abandonnent déjà le cran ; celui-ci était le seul à
+        // poursuivre, et c'est lui qui cassait le run.
+        return {};
     }
 
     if (m_data.passmarkAngleType == PassmarkAngleType::Straightforward)
@@ -1622,15 +1685,13 @@ auto VPassmark::SAPassmarkBaseLine(const QVector<QPointF> &seamAllowance, const 
         // edge and the notch comes out lying on the seam instead of marking the corner. There the notch has to
         // bisect the joint — which is exactly what "bisector" builds, and why the two rules are one and the same
         // on a corner.
-        const QLineF beforeEdge(m_data.previousSAPoint.ToQPointF(), m_data.passmarkSAPoint.ToQPointF());
-        const QLineF afterEdge(m_data.passmarkSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
-
-        if (seamPassmarkType == PassmarkStatus::Common && not beforeEdge.isNull() && not afterEdge.isNull() &&
-            qAbs(beforeEdge.angleTo(afterEdge)) > 5.)
-        {
-            return PassmarkBisectorBaseLine(seamPassmarkType, seamPassmarkSAPoint, seamAllowance);
-        }
-
+        // ⚠️ **Ne pas transformer un « tout droit » en bissectrice.** La règle a existé le temps d'une
+        // journée : sur un coin, la direction ancre→point longe une arête et le cran se couchait sur la
+        // couture, donc on la remplaçait par la bissectrice. Mais le test « les deux arêtes forment un
+        // angle > 5° » est vrai sur TOUTE une courbe : sur la manche pagode, les six crans « tout droit »
+        // sont tous sortis en bissectrices (Sophie, 06-11 : « mauvais rendu sur TOUS les crans »).
+        // Valentina ne fait pas cette substitution : un « tout droit » est perpendiculaire à la couture,
+        // partout. On s'y tient.
         return PassmarkStraightforwardBaseLine(seamPassmarkSAPoint);
     }
 
