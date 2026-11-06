@@ -98,10 +98,10 @@ struct SeamAllowanceAngleEntry
 constexpr SeamAllowanceAngleEntry kSeamAllowanceAngles[] = {
     {PieceNodeAngle::ByLength, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By length")},
     {PieceNodeAngle::ByPointsIntersection, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By points intersection")},
-    {PieceNodeAngle::ByFirstEdgeSymmetry, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By first edge symmetry")},
-    {PieceNodeAngle::BySecondEdgeSymmetry, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By second edge symmetry")},
-    {PieceNodeAngle::ByFirstEdgeRightAngle, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By first edge right angle")},
-    {PieceNodeAngle::BySecondEdgeRightAngle, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By second edge right angle")},
+    {PieceNodeAngle::ByFirstEdgeSymmetry, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By first edge symmetry (before)")},
+    {PieceNodeAngle::BySecondEdgeSymmetry, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By second edge symmetry (after)")},
+    {PieceNodeAngle::ByFirstEdgeRightAngle, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By first edge right angle (before)")},
+    {PieceNodeAngle::BySecondEdgeRightAngle, QT_TRANSLATE_NOOP("ODetailsNodeWidget", "By second edge right angle (after)")},
 };
 } // namespace
 
@@ -799,14 +799,15 @@ void ODetailsNodeWidget::CommitFormula(FormulaField field)
         return;
     }
 
-    // Refuse here what the engine would refuse later, in silence: a length of zero or below is an
-    // error state ("Cannot calculate passmark length"), and so is a width of zero. A negative width
-    // is refused too, except on a "Check mark" where the sign is what tells the two sides apart.
-    // The angle carries no guard at all — zero and negatives are legitimate there.
+    // Refuse here what the engine would refuse later, in silence: a width below zero is an error state,
+    // except on a "Check mark" where the sign is what tells the two sides apart. A width of zero is
+    // legitimate and must stay enterable: it is what a notch gets when the seam allowance is 0, and
+    // refusing it made the notch impossible to place at all. The angle carries no guard — zero and
+    // negatives are legitimate there.
     if (field == FormulaField::Width)
     {
         const bool checkMark = node.IsPassmark() && node.GetPassmarkLineType() == PassmarkLineType::CheckMark;
-        if (qFuzzyIsNull(raw) || (raw < 0 && !checkMark))
+        if (raw < 0 && !checkMark)
         {
             RestoreField(field);
             return;

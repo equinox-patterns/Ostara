@@ -238,11 +238,29 @@ private:
 Q_DECLARE_TYPEINFO(VAbstractPiece, Q_MOVABLE_TYPE); // NOLINT
 
 //---------------------------------------------------------------------------------------------------------------------
+/// Does this point carry a decision that removing it would silently destroy?
+///
+/// A point alone on a straight run looks redundant, and dropping it keeps the contour identical — but the point may
+/// still hold what the user asked for: an explicit squaring (`angle` 1..5) or a local seam allowance width on one
+/// side. Removing it then throws that decision away without a trace, which is the same loss as the one repaired when
+/// two margin points merge (see CarryAngleTypeToSurvivor). Without a local width or a chosen angle, a point carries
+/// nothing of its own and may go. `ByLengthCurve` is the runtime promotion of a smooth curve joint, not a choice.
+template <class T> inline auto KeepsOwnMargin(const T &) -> bool
+{
+    return false;
+}
+inline auto KeepsOwnMargin(const VSAPoint &p) -> bool
+{
+    return (p.GetAngleType() != PieceNodeAngle::ByLength && p.GetAngleType() != PieceNodeAngle::ByLengthCurve)
+           || p.GetSABefore() >= 0 || p.GetSAAfter() >= 0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 template <class T>
 inline auto VAbstractPiece::CheckPointOnLine(QVector<T> &points, const T &iPoint, const T &prevPoint,
                                              const T &nextPoint) -> bool
 {
-    if (iPoint.TurnPoint() || (iPoint.CurvePoint() && !prevPoint.CurvePoint())
+    if (iPoint.TurnPoint() || (iPoint.CurvePoint() && !prevPoint.CurvePoint()) || KeepsOwnMargin(iPoint)
         || !IsPointOnLineSegment(iPoint, prevPoint, nextPoint) || !IsEkvPointOnLine(iPoint, prevPoint, nextPoint))
     {
         points.append(iPoint);

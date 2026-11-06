@@ -85,6 +85,46 @@ constexpr auto PointPosition(const QPointF &p, const QLineF &line) -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// Keep the seam allowance visible when a joint cannot be computed.
+///
+/// A seam allowance of exactly 0 on one side of a node is a step, not an angle: the offset of the wider side
+/// stops at the node, and the contour takes over exactly there. Each joint routine below builds its corner from
+/// an intersection with an edge that starts on the node as soon as that side is 0, so the intersection falls a
+/// hair short of the offset's end, the rollback has nothing to cut, and the offset point is dropped: the contour
+/// then runs straight to the node and the allowance collapses along the whole incoming segment. Keeping the end
+/// of the offset is the step the user asked for. It is only reached when the rollback found nothing to clip, so
+/// a genuine artificial loop is still clipped exactly as before.
+inline auto AppendStepOnZeroSide(QVector<VRawSAPoint> &points, const VSAPoint &p, const QLineF &bigLine1,
+                                 qreal width) -> bool
+{
+    if (VFuzzyComparePossibleNulls(p.GetSABefore(width), 0) == VFuzzyComparePossibleNulls(p.GetSAAfter(width), 0))
+    {
+        return false; // both sides are alike, there is no step to keep
+    }
+
+    points.append(VRawSAPoint(bigLine1.p2(), p.CurvePoint(), p.TurnPoint()));
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/// Same step, built from scratch: used by the joint routines that would otherwise have to invent an intersection
+/// between the offset of the wide side and a side that has none. The narrow side is the contour itself, so the
+/// only honest drawing is the offset up to the node, then the node.
+inline auto BuildZeroSideStep(const QVector<VRawSAPoint> &points, const VSAPoint &p, const QLineF &bigLine1,
+                              const QLineF &bigLine2, qreal width, QVector<VRawSAPoint> &step) -> bool
+{
+    if (VFuzzyComparePossibleNulls(p.GetSABefore(width), 0) == VFuzzyComparePossibleNulls(p.GetSAAfter(width), 0))
+    {
+        return false;
+    }
+
+    step = points;
+    step.append(VRawSAPoint(bigLine1.p2(), p.CurvePoint(), p.TurnPoint()));
+    step.append(VRawSAPoint(bigLine2.p1(), p.CurvePoint(), p.TurnPoint()));
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto AngleByLength(QVector<VRawSAPoint> points,
                    QPointF p1,
                    QPointF p2,
@@ -242,6 +282,14 @@ auto AngleByIntersection(const QVector<VRawSAPoint> &points,
                          bool *needRollback = nullptr) -> QVector<VRawSAPoint>
 {
     {
+        QVector<VRawSAPoint> step;
+        if (BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
+        {
+            return step;
+        }
+    }
+
+    {
         QLineF const edge1(p2, p1);
         QLineF const edge2(p2, p3);
 
@@ -288,6 +336,10 @@ auto AngleByIntersection(const QVector<VRawSAPoint> &points,
         if (success)
         {
             pointsIntr = temp;
+        }
+        else
+        {
+            AppendStepOnZeroSide(pointsIntr, p, bigLine1, width);
         }
 
         if (needRollback != nullptr)
@@ -386,6 +438,10 @@ auto AngleByFirstSymmetry(const QVector<VRawSAPoint> &points,
         {
             pointsIntr = temp;
         }
+        else
+        {
+            AppendStepOnZeroSide(pointsIntr, p, bigLine1, width);
+        }
 
         if (needRollback != nullptr)
         {
@@ -421,6 +477,14 @@ auto AngleBySecondSymmetry(const QVector<VRawSAPoint> &points,
                            qreal width,
                            bool *needRollback = nullptr) -> QVector<VRawSAPoint>
 {
+    {
+        QVector<VRawSAPoint> step;
+        if (BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
+        {
+            return step;
+        }
+    }
+
     {
         QLineF const edge1(p2, p1);
         QLineF const edge2(p2, p3);
@@ -473,6 +537,10 @@ auto AngleBySecondSymmetry(const QVector<VRawSAPoint> &points,
         if (success)
         {
             pointsIntr = temp;
+        }
+        else
+        {
+            AppendStepOnZeroSide(pointsIntr, p, bigLine1, width);
         }
 
         if (needRollback != nullptr)
@@ -585,6 +653,14 @@ auto AngleBySecondRightAngle(QVector<VRawSAPoint> points,
                              bool *needRollback = nullptr) -> QVector<VRawSAPoint>
 {
     {
+        QVector<VRawSAPoint> step;
+        if (BuildZeroSideStep(points, p, bigLine1, bigLine2, width, step))
+        {
+            return step;
+        }
+    }
+
+    {
         QLineF const edge1(p2, p1);
         QLineF const edge2(p2, p3);
 
@@ -648,6 +724,10 @@ auto AngleBySecondRightAngle(QVector<VRawSAPoint> points,
         {
             points = temp;
             px = points.constLast().ToQPointF();
+        }
+        else
+        {
+            AppendStepOnZeroSide(points, p, bigLine1, width);
         }
 
         if (countBefore > 0)
