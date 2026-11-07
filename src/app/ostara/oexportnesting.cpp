@@ -1921,7 +1921,15 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
     // The engine marks an unplaced piece with a negative rotation and reports
     // nothing else — no status, no exception.
-    if (!AllPlaced(placements))
+    //
+    // ⚠️ **Sauf sur des feuilles fermées, où le moteur de bande n'a pas tourné du tout.** Depuis
+    // qu'il est écarté de ce chemin (07-11-2026 : un plan de bande traverse les lignes de coupe par
+    // construction, il n'y concourt jamais), `placements` est vide PAR CONSTRUCTION — et
+    // `AllPlaced` répondait donc faux sur un plan qui n'existe pas. Le run s'arrêtait ICI, avant
+    // d'avoir demandé quoi que ce soit au moteur tuilé : c'est le refus « le plan ne tient pas dans
+    // la largeur » vu sur A0, qui accusait une pièce que le moteur tuilé aurait posée. Le refus
+    // n'appartient qu'au moteur de bande ; le cas « aucun plan du tout » est traité plus bas.
+    if (!params.closedSheets && !AllPlaced(placements))
     {
         result.error = TooNarrowError(
             params, TooNarrowFactsOf(params, footprint.polygons, allowedAngles, placements, result.keys));
