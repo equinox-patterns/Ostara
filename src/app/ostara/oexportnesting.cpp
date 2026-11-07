@@ -39,6 +39,7 @@
 #include "nesting/CuttingRules.h"
 #include "nesting/Engine.h"
 #include "nesting/Footprint.h"
+#include "nesting/PageRepack.h"
 #include "nesting/TiledEngine.h"
 
 #include "../vmisc/def.h"
@@ -1823,12 +1824,47 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
                 placements  = tiled;
             }
         }
+    }
 
+    // ── Les deux passes de fin de run, sur le plan RETENU ────────────────────
+    //
+    // ⚠️ **Après l'arbitrage, et jamais dans un moteur.** Le plan qui gagne n'est pas toujours celui
+    // du moteur tuilé : une passe écrite dans ce moteur-là ne s'exécuterait jamais quand la bande
+    // gagne, et le gain resterait invisible. C'est arrivé, et c'est ce que ce placement corrige.
+    //
+    // 1. `Minimize` repose chaque pièce sur le MOINS de feuilles. Une pièce à cheval sur six feuilles
+    //    se recoupe et se recolle six fois à l'atelier ; la même sur trois, une fois.
+    // 2. `Breathe` recentre ensuite chaque pièce dans le couloir que les règles lui laissent — deux
+    //    écarts inégaux deviennent deux écarts égaux.
+    //
+    // ⚠️ **Le plan ne peut pas sortir pire de l'une ou de l'autre** : une pièce ne bouge que si elle
+    // touche strictement moins de feuilles (ou si elle se recentre sans en toucher une de plus),
+    // aucune rangée ne s'ouvre, et aucun bord ne s'approche d'une jonction de feuilles. Voir
+    // Modifications/Ostara/ExportMode/Nesting.md §25.
+    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0 && !foldedFabricPlan)
+    {
+        const double mmPerPx = 1.0 / ToPixel(1.0, Unit::Mm);
+        const OExportArtboards::Grid grid =
+            OExportArtboards::Compute(params.binWidthPx,
+                                      Engine::UsedHeight(placements, footprint.polygons, bin),
+                                      params.artboardHeightPx * mmPerPx, params.artboardCount);
+
+        if (grid.valid)
+        {
+            PageRepack::Frame repack;
+            repack.cellWidth  = grid.cellWidthPx;
+            repack.cellHeight = grid.cellHeightPx;
+            repack.columns    = grid.columns;
+            repack.rows       = grid.rows;
+            repack.gap        = params.gapPx;
+
+            placements = PageRepack::Minimize(bin, footprint.polygons, placements, repack);
+            placements = PageRepack::Breathe(bin, footprint.polygons, placements, repack);
+        }
     }
 
     result.placements = ToExportPlacements(placements, footprint.polygons);
     result.usedHeightPx = Engine::UsedHeight(placements, footprint.polygons, bin);
-
 
     result.ok = true;
     return result;
