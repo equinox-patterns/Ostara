@@ -1878,10 +1878,26 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         }
     }
 
+    // ── Le moteur de bande, sauf sur des feuilles fermées ────────────────────────────────────
+    //
+    // Sur A0, son plan n'est pas imprimable par construction (il ne connaît pas les feuilles), et on
+    // ne le lui demandait que pour le laisser concourir « au cas où il serait propre » : il ne l'a
+    // jamais été sur les patrons mesurés, et c'est le poste le plus cher du run — un recuit, sans
+    // budget de temps dans ce dépôt. Mesuré le 07-11-2026 : 6,4 s pour 24 pièces, et bien davantage
+    // à mesure que le patron grossit. Le moteur tuilé pose donc A0 seul, et c'est son plan qui part.
     const Engine engine{config};
     bool abandoned = false;
     std::vector<Placement> placements =
-        engine.place(bin, footprint.polygons, allowedAngles, {}, &abandoned);
+        params.closedSheets
+            ? std::vector<Placement>(footprint.polygons.size())
+            : engine.place(bin, footprint.polygons, allowedAngles, {}, &abandoned);
+    if (params.closedSheets)
+    {
+        for (Placement &pl : placements)
+        {
+            pl.rotation = -1.0; // aucune pièce posée : c'est le moteur tuilé qui les posera
+        }
+    }
 
     if (abandoned)
     {
@@ -1976,7 +1992,10 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         // Ce n'est pas une faveur, c'est la seule comparaison que les deux plans admettent — le
         // critère de Sophie est le nombre de feuilles, et à feuilles égales le plan le plus fin est
         // le meilleur.
-        const bool stripPrintable = !params.closedSheets || SheetClean(stripPlan, params);
+        // Sur des feuilles fermées il n'y a plus de plan de bande du tout (voir plus haut) : le
+        // candidat « bande » n'existe donc pas, et un plan vide ne doit surtout pas gagner — il
+        // ferait ZÉRO feuille.
+        const bool stripPrintable = !params.closedSheets && SheetClean(stripPlan, params);
         int bestSheets = stripPrintable ? PrintedSheets(stripPlan,
                                                        Engine::UsedHeight(placements,
                                                                           footprint.polygons, bin),
@@ -2010,6 +2029,12 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
                               params.binWidthPx / params.artboardCount});
         }
 
+        // **Un seul cache de sommes de non-recouvrement pour tous les plans du run** : les pièces,
+        // le jeu et les orientations sont les mêmes d'un candidat à l'autre, et chaque plan les
+        // recalculait tous. Mesuré le 07-11-2026 sur 24 pièces : 16,7 s pour trois ordres avec un
+        // cache par plan, 8,6 s avec un cache partagé — plans identiques au millimètre.
+        NestGeom::NFPCache sharedNfp;
+
         for (const SheetChoice &sheet : sheets)
         {
             // Le bac de CETTE feuille : même marge, mêmes zones interdites — le bloc de la page de
@@ -2025,7 +2050,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
                 bool tiledAbandoned = false;
                 const std::vector<Placement> tiled =
-                    TiledEngine(spec).place(sheetBin, footprint.polygons, &tiledAbandoned);
+                    TiledEngine(spec).place(sheetBin, footprint.polygons, &tiledAbandoned, &sharedNfp);
 
                 if (tiledAbandoned)
                 {
@@ -2193,6 +2218,12 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             double sheetHeightPx;
         } shapes[]{{false, kOpenSheetPx}, {true, params.binWidthPx * std::sqrt(2.0)}};
 
+        // **Un seul cache de sommes de non-recouvrement pour les deux familles** : mêmes pièces,
+        // même jeu, mêmes quarts de tour — le premier plan paie les sommes, les cinq autres les
+        // relisent. Mesuré le 07-11-2026 sur 24 pièces : 16,7 s pour trois plans avec un cache par
+        // plan, 8,6 s avec un cache partagé, plans identiques.
+        NestGeom::NFPCache sharedNfp;
+
         for (const auto &shape : shapes)
         {
             TiledEngine::Spec spec;
@@ -2209,7 +2240,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
                 bool greedyAbandoned = false;
                 const std::vector<Placement> greedy =
-                    TiledEngine(spec).place(bin, footprint.polygons, &greedyAbandoned);
+                    TiledEngine(spec).place(bin, footprint.polygons, &greedyAbandoned, &sharedNfp);
 
                 if (greedyAbandoned)
                 {
