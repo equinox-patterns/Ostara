@@ -119,9 +119,10 @@ struct OExportPrintModel
     /// measured on two patterns, one gives a page in portrait and two in landscape, the other exactly
     /// the reverse.
     ///
-    /// **Nothing is asked of the user**, and nothing is decided here: the nesting nests the plan in
-    /// both orientations and keeps the one with the fewest pages (a tie keeps portrait). The flag is
-    /// what tells it to. See OExportNestingParams::sheetBothWays.
+    /// **The flag only says the sheet HAS two senses**, and no longer that the run picks one: the
+    /// choice is the user's, and the plan is nested in the sense she asks for — stacked sheets in
+    /// both senses, which a quarter turn of the winning plan could never give. See
+    /// `OExportNestingParams::landscapeSheet`.
     bool hasOrientation{false};
 
     /// Whether the sheets are CLOSED — no piece may straddle two of them.

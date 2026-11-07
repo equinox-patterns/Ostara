@@ -455,19 +455,6 @@ auto DrawnRect(const OExportPlacement &piece) -> QRectF
     return QRectF(minX, minY, maxX - minX, maxY - minY);
 }
 
-/// @brief Whether the plan puts any ink inside @p zone — used for the cover page's block only.
-auto TouchesZone(const QVector<OExportPlacement> &plan, const QRectF &zone) -> bool
-{
-    for (const OExportPlacement &piece : plan)
-    {
-        if (DrawnRect(piece).intersects(zone))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 /// @brief Whether every piece lies WHOLLY inside one sheet, at the margin from its four edges.
 ///
 /// C'est ce qui rend un plan de BANDE imprimable sur un format à feuilles fermées. Le moteur de bande
@@ -2011,15 +1998,17 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
                                         : std::numeric_limits<int>::max();
         bool tiledChosen = false;
 
-        // ── LA FEUILLE : PORTRAIT, PUIS PAYSAGE ────────────────────────────────────────────────
+        // ── LA FEUILLE, DANS LE SENS DEMANDÉ — ET LUI SEUL ─────────────────────────────────────
         //
-        // **Le choix n'est plus dans l'interface** : une feuille A0 se pose dans les deux sens, et
-        // c'est le nombre de PAGES qui tranche. Mesuré le 07-11-2026 sur deux patrons : l'un donne
-        // une page en portrait et deux en paysage, l'autre exactement l'inverse — et rien dans la
-        // feuille ne dit lequel. On demande donc les deux plans.
+        // ⚠️ **Le sens n'est plus arbitré : il est DEMANDÉ.** Le nesting demandait autrefois les deux
+        // plans et gardait celui qui imprimait le moins de pages. C'était juste tant que la page
+        // était le seul enjeu ; ça ne l'est plus depuis que l'utilisatrice choisit le sens de sa
+        // liasse — et surtout, un plan tourné après coup donne des feuilles CÔTE À CÔTE, alors que
+        // des feuilles EMPILÉES (ce qu'elle veut, comme en portrait) exigent un plan nidifié dans
+        // ce sens. Deux mises en page, un seul sens, et c'est celui-là qui est demandé.
         //
-        // **Le portrait passe le premier, et `tiledSheets < bestSheets` est strict** : à égalité de
-        // pages il reste, et c'est l'orientation que tout run portait avant cette règle.
+        // Ce qui ne change pas : à l'intérieur du sens, les trois ordres du moteur tuilé concourent
+        // toujours, et le plan de bande garde son mot à dire quand il est imprimable.
         struct SheetChoice
         {
             bool landscape;
@@ -2027,14 +2016,17 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             double sheetHeightPx;
         };
 
-        std::vector<SheetChoice> sheets{
-            {false, params.binWidthPx, params.artboardHeightPx}};
-        if (params.sheetBothWays)
+        std::vector<SheetChoice> sheets;
+        if (params.sheetBothWays && params.landscapeSheet)
         {
             // La feuille couchée : sa largeur devient la hauteur, et le bac s'élargit d'autant —
             // une colonne de feuilles couchées est aussi large que leur long côté.
             sheets.push_back({true, params.artboardHeightPx * params.artboardCount,
                               params.binWidthPx / params.artboardCount});
+        }
+        else
+        {
+            sheets.push_back({false, params.binWidthPx, params.artboardHeightPx});
         }
 
         // **Un seul cache de sommes de non-recouvrement pour tous les plans du run** : les pièces,
@@ -2045,8 +2037,10 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
         for (const SheetChoice &sheet : sheets)
         {
-            // Le bac de CETTE feuille : même marge, mêmes zones interdites — le bloc de la page de
-            // garde est le même dans les deux sens (c'est la page qui est tournée, pas le bloc).
+            // Le bac de CETTE feuille : même marge, mêmes zones interdites. Le bloc de la page de
+            // garde est aux MÊMES coordonnées dans les deux sens — il se tient au coin du plan, et le
+            // plan dans le sens demandé commence au même coin. Il n'y a donc rien à tourner : c'est
+            // le sens de la feuille qui change, pas la place du bloc.
             const Bin sheetBin(sheet.binWidthPx, params.marginPx, zones);
 
             spec.sheetWidth = sheet.binWidthPx / params.artboardCount;
@@ -2083,101 +2077,6 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
                     tiledChosen = true;
                     result.binWidthPx = sheet.binWidthPx;
                     result.sheetHeightPx = sheet.sheetHeightPx;
-                }
-            }
-
-            // ── LE MÊME PLAN, TOURNÉ D'UN QUART DE TOUR ─────────────────────────────────────────────
-            //
-            // Une feuille A0 portrait et une feuille A0 paysage ont la MÊME surface et pas la même
-            // FORME : un plan qui remplit l'une ne remplit pas forcément l'autre, et le glouton, qui
-            // pose pièce après pièce dans un ordre, ne retrouve pas toujours le plan qu'il a trouvé dans
-            // l'autre sens. Mesuré par Sophie le 07-11-2026 : une seule page en portrait, deux en paysage.
-            //
-            // Or un plan est un plan. Tourné d'un quart de tour, il occupe la feuille de l'autre sens —
-            // ses marges avec lui, parce que la marge est la même sur les quatre bords. Démonstration :
-            // le plan portrait tient dans [m, L−m] × [m, H−m] ; la rotation x' = K − y, y' = x envoie ce
-            // rectangle sur [m, H−m] × [m, L−m], qui est exactement la feuille tournée. Il n'y a donc
-            // rien à chercher : si le portrait tient en une page, le paysage y tient aussi.
-            //
-            // On ne le demande que si l'orientation courante coûte plus d'une feuille — sinon il ne
-            // pourrait rien gagner. Et on REFUSE le plan tourné s'il passe sous la page de garde : le
-            // bloc ne tourne pas avec le plan, il reste au coin de la première feuille.
-            if (params.closedSheets && bestSheets > 1)
-            {
-                TiledEngine::Spec turnedSpec = spec;
-                turnedSpec.sheetWidth = spec.sheetHeight;
-                turnedSpec.sheetHeight = spec.sheetWidth;
-
-                // Le plan source se cherche dans la LARGEUR de l'autre sens — le bac du run est celui de
-                // l'orientation courante, et c'est la feuille qui change, pas le plan qu'on y cherche.
-                const Bin turnedBin(spec.sheetHeight, params.marginPx);
-
-                for (const TiledEngine::Spec::Order order : orders)
-                {
-                    turnedSpec.order = order;
-
-                    bool turnedAbandoned = false;
-                    const std::vector<Placement> source =
-                        TiledEngine(turnedSpec).place(turnedBin, footprint.polygons, &turnedAbandoned);
-
-                    if (turnedAbandoned)
-                    {
-                        result.abandoned = true;
-                        return result;
-                    }
-
-                    if (!AllPlaced(source))
-                    {
-                        continue;
-                    }
-
-                    // Où le plan source s'arrête : c'est la translation qui le remet dans ses marges
-                    // une fois tourné.
-                    const QVector<OExportPlacement> sourcePlan =
-                        ToExportPlacements(source, footprint.polygons);
-                    double deepest = 0.0;
-                    for (const OExportPlacement &piece : sourcePlan)
-                    {
-                        deepest = std::max(deepest, DrawnRect(piece).bottom());
-                    }
-
-                    const double shift = deepest + params.marginPx;
-
-                    std::vector<Placement> turned = source;
-                    for (Placement &piece : turned)
-                    {
-                        const double x = piece.x;
-                        const double y = piece.y;
-                        piece.x = shift - y;
-                        piece.y = x;
-                        piece.rotation = std::fmod(piece.rotation + 90.0, 360.0);
-                    }
-
-                    const QVector<OExportPlacement> turnedPlan =
-                        ToExportPlacements(turned, footprint.polygons);
-
-                    // Le bloc de la page de garde ne tourne pas avec le plan : il reste au coin de la
-                    // première feuille. Un plan tourné qui passerait dessous est donc refusé.
-                    const bool touchesZone =
-                        !params.coverZonePx.isEmpty() && TouchesZone(turnedPlan, params.coverZonePx);
-
-                    const int turnedSheets = PrintedSheetsFor(
-                        turnedPlan, Engine::UsedHeight(turned, footprint.polygons, sheetBin),
-                        sheet.binWidthPx, sheet.sheetHeightPx, params.artboardCount, params);
-
-                    if (touchesZone)
-                    {
-                        continue;
-                    }
-
-                    if (turnedSheets < bestSheets)
-                    {
-                        bestSheets = turnedSheets;
-                        placements = turned;
-                        tiledChosen = true;
-                        result.binWidthPx = sheet.binWidthPx;
-                        result.sheetHeightPx = sheet.sheetHeightPx;
-                    }
                 }
             }
         }

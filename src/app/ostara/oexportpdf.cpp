@@ -127,12 +127,27 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                        const VContainer *pattern, VAbstractPattern *doc,
                        const OExportTemplate *marks, bool framed, bool addLayoutLayer,
                        const OExportCoverPage::Drawing *cover, bool rabnestPayload,
-                       const QString &gradedDrawing) -> bool
+                       const QString &gradedDrawing, QString *error) -> bool
 {
+    // ⚠️ **La raison remonte, et elle est vraie.** La boîte de dialogue disait « vérifiez que le
+    // dossier autorise l'écriture » quelle que soit la panne — phrase fausse dès que l'échec vient
+    // d'autre part, et qui envoie chercher un dossier parfaitement inscriptible. Chaque sortie dit
+    // donc ce qui l'a provoquée, et l'appelant la répète.
+    const auto fail = [error](const QString &reason) -> bool {
+        if (error != nullptr)
+        {
+            *error = reason;
+        }
+        return false;
+    };
+    const auto reason = [](const char *text) {
+        return QCoreApplication::translate("OExportPdf", text);
+    };
+
     if (pattern == nullptr || doc == nullptr || output.layers.isEmpty() || !output.result.ok)
     {
         qWarning() << "OExportPdf: the generation cannot be reproduced";
-        return false;
+        return fail(reason("the generation cannot be drawn again"));
     }
 
     // Draw the generation the way the canvas draws it, and take back what was drawn. The
@@ -337,7 +352,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     if (!dir.isValid())
     {
         qWarning() << "OExportPdf: no temporary directory";
-        return false;
+        return fail(reason("there is no temporary folder to draw in"));
     }
 
     // ONE SVG, over the whole plan — not one per sheet. The drawing below is the same
@@ -421,7 +436,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                                     QDomElement(), false, overlayData))
     {
         qWarning() << "OExportPdf: the SVG could not be written";
-        return false;
+        return fail(reason("the plan could not be drawn"));
     }
 
     // ── Le PAYLOAD, dans un fichier à part ──────────────────────────────────────────────────────
@@ -476,7 +491,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                                            layered, recipeElement, false, overlayData))
         {
             qWarning() << "OExportPdf: the payload SVG could not be written";
-            return false;
+            return fail(reason("the payload could not be written"));
         }
     }
 
@@ -504,7 +519,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         if (!OExportUnderlay::Write(underlayPath, svgPath, *marks, artboards, sheets, framed))
         {
             qWarning() << "OExportPdf: the assembly marks could not be written";
-            return false;
+            return fail(reason("the assembly marks could not be written"));
         }
     }
 
@@ -530,7 +545,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         if (!OExportCoverPageSvg::Write(coverPath, *cover, coverPage))
         {
             qWarning() << "OExportPdf: the cover page could not be written";
-            return false;
+            return fail(reason("the cover page could not be written"));
         }
     }
 
@@ -580,7 +595,7 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
                            coverSheet, payloadPath))
     {
         qWarning() << "OExportPdf: the PDF could not be written";
-        return false;
+        return fail(reason("the PDF itself could not be written"));
     }
 
     return true;

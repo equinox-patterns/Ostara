@@ -441,11 +441,17 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
     // **Le format A0 : des feuilles fermées, et une feuille qui se pose dans les deux sens.**
     // Les deux sont DÉCLARÉS par le modèle et non déduits l'un de l'autre : l'un est une contrainte
-    // dure donnée au moteur, l'autre une question posée à lui — celle de l'orientation qui imprime
-    // le moins de pages. Voir OExportNestingParams::sheetBothWays.
+    // dure donnée au moteur, l'autre dit seulement que la feuille a deux sens — lequel sera pris,
+    // c'est l'utilisatrice qui le choisit (juste en dessous).
     const OExportPrintModel *closedModel = FindPrintModel(request.printModelToken);
     params.closedSheets = closedModel != nullptr && closedModel->closedSheets;
     params.sheetBothWays = closedModel != nullptr && closedModel->hasOrientation;
+
+    // **Et le SENS est celui de l'utilisatrice**, pas celui que le nombre de pages désignerait. Le
+    // nesting nidifie dans ce sens-là : des feuilles empilées, comme en portrait, ne peuvent pas
+    // sortir d'un plan tourné après coup (il donnerait des feuilles côte à côte). Voir
+    // OExportNestingParams::landscapeSheet.
+    params.landscapeSheet = params.sheetBothWays && request.documentLandscape;
 
     // Et le tissu plié, qui ne se dit pas seulement ici : c'est le nesting qui en tire la rotation
     // d'une pièce au pli et son ancrage au bord. Voir OExportNestingParams::foldedFabric.
@@ -1405,6 +1411,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     }
     output.unit = request.unit;
     output.printModelToken = request.printModelToken;
+    output.documentLandscape = request.documentLandscape;
     output.columns = request.columns;
     output.frameHeightMm = request.frameHeightMm;
     output.marksTemplateName = request.marksTemplateName;
@@ -1878,15 +1885,23 @@ void MainWindow::ExportOutputToPdf(quint32 id)
         }
     }
 
+    QString pdfFailure;
     if (!OExportPdf::Write(*existing, dialog.FullPath(), pattern, doc,
                            hasMarks ? &marks : nullptr, framed, dialog.AddLayoutLayer(),
                            cover.IsEmpty() ? nullptr : &cover, dialog.CarriesPayload(),
-                           gradedDrawing))
+                           gradedDrawing, &pdfFailure))
     {
-        QMessageBox::warning(this, tr("Export mode"),
-                             tr("\"%1\" could not be written to:\n%2\n\nCheck that the folder allows writing, "
-                                "and that the file is not open in another program.")
-                                 .arg(existing->name, QDir::toNativeSeparators(dialog.FullPath())));
+        // ⚠️ **La raison, quand l'écrivain en a une.** Le conseil sur le dossier ne vaut que pour un
+        // échec causé par le fichier : l'afficher sur une erreur de dessin envoyait chercher un
+        // dossier parfaitement inscriptible, et c'est exactement ce qui s'est produit.
+        QMessageBox::warning(
+            this, tr("Export mode"),
+            tr("\"%1\" could not be written to:\n%2\n\n%3")
+                .arg(existing->name, QDir::toNativeSeparators(dialog.FullPath()),
+                     pdfFailure.isEmpty()
+                         ? tr("Check that the folder allows writing, and that the file is not open "
+                              "in another program.")
+                         : pdfFailure));
         return;
     }
 

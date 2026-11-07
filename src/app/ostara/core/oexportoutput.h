@@ -152,6 +152,14 @@ struct OExportOutput
     /// token is what the generated name carries and what the model is looked back up by.
     QString printModelToken{};
 
+    /// Le sens dans lequel le DOCUMENT est livré, quand le format en admet deux — l'A0, et lui seul.
+    ///
+    /// Le nesting choisit le plan qui imprime le moins de pages, et le sens de sa feuille avec lui.
+    /// Ce champ ne discute pas ce choix : il dit dans quel sens la page doit SORTIR. Quand les deux
+    /// diffèrent, rien n'est recalculé — la page entière est tournée de 90°, pièces et page de garde
+    /// comprises, et largeur et hauteur s'échangent. Voir `OExportPrintModel::documentLandscape`.
+    bool documentLandscape{false};
+
     /// Sheets side by side. Irrelevant to a roll — which has none — and kept all the same,
     /// so that the replay does not have to guess whether zero meant "one" or "unknown".
     int columns{1};
@@ -297,6 +305,8 @@ struct OExportRunRequest
     qreal marginMm{5.0};
     qreal gapMm{5.0};
     QString printModelToken{};
+    /// @see OExportOutput::documentLandscape — le même choix, de l'autre côté.
+    bool documentLandscape{false};
     int columns{1};
     qreal frameHeightMm{0.0};
     QString marksTemplateName{};

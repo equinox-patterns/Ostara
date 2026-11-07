@@ -124,6 +124,18 @@ auto OExportTiledFormatWidget::Columns() const -> int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void OExportTiledFormatWidget::SetDocumentLandscape(bool landscape)
+{
+    if (m_documentLandscape == landscape)
+    {
+        return;
+    }
+
+    m_documentLandscape = landscape;
+    Refresh();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OExportTiledFormatWidget::SetUnit(const Unit &unit)
 {
     m_unit = unit;
@@ -137,9 +149,15 @@ void OExportTiledFormatWidget::Refresh()
     // around the two figures are the ones the two fields carried. The unit is written after
     // EACH figure and not once at the end — "19 cm x 25.9" would read as a single length.
     const QString unit = UnitsToStr(m_unit, true);
-    m_sidesValue->setText(tr("Width:") + QLatin1Char(' ') + OExportUnitFormat::Format(m_widthMm, m_unit)
+    // ⚠️ **Dans le sens LIVRÉ, pas dans celui du format.** Un A0 se pose dans les deux sens, et la
+    // feuille tournée fait 1 189 × 841 : la phrase qui annoncerait 841 × 1189 après le choix
+    // « Paysage » serait la seule chose à l'écran disant que rien ne s'est passé. Les deux figures
+    // sont échangées, jamais les champs : ce que le format EST ne dépend pas de ce qu'on imprime.
+    const qreal widthMm = m_documentLandscape ? m_heightMm : m_widthMm;
+    const qreal heightMm = m_documentLandscape ? m_widthMm : m_heightMm;
+    m_sidesValue->setText(tr("Width:") + QLatin1Char(' ') + OExportUnitFormat::Format(widthMm, m_unit)
                           + QLatin1Char(' ') + unit + QStringLiteral(" x ") + tr("Height:")
-                          + QLatin1Char(' ') + OExportUnitFormat::Format(m_heightMm, m_unit)
+                          + QLatin1Char(' ') + OExportUnitFormat::Format(heightMm, m_unit)
                           + QLatin1Char(' ') + unit);
 }
 

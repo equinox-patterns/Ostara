@@ -84,6 +84,15 @@ public:
     /// @brief Show every length in @p unit from now on.
     void SetUnit(const Unit &unit);
 
+    /// @brief Le sens dans lequel le DOCUMENT est livré, quand le format en admet deux.
+    ///
+    /// **La feuille, elle, ne change pas** : une A0 reste 841 × 1189, et les deux chiffres que ce
+    /// widget tient (`m_widthMm`, `m_heightMm`) sont ceux du format, pas ceux d'une livraison. Ce
+    /// que le sens change, c'est la PAGE : en paysage c'est la feuille TOURNÉE, et la phrase des
+    /// deux côtés doit le dire, sinon elle affiche 841 × 1189 en portrait comme en paysage et le
+    /// choix paraît sans effet. Les deux figures s'échangent donc, et les champs ne bougent pas.
+    void SetDocumentLandscape(bool landscape);
+
 signals:
     /// Emitted when a field the user can act on changed. The column count is now the only one:
     /// the two sides are read, never typed. The tab recomputes the document width from it.
@@ -102,6 +111,9 @@ private:
 
     qreal m_widthMm{0.0};
     qreal m_heightMm{0.0};
+
+    /// Le sens livré — portrait par défaut, et sans objet sur un format qui n'en admet qu'un.
+    bool m_documentLandscape{false};
     Unit m_unit{Unit::Cm};
 
     /// Whether the model offers a column count. Held as data, never read back off the

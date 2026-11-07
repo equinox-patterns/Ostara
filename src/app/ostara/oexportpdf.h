@@ -115,12 +115,23 @@ namespace OExportPdf
 ///
 ///                It changes nothing that is drawn: the same pages, the same layers, the same
 ///                bytes for every one of them. It only makes the file heavier.
-/// @return false when the run cannot be reproduced; the reason has been logged.
+/// @param gradedDrawing  the graded SVG this run drew, when it has one, handed over so the
+///                payload is THAT document rather than a second drawing of the plan. Empty falls
+///                back to writing the plan's own layers.
+/// @param error   when not null, filled with why the file could not be written — **the reason, and
+///                not a guess**.
+///
+///                ⚠️ The caller used to answer with one sentence of its own — « check that the folder
+///                allows writing » — whatever had failed. That sentence is FALSE the moment the
+///                failure is a drawing that could not be turned, and it sends the user to look at a
+///                folder that is perfectly writable. The reason therefore travels with the answer,
+///                and the dialog states it. It is logged either way.
+/// @return false when the run cannot be reproduced; @p error says why.
 bool Write(const OExportOutput &output, const QString &pdfPath,
            const VContainer *pattern, VAbstractPattern *doc,
            const OExportTemplate *marks, bool framed, bool addLayoutLayer,
            const OExportCoverPage::Drawing *cover = nullptr, bool rabnestPayload = true,
-           const QString &gradedDrawing = QString());
+           const QString &gradedDrawing = QString(), QString *error = nullptr);
 }  // namespace OExportPdf
 
 #endif  // OEXPORTPDF_H

@@ -131,9 +131,9 @@ struct OExportNestingResult
     /// @brief La hauteur de la feuille sur laquelle le plan a été posé, en PIXELS.
     ///
     /// **Un résultat, et non une entrée.** Un format dont la feuille peut se poser dans les deux sens
-    /// (A0) ne décide pas avant de nidifier : le nesting demande les deux plans, garde celui qui
-    /// imprime le moins de pages, et c'est cette hauteur-là — avec `binWidthPx` — que la grille, le
-    /// canevas et le PDF lisent ensuite. Zéro sur tout run qui n'a pas eu le choix : les lecteurs
+    /// (A0) reçoit son sens de la requête (`OExportNestingParams::landscapeSheet`) : le plan est
+    /// nidifié DANS ce sens-là, et c'est cette hauteur-là — avec `binWidthPx` — que la grille, le
+    /// canevas et le PDF lisent ensuite. Zéro sur tout run qui n'a pas eu de feuille : les lecteurs
     /// prennent alors la hauteur de la requête.
     double sheetHeightPx{0.0};
 
@@ -239,12 +239,25 @@ struct OExportNestingParams
     int    artboardCount{0};   ///< frames side by side across the bin width
     double artboardHeightPx{0.0}; ///< frame height, converted to pixels like the rest
 
-    /// @brief Whether the sheet may be laid either way, the run choosing by page count.
+    /// @brief Whether the sheet may be laid either way — the A0 sheet alone.
     ///
-    /// True for the A0 sheet alone — the one format with no column to multiply. When it is set, the
-    /// nesting nests the plan twice, once in each orientation, and keeps the one with the fewest
-    /// pages (a tie keeps portrait). See OExportNestingResult::sheetHeightPx.
+    /// True for the one format with no column to multiply. What it no longer means is « le run
+    /// décide » : c'est l'utilisatrice qui décide, par `landscapeSheet`, et le plan est nidifié dans
+    /// CE sens-là et pas dans l'autre. Voir OExportNestingResult::sheetHeightPx.
     bool sheetBothWays{false};
+
+    /// @brief Le sens dans lequel le plan doit être NIDIFIÉ, quand la feuille en admet deux.
+    ///
+    /// ⚠️ **Le sens décide la nidification, pas la page.** Il a d'abord été question de tourner le
+    /// plan gagnant d'un quart de tour : un plan 841 × 4 756 devient alors une bande de 4 756 × 841,
+    /// donc des feuilles CÔTE À CÔTE — et c'est la seule chose qu'un tour puisse donner. Des feuilles
+    /// empILÉES, comme en portrait, veulent dire un plan nidifié en 1 189 de large : deux mises en
+    /// page différentes, et c'est celle-ci que Sophie a demandée le 07-11-2026.
+    ///
+    /// Conséquence assumée : le sens n'est plus arbitré par le nombre de pages. Un patron qui tenait
+    /// en une feuille en paysage peut en coûter deux en portrait — c'est le prix d'une liasse
+    /// homogène, et la barre de statut dit le compte avant l'impression.
+    bool landscapeSheet{false};
 
     /// @brief Whether the sheets are CLOSED — no piece may straddle two of them.
     ///

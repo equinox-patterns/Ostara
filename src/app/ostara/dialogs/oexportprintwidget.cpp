@@ -165,6 +165,19 @@ void OExportPrintWidget::BuildUi()
     m_coverLabel = new QLabel(this);
     layout->addRow(m_coverLabel, m_coverCombo);
 
+    // ── Le sens du document, quand le format en admet deux ───────────────
+    // Une utilisatrice qui livre plusieurs impressions veut les livrer dans le MÊME sens : sans
+    // cette ligne, l'arbitrage du nesting rend le portrait d'un patron et le paysage du suivant, et
+    // la liasse est bancale. Ce n'est PAS un choix de plan — le meilleur plan est toujours pris —
+    // c'est le sens de la page, obtenu en tournant le plan gagnant si besoin.
+    m_orientationCombo = MakeComboBox(this);
+    m_orientationCombo->addItem(QString(), false); // portrait
+    m_orientationCombo->addItem(QString(), true);  // paysage
+    connect(m_orientationCombo, &QComboBox::currentIndexChanged, this,
+            &OExportPrintWidget::UpdateDocumentWidth);
+    m_orientationLabel = new QLabel(this);
+    layout->addRow(m_orientationLabel, m_orientationCombo);
+
     // ── The two lengths the nesting takes, whatever the model ────────────
     m_marginEdit = new QLineEdit(this);
     connect(m_marginEdit, &QLineEdit::editingFinished, this, &OExportPrintWidget::CommitEditedLengths);
@@ -180,6 +193,11 @@ void OExportPrintWidget::BuildUi()
     // Shown because it is nowhere else: on a tiled model the width the nesting runs on is
     // the product of two fields, and a user who cannot see the product has no way to tell
     // a plan that came out narrow from one she asked for narrow.
+    //
+    // ⚠️ **La largeur suit le sens livré, et les deux côtés sont sur la ligne du format tuilé.**
+    // Cette ligne-ci ne dit qu'une longueur — le produit que le nesting lit — et la doubler d'un
+    // second affichage du format donnerait deux réponses à la même question. La paire, elle, est
+    // dans le widget de tuilage (« Width: … x Height: … »), et c'est elle qui s'échange.
     m_documentWidthValue = new QLabel(this);
     m_documentWidthLabel = new QLabel(this);
     layout->addRow(m_documentWidthLabel, m_documentWidthValue);
@@ -452,7 +470,32 @@ void OExportPrintWidget::UpdateModel()
     m_marksLabel->setVisible(marks);
     m_marksCombo->setVisible(marks);
 
+    // La ligne du sens n'apparaît que sur un format qui admet les deux : un A3 ou un A4 n'ont qu'un
+    // sens de page, et la demander ferait croire à un choix qui n'existe pas.
+    m_orientationLabel->setVisible(model->hasOrientation);
+    m_orientationCombo->setVisible(model->hasOrientation);
+
+    // ⚠️ **Un format qui n'admet qu'un sens ne peut pas en avoir choisi un autre.** Sans ce retour,
+    // la combo garderait « Paysage » d'un A0 et le rendrait encore après un passage à un A4 : la
+    // requête porterait alors un paysage que ce format ne sait pas imprimer, et c'est un favori qui
+    // l'enregistrerait pour de bon. Ramener la combo au portrait garde l'état du widget vrai.
+    if (!model->hasOrientation && m_orientationCombo->currentData().toBool())
+    {
+        // Bloquée : ce n'est pas un geste de l'utilisatrice, et le signal ferait relire la requête
+        // au milieu de sa propre mise à jour.
+        const QSignalBlocker block(m_orientationCombo);
+        m_orientationCombo->setCurrentIndex(m_orientationCombo->findData(false));
+    }
+
     UpdateDocumentWidth();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportPrintWidget::DocumentLandscape() const -> bool
+{
+    // La donnée de l'entrée courante, jamais son rang : « Portrait » est la première parce qu'elle
+    // est le défaut, et c'est le défaut qui doit rester vrai si les entrées changent d'ordre.
+    return m_orientationCombo != nullptr && m_orientationCombo->currentData().toBool();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -540,8 +583,26 @@ void OExportPrintWidget::WriteEditedLengths()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportPrintWidget::UpdateDocumentWidth()
 {
-    m_documentWidthValue->setText(OExportUnitFormat::Format(DocumentWidthMm(), m_unit)
-                                  + QLatin1Char(' ') + UnitsToStr(m_unit, true));
+    const bool landscape = DocumentLandscape();
+
+    // ⚠️ **La largeur du document suit le sens livré.** 841 en portrait, 1 189 en paysage : c'est la
+    // largeur que le plan aura sur le papier, et c'est le côté de la feuille qui se couche. Un
+    // rouleau n'a pas de second côté, `FrameHeightMm` y vaut zéro et ne peut donc pas être choisi.
+    const qreal widthMm = (landscape && FrameHeightMm() > 0.0) ? FrameHeightMm() : DocumentWidthMm();
+    m_documentWidthValue->setText(OExportUnitFormat::Format(widthMm, m_unit) + QLatin1Char(' ')
+                                  + UnitsToStr(m_unit, true));
+
+    // ⚠️ **Et la ligne qu'on lit vraiment est celle du format tuilé** — « Width: 841 mm x
+    // Height: 1189 mm ». Elle vit dans ce widget, qui ne connaît pas le sens : c'est donc ici, au
+    // seul endroit qui le connaît, qu'on le lui dit. Sans cet appel elle annonçait 841 × 1189 après
+    // le choix « Paysage » — et c'était la seule chose à l'écran qui aurait dit que rien n'avait
+    // bougé. (Corrigé le 07-11-2026 : la première version avait ajouté une seconde ligne
+    // « Document size » à côté, c'est-à-dire deux réponses à une question.)
+    if (m_tiledWidget != nullptr)
+    {
+        m_tiledWidget->SetDocumentLandscape(landscape);
+    }
+
     emit Changed();
 }
 
@@ -760,6 +821,15 @@ void OExportPrintWidget::Retranslate()
     m_modelLabel->setText(tr("Print model:"));
     m_marksLabel->setText(tr("PDF layout:"));
     m_coverLabel->setText(tr("Cover page:"));
+    m_orientationLabel->setText(tr("Document orientation:"));
+    for (int index = 0; index < m_orientationCombo->count(); ++index)
+    {
+        // Par la DONNÉE, jamais par le rang : la même règle que les entrées de la source, qui sont
+        // renommées après coup.
+        m_orientationCombo->setItemText(index, m_orientationCombo->itemData(index).toBool()
+                                                   ? tr("Landscape")
+                                                   : tr("Portrait"));
+    }
     m_marginLabel->setText(tr("Document margin:"));
     m_gapLabel->setText(tr("Space between pieces:"));
     m_documentWidthLabel->setText(tr("Document width:"));

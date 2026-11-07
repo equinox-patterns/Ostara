@@ -44,6 +44,7 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.marginMm = output.marginMm;
     request.gapMm = output.gapMm;
     request.printModelToken = output.printModelToken;
+    request.documentLandscape = output.documentLandscape;
     request.columns = output.columns;
     request.frameHeightMm = output.frameHeightMm;
     request.marksTemplateName = output.marksTemplateName;

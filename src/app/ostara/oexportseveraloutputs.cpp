@@ -183,7 +183,8 @@ void MainWindow::ExportSeveralOutputs()
             const OExportCoverPage::Drawing cover = OExportCoverPage::Of(*output, doc);
 
             ok = OExportPdf::Write(*output, path, pattern, doc, hasMarks ? &marks : nullptr, framed,
-                                   addLayoutLayer, cover.IsEmpty() ? nullptr : &cover);
+                                   addLayoutLayer, cover.IsEmpty() ? nullptr : &cover, true,
+                                   QString(), &why);
         }
 
         if (ok)

@@ -136,6 +136,15 @@ public:
     /// what it has not is a decor, and that is `hasDecor`'s business, not this figure's.
     auto FrameHeightMm() const -> qreal;
 
+    /// Le sens dans lequel le document doit SORTIR — portrait quand la ligne n'est pas montrée.
+    ///
+    /// **C'est un choix de nidification**, pas une rotation : le plan est cherché dans ce sens-là, et
+    /// les feuilles s'empilent comme en portrait dans les deux cas. Ce n'est pas une propriété du
+    /// FORMAT — celui-ci dit seulement s'il en admet deux
+    /// (`OExportPrintModel::hasOrientation`) — donc la réponse est tenue par la combo, et nulle part
+    /// ailleurs en double.
+    auto DocumentLandscape() const -> bool;
+
     /// @brief The unit the tab is read in. Stored with the generation so that the figures
     ///        come back in it, rather than in whatever the pattern happens to use.
     auto DisplayUnit() const -> Unit;
@@ -198,6 +207,8 @@ private:
 
     QLabel *m_coverLabel{nullptr};
     QComboBox *m_coverCombo{nullptr};
+    QLabel *m_orientationLabel{nullptr};
+    QComboBox *m_orientationCombo{nullptr};
 
     QStackedWidget *m_shapeStack{nullptr};
     OExportRollFormatWidget *m_rollWidget{nullptr};

@@ -65,6 +65,8 @@ constexpr auto kAttrMarginMm = "marginMm";
 constexpr auto kAttrGapMm = "gapMm";
 constexpr auto kAttrFrameHeightMm = "frameHeightMm";
 constexpr auto kAttrDecor = "decor";
+/// Le sens du DOCUMENT demandé — « landscape » quand il n'est pas le portrait. Absent : portrait.
+constexpr auto kAttrOrientation = "orientation";
 constexpr auto kAttrDocumentWidthMm = "documentWidthMm";
 constexpr auto kAttrTemplate = "template";
 
@@ -144,6 +146,17 @@ auto OExportRecipe::Of(QDomDocument &doc, const OExportOutput &output, const OEx
     if (formatModel != nullptr && !formatModel->hasDecor)
     {
         format.setAttribute(QLatin1String(kAttrDecor), false);
+    }
+
+    // ── Le SENS DU DOCUMENT, quand il n'est pas le portrait ──────────────────────────────────────
+    //
+    // Absent veut dire portrait, et c'est ce que TOUTE génération écrite avant cette attribute est
+    // déjà : aucun fichier existant n'a besoin d'être relu autrement. Écrit seulement pour un format
+    // qui admet les deux sens — un A4 n'a pas de sens à demander, et l'écrire là ferait croire à un
+    // choix qui n'existe pas.
+    if (formatModel != nullptr && formatModel->hasOrientation && output.documentLandscape)
+    {
+        format.setAttribute(QLatin1String(kAttrOrientation), QStringLiteral("landscape"));
     }
 
     recipe.appendChild(format);

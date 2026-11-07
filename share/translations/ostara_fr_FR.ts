@@ -9708,11 +9708,15 @@ Cette action ne peut pas être annulée.</translation>
         <source>"%1" could not be written to:
 %2
 
-Check that the folder allows writing, and that the file is not open in another program.</source>
+%3</source>
         <translation>« %1 » n&apos;a pas pu être écrit dans :
 %2
 
-Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
+%3</translation>
+    </message>
+    <message>
+        <source>Check that the folder allows writing, and that the file is not open in another program.</source>
+        <translation>Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est pas ouvert dans un autre programme.</translation>
     </message>
     <message>
         <source>Check that the folder allows writing, and that none of the files is open in another program.</source>
@@ -28164,4 +28168,39 @@ Envoyez ce fichier à votre contact Ostara.</translation>
 %2</translation>
     </message>
 </context>
+  <context>
+    <name>OExportPdf</name>
+    <message>
+        <source>the generation cannot be drawn again</source>
+        <translation>la génération ne peut pas être dessinée à nouveau</translation>
+    </message>
+    <message>
+        <source>there is no temporary folder to draw in</source>
+        <translation>il n&apos;y a pas de dossier temporaire où dessiner</translation>
+    </message>
+    <message>
+        <source>the plan could not be drawn</source>
+        <translation>le plan n&apos;a pas pu être dessiné</translation>
+    </message>
+    <message>
+        <source>the payload could not be written</source>
+        <translation>le payload n&apos;a pas pu être écrit</translation>
+    </message>
+    <message>
+        <source>the assembly marks could not be written</source>
+        <translation>les repères d&apos;assemblage n&apos;ont pas pu être écrits</translation>
+    </message>
+    <message>
+        <source>the cover page could not be written</source>
+        <translation>la page de garde n&apos;a pas pu être écrite</translation>
+    </message>
+    <message>
+        <source>the cover page could not be turned with its page</source>
+        <translation>la page de garde n&apos;a pas pu être tournée avec sa page</translation>
+    </message>
+    <message>
+        <source>the PDF itself could not be written</source>
+        <translation>le PDF lui-même n&apos;a pas pu être écrit</translation>
+    </message>
+  </context>
 </TS>
