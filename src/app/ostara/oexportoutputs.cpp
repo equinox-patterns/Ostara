@@ -473,6 +473,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // Le moteur ne demande qu'une chose : les pièces suivent-elles leur droit-fil ? Un plan de
     // coupe et un projecteur, oui ; une impression, non.
     params.grainlinePinned = OExportFormat::IsCutting(request.format);
+    // Seul le mot du refus en dépend : le tissu d'un plan de coupe, le papier d'une impression.
+    params.printRun = request.format == OExportFormat::Kind::Print;
 
     // ── Le sens unique est une RÈGLE du projecteur, pas un réglage ───────────────────────────────
     //

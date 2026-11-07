@@ -655,7 +655,7 @@ void ApplyGroupFoldLine(VLayoutPiece &placed, const OExportPieceGeometry &geomet
 /// by half its width.
 auto UnplacedBounds(const VLayoutPiece &piece) -> QRectF
 {
-    QScopedPointer<QGraphicsItem> probe(piece.GetItem(false, true, false));
+    QScopedPointer<QGraphicsItem> probe(piece.GetItem(false, false, false));
     return probe.isNull() ? QRectF() : probe->boundingRect();
 }
 
@@ -1373,7 +1373,7 @@ void CollectMemberOwnDecor(QGraphicsScene *scene, const OExportPieceGeometry &ge
     }
     placed.SetShowMirrorLine(true);
 
-    QGraphicsItem *item = placed.GetItem(false, true, false);
+    QGraphicsItem *item = placed.GetItem(false, false, false);
     if (item == nullptr)
     {
         return;
@@ -2378,7 +2378,18 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                     }
                 }
 
-                QGraphicsItem *item = placed.GetItem(false, true, false);
+                // ── L'encre de la pièce : celle de Details et de Graded, jamais une autre ──────────
+                //
+                // ⚠️ **`togetherWithNotches` à `false`, et ce n'est pas un réglage.** À `true`, la
+                // pièce recoud ses crans DANS son contour : `VBoundary::Combine` rend une séquence
+                // de morceaux, `GetFullSeamAllowancePoints` les recolle en une seule liste de
+                // points, et la marque d'un cran devient un triangle refermé relié au contour par
+                // ses deux pattes. À l'écran, ça se lit comme des traits qui traversent la pièce.
+                // Graded construit son item avec `GetItem(false, false, false, true)`
+                // (`mainwindow_graded_build.cpp:405`) : c'est donc la même encre qu'ici, et le
+                // contour avec ses crans ouverts (`AddPassmarkLines`, `vlayoutpiece.cpp:1285`).
+                // Export n'a rien à redessiner : il dessine ce que Graded dessine.
+                QGraphicsItem *item = placed.GetItem(false, false, false);
                 if (item == nullptr)
                 {
                     continue;
@@ -2619,7 +2630,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                         // c'est elle qu'il faut, pas l'enregistrement gelé, qui est une autre valeur.
                         VLayoutPiece lone = geometry.piece;
                         lone.SetMatrix(placed.GetMatrix());
-                        QGraphicsItem *host = lone.GetItem(false, true, false);
+                        QGraphicsItem *host = lone.GetItem(false, false, false);
                         if (host != nullptr)
                         {
                             host->setVisible(false);

@@ -19924,6 +19924,30 @@ vers %2</translation>
         <translation> Refusé : %1.</translation>
     </message>
     <message>
+        <source>These pieces do not fit across the document: %1.</source>
+        <translation>Ces pièces ne tiennent pas dans la largeur du document : %1.</translation>
+    </message>
+    <message>
+        <source>The plan does not fit across the document. The layout stopped at %1; the pieces before it are placed, the ones after it were not tried.</source>
+        <translation>Le plan ne tient pas dans la largeur du document. La pose s'est arrêtée à %1 ; les pièces d'avant sont posées, celles d'après n'ont pas été essayées.</translation>
+    </message>
+    <message>
+        <source>no piece</source>
+        <translation>aucune pièce</translation>
+    </message>
+    <message>
+        <source>Usable width: %1 cm on %2 — document %3 cm, margin %4 cm.</source>
+        <translation>Largeur utile : %1 cm sur %2 — document %3 cm, marge %4 cm.</translation>
+    </message>
+    <message>
+        <source>the paper</source>
+        <translation>le papier</translation>
+    </message>
+    <message>
+        <source>the cloth</source>
+        <translation>le tissu</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/oexportnesting.cpp" line="372"/>
         <source>The document is too narrow: some pieces could not be placed. The space kept from the fabric&apos;s edges may be what leaves too little room.</source>
         <translation>Le document est trop étroit : certaines pièces n&apos;ont pas pu être placées. L&apos;espace gardé depuis les bords du tissu est peut-être ce qui laisse trop peu de place.</translation>

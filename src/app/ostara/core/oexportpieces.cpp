@@ -102,9 +102,15 @@ auto PointData(const QPointF &point) -> QString
 /// reprend donc ici la construction d'Ostara, et on garde exactement ce qu'elle dessine comme
 /// géométrie : la racine, puis chaque enfant qui n'est pas une information (le droit-fil, le pli et
 /// sa légende, qui voyagent avec le décor parce que leur place se projette d'une taille à l'autre).
+///
+/// ⚠️ **Les crans ne sont pas recousus dans le contour** (`togetherWithNotches` à `false`, comme
+/// Graded). À `true`, `VBoundary::Combine` découpe le contour aux crans et la liste de points
+/// recolle chaque marque en triangle fermé, relié au contour par ses deux pattes : dans le payload,
+/// un cran se lit comme un trait qui traverse la pièce. L'encre d'ici est celle de Details/Graded —
+/// un contour, et des crans ouverts posés dessus.
 auto InkOf(const VLayoutPiece &piece) -> QString
 {
-    QGraphicsItem *item = piece.GetItem(false, true, false);
+    QGraphicsItem *item = piece.GetItem(false, false, false);
     if (item == nullptr)
     {
         return {};

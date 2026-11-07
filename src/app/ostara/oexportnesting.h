@@ -195,6 +195,17 @@ struct OExportNestingParams
     /// qu'elle pose : le projecteur est un plan de tissu sans être un plan de coupe.
     bool grainlinePinned{false};
 
+    /// @brief Whether the run prints on paper rather than laying pieces out on cloth.
+    ///
+    /// **It answers one question: whose edges the refusal is about.** A plan that does not fit
+    /// mentions the space kept from an edge, and that edge is the cloth's on a cutting plan and the
+    /// paper's — a page or a roll — on a print run. Saying "the fabric's edges" to someone printing
+    /// an A0 roll is a sentence about a material that is not in play.
+    ///
+    /// Nothing else reads it: the engine has no idea what it is laying pieces out on, and must not
+    /// learn. This only names the thing the user is looking at.
+    bool printRun{false};
+
     /// @brief « Sens unique » — aucune pièce n'est retournée d'un demi-tour.
     ///
     /// Retire un **sens**, pas un axe : une pièce « Double » garde le droit-fil ET le contre-fil.

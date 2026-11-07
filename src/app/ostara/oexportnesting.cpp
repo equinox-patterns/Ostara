@@ -27,6 +27,7 @@
 
 #include "oexportnesting.h"
 
+
 #include "oexportartboards.h"
 #include "oexportgeometry.h"
 #include "oexportsheets.h"
@@ -346,47 +347,107 @@ auto ConstraintsFor(const QVector<PieceTalk> &talks, const std::vector<int> &ran
 /// soit. Le moteur a raison de dire « ça ne rentre pas » : il ignore qu'un espace a été demandé.
 /// L'appelant, lui, le sait — d'où cette phrase, écrite ici une fois pour les deux chemins. Sans
 /// elle, la seule piste laissée à l'utilisatrice est sa laize, qui n'y est pour rien.
-/// The keys of the pieces the engine could not place — see TooNarrowError.
-template <typename Keys, typename Placements>
-auto RefusedKeys(const Keys &keys, const Placements &placements) -> QStringList
+
+/// What a refused plan has to say, gathered where the geometry is still at hand.
+///
+/// **The pieces that cannot fit and the pieces the search never reached are two different things**,
+/// and the engine reports both the same way: every placement left at its `-1` sentinel. It stops at
+/// the FIRST piece it cannot lay out, so the ones after it were never tried — listing them as
+/// "refused" tells the user thirteen pieces are impossible when one is.
+struct TooNarrowFacts
 {
-    QStringList refused;
-    auto piece = placements.begin();
-    for (auto key = keys.begin(); key != keys.end() && piece != placements.end(); ++key, ++piece)
+    QStringList tooWide{};   ///< "Name (93,5 cm)" — wider than the usable width, at every angle
+    QString stoppedAt{};     ///< the first piece the search could not place
+    double usablePx{0.0};    ///< the document width minus its two side margins
+};
+
+/// Gathers those facts from the engine's own answer, using the narrowest width of each piece — the
+/// same measure the engine uses to decide whether it fits, so the two cannot disagree.
+auto TooNarrowFactsOf(const OExportNestingParams &params,
+                      const std::vector<Clipper2Lib::Path64> &polygons,
+                      const std::vector<std::vector<double>> &angles,
+                      const std::vector<Placement> &placements,
+                      const QStringList &names) -> TooNarrowFacts
+{
+    TooNarrowFacts facts;
+    facts.usablePx = params.binWidthPx - 2.0 * params.marginPx;
+
+    const qsizetype count = std::min<qsizetype>(
+        {static_cast<qsizetype>(placements.size()), static_cast<qsizetype>(polygons.size()),
+         static_cast<qsizetype>(names.size())});
+
+    for (qsizetype i = 0; i < count; ++i)
     {
-        if (piece->rotation < 0.0)
+        if (placements.at(static_cast<std::size_t>(i)).rotation >= 0.0)
         {
-            refused.append(*key);
+            continue; // placed
+        }
+
+        // ⚠️ **Les angles du moteur, pas ceux de la contrainte.** Une impression ne contraint
+        // aucune rotation : le moteur reçoit une liste vide et tourne la pièce dans ses 180
+        // orientations. Lire la largeur sur une liste vide la donnait à 0°, et le message accusait
+        // une pièce qui passe très bien couchée (`Bas Robe Devant`, 109,9 cm à 0° pour 38,1 cm
+        // couché). On mesure donc ce que le moteur, lui, essaiera.
+        std::vector<double> pieceAngles = i < static_cast<qsizetype>(angles.size())
+                                              ? angles.at(static_cast<std::size_t>(i))
+                                              : std::vector<double>{};
+        if (pieceAngles.empty())
+        {
+            for (int a = 0; a < 360; a += 2)
+            {
+                pieceAngles.push_back(static_cast<double>(a));
+            }
+        }
+
+        const double width = NarrowestWidth(polygons.at(static_cast<std::size_t>(i)), pieceAngles);
+        if (width > facts.usablePx)
+        {
+            facts.tooWide.append(QStringLiteral("%1 (%2 cm)")
+                                     .arg(names.at(i))
+                                     .arg(width / ToPixel(10.0, Unit::Mm), 0, 'f', 1));
+        }
+
+        if (facts.stoppedAt.isEmpty())
+        {
+            facts.stoppedAt = names.at(i);
         }
     }
-    refused.removeDuplicates();
-    return refused;
+
+    return facts;
 }
 
-auto TooNarrowError(const OExportNestingParams &params, const QStringList &refused) -> QString
+auto TooNarrowError(const OExportNestingParams &params, const TooNarrowFacts &facts) -> QString
 {
-    // ⚠️ **Le nom, et pas seulement le constat.** « Ça ne rentre pas » laisse deux causes possibles —
-    // une laize, ou un espace depuis les bords — et aucune façon de les distinguer : les pièces sont
-    // toutes plus étroites que la laize, et pourtant le moteur en refuse une. Sans le nom, on cherche
-    // dans la géométrie au hasard ; avec lui, on sait en une seconde si la pièce refusée est bien
-    // celle qu'on croit, ou si le bac qui la reçoit n'a pas la largeur qu'on imagine.
-    const QString who = refused.isEmpty()
-                            ? QString()
-                            : QObject::tr(" Refused: %1.").arg(refused.join(QStringLiteral(", ")));
+    const qreal toCm = ToPixel(10.0, Unit::Mm);
+    // Le mot suit ce sur quoi les pièces sont posées : le papier d'une impression, le tissu d'un plan
+    // de coupe. Voir OExportNestingParams::printRun.
+    const QString support = params.printRun ? QObject::tr("the paper") : QObject::tr("the cloth");
 
-    if (params.marginPx > 0.0)
+    QString message;
+    if (!facts.tooWide.isEmpty())
     {
-        return QObject::tr("The document is too narrow: some pieces could not be placed. "
-                           "The space kept from the fabric's edges may be what leaves too little "
-                           "room.")
-               + who;
+        // Le cas qui se répare en changeant de laize ou de rouleau — et il nomme le SURPLUS, pas
+        // seulement le refus : c'est la seule chose à comparer avec le papier qu'on a.
+        message = QObject::tr("These pieces do not fit across the document: %1.")
+                      .arg(facts.tooWide.join(QStringLiteral(", ")));
+    }
+    else
+    {
+        // Aucune n'est trop large : c'est l'arrangement qui n'a pas trouvé sa place. On le dit
+        // ainsi, et on nomme la pièce où la recherche s'est arrêtée.
+        message = QObject::tr("The plan does not fit across the document. The layout stopped at %1; "
+                              "the pieces before it are placed, the ones after it were not tried.")
+                      .arg(facts.stoppedAt.isEmpty() ? QObject::tr("no piece") : facts.stoppedAt);
     }
 
-    return QObject::tr("The document is too narrow: some pieces could not be placed.") + who
-           + QObject::tr(" Usable width: %1 cm, cloth %2 cm, margin %3 cm.")
-                 .arg((params.binWidthPx - params.marginPx) / ToPixel(10.0, Unit::Mm), 0, 'f', 1)
-                 .arg(params.binWidthPx / ToPixel(10.0, Unit::Mm), 0, 'f', 1)
-                 .arg(params.marginPx / ToPixel(10.0, Unit::Mm), 0, 'f', 1);
+    message += QLatin1Char('\n')
+               + QObject::tr("Usable width: %1 cm on %2 — document %3 cm, margin %4 cm.")
+                     .arg(facts.usablePx / toCm, 0, 'f', 1)
+                     .arg(support)
+                     .arg(params.binWidthPx / toCm, 0, 'f', 1)
+                     .arg(params.marginPx / toCm, 0, 'f', 1);
+
+    return message;
 }
 
 /// Nidifie les rangs d'un plan dans un bac de largeur @p widthPx.
@@ -439,24 +500,15 @@ auto NestRanks(const Footprint::Result &footprint, const std::vector<ZoneConstra
         // The names, read through the ranks: this path holds the footprint the engine was given, and
         // a rank is what points back at a key. Without them the message says "some pieces" — and the
         // one thing the user needs is which.
-        QStringList refused;
-        auto piece = plan->placements.begin();
-        for (auto rank = plan->ranks.begin();
-             rank != plan->ranks.end() && piece != plan->placements.end(); ++rank, ++piece)
+        QStringList names;
+        names.reserve(static_cast<qsizetype>(plan->ranks.size()));
+        for (const int rank : plan->ranks)
         {
-            if (piece->rotation >= 0.0)
-            {
-                continue;
-            }
-            auto key = footprint.keys.begin() + static_cast<std::ptrdiff_t>(*rank);
-            if (key != footprint.keys.end())
-            {
-                refused.append(*key);
-            }
+            names.append(footprint.keys.at(static_cast<std::size_t>(rank)));
         }
-        refused.removeDuplicates();
 
-        *error = TooNarrowError(params, refused);
+        *error = TooNarrowError(params,
+                                TooNarrowFactsOf(params, plan->polygons, angles, plan->placements, names));
         return false;
     }
 
@@ -1681,7 +1733,8 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // nothing else — no status, no exception.
     if (!AllPlaced(placements))
     {
-        result.error = TooNarrowError(params, RefusedKeys(result.keys, placements));
+        result.error = TooNarrowError(
+            params, TooNarrowFactsOf(params, footprint.polygons, allowedAngles, placements, result.keys));
         return result;
     }
 
@@ -1775,6 +1828,7 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
     result.placements = ToExportPlacements(placements, footprint.polygons);
     result.usedHeightPx = Engine::UsedHeight(placements, footprint.polygons, bin);
+
 
     result.ok = true;
     return result;
