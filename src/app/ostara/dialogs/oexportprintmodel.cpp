@@ -40,26 +40,30 @@ namespace
 // the block would be the whole sheet — Letter is too short for 297, and A4/Letter framed is
 // narrower than 210. A roll has no sheet height at all, so the block simply sits at its corner.
 //
-// ⚠️ A0 is the one seat nobody dictated: it is not selectable today, so no run can reach it.
-// `InSheet` because an A0 sheet does admit the block; to revisit if the row is ever enabled.
+// ⚠️ **A0 garde `InSheet`, et c'est la seule page de garde d'un run qui en compte plusieurs.**
+// Une feuille A0 (841 × 1189) admet largement le bloc de 190 × 259 à côté du plan : la page se tient
+// au coin de la PREMIÈRE feuille, et les suivantes n'en portent pas — le bloc réservé force la
+// feuille (0,0) à s'imprimer même vide, c'est tout ce qu'il faut dire au découpage.
 // ⚠️ The columns are in DECLARATION order — a Seat sits between the two flags, because
 // `hasFrame` and `coverSeat` are the format's two properties and belong together. Aggregate
 // initialisation is positional: a column moved without the struct moved is a silent
-// reinterpretation, and the enum class is what caught it.
+// reinterpretation, and the enum class is what caught it. The two flags that arrived last
+// (`hasDecor`, `hasOrientation`) were APPENDED for the same reason: the enum class would catch a
+// shift, but nothing would catch a bool landing on another bool.
 const QVector<OExportPrintModel> kModels{
-    //              label                    token              shape                     widthMm  heightMm  frame  coverSeat                          columns  selectable
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0 Roll"),           "A0Roll",          OExportPrintShape::Roll,   841.0,      0.0,  false, OExportCoverPage::Seat::InSheet,    false,   true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0"),                "A0",              OExportPrintShape::Tiled,  841.0,   1189.0,  false, OExportCoverPage::Seat::InSheet,    false,   false},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3"),                "A3",              OExportPrintShape::Tiled,  297.0,    420.0,  false, OExportCoverPage::Seat::InSheet,    true,    true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "Tabloid"),           "Tabloid",         OExportPrintShape::Tiled,  279.4,    431.8,  false, OExportCoverPage::Seat::InSheet,    true,    true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4"),                "A4",              OExportPrintShape::Tiled,  210.0,    297.0,  false, OExportCoverPage::Seat::ExtraSheet, true,    true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "Letter"),            "Letter",          OExportPrintShape::Tiled,  215.9,    279.4,  false, OExportCoverPage::Seat::ExtraSheet, true,    true},
+    //              label                    token              shape                     widthMm  heightMm  frame  coverSeat                          columns  selectable  decor   orientation  closed
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0 Roll"),           "A0Roll",          OExportPrintShape::Roll,   841.0,      0.0,  false, OExportCoverPage::Seat::InSheet,    false,   true,       false,  false,       false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0"),                "A0",              OExportPrintShape::Tiled,  841.0,   1189.0,  false, OExportCoverPage::Seat::InSheet,    false,   true,       false,  true,        true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3"),                "A3",              OExportPrintShape::Tiled,  297.0,    420.0,  false, OExportCoverPage::Seat::InSheet,    true,    true,       true,   false,       false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "Tabloid"),           "Tabloid",         OExportPrintShape::Tiled,  279.4,    431.8,  false, OExportCoverPage::Seat::InSheet,    true,    true,       true,   false,       false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4"),                "A4",              OExportPrintShape::Tiled,  210.0,    297.0,  false, OExportCoverPage::Seat::ExtraSheet, true,    true,       true,   false,       false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "Letter"),            "Letter",          OExportPrintShape::Tiled,  215.9,    279.4,  false, OExportCoverPage::Seat::ExtraSheet, true,    true,       true,   false,       false},
     // The two framed formats are the only ones whose dimensions are not a standard: the frame
     // is sized so the printable area stays inside the sheet's margins — ten millimetres a side
     // — which is exactly what lets one file come out on A4 OR on Letter, and the other on A3
     // OR on Tabloid. They are listed after the standards, together: they are variants of them.
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4/Letter framed"),  "A4LetterFramed",  OExportPrintShape::Tiled,  190.0,    259.0,   true,  OExportCoverPage::Seat::ExtraSheet, true,    true},
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3/Tabloid framed"), "A3TabloidFramed", OExportPrintShape::Tiled,  259.0,    400.0,   true,  OExportCoverPage::Seat::InSheet,    true,    true},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A4/Letter framed"),  "A4LetterFramed",  OExportPrintShape::Tiled,  190.0,    259.0,   true,  OExportCoverPage::Seat::ExtraSheet, true,    true,       true,   false,       false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A3/Tabloid framed"), "A3TabloidFramed", OExportPrintShape::Tiled,  259.0,    400.0,   true,  OExportCoverPage::Seat::InSheet,    true,    true,       true,   false,       false},
 };
 } // namespace
 

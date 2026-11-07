@@ -439,6 +439,14 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     params.artboardCount    = request.columns;
     params.artboardHeightPx = ToPixel(request.frameHeightMm, Unit::Mm);
 
+    // **Le format A0 : des feuilles fermées, et une feuille qui se pose dans les deux sens.**
+    // Les deux sont DÉCLARÉS par le modèle et non déduits l'un de l'autre : l'un est une contrainte
+    // dure donnée au moteur, l'autre une question posée à lui — celle de l'orientation qui imprime
+    // le moins de pages. Voir OExportNestingParams::sheetBothWays.
+    const OExportPrintModel *closedModel = FindPrintModel(request.printModelToken);
+    params.closedSheets = closedModel != nullptr && closedModel->closedSheets;
+    params.sheetBothWays = closedModel != nullptr && closedModel->hasOrientation;
+
     // Et le tissu plié, qui ne se dit pas seulement ici : c'est le nesting qui en tire la rotation
     // d'une pièce au pli et son ancrage au bord. Voir OExportNestingParams::foldedFabric.
     params.foldedFabric = request.foldedFabric;
@@ -1420,6 +1428,18 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.layers = std::move(fabric.plan->layers);
     output.result = std::move(fabric.plan->result);
 
+    // **La feuille que le plan a RÉELLEMENT prise.** Un format qui se pose dans les deux sens ne
+    // décide pas de son orientation avant de nidifier : c'est le nombre de pages qui tranche, et le
+    // nesting rend la hauteur de la feuille gagnante. Zéro sur tout run qui n'a pas eu le choix —
+    // les lecteurs (grille, canevas, PDF) prennent alors celle de la requête.
+    if (output.result.sheetHeightPx > 0.0)
+    {
+        output.frameHeightMm = FromPixel(output.result.sheetHeightPx, Unit::Mm);
+        // Et la LARGEUR avec : le plan a été posé sur une feuille de 1 189 de large si c'est le
+        // paysage qui a gagné, et la grille, le canevas et le PDF lisent ce chiffre-là.
+        output.documentWidthMm = FromPixel(output.result.binWidthPx, Unit::Mm);
+    }
+
     // Le décor des groupes de la couche de référence, résolu pendant la marche des tailles. Il rejoint
     // le résultat ici, et pas ailleurs : c'est la seule chose que le canvas reçoit qui appartienne à
     // UNE génération — une pièce a sa place dans les couches, un groupe n'en a pas.
@@ -2153,12 +2173,27 @@ auto MainWindow::ExportMarksOf(const OExportOutput &output, OExportTemplate &mar
     // is a file the user edits, and a run that had copied its frame and its marks would go on
     // drawing what the file said the day it was nested, while the editor shows something else:
     // the drawing would then be lying about the very thing it is there to show.
+    // **Le format peut interdire le décor, et ce n'est pas une affaire de nom vide.**
+    //
+    // `OExportTemplateStorage::Resolve("")` retombe sur « Default » : une génération qui ne porte
+    // pas de décor ne peut donc pas le dire en vidant le champ. Elle le dit ici, par son format —
+    // l'A0 imprime des feuilles entières qu'une machine plie en A4 : il n'y a rien à assembler,
+    // donc ni cadre, ni ciseaux, ni repères, ni numérotation.
+    //
+    // Ce point de coupe est unique, et c'est ce qui rend la règle tenable : les deux appelants du
+    // PDF, le document de dessous comme le canevas passent tous par ici.
+    const OExportPrintModel *model = FindPrintModel(output.printModelToken);
+    if (model != nullptr && !model->hasDecor)
+    {
+        framed = false;
+        return false;
+    }
+
     const bool hasMarks = OExportTemplateStorage::Resolve(output.marksTemplateName, &marks);
 
     // Whether the format carries a frame — the two framed formats, and them alone. Read off the
     // table rather than guessed from the geometry: the frame is a property of the model, and its
     // sheet happens to be the size the frame is.
-    const OExportPrintModel *model = FindPrintModel(output.printModelToken);
     framed = model != nullptr && model->hasFrame;
 
     return hasMarks;

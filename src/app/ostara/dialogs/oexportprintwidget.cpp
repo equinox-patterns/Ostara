@@ -443,7 +443,12 @@ void OExportPrintWidget::UpdateModel()
 
     // The template row follows the model, exactly as the shape does, and label and field go
     // together: the form then collapses the row instead of leaving a gap where a choice was.
-    const bool marks = FrameHeightMm() > 0.0;
+    //
+    // ⚠️ **Two questions, and they used to be one.** A sheet height means the plan is cut into
+    // sheets; it does NOT mean a decor is drawn on them. The A0 sheet has both a height and no
+    // decor — its sheets are whole pages a machine folds, there is nothing to assemble — so the
+    // format's own `hasDecor` answers here, and the height only answers "is there a grid at all".
+    const bool marks = FrameHeightMm() > 0.0 && model->hasDecor;
     m_marksLabel->setVisible(marks);
     m_marksCombo->setVisible(marks);
 
@@ -680,16 +685,19 @@ auto OExportPrintWidget::Columns() const -> int
 auto OExportPrintWidget::FrameHeightMm() const -> qreal
 {
     const OExportPrintModel *model = FindPrintModel(PrintModelToken());
-    if (model == nullptr || model->shape == OExportPrintShape::Roll || !model->hasColumns)
+    if (model == nullptr || model->shape == OExportPrintShape::Roll)
     {
         return 0.0;
     }
 
-    // The two guards ask two different questions. A roll is one continuous sheet AND the
-    // tiled widget is never refreshed for it — reading it there would hand back the sheet of
-    // the last tiled model the user looked at, a length she never asked for. The A0 sheet is
-    // the other way round: it has its two sides, but it is never placed side by side, so
-    // there is no frame to cut a plan into, and it has to answer like the roll.
+    // One guard, and it asks one question: a roll is one continuous sheet, and the tiled widget
+    // is never refreshed for it — reading it there would hand back the sheet of the last tiled
+    // model the user looked at, a length she never asked for.
+    //
+    // **The A0 sheet used to answer zero here, and that zero was the whole feature missing**: no
+    // height, no grid, so one continuous page of the plan's own length and no page at all. It has
+    // the same two sides as the others, and it is cut into sheets of them like the others — it is
+    // only its DECOR that is missing, and `hasDecor` says that.
     return m_tiledWidget->SheetHeightMm();
 }
 

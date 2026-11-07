@@ -48,8 +48,11 @@ class QSpinBox;
  * shown on one line, in a box that looks like a field and is not one — everything the box holds
  * is what the model imposes, and one line says it in less room than two labelled fields.
  *
- * All sides are portrait. The small side is the one the columns multiply, so the width the
- * nesting works on is the sum of the sheets placed side by side, never of their long sides.
+ * Every format with a column count is portrait. The small side is the one the columns multiply,
+ * so the width the nesting works on is the sum of the sheets placed side by side, never of their
+ * long sides. **The A0 sheet is the one exception, and it is not this widget's business**: it has no
+ * column to multiply, so nothing is asked here, and the run itself tries both orientations — see
+ * OExportNestingParams::sheetBothWays.
  */
 class OExportTiledFormatWidget : public QWidget
 {

@@ -158,8 +158,8 @@ struct OExportOutput
 
     /// The long side of one sheet, in millimetres — the height of the frame the plan is cut
     /// into. Zero when the run is not tiled, and that single fact is what the canvas reads
-    /// to decide whether there is a grid to draw: a roll has no sheet, and the A0 model is
-    /// never assembled side by side.
+    /// to decide whether there is a grid to draw: a roll has no sheet, and it is the only
+    /// format that has none.
     ///
     /// Stored rather than looked up by the token, and it is what the readers take: the artboard
     /// grid and the PDF read the sheet from the generation and never from the model table. Now

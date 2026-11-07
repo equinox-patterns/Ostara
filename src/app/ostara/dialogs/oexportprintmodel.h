@@ -92,11 +92,50 @@ struct OExportPrintModel
     /// by side, so a column count would have nothing to mean.
     bool hasColumns{true};
 
-    /// Whether the combo lets the model be picked. False for the A0 sheet, whose nesting
-    /// packs closed rectangles rather than a strip — engine work that is not done yet.
-    /// The row stays visible: a model that silently vanished would read as a feature that
-    /// was never planned.
+    /// Whether the combo lets the model be picked.
     bool selectable{true};
+
+    /// Whether the format draws a decor at all — the frame, the scissors, the marks, the numbering.
+    ///
+    /// **DECLARED, and not deduced from the sheet's height.** The plan is cut into sheets as soon
+    /// as the model has a sheet height, and that same height used to mean "draw the decor" too: the
+    /// renderer gates both on `artboards.valid`. A format that wants sheets and NO decor breaks that
+    /// equivalence, and the A0 sheet is exactly that one — its sheets are whole pages, a folding
+    /// machine turns each into four A4s, and there is nothing to assemble, so nothing to number.
+    ///
+    /// Deduction has no honest form here: an empty marks template does not mean "no decor", because
+    /// `OExportTemplateStorage::Resolve` falls back on "Default" for an empty name. So the format
+    /// says it.
+    ///
+    /// False for the roll too, although the roll gets its absence from the zero height anyway: one
+    /// flag that means one thing, rather than a zero that means two.
+    bool hasDecor{true};
+
+    /// Whether the sheet may be laid either way, the RUN choosing by page count.
+    ///
+    /// False everywhere but the A0 sheet: every other tiled format is portrait by construction — its
+    /// small side is the one the columns multiply, and the plan's width follows. A single A0 page has
+    /// no columns to multiply, so both orientations are printable, and neither is better in advance:
+    /// measured on two patterns, one gives a page in portrait and two in landscape, the other exactly
+    /// the reverse.
+    ///
+    /// **Nothing is asked of the user**, and nothing is decided here: the nesting nests the plan in
+    /// both orientations and keeps the one with the fewest pages (a tie keeps portrait). The flag is
+    /// what tells it to. See OExportNestingParams::sheetBothWays.
+    bool hasOrientation{false};
+
+    /// Whether the sheets are CLOSED — no piece may straddle two of them.
+    ///
+    /// False for every format that is ASSEMBLED: a tiled run cuts the plan, and a piece crossing a
+    /// cut line is printed on both sheets and glued back together, which is the whole point of
+    /// tiling. The A0 sheet is not assembled — a folding machine turns each sheet into four A4s —
+    /// so a piece on two sheets could not be printed at all, and the nesting has to keep every
+    /// piece whole inside one.
+    ///
+    /// DECLARED, and not read off `hasColumns`: today the two flags happen to agree, and they
+    /// answer two different questions — one is about a field, the other about a hard constraint
+    /// handed to the engine.
+    bool closedSheets{false};
 };
 
 /// @brief Every model, in the order the combo shows them — the standard sheets largest first,

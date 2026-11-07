@@ -128,6 +128,15 @@ struct OExportNestingResult
 {
     bool ok{false};
 
+    /// @brief La hauteur de la feuille sur laquelle le plan a été posé, en PIXELS.
+    ///
+    /// **Un résultat, et non une entrée.** Un format dont la feuille peut se poser dans les deux sens
+    /// (A0) ne décide pas avant de nidifier : le nesting demande les deux plans, garde celui qui
+    /// imprime le moins de pages, et c'est cette hauteur-là — avec `binWidthPx` — que la grille, le
+    /// canevas et le PDF lisent ensuite. Zéro sur tout run qui n'a pas eu le choix : les lecteurs
+    /// prennent alors la hauteur de la requête.
+    double sheetHeightPx{0.0};
+
     /// @brief The run was given up at the caller's request, and what it holds means nothing.
     ///
     /// **Not a failure, and never reported as one.** The user asked for the nesting to stop, and a
@@ -229,6 +238,25 @@ struct OExportNestingParams
     // pass on, and nothing else does.
     int    artboardCount{0};   ///< frames side by side across the bin width
     double artboardHeightPx{0.0}; ///< frame height, converted to pixels like the rest
+
+    /// @brief Whether the sheet may be laid either way, the run choosing by page count.
+    ///
+    /// True for the A0 sheet alone — the one format with no column to multiply. When it is set, the
+    /// nesting nests the plan twice, once in each orientation, and keeps the one with the fewest
+    /// pages (a tie keeps portrait). See OExportNestingResult::sheetHeightPx.
+    bool sheetBothWays{false};
+
+    /// @brief Whether the sheets are CLOSED — no piece may straddle two of them.
+    ///
+    /// False on every format that is assembled: a tiled run is cut, and a piece crossing a cut
+    /// line is printed on both sheets and glued. The A0 sheet is not assembled — a machine folds
+    /// each of its sheets into four A4s — so a piece lying on two of them could not be printed at
+    /// all, and the nesting has to keep every piece whole inside one.
+    ///
+    /// Two consequences, both here and not in the engine: `TiledEngine::Spec::closedSheets` is
+    /// what forbids the straddle, and the strip plan stops competing — it knows no sheet, so
+    /// nothing stops it from laying a piece across one. See RunExportNesting.
+    bool closedSheets{false};
 
     /// The block the cover page reserves, in PIXELS from the bin's own top-left corner — empty
     /// when the run carries no cover page, or when its format gives the page a sheet of its own.

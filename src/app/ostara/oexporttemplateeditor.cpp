@@ -351,10 +351,14 @@ void OExportTemplateEditor::PopulatePreviewFormats()
 
     for (const OExportPrintModel &model : OExportPrintModels())
     {
-        // Only the tiled formats have sheets to decorate, and the table already says which
-        // those are: a roll is one continuous length, and A0 is never placed side by side —
-        // it is marked not selectable, so it is not offered anywhere, here included.
-        if (!model.selectable || model.shape != OExportPrintShape::Tiled)
+        // Only the formats that CARRY a decor have sheets to decorate: the template draws a
+        // frame, scissors, marks and numbers on sheets that are cut and reassembled. A roll is one
+        // continuous length, and the A0 sheet is not assembled at all — neither belongs here.
+        //
+        // ⚠️ **The filter used to be `selectable`, and that is now the wrong question**: the A0 row
+        // is selectable in the print tab, and it must still stay out of this editor. The table says
+        // it itself, with `hasDecor` — a format is offered here when it has something to draw.
+        if (!model.hasDecor || model.shape != OExportPrintShape::Tiled)
         {
             continue;
         }

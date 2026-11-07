@@ -27,7 +27,6 @@
 
 #include "oexportnesting.h"
 
-
 #include "oexportartboards.h"
 #include "oexportgeometry.h"
 #include "oexportsheets.h"
@@ -57,6 +56,11 @@ namespace
 /// The engine works in fixed-point: one pixel is kTrameScale units. Every
 /// coordinate handed to it, and every coordinate it returns, uses that scale.
 constexpr double kTrameScale = 1e6;
+
+/// La « feuille » d'un plan roulé donné au moteur tuilé : plus haute que tout plan possible, donc
+/// jamais atteinte, et le moteur n'ouvre pas de rangée. 1e6 px font 264 km — et le fixe suit
+/// (1e12), très loin des 9,2e18 d'un int64.
+constexpr double kOpenSheetPx = 1.0e6;
 
 /// Le centième de pixel d'indulgence des comparaisons de largeur : une somme juste à l'arrondi
 /// près ne doit pas fermer la porte au double bord, ni faire échouer un déplacement qui tient.
@@ -149,15 +153,14 @@ auto ToExportPlacements(const std::vector<Placement> &placements,
 /// of the bin model, and the count is read off the placements by the one
 /// function that counts them. Trame is asked for two plans and told nothing
 /// about pages — it is here, and only here, that they are compared.
-auto PrintedSheets(const QVector<OExportPlacement> &placements,
-                   double usedHeightPx, const OExportNestingParams &params) -> int
+auto PrintedSheetsFor(const QVector<OExportPlacement> &placements, double usedHeightPx,
+                      double binWidthPx, double sheetHeightPx, int columns,
+                      const OExportNestingParams &params) -> int
 {
     const double mmPerPx = 1.0 / ToPixel(1.0, Unit::Mm);
 
-    const OExportArtboards::Grid grid =
-        OExportArtboards::Compute(params.binWidthPx, usedHeightPx,
-                                  params.artboardHeightPx * mmPerPx,
-                                  params.artboardCount);
+    const OExportArtboards::Grid grid = OExportArtboards::Compute(
+        binWidthPx, usedHeightPx, sheetHeightPx * mmPerPx, columns);
 
     if (!grid.valid)
     {
@@ -168,6 +171,15 @@ auto PrintedSheets(const QVector<OExportPlacement> &placements,
     // for both candidate plans: it is therefore a constant in the comparison below, and the engine's
     // choice can only move through the placements — which is what it is there for.
     return OExportSheets::Compute(grid, placements, params.coverZonePx).count;
+}
+
+/// The same count, on the sheet the RUN was asked for — the shape every caller that has no second
+/// candidate needs.
+auto PrintedSheets(const QVector<OExportPlacement> &placements,
+                   double usedHeightPx, const OExportNestingParams &params) -> int
+{
+    return PrintedSheetsFor(placements, usedHeightPx, params.binWidthPx, params.artboardHeightPx,
+                            params.artboardCount, params);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -340,7 +352,6 @@ auto ConstraintsFor(const QVector<PieceTalk> &talks, const std::vector<int> &ran
     return out;
 }
 
-
 /// Le message d'un plan qui ne rentre pas — **et il a désormais deux causes, dont une seule est
 /// nommée par le moteur.**
 ///
@@ -361,6 +372,153 @@ struct TooNarrowFacts
     QString stoppedAt{};     ///< the first piece the search could not place
     double usablePx{0.0};    ///< the document width minus its two side margins
 };
+
+/// The pieces a CLOSED sheet cannot hold, by name — empty when every piece fits one.
+///
+/// **A fact of the geometry, asked before the first engine runs.** The A0 sheet is not assembled:
+/// a piece lying on two sheets could not be printed, so a piece larger than one sheet has no plan
+/// at all. `TiledEngine` would refuse it too — it marks the piece unplaced — but only after a full
+/// sweep, and through a message about a plan that does not fit. The user gets the reason instead,
+/// and the pieces it is about.
+///
+/// The four quarter turns are tried, because that is what the engine tries: a piece may fit a sheet
+/// lying down where it does not fit standing up.
+auto TooBigForOneSheet(const OExportNestingParams &params,
+                       const std::vector<Clipper2Lib::Path64> &polygons,
+                       const std::vector<QString> &names) -> QStringList
+{
+    const double sheetWidthPx =
+        params.artboardCount > 0 ? params.binWidthPx / params.artboardCount : 0.0;
+    const double usableW = sheetWidthPx - 2.0 * params.marginPx;
+    const double usableH = params.artboardHeightPx - 2.0 * params.marginPx;
+
+    const int64_t maxW = static_cast<int64_t>(std::floor(usableW * kTrameScale));
+    const int64_t maxH = static_cast<int64_t>(std::floor(usableH * kTrameScale));
+
+    QStringList tooBig;
+    const std::size_t count = std::min(polygons.size(), names.size());
+    for (std::size_t i = 0; i < count; ++i)
+    {
+        const BBox box = NestGeom::bboxFromPath(polygons.at(i));
+        const int64_t w = box.xMax - box.xMin;
+        const int64_t h = box.yMax - box.yMin;
+        if ((w <= maxW && h <= maxH) || (h <= maxW && w <= maxH))
+        {
+            continue;
+        }
+        tooBig << names.at(i);
+    }
+    return tooBig;
+}
+
+/// The rectangle a placement actually OCCUPIES on the plan — outline turned, then moved.
+///
+/// `OExportPlacement::origin`/`extent` are the FOOTPRINT's, unrotated (see their note): they say what
+/// the engine reserved, not what the paper carries. The drawn rectangle is the corner list of that
+/// box turned by the placement's angle about the engine's own convention — `x·cos − y·sin`,
+/// `x·sin + y·cos`, the one `NestGeom::rotatePath` applies — then moved by (x, y).
+///
+/// It is the box AROUND the outline, never the outline: a curved piece kept whole in a sheet has its
+/// box in the sheet too, so the test below is stricter than the truth and never looser.
+auto DrawnRect(const OExportPlacement &piece) -> QRectF
+{
+    const double rad = piece.rotation * M_PI / 180.0;
+    const double c = std::cos(rad);
+    const double s = std::sin(rad);
+
+    const double corners[4][2] = {{0.0, 0.0},
+                                  {piece.extentX, 0.0},
+                                  {piece.extentX, piece.extentY},
+                                  {0.0, piece.extentY}};
+
+    double minX = 0.0;
+    double minY = 0.0;
+    double maxX = 0.0;
+    double maxY = 0.0;
+    bool first = true;
+    for (const auto &corner : corners)
+    {
+        const double x = piece.x + corner[0] * c - corner[1] * s;
+        const double y = piece.y + corner[0] * s + corner[1] * c;
+        if (first)
+        {
+            minX = maxX = x;
+            minY = maxY = y;
+            first = false;
+            continue;
+        }
+        minX = std::min(minX, x);
+        maxX = std::max(maxX, x);
+        minY = std::min(minY, y);
+        maxY = std::max(maxY, y);
+    }
+    return QRectF(minX, minY, maxX - minX, maxY - minY);
+}
+
+/// @brief Whether the plan puts any ink inside @p zone — used for the cover page's block only.
+auto TouchesZone(const QVector<OExportPlacement> &plan, const QRectF &zone) -> bool
+{
+    for (const OExportPlacement &piece : plan)
+    {
+        if (DrawnRect(piece).intersects(zone))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+/// @brief Whether every piece lies WHOLLY inside one sheet, at the margin from its four edges.
+///
+/// C'est ce qui rend un plan de BANDE imprimable sur un format à feuilles fermées. Le moteur de bande
+/// ne connaît pas les feuilles : il peut poser une pièce à cheval, et ce plan-là ne s'imprime pas. Un
+/// plan qui passe ce test, lui, s'imprime — et il arrive avec le recuit et les rotations à 2°, que le
+/// moteur tuilé n'a pas.
+///
+/// La tolérance est le pixel unique que tout le reste de l'export s'accorde : une position posée au
+/// contact exact d'une marge n'est pas un cheval.
+auto SheetClean(const QVector<OExportPlacement> &plan, const OExportNestingParams &params) -> bool
+{
+    const qreal cellW = params.artboardCount > 0 ? params.binWidthPx / params.artboardCount : 0.0;
+    const qreal cellH = params.artboardHeightPx;
+    if (cellW <= 0.0 || cellH <= 0.0)
+    {
+        return false;
+    }
+
+    constexpr qreal kTolerancePx = 1.0;
+
+    for (const OExportPlacement &piece : plan)
+    {
+        const QRectF box = DrawnRect(piece);
+
+        // La feuille où la pièce se tient, lue sur son coin : une pièce à cheval tombe dans une
+        // feuille, puis déborde de l'une de ses quatre bornes.
+        const int col = static_cast<int>(std::floor((box.left() - params.marginPx) / cellW + 1e-9));
+        const int row = static_cast<int>(std::floor((box.top() - params.marginPx) / cellH + 1e-9));
+
+        const qreal left = col * cellW + params.marginPx;
+        const qreal top = row * cellH + params.marginPx;
+        const qreal right = (col + 1) * cellW - params.marginPx;
+        const qreal bottom = (row + 1) * cellH - params.marginPx;
+
+        if (box.left() < left - kTolerancePx || box.right() > right + kTolerancePx
+            || box.top() < top - kTolerancePx || box.bottom() > bottom + kTolerancePx)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+/// The refusal that goes with the facts above.
+auto TooBigError(const QStringList &pieces) -> QString
+{
+    return QObject::tr("These pieces are larger than one sheet of this format: %1. "
+                       "A sheet is printed whole, so a piece that did not fit on one could not "
+                       "be printed at all.")
+        .arg(pieces.join(QStringLiteral(", ")));
+}
 
 /// Gathers those facts from the engine's own answer, using the narrowest width of each piece — the
 /// same measure the engine uses to decide whether it fits, so the two cannot disagree.
@@ -1157,7 +1315,6 @@ auto PlanFoldedFabric(const Footprint::Result &footprint, const QVector<PieceTal
         }
     }
 
-
     // ── La sortie ────────────────────────────────────────────────────────────────────────────
     placements->clear();
     orderedRanks->clear();
@@ -1613,6 +1770,22 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         return result;
     }
 
+    // ── Feuilles fermées : une pièce plus grande qu'une feuille n'a aucun plan ──
+    //
+    // Refusé ICI, avant les moteurs : c'est une impossibilité de la géométrie, pas un arrangement
+    // que la recherche aurait manqué, et l'utilisatrice n'a pas à attendre un plan qui ne peut pas
+    // exister pour apprendre quelles pièces sont en cause. Voir TooBigForOneSheet.
+
+    if (params.closedSheets)
+    {
+        const QStringList tooBig = TooBigForOneSheet(params, footprint.polygons, footprint.keys);
+        if (!tooBig.isEmpty())
+        {
+            result.error = TooBigError(tooBig);
+            return result;
+        }
+    }
+
     // Fixed width, unbounded height: the height is what the nesting produces.
     //
     // The margin and the gap arrive already in pixels, like the width and the polygons:
@@ -1769,6 +1942,8 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
         spec.sheetHeight   = params.artboardHeightPx;
         spec.gap           = params.gapPx;
         spec.allowRotation = true;
+        // Le format A0 : aucune pièce à cheval sur deux feuilles. Voir OExportNestingParams.
+        spec.closedSheets  = params.closedSheets;
         // The second engine is asked the same question as the first, and for the same reason: a
         // run given up during the tiled pass has to stop there too.
         spec.abandoned     = params.abandoned;
@@ -1792,36 +1967,268 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
 
         const QVector<OExportPlacement> stripPlan =
             ToExportPlacements(placements, footprint.polygons);
-        int bestSheets = PrintedSheets(
-            stripPlan, Engine::UsedHeight(placements, footprint.polygons, bin), params);
+        // **Le plan de bande ne concourt que s'il est IMPRIMABLE.** Il ne connaît pas les feuilles :
+        // rien ne l'empêche de poser une pièce à cheval, et ce plan-là ne s'imprime pas sur un format
+        // à feuilles fermées. Quand il est propre, il concourt comme les autres — et il arrive avec
+        // le RECUIT et les rotations à 2°, que le moteur tuilé n'a pas.
+        //
+        // À égalité de feuilles, c'est donc lui qui reste : `tiledSheets < bestSheets` est strict.
+        // Ce n'est pas une faveur, c'est la seule comparaison que les deux plans admettent — le
+        // critère de Sophie est le nombre de feuilles, et à feuilles égales le plan le plus fin est
+        // le meilleur.
+        const bool stripPrintable = !params.closedSheets || SheetClean(stripPlan, params);
+        int bestSheets = stripPrintable ? PrintedSheets(stripPlan,
+                                                       Engine::UsedHeight(placements,
+                                                                          footprint.polygons, bin),
+                                                       params)
+                                        : std::numeric_limits<int>::max();
+        bool tiledChosen = false;
 
-        for (const TiledEngine::Spec::Order order : orders)
+        // ── LA FEUILLE : PORTRAIT, PUIS PAYSAGE ────────────────────────────────────────────────
+        //
+        // **Le choix n'est plus dans l'interface** : une feuille A0 se pose dans les deux sens, et
+        // c'est le nombre de PAGES qui tranche. Mesuré le 07-11-2026 sur deux patrons : l'un donne
+        // une page en portrait et deux en paysage, l'autre exactement l'inverse — et rien dans la
+        // feuille ne dit lequel. On demande donc les deux plans.
+        //
+        // **Le portrait passe le premier, et `tiledSheets < bestSheets` est strict** : à égalité de
+        // pages il reste, et c'est l'orientation que tout run portait avant cette règle.
+        struct SheetChoice
         {
-            spec.order = order;
+            bool landscape;
+            double binWidthPx;
+            double sheetHeightPx;
+        };
 
-            bool tiledAbandoned = false;
-            const std::vector<Placement> tiled =
-                TiledEngine(spec).place(bin, footprint.polygons, &tiledAbandoned);
+        std::vector<SheetChoice> sheets{
+            {false, params.binWidthPx, params.artboardHeightPx}};
+        if (params.sheetBothWays)
+        {
+            // La feuille couchée : sa largeur devient la hauteur, et le bac s'élargit d'autant —
+            // une colonne de feuilles couchées est aussi large que leur long côté.
+            sheets.push_back({true, params.artboardHeightPx * params.artboardCount,
+                              params.binWidthPx / params.artboardCount});
+        }
 
-            if (tiledAbandoned)
+        for (const SheetChoice &sheet : sheets)
+        {
+            // Le bac de CETTE feuille : même marge, mêmes zones interdites — le bloc de la page de
+            // garde est le même dans les deux sens (c'est la page qui est tournée, pas le bloc).
+            const Bin sheetBin(sheet.binWidthPx, params.marginPx, zones);
+
+            spec.sheetWidth = sheet.binWidthPx / params.artboardCount;
+            spec.sheetHeight = sheet.sheetHeightPx;
+
+            for (const TiledEngine::Spec::Order order : orders)
             {
-                result.abandoned = true;
-                return result;
+                spec.order = order;
+
+                bool tiledAbandoned = false;
+                const std::vector<Placement> tiled =
+                    TiledEngine(spec).place(sheetBin, footprint.polygons, &tiledAbandoned);
+
+                if (tiledAbandoned)
+                {
+                    result.abandoned = true;
+                    return result;
+                }
+
+                if (tiled.size() != footprint.polygons.size() || !AllPlaced(tiled))
+                {
+                    continue;   // ce départ-là n'a pas su tout poser : il ne concourt pas
+                }
+
+                const int tiledSheets = PrintedSheetsFor(
+                    ToExportPlacements(tiled, footprint.polygons),
+                    Engine::UsedHeight(tiled, footprint.polygons, sheetBin), sheet.binWidthPx,
+                    sheet.sheetHeightPx, params.artboardCount, params);
+
+                if (tiledSheets < bestSheets)
+                {
+                    bestSheets  = tiledSheets;
+                    placements  = tiled;
+                    tiledChosen = true;
+                    result.binWidthPx = sheet.binWidthPx;
+                    result.sheetHeightPx = sheet.sheetHeightPx;
+                }
             }
 
-            if (tiled.size() != footprint.polygons.size() || !AllPlaced(tiled))
+            // ── LE MÊME PLAN, TOURNÉ D'UN QUART DE TOUR ─────────────────────────────────────────────
+            //
+            // Une feuille A0 portrait et une feuille A0 paysage ont la MÊME surface et pas la même
+            // FORME : un plan qui remplit l'une ne remplit pas forcément l'autre, et le glouton, qui
+            // pose pièce après pièce dans un ordre, ne retrouve pas toujours le plan qu'il a trouvé dans
+            // l'autre sens. Mesuré par Sophie le 07-11-2026 : une seule page en portrait, deux en paysage.
+            //
+            // Or un plan est un plan. Tourné d'un quart de tour, il occupe la feuille de l'autre sens —
+            // ses marges avec lui, parce que la marge est la même sur les quatre bords. Démonstration :
+            // le plan portrait tient dans [m, L−m] × [m, H−m] ; la rotation x' = K − y, y' = x envoie ce
+            // rectangle sur [m, H−m] × [m, L−m], qui est exactement la feuille tournée. Il n'y a donc
+            // rien à chercher : si le portrait tient en une page, le paysage y tient aussi.
+            //
+            // On ne le demande que si l'orientation courante coûte plus d'une feuille — sinon il ne
+            // pourrait rien gagner. Et on REFUSE le plan tourné s'il passe sous la page de garde : le
+            // bloc ne tourne pas avec le plan, il reste au coin de la première feuille.
+            if (params.closedSheets && bestSheets > 1)
             {
-                continue;   // ce départ-là n'a pas su tout poser : il ne concourt pas
+                TiledEngine::Spec turnedSpec = spec;
+                turnedSpec.sheetWidth = spec.sheetHeight;
+                turnedSpec.sheetHeight = spec.sheetWidth;
+
+                // Le plan source se cherche dans la LARGEUR de l'autre sens — le bac du run est celui de
+                // l'orientation courante, et c'est la feuille qui change, pas le plan qu'on y cherche.
+                const Bin turnedBin(spec.sheetHeight, params.marginPx);
+
+                for (const TiledEngine::Spec::Order order : orders)
+                {
+                    turnedSpec.order = order;
+
+                    bool turnedAbandoned = false;
+                    const std::vector<Placement> source =
+                        TiledEngine(turnedSpec).place(turnedBin, footprint.polygons, &turnedAbandoned);
+
+                    if (turnedAbandoned)
+                    {
+                        result.abandoned = true;
+                        return result;
+                    }
+
+                    if (!AllPlaced(source))
+                    {
+                        continue;
+                    }
+
+                    // Où le plan source s'arrête : c'est la translation qui le remet dans ses marges
+                    // une fois tourné.
+                    const QVector<OExportPlacement> sourcePlan =
+                        ToExportPlacements(source, footprint.polygons);
+                    double deepest = 0.0;
+                    for (const OExportPlacement &piece : sourcePlan)
+                    {
+                        deepest = std::max(deepest, DrawnRect(piece).bottom());
+                    }
+
+                    const double shift = deepest + params.marginPx;
+
+                    std::vector<Placement> turned = source;
+                    for (Placement &piece : turned)
+                    {
+                        const double x = piece.x;
+                        const double y = piece.y;
+                        piece.x = shift - y;
+                        piece.y = x;
+                        piece.rotation = std::fmod(piece.rotation + 90.0, 360.0);
+                    }
+
+                    const QVector<OExportPlacement> turnedPlan =
+                        ToExportPlacements(turned, footprint.polygons);
+
+                    // Le bloc de la page de garde ne tourne pas avec le plan : il reste au coin de la
+                    // première feuille. Un plan tourné qui passerait dessous est donc refusé.
+                    const bool touchesZone =
+                        !params.coverZonePx.isEmpty() && TouchesZone(turnedPlan, params.coverZonePx);
+
+                    const int turnedSheets = PrintedSheetsFor(
+                        turnedPlan, Engine::UsedHeight(turned, footprint.polygons, sheetBin),
+                        sheet.binWidthPx, sheet.sheetHeightPx, params.artboardCount, params);
+
+                    if (touchesZone)
+                    {
+                        continue;
+                    }
+
+                    if (turnedSheets < bestSheets)
+                    {
+                        bestSheets = turnedSheets;
+                        placements = turned;
+                        tiledChosen = true;
+                        result.binWidthPx = sheet.binWidthPx;
+                        result.sheetHeightPx = sheet.sheetHeightPx;
+                    }
+                }
             }
+        }
 
-            const int tiledSheets = PrintedSheets(
-                ToExportPlacements(tiled, footprint.polygons),
-                Engine::UsedHeight(tiled, footprint.polygons, bin), params);
+        // Aucun ordre n'a posé toutes les pièces, et le plan de bande n'est pas imprimable : il n'y a
+        // pas de plan. On le dit plutôt que de rendre un plan à cheval.
+        if (params.closedSheets && !tiledChosen && !stripPrintable)
+        {
+            result.error = QObject::tr("The pieces do not fit on the sheets of this format.");
+            return result;
+        }
+    }
 
-            if (tiledSheets < bestSheets)
+    // ── Un roulé n'a qu'une LONGUEUR à perdre, et deux moteurs pour la trouver ──────────────
+    //
+    // Le moteur de bande recuit et tourne au degré ; le moteur tuilé est glouton et ne tourne qu'au
+    // quart de tour, mais il essaie TROIS ordres. Mesuré par Sophie le 07-11-2026 sur un patron
+    // réel : 1 263 mm pour le premier, 1 189 pour le second, mêmes pièces, même largeur — le
+    // glouton gagnait 74 mm.
+    //
+    // Un roulé ne paie que sa longueur, donc on demande les deux et on garde la plus courte : le
+    // plan ne peut pas sortir plus long qu'avant. Et jamais sur un plan de coupe : le moteur tuilé
+    // ne connaît ni les angles par pièce ni l'ancrage au pli, deux choses qu'un plan de coupe doit.
+    if (params.printRun && params.artboardHeightPx <= 0.0 && AllPlaced(placements))
+    {
+        double bestHeight = Engine::UsedHeight(placements, footprint.polygons, bin);
+
+        const TiledEngine::Spec::Order orders[] = {TiledEngine::Spec::Order::HolderArea,
+                                                   TiledEngine::Spec::Order::HolderHeight,
+                                                   TiledEngine::Spec::Order::HolderWidth};
+
+        // **Deux familles de candidats, parce que le glouton dépend de la hauteur de son étagère.**
+        //
+        // 1. la bande OUVERTE — une étagère plus haute que tout plan possible ;
+        // 2. la bande DÉCOUPÉE en étagères hautes comme la feuille ISO de cette largeur
+        //    (largeur × √2 : 841 × 1,414 = 1 189 mm, c'est-à-dire l'A0 exactement). Le glouton pose
+        //    alors comme sur des feuilles A0, et c'est le plan que Sophie comparait : 1 178 mm pour
+        //    celui-là contre 1 263 pour le recuit, mêmes pièces, même largeur.
+        //
+        // Le tracé du 07-11-2026 explique pourquoi les deux : sur son patron, l'étagère OUVERTE donne
+        // 1 812 mm (un glouton sans pression monte), l'étagère ISO 1 178 mm. Sur un autre jeu c'est
+        // l'inverse. On demande donc les deux et on garde le plus court.
+        const struct
+        {
+            bool closed;
+            double sheetHeightPx;
+        } shapes[]{{false, kOpenSheetPx}, {true, params.binWidthPx * std::sqrt(2.0)}};
+
+        for (const auto &shape : shapes)
+        {
+            TiledEngine::Spec spec;
+            spec.sheetWidth = params.binWidthPx;
+            spec.sheetHeight = shape.sheetHeightPx;
+            spec.gap = params.gapPx;
+            spec.allowRotation = true;
+            spec.closedSheets = shape.closed;
+            spec.abandoned = params.abandoned;
+
+            for (const TiledEngine::Spec::Order order : orders)
             {
-                bestSheets  = tiledSheets;
-                placements  = tiled;
+                spec.order = order;
+
+                bool greedyAbandoned = false;
+                const std::vector<Placement> greedy =
+                    TiledEngine(spec).place(bin, footprint.polygons, &greedyAbandoned);
+
+                if (greedyAbandoned)
+                {
+                    result.abandoned = true;
+                    return result;
+                }
+
+                if (!AllPlaced(greedy))
+                {
+                    continue; // ce départ-là n'a pas su tout poser : il ne concourt pas
+                }
+
+                const double greedyHeight = Engine::UsedHeight(greedy, footprint.polygons, bin);
+
+                if (greedyHeight < bestHeight)
+                {
+                    bestHeight = greedyHeight;
+                    placements = greedy;
+                }
             }
         }
     }
@@ -1841,7 +2248,12 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // touche strictement moins de feuilles (ou si elle se recentre sans en toucher une de plus),
     // aucune rangée ne s'ouvre, et aucun bord ne s'approche d'une jonction de feuilles. Voir
     // Modifications/Ostara/ExportMode/Nesting.md §25.
-    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0 && !foldedFabricPlan)
+    // ⚠️ **Et jamais sur des feuilles fermées** : ces deux passes déplacent des pièces sans connaître
+    // la règle des feuilles fermées — une pièce que `Minimize` pousse d'une feuille à l'autre serait
+    // exactement ce que le format interdit. Elles n'ont d'ailleurs rien à y gagner : une pièce y
+    // occupe déjà une seule page, et un bord de feuille y est tenu par la marge, pas par une passe.
+    if (params.artboardHeightPx > 0.0 && params.artboardCount > 0 && !foldedFabricPlan
+        && !params.closedSheets)
     {
         const double mmPerPx = 1.0 / ToPixel(1.0, Unit::Mm);
         const OExportArtboards::Grid grid =
