@@ -1832,10 +1832,10 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
     // du moteur tuilé : une passe écrite dans ce moteur-là ne s'exécuterait jamais quand la bande
     // gagne, et le gain resterait invisible. C'est arrivé, et c'est ce que ce placement corrige.
     //
-    // 1. `Minimize` repose chaque pièce sur le MOINS de feuilles. Une pièce à cheval sur six feuilles
-    //    se recoupe et se recolle six fois à l'atelier ; la même sur trois, une fois.
-    // 2. `Breathe` recentre ensuite chaque pièce dans le couloir que les règles lui laissent — deux
-    //    écarts inégaux deviennent deux écarts égaux.
+    // 1. le reposage : chaque pièce sur le MOINS de feuilles. Une pièce à cheval sur six feuilles se
+    //    recoupe et se recolle six fois à l'atelier ; la même sur trois, une fois.
+    // 2. l'air : chaque pièce recentrée dans le couloir que les règles lui laissent — deux écarts
+    //    inégaux deviennent deux écarts égaux.
     //
     // ⚠️ **Le plan ne peut pas sortir pire de l'une ou de l'autre** : une pièce ne bouge que si elle
     // touche strictement moins de feuilles (ou si elle se recentre sans en toucher une de plus),
@@ -1858,8 +1858,9 @@ auto OExportNesting::Run(const QVector<OExportSizeLayer> &layers, const OExportN
             repack.rows       = grid.rows;
             repack.gap        = params.gapPx;
 
-            placements = PageRepack::Minimize(bin, footprint.polygons, placements, repack);
-            placements = PageRepack::Breathe(bin, footprint.polygons, placements, repack);
+            // Un seul appel : les deux passes ont un ordre obligatoire, et `Refine` est le seul
+            // endroit qui le connaisse.
+            placements = PageRepack::Refine(bin, footprint.polygons, placements, repack);
         }
     }
 
