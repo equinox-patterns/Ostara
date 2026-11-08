@@ -281,8 +281,27 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
                                           drawing.sheets.count + 1)
                          : MainWindow::tr(" · %n pages", nullptr, drawing.sheets.count);
         }
+        else if (!output.projectorPagesPx.isEmpty())
+        {
+            // **Un projecteur n'a pas de grille**, donc pas de compte de feuilles : son nombre de
+            // pages vient de la DÉCOUPE que le format a faite, quand son plan ne tenait pas sous
+            // 500 × 500 cm. C'est le seul format qui découpe sans feuille, et il le dit ici.
+            label += MainWindow::tr(" · %n pages", nullptr,
+                                    static_cast<int>(output.projectorPagesPx.size()));
+        }
 
-        return label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
+        QString text = label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
+
+        // **Ce que le fichier a de particulier, dit après coup.** Un plan projeté trop grand sort en
+        // plusieurs pages — la raison est une limite du PDF et non du patron, et l'utilisatrice ne
+        // peut pas la deviner. Un plan qui n'a pas pris la forme demandée le dit aussi : on ne
+        // refuse pas, mais on ne laisse pas croire que le réglage a été suivi.
+        if (!output.projectorWarning.isEmpty())
+        {
+            text += QStringLiteral(" — ") + output.projectorWarning;
+        }
+
+        return text;
     }
 
     // « Fabric width » et « length » plutôt que « laize » et « métrage » : la chaîne source d'Ostara
@@ -836,6 +855,14 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         /// zéro veut dire « rien de particulier », donc les valeurs de la requête.
         int widthMm{0};
         qreal gapMm{0.0};
+
+        /// Les pages du PDF projeté, quand le plan n'en tient pas sur une seule — vide sinon.
+        /// @see OExportProjector::Outcome::pagesPx
+        QVector<QRectF> pagesPx{};
+
+        /// Ce que le run a à dire sans avoir échoué (plan pas assez carré, écrit en plusieurs
+        /// pages…) — vide quand il n'y a rien à dire.
+        QString warning{};
     };
 
     /// Le sort d'une passe : son plan, ou la raison pour laquelle il n'y en a pas. **Aucun message
@@ -1198,6 +1225,10 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
             OExportProjector::Limits limits;
             limits.gapMm = request.gapMm;
             limits.pageMaxMm = 5000.0;
+            // **Le seul réglage de la recherche** : carré, portrait ou paysage. Il ne change pas le
+            // plafond — 500 × 500 cm reste la page d'un projecteur — il change l'ordre dans lequel
+            // les paliers sont essayés, et le critère qui désigne le gagnant.
+            limits.shape = request.pageShape;
 
             QFuture<OExportProjector::Outcome> future = QtConcurrent::run(
                 &pool, &OExportProjector::Nest, planLayers, planParams, limits);
@@ -1229,6 +1260,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
 
             pass.plan = PlanPass{std::move(planLayers), outcome.result, std::move(planGroupDecor),
                                  outcome.widthMm, outcome.gapMm};
+            pass.plan->pagesPx = outcome.pagesPx;
+            pass.plan->warning = outcome.warning;
             return pass;
         }
 
@@ -1412,6 +1445,7 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     output.unit = request.unit;
     output.printModelToken = request.printModelToken;
     output.documentLandscape = request.documentLandscape;
+    output.pageShape = request.pageShape;
     output.columns = request.columns;
     output.frameHeightMm = request.frameHeightMm;
     output.marksTemplateName = request.marksTemplateName;
@@ -1434,6 +1468,11 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     // commencer par l'écriture DXF / PLT / HPGL, le PDF et l'image.
     output.layers = std::move(fabric.plan->layers);
     output.result = std::move(fabric.plan->result);
+    // Les pages d'un projecteur : vides quand le plan tient sur une seule, et c'est le cas normal.
+    // Elles voyagent à côté du résultat et non dedans, parce que tout ce qui lit un plan n'a pas à
+    // apprendre qu'un projecteur ait pu le découper.
+    output.projectorPagesPx = std::move(fabric.plan->pagesPx);
+    output.projectorWarning = fabric.plan->warning;
 
     // **La feuille que le plan a RÉELLEMENT prise.** Un format qui se pose dans les deux sens ne
     // décide pas de son orientation avant de nidifier : c'est le nombre de pages qui tranche, et le

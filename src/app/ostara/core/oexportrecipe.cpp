@@ -67,6 +67,10 @@ constexpr auto kAttrFrameHeightMm = "frameHeightMm";
 constexpr auto kAttrDecor = "decor";
 /// Le sens du DOCUMENT demandé — « landscape » quand il n'est pas le portrait. Absent : portrait.
 constexpr auto kAttrOrientation = "orientation";
+/// La forme de page cherchée par le format Projecteur — « portrait » ou « landscape ». Absent :
+/// carré, qui est le défaut. Ce n'est PAS `orientation` : un projecteur n'a pas de feuille à tourner,
+/// il a une largeur à chercher.
+constexpr auto kAttrShape = "shape";
 constexpr auto kAttrDocumentWidthMm = "documentWidthMm";
 constexpr auto kAttrTemplate = "template";
 
@@ -157,6 +161,18 @@ auto OExportRecipe::Of(QDomDocument &doc, const OExportOutput &output, const OEx
     if (formatModel != nullptr && formatModel->hasOrientation && output.documentLandscape)
     {
         format.setAttribute(QLatin1String(kAttrOrientation), QStringLiteral("landscape"));
+    }
+
+    // ── La FORME DE PAGE du projecteur, quand ce n'est pas le carré ─────────────────────────────
+    //
+    // Le projecteur n'a pas de feuille, donc pas d'`orientation` : `shape` est l'autre question —
+    // dans quel sens sa recherche de largeur a été menée. Absent veut dire carré, qui est le défaut,
+    // et un lecteur qui ne connaît pas cette attribute l'ignore : elle est optionnelle.
+    if (OExportFormat::IsProjector(output.format) && output.pageShape != OExportPageShape::Square)
+    {
+        format.setAttribute(QLatin1String(kAttrShape),
+                            output.pageShape == OExportPageShape::Portrait ? QStringLiteral("portrait")
+                                                                           : QStringLiteral("landscape"));
     }
 
     recipe.appendChild(format);

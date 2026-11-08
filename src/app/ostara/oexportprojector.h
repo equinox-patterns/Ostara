@@ -27,6 +27,7 @@
 #ifndef OEXPORTPROJECTOR_H
 #define OEXPORTPROJECTOR_H
 
+#include "core/oexportoutput.h"
 #include "oexportgeometry.h"
 #include "oexportnesting.h"
 
@@ -71,6 +72,12 @@ struct Limits
     /// Le plancher absolu de cet espace, en millimètres — **5 cm**. En dessous, ce n'est plus un plan
     /// projecteur, c'est un plan de coupe.
     qreal gapFloorMm{50.0};
+
+    /// Dans quel sens chercher la largeur du bac — le seul réglage de la recherche.
+    ///
+    /// **Ajouté en fin de struct, et pas au milieu** : l'initialisation est positionnelle, et un champ
+    /// inséré avant un autre décalerait silencieusement tous les suivants.
+    OExportPageShape shape{OExportPageShape::Square};
 };
 
 /// @brief Ce qu'une recherche a donné.
@@ -94,6 +101,24 @@ struct Outcome
 
     /// L'espace entre pièces du plan retenu, en millimètres.
     qreal gapMm{0.0};
+
+    /// Les pages du PDF, en pixels du plan — **vide quand le plan tient sur une seule page**.
+    ///
+    /// Chaque rectangle est la boîte serrée de sa page plus la marge au bord, donc les pages n'ont
+    /// pas toutes la même taille. Elles sont exprimées dans le repère du plan publié
+    /// (`result.placements`, déjà translatés), et c'est le writer qui découpe : il n'a pas à savoir
+    /// qu'un projecteur a découpé quoi que ce soit.
+    ///
+    /// @see OExportOutput::projectorPagesPx — le même vecteur, de l'autre côté du run.
+    QVector<QRectF> pagesPx{};
+
+    /// Ce qui est vrai du plan sans empêcher de l'écrire — vide quand il n'y a rien à dire.
+    ///
+    /// **Un avertissement, jamais un refus.** Un plan qui sort plus haut que large en mode paysage,
+    /// ou qui n'arrive pas à être carré, reste un plan utilisable : le refuser priverait
+    /// l'utilisatrice d'un fichier qu'elle peut projeter. Le refus, lui, ne sert qu'à ce qui ne peut
+    /// pas exister (`error`).
+    QString warning{};
 };
 
 /**
@@ -102,6 +127,20 @@ struct Outcome
  * L'échelle des paliers est 150, 200, … 500 cm. L'espace demandé est tenté **sur tous les paliers
  * d'abord**, puis le plancher de 5 cm sur tous les paliers : l'espacement passe avant la compacité
  * (`Projector.md` §10.3).
+ *
+ * **Le sens de la recherche est le seul réglage** (`Limits::shape`), et il ne change rien d'autre :
+ *
+ * - `Portrait` — les paliers du plus étroit au plus large, et **le premier qui tient est le bon** :
+ *   la page la plus étroite, donc la plus haute. C'est ce que le format faisait avant.
+ * - `Landscape` — les paliers du plus large au plus étroit, même règle : la page la plus large.
+ * - `Square` — les paliers du plus étroit au plus large, mais on ne s'arrête qu'au premier dont le
+ *   rapport grand côté / petit côté est **≤ 1,25** : une page à peu près carrée. Si aucun palier n'y
+ *   arrive, on garde le plus proche **et on le dit** dans `Outcome::warning`.
+ *
+ * **Et quand aucune page ne tient**, le plan n'est pas refusé : il est **coupé en pages** d'au plus
+ * 500 × 500 cm, sans qu'aucune pièce ne soit à cheval sur deux d'entre elles, et `Outcome::pagesPx`
+ * porte la découpe. Le refus est réservé à ce qui ne peut pas exister — une pièce plus grande que la
+ * page elle-même.
  */
 auto Nest(const QVector<OExportSizeLayer> &layers, const OExportNestingParams &params,
           const Limits &limits) -> Outcome;

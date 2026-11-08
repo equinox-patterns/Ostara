@@ -239,6 +239,17 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
             }
         }
     }
+    else if (!output.projectorPagesPx.isEmpty())
+    {
+        // **Un plan projeté qui ne tient pas sous 500 × 500 cm est coupé en pages.** Chacune fait la
+        // taille de son contenu — elles n'ont donc pas toutes la même largeur, et c'est voulu : un
+        // projecteur ne paie pas de papier, il paie de la surface à projeter.
+        //
+        // ⚠️ Le writer écrit un `/MediaBox` **par page** (`SvgToOcgPdf.cpp`) : rien à lui apprendre,
+        // il lui suffit de recevoir les rectangles. Il ne découpe pas non plus le contenu — c'est le
+        // `/MediaBox` qui décide de ce qui se voit.
+        pages = output.projectorPagesPx;
+    }
     else
     {
         pages.append(QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx));
@@ -366,7 +377,16 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // the PDF. A page is the plan read through a rectangle — and the writer does not crop
     // to what it is handed, it only sizes the root and shifts the content, so the plan
     // being whole here is exactly what each page needs.
-    const QRectF imageRect = artboards.valid ? artboards.planRect : pages.first();
+    // **Le plan entier, jamais la première page.** Une projection découpée a plusieurs rectangles et
+    // pas de grille : prendre le premier dessinerait la page 1 et couperait tout le reste.
+    QRectF imageRect = artboards.valid ? artboards.planRect : pages.first();
+    if (!artboards.valid)
+    {
+        for (const QRectF &page : pages)
+        {
+            imageRect = imageRect.united(page);
+        }
+    }
 
     const QString svgPath = dir.filePath(QStringLiteral("generation.svg"));
 

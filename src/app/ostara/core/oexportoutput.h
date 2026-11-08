@@ -33,6 +33,7 @@
 #define OEXPORTOUTPUT_H
 
 #include <QMap>
+#include <QRectF>
 #include <QSet>
 #include <QString>
 #include <QVector>
@@ -42,6 +43,33 @@
 #include "oexportnesting.h"
 #include "../vpatterndb/osizerange.h"
 #include "../vmisc/def.h"
+
+/**
+ * @brief La forme de la page que le format Projecteur cherche — **le seul format qui en ait une**.
+ *
+ * Un projecteur n'a ni laize, ni feuille, ni tuile : sa page est la boîte serrée de ce qu'il a posé,
+ * tenue sous un plafond **carré** de 500 × 500 cm. La largeur du bac n'est donc pas donnée, elle est
+ * **cherchée**, et c'est ce choix-ci qui dit dans quel sens la chercher (`Projector.md` §10).
+ *
+ * - `Square` — on balaie les paliers et on garde celui dont la page est la plus proche du carré,
+ *   c'est-à-dire dont le rapport grand côté / petit côté est le plus près de 1. C'est le défaut.
+ * - `Portrait` — le premier palier qui tient en montant de 150 vers 500 : la page la plus étroite,
+ *   donc la plus haute. C'est ce que le format faisait avant que ce réglage existe.
+ * - `Landscape` — le palier le plus large, 500 : la page la plus large, donc la plus basse.
+ *
+ * **Ce n'est pas le sens d'une feuille**, et ne pas le confondre avec `OExportPrintModel::
+ * documentLandscape` : l'A0 tourne SA feuille, le projecteur cherche SA largeur. Il n'a pas de
+ * feuille à tourner, et le quart de tour d'un plan gagnant ne lui donnerait pas ce qu'il cherche.
+ *
+ * Les valeurs entières sont écrites telles quelles dans la recette et dans les favoris : elles sont
+ * une clé de fichier, jamais une position de combo.
+ */
+enum class OExportPageShape
+{
+    Square = 0,
+    Portrait = 1,
+    Landscape = 2,
+};
 
 /**
  * @brief One generation: the outcome of a nesting run, kept as it was produced.
@@ -159,6 +187,43 @@ struct OExportOutput
     /// diffèrent, rien n'est recalculé — la page entière est tournée de 90°, pièces et page de garde
     /// comprises, et largeur et hauteur s'échangent. Voir `OExportPrintModel::documentLandscape`.
     bool documentLandscape{false};
+
+    /// @brief La forme de page demandée au format Projecteur — sans objet pour tous les autres.
+    ///
+    /// **Le projeté et l'imprimé ne demandent pas la même chose.** Un document d'impression livre des
+    /// feuilles : son sens est celui de la feuille. Un projecteur n'a pas de feuille : il cherche la
+    /// largeur de son bac, et ce réglage dit dans quel sens il la cherche (`OExportPageShape`).
+    ///
+    /// Défaut `Square` : c'est le choix qui corrige le défaut d'origine du format, dont la recherche
+    /// partait du palier le plus étroit et sortait donc une bande haute. Un run rejoué depuis une
+    /// recette d'avant ce champ n'en porte aucun et retombe ici.
+    OExportPageShape pageShape{OExportPageShape::Square};
+
+    /// @brief Les pages du PDF projeté, en pixels du plan — vide pour tous les autres formats.
+    ///
+    /// Un projecteur écrit **une** page tant que son plan tient sous 500 × 500 cm. Au-delà, le PDF
+    /// n'est plus lisible par un logiciel externe : le plan est alors coupé en pages, **sans qu'aucune
+    /// pièce ne soit à cheval** sur deux d'entre elles (`Projector.md` §3.3).
+    ///
+    /// Chaque rectangle est **la boîte serrée de sa page plus la marge au bord**, donc les pages
+    /// n'ont pas toutes la même taille — c'est la dernière qui est plus petite, et c'est voulu : un
+    /// projecteur ne paie pas de papier, il paie de la surface à projeter.
+    ///
+    /// Vide = une seule page, celle que `result` décrit. Ce n'est pas un cas dégradé : c'est le cas
+    /// normal, et celui qui doit rester écrit comme avant.
+    QVector<QRectF> projectorPagesPx{};
+
+    /// @brief Ce que le run projeté a à dire sans avoir échoué — vide quand il n'y a rien à dire.
+    ///
+    /// Deux choses s'y écrivent : un plan qui sort en plusieurs pages parce qu'il dépasse
+    /// 500 × 500 cm (la plus grande page qu'un PDF puisse porter et rester lisible par un autre
+    /// logiciel), et un plan qui n'a pas pu prendre la forme demandée — pas assez carré, ou pas plus
+    /// large que haut en paysage.
+    ///
+    /// **Une propriété du FICHIER, donc gardée avec lui** : rouvrir la génération doit redire la même
+    /// chose, sinon l'explication ne serait vraie qu'au moment où elle a été écrite. Un
+    /// avertissement n'empêche rien : le fichier existe.
+    QString projectorWarning{};
 
     /// Sheets side by side. Irrelevant to a roll — which has none — and kept all the same,
     /// so that the replay does not have to guess whether zero meant "one" or "unknown".
@@ -307,6 +372,8 @@ struct OExportRunRequest
     QString printModelToken{};
     /// @see OExportOutput::documentLandscape — le même choix, de l'autre côté.
     bool documentLandscape{false};
+    /// @see OExportOutput::pageShape — le même choix, de l'autre côté.
+    OExportPageShape pageShape{OExportPageShape::Square};
     int columns{1};
     qreal frameHeightMm{0.0};
     QString marksTemplateName{};

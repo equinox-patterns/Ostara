@@ -52,6 +52,8 @@ constexpr auto kColumns = "columns";
 constexpr auto kFrameHeight = "frameHeightMm";
 /// Le sens du document demandé — vrai quand il est paysage. Absent : portrait, donc rien à écrire.
 constexpr auto kDocumentLandscape = "documentLandscape";
+/// La forme de page du format Projecteur — carré, portrait ou paysage.
+constexpr auto kPageShape = "pageShape";
 constexpr auto kMarksTemplate = "marksTemplateName";
 constexpr auto kCoverPageTemplate = "coverPageTemplateName";
 constexpr auto kPinnedAxes = "pinnedAxes";
@@ -100,6 +102,12 @@ auto RecipeOf(const OExportRunRequest &request) -> QVariantMap
         // fiche écrite avant ce champ se relit en portrait, ce qu'elle était.
         record.insert(QLatin1String(kDocumentLandscape), true);
     }
+    if (request.pageShape != OExportPageShape::Square)
+    {
+        // Même règle : le défaut ne s'écrit pas. Une fiche d'avant ce champ se relit donc en carré,
+        // qui est le défaut — et c'est le choix qu'elle n'a jamais fait, puisqu'il n'existait pas.
+        record.insert(QLatin1String(kPageShape), static_cast<int>(request.pageShape));
+    }
     record.insert(QLatin1String(kMarksTemplate), request.marksTemplateName);
     record.insert(QLatin1String(kCoverPageTemplate), request.coverPageTemplateName);
     record.insert(QLatin1String(kPinnedAxes), pinned);
@@ -143,6 +151,8 @@ auto RequestOf(const QVariantMap &record) -> OExportRunRequest
     request.frameHeightMm = record.value(QLatin1String(kFrameHeight), request.frameHeightMm).toDouble();
     request.documentLandscape = record.value(QLatin1String(kDocumentLandscape),
                                              request.documentLandscape).toBool();
+    request.pageShape = static_cast<OExportPageShape>(
+        record.value(QLatin1String(kPageShape), static_cast<int>(request.pageShape)).toInt());
     request.marksTemplateName = record.value(QLatin1String(kMarksTemplate), request.marksTemplateName).toString();
     request.coverPageTemplateName =
         record.value(QLatin1String(kCoverPageTemplate), request.coverPageTemplateName).toString();

@@ -28,6 +28,7 @@
 #define OEXPORTPROJECTORWIDGET_H
 
 #include "../core/ogradedsizeranges.h"
+#include "../core/oexportoutput.h"
 #include "../vmisc/def.h"
 
 #include <QSharedPointer>
@@ -87,6 +88,15 @@ public:
     /// @brief L'écart au bord, en millimètres.
     auto EdgeMarginMm() const -> qreal;
 
+    /// @brief La forme de page cherchée : carré, portrait ou paysage.
+    ///
+    /// C'est le SEUL réglage de la recherche de largeur. Il ne change pas le plafond — 500 × 500 cm
+    /// reste la page d'un projecteur — il change l'ordre des paliers et le critère du gagnant.
+    auto PageShape() const -> OExportPageShape;
+
+    /// @brief Impose la forme de page — la restauration d'un favori, et rien d'autre.
+    void SetPageShape(OExportPageShape shape);
+
     /// @brief L'unité dans laquelle l'onglet est lu et saisi — `cm` ou `inch`, jamais le mm.
     auto DisplayUnit() const -> Unit;
 
@@ -134,6 +144,10 @@ private:
 
     QLabel *m_marginLabel{nullptr};
     QLineEdit *m_marginEdit{nullptr};
+
+    /// Le seul réglage de la recherche de largeur : carré, portrait ou paysage.
+    QLabel *m_shapeLabel{nullptr};
+    QComboBox *m_shapeCombo{nullptr};
 
     /// Ce que le PDF porte et que le canvas ne montre pas — **une phrase, pas une documentation**.
     ///

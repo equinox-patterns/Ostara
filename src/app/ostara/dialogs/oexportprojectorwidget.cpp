@@ -139,6 +139,26 @@ void OExportProjectorWidget::BuildUi()
     m_marginLabel = new QLabel(this);
     layout->addRow(m_marginLabel, m_marginEdit);
 
+    // ── La forme de la page cherchée ────────────────────────────────────────────────────────────
+    //
+    // Trois choix, et ils ne disent qu'une chose : **dans quel ordre la recherche essaie les paliers
+    // de largeur, et lequel elle garde.** « Carré » n'impose pas un carré — 500 × 500 cm est le
+    // plafond, pas un objectif à atteindre au centimètre : le format garde, parmi les paliers qui
+    // tiennent, celui dont la page a le rapport grand côté / petit côté le plus proche de 1, et
+    // s'accommode de 1,25.
+    //
+    // ⚠️ **Ce n'est pas le sens d'une feuille**, et ce n'est donc pas le combo de l'onglet Print :
+    // l'A0 tourne sa feuille, le projecteur cherche sa largeur. Il n'a pas de feuille à tourner.
+    m_shapeCombo = MakeComboBox(this);
+    for (const OExportPageShape shape : {OExportPageShape::Square, OExportPageShape::Portrait,
+                                         OExportPageShape::Landscape})
+    {
+        m_shapeCombo->addItem(QString(), static_cast<int>(shape));
+    }
+    connect(m_shapeCombo, &QComboBox::currentIndexChanged, this, [this](int) { emit Changed(); });
+    m_shapeLabel = new QLabel(this);
+    layout->addRow(m_shapeLabel, m_shapeCombo);
+
     // ── Ce que le fichier porte et que l'aperçu ne montre pas ───────────────────────────────────
     //
     // ⚠️ **Une phrase, et rien de plus.** Les trois calques de calibration ne sont pas dessinés dans
@@ -381,6 +401,36 @@ auto OExportProjectorWidget::DisplayUnit() const -> Unit
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OExportProjectorWidget::PageShape() const -> OExportPageShape
+{
+    if (m_shapeCombo == nullptr)
+    {
+        return OExportPageShape::Square;
+    }
+
+    return static_cast<OExportPageShape>(m_shapeCombo->currentData().toInt());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OExportProjectorWidget::SetPageShape(OExportPageShape shape)
+{
+    if (m_shapeCombo == nullptr)
+    {
+        return;
+    }
+
+    const int index = m_shapeCombo->findData(static_cast<int>(shape));
+    if (index < 0)
+    {
+        return;
+    }
+
+    // Sans le blocage, restaurer un favori dirait « Changed » et le dialogue se croirait modifié.
+    const QSignalBlocker blocker(m_shapeCombo);
+    m_shapeCombo->setCurrentIndex(index);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto OExportProjectorWidget::IsValid() const -> bool
 {
     // Un écart entre pièces sous le plancher n'existe pas : la lecture le relève, donc il n'y a rien
@@ -442,6 +492,22 @@ void OExportProjectorWidget::Retranslate()
                                  "put a hand.\n\n"
                                  "It is the first thing to reduce when the plan does not fit in "
                                  "500 x 500 cm: the pieces themselves rarely are the problem."));
+
+    m_shapeLabel->setText(tr("Format:"));
+    m_shapeLabel->setToolTip(tr("Which way the search goes for the plan's width.\n\n"
+                                "Square: among the widths that fit, the one whose page comes closest "
+                                "to a square - 200 x 250 cm counts as square.\n"
+                                "Portrait: the narrowest width that fits, so the tallest page.\n"
+                                "Landscape: the widest width, 500 cm.\n\n"
+                                "The 500 x 500 cm ceiling never moves: this only changes which plan "
+                                "is kept. A plan too big for one page is written on several, and no "
+                                "piece is ever cut in two."));
+    m_shapeCombo->setItemText(m_shapeCombo->findData(static_cast<int>(OExportPageShape::Square)),
+                              tr("Square"));
+    m_shapeCombo->setItemText(m_shapeCombo->findData(static_cast<int>(OExportPageShape::Portrait)),
+                              tr("Portrait"));
+    m_shapeCombo->setItemText(m_shapeCombo->findData(static_cast<int>(OExportPageShape::Landscape)),
+                              tr("Landscape"));
 
     // Une phrase, sans tiret cadratin : elle dit ce que le fichier porte et que le canvas ne montre
     // pas — ni plus, ni moins.

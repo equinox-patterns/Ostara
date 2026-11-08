@@ -14073,44 +14073,64 @@ Une pièce plus grande que lui est découpée en morceaux aux bords du tapis, à
 <context>
     <name>OExportProjector</name>
     <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="140"/>
         <source>The plan does not fit in %1 × %1 cm</source>
         <translation>Le plan ne tient pas dans %1 × %1 cm</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="151"/>
-        <source>The pieces take %1 m². With an edge margin of %2 cm, only %3 m² remain in a %4 × %4 cm plan.</source>
-        <translation>Les pièces occupent %1 m². Avec un écart au bord de %2 cm, il ne reste que %3 m² dans un plan de %4 × %4 cm.</translation>
+        <source>One piece is %1 cm wide, and a page holds %2 cm with an edge margin of %3 cm. No page can hold it.</source>
+        <translation>Une pièce fait %1 cm de large, et une page en tient %2 avec un écart au bord de %3 cm. Aucune page ne peut la recevoir.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="164"/>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="198"/>
-        <source>Reducing the edge margin to %1 cm would be enough.</source>
-        <translation>Réduire l&apos;écart au bord à %1 cm suffirait.</translation>
+        <source>No width gives a square plan: the closest is %1 × %2 cm. It is written as it is.</source>
+        <translation>Aucune largeur ne donne un plan carré : le plus proche fait %1 × %2 cm. Il est écrit tel quel.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="170"/>
-        <source>No edge margin can make it fit: the pieces themselves fill the largest plan this format can hold.</source>
-        <translation>Aucun écart au bord ne peut le faire tenir : les pièces elles-mêmes remplissent le plus grand plan que ce format sache publier.</translation>
+        <source>The widest plan this format can hold is still taller than wide: %1 × %2 cm. It is written as it is.</source>
+        <translation>Le plan le plus large que ce format sache publier est encore plus haut que large : %1 × %2 cm. Il est écrit tel quel.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="189"/>
-        <source>The most compact plan obtained is %1 × %2 cm, with an edge margin of %3 cm and a space between pieces of %4 cm.</source>
-        <translation>Le plan le plus compact obtenu fait %1 × %2 cm, avec un écart au bord de %3 cm et un espace entre les pièces de %4 cm.</translation>
+        <source>The plan is larger than %1 × %1 cm, the biggest page a PDF can hold and still be read by other software. It is written on %2 pages, and no piece is across two of them.</source>
+        <translation>Le plan dépasse %1 × %1 cm, la plus grande page qu&apos;un PDF puisse porter en restant lisible par un autre logiciel. Il est donc écrit en %2 pages, et aucune pièce n&apos;est à cheval sur deux d&apos;entre elles.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="203"/>
-        <source>Reduce the space between pieces, or split the plan.</source>
-        <translation>Réduisez l&apos;espace entre les pièces, ou coupez le plan.</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/oexportprojector.cpp" line="368"/>
-        <source>The pieces are wider than the largest plan this format can hold, with the edge margin asked for. Reduce the edge margin.</source>
-        <translation>Les pièces sont plus larges que le plus grand plan que ce format sache publier, avec l&apos;écart au bord demandé. Réduisez l&apos;écart au bord.</translation>
+        <source>The pieces are wider than the largest plan this format can hold, with the edge margin asked for.</source>
+        <translation>Les pièces sont plus larges que le plus grand plan que ce format sache publier, avec l&apos;écart au bord demandé.</translation>
     </message>
 </context>
 <context>
     <name>OExportProjectorWidget</name>
+    <message>
+        <source>Format:</source>
+        <translation>Format :</translation>
+    </message>
+    <message>
+        <source>Square</source>
+        <translation>Carré</translation>
+    </message>
+    <message>
+        <source>Portrait</source>
+        <translation>Portrait</translation>
+    </message>
+    <message>
+        <source>Landscape</source>
+        <translation>Paysage</translation>
+    </message>
+    <message>
+        <source>Which way the search goes for the plan&apos;s width.
+
+Square: among the widths that fit, the one whose page comes closest to a square - 200 x 250 cm counts as square.
+Portrait: the narrowest width that fits, so the tallest page.
+Landscape: the widest width, 500 cm.
+
+The 500 x 500 cm ceiling never moves: this only changes which plan is kept. A plan too big for one page is written on several, and no piece is ever cut in two.</source>
+        <translation>Dans quel sens la recherche de la largeur du plan se fait.
+
+Carré : parmi les largeurs qui tiennent, celle dont la page est la plus proche du carré — 200 × 250 cm compte comme un carré.
+Portrait : la largeur la plus étroite qui tient, donc la page la plus haute.
+Paysage : la largeur la plus grande, 500 cm.
+
+Le plafond de 500 × 500 cm ne bouge jamais : ce réglage ne change que le plan retenu. Un plan trop grand pour une seule page est écrit sur plusieurs, et aucune pièce n&apos;est jamais coupée en deux.</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/oexportprojectorwidget.cpp" line="425"/>
         <source>Unit:</source>
