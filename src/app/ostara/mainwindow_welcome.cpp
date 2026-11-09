@@ -223,7 +223,9 @@ void MainWindow::ShowEditor()
 
     // The editor's docks carry sizes of their own, and restoring a layout saved on a bigger window grows
     // the window past the screen — the welcome screen fits, then the first pattern overflows. Clamp again
-    // once the layout has settled.
+    // once the layout has settled, but only what overflows: a window that fits keeps the size it has. This
+    // call used to shrink it back to the ninth-tenths opening size, which is what undid the resize the
+    // reader had just made on the welcome screen. Sophie, 09-11-2026.
     QTimer::singleShot(0, this, [this]() { FitMainWindowToScreen(); });
     QTimer::singleShot(150, this,
                        [this]()

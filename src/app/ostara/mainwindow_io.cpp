@@ -122,10 +122,17 @@ static void ShowPatternOpenError(QWidget *parent, const QString &details)
  *
  * Sophie, 03-11-2026: a 1024x768 screen. The size is clamped only when it does not fit; a window that already
  * fits is left exactly where the user put it, and one that hangs off an edge is moved back inside.
+ *
+ * The ninth-tenths margin is for the size the window carries when nothing has chosen one yet — the default of
+ * mainwindow.ui. A size restored from the preferences, or given by the reader by dragging the window, is kept
+ * whole as long as it fits: it is not the screen's business to shrink it. Applying the margin to every window
+ * undid every resize twice, at start-up and again when the first pattern was opened. Sophie, 09-11-2026.
  */
 void MainWindow::FitMainWindowToScreen()
 {
-    if (isHidden())
+    // A maximised or full-screen window is already the screen's own geometry: resizing it here would only
+    // rewrite the geometry it returns to when it is restored.
+    if (isHidden() || isMaximized() || isFullScreen())
     {
         return;
     }
@@ -142,9 +149,11 @@ void MainWindow::FitMainWindowToScreen()
     const int frameWidth = qMax(0, frame.width() - width());
     const int frameHeight = qMax(0, frame.height() - height());
     const int maxWidth = qMax(1, available.width() - frameWidth);
-    // Nine tenths of the height, not all of it: a window whose bottom touches the taskbar reads as
-    // maximised and leaves no air around the canvas. Sophie, 03-11-2026.
-    const int maxHeight = qMax(1, (available.height() - frameHeight) * 9 / 10);
+    // The whole usable height is the limit; nine tenths of it is the limit only for the default size of
+    // mainwindow.ui — a window whose bottom touches the taskbar reads as maximised and leaves no air around
+    // the canvas. Sophie, 03-11-2026, revised 09-11-2026: a size already settled is honoured as it is.
+    const int fitHeight = qMax(1, available.height() - frameHeight);
+    const int maxHeight = m_initialSizeSettled ? fitHeight : qMax(1, fitHeight * 9 / 10);
 
     if (width() > maxWidth || height() > maxHeight)
     {
@@ -162,6 +171,9 @@ void MainWindow::FitMainWindowToScreen()
     {
         move(x, y);
     }
+
+    // From now on the window has a size of its own — the one it was just given, or the one it came with.
+    m_initialSizeSettled = true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -175,7 +187,10 @@ void MainWindow::ReadSettings()
 
     if (settings->status() == QSettings::NoError)
     {
-        restoreGeometry(settings->GetGeometry());
+        // A geometry that was really restored is a size of the reader's own: FitMainWindowToScreen() keeps it
+        // whole instead of applying the ninth-tenths opening margin. Only the default of mainwindow.ui, which
+        // is what a first start carries, gets that margin. Sophie, 09-11-2026.
+        m_initialSizeSettled = restoreGeometry(settings->GetGeometry());
         const bool dockLayoutRestored = restoreState(settings->GetToolbarsState(), kToolbarStateVersion);
 
         // Load per-mode dock layouts so the first entry into a mode after startup

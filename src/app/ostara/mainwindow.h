@@ -564,10 +564,24 @@ private:
     /// geometry may come from a larger display: the bottom of the window then lands under the taskbar, and
     /// the only way out is to minimise and restore so that Windows re-lays it out. Sophie, 03-11-2026.
     ///
-    /// Called once, from `showEvent`, on the next event-loop turn: the frame margins (title bar, borders)
-    /// only exist once the window is mapped, and they are part of what has to fit — clamping the client
-    /// area alone still leaves the window over the taskbar by the height of its own title bar.
+    /// Called from `showEvent` on the next event-loop turn — the frame margins (title bar, borders) only
+    /// exist once the window is mapped, and they are part of what has to fit — and again from `ShowEditor`,
+    /// where restoring the docks can grow the window past the screen.
+    ///
+    /// Only what does not fit is changed. The ninth-tenths margin belongs to the size the window carries
+    /// when nothing has chosen one yet, that is the default of `mainwindow.ui`; a geometry restored from the
+    /// preferences, or one the reader gave by dragging, is kept whole as long as it fits the usable area.
+    /// Capping every window undid every resize twice — at start-up, then again when the first pattern was
+    /// opened. Sophie, 09-11-2026.
     void FitMainWindowToScreen();
+
+    /// @brief Whether the window's size has been settled — restored from the preferences, or given by the
+    /// reader.
+    ///
+    /// While it is false the window still carries the default size of `mainwindow.ui`, the only one
+    /// FitMainWindowToScreen() leaves a margin of air around. ReadSettings() sets it when a geometry was
+    /// actually restored; the first fit sets it in every other case.
+    bool m_initialSizeSettled{false};
 
     /** @brief ui keeps information about user interface */
     Ui::MainWindow *ui;
