@@ -602,15 +602,18 @@ void MainWindow::on_actionOpen_triggered()
         return;
     }
 
-    // Only now: showing the editor before the dialog would hide the Welcome screen under an empty canvas
-    // if the dialog were then refused.
-    ShowEditor();
-    if (!LoadPattern(filePath))
+    // LoadPattern shows the editor itself once a pattern is actually open — showing it first made the canvas
+    // flash for nothing when the opening was then refused.
+    const auto result = LoadPattern(filePath);
+    if (result == PatternLoadResult::Failed)
     {
         // The opening was refused — no usable measurement table, or the reader gave it up. An empty editor
         // is not an answer: back to the welcome screen, from where the file can be tried again.
         ShowWelcomeScreen();
     }
+    // PatternLoadResult::Delegated is not a refusal: this window keeps the pattern it already shows, and the
+    // chosen file opens in another process's window. Switching to the Welcome screen here would hide the
+    // pattern being edited with no way back to it.
 }
 
 
@@ -924,7 +927,7 @@ auto MainWindow::OpenNewValentina(const QString &fileName) const -> bool
  * @brief LoadPattern open pattern file.
  * @param fileName name of file.
  */
-auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile) -> bool
+auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile) -> PatternLoadResult
 {
     qCDebug(vMainWindow, "Loading new file %s.", qUtf8Printable(fileName));
 
@@ -949,17 +952,18 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             });
     }
 
-    // We have unsaved changes or load more then one file per time
+    // We have unsaved changes or load more than one file at a time: this window keeps its pattern and the
+    // file opens in another process's window. Not a failure — the caller must not treat it as one.
     if (OpenNewValentina(fileName))
     {
-        return false;
+        return PatternLoadResult::Delegated;
     }
 
     if (fileName.isEmpty())
     {
         qCDebug(vMainWindow, "Got empty file.");
         Clear();
-        return false;
+        return PatternLoadResult::Failed;
     }
 
     if (fileName.endsWith(".vit"_L1) || fileName.endsWith(".vst"_L1))
@@ -980,7 +984,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 }
 
                 // Legacy Tape external launch removed — Ostara handles .vst/.vit internally
-                return false;
+                return PatternLoadResult::Failed;
             }
         }
         catch (VException &e)
@@ -996,7 +1000,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
             {
                 QCoreApplication::exit(V_EX_NOINPUT);
             }
-            return false;
+            return PatternLoadResult::Failed;
         }
     }
 
@@ -1011,7 +1015,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
     {
         if (not IgnoreLocking(m_lock->GetLockError(), fileName, VApplication::IsGUIMode()))
         {
-            return false;
+            return PatternLoadResult::Failed;
         }
     }
 
@@ -1176,7 +1180,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 {
                     QCoreApplication::exit(V_EX_NOINPUT);
                 }
-                return false;
+                return PatternLoadResult::Failed;
             }
         }
 
@@ -1254,7 +1258,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 {
                     VAbstractValApplication::VApp()->setOpeningPattern();
                     Clear();
-                    return false;
+                    return PatternLoadResult::Failed;
                 }
 
                 fixedMPath = newPath;
@@ -1273,7 +1277,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
                 {
                     QCoreApplication::exit(V_EX_NOINPUT);
                 }
-                return false;
+                return PatternLoadResult::Failed;
             }
 
             m_watcher->addPath(fixedMPath);
@@ -1300,7 +1304,7 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         {
             QCoreApplication::exit(V_EX_NOINPUT);
         }
-        return false;
+        return PatternLoadResult::Failed;
     }
 
     m_progressBar->setVisible(true);
@@ -1341,11 +1345,11 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
 
         VAbstractValApplication::VApp()->setOpeningPattern(); // End opening file
         m_statusLabel->setText(QString());
-        return true;
+        return PatternLoadResult::Loaded;
     }
 
     VAbstractValApplication::VApp()->setOpeningPattern(); // End opening file
-    return false;
+    return PatternLoadResult::Failed;
 }
 
 

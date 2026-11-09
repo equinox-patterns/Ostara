@@ -116,10 +116,24 @@ class MainWindow final : public MainWindowsNoGUI
     Q_OBJECT // NOLINT
 
 public:
+    /**
+     * @brief The PatternLoadResult enum says what opening a pattern actually did.
+     *
+     * A plain bool conflated two opposite outcomes: a load that failed, and a load handed over to another
+     * process because this window already holds a pattern. The caller treated both alike and fell back to
+     * the Welcome screen — which hid the pattern being edited and left its window with no way back.
+     */
+    enum class PatternLoadResult
+    {
+        Loaded,    ///< The pattern is open in this window.
+        Failed,    ///< Nothing usable was loaded; this window has no pattern to show.
+        Delegated, ///< This window already holds a pattern: another process opens the file.
+    };
+
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
 
-    auto LoadPattern(QString fileName, const QString &customMeasureFile = QString()) -> bool;
+    auto LoadPattern(QString fileName, const QString &customMeasureFile = QString()) -> PatternLoadResult;
 
     /// @brief Give the graded ranges back the state an undo/redo command restored.
     ///

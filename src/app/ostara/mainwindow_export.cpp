@@ -426,7 +426,7 @@ void MainWindow::ProcessCMD()
 
         VAbstractValApplication::VApp()->SetUserMaterials(cmd->OptUserMaterials());
 
-        if (const bool loaded = LoadPattern(args.constFirst(), cmd->OptMeasurePath()); not loaded)
+        if (LoadPattern(args.constFirst(), cmd->OptMeasurePath()) != PatternLoadResult::Loaded)
         {
             return; // process only one input file
         }
