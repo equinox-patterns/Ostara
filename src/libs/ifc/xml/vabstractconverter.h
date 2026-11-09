@@ -74,6 +74,15 @@ protected:
 
     virtual auto IsReadOnly() const -> bool = 0;
 
+    // True when a reserve copy of the source file that could not be written must abort the
+    // conversion. That is the case when the caller rewrites the source in place: the copy is then the
+    // only way back to the previous version. A caller that never touches the source can answer false
+    // and let the conversion go on without it.
+    virtual auto IsReserveCopyMandatory() const -> bool
+    {
+        return true;
+    }
+
     virtual auto Schemas() const -> QHash<unsigned, QString> = 0;
 
     void Replace(QString &formula, const QString &newName, vsizetype position, const QString &token,

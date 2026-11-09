@@ -112,7 +112,12 @@ void VAbstractConverter::ReserveFile() const
                                                                  info.baseName(),
                                                                  GetFormatVersionStr(),
                                                                  info.completeSuffix());
-    if (not SafeCopy(m_convertedFileName, reserveFileName, error))
+    if (SafeCopy(m_convertedFileName, reserveFileName, error))
+    {
+        return;
+    }
+
+    if (IsReserveCopyMandatory())
     {
         // #ifdef Q_OS_WIN32
         //         qt_ntfs_permission_lookup++; // turn checking on
@@ -126,6 +131,12 @@ void VAbstractConverter::ReserveFile() const
             throw VException(tr("Error creating a reserv copy: %1.").arg(error));
         }
     }
+
+    // No reserve copy, but the source itself could be read: the conversion goes on in its temporary
+    // file and never writes the source back. Say it in the log instead of refusing to open a file
+    // that is not damaged — the folder may simply be one that refuses a new file (read-only medium,
+    // cloud folder, network share).
+    qCWarning(vXML, "Reserve copy \"%s\" was not created: %s", qUtf8Printable(reserveFileName), qUtf8Printable(error));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

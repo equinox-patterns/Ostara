@@ -35,9 +35,12 @@
 #include <qt_windows.h>
 #endif /*Q_OS_WIN*/
 
+#include <QCryptographicHash>
+#include <QDir>
 #include <QFileInfo>
 #include <QLockFile>
 #include <QSharedPointer>
+#include <QStandardPaths>
 #include <QString>
 #include <cstdint>
 
@@ -75,6 +78,15 @@ private:
     QSharedPointer<QLockFile> lock{};
 
     auto TryLock(const QString &lockName, int stale, int timeout) -> bool;
+    auto TryLockFile(const QString &path, int stale, int timeout) -> bool;
+    void MarkLockFileHidden() const;
+
+    // Usual location: next to the guarded file, hidden on Unix. Every window of the application
+    // looks there first, so it stays the first choice.
+    static auto PrimaryLockFile(const QString &lockName) -> QString;
+    // Last resort when the guarded file's folder cannot take a new file. Keyed on the canonical path
+    // of the guarded file so that every window of this user still designates the same pattern.
+    static auto FallbackLockFile(const QString &lockName) -> QString;
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -146,16 +158,35 @@ template <typename Guarded> auto VLockGuard<Guarded>::GetLockFile() const -> QSt
 //---------------------------------------------------------------------------------------------------------------------
 template <typename Guarded> auto VLockGuard<Guarded>::TryLock(const QString &lockName, int stale, int timeout) -> bool
 {
-    bool res = true;
-
-    lockFile = lockName + QLatin1String(".lock");
-#if defined(Q_OS_UNIX) || defined(Q_OS_MACOS)
+    if (TryLockFile(PrimaryLockFile(lockName), stale, timeout))
     {
-        QFileInfo info(lockFile);
-        lockFile = info.absolutePath() + QLatin1String("/.") + info.fileName();
+        MarkLockFileHidden();
+        return true;
     }
-#endif
-    lock.reset(new QLockFile(lockFile));
+
+    // A file can be perfectly readable while its folder refuses the creation of a new one: read-only
+    // medium, cloud folder in a bad state, network share, folder whose ACLs deny creation... Opening
+    // only reads the guarded file, so a lock that cannot be written there must not stop the open.
+    // A real conflict is something else and is still reported.
+    if (lockError == QLockFile::LockFailedError)
+    {
+        return false;
+    }
+
+    if (TryLockFile(FallbackLockFile(lockName), stale, timeout))
+    {
+        MarkLockFileHidden();
+        return true;
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename Guarded>
+auto VLockGuard<Guarded>::TryLockFile(const QString &path, int stale, int timeout) -> bool
+{
+    lock.reset(new QLockFile(path));
 
     lock->setStaleLockTime(stale);
     lock->tryLock(timeout);
@@ -169,19 +200,66 @@ template <typename Guarded> auto VLockGuard<Guarded>::TryLock(const QString &loc
         lock->removeStaleLockFile();
         lock->tryLock(timeout);
     }
-    res = QLockFile::NoError == (lockError = lock->error());
-    if (!res)
+
+    lockError = lock->error();
+    if (lockError != QLockFile::NoError)
     {
         lock.reset();
+        return false;
     }
-#if defined(Q_OS_WIN)
-    else
+
+    lockFile = path;
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename Guarded> auto VLockGuard<Guarded>::PrimaryLockFile(const QString &lockName) -> QString
+{
+    QString path = lockName + QLatin1String(".lock");
+#if defined(Q_OS_UNIX) || defined(Q_OS_MACOS)
     {
-        SetFileAttributesW(lockFile.toStdWString().c_str(), FILE_ATTRIBUTE_HIDDEN);
+        QFileInfo const info(path);
+        path = info.absolutePath() + QLatin1String("/.") + info.fileName();
     }
 #endif
-    return res;
+    return path;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename Guarded> auto VLockGuard<Guarded>::FallbackLockFile(const QString &lockName) -> QString
+{
+    QFileInfo const info(lockName);
+
+    // The same pattern has to give the same guard file whatever the spelling of the path used to
+    // open it (symlink, case, relative form).
+    QString target = info.canonicalFilePath();
+    if (target.isEmpty())
+    {
+        target = info.absoluteFilePath();
+    }
+
+    const QByteArray digest = QCryptographicHash::hash(target.toUtf8(), QCryptographicHash::Sha256).toHex();
+
+    QString tempDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
+    if (tempDir.isEmpty())
+    {
+        tempDir = QDir::tempPath();
+    }
+
+    return QDir(tempDir).filePath(QStringLiteral("ostara-%1.lock").arg(QString::fromLatin1(digest.left(32))));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+#if defined(Q_OS_WIN)
+template <typename Guarded> inline void VLockGuard<Guarded>::MarkLockFileHidden() const
+{
+    SetFileAttributesW(lockFile.toStdWString().c_str(), FILE_ATTRIBUTE_HIDDEN);
+}
+#else
+template <typename Guarded> inline void VLockGuard<Guarded>::MarkLockFileHidden() const
+{
+}
+#endif
 
 // use pointer and function below to persistent things like class-member, because lock is taken by constructor
 // helper functions allow to write shorter creating and setting new lock-pointer

@@ -51,6 +51,14 @@ protected:
     static auto OldNamesToNewNames_InV0_3_0() -> QMultiMap<QString, QString>;
     static auto OldNamesToNewNames_InV0_3_3() -> QMap<QString, QString>;
 
+    // Ostara leaves a legacy .vst/.vit untouched: the upgraded measurements only live in memory and
+    // are saved as a new .omt/.otu, so a reserve copy of the source is a comfort, not a condition for
+    // loading it. A folder that refuses to take a new file must not block the measurements.
+    auto IsReserveCopyMandatory() const -> bool override
+    {
+        return false;
+    }
+
 private:
     Q_DISABLE_COPY_MOVE(VAbstractMConverter) // NOLINT
 };

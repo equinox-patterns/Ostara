@@ -20930,7 +20930,7 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="331"/>
         <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="338"/>
         <source>Locking file</source>
-        <translation>Verrouiller le fichier (lecture seule)</translation>
+        <translation>Verrouillage du fichier</translation>
     </message>
     <message>
         <location filename="../../src/libs/vwidgets/vabstractmainwindow.cpp" line="326"/>
@@ -27856,7 +27856,7 @@ Voulez-vous continuer ?</translation>
         <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="704"/>
         <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="711"/>
         <source>Locking file</source>
-        <translation>Verrouiller le fichier (lecture seule)</translation>
+        <translation>Verrouillage du fichier</translation>
     </message>
     <message>
         <location filename="../../src/libs/vlayout/dialogs/watermarkwindow.cpp" line="699"/>

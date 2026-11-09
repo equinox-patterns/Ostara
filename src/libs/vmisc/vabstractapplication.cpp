@@ -77,20 +77,30 @@ constexpr auto DAYS_TO_KEEP_LOGS = 3;
 //---------------------------------------------------------------------------------------------------------------------
 auto LoadTranslationFromResource(QTranslator *translator, const QString &locale) -> bool
 {
+    // A locale name has two spellings: "fr_BE" in the settings, "fr-BE" from QLocale::uiLanguages().
+    const auto Normalise = [](QString name) -> QString
+    {
+        name.replace(u'-', u'_');
+        return name;
+    };
+
     // Build candidate list: requested locale → bare language → system locales
     QStringList candidates;
     if (not locale.isEmpty())
     {
-        candidates.append(locale);
-        const vsizetype uscore = locale.indexOf(u'_');
+        candidates.append(Normalise(locale));
+        const vsizetype uscore = candidates.constLast().indexOf(u'_');
         if (uscore > 0)
         {
-            candidates.append(locale.left(uscore));
+            candidates.append(candidates.constLast().left(uscore));
         }
     }
     else
     {
-        candidates = QLocale().uiLanguages();
+        for (const auto &language : QLocale().uiLanguages())
+        {
+            candidates.append(Normalise(language));
+        }
     }
 
     // Filter out ru/ir (same as before)
@@ -108,6 +118,26 @@ auto LoadTranslationFromResource(QTranslator *translator, const QString &locale)
         if (translator->load(QStringLiteral(":/i18n/ostara_%1.qm").arg(candidate)))
         {
             return true;
+        }
+    }
+
+    // No translation for that exact locale. French is not one language for a computer: a Belgian,
+    // Swiss or Canadian Windows asks for fr_BE, fr_CH or fr_CA, and only fr_FR is shipped. Another
+    // variant of the same language is far better than leaving the whole interface in English.
+    const QStringList available =
+        QDir(QStringLiteral(":/i18n")).entryList({QStringLiteral("ostara_*.qm")}, QDir::Files);
+    for (const auto &candidate : filtered)
+    {
+        const vsizetype uscore = candidate.indexOf(u'_');
+        const QString language = uscore > 0 ? candidate.left(uscore) : candidate;
+        const QString prefix = QStringLiteral("ostara_%1_").arg(language);
+
+        for (const auto &file : available)
+        {
+            if (file.startsWith(prefix) && translator->load(QStringLiteral(":/i18n/") + file))
+            {
+                return true;
+            }
         }
     }
 

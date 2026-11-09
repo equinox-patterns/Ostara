@@ -74,6 +74,14 @@ protected:
 
     auto IsReadOnly() const -> bool override;
 
+    // Ostara never rewrites a .val in place: a converted pattern is saved as a fresh .ostara, so the
+    // original file stays intact with or without the reserve copy. A folder that refuses to take a
+    // new file (read-only medium, cloud folder, network share) must not stop the pattern opening.
+    auto IsReserveCopyMandatory() const -> bool override
+    {
+        return false;
+    }
+
     auto Schemas() const -> QHash<unsigned, QString> override;
 
 private:
