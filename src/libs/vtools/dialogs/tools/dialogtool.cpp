@@ -188,21 +188,9 @@ void DialogTool::showEvent(QShowEvent *event)
         }
     }
 
-    // A dialog taller than the screen puts its buttons out of reach - they sit at the bottom of the frame, and a
-    // frame that runs past the edge takes them with it. The frame has to fit the usable area; the content scrolls
-    // where it can, and where it cannot the layout's own minimum decides and nothing is gained.
-    if (const QScreen *screen = this->screen())
-    {
-        const QRect available = screen->availableGeometry();
-        const int chrome = frameGeometry().height() - height();
-        // Four fifths of the usable height at most, whatever the system: what the window would cover beyond that
-        // belongs to the pattern behind it. A dialog whose pages scroll asks for its natural height and is capped
-        // here; the others keep their own minimum, which nothing can go below.
-        const int maxHeight = qMax(0, available.height() * 8 / 10 - chrome);
-        const int wanted = m_preferredHeight > 0 ? qMin(maxHeight, m_preferredHeight) : qMin(height(), maxHeight);
-        resize(width(), qMax(wanted, minimumSizeHint().height()));
-    }
-
+    // The frame is kept inside the screen by ODialogFit, installed once for the whole application:
+    // one rule, applied to every dialog, rather than a copy of it here. This class only places
+    // itself, which the fit does not do.
     PlaceDialog();
 
 }

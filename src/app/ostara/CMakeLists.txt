@@ -100,18 +100,36 @@ if(TARGET Clipper2)
     )
 endif()
 
-qt_add_executable(Ostara
+# ══════════════════════════════════════════════════════════════════════════
+# Le code de l'application, dans une BIBLIOTHÈQUE, l'exécutable n'étant qu'un `main`
+# ══════════════════════════════════════════════════════════════════════════
+# Ce n'est pas une coquetterie d'architecture : une dialogue ne se mesure qu'en la construisant, et
+# tant que tout le code vit dans l'exécutable, aucun essai ne peut la construire. L'inventaire des
+# dialogues s'arrêtait donc aux `.ui` — 67 sur 112 — et les 45 autres ne pouvaient être vérifiées
+# qu'à la main, sur une machine, par un œil ; c'est-à-dire pas vraiment. Séparer la bibliothèque de
+# son `main` est ce qui rend les 45 mesurables par le code, sur les deux écrans de l'objectif, et
+# sans passage manuel — ni sous macOS, ni sous Windows.
+#
+# Les ressources (`.qrc`) restent sur l'exécutable : elles n'ont pas à être liées deux fois, et une
+# bibliothèque statique dont personne ne cite l'objet de ressources les perdrait en silence.
+set(OSTARA_APP_SOURCES
     ${OSTARA_SOURCES}
     ${OSTARA_CORE}
     ${OSTARA_DIALOGS}
     ${OSTARA_XML}
     ${OSTARA_WIDGETS}
-    ${OSTARA_QRC}
+)
+list(REMOVE_ITEM OSTARA_APP_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+add_library(OstaraApp STATIC ${OSTARA_APP_SOURCES})
+
+target_include_directories(OstaraApp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(OstaraApp PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/dialogs
+    ${CMAKE_CURRENT_SOURCE_DIR}/dialogs/configpages
 )
 
-target_include_directories(Ostara PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
-target_link_libraries(Ostara PRIVATE
+target_link_libraries(OstaraApp PUBLIC
     Qt6::Core
     Qt6::Widgets
     Qt6::Svg
@@ -130,6 +148,21 @@ target_link_libraries(Ostara PRIVATE
     Trame
 )
 
+# Define VALENTINA_PATH and TRANSLATIONS_DIR for VTestLib consumers
+target_compile_definitions(OstaraApp PUBLIC
+    VALENTINA_PATH="$<TARGET_FILE:Ostara>"
+    TRANSLATIONS_DIR="${CMAKE_SOURCE_DIR}/share/translations"
+)
+
+target_precompile_headers(OstaraApp PRIVATE stable.h)
+
+qt_add_executable(Ostara
+    main.cpp
+    ${OSTARA_QRC}
+)
+
+target_link_libraries(Ostara PRIVATE OstaraApp)
+
 # macOS bundle
 if(APPLE)
     set_target_properties(Ostara PROPERTIES
@@ -141,20 +174,6 @@ if(APPLE)
         MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/cmake/Info.plist.in"
     )
 endif()
-
-# Define VALENTINA_PATH and TRANSLATIONS_DIR for VTestLib consumers
-target_compile_definitions(Ostara PUBLIC
-    VALENTINA_PATH="$<TARGET_FILE:Ostara>"
-    TRANSLATIONS_DIR="${CMAKE_SOURCE_DIR}/share/translations"
-)
-
-target_precompile_headers(Ostara PRIVATE stable.h)
-
-# Help AUTOUIC find ui_ headers
-target_include_directories(Ostara PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/dialogs
-    ${CMAKE_CURRENT_SOURCE_DIR}/dialogs/configpages
-)
 
 # ═══════════════════════════════════════════════════════════
 # Translations — embarquées dans le binaire (ressources Qt)

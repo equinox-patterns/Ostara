@@ -42,6 +42,7 @@
 #include "../vganalytics/vganalytics.h"
 #include "../vdispatch/qt_dispatch.h"
 #include "otranslation.h"
+#include "vwidgets/odialogfit.h"
 #include "vtheme.h"
 #include "omenuglyph.h"
 #include "../vmisc/commandoptions.h"
@@ -621,6 +622,14 @@ VApplication::VApplication(int &argc, char **argv)
     // ses propres libellés — c'est ce qui laissait des surfaces entières dans la langue du premier
     // affichage, dock Options en tête.
     OTranslation::InstallWatcher();
+
+    // ⚠️ **Le cadrage des dialogues, installé une fois pour toute l'application.** Une dialogue plus
+    // haute que la zone utile place ses boutons hors de l'écran, et rien dans Qt ne l'en empêche : sa
+    // taille d'ouverture est bornée aux deux tiers de l'écran, jamais sous le minimum de son contenu.
+    // La règle est la même pour toutes — cadre plafonné à la zone utile, contenu défilant quand il
+    // dépasse, barre de boutons toujours dans le cadre — donc elle vit à un seul endroit et ne
+    // s'oublie dans aucune dialogue. Voir `odialogfit.h`.
+    ODialogFit::Install();
 
 }
 

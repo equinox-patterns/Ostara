@@ -15,6 +15,7 @@ set(VWIDGETS_SOURCES
     vtoolbuttonpopup.cpp
     vtoolbuttonpopup.h
     vwidgetpopup.cpp
+    odialogfit.cpp
     vcontrolpointspline.cpp
     vgraphicssimpletextitem.cpp
     vsimplepoint.cpp
@@ -51,6 +52,7 @@ set(VWIDGETS_SOURCES
     vmaingraphicsscene.h
     vmaingraphicsview.h
     vwidgetpopup.h
+    odialogfit.h
     vcontrolpointspline.h
     vgraphicssimpletextitem.h
     vsimplepoint.h
