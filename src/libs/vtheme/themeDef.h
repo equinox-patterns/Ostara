@@ -234,8 +234,8 @@ enum class VThemeIcon : quint8
     // Pas d'équivalent dans Qt : Ostara fournit elle-même le nom et le fichier. Les quatorze entrées
     // mortes qui suivaient (gtk-ok, object-order-*, add-placemark, draw-star, edit-rename, etc.) n'avaient
     // ni fichier dans le thème ni appelant nulle part : supprimées le 27-10-2026, avec leur correspondance.
-    DocumentExport,
-    PreferencesOther
+    // DocumentExport et PreferencesOther, oubliées dans ce lot, sont parties le 10-11-2026 pour la même
+    // raison — le banc Windows le disait, macOS le masquait par son thème système.
 };
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)

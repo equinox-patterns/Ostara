@@ -33,6 +33,7 @@
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "widgets/ODockManager.h"
+#include "widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../vmisc/vsysexits.h"
@@ -57,6 +58,7 @@
 #include "../vexception/vexception.h"
 #include "../vmisc/projectversion.h"
 #include "../vtools/tools/othumbnailcache.h"
+#include "../vtools/tools/vtoolseamallowance.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include <QApplication>
 #include <QComboBox>
@@ -74,6 +76,7 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QScreen>
+#include <QSet>
 #include <QTimer>
 #include <QtConcurrent>
 #include <chrono>
@@ -108,6 +111,97 @@ static void ShowPatternOpenError(QWidget *parent, const QString &details)
     {
         QGuiApplication::clipboard()->setText(details);
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The resources a pattern names and that are nowhere in their folder.
+ *
+ * A cartouche whose template file is missing renders nothing at all — no border, no block, no message — and an
+ * annotation whose style is missing is drawn in the default one without saying so. Both names stay in the pattern
+ * (that is right: an edit must never overwrite them), so the only moment the absence can be said is at open.
+ *
+ * Reading must not write: the style library is read through `ReadAnnotationStyles()`, not through the loader that
+ * installs the built-in Default on a first launch — opening a pattern is not the moment to create files in a
+ * library. And a folder that does not exist says nothing about the files it should hold: accusing a template of
+ * being absent would name the wrong culprit, the folder being the problem the library dialogs already explain.
+ *
+ * The template is resolved the way the renderer resolves it (OInfoBlockResolver): the pattern's own name, then the
+ * favourite from the settings, then "Default". A piece-level override is not checked — the pattern's own name is
+ * the one that covers the whole document.
+ *
+ * @return one sentence per missing resource, worded for the status bar; empty when everything resolves.
+ */
+static auto MissingLibraryResources(const VAbstractPattern *doc) -> QStringList
+{
+    QStringList missing;
+    if (doc == nullptr)
+    {
+        return missing;
+    }
+
+    QString templateName = doc->GetCartoucheTemplate();
+    if (templateName.isEmpty())
+    {
+        templateName = VAbstractApplication::VApp()->Settings()->GetDefaultCartoucheTemplate();
+    }
+    if (templateName.isEmpty())
+    {
+        templateName = QStringLiteral("Default");
+    }
+
+    const QString templatesDirectory = OPieceCartoucheStorage::DefaultDirectory();
+    if (QDir(templatesDirectory).exists())
+    {
+        bool found = false;
+        for (const QString &path : OPieceCartoucheStorage::ScanDirectory(templatesDirectory))
+        {
+            if (QFileInfo(path).completeBaseName() == templateName)
+            {
+                found = true;
+                break;
+            }
+        }
+        if (not found)
+        {
+            missing << QCoreApplication::translate("MainWindow", "cartouche template « %1 »").arg(templateName);
+        }
+    }
+
+    // Every distinct style the document names, missing from the library's own file. Sorted, so the sentence
+    // does not change shape from one opening to the next.
+    const QString stylesDirectory = OPieceCartoucheStorage::AnnotationStylesDirectory();
+    if (QDir(stylesDirectory).exists())
+    {
+        const QDomNodeList annotations = doc->elementsByTagName(VToolSeamAllowance::TagAnnotation);
+        if (not annotations.isEmpty())
+        {
+            QSet<QString> known;
+            for (const OPieceCartoucheStorage::AnnotationStyleEntry &entry : OPieceCartoucheStorage::ReadAnnotationStyles())
+            {
+                known.insert(entry.name);
+            }
+
+            QStringList absent;
+            for (int i = 0; i < annotations.size(); ++i)
+            {
+                const QString styleName = annotations.at(i).toElement().attribute(VAbstractPattern::AttrTemplate);
+                if (styleName.isEmpty() || styleName == QStringLiteral("Default") || known.contains(styleName)
+                    || absent.contains(styleName))
+                {
+                    continue;
+                }
+                absent << styleName;
+            }
+
+            absent.sort();
+            for (const QString &styleName : absent)
+            {
+                missing << QCoreApplication::translate("MainWindow", "annotation style « %1 »").arg(styleName);
+            }
+        }
+    }
+
+    return missing;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1337,6 +1431,15 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // Make the view visible BEFORE ZoomFirstShow/ActionDraw so that
         // NewSceneRect, ZoomFitBest etc. operate with correct widget dimensions.
         ShowEditor();
+
+        // A template or a style the pattern names and that is not in its folder draws nothing, silently: said
+        // once here, as the pattern becomes readable, because the names stay in the pattern and nothing else
+        // would ever mention them.
+        if (const QStringList missing = MissingLibraryResources(doc); not missing.isEmpty())
+        {
+            statusBar()->showMessage(tr("Not found in the library: %1.").arg(missing.join(QStringLiteral(", "))),
+                                     10000);
+        }
 
         // Fit scene size to best size for first show
         ZoomFirstShow();

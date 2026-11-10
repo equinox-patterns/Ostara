@@ -361,8 +361,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const ThemeIconStringHash,
                             // {VThemeIcon::WeatherSnow, "weather-snow"_L1},
                             // {VThemeIcon::WeatherStorm, "weather-storm"_L1},
 
-                            {VThemeIcon::DocumentExport, "document-export"_L1},
-                            {VThemeIcon::PreferencesOther, "preferences-other"_L1}}))
+                            }))
 QT_WARNING_POP
 } // namespace
 

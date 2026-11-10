@@ -28,6 +28,7 @@
 #define OLIBRARYSTORAGE_H
 
 #include <QString>
+#include <QStringList>
 
 /**
  * @brief The gestures a library makes on the files it holds — the same for every library that has folders.
@@ -73,6 +74,34 @@ auto Export(const QString &sourcePath, const QString &targetPath, QString *error
 
 /// @brief Removes the file, and says so when it refuses.
 auto Remove(const QString &filePath, QString *error) -> bool;
+
+/**
+ * @brief Moves everything a folder holds into another one, all or nothing.
+ *
+ * Every file is copied first, sub-folders included, and the sources are removed only once every copy has
+ * succeeded. One failure undoes the copies already made — and the folders this attempt created — so a caller
+ * that gives up leaves both sides exactly as they were. A half-moved library, with the setting already on the
+ * new folder, is a state no interface can repair.
+ *
+ * Copying is what is guaranteed: once the function answers true, every file is in @p target. Removing
+ * the originals is best effort — a file another program holds open keeps its copy behind, and deleting
+ * it is the reader's business.
+ *
+ * @param blocked receives the paths that could not be written, relative to @p source (or @p target itself);
+ *        may be null, and emptied on success.
+ * @return true when the folder's files now live in @p target.
+ */
+auto MoveFolderContents(const QString &source, const QString &target, QStringList *blocked) -> bool;
+
+/**
+ * @brief Whether one of the two folders is inside the other.
+ *
+ * Compared the way the paths are written (`QDir::cleanPath`), never resolved against the disk: a destination
+ * that does not exist yet has no canonical form, and mixing a resolved path with an unresolved one makes the
+ * prefix test fail on macOS, where `/var` resolves to `/private/var`. The case is ignored on Windows, where
+ * two spellings are one folder. Two spellings of the same folder are *not* nested — see the callers.
+ */
+auto IsNested(const QString &first, const QString &second) -> bool;
 
 /**
  * @brief Whether @p path is @p root itself, or lives somewhere under it.

@@ -83,6 +83,10 @@ signals:
     void deleteRequested(const QString &rangeName);
     void exportRequested(const QString &rangeName);
     void exportAllRequested(const QString &dirPath);
+
+    /// A gesture the widget could not carry out, with the reason to show the user. The widget owns no
+    /// status bar: the window decides where the sentence lands.
+    void infoRequested(const QString &text);
     void rangeActivated(const QString &rangeName);
 
 protected:

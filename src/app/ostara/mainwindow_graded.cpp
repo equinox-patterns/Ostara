@@ -681,7 +681,10 @@ bool MainWindow::EditGradedRange(const QString &rangeName)
 
     const QString canonical =
         AbsoluteMPath(VAbstractValApplication::VApp()->GetPatternPath(), doc->MPath());
-    if (stored.measurement != canonical)
+    // The same rule the dock lists by: three answers to "is this the same table" in one place was
+    // one too many — a range could be listed, offered for editing and refused as "another table"
+    // in the same breath.
+    if (not OGradedSizeRanges::SameMeasurementTable(stored.measurement, canonical))
     {
         QMessageBox::information(this, tr("Graded mode"),
                                  tr("This size range belongs to another measurements table. Load "

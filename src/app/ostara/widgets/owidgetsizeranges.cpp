@@ -111,8 +111,12 @@ public:
             return;
         }
 
-        QIcon::Mode mode = QIcon::Normal;
-        if (option.state & (QStyle::State_Selected | QStyle::State_MouseOver))
+        // A disabled star must not look like a live one: Qt draws the Disabled mode through its own
+        // greyed variant, and without this line a dead star was pixel-identical to a working one —
+        // which is exactly how "clicking does nothing" was reported.
+        QIcon::Mode mode = (option.state & QStyle::State_Enabled) ? QIcon::Normal : QIcon::Disabled;
+        if ((option.state & (QStyle::State_Selected | QStyle::State_MouseOver))
+            && (option.state & QStyle::State_Enabled))
         {
             mode = QIcon::Selected;
         }
@@ -528,7 +532,11 @@ void OWidgetSizeRanges::ToggleFavorite(int row, const QString &rangeName)
     QTableWidgetItem *favoriteItem = m_table != nullptr ? m_table->item(row, kFavorite) : nullptr;
     if (favoriteItem == nullptr || not (favoriteItem->flags() & Qt::ItemIsEnabled))
     {
-        return; // table outside the library → no favorite persistence
+        // Table outside the library → no favorite persistence. The click still arrives (Qt emits
+        // cellClicked for a disabled cell), so it is answered instead of swallowed: a silent return
+        // is what made the Client call it "the star does nothing".
+        emit infoRequested(tr("Favorites need a measurements table from the library"));
+        return;
     }
 
     const auto *ranges = m_pattern->SizeRanges();

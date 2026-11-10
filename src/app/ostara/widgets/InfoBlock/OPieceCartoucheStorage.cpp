@@ -510,6 +510,12 @@ auto UpdateCollectionMeta(const QString &id, const QString &name, int year, cons
     return SaveCollections(entries, error);
 }
 
+auto ReadAnnotationStyles() -> QList<AnnotationStyleEntry>
+{
+    return ReadAnnotationStylesMeta();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto LoadAnnotationStyles() -> QList<AnnotationStyleEntry>
 {
     QList<AnnotationStyleEntry> entries = ReadAnnotationStylesMeta();

@@ -577,7 +577,13 @@ void OPieceLibraryDialog::ShowDetails()
         // No choice yet — which is also what an empty library looks like, what a folder holding nothing looks
         // like, and what a search that matches nothing looks like. Saying which of the three it is is the
         // difference between a window that answers and a window that looks broken.
-        if (m_all.isEmpty())
+        if (not QDir(m_directory).exists())
+        {
+            // The folder is gone — a fourth state, which used to read as "no piece saved yet" and made a
+            // moved library look emptied, since Ostara recreates its folders empty at startup.
+            m_stateLabel->setText(tr("This folder does not exist. Check its path in Settings."));
+        }
+        else if (m_all.isEmpty())
         {
             m_stateLabel->setText(tr("No piece is saved in the library yet."));
         }

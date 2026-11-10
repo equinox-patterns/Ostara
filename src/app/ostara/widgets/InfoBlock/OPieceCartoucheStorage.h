@@ -128,6 +128,10 @@ auto AnnotationStylesDirectory() -> QString;
 /// file) the built-in Default style is pre-installed.
 auto LoadAnnotationStyles() -> QList<AnnotationStyleEntry>;
 
+/// The annotation styles exactly as the file holds them, without installing the built-in Default on a first
+/// launch: reading must never write. Empty when the file is missing or unreadable.
+auto ReadAnnotationStyles() -> QList<AnnotationStyleEntry>;
+
 /// Persist the annotation styles (`annotationstyles.xml`, atomic write).
 /// Returns false and fills `error` on failure.
 auto SaveAnnotationStyles(const QList<AnnotationStyleEntry> &styles, QString *error = nullptr) -> bool;

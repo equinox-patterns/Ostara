@@ -33,6 +33,7 @@
 #include "../../core/oexporttemplatestorage.h"
 #include "../../core/opiecelibrary.h"
 #include "../../core/opatternlibrary.h"
+#include "../../core/olibrarystorage.h"
 #include "../../widgets/InfoBlock/OPieceCartoucheStorage.h"
 #include "../vmisc/vabstractapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -42,7 +43,6 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QEvent>
-#include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGridLayout>
@@ -56,7 +56,6 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
-#include <algorithm>
 #include <utility>
 
 namespace
@@ -76,90 +75,6 @@ auto FileCount(const QString &path) -> int
     return count;
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-/// True when one of the two paths is inside the other. Copying a folder into its own subtree would
-/// walk the files it is creating.
-auto IsNested(const QString &a, const QString &b) -> bool
-{
-    const QString left = QDir::cleanPath(a);
-    const QString right = QDir::cleanPath(b);
-    return right.startsWith(left + QLatin1Char('/')) || left.startsWith(right + QLatin1Char('/'));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto SubDirectories(const QString &path) -> QStringList
-{
-    QStringList dirs;
-    QDirIterator it(path, QDir::Dirs | QDir::Hidden | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (it.hasNext())
-    {
-        dirs << it.next();
-    }
-    // Deepest first, so a folder is empty by the time it is removed.
-    std::sort(dirs.begin(), dirs.end(),
-              [](const QString &first, const QString &second) { return first.size() > second.size(); });
-    return dirs;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/// Copy every file of `from` into `to`, then delete the copies from `from`.
-///
-/// **Nothing is removed before it has been copied**, and a file whose name already exists in the
-/// destination is left alone (reported): a library folder is the user's work, and a silent overwrite
-/// is the one mistake that cannot be undone. The source folder is removed only when it ends up empty.
-auto MoveTree(const QString &from, const QString &to, QStringList *failed) -> int
-{
-    if (not QDir(from).exists())
-    {
-        return 0;
-    }
-
-    if (not QDir().mkpath(to))
-    {
-        *failed << to;
-        return 0;
-    }
-
-    QStringList files;
-    QDirIterator it(from, QDir::Files | QDir::Hidden | QDir::System, QDirIterator::Subdirectories);
-    while (it.hasNext())
-    {
-        files << it.next();
-    }
-
-    QDir const source(from);
-    QDir const target(to);
-    QStringList copied;
-
-    for (const QString &file : files)
-    {
-        const QString relative = source.relativeFilePath(file);
-        const QString destination = target.filePath(relative);
-
-        if (QFile::exists(destination) || not QDir().mkpath(QFileInfo(destination).absolutePath())
-            || not QFile::copy(file, destination))
-        {
-            *failed << relative;
-            continue;
-        }
-
-        copied << file;
-    }
-
-    for (const QString &file : copied)
-    {
-        QFile::remove(file);
-    }
-
-    const QStringList dirs = SubDirectories(from);
-    for (const QString &dir : dirs)
-    {
-        QDir().rmdir(dir); // Only when empty.
-    }
-    QDir().rmdir(from);
-
-    return static_cast<int>(copied.size());
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -193,24 +108,40 @@ auto PreferencesFoldersPage::Apply() -> QStringList
             continue;
         }
 
-        folder.set(wanted);
-
-        // The files come after the setting, never before: a move that fails has already been
-        // reported, and the path itself is what the application remembers.
+        // The move comes first, and it is all or nothing. A setting that has already switched cannot
+        // be taken back, and a library left behind while the application looks elsewhere is a state
+        // no interface can repair — so a refused move writes nothing at all.
         if (move)
         {
-            QStringList failed;
-            MoveTree(previous, wanted, &failed);
-            if (not failed.isEmpty())
+            QStringList blocked;
+            if (not OLibraryStorage::MoveFolderContents(previous, wanted, &blocked))
             {
                 QMessageBox::warning(
-                    this, tr("Files left behind"),
-                    tr("%n file(s) could not be moved to « %1 » and stay in the old folder. Check that the "
-                       "destination allows writing, then change the folder again.", "",
-                           static_cast<int>(failed.size()))
-                        .arg(QDir::toNativeSeparators(wanted)),
+                    this, tr("Nothing was moved"),
+                    tr("The « %1 » folder could not be moved to « %2 »: %3 could not be copied. "
+                       "Nothing changed — the folder stays where it is, with all its files.")
+                        .arg(folder.nameLabel->text(), QDir::toNativeSeparators(wanted), blocked.constFirst()),
                     QMessageBox::Ok);
+                continue; // the setting keeps the old path
             }
+        }
+
+        folder.set(wanted);
+
+        // The setting is read back: QSettings::sync() says nothing, and a refused write (folder that only
+        // allows reading, quota, another program holding the ini) would otherwise leave the files moved and
+        // the library still pointing at the old path — the very "emptied library" this work removes. The
+        // files are already in the new folder at this point, so the message has to say where they are.
+        if (QDir::cleanPath(folder.get()) != QDir::cleanPath(wanted))
+        {
+            QMessageBox::warning(
+                this, tr("The change could not be saved"),
+                tr("The « %1 » folder was moved, but Ostara could not remember the new path: %2. The files "
+                   "are in the new folder; copy the path above into the preferences again, or check that "
+                   "the settings file can be written.")
+                    .arg(folder.nameLabel->text(), QDir::toNativeSeparators(wanted)),
+                QMessageBox::Ok);
+            continue;
         }
 
         // Then the folder is brought back to the state the application expects from it: created,
@@ -414,15 +345,29 @@ void PreferencesFoldersPage::RowChanged(int row, const QString &path)
     Folder &folder = m_folders[row];
     const QString previous = folder.get();
 
-    folder.moveContents = false;
-    folder.pending = path;
-
-    folder.pathEdit->setText(DisplayPath(path));
-    folder.pathEdit->setCursorPosition(0);
-    folder.pathEdit->setToolTip(QDir::toNativeSeparators(path));
-
-    if (IsNested(previous, path))
+    // Back to the folder the library already has: there is nothing to ask, nothing to remember, and above
+    // all nothing to refuse — two spellings of one folder are not nested inside each other. Reachable by
+    // choosing another folder, then changing one's mind and picking the original again.
+    if (QDir::cleanPath(previous) == QDir::cleanPath(path))
     {
+        folder.moveContents = false;
+        folder.pending.clear();
+        folder.pathEdit->setText(DisplayPath(previous));
+        folder.pathEdit->setCursorPosition(0);
+        folder.pathEdit->setToolTip(QDir::toNativeSeparators(previous));
+        return;
+    }
+
+    // The guard comes BEFORE anything is remembered. It used to warn and return with the forbidden
+    // path already stored, so Apply then moved the library into the folder it had just refused.
+    if (OLibraryStorage::IsNested(previous, path))
+    {
+        folder.moveContents = false;
+        folder.pending.clear();
+        folder.pathEdit->setText(DisplayPath(previous));
+        folder.pathEdit->setCursorPosition(0);
+        folder.pathEdit->setToolTip(QDir::toNativeSeparators(previous));
+
         QMessageBox::warning(this, tr("Folder inside the other"),
                              tr("The two folders are inside one another. Choose a folder that does not "
                                 "contain « %1 », nor is contained by it.")
@@ -430,6 +375,13 @@ void PreferencesFoldersPage::RowChanged(int row, const QString &path)
                              QMessageBox::Ok);
         return;
     }
+
+    folder.moveContents = false;
+    folder.pending = path;
+
+    folder.pathEdit->setText(DisplayPath(path));
+    folder.pathEdit->setCursorPosition(0);
+    folder.pathEdit->setToolTip(QDir::toNativeSeparators(path));
 
     const int files = FileCount(previous);
     if (files == 0)

@@ -7379,6 +7379,18 @@ mais il est introuvable. Ostara utilise le format .omt/.otu. Choisissez comment 
 <context>
     <name>MainWindow</name>
     <message>
+        <source>cartouche template « %1 »</source>
+        <translation>gabarit de cartouche « %1 »</translation>
+    </message>
+    <message>
+        <source>annotation style « %1 »</source>
+        <translation>style d&apos;annotation « %1 »</translation>
+    </message>
+    <message>
+        <source>Not found in the library: %1.</source>
+        <translation>Introuvable dans la bibliothèque : %1.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/mainwindow_export.cpp" line="260"/>
         <source>Nothing was written to this folder:
 %1
@@ -16159,6 +16171,10 @@ Lier le dossier à cette collection ?</translation>
 <context>
     <name>OPatternLibraryDialog</name>
     <message>
+        <source>This folder does not exist. Check its path in Settings.</source>
+        <translation>Ce dossier n&apos;existe pas. Vérifiez son chemin dans les Préférences.</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/dialogs/opatternlibrarydialog.cpp" line="287"/>
         <source>Pattern library</source>
         <translation>Bibliothèque de patrons</translation>
@@ -16857,6 +16873,10 @@ Load a measurement table that defines them, then insert the piece.</source>
 </context>
 <context>
     <name>OPieceLibraryDialog</name>
+    <message>
+        <source>This folder does not exist. Check its path in Settings.</source>
+        <translation>Ce dossier n&apos;existe pas. Vérifiez son chemin dans les Préférences.</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecelibrarydialog.cpp" line="279"/>
         <source>Modified</source>
@@ -18896,16 +18916,21 @@ L&apos;enregistrer avant de le quitter ?</translation>
     <name>PreferencesFoldersPage</name>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="207"/>
-        <source>Files left behind</source>
-        <translation>Fichiers restés en place</translation>
+        <source>Nothing was moved</source>
+        <translation>Rien n&apos;a été déplacé</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="208"/>
-        <source>%n file(s) could not be moved to « %1 » and stay in the old folder.</source>
-        <translation>
-            <numerusform>%n fichier n&apos;a pas pu être déplacé vers « %1 » et reste dans l&apos;ancien dossier.</numerusform>
-            <numerusform>%n fichiers n&apos;ont pas pu être déplacés vers « %1 » et restent dans l&apos;ancien dossier.</numerusform>
-        </translation>
+        <source>The « %1 » folder could not be moved to « %2 »: %3 could not be copied. Nothing changed — the folder stays where it is, with all its files.</source>
+        <translation>Le dossier « %1 » n&apos;a pas pu être déplacé vers « %2 » : %3 n&apos;a pas pu être copié. Rien n&apos;a changé — le dossier reste où il est, avec tous ses fichiers.</translation>
+    </message>
+    <message>
+        <source>The change could not be saved</source>
+        <translation>La modification n&apos;a pas pu être enregistrée</translation>
+    </message>
+    <message>
+        <source>The « %1 » folder was moved, but Ostara could not remember the new path: %2. The files are in the new folder; copy the path above into the preferences again, or check that the settings file can be written.</source>
+        <translation>Le dossier « %1 » a été déplacé, mais Ostara n&apos;a pas pu retenir le nouveau chemin : %2. Les fichiers sont dans le nouveau dossier ; recopiez le chemin ci-dessus dans les Préférences, ou vérifiez que le fichier de réglages peut être écrit.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/configpages/preferencesfolderspage.cpp" line="233"/>

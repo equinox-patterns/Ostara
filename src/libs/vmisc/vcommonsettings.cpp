@@ -294,6 +294,33 @@ auto VCommonSettings::GetPathIndividualMeasurements() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/// Write one folder path and say it moved.
+///
+/// Every library path setter goes through here, so no folder can change without the windows hearing
+/// about it. The Graded context, the two size docks and the cartouche all read these keys at the moment
+/// they are used; without this signal they kept answering from the previous folder until the user
+/// happened to touch something else.
+void VCommonSettings::SetFolderPath(const QString &key, const QString &value, const QString &previous)
+{
+    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
+    settings.setValue(key, value);
+    settings.sync();
+
+    // sync() answers nothing: only status() says whether the file took the write. A refused ini (a folder
+    // that only allows reading, another program holding it) must not be announced as a move — the caller
+    // reads the path back and tells the reader that nothing was remembered.
+    if (settings.status() != QSettings::NoError)
+    {
+        return;
+    }
+
+    if (previous != value)
+    {
+        emit FolderPathChanged(key, previous, value);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VCommonSettings::SetPathIndividualMeasurements(const QString &value) const
 {
     QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
@@ -452,11 +479,9 @@ auto VCommonSettings::GetPathMeasurementLibrary() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathMeasurementLibrary(const QString &value) const
+void VCommonSettings::SetPathMeasurementLibrary(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsMeasurementLibrary, value);
-    settings.sync();
+    SetFolderPath(*settingPathsMeasurementLibrary, value, GetPathMeasurementLibrary());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -468,11 +493,9 @@ auto VCommonSettings::GetPathCartoucheTemplates() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathCartoucheTemplates(const QString &value) const
+void VCommonSettings::SetPathCartoucheTemplates(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsCartoucheTemplates, value);
-    settings.sync();
+    SetFolderPath(*settingPathsCartoucheTemplates, value, GetPathCartoucheTemplates());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -483,11 +506,9 @@ auto VCommonSettings::GetPathPieces() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathPieces(const QString &value) const
+void VCommonSettings::SetPathPieces(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsPieces, value);
-    settings.sync();
+    SetFolderPath(*settingPathsPieces, value, GetPathPieces());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -498,11 +519,9 @@ auto VCommonSettings::GetPathPatterns() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathPatterns(const QString &value) const
+void VCommonSettings::SetPathPatterns(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsPatterns, value);
-    settings.sync();
+    SetFolderPath(*settingPathsPatterns, value, GetPathPatterns());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -514,11 +533,9 @@ auto VCommonSettings::GetPathPdfTemplates() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathPdfTemplates(const QString &value) const
+void VCommonSettings::SetPathPdfTemplates(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsPdfTemplates, value);
-    settings.sync();
+    SetFolderPath(*settingPathsPdfTemplates, value, GetPathPdfTemplates());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -532,11 +549,9 @@ auto VCommonSettings::GetPathCoverPageTemplates() const -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 
-void VCommonSettings::SetPathCoverPageTemplates(const QString &value) const
+void VCommonSettings::SetPathCoverPageTemplates(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsCoverPageTemplates, value);
-    settings.sync();
+    SetFolderPath(*settingPathsCoverPageTemplates, value, GetPathCoverPageTemplates());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -547,11 +562,9 @@ auto VCommonSettings::GetPathLogos() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathLogos(const QString &value) const
+void VCommonSettings::SetPathLogos(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsLogos, value);
-    settings.sync();
+    SetFolderPath(*settingPathsLogos, value, GetPathLogos());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -562,11 +575,9 @@ auto VCommonSettings::GetPathSymbols() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathSymbols(const QString &value) const
+void VCommonSettings::SetPathSymbols(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsSymbols, value);
-    settings.sync();
+    SetFolderPath(*settingPathsSymbols, value, GetPathSymbols());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -578,11 +589,9 @@ auto VCommonSettings::GetPathSeamAllowances() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathSeamAllowances(const QString &value) const
+void VCommonSettings::SetPathSeamAllowances(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsSeamAllowances, value);
-    settings.sync();
+    SetFolderPath(*settingPathsSeamAllowances, value, GetPathSeamAllowances());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -593,11 +602,9 @@ auto VCommonSettings::GetPathClients() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathClients(const QString &value) const
+void VCommonSettings::SetPathClients(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsClients, value);
-    settings.sync();
+    SetFolderPath(*settingPathsClients, value, GetPathClients());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -609,11 +616,9 @@ auto VCommonSettings::GetPathAnnotationStyles() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathAnnotationStyles(const QString &value) const
+void VCommonSettings::SetPathAnnotationStyles(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsAnnotationStyles, value);
-    settings.sync();
+    SetFolderPath(*settingPathsAnnotationStyles, value, GetPathAnnotationStyles());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -624,11 +629,9 @@ auto VCommonSettings::GetPathCollections() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VCommonSettings::SetPathCollections(const QString &value) const
+void VCommonSettings::SetPathCollections(const QString &value)
 {
-    QSettings settings(this->format(), this->scope(), this->organizationName(), *commonIniFilename);
-    settings.setValue(*settingPathsCollections, value);
-    settings.sync();
+    SetFolderPath(*settingPathsCollections, value, GetPathCollections());
 }
 
 //---------------------------------------------------------------------------------------------------------------------

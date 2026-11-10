@@ -80,6 +80,7 @@
 #include "../vmisc/def.h"
 #include "vtheme.h"
 #include "../vmisc/vvalentinasettings.h"
+#include "../vmisc/vcommonsettings.h"
 #include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/vtoolbasepoint.h"
 #include "../vtools/tools/oannotationitem.h"
 #include "../vtools/tools/oinfoblockitem.h"
@@ -1460,6 +1461,23 @@ void MainWindow::InitDocksContain()
             &MainWindow::ExportAllGradedRanges);
     connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::rangeActivated, this,
             &MainWindow::ActivateGradedRange);
+    // A gesture the dock could not carry out — it owns no status bar, so the reason comes here.
+    connect(m_dockManager->sizeRangesWidget(), &OWidgetSizeRanges::infoRequested, this,
+            [this](const QString &text) { statusBar()->showMessage(text, 8000); });
+
+    // A library folder moved. Only the measurements folder changes what the Graded mode reads: the axis,
+    // the favourites and the size styles are all keyed by that table's path. Any other folder would pay a
+    // .omt parse and a scene rebuild for nothing — and the rebuild re-enters the Graded mode, which can
+    // open a dialog, so it must never ride on an unrelated preference.
+    connect(VAbstractApplication::VApp()->Settings(), &VCommonSettings::FolderPathChanged, this,
+            [this](const QString &key, const QString &, const QString &)
+            {
+                if (key != QStringLiteral("paths/measurementLibrary"))
+                {
+                    return;
+                }
+                RefreshGradedAfterTableAxisChange(); // no-op outside Graded mode
+            });
 
     // Size Styles dock → MainWindow (edit dialog + global "Show in canvas" gate).
     connect(m_dockManager->sizeStylesWidget(), &OWidgetSizeStyles::editRequested, this,
