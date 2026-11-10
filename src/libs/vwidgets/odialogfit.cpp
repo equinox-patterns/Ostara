@@ -207,7 +207,10 @@ void CapTo(QWidget *dialog, const char *property, Getter getter, Setter setter, 
 {
     const int previous = dialog->property(property).toInt();
     const int current = (dialog->*getter)();
-    const bool ours = previous == 0 || current == previous;
+    // "Ours" means we have already written this property, and it still holds what we wrote. On the very
+    // first pass nothing is ours: a dialog that locked its own size below the screen keeps it, and only a
+    // maximum that would let the frame run past the screen is overruled.
+    const bool ours = previous != 0 && current == previous;
     if (current != cap && (ours || current > cap))
     {
         (dialog->*setter)(cap);
@@ -400,6 +403,97 @@ auto ODialogFit::InventoryReport() -> QStringList
                       .arg(VerdictName(record.verdict));
     }
     return report;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogFit::KeepOnScreen(QWidget *dialog)
+{
+    if (dialog == nullptr)
+    {
+        return;
+    }
+
+    const QScreen *current = dialog->screen();
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    const QRect available = current->availableGeometry();
+    const int margin = 20;
+
+    if (dialog->height() > available.height() - 2 * margin)
+    {
+        dialog->resize(dialog->width(), available.height() - 2 * margin);
+    }
+
+    const QRect frame = dialog->frameGeometry();
+    QRect target = frame;
+    if (target.left() < available.left())
+    {
+        target.moveLeft(available.left());
+    }
+    if (target.top() < available.top())
+    {
+        target.moveTop(available.top());
+    }
+    if (target.right() > available.right())
+    {
+        target.moveRight(available.right());
+    }
+    if (target.bottom() > available.bottom())
+    {
+        target.moveBottom(available.bottom());
+    }
+
+    if (target.topLeft() == frame.topLeft())
+    {
+        return; // it is already whole, and where its reader put it
+    }
+
+    // move() places the client, frameGeometry() speaks of the frame: the offset is what the window
+    // manager added around us, and taking it out is what puts the frame where it was computed.
+    const QPoint clientOffset = dialog->pos() - frame.topLeft();
+    dialog->move(target.topLeft() + clientOffset);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ODialogFit::CenterOnScreen(QWidget *dialog)
+{
+    if (dialog == nullptr)
+    {
+        return;
+    }
+
+    const QScreen *current = dialog->screen();
+    if (current == nullptr)
+    {
+        return;
+    }
+
+    const QRect available = current->availableGeometry();
+    const int margin = 20;
+
+    // First, it must be able to fit: a frame taller than the area cannot be centred whole, so the frame is
+    // brought back inside before anything is placed.
+    const int maxWidth = qMax(1, available.width() - 2 * margin);
+    const int maxHeight = qMax(1, available.height() - 2 * margin);
+    if (dialog->width() > maxWidth || dialog->height() > maxHeight)
+    {
+        dialog->resize(qMin(dialog->width(), maxWidth), qMin(dialog->height(), maxHeight));
+    }
+
+    const QRect frame = dialog->frameGeometry();
+    QPoint target = available.center() - QPoint(frame.width() / 2, frame.height() / 2);
+
+    // Centred, but whole: what would hang under the bottom is raised, and what would run past the top is
+    // pinned to the margin. A window taller than the area keeps its top visible — its bottom is what the
+    // content can scroll to.
+    target.setX(qBound(available.left() + margin, target.x(), available.right() - frame.width() - margin + 1));
+    target.setY(qBound(available.top() + margin, target.y(), available.bottom() - frame.height() - margin + 1));
+
+    const QPoint clientOffset = dialog->pos() - frame.topLeft();
+    dialog->move(target + clientOffset);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

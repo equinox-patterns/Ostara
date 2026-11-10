@@ -85,6 +85,22 @@ public:
     /// application quits, and the release audit reads it there.
     static auto InventoryReport() -> QStringList;
 
+    /// @brief Bring a dialog back inside the usable area, and no further.
+    ///
+    /// A dialog that moves itself after it has been shown is a dialog that cannot be moved: on X11 and
+    /// on Wayland, a client that repositions itself while the user is dragging the window makes the
+    /// window manager cancel the drag, and the frame snaps back under the cursor. The rule is therefore
+    /// the same everywhere — the position the user chose is theirs, and it is only overruled when the
+    /// frame is not wholly visible, then by the least move that brings it back.
+    static void KeepOnScreen(QWidget *dialog);
+
+    /// @brief Centre a dialog on the usable area, and keep it whole.
+    ///
+    /// Three rules, in this order: the frame never exceeds the area it must live in (it is shrunk, the
+    /// content scrolling if it has to), it is centred, and a centred frame that would hang below the
+    /// bottom is raised until it is whole — a window whose buttons are under the edge is not a window.
+    static void CenterOnScreen(QWidget *dialog);
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 

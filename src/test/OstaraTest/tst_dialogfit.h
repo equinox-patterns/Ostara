@@ -53,6 +53,10 @@ private slots:
     void AContentThatGrowsAfterTheShowIsFitted();
     void AContainerHoldingATableKeepsItsRoom();
     void ALongListDoesNotGrowTheDialog();
+    void ThePositionChosenByTheReaderIsRespected();
+    void ADialogPartlyOffScreenIsBroughtBack();
+    void ADialogThatLockedItsOwnSizeKeepsIt();
+    void ACentredDialogIsWholeAndRaisedWhenTheScreenIsShort();
 };
 
 #endif // TST_DIALOGFIT_H

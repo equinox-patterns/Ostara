@@ -28,6 +28,7 @@
 #include "tst_dialogfit.h"
 
 #include "vwidgets/odialogfit.h"
+#include "vcontainer.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -472,6 +473,94 @@ void TST_DialogFit::ALongListDoesNotGrowTheDialog()
 
     QCOMPARE(ODialogFit::Apply(large.data(), kSmallScreen), ODialogFit::Verdict::Fits);
     QVERIFY(large->minimumSizeHint().height() <= kScreenHeight);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_DialogFit::ThePositionChosenByTheReaderIsRespected()
+{
+    // « Les dialogues ne se déplacent pas » : sur X11 et Wayland, un client qui se replace pendant que
+    // l'utilisatrice fait glisser la fenêtre fait annuler le glisser par le gestionnaire de fenêtres.
+    // La position choisie n'est donc jamais reprise tant que le cadre est entier.
+    QDialog dialog;
+    dialog.resize(220, 160);
+
+    const QRect available = dialog.screen()->availableGeometry();
+    dialog.move(available.topLeft() + QPoint(60, 50));
+    const QPoint chosen = dialog.pos();
+
+    ODialogFit::KeepOnScreen(&dialog);
+
+    QCOMPARE(dialog.pos(), chosen);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_DialogFit::ADialogPartlyOffScreenIsBroughtBack()
+{
+    QDialog dialog;
+    dialog.resize(220, 160);
+
+    const QRect available = dialog.screen()->availableGeometry();
+    dialog.move(available.right() - 40, available.bottom() - 30); // its right and bottom hang out
+
+    ODialogFit::KeepOnScreen(&dialog);
+
+    const QRect frame = dialog.frameGeometry();
+    QVERIFY2(available.contains(frame), qPrintable(QStringLiteral("frame %1,%2 %3×%4 outside %5,%6 %7×%8")
+                                                      .arg(frame.x()).arg(frame.y())
+                                                      .arg(frame.width()).arg(frame.height())
+                                                      .arg(available.x()).arg(available.y())
+                                                      .arg(available.width()).arg(available.height())));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_DialogFit::ADialogThatLockedItsOwnSizeKeepsIt()
+{
+    // « Nouveau patron » se verrouille à sa taille : minimum = maximum. Le plafond de l'écran est bien plus
+    // grand, et pourtant il ne doit pas relever ce maximum — sinon le verrou tombe et la dialogue se remet
+    // à grandir, ce que son auteur a explicitement refusé.
+    QDialog dialog;
+    auto *layout = new QVBoxLayout(&dialog);
+    layout->addWidget(new QLabel(QStringLiteral("A fixed form"), &dialog));
+    layout->addWidget(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog));
+
+    dialog.adjustSize();
+    const QSize locked = dialog.size();
+    dialog.setMinimumSize(locked);
+    dialog.setMaximumSize(locked);
+
+    ODialogFit::Apply(&dialog, kSmallScreen);
+
+    QCOMPARE(dialog.maximumHeight(), locked.height());
+    QCOMPARE(dialog.maximumWidth(), locked.width());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+void TST_DialogFit::ACentredDialogIsWholeAndRaisedWhenTheScreenIsShort()
+{
+    // « Quand elle s'ouvre, elle est trop basse » : une fenêtre centrée sur un écran trop court pend sous le
+    // bord. Elle doit être entière — centrée quand elle tient, remontée sinon — et jamais plus grande que la
+    // zone utile.
+    const QRect available = QGuiApplication::primaryScreen()->availableGeometry();
+
+    QDialog fitting;
+    fitting.resize(400, 300);
+    ODialogFit::CenterOnScreen(&fitting);
+    QVERIFY(available.contains(fitting.frameGeometry()));
+    // Centred: the two margins above and below are equal to a pixel or two.
+    const int above = fitting.frameGeometry().top() - available.top();
+    const int below = available.bottom() - fitting.frameGeometry().bottom();
+    QVERIFY2(qAbs(above - below) <= 2, qPrintable(QStringLiteral("above %1, below %2").arg(above).arg(below)));
+
+    QDialog tallerThanTheScreen;
+    tallerThanTheScreen.resize(400, available.height() + 400);
+    ODialogFit::CenterOnScreen(&tallerThanTheScreen);
+    QVERIFY2(tallerThanTheScreen.height() <= available.height(),
+             qPrintable(QStringLiteral("still %1 px tall for a %2 px screen")
+                            .arg(tallerThanTheScreen.height())
+                            .arg(available.height())));
+    QVERIFY2(tallerThanTheScreen.frameGeometry().top() >= available.top(),
+             "a window taller than the screen must keep its top visible");
 }
 
 QTEST_MAIN(TST_DialogFit)

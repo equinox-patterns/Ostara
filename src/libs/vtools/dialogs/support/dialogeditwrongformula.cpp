@@ -32,6 +32,8 @@
 #include <QTextStream>
 #include "dialogeditwrongformula.h"
 
+#include "vwidgets/odialogfit.h"
+
 #include <QAbstractItemView>
 #include <QApplication>
 #include <QCheckBox>
@@ -162,6 +164,15 @@ DialogEditWrongFormula::DialogEditWrongFormula(const VContainer *data, quint32 t
 
 #if defined(Q_OS_MAC)
     setWindowFlags(Qt::Window);
+#endif
+
+#if defined(Q_OS_MAC)
+    // Une fenêtre modale-de-fenêtre AVEC un parent devient une « sheet » sur macOS : elle s'accroche sous la
+    // barre de titre de la fenêtre parente, n'a plus de barre à elle, et **ne peut pas être déplacée**
+    // (qcocoawindow.mm:463-470 : `beginSheet` déclenché dès que `modality() == Qt::WindowModal` et qu'un
+    // parent existe). Cet éditeur doit pouvoir être poussé de côté : il est donc modal d'application ici,
+    // ce que `exec()` fait déjà de toute façon côté boucle d'événements.
+    setWindowModality(Qt::ApplicationModal);
 #endif
 
     InitVariables();
@@ -696,6 +707,10 @@ void DialogEditWrongFormula::showEvent(QShowEvent *event)
     {
         resize(sz);
     }
+
+    // Centred, whole, and raised if the screen is too short for it: a dialogue that opens under the edge
+    // hides its own buttons, and one that opens "a bit far down" makes the reader hunt for it.
+    ODialogFit::CenterOnScreen(this);
 
     CheckState();
 

@@ -46,6 +46,15 @@ DialogUndo::DialogUndo(QWidget *parent)
 {
     ui->setupUi(this);
 
+#if defined(Q_OS_MAC)
+    // Une fenêtre modale-de-fenêtre AVEC un parent devient une « sheet » sur macOS : elle s'accroche sous la
+    // barre de titre de la fenêtre parente, n'a plus de barre à elle, et **ne peut pas être déplacée**
+    // (qcocoawindow.mm:463-470 : `beginSheet` déclenché dès que `modality() == Qt::WindowModal` et qu'un
+    // parent existe). Cet éditeur doit pouvoir être poussé de côté : il est donc modal d'application ici,
+    // ce que `exec()` fait déjà de toute façon côté boucle d'événements.
+    setWindowModality(Qt::ApplicationModal);
+#endif
+
     VAbstractApplication::VApp()->Settings()->GetOsSeparator() ? setLocale(QLocale()) : setLocale(QLocale::c());
 
     bool const opening = VAbstractValApplication::VApp()->getOpeningPattern();

@@ -30,6 +30,7 @@
 #include <QTimer>
 
 
+#include "vwidgets/odialogfit.h"
 #include "../../tools/drawTools/operation/otoolspread.h"
 #include "../../tools/drawTools/operation/ospreadtransform.h"
 
@@ -254,28 +255,9 @@ void ODialogSpread::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void ODialogSpread::KeepOnScreen()
 {
-    const QScreen *current = screen();
-    if (current == nullptr)
-    {
-        return;
-    }
-
-    const QRect available = current->availableGeometry();
-    const int margin = 20;
-
-    // A dialogue taller than the screen cannot be kept on it: it is made to fit first.
-    if (height() > available.height() - 2 * margin)
-    {
-        resize(width(), available.height() - 2 * margin);
-    }
-
-    // The dialogue is CENTRED on the screen rather than pushed up until it fits: a dialogue sitting on the
-    // bottom edge is as unusable as one under it, and the user has to look for its buttons every time.
-    const QRect frame = frameGeometry();
-    const QPoint clientOffset = pos() - frame.topLeft();
-    const QPoint target
-        = available.center() - QPoint(frame.width() / 2, frame.height() / 2) + clientOffset;
-    move(target);
+    // Same rule as the piece dialogue: a frame that moves itself cannot be moved. It is brought back
+    // only when it is not wholly visible, and never re-centred on a position the reader chose.
+    ODialogFit::KeepOnScreen(this);
 }
 
 

@@ -32,6 +32,7 @@
 #include "opiecedialog_patternstep.h"
 #include "opiecedialog_piecestep.h"
 #include "../vtools/visualization/path/vistoolpiece.h"
+#include "vwidgets/odialogfit.h"
 #include "../vmisc/def.h"
 #include "../vmisc/vabstractvalapplication.h"
 #include "../vmisc/vcommonsettings.h"
@@ -107,27 +108,11 @@ void OPieceDialog::showEvent(QShowEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void OPieceDialog::KeepOnScreen()
 {
-    const QScreen *current = screen();
-    if (current == nullptr)
-    {
-        return;
-    }
-
-    const QRect available = current->availableGeometry();
-    const int margin = 20;
-
-    if (height() > available.height() - 2 * margin)
-    {
-        resize(width(), available.height() - 2 * margin);
-    }
-
-    // Centred on the screen rather than pushed up until it fits: a dialogue on the bottom edge is as unusable
-    // as one under it.
-    const QRect frame = frameGeometry();
-    const QPoint clientOffset = pos() - frame.topLeft();
-    const QPoint target
-        = available.center() - QPoint(frame.width() / 2, frame.height() / 2) + clientOffset;
-    move(target);
+    // The dialogue used to re-centre itself here, unconditionally, and again 150 ms after every show:
+    // on X11 and Wayland a client that moves itself during a drag makes the window manager cancel the
+    // drag, so the frame came back under the cursor and the dialogue could not be moved at all. It is
+    // now brought back only when it is not wholly visible — see ODialogFit::KeepOnScreen.
+    ODialogFit::KeepOnScreen(this);
 }
 
 
