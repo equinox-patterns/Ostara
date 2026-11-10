@@ -529,16 +529,6 @@ void OWidgetSizeRanges::ToggleFavorite(int row, const QString &rangeName)
         return;
     }
 
-    QTableWidgetItem *favoriteItem = m_table != nullptr ? m_table->item(row, kFavorite) : nullptr;
-    if (favoriteItem == nullptr || not (favoriteItem->flags() & Qt::ItemIsEnabled))
-    {
-        // Table outside the library → no favorite persistence. The click still arrives (Qt emits
-        // cellClicked for a disabled cell), so it is answered instead of swallowed: a silent return
-        // is what made the Client call it "the star does nothing".
-        emit infoRequested(tr("Favorites need a measurements table from the library"));
-        return;
-    }
-
     const auto *ranges = m_pattern->SizeRanges();
     if (ranges == nullptr || !ranges->contains(rangeName))
     {
@@ -546,6 +536,18 @@ void OWidgetSizeRanges::ToggleFavorite(int row, const QString &rangeName)
     }
 
     const OSizerange range = ranges->value(rangeName);
+
+    QTableWidgetItem *favoriteItem = m_table != nullptr ? m_table->item(row, kFavorite) : nullptr;
+    if (favoriteItem == nullptr || not (favoriteItem->flags() & Qt::ItemIsEnabled))
+    {
+        // Table outside the library → no favorite can be stored: a favorite is keyed by the table it comes
+        // from. The click still arrives (Qt emits cellClicked for a disabled cell), so it is answered with
+        // the reason and with what to do — a silent return is what made the client call it "the star does
+        // nothing".
+        emit favoriteUnavailable(rangeName, range.measurement);
+        return;
+    }
+
     auto *settings = VAbstractApplication::VApp()->Settings();
     if (OGradedFavorites::IsFavorite(settings, range.measurement, range.sizeAxis, rangeName))
     {

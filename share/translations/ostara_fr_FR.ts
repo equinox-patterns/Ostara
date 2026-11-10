@@ -9808,6 +9808,41 @@ Vérifiez que le dossier autorise l&apos;écriture et qu&apos;aucun n&apos;est o
         <source>The graded export failed. Check that the folder allows writing, and try again.</source>
         <translation>L&apos;export gradé a échoué. Vérifiez que le dossier autorise l&apos;écriture, puis réessayez.</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1465"/>
+        <source>“%1” cannot be added to favorites.</source>
+        <translation>« %1 » ne peut pas être ajouté aux favoris.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1472"/>
+        <source>Its measurements table — %1 — is not in the measurements library.</source>
+        <translation>Sa table de mensurations — %1 — n&apos;est pas dans la bibliothèque de mesures.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1470"/>
+        <source>Ostara does not know which measurements table this size range comes from, so it cannot record a favorite for it.</source>
+        <translation>Ostara ne sait pas de quelle table de mensurations cette plage de tailles provient : il ne peut donc pas enregistrer de favori pour elle.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1476"/>
+        <source>A favorite is stored with the table it comes from: the library is what lets Ostara find the sizes again.</source>
+        <translation>Un favori est rangé avec la table dont il provient : c&apos;est la bibliothèque qui permet à Ostara de retrouver les tailles.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1480"/>
+        <source>Load a measurements table, then add the size range to favorites.</source>
+        <translation>Chargez une table de mensurations, puis ajoutez la plage de tailles aux favoris.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1483"/>
+        <source>Put %1 in the measurements library folder, or choose a size range built on a table that is already there.</source>
+        <translation>Placez %1 dans le dossier de la bibliothèque de mesures, ou choisissez une plage de tailles construite sur une table qui s&apos;y trouve déjà.</translation>
+    </message>
+    <message>
+        <location filename="../../src/app/ostara/mainwindow.cpp" line="1486"/>
+        <source>Put %1 in the measurements library folder (%2), or choose a size range built on a table that is already there.</source>
+        <translation>Placez %1 dans le dossier de la bibliothèque de mesures (%2), ou choisissez une plage de tailles construite sur une table qui s&apos;y trouve déjà.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
@@ -18828,11 +18863,6 @@ L&apos;enregistrer avant de le quitter ?</translation>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="440"/>
         <source>Add to favorites</source>
         <translation>Ajouter aux favoris</translation>
-    </message>
-    <message>
-        <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="445"/>
-        <source>Favorites need a measurements table from the library</source>
-        <translation>Les favoris nécessitent une table de mensurations provenant de la bibliothèque</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/owidgetsizeranges.cpp" line="453"/>

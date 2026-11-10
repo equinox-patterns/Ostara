@@ -84,9 +84,10 @@ signals:
     void exportRequested(const QString &rangeName);
     void exportAllRequested(const QString &dirPath);
 
-    /// A gesture the widget could not carry out, with the reason to show the user. The widget owns no
-    /// status bar: the window decides where the sentence lands.
-    void infoRequested(const QString &text);
+    /// The star was clicked on a range whose measurements table is not in the library: no favorite can be
+    /// stored for it, because a favorite is keyed by the table it comes from. The widget owns no dialog — the
+    /// window explains the refusal and what to do about it.
+    void favoriteUnavailable(const QString &rangeName, const QString &measurementTable);
     void rangeActivated(const QString &rangeName);
 
 protected:
