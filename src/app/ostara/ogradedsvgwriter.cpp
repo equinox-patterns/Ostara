@@ -296,113 +296,6 @@ void WriteText(QXmlStreamWriter &writer, const InkSpace &space, QGraphicsSimpleT
     writer.writeEndElement();  // text
 }
 
-/** @brief Inline the original user SVG of a block logo (Val Fork behaviour). */
-void WriteLogo(QXmlStreamWriter &writer, const OCartoucheRenderItem &el)
-{
-    const QString logoPath = el.sourcePath;
-    if (logoPath.isEmpty() || el.target.width() <= 0.0 || el.target.height() <= 0.0)
-    {
-        return;
-    }
-    QFile logoFile(logoPath);
-    if (!logoFile.open(QIODevice::ReadOnly))
-    {
-        return;
-    }
-    const QByteArray logoSvgBytes = logoFile.readAll();
-
-    QXmlStreamReader rd(logoSvgBytes);
-    while (!rd.atEnd() && !(rd.isStartElement() && rd.name() == QLatin1String("svg")))
-    {
-        rd.readNext();
-    }
-    qreal naturalW = el.target.width();
-    qreal naturalH = el.target.height();
-    if (!rd.atEnd())
-    {
-        const QString vb = rd.attributes().value(QLatin1String("viewBox")).toString();
-        if (!vb.isEmpty())
-        {
-            static const QRegularExpression re(QStringLiteral("[\\s,]+"));
-            const QStringList p = vb.split(re, Qt::SkipEmptyParts);
-            if (p.size() >= 4)
-            {
-                naturalW = p[2].toDouble();
-                naturalH = p[3].toDouble();
-            }
-        }
-        else
-        {
-            const double w = rd.attributes().value(QLatin1String("width")).toDouble();
-            const double h = rd.attributes().value(QLatin1String("height")).toDouble();
-            if (w > 0.0)
-            {
-                naturalW = w;
-            }
-            if (h > 0.0)
-            {
-                naturalH = h;
-            }
-        }
-    }
-    const qreal sx = (naturalW > 0.0) ? el.target.width() / naturalW : 1.0;
-    const qreal sy = (naturalH > 0.0) ? el.target.height() / naturalH : 1.0;
-
-    writer.writeStartElement(QStringLiteral("g"));
-    writer.writeAttribute(QStringLiteral("transform"),
-                          QStringLiteral("translate(%1,%2) scale(%3,%4)")
-                              .arg(el.target.x(), 0, 'g', 8)
-                              .arg(el.target.y(), 0, 'g', 8)
-                              .arg(sx, 0, 'g', 8)
-                              .arg(sy, 0, 'g', 8));
-
-    int svgDepth = 0;
-    while (!rd.atEnd())
-    {
-        rd.readNext();
-        if (rd.isStartElement())
-        {
-            ++svgDepth;
-            const QString ns = rd.namespaceUri().toString();
-            const QString name = rd.name().toString();
-            if (ns.isEmpty() || ns == QLatin1String("http://www.w3.org/2000/svg"))
-            {
-                writer.writeStartElement(name);
-            }
-            else
-            {
-                writer.writeStartElement(ns, name);
-            }
-            for (const QXmlStreamAttribute &a : rd.attributes())
-            {
-                const QString ans = a.namespaceUri().toString();
-                if (ans.isEmpty())
-                {
-                    writer.writeAttribute(a.name().toString(), a.value().toString());
-                }
-                else
-                {
-                    writer.writeAttribute(ans, a.name().toString(), a.value().toString());
-                }
-            }
-        }
-        else if (rd.isEndElement())
-        {
-            if (svgDepth <= 0)
-            {
-                break;
-            }
-            --svgDepth;
-            writer.writeEndElement();
-        }
-        else if (rd.isCharacters() && !rd.isWhitespace())
-        {
-            writer.writeCharacters(rd.text().toString());
-        }
-    }
-    writer.writeEndElement();  // g (logo)
-}
-
 /** @brief Emit one information block (editable text only). */
 void WriteBlock(QXmlStreamWriter &writer, const QPointF &origin,
                 const OInfoBlockSvg::Block &block)
@@ -516,7 +409,7 @@ void WriteBlock(QXmlStreamWriter &writer, const QPointF &origin,
         }
         else
         {
-            WriteLogo(writer, el);
+            OCartoucheSvg::WriteLogo(writer, el);
         }
     }
     writer.writeEndElement();  // g (block)

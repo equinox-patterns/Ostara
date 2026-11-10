@@ -34,8 +34,8 @@
  * @brief Turning a logo file into a pixmap, at the size its template asked for.
  *
  * **It was written three times before it was written once.** Drawing a logo means the same six
- * steps everywhere — read the name out of the options, build the path, load the SVG, refuse it
- * when it does not load, turn centimetres into pixels, keep the file's proportions — and two
+ * steps everywhere — read the name out of the options, build the path, open the file, refuse it
+ * when it does not open, turn centimetres into pixels, keep the file's proportions — and two
  * copies of those steps had already drifted apart before a third was about to be made. A
  * preview and a resolver disagreeing about how big a logo is would be a preview that lies.
  *
@@ -58,7 +58,24 @@ struct Drawing
 auto HeightFor(double sizeCm) -> double;
 
 /**
+ * @brief Whether @p path names a drawing — an SVG, rendered — rather than a picture, sampled.
+ *
+ * **One definition of the question**, because three kinds of code ask it: this module to pick a
+ * way of drawing, the library page's preview to pick the same way, and the SVG exporters to know
+ * whether the logo can be inlined as it is or has to be embedded as bytes.
+ *
+ * A file with no suffix counts as a drawing: the library held SVG alone long enough that no other
+ * reading of such a file could be meant.
+ */
+auto IsVector(const QString &path) -> bool;
+
+/**
  * @brief Draws @p fileName, from the logo library, @p sizeCm centimetres tall.
+ *
+ * **A drawing or a photograph, and the caller is not told which.** An SVG is rendered, a PNG or a
+ * JPEG is sampled; both come back as a pixmap of the height that was asked for, with the file's
+ * own proportions kept, so that everything downstream — the preview, the item on the plan, the
+ * cover page — keeps drawing one kind of thing.
  *
  * The proportions of the file are kept: the height is what was asked for, and the width follows.
  * A file that cannot be read gives back an empty drawing rather than a placeholder — nothing is

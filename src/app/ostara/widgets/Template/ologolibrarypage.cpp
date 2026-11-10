@@ -191,7 +191,7 @@ void OLogoLibraryPage::OnSelectionChanged(QTreeWidgetItem *current)
     {
         m_nameEdit->clear();
         m_notesEdit->clear();
-        m_preview->SetSvgFile(QString());
+        m_preview->SetLogoFile(QString());
     }
     else
     {
@@ -205,7 +205,7 @@ void OLogoLibraryPage::OnSelectionChanged(QTreeWidgetItem *current)
                 break;
             }
         }
-        m_preview->SetSvgFile(OLogoLibrary::Directory() + QLatin1Char('/') + fileName);
+        m_preview->SetLogoFile(OLogoLibrary::Directory() + QLatin1Char('/') + fileName);
     }
 
     m_updating = false;
@@ -295,7 +295,8 @@ void OLogoLibraryPage::PersistEntry(const QString &fileName, const QString &name
 void OLogoLibraryPage::OnAdd()
 {
     const QString src =
-        QFileDialog::getOpenFileName(this, tr("Add Logo"), QDir::homePath(), tr("SVG files (*.svg)"));
+        QFileDialog::getOpenFileName(this, tr("Add Logo"), QDir::homePath(),
+                                     tr("Images (%1)").arg(OLogoLibrary::FilePatterns().join(QLatin1Char(' '))));
     if (src.isEmpty())
     {
         return;

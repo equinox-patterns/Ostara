@@ -27,10 +27,12 @@
 
 #include "ocartouchesvg.h"
 
+#include "core/ologorender.h"
 #include "osvgutils.h"
 
 #include <QFile>
 #include <QFontInfo>
+#include <QImageReader>
 #include <QPainterPath>
 #include <QPen>
 #include <QRegularExpression>
@@ -40,6 +42,44 @@
 #include <QXmlStreamWriter>
 
 #include <algorithm>
+
+namespace
+{
+/**
+ * @brief Writes a raster logo as one `<image>` carrying its own bytes in a data URI.
+ *
+ * **Base64 rather than a link into the library**, for the reason a drawing is inlined: an exported
+ * plan is expected to stand on its own, and a plan that shows its logo only while the file is
+ * still in `~/Ostara/Logos` is a plan somebody else cannot open.
+ *
+ * **The value is never wrapped.** XML turns a newline inside an attribute into a space, and a
+ * space in the middle of base64 is a corrupt picture — so it goes out in one piece, however long.
+ *
+ * The declared type is the one Qt reads the file as, not the one its name suggests: a `.png` that
+ * is really a JPEG has to go out as `image/jpeg` for a reader to draw it.
+ */
+void WriteEmbeddedPicture(QXmlStreamWriter &writer, const QByteArray &bytes, const QString &path,
+                          const QRectF &target)
+{
+    const QByteArray format = QImageReader::imageFormat(path);
+    const QString mime = format.isEmpty() ? QStringLiteral("image/png")
+                                         : QStringLiteral("image/") + QString::fromLatin1(format);
+
+    writer.writeStartElement(QStringLiteral("image"));
+    // Declared on the element that uses it rather than on the three roots this writer serves:
+    // `xlink:href` is the form every reader of an SVG still understands, Qt's own renderer
+    // included (it reads that name first, and the plain `href` only after it).
+    writer.writeNamespace(QStringLiteral("http://www.w3.org/1999/xlink"), QStringLiteral("xlink"));
+    writer.writeAttribute(QStringLiteral("xlink:href"),
+                          QStringLiteral("data:%1;base64,%2")
+                              .arg(mime, QString::fromLatin1(bytes.toBase64())));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(target.x(), 'g', 8));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(target.y(), 'g', 8));
+    writer.writeAttribute(QStringLiteral("width"), QString::number(target.width(), 'g', 8));
+    writer.writeAttribute(QStringLiteral("height"), QString::number(target.height(), 'g', 8));
+    writer.writeEndElement();  // image
+}
+} // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
 void OCartoucheSvg::WriteItems(QXmlStreamWriter &writer, const QVector<OCartoucheRenderItem> &items,
@@ -173,110 +213,126 @@ void OCartoucheSvg::WriteItems(QXmlStreamWriter &writer, const QVector<OCartouch
         }
         else
         {
-            // Logo: inline the original user SVG (Val Fork behaviour).
-            const QString logoPath = el.sourcePath;
-            if (logoPath.isEmpty() || el.target.width() <= 0.0 || el.target.height() <= 0.0)
-            {
-                continue;
-            }
-            QFile logoFile(logoPath);
-            if (!logoFile.open(QIODevice::ReadOnly))
-            {
-                continue;
-            }
-            const QByteArray logoSvgBytes = logoFile.readAll();
+            WriteLogo(writer, el);
+        }
+    }
+}
 
-            QXmlStreamReader rd(logoSvgBytes);
-            while (!rd.atEnd() && !(rd.isStartElement() && rd.name() == QLatin1String("svg")))
+//---------------------------------------------------------------------------------------------------------------------
+void OCartoucheSvg::WriteLogo(QXmlStreamWriter &writer, const OCartoucheRenderItem &el)
+{
+    const QString logoPath = el.sourcePath;
+    if (logoPath.isEmpty() || el.target.width() <= 0.0 || el.target.height() <= 0.0)
+    {
+        return;
+    }
+
+    QFile logoFile(logoPath);
+    if (!logoFile.open(QIODevice::ReadOnly))
+    {
+        return;
+    }
+    const QByteArray logoBytes = logoFile.readAll();
+
+    // **A drawing is inlined, a picture is embedded.** An SVG carries its own geometry: copied
+    // here as it is, the logo stays vector and the exported file stays independent of the library
+    // it came from (Val Fork behaviour, kept). A PNG or a JPEG is bytes and nothing else — read as
+    // XML it yields no `<svg>` element, and the block came out with an empty `<g>` where the logo
+    // was: the logo gone from the plan, and nothing said.
+    if (!OLogoRender::IsVector(logoPath))
+    {
+        WriteEmbeddedPicture(writer, logoBytes, logoPath, el.target);
+        return;
+    }
+
+    QXmlStreamReader rd(logoBytes);
+    while (!rd.atEnd() && !(rd.isStartElement() && rd.name() == QLatin1String("svg")))
+    {
+        rd.readNext();
+    }
+    qreal naturalW = el.target.width();
+    qreal naturalH = el.target.height();
+    if (!rd.atEnd())
+    {
+        const QString vb = rd.attributes().value(QLatin1String("viewBox")).toString();
+        if (!vb.isEmpty())
+        {
+            static const QRegularExpression re(QStringLiteral("[\\s,]+"));
+            const QStringList p = vb.split(re, Qt::SkipEmptyParts);
+            if (p.size() >= 4)
             {
-                rd.readNext();
+                naturalW = p[2].toDouble();
+                naturalH = p[3].toDouble();
             }
-            qreal naturalW = el.target.width();
-            qreal naturalH = el.target.height();
-            if (!rd.atEnd())
+        }
+        else
+        {
+            const double w = rd.attributes().value(QLatin1String("width")).toDouble();
+            const double h = rd.attributes().value(QLatin1String("height")).toDouble();
+            if (w > 0.0)
             {
-                const QString vb = rd.attributes().value(QLatin1String("viewBox")).toString();
-                if (!vb.isEmpty())
+                naturalW = w;
+            }
+            if (h > 0.0)
+            {
+                naturalH = h;
+            }
+        }
+    }
+    const qreal sx = (naturalW > 0.0) ? el.target.width() / naturalW : 1.0;
+    const qreal sy = (naturalH > 0.0) ? el.target.height() / naturalH : 1.0;
+
+    writer.writeStartElement(QStringLiteral("g"));
+    writer.writeAttribute(QStringLiteral("transform"),
+                          QStringLiteral("translate(%1,%2) scale(%3,%4)")
+                              .arg(el.target.x(), 0, 'g', 8)
+                              .arg(el.target.y(), 0, 'g', 8)
+                              .arg(sx, 0, 'g', 8)
+                              .arg(sy, 0, 'g', 8));
+
+    int svgDepth = 0;
+    while (!rd.atEnd())
+    {
+        rd.readNext();
+        if (rd.isStartElement())
+        {
+            ++svgDepth;
+            const QString ns = rd.namespaceUri().toString();
+            const QString name = rd.name().toString();
+            if (ns.isEmpty() || ns == QLatin1String("http://www.w3.org/2000/svg"))
+            {
+                writer.writeStartElement(name);
+            }
+            else
+            {
+                writer.writeStartElement(ns, name);
+            }
+            for (const QXmlStreamAttribute &a : rd.attributes())
+            {
+                const QString ans = a.namespaceUri().toString();
+                if (ans.isEmpty())
                 {
-                    static const QRegularExpression re(QStringLiteral("[\\s,]+"));
-                    const QStringList p = vb.split(re, Qt::SkipEmptyParts);
-                    if (p.size() >= 4)
-                    {
-                        naturalW = p[2].toDouble();
-                        naturalH = p[3].toDouble();
-                    }
+                    writer.writeAttribute(a.name().toString(), a.value().toString());
                 }
                 else
                 {
-                    const double w = rd.attributes().value(QLatin1String("width")).toDouble();
-                    const double h = rd.attributes().value(QLatin1String("height")).toDouble();
-                    if (w > 0.0)
-                    {
-                        naturalW = w;
-                    }
-                    if (h > 0.0)
-                    {
-                        naturalH = h;
-                    }
+                    writer.writeAttribute(ans, a.name().toString(), a.value().toString());
                 }
             }
-            const qreal sx = (naturalW > 0.0) ? el.target.width() / naturalW : 1.0;
-            const qreal sy = (naturalH > 0.0) ? el.target.height() / naturalH : 1.0;
-
-            writer.writeStartElement(QStringLiteral("g"));
-            writer.writeAttribute(
-                QStringLiteral("transform"),
-                QStringLiteral("translate(%1,%2) scale(%3,%4)")
-                    .arg(el.target.x(), 0, 'g', 8)
-                    .arg(el.target.y(), 0, 'g', 8)
-                    .arg(sx, 0, 'g', 8)
-                    .arg(sy, 0, 'g', 8));
-
-            int svgDepth = 0;
-            while (!rd.atEnd())
+        }
+        else if (rd.isEndElement())
+        {
+            if (svgDepth <= 0)
             {
-                rd.readNext();
-                if (rd.isStartElement())
-                {
-                    ++svgDepth;
-                    const QString ns = rd.namespaceUri().toString();
-                    const QString name = rd.name().toString();
-                    if (ns.isEmpty() || ns == QLatin1String("http://www.w3.org/2000/svg"))
-                    {
-                        writer.writeStartElement(name);
-                    }
-                    else
-                    {
-                        writer.writeStartElement(ns, name);
-                    }
-                    for (const QXmlStreamAttribute &a : rd.attributes())
-                    {
-                        const QString ans = a.namespaceUri().toString();
-                        if (ans.isEmpty())
-                        {
-                            writer.writeAttribute(a.name().toString(), a.value().toString());
-                        }
-                        else
-                        {
-                            writer.writeAttribute(ans, a.name().toString(), a.value().toString());
-                        }
-                    }
-                }
-                else if (rd.isEndElement())
-                {
-                    if (svgDepth <= 0)
-                    {
-                        break;
-                    }
-                    --svgDepth;
-                    writer.writeEndElement();
-                }
-                else if (rd.isCharacters() && !rd.isWhitespace())
-                {
-                    writer.writeCharacters(rd.text().toString());
-                }
+                break;
             }
-            writer.writeEndElement();  // g (logo)
+            --svgDepth;
+            writer.writeEndElement();
+        }
+        else if (rd.isCharacters() && !rd.isWhitespace())
+        {
+            writer.writeCharacters(rd.text().toString());
         }
     }
+    writer.writeEndElement();  // g (logo)
 }

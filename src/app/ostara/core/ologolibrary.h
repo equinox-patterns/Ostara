@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   18/09/2026
  **
- **  @brief  The installation's logo library — one folder of SVG files, and their names.
+ **  @brief  The installation's logo library — one folder of logo files, and their names.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -29,9 +29,10 @@
 
 #include <QList>
 #include <QString>
+#include <QStringList>
 
 /**
- * @brief The logos of the installation: a folder of SVG files, and the names they are shown under.
+ * @brief The logos of the installation: a folder of logo files, and the names they are shown under.
  *
  * **Not a template family's library.** A logo belongs to whoever is drawing — a brand, a
  * workshop — and not to the shape it happens to be placed on: the same set is offered to the
@@ -43,7 +44,10 @@
  * and the list is built by reading the folder rather than the index. `fileName` is therefore the
  * identity, and it is what a template stores.
  *
- * **SVG only.** Nothing here checks that: a file the folder holds is a logo as far as this is
+ * **Three formats, and the list of them lives here.** A logo is an SVG, a PNG or a JPEG.
+ * `FilePatterns()` is the only place that says so, and both the folder listing and the file
+ * dialog take it from there — a file that can be added is a file that can be seen. Nothing
+ * here checks what a file holds: a file the folder holds is a logo as far as this is
  * concerned, and whether it draws is answered when something tries to render it.
  *
  * The index is XML but is deliberately **not** validated against a schema, unlike the template
@@ -56,7 +60,7 @@ namespace OLogoLibrary
 struct Entry
 {
     QString fileName; ///< the file's name, bare — the identity, and what a template stores
-    QString name;     ///< the name shown in a list; falls back to the file's base name
+    QString name;     ///< the name shown in a list; falls back to the file name, see Load()
     QString notes;    ///< free text, shown nowhere but the library page
 };
 
@@ -67,11 +71,25 @@ auto Directory() -> QString;
 auto MetaPath() -> QString;
 
 /**
+ * @brief The file patterns a logo can have — `*.svg`, `*.png`, `*.jpg`, `*.jpeg`.
+ *
+ * **One list, because two places have to agree on it.** The folder is listed by these patterns
+ * and the file dialog offers exactly these: written twice, they drifted apart the day a format
+ * was added in one of them, and a file could then be added to a library that never showed it.
+ */
+auto FilePatterns() -> QStringList;
+
+/**
  * @brief Every logo in the folder, in name order, with its display name — empty if there is none.
  *
  * The folder is what is read, so a file whose metadata entry has gone is still a logo; an entry
  * whose file has gone is not, and is dropped — which is what makes the index follow the folder
  * rather than the other way round.
+ *
+ * **A display name that two files would share is the file name instead.** `Logo.svg` and
+ * `Logo.png` are both « Logo » by base name, and the format now being a choice makes that pair
+ * an ordinary thing to have; listed as two « Logo » the library page and the editor's combo
+ * would each show a choice that cannot be made.
  */
 auto Load() -> QList<Entry>;
 

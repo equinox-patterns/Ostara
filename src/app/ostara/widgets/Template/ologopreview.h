@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   25/08/2026
  **
- **  @brief  Live preview of one SVG logo from the logo library.
+ **  @brief  Live preview of one logo from the logo library.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -30,8 +30,12 @@
 #include <QWidget>
 
 /**
- * @brief Renders one SVG logo, scaled to fit the widget keeping its aspect
+ * @brief Renders one logo file, scaled to fit the widget keeping its aspect
  * ratio, horizontally and vertically centered.
+ *
+ * **A drawing or a photograph.** An SVG is rendered by the SVG renderer; a PNG or a JPEG is
+ * loaded as a picture. Both are fitted the same way, so the library page shows what the logo will
+ * look like whichever format it was saved in.
  */
 class OLogoPreview : public QWidget
 {
@@ -40,8 +44,8 @@ class OLogoPreview : public QWidget
 public:
     explicit OLogoPreview(QWidget *parent = nullptr);
 
-    /// Show the SVG at `filePath`; an empty path shows a placeholder.
-    void SetSvgFile(const QString &filePath);
+    /// Show the logo at `filePath`; an empty path shows a placeholder.
+    void SetLogoFile(const QString &filePath);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

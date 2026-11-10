@@ -4,7 +4,7 @@
  **  @author Sophie Denys <contact@sophiedenys.com>
  **  @date   25/08/2026
  **
- **  @brief  Live preview of one SVG logo from the logo library.
+ **  @brief  Live preview of one logo from the logo library.
  **
  **  @copyright
  **  Copyright (C) 2026 Sophie Denys <contact@sophiedenys.com>
@@ -26,7 +26,11 @@
 
 #include "ologopreview.h"
 
+#include "core/ologorender.h"
+
 #include <QEvent>
+#include <QImage>
+#include <QImageReader>
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -35,7 +39,7 @@ OLogoPreview::OLogoPreview(QWidget *parent) : QWidget(parent)
     setMinimumSize(200, 150);
 }
 
-void OLogoPreview::SetSvgFile(const QString &filePath)
+void OLogoPreview::SetLogoFile(const QString &filePath)
 {
     m_filePath = filePath;
     update();
@@ -55,17 +59,39 @@ void OLogoPreview::paintEvent(QPaintEvent *event)
         return;
     }
 
-    QSvgRenderer renderer(m_filePath);
-    if (!renderer.isValid())
+    // What is drawn, and how big it says it is: a drawing knows its own size, a photograph the
+    // size of the picture in it. Everything below the fork is the same for both.
+    QSvgRenderer renderer;
+    QImage image;
+    QSize base;
+    const bool vector = OLogoRender::IsVector(m_filePath);
+    if (vector)
     {
-        painter.setPen(palette().placeholderText().color());
-        painter.drawText(rect(), Qt::AlignCenter, tr("Invalid SVG"));
-        return;
+        renderer.load(m_filePath);
+        if (!renderer.isValid())
+        {
+            painter.setPen(palette().placeholderText().color());
+            painter.drawText(rect(), Qt::AlignCenter, tr("Not a readable image"));
+            return;
+        }
+        base = renderer.defaultSize();
+    }
+    else
+    {
+        QImageReader reader(m_filePath);
+        reader.setAutoTransform(true);
+        image = reader.read();
+        if (image.isNull())
+        {
+            painter.setPen(palette().placeholderText().color());
+            painter.drawText(rect(), Qt::AlignCenter, tr("Not a readable image"));
+            return;
+        }
+        base = image.size();
     }
 
-    // Fit the SVG into the widget keeping its aspect ratio, centered.
+    // Fit the logo into the widget keeping its aspect ratio, centered.
     QRectF target = rect();
-    const QSize base = renderer.defaultSize();
     if (base.isValid() && base.width() > 0 && base.height() > 0)
     {
         const QSize fit = base.scaled(rect().size(), Qt::KeepAspectRatio);
@@ -73,7 +99,15 @@ void OLogoPreview::paintEvent(QPaintEvent *event)
                                 (rect().height() - fit.height()) / 2.0),
                         QSizeF(fit));
     }
-    renderer.render(&painter, target);
+    if (vector)
+    {
+        renderer.render(&painter, target);
+    }
+    else
+    {
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+        painter.drawImage(target, image);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

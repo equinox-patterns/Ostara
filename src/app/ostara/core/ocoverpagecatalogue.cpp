@@ -587,7 +587,7 @@ auto OCoverPageCatalogue::Build() -> QList<OTemplateSection>
         MakeSection("logo",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Logo"),
                     QT_TRANSLATE_NOOP("OTemplateSection",
-                                      "A logo from your library (add your SVG logos in the Logo page)."),
+                                      "A logo from your library (add logos in the Logo page)."),
                     {kLogo, kLogoSize, kLineSpacing}),
         // The same split as the cartouche's free text — the template says that the text is shown
         // and how, and the user writes what it says. But a cover page serves a whole library of

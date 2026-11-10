@@ -148,8 +148,9 @@ struct OCartoucheRenderLine
     qreal logoHeight = 0; // Kind::Logo — rendered height in px.
     // Kind::Space — the room the line takes, in px. It draws nothing, and this is all it is.
     qreal spaceHeight = 0;
-    QString sourcePath;   // Kind::Logo — original SVG file path; Paint ignores it,
-                          // the SVG writer re-inlines this file (Val Fork behaviour).
+    QString sourcePath;   // Kind::Logo — the logo file as it sits in the library; Paint ignores it,
+                          // the SVG writers read it — inlined when it is a drawing, embedded as
+                          // bytes when it is a picture (see OCartoucheSvg::WriteLogo).
     QVector<QRectF> shapeOutlines;               // Kind::Shape — rectangles to stroke, unfilled.
     QVector<OCartoucheShapeLabel> shapeLabels;   // Kind::Shape — texts placed against them.
 
@@ -172,7 +173,7 @@ struct OCartoucheRenderLine
  *
  * Produced by Layout() from the render lines: text lines carry the resolved
  * font and the drawText origin (penX, baseline); logo lines carry the target
- * draw rect plus the original SVG path for the writer.
+ * draw rect plus the path of the file it came from, for the writer.
  */
 struct OCartoucheRenderItem
 {
@@ -189,7 +190,7 @@ struct OCartoucheRenderItem
     QPointF pen;        // Kind::Text — drawText origin (penX, baseline).
     QPixmap pixmap;     // Kind::Logo — pre-rendered pixmap (screen painter).
     QRectF target;      // Kind::Logo, Kind::Shape — target draw rect.
-    QString sourcePath; // Kind::Logo — original SVG file path (SVG writer only).
+    QString sourcePath; // Kind::Logo — the logo file the pixmap was made from (writers only).
 
     // Kind::Text — the trace sample, placed. Null when the line carries none, which is why the
     // three below need no separate "has one": a placed segment says so by existing.
@@ -318,7 +319,7 @@ QVector<OCartoucheRenderLine> TextLines(const QString &text, const QFont &font, 
 QVector<OCartoucheRenderLine> TextLinesFitting(const QString &text, const QFont &font,
                                                int lineSpacing, qreal maxWidth);
 
-/** @brief Build a logo render line (pre-rendered pixmap + original SVG source). */
+/** @brief Build a logo render line (pre-rendered pixmap + the file it was made from). */
 OCartoucheRenderLine LogoLine(const QPixmap &logo, qreal logoHeight, int lineSpacing,
                               const QString &sourcePath = {});
 

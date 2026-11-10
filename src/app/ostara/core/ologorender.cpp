@@ -30,6 +30,9 @@
 
 #include "vmisc/def.h"
 
+#include <QFileInfo>
+#include <QImage>
+#include <QImageReader>
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QtMath>
@@ -45,7 +48,74 @@ namespace
  * enough to still be seen.
  */
 constexpr double kMinimumHeightPx = 8.0;
+
+/**
+ * @brief The vector logo @p path, drawn @p heightPx tall, its width from its own proportions.
+ *
+ * A file that declares no size of its own is taken as square, which is the only guess that keeps
+ * it visible rather than a sliver.
+ */
+auto VectorPixmap(const QString &path, double heightPx) -> QPixmap
+{
+    QSvgRenderer renderer(path);
+    if (!renderer.isValid())
+    {
+        return {}; // a file that has gone, or one that is not a drawing
+    }
+
+    const QSizeF intrinsic = renderer.defaultSize();
+    double widthPx = heightPx;
+    if (intrinsic.isValid() && intrinsic.width() > 0 && intrinsic.height() > 0)
+    {
+        widthPx = heightPx * (intrinsic.width() / intrinsic.height());
+    }
+
+    QPixmap pixmap(qCeil(widthPx), qCeil(heightPx));
+    pixmap.fill(Qt::transparent);
+
+    QPainter painter(&pixmap);
+    renderer.render(&painter);
+    painter.end();
+    return pixmap;
+}
+
+/**
+ * @brief The raster logo @p path, sampled @p heightPx tall, its width from its own proportions.
+ *
+ * **The proportions are read from the picture that came out, not from the file's header.** A
+ * photograph is rotated by its EXIF tag as it is decoded, so the size the header announces is the
+ * one lying on its side: a logo turned upright that way would have been given the width of its
+ * height. Decoding first costs the full-size image in memory once, and it is the only way not to
+ * be wrong about a photograph taken with a telephone.
+ */
+auto RasterPixmap(const QString &path, double heightPx) -> QPixmap
+{
+    QImageReader reader(path);
+    // Whatever says which way is up — a scanner or a telephone — is obeyed.
+    reader.setAutoTransform(true);
+
+    const QImage image = reader.read();
+    if (image.isNull() || image.width() <= 0 || image.height() <= 0)
+    {
+        return {}; // a file that has gone, or one this build cannot decode
+    }
+
+    const double widthPx = heightPx * (static_cast<double>(image.width()) / image.height());
+    const QImage scaled = image.scaled(QSize(qCeil(widthPx), qCeil(heightPx)), Qt::IgnoreAspectRatio,
+                                       Qt::SmoothTransformation);
+    return QPixmap::fromImage(scaled);
+}
 } // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+
+auto OLogoRender::IsVector(const QString &path) -> bool
+{
+    const QString suffix = QFileInfo(path).suffix().toLower();
+    // Empty counts as vector: the library held SVG alone long enough that no other reading of a
+    // file without a suffix could be meant. `.svgz` is the compressed drawing, and it is drawn.
+    return suffix.isEmpty() || suffix == QLatin1String("svg") || suffix == QLatin1String("svgz");
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -65,29 +135,18 @@ auto OLogoRender::Draw(const QString &fileName, double sizeCm) -> Drawing
     }
 
     const QString path = OLogoLibrary::Directory() + QLatin1Char('/') + fileName;
-    QSvgRenderer renderer(path);
-    if (!renderer.isValid())
+    const double heightPx = HeightFor(sizeCm);
+
+    // One answer either way: a drawing that could not be made is an empty Drawing, never a pixmap
+    // with no height beside it — the callers drop the line on `pixmap.isNull()` and read the height
+    // only once it is not.
+    const QPixmap pixmap = IsVector(path) ? VectorPixmap(path, heightPx) : RasterPixmap(path, heightPx);
+    if (pixmap.isNull())
     {
-        return drawing; // a file that has gone, or one that is not a drawing
+        return drawing;
     }
 
-    drawing.heightPx = HeightFor(sizeCm);
-
-    // The width follows the file's own proportions; a file that declares no size of its own is
-    // taken as square, which is the only guess that keeps it visible rather than a sliver.
-    const QSizeF intrinsic = renderer.defaultSize();
-    double widthPx = drawing.heightPx;
-    if (intrinsic.isValid() && intrinsic.width() > 0 && intrinsic.height() > 0)
-    {
-        widthPx = drawing.heightPx * (intrinsic.width() / intrinsic.height());
-    }
-
-    drawing.pixmap = QPixmap(qCeil(widthPx), qCeil(drawing.heightPx));
-    drawing.pixmap.fill(Qt::transparent);
-
-    QPainter painter(&drawing.pixmap);
-    renderer.render(&painter);
-    painter.end();
-
+    drawing.pixmap = pixmap;
+    drawing.heightPx = heightPx;
     return drawing;
 }

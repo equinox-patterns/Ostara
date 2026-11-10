@@ -195,7 +195,7 @@ auto OPieceCartoucheCatalogue::Build() -> QList<OTemplateSection>
                     {kMeasureName, kSeparator, kMeasureRename, kFontFamily, kFontWeight, kFontSize, kLineSpacing}),
         MakeSection("logo",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Logo"),
-                    QT_TRANSLATE_NOOP("OTemplateSection", "A logo from your library (add your SVG logos in the Logo page)."),
+                    QT_TRANSLATE_NOOP("OTemplateSection", "A logo from your library (add logos in the Logo page)."),
                     {kLogo, kLogoSize, kLineSpacing}),
         MakeSection("collection",
                     QT_TRANSLATE_NOOP("OTemplateSection", "Collection"),

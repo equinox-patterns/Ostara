@@ -103,11 +103,21 @@ auto OLogoLibrary::MetaPath() -> QString
 
 //---------------------------------------------------------------------------------------------------------------------
 
+auto OLogoLibrary::FilePatterns() -> QStringList
+{
+    // SVG first, because it is the one that stays sharp at any size; the two raster formats after
+    // it, in the order a drawing program is likeliest to hand them over.
+    return {QStringLiteral("*.svg"), QStringLiteral("*.png"), QStringLiteral("*.jpg"),
+            QStringLiteral("*.jpeg")};
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+
 auto OLogoLibrary::Load() -> QList<Entry>
 {
     QDir dir(Directory());
     const QStringList files =
-        dir.exists() ? dir.entryList({QStringLiteral("*.svg")}, QDir::Files, QDir::Name | QDir::IgnoreCase)
+        dir.exists() ? dir.entryList(FilePatterns(), QDir::Files, QDir::Name | QDir::IgnoreCase)
                      : QStringList();
 
     // Indexed by file name, because that is what the index is keyed on and what a template
@@ -130,6 +140,22 @@ auto OLogoLibrary::Load() -> QList<Entry>
             entry.name = QFileInfo(file).completeBaseName();
         }
         result.append(entry);
+    }
+
+    // Two files that would show the same name are shown by their file name instead — see the
+    // header: with three formats a logo is as often a `Logo.svg` beside a `Logo.png` as not, and
+    // two identical names are a choice the library page and the editor's combo could not offer.
+    QHash<QString, int> shared;
+    for (const Entry &entry : result)
+    {
+        shared[entry.name] = shared.value(entry.name) + 1;
+    }
+    for (Entry &entry : result)
+    {
+        if (shared.value(entry.name) > 1)
+        {
+            entry.name = entry.fileName;
+        }
     }
     return result;
 }

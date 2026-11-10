@@ -63,6 +63,17 @@ namespace OCartoucheSvg
 ///                    path wants `<text>`, and is the reason the flag exists at all.
 void WriteItems(QXmlStreamWriter &writer, const QVector<OCartoucheRenderItem> &items, qreal scale,
                 bool textAsPaths);
+
+/// @brief Write one logo item: a drawing inlined as it is, or a picture embedded as a data URI.
+///
+/// **One definition, because it had two.** The block's logo was written here and again in the
+/// graded sheet's writer, character for character the same; two copies of « read the file as XML
+/// and copy its elements » agree only while every logo is an SVG. A PNG read that way yields no
+/// `<svg>` element at all, and the block came out with an empty group where the logo was — so the
+/// copy that had been forgotten would have been the one that lost it, in silence.
+///
+/// @param el the Item to write; its `sourcePath` names the file and its `target` places it.
+void WriteLogo(QXmlStreamWriter &writer, const OCartoucheRenderItem &el);
 }  // namespace OCartoucheSvg
 
 #endif // OCARTOUCHESVG_H

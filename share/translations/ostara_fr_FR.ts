@@ -15834,9 +15834,9 @@ Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est 
         <translation>Aucun logo pour l&apos;instant. Ajoutez-en un.</translation>
     </message>
     <message>
-        <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="298"/>
-        <source>SVG files (*.svg)</source>
-        <translation>Fichiers SVG (*.svg)</translation>
+        <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="299"/>
+        <source>Images (%1)</source>
+        <translation>Images (%1)</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologolibrarypage.cpp" line="314"/>
@@ -15863,8 +15863,9 @@ Vérifiez que le dossier autorise l&apos;écriture et que le fichier n&apos;est 
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="62"/>
-        <source>Invalid SVG</source>
-        <translation>SVG invalide</translation>
+        <location filename="../../src/app/ostara/widgets/Template/ologopreview.cpp" line="72"/>
+        <source>Not a readable image</source>
+        <translation>Image illisible</translation>
     </message>
 </context>
 <context>
@@ -18210,8 +18211,8 @@ L&apos;enregistrer avant de le quitter ?</translation>
     <message>
         <location filename="../../src/app/ostara/core/ocoverpagecatalogue.cpp" line="589"/>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="198"/>
-        <source>A logo from your library (add your SVG logos in the Logo page).</source>
-        <translation>Un logo de votre bibliothèque (ajoutez vos logos SVG dans la page Logo).</translation>
+        <source>A logo from your library (add logos in the Logo page).</source>
+        <translation>Un logo de votre bibliothèque (ajoutez vos logos dans la page Logo).</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/widgets/InfoBlock/OPieceCartoucheCatalogue.cpp" line="201"/>
