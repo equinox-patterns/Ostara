@@ -97,6 +97,14 @@ constexpr auto PointPosition(const QPointF &p, const QLineF &line) -> qreal
 inline auto AppendStepOnZeroSide(QVector<VRawSAPoint> &points, const VSAPoint &p, const QLineF &bigLine1,
                                  qreal width) -> bool
 {
+    // A step needs contour to step from. When the joint is reached before any point was drawn, the end of the
+    // offset is not the end of anything: it lands beside the node and the contour then joins it, making a spike
+    // sticking out of the piece. Only keep it when the contour has started, or when it falls on the node itself.
+    if (points.isEmpty() && not VFuzzyComparePoints(bigLine1.p2(), p.ToQPointF()))
+    {
+        return false;
+    }
+
     if (VFuzzyComparePossibleNulls(p.GetSABefore(width), 0) == VFuzzyComparePossibleNulls(p.GetSAAfter(width), 0))
     {
         return false; // both sides are alike, there is no step to keep
