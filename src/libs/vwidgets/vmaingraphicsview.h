@@ -212,6 +212,16 @@ protected:
 
 private:
     Q_DISABLE_COPY_MOVE(VMainGraphicsView) // NOLINT
+
+    /// @brief The single writer of the viewport cursor while a pan runs.
+    ///
+    /// The view owns no cursor of its own: the pointer is the arrow, and over a drawing item it is
+    /// that item's cursor, which `QGraphicsView` re-applies on every mouse move. A pan is the one
+    /// exception. Its hand cannot be written once at the key press — the item under the mouse writes
+    /// over it on the very next move — so the cursor is decided here, from the flags, after every
+    /// event that may have touched it. With no pan running the arrow comes back.
+    void UpdatePanCursor();
+
     GraphicsViewZoom *zoom{nullptr};
     bool showToolOptions{true};
     bool isAllowRubberBand{true};
@@ -223,12 +233,10 @@ private:
     /// drawing scrolls and zooms. Empty means nothing is drawn.
     QString m_cornerLabel{};
     QPoint m_ptStartPos{};
-    QCursor m_oldCursor{};
     Qt::CursorShape m_currentCursor{Qt::ArrowCursor};
     bool m_isSpacePanActive{false};
     bool m_isSpacePanDrag{false};
     bool m_isMiddlePanActive{false};
-    QCursor m_preSpaceCursor{};
 };
 
 #endif // VMAINGRAPHICSVIEW_H

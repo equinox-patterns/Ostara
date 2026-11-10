@@ -668,12 +668,11 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
     if (m_isSpacePanActive && event->button() == Qt::LeftButton)
     {
         m_ptStartPos = event->pos();
-        m_oldCursor = viewport()->cursor();
         QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
         m_isSpacePanDrag = true;
         panStarted = true;
         event->accept();
-        viewport()->setCursor(Qt::ClosedHandCursor);
+        UpdatePanCursor();
 
         // ⚠️ **Aucun appel à `QGraphicsView::mousePressEvent` ici, et c'est la correction.** Ce
         // handler de base livre TOUJOURS la pression à la scène avant de regarder le mode de
@@ -731,12 +730,11 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *event)
             if (list.isEmpty() || (scene && scene->IsNonInteractive()))
             { // Only when the user clicks on the scene background or non interactive scene
                 m_ptStartPos = event->pos();
-                m_oldCursor = viewport()->cursor();
                 QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
                 m_isMiddlePanActive = true;
                 panStarted = true;
                 event->accept();
-                viewport()->setCursor(Qt::ClosedHandCursor);
+                UpdatePanCursor();
             }
             break;
         }
@@ -801,6 +799,15 @@ void VMainGraphicsView::mouseMoveEvent(QMouseEvent *event)
     {
         QGraphicsView::mouseMoveEvent(event);
     }
+
+    // ⚠️ **Le pan reprend le curseur en dernier.** `QGraphicsView` réécrit le curseur du viewport à
+    // chaque déplacement avec celui de l'item sous la souris (`_q_setViewportCursor`) : la main posée
+    // au clavier disparaissait donc sous le curseur d'une miniature, et une main fermée prise sur un
+    // item pouvait au contraire survivre au pan. La décision revient à `UpdatePanCursor()`, après coup.
+    if (m_isSpacePanActive || m_isSpacePanDrag || m_isMiddlePanActive)
+    {
+        UpdatePanCursor();
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -832,24 +839,26 @@ void VMainGraphicsView::mouseReleaseEvent(QMouseEvent *event)
         QGraphicsView::mouseReleaseEvent(event); // First because need to hide a rubber band
     }
     QGraphicsView::setDragMode(QGraphicsView::NoDrag);
-    if (event->button() == Qt::MiddleButton)
+
+    if (wasMiddlePan)
     {
-        viewport()->setCursor(m_oldCursor);
-        if (wasMiddlePan)
-        {
-            m_isMiddlePanActive = false;
-        }
+        m_isMiddlePanActive = false;
     }
+
     if (wasSpacePanDrag)
     {
+        // The press the pan had retained is closed here. Whether the hand stays on is the flags'
+        // business, and `UpdatePanCursor()` decides it — no cursor is set from a snapshot any more.
         m_isSpacePanDrag = false;
-        // Open hand only while the key is still held: if Espace went up first, the key release has
-        // already put the real cursor back, and setting the hand here would leave it for good.
-        viewport()->setCursor(m_isSpacePanActive ? Qt::OpenHandCursor : m_preSpaceCursor);
     }
     else if (event->button() == Qt::LeftButton)
     {
         emit MouseRelease();
+    }
+
+    if (wasSpacePanDrag || wasMiddlePan || m_isSpacePanActive || m_isMiddlePanActive)
+    {
+        UpdatePanCursor();
     }
 }
 
@@ -862,9 +871,8 @@ void VMainGraphicsView::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Space && not event->isAutoRepeat())
     {
-        m_preSpaceCursor = viewport()->cursor();
-        viewport()->setCursor(Qt::OpenHandCursor);
         m_isSpacePanActive = true;
+        UpdatePanCursor();
         event->accept();
         return;
     }
@@ -892,7 +900,7 @@ void VMainGraphicsView::keyReleaseEvent(QKeyEvent *event)
             // pression avait été retenue, livrait un `release` sans `press` à la scène, et laissait
             // la main fermée quand Espace partait avant le bouton.
         }
-        viewport()->setCursor(m_preSpaceCursor);
+        UpdatePanCursor();
         event->accept();
         return;
     }
@@ -907,14 +915,43 @@ void VMainGraphicsView::focusOutEvent(QFocusEvent *event)
     // Reset it here to avoid a permanent global hand cursor.
     if (m_isSpacePanActive || m_isSpacePanDrag || m_isMiddlePanActive)
     {
-        const bool wasMiddlePan = m_isMiddlePanActive;
         m_isSpacePanActive = false;
         m_isSpacePanDrag = false;
         m_isMiddlePanActive = false;
         QGraphicsView::setDragMode(QGraphicsView::NoDrag);
-        viewport()->setCursor(wasMiddlePan ? m_oldCursor : m_preSpaceCursor);
+        UpdatePanCursor();
     }
     QGraphicsView::focusOutEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief the single writer of the viewport cursor while a pan runs.
+ *
+ * The view owns no cursor of its own: the pointer is the arrow, and over a drawing item it is that
+ * item's cursor, which `QGraphicsView` re-applies on every mouse move. A pan is the one exception,
+ * and it cannot write its hand once and for all at the key press — the item under the mouse writes
+ * over it on the very next move. The hand is therefore decided here, from the flags, after every
+ * event that may have touched the cursor. With no pan running the arrow comes back, so neither a
+ * hand nor an item cursor can outlive the gesture.
+ */
+void VMainGraphicsView::UpdatePanCursor()
+{
+    QCursor cursor(Qt::ArrowCursor);
+    if (m_isSpacePanDrag || m_isMiddlePanActive)
+    {
+        cursor = QCursor(Qt::ClosedHandCursor);
+    }
+    else if (m_isSpacePanActive)
+    {
+        cursor = QCursor(Qt::OpenHandCursor);
+    }
+
+    if (viewport()->cursor() == cursor)
+    {
+        return; // the same cursor again is not free: the platform cursor is reprogrammed each time
+    }
+    viewport()->setCursor(cursor);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
