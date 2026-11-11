@@ -79,25 +79,6 @@ auto DefaultPointName(const QSharedPointer<VPointF> &start, OFlounceSpiralPoint:
     }
     return base;
 }
-
-//---------------------------------------------------------------------------------------------------------------------
-/// The tag names of the children of @a element, in the order they are written, as one string. Used by the traces
-/// that check the order the schema imposes — a whole save fails when it is wrong, and the failure names the model
-/// rather than the child that broke it.
-auto ChildrenOf(const QDomElement &element) -> QString
-{
-    QStringList names;
-    const QDomNodeList nodes = element.childNodes();
-    for (int i = 0; i < nodes.size(); ++i)
-    {
-        const QDomElement child = nodes.at(i).toElement();
-        if (not child.isNull())
-        {
-            names.append(child.tagName());
-        }
-    }
-    return names.join(QStringLiteral(", "));
-}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -151,7 +132,6 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     }
 
     const QSharedPointer<VPointF> start = initData.data->GeometricObject<VPointF>(initData.startPointId);
-    qDebug() << "FLOUNCE-CREATE: point trouve =" << start->name();
 
     OFlounceSpiralDisplay &display = initData.display;
 
@@ -227,7 +207,6 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     const qreal width = app->toPixel(CheckFormula(initData.id, display.width, initData.data));
     const qreal length = app->toPixel(CheckFormula(initData.id, display.length, initData.data));
     const qreal angle = CheckFormula(initData.id, display.angle, initData.data);
-    qDebug() << "FLOUNCE-CREATE: formules width =" << width << " length =" << length << " angle =" << angle;
 
     // Each edge is named after the two points it runs between — the inner edge from the start point to the inner
     // end, the outer edge from the outer start to the outer end. That is what its tooltip, its history entry and
@@ -247,9 +226,6 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     {
         display.length = QStringLiteral("0");
     }
-
-    qDebug() << "FLOUNCE-CREATE: figure batie, innerEnd ="
-             << figure.innerEnd << " outerStart =" << figure.outerStart << " outerEnd =" << figure.outerEnd;
 
     // The points come first: the two segments and the two curves lean on them, and the figure is only whole once
     // they stand where the geometry put them.
@@ -306,7 +282,6 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     PlacePoint(OFlounceSpiralPoint::Role::OuterStart, figure.outerStart);
     PlacePoint(OFlounceSpiralPoint::Role::InnerEnd, figure.innerEnd);
     PlacePoint(OFlounceSpiralPoint::Role::OuterEnd, figure.outerEnd);
-    qDebug() << "FLOUNCE-CREATE: les trois points sont places";
 
     auto inner = QSharedPointer<VSplinePath>::create(figure.begin);
     auto outer = QSharedPointer<VSplinePath>::create(figure.outer);
@@ -323,8 +298,6 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     // variable away would break the formulas of the pattern that carries it.
     inner->SetAliasSuffix(display.innerAlias);
     outer->SetAliasSuffix(display.outerAlias);
-
-    qDebug() << "FLOUNCE-CREATE: inner id =" << display.inner << " outer id =" << display.outer;
 
     // Two calls, not one: AddSpline registers the VARIABLES of the curve — its length, its angles, its handles —
     // and puts the object in the container through nothing at all. The object itself goes in by UpdateGObject.
@@ -430,7 +403,6 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
     // new pen and its new endpoints after an option change.
     for (const OOperationLine &line : std::as_const(initData.lines))
     {
-        qDebug() << "FLOUNCE-CREATE: ligne id =" << line.result << " de" << line.point1 << "a" << line.point2;
         OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, line, line.point1, line.point2,
                                     initData.parse);
     }
@@ -440,34 +412,8 @@ auto OToolFlounceSpiral::Create(OToolFlounceSpiralInitData &initData) -> OToolFl
         initData.doc->UpdateToolData(initData.id, initData.data);
     }
 
-    qDebug() << "FLOUNCE-CREATE: graphe et lignes faits, parse =" << static_cast<int>(initData.parse);
-
-    // Ce que le conteneur detient vraiment, juste avant que l'item de scene ne soit bati.
-    auto Existe = [&initData](quint32 id, const char *quoi)
-    {
-        qDebug() << "FLOUNCE-CREATE:   " << quoi << "id =" << id
-                 << " present =" << initData.data->HasObject(id);
-    };
-    Existe(display.inner, "inner");
-    Existe(display.outer, "outer");
-    Existe(display.line1, "line1");
-    Existe(display.line2, "line2");
-    for (const OFlounceSpiralPoint &pt : display.points)
-    {
-        Existe(pt.id, "point");
-    }
-
     if (initData.parse == Document::FullParse)
     {
-        // The proof that the two segments really became objects: a line the resolver could not resolve leaves
-        // nothing behind, and says so only through a category log that is off by default. Read it here instead.
-        for (const quint32 id : {display.line1, display.line2})
-        {
-            qDebug() << "FLOUNCE-CREATE: segment id =" << id
-                     << " construit =" << (VAbstractPattern::FindTool(id) != nullptr);
-        }
-
-        qDebug() << "FLOUNCE-CREATE: lignes creees, on ajoute le tool a la scene";
         return AddToolToScene<OToolFlounceSpiral>(initData, Tool::FlounceSpiral, tr("flounce spiral"),
                                                   [&initData]() { return new OToolFlounceSpiral(initData); });
     }
@@ -503,33 +449,6 @@ void OToolFlounceSpiral::RefreshFigure()
                               {start->name(), PointName(OFlounceSpiralPoint::Role::OuterEnd)},
                               {PointName(OFlounceSpiralPoint::Role::OuterStart),
                                PointName(OFlounceSpiralPoint::Role::OuterEnd)});
-
-    // Trace of the construction: the four corners of the band and the distance between them. The two closing
-    // segments are the pairs exactly one band width apart; anything else is a segment across the figure. Read the
-    // numbers here rather than the picture — they are what the file will hold.
-    {
-        auto Distance = [](const QPointF &one, const QPointF &other)
-        { return std::hypot(one.x() - other.x(), one.y() - other.y()); };
-        qDebug() << "FLOUNCE-FIGURE: largeur =" << figure.bandWidth << " longueur =" << figure.innerLength
-                 << " externe =" << figure.outerLength << " angle balaye ="
-                 << figure.sweptAngle * 180.0 / M_PI;
-        qDebug() << "FLOUNCE-FIGURE:   depart    =" << figure.start << start->name()
-                 << " id =" << m_startPointId;
-        qDebug() << "FLOUNCE-FIGURE:   fin interne=" << figure.innerEnd << PointName(OFlounceSpiralPoint::Role::InnerEnd)
-                 << " id =" << PointId(OFlounceSpiralPoint::Role::InnerEnd);
-        qDebug() << "FLOUNCE-FIGURE:   debut ext.=" << figure.outerStart << PointName(OFlounceSpiralPoint::Role::OuterStart)
-                 << " id =" << PointId(OFlounceSpiralPoint::Role::OuterStart);
-        qDebug() << "FLOUNCE-FIGURE:   fin ext.  =" << figure.outerEnd << PointName(OFlounceSpiralPoint::Role::OuterEnd)
-                 << " id =" << PointId(OFlounceSpiralPoint::Role::OuterEnd);
-        qDebug() << "FLOUNCE-FIGURE:   d(depart, fin ext.)   =" << Distance(figure.start, figure.outerEnd)
-                 << " <- ligne 1, doit valoir la largeur";
-        qDebug() << "FLOUNCE-FIGURE:   d(fin int., debut ext.)=" << Distance(figure.innerEnd, figure.outerStart)
-                 << " <- ligne 2, doit valoir la largeur";
-        qDebug() << "FLOUNCE-FIGURE:   d(depart, debut ext.)  =" << Distance(figure.start, figure.outerStart)
-                 << " (croise)";
-        qDebug() << "FLOUNCE-FIGURE:   d(fin int., fin ext.)  =" << Distance(figure.innerEnd, figure.outerEnd)
-                 << " (croise)";
-    }
 
     auto inner = QSharedPointer<VSplinePath>::create(figure.begin);
     auto outer = QSharedPointer<VSplinePath>::create(figure.outer);
@@ -692,8 +611,6 @@ void OToolFlounceSpiral::AttachFigureToLayer()
     }
 
     doc->AddItemsToGroup(objects, active);
-
-    qDebug() << "FLOUNCE-LAYER: calque actif =" << active << " objets =" << objects.size();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1015,7 +932,6 @@ void OToolFlounceSpiral::SetDialog()
 //---------------------------------------------------------------------------------------------------------------------
 void OToolFlounceSpiral::SaveDialog(QDomElement &domElement)
 {
-    qDebug() << "FLOUNCE-SAVEDIALOG: entree";
     SCASSERT(not m_dialog.isNull())
     const QPointer<ODialogFlounceSpiral> dialogTool = qobject_cast<ODialogFlounceSpiral *>(m_dialog);
     SCASSERT(not dialogTool.isNull())
@@ -1058,9 +974,6 @@ void OToolFlounceSpiral::SaveDialog(QDomElement &domElement)
 
     // A figure edited in the dialog enters the layer too: what it now holds is not what the layer last recorded.
     AttachFigureToLayer();
-
-    qDebug() << "FLOUNCE-SAVEDIALOG: ecrit, startPointId =" << m_startPointId
-             << " points =" << m_display.points.size() << " enfants =" << ChildrenOf(domElement);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1086,9 +999,6 @@ void OToolFlounceSpiral::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> 
 
     // The objects the change has just described belong to the active layer, like every object (the pleat's rule).
     AttachFigureToLayer();
-
-    qDebug() << "FLOUNCE-SAVEOPTIONS: id =" << m_id << " lignes =" << m_lines.size()
-             << " enfants =" << ChildrenOf(tag);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1107,9 +1017,6 @@ void OToolFlounceSpiral::ApplyToolOptions(const QDomElement &oldDomElement, cons
     // The change has to reach the file, the undo stack and the scene. Doing only the third — as this method did —
     // made an edit made in the dialog disappear as soon as the pattern was saved: the element in the document was
     // never replaced. The base class replaces it and pushes the undo command; the figure follows underneath.
-    qDebug() << "FLOUNCE-APPLY: ancien =" << ChildrenOf(oldDomElement)
-             << " nouveau =" << ChildrenOf(newDomElement);
-
     VAbstractOperation::ApplyToolOptions(oldDomElement, newDomElement);
 
     RefreshFigure();
@@ -1118,11 +1025,6 @@ void OToolFlounceSpiral::ApplyToolOptions(const QDomElement &oldDomElement, cons
 //---------------------------------------------------------------------------------------------------------------------
 void OToolFlounceSpiral::ShowContextMenu(QGraphicsSceneContextMenuEvent *event, quint32 id)
 {
-    // Trace: the context menu is built by RunContextMenu, which ALWAYS adds "Options" — so a right click that
-    // shows nothing never reached the tool. This says which object id arrived, and whether the menu is suppressed
-    // for the whole application at that moment.
-    qDebug() << "FLOUNCE-CLIC: id recu =" << id << " menu supprime =" << m_suppressContextMenu;
-
     // The one call every other operation makes. It is ContextMenu<Dialog>(event, id) inside the shared
     // VExceptionToolWasDeleted catch, so the body is the same — and the id is what lets the layer entries speak
     // about the object that was clicked instead of about the tool.
