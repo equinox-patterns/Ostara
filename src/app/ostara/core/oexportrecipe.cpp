@@ -72,6 +72,11 @@ constexpr auto kAttrOrientation = "orientation";
 /// il a une largeur à chercher.
 constexpr auto kAttrShape = "shape";
 constexpr auto kAttrDocumentWidthMm = "documentWidthMm";
+/// La longueur maximale d'une page de rouleau, quand elle a été choisie. Absente : 500 cm (le
+/// plafond du PDF). Écrite pour que le portage Rabnest la rejoue, même s'il ne la lit pas encore.
+constexpr auto kAttrMaxPageLengthMm = "maxPageLengthMm";
+/// L'export hors marges droite/gauche, quand il est demandé. Absente : non.
+constexpr auto kAttrTrimSideMargins = "trimSideMargins";
 constexpr auto kAttrTemplate = "template";
 
 void WriteElement(QXmlStreamWriter &writer, const QDomElement &element)
@@ -137,6 +142,15 @@ auto OExportRecipe::Of(QDomDocument &doc, const OExportOutput &output, const OEx
     format.setAttribute(QLatin1String(kAttrGapMm), QString::number(output.gapMm));
     format.setAttribute(QLatin1String(kAttrFrameHeightMm), QString::number(output.frameHeightMm));
     format.setAttribute(QLatin1String(kAttrDocumentWidthMm), QString::number(output.documentWidthMm));
+
+    if (output.maxPageLengthMm > 0.0)
+    {
+        format.setAttribute(QLatin1String(kAttrMaxPageLengthMm), QString::number(output.maxPageLengthMm));
+    }
+    if (output.trimSideMargins)
+    {
+        format.setAttribute(QLatin1String(kAttrTrimSideMargins), true);
+    }
 
     // ── Le DÉCOR, quand il n'y en a pas ───────────────────────────────────────────────────────────
     //

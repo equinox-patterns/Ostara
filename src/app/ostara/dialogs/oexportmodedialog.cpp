@@ -523,6 +523,8 @@ auto OExportModeDialog::CurrentRequest() const -> OExportRunRequest
     request.marginMm = m_printWidget->MarginMm();
     request.gapMm = m_printWidget->GapMm();
     request.printModelToken = m_printWidget->PrintModelToken();
+    request.maxPageLengthMm = m_printWidget->MaxPageLengthMm();
+    request.trimSideMargins = m_printWidget->TrimSideMargins();
     request.documentLandscape = m_printWidget->DocumentLandscape();
     request.columns = m_printWidget->Columns();
     request.frameHeightMm = m_printWidget->FrameHeightMm();

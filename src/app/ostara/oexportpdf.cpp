@@ -36,6 +36,7 @@
 
 #include "core/oexportoutput.h"
 #include "core/oexportpieces.h"
+#include "core/oexportrollpages.h"
 #include "core/oexportrecipe.h"
 #include "core/oexporttemplate.h"
 
@@ -250,6 +251,24 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
         // `/MediaBox` qui décide de ce qui se voit.
         pages = output.projectorPagesPx;
     }
+    else if (output.format == OExportFormat::Kind::Print)
+    {
+        // **Un rouleau n'a pas de feuille, mais il a des pages.** Sa longueur est celle du patron,
+        // et deux choses la coupent : la longueur demandée (la machine à plier de l'imprimante) et
+        // le plafond du PDF (500 cm). Aucune pièce n'est à cheval : les pages se ferment entre elles.
+        //
+        // Le calcul est une fonction des placements, jamais un état gardé : une correction à la main
+        // déplace la découpe avec la pièce, au lieu de laisser une page qui ne correspond plus.
+        //
+        // ⚠️ `frameHeightMm` vaut zéro sur un rouleau : c'est le seul format d'impression qui arrive
+        // ici sans artboards. Les tuilés ont leur grille, le projecteur ses pages, et le rouleau
+        // celles-ci.
+        pages = OExportRollPages::Compute(output.result.placements, OExportRollPages::SettingsOf(output)).pages;
+        if (pages.isEmpty())
+        {
+            pages.append(QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx));
+        }
+    }
     else
     {
         pages.append(QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx));
@@ -379,9 +398,23 @@ auto OExportPdf::Write(const OExportOutput &output, const QString &pdfPath,
     // being whole here is exactly what each page needs.
     // **Le plan entier, jamais la première page.** Une projection découpée a plusieurs rectangles et
     // pas de grille : prendre le premier dessinerait la page 1 et couperait tout le reste.
-    QRectF imageRect = artboards.valid ? artboards.planRect : pages.first();
-    if (!artboards.valid)
+    //
+    // ⚠️ **Un rouleau garde le bac comme image, même quand ses pages sont rognées.** Le SVG doit
+    // commencer à l'origine du plan : Trame lit l'origine du viewBox pour placer les textes, et une
+    // image qui commencerait à la marge décalerait chaque cartouche de 5 mm. La page est un
+    // RECTANGLE dans ce plan — c'est elle qui rogne, pas le dessin.
+    QRectF imageRect;
+    if (artboards.valid)
     {
+        imageRect = artboards.planRect;
+    }
+    else if (output.format == OExportFormat::Kind::Print)
+    {
+        imageRect = QRectF(0.0, 0.0, output.result.binWidthPx, output.result.usedHeightPx);
+    }
+    else
+    {
+        imageRect = pages.first();
         for (const QRectF &page : pages)
         {
             imageRect = imageRect.united(page);

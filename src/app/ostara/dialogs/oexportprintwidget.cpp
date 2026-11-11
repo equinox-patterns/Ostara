@@ -142,6 +142,13 @@ void OExportPrintWidget::BuildUi()
     m_shapeStack->addWidget(m_rollWidget);
     m_shapeStack->addWidget(m_tiledWidget);
     connect(m_tiledWidget, &OExportTiledFormatWidget::Changed, this, &OExportPrintWidget::UpdateDocumentWidth);
+    connect(m_rollWidget, &OExportRollFormatWidget::Changed, this, [this]()
+    {
+        // La largeur du rouleau est la seule valeur du widget qui serve à la requête : on la garde
+        // ici, sinon un passage par un format tuilé la perdrait (voir `m_rollWidthMm`).
+        m_rollWidthMm = m_rollWidget->WidthMm();
+        UpdateDocumentWidth();
+    });
     layout->addRow(m_shapeStack);
 
     // ── What the sheets are marked with ─────────────────────────────────
@@ -448,7 +455,16 @@ void OExportPrintWidget::UpdateModel()
 
     if (model->shape == OExportPrintShape::Roll)
     {
-        m_rollWidget->SetWidthMm(model->widthMm);
+        if (!m_rollWidthSeeded)
+        {
+            m_rollWidthMm = model->widthMm;
+            m_rollWidthSeeded = true;
+        }
+
+        // ⚠️ **La largeur du WIDGET, pas celle de la table.** La table donne le défaut (841), mais un
+        // rouleau de 36 pouces (914) est aussi courant : c'est la valeur saisie qui reste, et elle
+        // survit à un aller-retour vers un format tuilé.
+        m_rollWidget->SetWidthMm(m_rollWidthMm);
         m_rollWidget->SetUnit(m_unit);
         m_shapeStack->setCurrentWidget(m_rollWidget);
     }
@@ -550,6 +566,10 @@ void OExportPrintWidget::CommitEditedLengths()
     ReadEditedLengths(m_unit);
     WriteEditedLengths();
 
+    // La marge a bougé : la largeur exportée du rouleau en dépend, et c'est le seul endroit qui la
+    // recalcule quand les deux champs communs changent.
+    m_rollWidget->SetMarginMm(m_marginMm);
+
     emit Changed();
 }
 
@@ -583,6 +603,10 @@ void OExportPrintWidget::WriteEditedLengths()
 //---------------------------------------------------------------------------------------------------------------------
 void OExportPrintWidget::UpdateDocumentWidth()
 {
+    // La marge du run est celle des quatre côtés : le rouleau en a besoin pour dire sa largeur
+    // exportée, et elle est réglée dans un champ que ce widget possède.
+    m_rollWidget->SetMarginMm(m_marginMm);
+
     const bool landscape = DocumentLandscape();
 
     // ⚠️ **La largeur du document suit le sens livré.** 841 en portrait, 1 189 en paysage : c'est la
@@ -760,6 +784,30 @@ auto OExportPrintWidget::FrameHeightMm() const -> qreal
     // the same two sides as the others, and it is cut into sheets of them like the others — it is
     // only its DECOR that is missing, and `hasDecor` says that.
     return m_tiledWidget->SheetHeightMm();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportPrintWidget::MaxPageLengthMm() const -> qreal
+{
+    const OExportPrintModel *model = FindPrintModel(PrintModelToken());
+    if (model == nullptr || model->shape != OExportPrintShape::Roll)
+    {
+        return 0.0; // une feuille n'a pas de longueur maximale à découper
+    }
+
+    return m_rollWidget->MaxPageLengthMm();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OExportPrintWidget::TrimSideMargins() const -> bool
+{
+    const OExportPrintModel *model = FindPrintModel(PrintModelToken());
+    if (model == nullptr || model->shape != OExportPrintShape::Roll)
+    {
+        return false;
+    }
+
+    return m_rollWidget->TrimSideMargins();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

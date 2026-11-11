@@ -52,7 +52,7 @@ namespace
 // shift, but nothing would catch a bool landing on another bool.
 const QVector<OExportPrintModel> kModels{
     //              label                    token              shape                     widthMm  heightMm  frame  coverSeat                          columns  selectable  decor   orientation  closed
-    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0 Roll"),           "A0Roll",          OExportPrintShape::Roll,   841.0,      0.0,  false, OExportCoverPage::Seat::InSheet,    false,   true,       false,  false,       false},
+    {QT_TRANSLATE_NOOP("OExportPrintModel", "A0 roll & equivalent"), "A0Roll",          OExportPrintShape::Roll,   841.0,      0.0,  false, OExportCoverPage::Seat::InSheet,    false,   true,       false,  false,       false},
     {QT_TRANSLATE_NOOP("OExportPrintModel", "A0"),                "A0",              OExportPrintShape::Tiled,  841.0,   1189.0,  false, OExportCoverPage::Seat::InSheet,    false,   true,       false,  true,        true},
     {QT_TRANSLATE_NOOP("OExportPrintModel", "A3"),                "A3",              OExportPrintShape::Tiled,  297.0,    420.0,  false, OExportCoverPage::Seat::InSheet,    true,    true,       true,   false,       false},
     {QT_TRANSLATE_NOOP("OExportPrintModel", "Tabloid"),           "Tabloid",         OExportPrintShape::Tiled,  279.4,    431.8,  false, OExportCoverPage::Seat::InSheet,    true,    true,       true,   false,       false},

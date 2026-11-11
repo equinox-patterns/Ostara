@@ -44,6 +44,8 @@ auto RequestOf(const OExportOutput &output) -> OExportRunRequest
     request.marginMm = output.marginMm;
     request.gapMm = output.gapMm;
     request.printModelToken = output.printModelToken;
+    request.maxPageLengthMm = output.maxPageLengthMm;
+    request.trimSideMargins = output.trimSideMargins;
     request.documentLandscape = output.documentLandscape;
     request.pageShape = output.pageShape;
     request.columns = output.columns;

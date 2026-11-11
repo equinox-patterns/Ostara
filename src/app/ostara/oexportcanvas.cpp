@@ -27,12 +27,15 @@
 #include "oexportcanvas.h"
 
 #include <QFontMetricsF>
+#include <QGraphicsLineItem>
 #include <QGraphicsPathItem>
 #include <QPainterPath>
 
 #include <algorithm>
+#include <cmath>
 
 #include "core/ogratedsizestyles.h"
+#include "core/oexportrollpages.h"
 #include "core/oexporttemplate.h"
 #include "mainwindow_graded_helpers.h"
 #include "oexportmarkpainter.h"
@@ -1830,6 +1833,14 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     QVector<int> placementBand;   ///< la bande de CHAQUE placement, dans l'ordre du run
     qreal bandGapPx = 0.0;    ///< le pas d'une bande à la suivante : le vide, et le titre dedans
     qreal bandLeadPx = 0.0;   ///< la place du titre au-dessus de la PREMIÈRE bande
+
+    // ── Les PAGES d'un A0 ou d'un A0 Roll : chaque page est son propre canvas ───────────────────
+    //
+    // Même principe que les bandes d'un plan de coupe, et même raison : deux pages qui se touchent
+    // se lisent comme un seul rouleau coupé. Le vide entre elles est **d'affichage** — la longueur
+    // du plan, la surface et le PDF ne le voient pas —, mais il est ce qui fait voir quatre pages.
+    QVector<int> placementPage; ///< la page de CHAQUE placement, dans l'ordre du run
+    qreal pageGapPx = 0.0;      ///< le vide visible entre deux pages, en pixels de scène
     // ⚠️ **La bande d'une pièce ne se devine PAS depuis sa géométrie.** `OExportPlacement::y` est
     // le point de placement, pas le haut de la pièce, et `originY`/`extentY` sont mesurés avant
     // rotation : une pièce taillée dans le BIAIS a une boîte tournée qui n'a plus aucun rapport
@@ -1925,8 +1936,114 @@ void OExportCanvas::Build(QGraphicsScene *scene,
 
     const OExportSheets::Set sheets = OExportSheets::Compute(artboards, result.placements, reserved);
 
+    // ── Le découpage visuel en pages ─────────────────────────────────────────────────────────────
+    //
+    // A0 : les feuilles imprimées, une par page, dans l'ordre du plan. A0 Roll : les pages de
+    // `OExportRollPages`, les mêmes que le PDF. Chaque page reçoit un cadre blanc fermé, décalé
+    // d'un vide, et **ses pièces suivent ce décalage** — voir `placementPage` et la matrice de
+    // placement plus bas. Rien de tout cela ne remonte dans le plan : c'est de la scène.
+    if (run.separatePages)
+    {
+        QVector<QRectF> pages;
+
+        if (artboards.valid)
+        {
+            QVector<int> cellPage(artboards.rows * artboards.columns, -1);
+            for (int row = 0; row < artboards.rows; ++row)
+            {
+                for (int col = 0; col < artboards.columns; ++col)
+                {
+                    if (!sheets.IsPresent(row, col))
+                    {
+                        continue;
+                    }
+
+                    cellPage[row * artboards.columns + col] = static_cast<int>(pages.size());
+                    pages.append(QRectF(artboards.planRect.left() + col * artboards.cellWidthPx,
+                                        artboards.planRect.top() + row * artboards.cellHeightPx,
+                                        artboards.cellWidthPx, artboards.cellHeightPx));
+                }
+            }
+
+            placementPage.reserve(result.placements.size());
+            for (const OExportPlacement &placement : result.placements)
+            {
+                const QRectF rect = OExportFootprint::Rect(placement);
+                const int row = std::clamp(
+                    static_cast<int>(std::floor((rect.center().y() - artboards.planRect.top())
+                                                / artboards.cellHeightPx)),
+                    0, artboards.rows - 1);
+                const int col = std::clamp(
+                    static_cast<int>(std::floor((rect.center().x() - artboards.planRect.left())
+                                                / artboards.cellWidthPx)),
+                    0, artboards.columns - 1);
+                const int page = cellPage.value(row * artboards.columns + col, -1);
+                placementPage.append(page >= 0 ? page : 0);
+            }
+        }
+        else
+        {
+            OExportRollPages::Settings settings;
+            settings.binWidthPx = result.binWidthPx;
+            settings.usedHeightPx = result.usedHeightPx;
+            settings.marginPx = ToPixel(run.marginMm, Unit::Mm);
+            settings.maxPageLengthMm = run.maxPageLengthMm;
+            // ⚠️ **Le canvas montre la LARGEUR DU PLAN**, pas celle du PDF : les pages sont des
+            // feuilles de 841, et le rectangle bleu dessine à l'intérieur la largeur réellement
+            // exportée (831). Rogner le cadre ici ferait disparaître les marges du plan à l'écran.
+            settings.trimSideMargins = false;
+            settings.coverPage = run.coverPage;
+
+            const OExportRollPages::Result roll = OExportRollPages::Compute(result.placements, settings);
+            pages = roll.pages;
+
+            placementPage.reserve(result.placements.size());
+            for (const OExportPlacement &placement : result.placements)
+            {
+                const QRectF rect = OExportFootprint::Rect(placement);
+                int page = 0;
+                for (int index = 0; index < pages.size(); ++index)
+                {
+                    if (pages.at(index).contains(rect.center()))
+                    {
+                        page = index;
+                        break;
+                    }
+                }
+                placementPage.append(page);
+            }
+        }
+
+        if (!pages.isEmpty())
+        {
+            qreal widest = 0.0;
+            for (const QRectF &page : pages)
+            {
+                widest = std::max(widest, page.width());
+            }
+            // Un vide proportionné à la largeur : assez large pour que le fond gris se voie entre
+            // deux pages, assez étroit pour ne pas noyer le plan.
+            pageGapPx = std::max<qreal>(60.0, widest * 0.05);
+
+            for (int index = 0; index < pages.size(); ++index)
+            {
+                const QRectF canvas = pages.at(index).translated(0.0, index * pageGapPx);
+                auto *frame = new QGraphicsRectItem(canvas);
+                frame->setPen(QPen(Qt::black, 1));
+                frame->setBrush(QBrush(Qt::white));
+                frame->setZValue(kBinZ);
+                frame->setPos(seat.origin);
+                scene->addItem(frame);
+            }
+        }
+    }
+
     if (artboards.valid)
     {
+        if (!run.separatePages)
+        {
+            MakeArtboardPaper(scene, artboards, sheets, seat.origin);
+        }
         MakeArtboardPaper(scene, artboards, sheets, seat.origin);
 
         // The cover page's own sheet, for the three formats that give it one. **Added here and not
@@ -1946,7 +2063,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
         // ⚠️ **Pas de bac autour d'un plan à plusieurs bandes.** Ce rectangle enfermerait les vides
         // qui les séparent et redirait, en un seul trait, le contraire de ce que les canvas
         // montrent : chaque bande a le sien, et c'est lui qui porte le fond blanc.
-        if (result.foldedZones.size() < 2)
+        if (result.foldedZones.size() < 2 && !run.separatePages)
         {
             auto *bin = new QGraphicsRectItem(0, 0, result.binWidthPx, result.usedHeightPx);
             bin->setPen(QPen(Qt::black, 1));
@@ -1954,6 +2071,90 @@ void OExportCanvas::Build(QGraphicsScene *scene,
             bin->setZValue(kBinZ);
             bin->setPos(seat.origin);
             scene->addItem(bin);
+        }
+
+        // ── Les pages d'un rouleau, et la largeur réellement exportée ────────────────────────────
+        //
+        // **Un rouleau n'a pas de feuille, mais il a des pages.** Sa longueur est celle du patron ;
+        // deux choses la coupent — la longueur maximale demandée (la machine à plier de
+        // l'imprimante) et le plafond du PDF (500 cm). Sans ce trait, la seconde page serait
+        // invisible à l'écran : le plan se lit d'un seul tenant, et rien ne dirait où il se coupe.
+        //
+        // ⚠️ **Un repère, pas un objet du fichier.** Le PDF ne lit pas la scène : il refait la même
+        // découpe par `OExportRollPages`. Les deux appellent la MÊME fonction, donc ils ne peuvent
+        // pas se contredire.
+        if (format == OExportFormat::Kind::Print && !artboards.valid)
+        {
+            OExportRollPages::Settings settings;
+            settings.binWidthPx = result.binWidthPx;
+            settings.usedHeightPx = result.usedHeightPx;
+            settings.marginPx = ToPixel(run.marginMm, Unit::Mm);
+            settings.maxPageLengthMm = run.maxPageLengthMm;
+            settings.trimSideMargins = run.trimSideMargins;
+            settings.coverPage = run.coverPage;
+
+            const OExportRollPages::Result pages = OExportRollPages::Compute(result.placements, settings);
+
+            // **Le trait d'un A0, à l'identique** : noir, plein, un pixel — la plume de
+            // `ArtboardGridItem`, qui est celle des coutures entre deux feuilles. Un pointillé gris
+            // se lisait comme un repère de construction, pas comme une page ; ici, c'est la page
+            // qui s'arrête, et elle doit se voir du premier coup d'œil.
+            // ⚠️ **Aucun trait de coupe quand les pages sont séparées** : leur cadre et le vide
+            // entre elles disent la même chose, et un trait en plus redirait « un seul rouleau ».
+            if (!run.separatePages)
+            {
+                QPen cutPen(Qt::black, 1);
+                for (int index = 1; index < pages.pages.size(); ++index)
+                {
+                    const qreal y = pages.pages.at(index).top();
+                    auto *cut = new QGraphicsLineItem(0.0, y, result.binWidthPx, y);
+                    cut->setPen(cutPen);
+                    cut->setZValue(kGridZ);
+                    cut->setPos(seat.origin);
+                    scene->addItem(cut);
+                }
+            }
+
+            // La largeur que le PDF fera : les deux marges droite et gauche retirées. Le rectangle
+            // est tracé en bleu pointillé — la couleur des fonds perdus — pour que le repère se
+            // distingue du bac noir. **Un rectangle PAR PAGE** quand les pages sont séparées : le
+            // repère suit le canvas de sa page au lieu de traverser les vides.
+            if (run.trimSideMargins && run.marginMm > 0.0)
+            {
+                const qreal margin = ToPixel(run.marginMm, Unit::Mm);
+                const qreal trimmedWidth = result.binWidthPx - 2.0 * margin;
+                if (trimmedWidth > 0.0)
+                {
+                    QPen trimPen(QColor(0, 90, 200), 1);
+                    trimPen.setCapStyle(Qt::FlatCap);
+                    trimPen.setDashPattern({12.0, 6.0});
+
+                    if (run.separatePages)
+                    {
+                        for (int index = 0; index < pages.pages.size(); ++index)
+                        {
+                            const QRectF &page = pages.pages.at(index);
+                            auto *frame = new QGraphicsRectItem(margin, page.top(), trimmedWidth,
+                                                                page.height());
+                            frame->setPen(trimPen);
+                            frame->setBrush(Qt::NoBrush);
+                            frame->setZValue(kGridZ + 1.0);
+                            frame->setPos(seat.origin + QPointF(0.0, index * pageGapPx));
+                            scene->addItem(frame);
+                        }
+                    }
+                    else
+                    {
+                        auto *frame = new QGraphicsRectItem(margin, 0.0, trimmedWidth,
+                                                            result.usedHeightPx);
+                        frame->setPen(trimPen);
+                        frame->setBrush(Qt::NoBrush);
+                        frame->setZValue(kGridZ + 1.0);
+                        frame->setPos(seat.origin);
+                        scene->addItem(frame);
+                    }
+                }
+            }
         }
 
         // ── La grille des tapis d'un plotter ──────────────────────────────────────────────────────
@@ -2337,8 +2538,16 @@ void OExportCanvas::Build(QGraphicsScene *scene,
                 // `result.placements`, ni dans la hauteur, ni dans le métrage, ni dans les fichiers.
                 // `i` est l'indice du placement dans le run : c'est lui qui porte la bande, pas la
                 // géométrie de la pièce (voir `placementBand` plus haut).
-                const QTransform bandMatrix = QTransform::fromTranslate(
-                    0.0, bandLeadPx + static_cast<qreal>(placementBand.value(i, 0)) * bandGapPx);
+                // **Une pièce suit SA page** quand les pages sont séparées, et sa bande sinon.
+                // Le décalage est inséré ici, une fois, dans la matrice de placement : il entraîne
+                // le contour, le décor, la grainline et les étiquettes d'un seul coup. Affichage
+                // seulement — ni `result.placements`, ni la hauteur, ni le PDF ne le voient.
+                const qreal visualShift = run.separatePages
+                                              ? static_cast<qreal>(placementPage.value(i, 0)) * pageGapPx
+                                              : bandLeadPx
+                                                    + static_cast<qreal>(placementBand.value(i, 0))
+                                                          * bandGapPx;
+                const QTransform bandMatrix = QTransform::fromTranslate(0.0, visualShift);
                 const QTransform placementMatrix =
                     OExportFootprint::PieceMatrix(placement, geometry.alignDelta) * bandMatrix
                     * originMatrix;
@@ -2710,7 +2919,7 @@ void OExportCanvas::Build(QGraphicsScene *scene,
     // on every other format, and whenever there is no template at all — where they are then the
     // only thing that tells one sheet from the next.
     const bool frameDrawn = marks != nullptr && framed;
-    if (artboards.valid && !frameDrawn)
+    if (artboards.valid && !frameDrawn && !run.separatePages)
     {
         auto *grid = new ArtboardGridItem(artboards.planRect, artboards.cellWidthPx,
                                           artboards.cellHeightPx, artboards.columns,

@@ -50,11 +50,16 @@ enum class OExportPrintShape : qint8
  * @brief One printable output: the sheet the nesting is laid out on.
  *
  * The models differ by their shape and by whether the plan is cut into a framed sheet, and
- * by nothing else — which is why they are a table rather than eight classes. None of them is
- * typed into: every dimension here is the sheet the user prints on, and a sheet she could
- * edit would be one no printer has. What the table does NOT carry is a behaviour: there is no
- * pointer, no virtual, no callback. A model that needs its own code gets its own shape class,
- * and this file stays a list of values.
+ * by nothing else — which is why they are a table rather than eight classes. What the table
+ * does NOT carry is a behaviour: there is no pointer, no virtual, no callback. A model that
+ * needs its own code gets its own shape class, and this file stays a list of values.
+ *
+ * ⚠️ **Une dimension de cette table est un DÉFAUT, pas une vérité.** Une feuille A4 est une
+ * norme, et une feuille qu'on pourrait retaper serait une feuille qu'aucune imprimante n'a. Le
+ * rouleau, lui, n'est pas une feuille : sa largeur est celle du rouleau CHARGÉ, et les imprimeurs
+ * en ont plusieurs — 841 mm pour un A0, 914 mm pour un 36 pouces, et d'autres. La table donne donc
+ * la largeur d'un A0 comme valeur de départ, et `OExportRollFormatWidget` la laisse changer :
+ * c'est le seul format dont une dimension se saisit, et c'est pour cela qu'il a son propre widget.
  *
  * The dimensions are in millimetres, always. They are the one fixed point of the unit
  * combo: millimetres go in, whatever unit the user reads comes out, and converting the

@@ -164,6 +164,24 @@ struct OExportOutput
     qreal marginMm{5.0};
     qreal gapMm{5.0};    ///< the space between two pieces, in millimetres
 
+    /// @brief La longueur maximale d'une PAGE d'un rouleau, en millimètres — zéro veut dire 500 cm.
+    ///
+    /// **Zéro n'est pas « pas de limite »** : c'est le plafond du PDF (500 cm), le seul qu'on ne
+    /// peut pas demander de dépasser sans que le fichier sorte rétréci. Une valeur plus petite est
+    /// la contrainte de la machine à plier de l'imprimante ; c'est à l'utilisatrice de la donner,
+    /// parce qu'aucune limite de machine n'est universelle. Voir `OExportRollPages`.
+    qreal maxPageLengthMm{0.0};
+
+    /// @brief Exporter le PDF sans les marges droite et gauche — le haut et le bas restent.
+    ///
+    /// Une feuille de 841 mm avec 5 mm de marge de chaque côté donne un PDF de 831 mm utiles : le
+    /// rouleau fait 841, et les deux bandes de 5 mm sont alors implicites — **à condition que le
+    /// pilote imprime à 100 % et centre la page** (chez Canon, « Print Centered » est une option,
+    /// pas le comportement par défaut). L'interface le dit à côté de la case.
+    /// Ne concerne QUE la largeur : la marge haute et basse est conservée dans la hauteur de la
+    /// page, parce qu'une imprimante a besoin de son avance.
+    bool trimSideMargins{false};
+
     /// The unit the run was entered in — the one the dialog's own fields were read and written in,
     /// and, on the print tab, the one the status figures come back in, so that what the user has just
     /// read in the dialog is what returns to her. It changes **nothing** about the result: every
@@ -370,6 +388,12 @@ struct OExportRunRequest
     qreal marginMm{5.0};
     qreal gapMm{5.0};
     QString printModelToken{};
+
+    /// @see OExportOutput::maxPageLengthMm — la même longueur, de l'autre côté.
+    qreal maxPageLengthMm{0.0};
+
+    /// @see OExportOutput::trimSideMargins — le même drapeau, de l'autre côté.
+    bool trimSideMargins{false};
     /// @see OExportOutput::documentLandscape — le même choix, de l'autre côté.
     bool documentLandscape{false};
     /// @see OExportOutput::pageShape — le même choix, de l'autre côté.

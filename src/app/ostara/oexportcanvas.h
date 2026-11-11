@@ -135,6 +135,31 @@ struct OExportRunFlags
     /// reste incomplète, donc dessiner la grille jusqu'au bord du canevas montrerait un tapis de
     /// plus que ce que la machine demandera — et c'est précisément ce que l'onglet fait descendre.
     int matCount{0};
+
+    /// La marge du document, en millimètres — ce que la largeur exportée retire de chaque côté.
+    ///
+    /// Sur un rouleau, la même longueur sert trois fois : le nesting l'écarte des bords, le PDF la
+    /// garde en haut et en bas, et la case « hors marges » la retire à gauche et à droite. Le canvas
+    /// en a besoin pour tracer la largeur réellement exportée.
+    qreal marginMm{0.0};
+
+    /// La longueur maximale d'une page de rouleau, en millimètres — zéro veut dire 500 cm.
+    /// Voir `OExportRollPages` : c'est la même règle que le PDF, lue au même endroit.
+    qreal maxPageLengthMm{0.0};
+
+    /// Exporter le PDF sans les marges droite et gauche — le repère bleu du canvas le dessine.
+    bool trimSideMargins{false};
+
+    /// Une page de garde occupe le coin de la première page : la découpe ne doit pas la couper.
+    bool coverPage{false};
+
+    /// @brief Dessiner chaque page comme un canvas À PART, séparé des autres par du vide.
+    ///
+    /// **A0 et A0 Roll seulement.** Le plan de coupe le fait déjà pour ses bandes : deux feuilles
+    /// qui se touchent se lisent comme un seul tissu, et c'est le vide entre elles qui dit « ce sont
+    /// des pages ». Le vide est **d'affichage** : la longueur du plan, le métrage et le PDF ne le
+    /// voient pas.
+    bool separatePages{false};
 };
 
 /// @brief Où ce plan se pose dans la scène — et s'il est celui qui la vide.

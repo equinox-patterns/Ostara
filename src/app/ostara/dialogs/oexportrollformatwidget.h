@@ -32,20 +32,28 @@
 
 #include "../vmisc/def.h"
 
+class OExportRowIconButton;
+class QCheckBox;
 class QLabel;
+class QLineEdit;
 
 /**
- * @brief The fields of a Roll model: a width, and nothing else.
+ * @brief The fields of a Roll model: its width, its page length, and its margins.
  *
- * A roll is one continuous sheet: its width is fixed by the standard, and its height is
- * whatever the pattern needs — the nesting produces it, so there is nothing to set and
- * nothing to show. That absence is the whole shape: the two fields a tiled model needs,
- * a height and a column count, would have nothing to mean here.
+ * A roll is one continuous sheet: its height is whatever the pattern needs — the nesting
+ * produces it — and nothing can be set about that. What CAN be set is:
  *
- * The width is shown rather than left out: a user who cannot see the width the nesting will run
- * on has no way to tell a plan that came out short from one that was asked for short. Shown and
- * never typed — it is the standard — in the same boxed line the tiled shape uses, so that the
- * two shapes read alike where they say the same thing.
+ *   - **sa largeur** — 841 mm par défaut, la largeur d'un A0, mais un imprimeur charge aussi du
+ *     36 pouces (914 mm) et d'autres rouleaux. C'est la seule dimension d'un format d'impression
+ *     que l'utilisatrice saisit, et elle dépend de la machine, pas d'une norme. L'icône d'info
+ *     liste les largeurs les plus courantes, en tooltip comme en dialogue.
+ *   - **la longueur maximale d'une page** — les machines à plier n'ont pas toutes la même limite ;
+ *     au-delà, le pliage est manuel et se paie. Vide veut dire 500 cm, le plafond du PDF.
+ *   - **l'export hors marges droite/gauche** — pour que la surface facturée soit celle du document
+ *     utile, les deux bandes de marge latérale étant implicites sur un rouleau plus large.
+ *
+ * ⚠️ **Aucune de ces valeurs ne vient de la table des modèles** : la table donne le défaut de la
+ * largeur, et rien d'autre. Le widget garde ce que l'utilisatrice a saisi et le rend tel quel.
  */
 class OExportRollFormatWidget : public QWidget
 {
@@ -54,25 +62,52 @@ class OExportRollFormatWidget : public QWidget
 public:
     explicit OExportRollFormatWidget(QWidget *parent = nullptr);
 
-    /// @brief Adopt the width @p widthMm the model imposes, in millimetres.
+    /// @brief Adopt the width @p widthMm — le défaut du modèle, ou la valeur déjà saisie.
     void SetWidthMm(qreal widthMm);
 
-    /// @brief The width the nesting runs on, in millimetres.
+    /// @brief La marge du document, en millimètres — elle décide la largeur exportée.
+    void SetMarginMm(qreal marginMm);
+
+    /// @brief Show the lengths in @p unit from now on.
+    void SetUnit(const Unit &unit);
+
     auto WidthMm() const -> qreal;
 
-    /// @brief Show the length in @p unit from now on.
-    void SetUnit(const Unit &unit);
+    /// @brief La longueur maximale d'une page, en millimètres — **zéro veut dire 500 cm**.
+    auto MaxPageLengthMm() const -> qreal;
+
+    auto TrimSideMargins() const -> bool;
+
+signals:
+    /// Une des trois valeurs a changé — le dialogue en dépend (largeur, validité, nom).
+    void Changed();
 
 protected:
     void changeEvent(QEvent *event) override;
 
 private:
+    void CommitWidth();
+    void CommitMaxLength();
     void Refresh();
     void Retranslate();
+    void ShowRollWidths();
 
-    QLabel *m_value{nullptr};
+    /// @brief Le texte du tooltip ET de la dialogue : une seule liste, deux lectures.
+    auto RollWidthsBody() const -> QString;
 
-    qreal m_widthMm{0.0};
+    QLabel *m_widthLabel{nullptr};
+    QLineEdit *m_widthEdit{nullptr};
+    OExportRowIconButton *m_infoButton{nullptr};
+
+    QLabel *m_maxLengthLabel{nullptr};
+    QLineEdit *m_maxLengthEdit{nullptr};
+
+    QCheckBox *m_trimCheck{nullptr};
+    QLabel *m_trimHint{nullptr};
+
+    qreal m_widthMm{841.0};
+    qreal m_maxPageLengthMm{0.0}; ///< 0 = 500 cm, the PDF limit
+    qreal m_marginMm{5.0};
     Unit m_unit{Unit::Cm};
 };
 

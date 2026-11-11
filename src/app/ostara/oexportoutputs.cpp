@@ -32,6 +32,7 @@
 #include "core/oexportcuttingguard.h"
 #include "core/oexportfavorites.h"
 #include "core/oexportoutput.h"
+#include "core/oexportrollpages.h"
 #include "core/olengthunits.h"
 #include "core/oexporttemplatestorage.h"
 #include "dialogs/oexportprintmodel.h"
@@ -265,9 +266,42 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
         const double width = FromPixel(drawing.drawnRect.width(), unit);
         const double height = FromPixel(drawing.drawnRect.height(), unit);
 
+        // **La surface du PDF, et non celle des pièces.** C'est le chiffre que l'imprimante facture :
+        // la page entière, marges comprises, et — quand la case est cochée — le rectangle bleu seul.
+        // Elle se lit sur les MÊMES rectangles que le PDF écrit, calculés par la même fonction : une
+        // surface qui aurait sa propre formule finirait par annoncer un autre fichier.
+        const auto areaOf = [](const QVector<QRectF> &pages)
+        {
+            qreal px2 = 0.0;
+            for (const QRectF &page : pages)
+            {
+                px2 += page.width() * page.height();
+            }
+            return FromPixel2(px2, Unit::Mm) / 1000000.0;
+        };
+
+        const bool isRoll = output.format == OExportFormat::Kind::Print && !drawing.artboards.valid;
+        OExportRollPages::Result rollPages;
+        if (isRoll)
+        {
+            rollPages = OExportRollPages::Compute(output.result.placements,
+                                                  OExportRollPages::SettingsOf(output));
+        }
+
+        // **Deux lignes pour un rouleau, et la première est le CANVAS.** Sa largeur est celle du
+        // plan — 84.1 —, pas celle du PDF : c'est la seconde ligne qui parle des vraies pages, avec
+        // leur largeur de 83.1. Le mot « Plan » est là pour qu'on ne confonde plus les deux.
         QString label = MainWindow::tr("%1 × %2 %3").arg(QString::number(width, 'f', 1),
                                                          QString::number(height, 'f', 1),
                                                          UnitsToStr(unit, true));
+        if (isRoll)
+        {
+            label = MainWindow::tr("Plan : %1").arg(label);
+        }
+
+        int pageCount = 1;
+        qreal areaM2 = 0.0;
+        bool extraSheet = false;
 
         if (drawing.artboards.valid)
         {
@@ -275,19 +309,46 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
             // others — it is the first page of the file — but it is not a cell of the grid, so the
             // plan's own count does not hold it. Only the ExtraSheet seat adds one; the two other
             // seats put the page on paper the plan already pays for.
-            const bool extraSheet = drawing.cover.seat == OExportCoverPage::Seat::ExtraSheet;
+            extraSheet = drawing.cover.seat == OExportCoverPage::Seat::ExtraSheet;
+            pageCount = drawing.sheets.count + (extraSheet ? 1 : 0);
+            areaM2 = FromPixel2(drawing.artboards.cellWidthPx * drawing.artboards.cellHeightPx, Unit::Mm)
+                     * pageCount / 1000000.0;
+
             label += extraSheet
                          ? MainWindow::tr(" · %n pages (cover page included)", nullptr,
                                           drawing.sheets.count + 1)
                          : MainWindow::tr(" · %n pages", nullptr, drawing.sheets.count);
         }
-        else if (!output.projectorPagesPx.isEmpty())
+        else if (isRoll)
+        {
+            pageCount = std::max(1, static_cast<int>(rollPages.pages.size()));
+            areaM2 = areaOf(rollPages.pages);
+            // Le compte, les largeurs et la surface d'un rouleau vont sur la SECONDE ligne : la
+            // première reste le canvas, et un rouleau se lit sur deux lignes.
+        }
+        else
         {
             // **Un projecteur n'a pas de grille**, donc pas de compte de feuilles : son nombre de
             // pages vient de la DÉCOUPE que le format a faite, quand son plan ne tenait pas sous
             // 500 × 500 cm. C'est le seul format qui découpe sans feuille, et il le dit ici.
-            label += MainWindow::tr(" · %n pages", nullptr,
-                                    static_cast<int>(output.projectorPagesPx.size()));
+            const QVector<QRectF> pages = output.projectorPagesPx.isEmpty()
+                                              ? QVector<QRectF>{QRectF(0.0, 0.0, output.result.binWidthPx,
+                                                                       output.result.usedHeightPx)}
+                                              : output.projectorPagesPx;
+            pageCount = static_cast<int>(pages.size());
+            areaM2 = areaOf(pages);
+
+            if (!output.projectorPagesPx.isEmpty())
+            {
+                label += MainWindow::tr(" · %n pages", nullptr, pageCount);
+            }
+        }
+
+        // **La surface ferme la ligne 1 pour tous les autres formats.** Un rouleau la porte à la fin
+        // de SA ligne 2, pour qu'on la rattache aux vraies pages et pas au canvas.
+        if (!isRoll)
+        {
+            label += MainWindow::tr(" · Surface PDF %1 m²").arg(QString::number(areaM2, 'f', 2));
         }
 
         QString text = label + MainWindow::tr(" · %1").arg(GenerationTimeText(output.generationMs));
@@ -299,6 +360,47 @@ auto ExportResultText(const OExportOutput &output, const OExportDrawing &drawing
         if (!output.projectorWarning.isEmpty())
         {
             text += QStringLiteral(" — ") + output.projectorWarning;
+        }
+
+        // Une pièce plus longue que la longueur demandée ne peut pas être coupée : sa page la
+        // dépasse. C'est exactement ce que la longueur existe pour éviter (le pliage manuel), donc
+        // on le dit — sans refuser, le fichier reste imprimable.
+        if (isRoll && rollPages.pageBeyondMax)
+        {
+            const qreal maxMm = output.maxPageLengthMm > 0.0 ? output.maxPageLengthMm
+                                                              : OExportRollPages::PdfPageMaxMm;
+            text += QStringLiteral(" — ")
+                    + MainWindow::tr("A piece is longer than the maximum page length (%1): its page "
+                                     "is longer.")
+                          .arg(OLengthUnits::Format(maxMm, unit));
+        }
+
+        // ── La seconde ligne du rouleau : les vraies pages, leur largeur, et la surface À LA FIN ─
+        //
+        // **Un rouleau, et lui seul** : les autres formats ont un nombre de feuilles, pas une
+        // longueur par page. La largeur est celle du PDF — 83.1 quand les marges G/D sont retirées,
+        // 84.1 sinon —, et chaque longueur est celle de la page, marges haut/bas comprises. La
+        // surface ferme la ligne : elle est donc lue comme la somme de ces pages-là, pas du canvas.
+        if (isRoll)
+        {
+            QStringList lengths;
+            lengths.reserve(rollPages.pages.size());
+            for (const QRectF &page : rollPages.pages)
+            {
+                // **Dans l'unité du run**, comme la ligne du dessus : une longueur de page en
+                // millimètres sous une unité « cm » annonçait 940.5 cm pour 94.05 cm.
+                lengths << QString::number(FromPixel(page.height(), unit), 'f', 1);
+            }
+
+            const qreal pdfWidth = rollPages.pages.isEmpty()
+                                       ? 0.0
+                                       : FromPixel(rollPages.pages.first().width(), unit);
+
+            text += QStringLiteral("\n")
+                    + MainWindow::tr("%n page(s) (largeur %1 %2) : %3 cm · %4 m²", nullptr, pageCount)
+                          .arg(QString::number(pdfWidth, 'f', 1), UnitsToStr(unit, true),
+                               lengths.join(QStringLiteral(" + ")),
+                               QString::number(areaM2, 'f', 2));
         }
 
         return text;
@@ -1444,6 +1546,8 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
     }
     output.unit = request.unit;
     output.printModelToken = request.printModelToken;
+    output.maxPageLengthMm = request.maxPageLengthMm;
+    output.trimSideMargins = request.trimSideMargins;
     output.documentLandscape = request.documentLandscape;
     output.pageShape = request.pageShape;
     output.columns = request.columns;
@@ -1484,6 +1588,44 @@ auto MainWindow::RunExportNesting(const OExportRunRequest &request, const OGrade
         // Et la LARGEUR avec : le plan a été posé sur une feuille de 1 189 de large si c'est le
         // paysage qui a gagné, et la grille, le canevas et le PDF lisent ce chiffre-là.
         output.documentWidthMm = FromPixel(output.result.binWidthPx, Unit::Mm);
+    }
+
+    // ── Les pages d'un rouleau, réagencées pour être INDÉPENDANTES ──────────────────────────────
+    //
+    // `Layout` ne se contente pas de découper : il pousse vers le bas ce qu'il faut pour que chaque
+    // page ait SA marge en haut et en bas. Sans lui, deux pages voisines partageraient le même blanc
+    // — le bas de l'une serait le haut de l'autre — et une pièce posée dans cette marge
+    // apparaîtrait sur les deux pages du PDF. **C'est ici, une fois, que le plan est réagencé** : le
+    // canvas, la barre d'état et le PDF relisent ensuite les placements de la sortie.
+    //
+    // ⚠️ **L'ordre des placements ne change pas** — seuls leurs `y` bougent. `result.keys` leur est
+    // indexé, et les trier ici désalignerait les clés en silence.
+    //
+    // Le plafond du PDF reste un refus : une page de plus de 500 cm n'est pas un PDF utilisable
+    // (Trame n'écrit aucun `/UserUnit`). Une PIÈCE plus longue ne se découpe pas, donc on refuse
+    // plutôt que de livrer un plan qui a l'air juste.
+    if (output.format == OExportFormat::Kind::Print && output.frameHeightMm <= 0.0)
+    {
+        OExportRollPages::LayoutResult layout =
+            OExportRollPages::Layout(output.result.placements, OExportRollPages::SettingsOf(output));
+        if (layout.pages.pastPdfLimit)
+        {
+            const QString message =
+                tr("The plan is larger than 500 cm, the biggest page a PDF can hold and still be read "
+                   "by other software. It cannot be cut into pages without cutting a piece.");
+            if (error != nullptr)
+            {
+                *error = message;
+            }
+            if (VApplication::IsGUIMode())
+            {
+                QMessageBox::warning(this, tr("Export mode"), message, QMessageBox::Ok, QMessageBox::Ok);
+            }
+            return std::nullopt;
+        }
+
+        output.result.placements = std::move(layout.placements);
+        output.result.usedHeightPx = layout.usedHeightPx;
     }
 
     // Le décor des groupes de la couche de référence, résolu pendant la marche des tailles. Il rejoint
@@ -2305,8 +2447,17 @@ void MainWindow::DrawExportDrawing(QGraphicsScene *scene, const OExportOutput &o
     bool framed = false;
     const bool hasMarks = ExportMarksOf(output, marks, framed);
 
+    // **A0 et A0 Roll dessinent leurs pages séparées** — comme un plan de coupe sépare ses bandes.
+    // Le vide entre deux pages est d'affichage ; la longueur du plan et le PDF ne le voient pas.
+    const OExportPrintModel *printModel = FindPrintModel(output.printModelToken);
+    const bool separatePages = printModel != nullptr
+                               && (printModel->shape == OExportPrintShape::Roll
+                                   || QLatin1String(printModel->token) == QLatin1String("A0"));
+
     const OExportRunFlags flags{output.format, output.foldedFabric, output.matWidthMm,
-                                output.matHeightMm, output.result.matCount};
+                                output.matHeightMm, output.result.matCount, output.marginMm,
+                                output.maxPageLengthMm, output.trimSideMargins,
+                                !output.coverPageTemplateName.isEmpty(), separatePages};
 
     // Le plan de TISSU ouvre la scène — c'est lui qui la vide, et il part de son origine.
     OExportCanvas::Build(scene, output.layers, output.result,
