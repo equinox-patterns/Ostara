@@ -89,17 +89,57 @@ void TST_SplinePortions::RunsRoundTripThroughTheFile()
     const QVector<int> nodes = OSplinePathPortions::DecodeNodes(OSplinePathPortions::EncodeNodes({1, 3}));
     QCOMPARE(nodes, (QVector<int>{1, 3}));
 
-    // The id each run got from the container travels the same way, keyed by the node the run ends on: a reparse
-    // then finds the same object instead of allocating a new one beside it.
-    const QMap<int, quint32> ids
-        = OSplinePathPortions::DecodeIds(OSplinePathPortions::EncodeIds({{2, 101}, {4, 103}}));
-    QCOMPARE(ids.size(), qsizetype(2));
-    QCOMPARE(ids.value(2), quint32(101));
-    QCOMPARE(ids.value(4), quint32(103));
+    // The id each run got from the container travels the same way, keyed by its two nodes: a reparse then finds the
+    // same object instead of allocating a new one beside it. A piece kept for its users carries its name too.
+    const QMap<QString, OSplinePathPortions::StoredPiece> pieces = OSplinePathPortions::DecodePieces(
+        OSplinePathPortions::EncodePieces({{QStringLiteral("0-2"), {101, QString()}},
+                                           {QStringLiteral("2-5"), {103, QStringLiteral("A18__p2")}}}));
+    QCOMPARE(pieces.size(), qsizetype(2));
+    QCOMPARE(pieces.value(QStringLiteral("0-2")).id, quint32(101));
+    QVERIFY(pieces.value(QStringLiteral("0-2")).name.isEmpty());
+    QCOMPARE(pieces.value(QStringLiteral("2-5")).id, quint32(103));
+    QCOMPARE(pieces.value(QStringLiteral("2-5")).name, QStringLiteral("A18__p2"));
 
     // A pattern written before the boxes existed has neither attribute: it reads back as an uncut path.
     QVERIFY(OSplinePathPortions::DecodeNodes(QString()).isEmpty());
-    QVERIFY(OSplinePathPortions::DecodeIds(QString()).isEmpty());
+    QVERIFY(OSplinePathPortions::DecodePieces(QString()).isEmpty());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_SplinePortions::RunKeysNameBothEnds()
+{
+    // A run is named by its two ends, so unticking the box before it cannot hand its id to the longer run that takes
+    // its place: the merged run is a new key.
+    QCOMPARE(OSplinePathPortions::RunKey({2, 5}), QStringLiteral("2-5"));
+
+    OSplinePathPortions::Run run;
+    QVERIFY(OSplinePathPortions::ParseRunKey(QStringLiteral("2-5"), run));
+    QCOMPARE(run.from, 2);
+    QCOMPARE(run.to, 5);
+
+    // The key of a cut half, and keys that describe no run, are not runs.
+    QVERIFY(not OSplinePathPortions::ParseRunKey(QStringLiteral("c90-1"), run));
+    QVERIFY(not OSplinePathPortions::ParseRunKey(QStringLiteral("5"), run));
+    QVERIFY(not OSplinePathPortions::ParseRunKey(QStringLiteral("5-2"), run));
+
+    const QVector<OSplinePathPortions::Run> before = OSplinePathPortions::Runs({1, 3}, 6);
+    const QVector<OSplinePathPortions::Run> after = OSplinePathPortions::Runs({3}, 6);
+    QCOMPARE(OSplinePathPortions::RunKey(before.at(1)), QStringLiteral("1-3"));
+    QCOMPARE(OSplinePathPortions::RunKey(after.at(0)), QStringLiteral("0-3"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_SplinePortions::LegacyIdsAreStillRead()
+{
+    // A file written before the runs had two ends keyed them by the node they end on, `3=102`: read as the legacy key
+    // the tool matches against its runs once.
+    const QMap<QString, OSplinePathPortions::StoredPiece> pieces =
+        OSplinePathPortions::DecodePieces(QStringLiteral("3=102;5=103"));
+    QCOMPARE(pieces.value(OSplinePathPortions::LegacyRunKey(3)).id, quint32(102));
+    QCOMPARE(pieces.value(OSplinePathPortions::LegacyRunKey(5)).id, quint32(103));
+
+    // Anything that is not an id is left out rather than read as one.
+    QVERIFY(OSplinePathPortions::DecodePieces(QStringLiteral("0-2=;x;=7")).isEmpty());
 }
 
 QTEST_MAIN(TST_SplinePortions)

@@ -28,6 +28,13 @@
 
 #include "vabstractcubicbezierpath.h"
 
+#include "../vgeometry/varc.h"
+#include "../vgeometry/vcubicbezier.h"
+#include "../vgeometry/vcubicbezierpath.h"
+#include "../vgeometry/vellipticalarc.h"
+#include "../vgeometry/vspline.h"
+#include "../vpatterndb/vcontainer.h"
+
 #include "../ifc/xml/vabstractpattern.h"
 #include "../ifc/xml/vpatternblockmapper.h"
 #include "../ifc/xml/vpatterngraph.h"
@@ -143,47 +150,6 @@ auto OSplinePathPortions::DecodeNodes(const QString &value) -> QVector<int>
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto OSplinePathPortions::EncodeIds(const QMap<int, quint32> &ids) -> QString
-{
-    QStringList parts;
-
-    for (auto it = ids.cbegin(); it != ids.cend(); ++it)
-    {
-        parts.append(QStringLiteral("%1=%2").arg(it.key()).arg(it.value()));
-    }
-
-    return parts.join(QLatin1Char(';'));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-auto OSplinePathPortions::DecodeIds(const QString &value) -> QMap<int, quint32>
-{
-    QMap<int, quint32> ids;
-
-    for (const QString &part : value.split(QLatin1Char(';'), Qt::SkipEmptyParts))
-    {
-        const qsizetype equal = part.indexOf(QLatin1Char('='));
-
-        if (equal <= 0)
-        {
-            continue;
-        }
-
-        bool okNode = false;
-        bool okId = false;
-        const int node = part.left(equal).toInt(&okNode);
-        const quint32 id = part.mid(equal + 1).toUInt(&okId);
-
-        if (okNode && okId && node > 0 && id != 0)
-        {
-            ids.insert(node, id);
-        }
-    }
-
-    return ids;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void OSplinePathPortions::SyncGraph(VAbstractPattern *doc, quint32 motherId, const QVector<quint32> &before,
                                     const QVector<quint32> &after)
 {
@@ -236,4 +202,244 @@ void OSplinePathPortions::SyncGraph(VAbstractPattern *doc, quint32 motherId, con
 auto OSplinePathPortions::PortionSuffix(int index) -> QString
 {
     return QStringLiteral("__p%1").arg(index);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::RunKey(const Run &run) -> QString
+{
+    return QStringLiteral("%1-%2").arg(run.from).arg(run.to);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::ParseRunKey(const QString &key, Run &run) -> bool
+{
+    const QStringList ends = key.split(QLatin1Char('-'));
+
+    if (ends.size() != 2)
+    {
+        return false;
+    }
+
+    bool okFrom = false;
+    bool okTo = false;
+    const int from = ends.at(0).toInt(&okFrom);
+    const int to = ends.at(1).toInt(&okTo);
+
+    if (not okFrom || not okTo || from < 0 || to <= from)
+    {
+        return false;
+    }
+
+    run = Run{from, to};
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::LegacyRunKey(int to) -> QString
+{
+    return QString::number(to);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::EncodePieces(const QMap<QString, StoredPiece> &pieces) -> QString
+{
+    QStringList parts;
+    parts.reserve(pieces.size());
+
+    for (auto it = pieces.cbegin(); it != pieces.cend(); ++it)
+    {
+        if (it.value().id == NULL_ID)
+        {
+            continue;
+        }
+
+        parts.append(it.value().name.isEmpty()
+                         ? QStringLiteral("%1=%2").arg(it.key()).arg(it.value().id)
+                         : QStringLiteral("%1=%2=%3").arg(it.key(), it.value().name).arg(it.value().id));
+    }
+
+    return parts.join(QLatin1Char(';'));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::DecodePieces(const QString &value) -> QMap<QString, StoredPiece>
+{
+    QMap<QString, StoredPiece> pieces;
+
+    for (const QString &part : value.split(QLatin1Char(';'), Qt::SkipEmptyParts))
+    {
+        const QStringList fields = part.split(QLatin1Char('='));
+
+        if (fields.size() < 2 || fields.size() > 3)
+        {
+            continue;
+        }
+
+        bool okId = false;
+        const quint32 id = fields.constLast().trimmed().toUInt(&okId);
+        const QString key = fields.constFirst().trimmed();
+
+        if (not okId || id == NULL_ID || key.isEmpty())
+        {
+            continue;
+        }
+
+        pieces.insert(key, StoredPiece{id, fields.size() == 3 ? fields.at(1).trimmed() : QString()});
+    }
+
+    return pieces;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::IsInUse(const VAbstractPattern *doc, quint32 id) -> bool
+{
+    if (doc == nullptr || id == NULL_ID)
+    {
+        return false;
+    }
+
+    if (not doc->IsPatternGraphComplete())
+    {
+        return true; // not known yet: keep it
+    }
+
+    const VPatternGraph *const graph = doc->PatternGraph();
+
+    if (graph == nullptr)
+    {
+        return true;
+    }
+
+    // Every kind of dependent counts, a piece of the pattern included: a seam line built on the piece needs it as
+    // much as an operation does.
+    const auto dependents = graph->TryGetDependentNodes(id, 500, [](const VNode &) -> bool { return true; });
+
+    return not dependents.has_value() || not dependents->isEmpty();
+}
+
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+template <class T> auto StoreAs(VContainer *data, T curve, quint32 id) -> quint32
+{
+    if (id != NULL_ID)
+    {
+        curve.setId(id);
+        data->UpdateGObject(id, curve);
+        return id;
+    }
+
+    return data->AddGObject(new T(curve));
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::RunCurve(const VAbstractCubicBezierPath &path, const Run &run) -> QSharedPointer<VAbstractCurve>
+{
+    if (run.from < 0 || run.to <= run.from || run.to > path.CountSubSpl())
+    {
+        return {};
+    }
+
+    if (run.to - run.from == 1)
+    {
+        return QSharedPointer<VSpline>::create(path.GetSpline(run.from + 1));
+    }
+
+    VSplinePath portion = Take(path, run);
+    if (portion.CountPoints() < 2)
+    {
+        return {};
+    }
+
+    return QSharedPointer<VSplinePath>::create(portion);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OSplinePathPortions::MarkPiece(VAbstractCurve &piece, const VAbstractCurve &from, quint32 ownerId,
+                                    const QString &suffix)
+{
+    piece.SetColor(from.GetColor());
+    piece.SetPenStyle(from.GetPenStyle());
+    piece.SetApproximationScale(from.GetApproximationScale());
+    piece.SetDerivative(true);
+    piece.SetNameSuffix(suffix);
+    piece.setIdObject(ownerId);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::StorePiece(VContainer *data, const QSharedPointer<VAbstractCurve> &piece, quint32 id)
+    -> quint32
+{
+    if (data == nullptr || piece.isNull())
+    {
+        return NULL_ID;
+    }
+
+    if (id != NULL_ID && data->HasObject(id))
+    {
+        const QSharedPointer<VGObject> held = data->GetGObject(id);
+        if (held.isNull() || held->getType() != piece->getType() || held->getIdObject() != piece->getIdObject())
+        {
+            qWarning("Piece id %u names another object of the pattern: the piece takes a new id.", id);
+            id = NULL_ID;
+        }
+    }
+
+    QT_WARNING_PUSH
+    QT_WARNING_DISABLE_GCC("-Wswitch-default")
+    QT_WARNING_DISABLE_CLANG("-Wswitch-default")
+
+    switch (piece->getType())
+    {
+        case GOType::Spline:
+            id = StoreAs(data, *piece.staticCast<VSpline>(), id);
+            data->AddSpline(data->GeometricObject<VSpline>(id), id);
+            return id;
+        case GOType::CubicBezier:
+            id = StoreAs(data, *piece.staticCast<VCubicBezier>(), id);
+            data->AddSpline(data->GeometricObject<VCubicBezier>(id), id);
+            return id;
+        case GOType::SplinePath:
+            id = StoreAs(data, *piece.staticCast<VSplinePath>(), id);
+            data->AddCurveWithSegments(data->GeometricObject<VSplinePath>(id), id);
+            return id;
+        case GOType::CubicBezierPath:
+            id = StoreAs(data, *piece.staticCast<VCubicBezierPath>(), id);
+            data->AddCurveWithSegments(data->GeometricObject<VCubicBezierPath>(id), id);
+            return id;
+        case GOType::Arc:
+            id = StoreAs(data, *piece.staticCast<VArc>(), id);
+            data->AddArc(data->GeometricObject<VArc>(id), id);
+            return id;
+        case GOType::EllipticalArc:
+            id = StoreAs(data, *piece.staticCast<VEllipticalArc>(), id);
+            data->AddArc(data->GeometricObject<VEllipticalArc>(id), id);
+            return id;
+        case GOType::Point:
+        case GOType::PlaceLabel:
+        case GOType::Unknown:
+            break;
+    }
+
+    QT_WARNING_POP
+
+    return NULL_ID;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::KeptSuffix(const QString &curveName, const Run &run) -> QString
+{
+    return curveName + QStringLiteral("__p%1_%2").arg(run.from).arg(run.to);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto OSplinePathPortions::CurveOf(const VContainer *data, quint32 id) -> QSharedPointer<VAbstractCurve>
+{
+    if (data == nullptr || id == NULL_ID || not data->HasObject(id))
+    {
+        return {};
+    }
+
+    return qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(id));
 }

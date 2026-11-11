@@ -572,9 +572,17 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
     // not rebuilt, since only a full parse adds a tool — and leave it holding ids that name nothing. The pleat
     // applied, then saved into its layer, reparses itself: that is the second pass that made the whole drawing
     // vanish. A lite parse is a change of options elsewhere, and this figure has nothing to say about it.
+    //
+    // The graph is another matter: the lite parse emptied it, and the pleat has to put itself back with the ids the
+    // file holds — the copies and the figure stay in the container, only their place in the graph was lost.
     if (initData.parse != Document::FullParse)
     {
-                return nullptr;
+        RegisterInGraph(initData);
+
+        // The pieces its copies inherit are put back in the graph too, and a tool further down the file reads them.
+        // Their shape follows the copies once the figure is refreshed (FullUpdateFromFile).
+        CreateDestinationPieces(initData);
+        return nullptr;
     }
 
     if (initData.typeCreation == Source::FromGui)
@@ -598,18 +606,41 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
         initData.keptInPlace.unite(KeptInPlace(initData.departures));
     }
 
+    CreateDestination(initData);
+
+    RegisterInGraph(initData);
+
+    // The departure lines themselves are what stays: the pleats have no pivot, and no point of the pattern is left
+    // in place by them.
+    CreateDestinationLines(initData, {});
+
+    if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
+    {
+        initData.doc->UpdateToolData(initData.id, initData.data);
+    }
+
+    if (initData.parse == Document::FullParse)
+    {
+        OToolPleat *const tool = AddToolToScene<OToolPleat>(initData, Tool::Pleat, tr("pleat"),
+                                                            [&initData]() { return new OToolPleat(initData); });
+                return tool;
+    }
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OToolPleat::RegisterInGraph(OToolPleatInitData &initData)
+{
     VPatternGraph *patternGraph = initData.doc->PatternGraph();
     SCASSERT(patternGraph != nullptr)
 
     patternGraph->AddVertex(initData.id, VNodeType::TOOL, initData.doc->PatternBlockMapper()->GetActiveId());
 
-    // The values are formulas like any other: what they read has to be known before the copies are built.
+    // The values are formulas like any other.
     for (const OPleatDeparture &departure : std::as_const(initData.departures))
     {
         initData.doc->FindFormulaDependencies(departure.value, initData.id, initData.data->DataDependencyVariables());
     }
-
-    CreateDestination(initData);
 
     // What the copies and the caps are read from: the points of every departure line, the points designated to carry
     // an edge, and everything that travels.
@@ -650,23 +681,6 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
         patternGraph->AddVertex(id, VNodeType::OBJECT, initData.doc->PatternBlockMapper()->GetActiveId());
         patternGraph->AddEdge(initData.id, id);
     }
-
-    // The departure lines themselves are what stays: the pleats have no pivot, and no point of the pattern is left
-    // in place by them.
-    CreateDestinationLines(initData, {});
-
-    if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
-    {
-        initData.doc->UpdateToolData(initData.id, initData.data);
-    }
-
-    if (initData.parse == Document::FullParse)
-    {
-        OToolPleat *const tool = AddToolToScene<OToolPleat>(initData, Tool::Pleat, tr("pleat"),
-                                                            [&initData]() { return new OToolPleat(initData); });
-                return tool;
-    }
-    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

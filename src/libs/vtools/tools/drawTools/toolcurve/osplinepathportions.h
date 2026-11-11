@@ -38,10 +38,14 @@
 #include <QVector>
 #include <QtGlobal>
 
-#include "vsplinepath.h"
+#include "../vgeometry/vsplinepath.h"
 
 class VAbstractCubicBezierPath;
+class VAbstractCurve;
 class VAbstractPattern;
+class VContainer;
+
+#include <QSharedPointer>
 
 /**
  * @brief What a set of cut nodes makes of a path: the runs, and how they are written down.
@@ -82,12 +86,6 @@ public:
     /** @brief The cut nodes of `2 3 5`, ignoring anything that is not a number. */
     static auto DecodeNodes(const QString &value) -> QVector<int>;
 
-    /** @brief `2=101;4=103` — the id the container gave each run, keyed by the node it ends on. */
-    static auto EncodeIds(const QMap<int, quint32> &ids) -> QString;
-
-    /** @brief The run ids of `2=101;4=103`. */
-    static auto DecodeIds(const QString &value) -> QMap<int, quint32>;
-
     /**
      * @brief The suffix a portion carries after the name of the curve it comes from: `__p1`, `__p2`…
      *
@@ -112,6 +110,78 @@ public:
      */
     static void SyncGraph(VAbstractPattern *doc, quint32 motherId, const QVector<quint32> &before,
                           const QVector<quint32> &after);
+
+    /** @brief One piece as the pattern writes it down: its object, and — for a piece kept for its users — the name
+     *  it had when it stopped being a run. */
+    struct StoredPiece
+    {
+        quint32 id{NULL_ID};
+        /// Empty for a piece the current runs name. A piece that outlives its run (see IsInUse) has no index left
+        /// in the runs to be named after, and its name is what a formula cites: it is written beside its id.
+        QString name{};
+
+        auto operator==(const StoredPiece &other) const -> bool = default;
+    };
+
+    /** @brief `2-5`: the key of a run, written by its two ends. A run keyed by the node it ends on alone changed
+     *  identity when a box before it was unticked: the merged run inherited the id of the run on its right, and an
+     *  operation that copied that piece silently copied a longer one. */
+    static auto RunKey(const Run &run) -> QString;
+
+    /** @brief The run a key names. False for a key that is not a run (`c90-1`, the key of a cut half). */
+    static auto ParseRunKey(const QString &key, Run &run) -> bool;
+
+    /** @brief The key a run had in a file written before runs were keyed by both ends: `5`, the node it ends on.
+     *  Read once, matched against the runs of the moment, never written again. */
+    static auto LegacyRunKey(int to) -> QString;
+
+    /** @brief `0-2=101;2-5=A18__p2=103` — every piece of one curve, keyed: `key=id`, or `key=name=id` for a piece
+     *  kept with its own name. The id is always last, so the counter of the pattern reads it like any list of ids
+     *  (see VPattern::MaxMentionedId). */
+    static auto EncodePieces(const QMap<QString, StoredPiece> &pieces) -> QString;
+
+    /** @brief The pieces of such a value. A legacy `node=id` list is read too: its keys are LegacyRunKey. */
+    static auto DecodePieces(const QString &value) -> QMap<QString, StoredPiece>;
+
+    /**
+     * @brief Whether something of the pattern is built on @a id: a tool, a piece, an operation that copies it, a
+     * formula that reads it.
+     *
+     * Asked at the moment a piece is about to stop being a run — a box unticked — and the answer decides whether it
+     * leaves the pattern or stays for the objects built on it. A graph not complete yet, or a lock not obtained, is
+     * answered "in use": keeping a piece nobody needs costs an object, dropping one somebody needs costs a pattern
+     * that no longer opens.
+     */
+    static auto IsInUse(const VAbstractPattern *doc, quint32 id) -> bool;
+
+    /** @brief The run @a run of @a path, as the curve it is: one sub-spline is a spline — a path is built from two at
+     *  the least and refuses fewer —, two or more a path. Null when the run holds no geometry. */
+    static auto RunCurve(const VAbstractCubicBezierPath &path, const Run &run) -> QSharedPointer<VAbstractCurve>;
+
+    /** @brief What every piece is: a derivative of the curve it comes from, owned by @a ownerId, drawn with that
+     *  curve's pen — same colour, same style, same approximation: it IS that curve, piece by piece. Named like the
+     *  halves a cut makes, the curve's name plus its own mark, never after the points it joins: two objects answering
+     *  to one name are one object for every reader of the pattern. */
+    static void MarkPiece(VAbstractCurve &piece, const VAbstractCurve &from, quint32 ownerId, const QString &suffix);
+
+    /**
+     * @brief Store @a piece in @a data under @a id, and give it the variables a curve of its kind has.
+     *
+     * A known id is the identity of the piece: the container adopts an object handed to it under that id even when it
+     * holds nothing there yet — the state a parse leaves. It is reused only when what the container holds there is
+     * this very piece: the same kind of curve, made by the same owner. An id that names something else — a file
+     * edited by hand, two pieces given one id — would have the piece overwrite another object of the pattern, or the
+     * container refuse the cast and close the file: the piece takes a new id instead. Returns the id it is stored
+     * under, NULL_ID for a kind no piece is made of.
+     */
+    static auto StorePiece(VContainer *data, const QSharedPointer<VAbstractCurve> &piece, quint32 id) -> quint32;
+
+    /** @brief The name a piece kept for its users falls back on when nothing else names it: its two nodes, which no
+     *  run of the boxes is ever named after (`__p2_5`). */
+    static auto KeptSuffix(const QString &curveName, const Run &run) -> QString;
+
+    /** @brief The curve @a id names, or null when it names nothing or something that is not a curve. */
+    static auto CurveOf(const VContainer *data, quint32 id) -> QSharedPointer<VAbstractCurve>;
 };
 
 #endif // OSPLINEPATHPORTIONS_H

@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "vtoolcutarc.h"
+#include "../../../operation/ocopypieces.h"
 
 #include <QPointF>
 #include <QSharedPointer>
@@ -270,6 +271,14 @@ auto VToolCutArc::Create(VToolCutInitData &initData) -> VToolCutArc *
     patternGraph->AddEdge(initData.id, initData.segment2Id);
 
     patternGraph->AddEdge(initData.baseCurveId, initData.id);
+
+    // The copies an operation made of the curve are cut too, at the place this point was carried to. Read from the
+    // file, a copy can come before its cut — it was made before the curve was cut — and was built with nothing to
+    // follow: it follows now. A cut made from its dialog is followed once it is written (VToolCut::AddToFile).
+    if (initData.typeCreation != Source::FromGui)
+    {
+        OCopyPieces::FollowCut(initData.doc, initData.data, initData.baseCurveId);
+    }
 
     if (initData.typeCreation != Source::FromGui && initData.parse != Document::FullParse)
     {

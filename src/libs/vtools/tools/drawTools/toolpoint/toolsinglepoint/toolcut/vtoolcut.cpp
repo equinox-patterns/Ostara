@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "vtoolcut.h"
+#include "../../../operation/ocopypieces.h"
 
 #include <QDomElement>
 #include <QGraphicsScene>
@@ -79,6 +80,8 @@ VToolCut::VToolCut(const VToolCutInitData &initData, QGraphicsItem *parent)
     m_segment2My(initData.segment2My),
     m_showTwoSegments(initData.showTwoSegments)
 {
+    m_patternData = initData.data;
+
     Q_ASSERT_X(initData.baseCurveId != 0, Q_FUNC_INFO, "curveCutId == 0"); //-V654 //-V712
 
     auto const CreateSegmentLabel =
@@ -779,7 +782,33 @@ auto VToolCut::IsRemovable() const -> RemoveStatus
         return RemoveStatus::Blocked;
     }
 
+    // The copies an operation made of the curve are cut too, and their halves are objects of the pattern as much as
+    // this tool's own: one that something is built on holds the cut exactly as one of its own halves does.
+    for (const quint32 half : OCopyPieces::HalvesOfCut(doc, m_id))
+    {
+        auto const dependencies = patternGraph->TryGetDependentNodes(half, 500, Filter);
+        if (!dependencies)
+        {
+            return RemoveStatus::Pending; // Lock timeout
+        }
+
+        if (!dependencies->isEmpty())
+        {
+            return RemoveStatus::Blocked;
+        }
+    }
+
     return RemoveStatus::Removable;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolCut::AddToFile()
+{
+    VToolSinglePoint::AddToFile();
+
+    // The cut is in the file now: the copies of its curve can find it, and be cut at the place its point was carried
+    // to. Done here for a cut made from its dialog — a cut read from the file is followed by its own Create.
+    OCopyPieces::FollowCut(doc, m_patternData != nullptr ? m_patternData : getData(), baseCurveId);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

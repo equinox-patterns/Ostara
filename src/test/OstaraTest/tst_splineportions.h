@@ -44,6 +44,8 @@ private slots:
     void EndsAreNeverCut();
     void BoxOrderDoesNotChangeTheRuns();
     void RunsRoundTripThroughTheFile();
+    void RunKeysNameBothEnds();
+    void LegacyIdsAreStillRead();
 };
 
 #endif // TST_SPLINEPORTIONS_H

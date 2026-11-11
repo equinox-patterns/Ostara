@@ -48,6 +48,7 @@
 #include "vexception.h"
 #include "../vpatterndb/vcontainer.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "../operation/ocopypieces.h"
 #include "osplinepathportions.h"
 #include "vtoolabstractcurve.h"
 
@@ -374,6 +375,27 @@ void OToolArmholeCurve::SetSegmentAtCarrure(bool segment)
         return;
     }
 
+    // **Asked now, while the graph knows every user.** Unticking the box takes the two pieces away from the curve,
+    // but a piece something is built on — an operation that copies it, a point cut on it, a formula — stays in the
+    // pattern for it, under its id and its name. The same question is asked of every copy an operation made of this
+    // curve: a copy of the whole curve loses its pieces with it, unless one of them is in use. It cannot wait for the
+    // parse that follows, which empties the graph before rebuilding it.
+    if (not segment)
+    {
+        for (quint32 *id : {&m_firstSegmentId, &m_secondSegmentId})
+        {
+            if (*id != NULL_ID && not OSplinePathPortions::IsInUse(doc, *id))
+            {
+                // It leaves the graph here: the rebuild that follows no longer knows it, and could not take it out.
+                OSplinePathPortions::SyncGraph(doc, m_id, {*id}, {});
+                *id = NULL_ID;
+            }
+        }
+    }
+
+    OCopyPieces::PruneUnused(doc, m_patternData != nullptr ? m_patternData : getData(), m_id,
+                             segment ? QVector<int>{CarrureNode} : QVector<int>{});
+
     m_segmentAtCarrure = segment;
 
     // **Built here, now.** Ticking the box is the moment the two pieces come into being: their ids are allocated
@@ -427,21 +449,14 @@ void OToolArmholeCurve::RebuildSegments()
             }
 
             item->setParent(nullptr);
-            delete item;
+            item->deleteLater(); // the rebuild may run from a handler the item is still inside
             *slot = nullptr;
         }
     }
 
-    if (not m_segmentAtCarrure)
-    {
-        // Uncut: the curve is the curve. The ids are forgotten so the next check builds fresh objects rather
-        // than reviving two nobody can see or cite.
-        m_firstSegmentId = NULL_ID;
-        m_secondSegmentId = NULL_ID;
-        OSplinePathPortions::SyncGraph(doc, m_id, previousIds, {});
-        ApplySegmentVisibility();
-        return;
-    }
+    // Uncut: the curve is the curve, and only the pieces kept for their users are left — the ones unticking found
+    // something built on (see SetSegmentAtCarrure). They are not drawn: the curve is whole again on the canvas.
+    const bool drawn = m_segmentAtCarrure;
 
     // The pieces are the two sub-bezier segments the curve already carries — nothing is recomputed, and the
     // joint is the chest/back width anchor, which is the end of the first and the start of the second.
@@ -455,47 +470,39 @@ void OToolArmholeCurve::RebuildSegments()
             break;
         }
 
-        VSpline piece = path->GetSpline(index);
-        piece.setIdObject(m_id);
-
-        // The piece is drawn with the pen of the curve it comes from: it IS that curve, piece by piece. A piece
-        // left with the default pen turns solid black the moment the curve is cut.
-        piece.SetColor(path->GetColor());
-        piece.SetPenStyle(path->GetPenStyle());
-        piece.SetApproximationScale(path->GetApproximationScale());
-
-        // **Cut parity, and not a detail.** A piece is a derivative of the curve it comes from, exactly as the
-        // two halves a cut makes are: same flag, same rule for the name — the curve's name plus its own mark
-        // (`Spl_A18_A28__c1__p1`). Named from the two points it happens to join, the piece took the name of a
-        // curve that already exists in the pattern, and two objects answering to one name is one object for
-        // every reader of the pattern: a formula, a layer, an operation.
-        piece.SetDerivative(true);
-        piece.SetNameSuffix(path->HeadlessName() + OSplinePathPortions::PortionSuffix(index));
-
         quint32 id = *ids[index - 1];
 
-        // A known id is the identity of this piece in the pattern: the container adopts an object handed to it
-        // under that id even when it holds nothing there yet, which is the state a reparse leaves. Allocating a
-        // new id instead broke the identity the dialog and the file already carried.
-        if (id != NULL_ID)
+        if (not drawn && id == NULL_ID)
         {
-            piece.setId(id);
-            m_patternData->UpdateGObject(id, piece);
-        }
-        else
-        {
-            id = m_patternData->AddGObject(new VSpline(piece));
-            *ids[index - 1] = id;
+            continue; // uncut, and nothing kept this piece
         }
 
-        const QSharedPointer<VSpline> stored = m_patternData->GeometricObject<VSpline>(id);
+        // The piece is the sub-bezier segment the curve already carries, under the rule every piece of a curve
+        // follows (OSplinePathPortions): its pen, the derivative flag, the curve's name plus its own mark
+        // (`Spl_A18_A28__c1__p1`), and the id the file gave it when that id is still this piece.
+        const QSharedPointer<VAbstractCurve> piece =
+            OSplinePathPortions::RunCurve(*path, OSplinePathPortions::Run{index - 1, index});
+        if (piece.isNull())
+        {
+            continue;
+        }
+
+        OSplinePathPortions::MarkPiece(*piece, *path, m_id,
+                                       path->HeadlessName() + OSplinePathPortions::PortionSuffix(index));
+        id = OSplinePathPortions::StorePiece(m_patternData, piece, id);
+        *ids[index - 1] = id;
+
+        const QSharedPointer<VAbstractCurve> stored = OSplinePathPortions::CurveOf(m_patternData, id);
 
         if (stored.isNull())
         {
             continue;
         }
 
-        m_patternData->AddSpline(stored, id);
+        if (not drawn)
+        {
+            continue; // kept, not drawn
+        }
 
         QSharedPointer<VAbstractCurve> curve = stored;
 

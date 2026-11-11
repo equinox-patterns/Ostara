@@ -206,6 +206,14 @@ protected:
                                const QDomElement &newDomElement,
                                const ToolChanges &changes);
 
+    /** @brief Written into the file: from this moment the copies an operation made of the curve can be cut too
+     *  (OCopyPieces::FollowCut) — a cut created from its dialog is followed at once, not at the next parse. */
+    void AddToFile() override;
+
+    /** @brief The pattern's container, the one the copies of the curve are cut into. Not this tool's own copy of it
+     *  (see VToolSplinePath::m_patternData). */
+    VContainer *m_patternData{nullptr};
+
     auto itemChange(GraphicsItemChange change, const QVariant &value) -> QVariant override;
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;

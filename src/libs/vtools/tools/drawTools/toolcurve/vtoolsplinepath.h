@@ -45,6 +45,7 @@
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vgeometry/vgeometrydef.h"
 #include "../vmisc/def.h"
+#include "osplinepathportions.h"
 #include "vtoolabstractcurve.h"
 
 class VSplinePath;
@@ -63,8 +64,9 @@ struct VToolSplinePathInitData : VToolAbstractCurveInitData
 
     /** The interior nodes this path is cut on (see OSplinePathPortions), and the ids of the runs they make.
      *  Read from the file on a parse, empty when the user has cut nothing. */
-    QVector<int> cutNodes{};         // NOLINT(misc-non-private-member-variables-in-classes)
-    QMap<int, quint32> portionIds{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    QVector<int> cutNodes{}; // NOLINT(misc-non-private-member-variables-in-classes)
+    /// Keyed by OSplinePathPortions::RunKey — or LegacyRunKey for a file written before the runs had two ends.
+    QMap<QString, OSplinePathPortions::StoredPiece> portionIds{}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 /**
@@ -231,9 +233,15 @@ private:
     /** @brief The interior nodes the user cut: always inside 1 .. CountPoints()-2, sorted. */
     QVector<int> m_cutNodes{};
 
-    /** @brief The container object of each run, keyed by the node the run ends on. Written to the file, so a
-     *  reparse — and a ticked box is one — finds the same object instead of allocating a new one beside it. */
-    QMap<int, quint32> m_portionIds{};
+    /** @brief The container object of each run, keyed by its two ends (OSplinePathPortions::RunKey). Written to the
+     *  file, so a reparse — and a ticked box is one — finds the same object instead of allocating a new one beside
+     *  it. It also holds the pieces kept for their users: a run that stopped being one when a box was unticked, but
+     *  that an operation, a tool or a formula is built on, stays in the pattern under its id and its name. */
+    QMap<QString, OSplinePathPortions::StoredPiece> m_portionIds{};
+
+    /** @brief Forget the pieces that would stop being runs under @a cutNodes and that nothing is built on. Asked
+     *  at the moment a box changes, when the graph knows every user — of this curve and of its copies. */
+    void PruneUnusedPieces(const QVector<int> &cutNodes);
 
     /** @brief The items that draw the runs — children of this tool, but top-level items of the scene, so a
      *  layer can show a run while the curve's own layer is hidden (see VToolCut, which does the same). */

@@ -311,7 +311,8 @@ requires std::predicate<Predicate, VNode> inline auto VPatternGraph::GetDependen
  * @param timeout lock timeout
  * @param filter filter funtion. Return true to add a node to the list
  * @return Vector of all nodes that can be reached from the starting node
- * based on filter if lock was successful, empty list otherwise.
+ * based on filter if lock was successful (an empty list for an id the graph does not know),
+ * std::nullopt when the lock could not be taken in time.
  * 
  * Example: If A->B, B->C, C->D, then GetDependentNodes(A) returns [B, C, D]
  * This answers: "What nodes depend on A?"
@@ -329,15 +330,18 @@ requires std::predicate<Predicate, VNode> inline auto VPatternGraph::TryGetDepen
 
     auto Unlock = qScopeGuard([this]() -> auto { m_lock.unlock(); });
 
+    // An id the graph does not know has no dependents: an empty list, as GetDependentNodes answers. `return {}` on
+    // the optional meant "no answer" — the lock timeout — and every caller read it as "still collecting": a tool
+    // missing from the graph showed as in use and could not be deleted.
     if (!m_idToVertex.contains(id))
     {
-        return {};
+        return QVector<VNode>{};
     }
 
     auto const startVertex = m_idToVertex.value(id);
     if (!m_graph.has_vertex(startVertex))
     {
-        return {};
+        return QVector<VNode>{};
     }
 
     QVector<VNode> result;

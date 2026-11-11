@@ -248,6 +248,15 @@ private:
      *  spec keeps the defect it cost: a layer ticked after the fact did not follow the exclusion on one of the two. */
     static auto KeptInPlace(const QVector<OPleatDeparture> &departures) -> QSet<quint32>;
 
+    /** @brief Put the pleat back in the dependency graph: its vertex, the formulas of its values, what it reads, its
+     *  copies and the points and curves of its figure.
+     *
+     *  Every parse but the value-only one empties the graph, so this runs on every parse, the lite one included —
+     *  where the figure itself is not rebuilt. Written once because both paths must answer the same: a pleat missing
+     *  from the graph after a lite parse could not be deleted until the file was reopened (its delete read "pending"
+     *  as "in use"), and an object of its figure really in use went unseen. */
+    static void RegisterInGraph(OToolPleatInitData &initData);
+
     explicit OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent = nullptr);
 
     /** @brief Write the options of the pleats themselves — their departure lines, their values and their boxes, and

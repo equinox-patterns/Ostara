@@ -220,8 +220,25 @@ protected:
     QHash<quint32, bool> m_objectVisible{};
     QHash<quint32, bool> m_objectReplaced{};
 
-    /** @brief Show or hide one copy from the two answers above. */
+    /** @brief Show or hide one copy from the two answers above — and, for a copy cut into pieces, from the third
+     *  one: its pieces take its place on the canvas, exactly as the curve it comes from is replaced by its own. A
+     *  piece answers to its own layer, to its copy's, and to whether it is drawn at all (see OCopyPieces::Piece). */
     void ApplyObjectVisibility(quint32 objectId);
+
+    /** @brief Build the pieces the copies inherit from the curves they were made of (OCopyPieces), and give each one
+     *  its item: a child of the operation, wired as the copies are, so a tool picks it, a layer hides it, a right
+     *  click opens the operation. Called whenever the copies are drawn again. */
+    void RefreshCopyPieces();
+
+    /** @brief The pieces of the copies: the copy each one belongs to, and whether it is drawn. */
+    QHash<quint32, quint32> m_pieceOwner{};
+    QHash<quint32, bool> m_pieceShown{};
+    /// The copies their pieces replace on the canvas.
+    QSet<quint32> m_piecedCopies{};
+
+    /** @brief The pattern's container: what the pieces are built into. NOT `VDataTool::data`, which is this tool's
+     *  copy of it (see VToolSplinePath::m_patternData, the same question). */
+    VContainer *m_patternData{nullptr};
 
     quint32 m_lastSelectedObject{NULL_ID};
 
@@ -235,6 +252,7 @@ protected:
     explicit VAbstractOperation(const VAbstractOperationInitData &initData, QGraphicsItem *parent = nullptr);
 
     void AddToFile() override;
+    void RebuildDerivedObjects() override;
     void RefreshDataInFile() override;
     void ChangeLabelVisibility(quint32 id, bool visible) override;
     void ApplyToolOptions(const QDomElement &oldDomElement, const QDomElement &newDomElement) override;
@@ -270,6 +288,11 @@ protected:
     static void CreateDestinationLines(const VAbstractOperationInitData &initData,
                                        const QVector<quint32> &fixedPoints,
                                        const QHash<quint32, quint32> &referencedPoints = {});
+
+    /** @brief Build the pieces the copies inherit (OCopyPieces::Build), on every parse, once the copies exist.
+     *  Called by CreateDestinationLines, the tail every operation already calls; the pleat, whose lite parse stops
+     *  before that tail, calls it itself. */
+    static void CreateDestinationPieces(const VAbstractOperationInitData &initData);
 
     auto Lines() const -> const QVector<OOperationLine> & { return m_lines; }
 

@@ -342,6 +342,12 @@
                                       <xs:attribute name="mx" type="xs:double"/>
                                       <xs:attribute name="my" type="xs:double"/>
                                       <xs:attribute name="showPointName" type="xs:boolean"/>
+                                      <!-- The pieces this copy inherits from the curve it was made of: the boxes of a
+                                           path or of an armhole curve, keyed `n` + the two nodes of the run
+                                           (`n0-2`), and the halves of a cut placed on a curve of its family, keyed
+                                           `c` + the cut + the half (`c90-1`). `key=id`, or `key=name=id` for a piece
+                                           kept for the objects built on it. Absent on a copy nothing cuts. -->
+                                      <xs:attribute name="pieceIds" type="xs:string"/>
                                     </xs:complexType>
                                   </xs:element>
                                 </xs:sequence>
@@ -726,10 +732,11 @@
                           <xs:attribute name="axis2P1" type="xs:unsignedInt"/>
                           <xs:attribute name="axis2P2" type="xs:unsignedInt"/>
                           <xs:attribute name="axis2Sense" type="axisSenseType"/>
-                          <!-- The interior nodes this path is cut on — `2 3` — and the alias of every run
-                               those cuts make, in the order the runs are, `dos_P2;dos_P3`, an empty alias
-                               keeping its place. Absent on a path nobody cut, and absent from every pattern
-                               written before the boxes existed: nothing had to be converted. -->
+                          <!-- The interior nodes this path is cut on — `2 3` — and the id of every run those
+                               cuts make, keyed by its two nodes: `0-2=101;2-3=102`. A run kept for the objects
+                               built on it after its box was unticked carries its name too: `2-5=A18__p2=103`. The
+                               older `3=102`, keyed by the node a run ends on, is still read. Absent on a path
+                               nobody cut, and absent from every pattern written before the boxes existed. -->
                           <xs:attribute name="cutNodes" type="xs:string"/>
                           <xs:attribute name="portionIds" type="xs:string"/>
                           <!-- The armhole curve, shown as the two pieces it is made of at the chest/back

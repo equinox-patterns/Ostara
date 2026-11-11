@@ -29,6 +29,7 @@
  *************************************************************************/
 
 #include "vabstractoperation.h"
+#include "ocopypieces.h"
 
 #include <QScopeGuard>
 
@@ -310,6 +311,13 @@ auto VAbstractOperation::IsRemovable() const -> RemoveStatus
         ownLines.append(id);
     }
 
+    // The pieces of the copies belong to the operation as the copies do, and go away with it. What is built on a
+    // piece is another matter: it is a dependent of the piece, and the walk goes on through it.
+    for (auto it = m_pieceOwner.cbegin(); it != m_pieceOwner.cend(); ++it)
+    {
+        ownLines.append(it.key());
+    }
+
     auto Filter = [&ownLines](const auto &node) -> auto
     {
         return node.type != VNodeType::MODELING_TOOL && node.type != VNodeType::MODELING_OBJECT
@@ -584,9 +592,30 @@ void VAbstractOperation::GroupVisibility(quint32 object, bool visible)
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractOperation::ApplyObjectVisibility(quint32 objectId)
 {
-    if (QGraphicsItem *item = OperatedItem(objectId); item != nullptr)
+    QGraphicsItem *item = OperatedItem(objectId);
+    if (item == nullptr)
     {
-        item->setVisible(m_objectVisible.value(objectId, true) && not m_objectReplaced.value(objectId, false));
+        return;
+    }
+
+    // A piece of a copy: its own layer, its copy's layer, and whether it is drawn at all.
+    if (const auto owner = m_pieceOwner.constFind(objectId); owner != m_pieceOwner.cend())
+    {
+        item->setVisible(m_objectVisible.value(objectId, true) && m_objectVisible.value(owner.value(), true)
+                         && m_pieceShown.value(objectId, false) && not m_objectReplaced.value(objectId, false));
+        return;
+    }
+
+    item->setVisible(m_objectVisible.value(objectId, true) && not m_objectReplaced.value(objectId, false)
+                     && not m_piecedCopies.contains(objectId));
+
+    // The pieces of a copy follow its layer: a copy hidden with its layer takes them off the canvas too.
+    for (auto it = m_pieceOwner.cbegin(); it != m_pieceOwner.cend(); ++it)
+    {
+        if (it.value() == objectId)
+        {
+            ApplyObjectVisibility(it.key());
+        }
     }
 }
 
@@ -802,6 +831,11 @@ void VAbstractOperation::FullUpdateFromFile()
     while (i.hasNext())
     {
         i.next();
+        if (m_pieceOwner.contains(i.key()))
+        {
+            continue; // the pieces are rebuilt whole below, from the copies just refreshed
+        }
+
         if (i.value()->GetType() == GOType::Point)
         {
             auto *item = qobject_cast<VSimplePoint *>(i.value());
@@ -817,6 +851,11 @@ void VAbstractOperation::FullUpdateFromFile()
             item->RefreshGeometry(VAbstractTool::data.GeometricObject<VAbstractCurve>(i.key()));
         }
     }
+
+    // The copies may have moved, and the curves they were made of may have been cut or given back whole since the
+    // last parse: their pieces are built again from what the file says now.
+    RefreshCopyPieces();
+
     SetVisualization();
 }
 
@@ -1085,7 +1124,8 @@ VAbstractOperation::VAbstractOperation(const VAbstractOperationInitData &initDat
     QGraphicsLineItem(parent),
     m_source(initData.source),
     m_destination(initData.destination),
-    m_lines(initData.lines)
+    m_lines(initData.lines),
+    m_patternData(initData.data)
 {
     connect(initData.doc,
             &VAbstractPattern::UpdateToolTip,
@@ -1119,6 +1159,91 @@ void VAbstractOperation::AddToFile()
     QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
     SaveOptions(domElement, obj);
     AddToCalculation(domElement);
+
+    // An operation created from its dialog is written only now: the copies it just made can inherit their pieces
+    // from this moment on, and the user can pick them at once.
+    RefreshCopyPieces();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::RebuildDerivedObjects()
+{
+    // The pieces of the copies are objects this tool creates beside itself: a container restored from another tool's
+    // copy has lost them, and the file still names their ids.
+    RefreshCopyPieces();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::RefreshCopyPieces()
+{
+    if (m_patternData == nullptr)
+    {
+        m_patternData = getData();
+    }
+
+    const OCopyPieces::Pieces built = OCopyPieces::Build(doc, m_patternData, m_id);
+
+    // Nothing was cut and nothing is: most operations — the ones that copy points, or curves nobody cut — have nothing
+    // to draw again here.
+    if (built.pieces.isEmpty() && m_pieceOwner.isEmpty() && m_piecedCopies.isEmpty())
+    {
+        return;
+    }
+
+    // This tool's copy of the container has to hold what was just built: the items read their shape from it, and the
+    // pattern rebuilds the live container from it after a parse.
+    VDataTool::setData(m_patternData);
+
+    // The items are rebuilt from the answer every time; only the container objects outlive a parse.
+    for (auto it = m_pieceOwner.cbegin(); it != m_pieceOwner.cend(); ++it)
+    {
+        if (VAbstractSimple *item = operatedObjects.take(it.key()); item != nullptr)
+        {
+            if (auto *graphicsItem = dynamic_cast<QGraphicsItem *>(item); graphicsItem != nullptr)
+            {
+                graphicsItem->setParentItem(nullptr);
+                if (graphicsItem->scene() != nullptr)
+                {
+                    graphicsItem->scene()->removeItem(graphicsItem);
+                }
+            }
+            item->deleteLater();
+        }
+    }
+
+    m_pieceOwner.clear();
+    m_pieceShown.clear();
+    m_piecedCopies = built.replacedCopies;
+
+    for (const OCopyPieces::Piece &piece : built.pieces)
+    {
+        if (operatedObjects.contains(piece.id) || not VAbstractTool::data.HasObject(piece.id))
+        {
+            continue;
+        }
+
+        InitOperatedObject(piece.id);
+        m_pieceOwner.insert(piece.id, piece.copyId);
+        m_pieceShown.insert(piece.id, piece.shown);
+
+        // The piece answers the hover and the selection the application asks of curves right now, as its copy does:
+        // a piece built after the tool picking objects started would otherwise be one the user cannot aim at.
+        auto *pieceItem = dynamic_cast<QGraphicsItem *>(operatedObjects.value(piece.id));
+        auto *copyItem = OperatedItem(piece.copyId);
+        if (pieceItem != nullptr && copyItem != nullptr)
+        {
+            pieceItem->setAcceptHoverEvents(copyItem->acceptHoverEvents());
+            pieceItem->setFlag(QGraphicsItem::ItemIsSelectable, copyItem->flags() & QGraphicsItem::ItemIsSelectable);
+        }
+    }
+
+    for (const auto &object : std::as_const(m_destination))
+    {
+        if (object.id != NULL_ID)
+        {
+            ApplyObjectVisibility(object.id); // the copy, then its pieces
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1206,6 +1331,9 @@ void VAbstractOperation::CreateDestinationLines(const VAbstractOperationInitData
                                                const QVector<quint32> &fixedPoints,
                                                const QHash<quint32, quint32> &referencedPoints)
 {
+    // The tail every operation calls once its copies exist: their pieces are built here too, lines or not.
+    CreateDestinationPieces(initData);
+
     if (initData.lines.isEmpty())
     {
         return;
@@ -1217,6 +1345,14 @@ void VAbstractOperation::CreateDestinationLines(const VAbstractOperationInitData
     // it on the others, the same two cases a normal line goes through (see VToolLine::Create).
     OOperationLines::CreateLines(initData.doc, initData.data, initData.scene, initData.lines, initData.source,
                                  initData.destination, fixedPoints, initData.parse, referencedPoints);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::CreateDestinationPieces(const VAbstractOperationInitData &initData)
+{
+    // On every parse, the moment the copies exist: a tool further down the file can be built on a piece of a copy —
+    // a pleat on the half of an armhole a dart closing has turned — and reads it while the file is being read.
+    OCopyPieces::Build(initData.doc, initData.data, initData.id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1385,6 +1521,24 @@ void VAbstractOperation::SaveSourceDestination(QDomElement &tag,
                                                const QVector<SourceItem> &source,
                                                const QVector<DestinationItem> &destination)
 {
+    // The pieces each copy inherits are written on its destination item, beside its label (OCopyPieces). They are not
+    // a decision of this save: the destination list below is written again from scratch, so they are read first and
+    // given back to the item of the same copy. Lost here, every piece would come back under a new id on the next
+    // parse, and every object built on one would lose it.
+    QHash<quint32, QString> pieceIds;
+    {
+        const QDomElement oldDestination = tag.firstChildElement(TagDestination);
+        for (QDomElement item = oldDestination.firstChildElement(TagItem); not item.isNull();
+             item = item.nextSiblingElement(TagItem))
+        {
+            if (item.hasAttribute(OCopyPieces::AttrPieceIds))
+            {
+                pieceIds.insert(VDomDocument::GetParametrUInt(item, AttrIdObject, NULL_ID_STR),
+                                item.attribute(OCopyPieces::AttrPieceIds));
+            }
+        }
+    }
+
     VAbstractPattern::RemoveAllChildren(tag);
 
     QDomElement tagObjects = doc->createElement(TagSource);
@@ -1453,6 +1607,11 @@ void VAbstractOperation::SaveSourceDestination(QDomElement &tag,
                                           AttrShowLabel,
                                           dItem.showLabel,
                                           [](bool showLabel) noexcept -> bool { return not showLabel; });
+
+        if (const QString pieces = pieceIds.value(dItem.id); not pieces.isEmpty())
+        {
+            doc->SetAttribute(item, OCopyPieces::AttrPieceIds, pieces);
+        }
 
         tagObjects.appendChild(item);
     }
@@ -1643,6 +1802,9 @@ void VAbstractOperation::InitOperatedObjects()
     {
         InitOperatedLine(id);
     }
+
+    // And the pieces the copies inherit from the curves they were made of.
+    RefreshCopyPieces();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1735,6 +1897,13 @@ auto VAbstractOperation::ComplexPointToolTip(quint32 itemId) const -> QString
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractOperation::ComplexCurveToolTip(quint32 itemId) const -> QString
 {
+    // A piece is rebuilt on every parse: between two of them, the tooltip may be asked about one this tool's copy of
+    // the container does not hold yet — the operation's own text is the whole answer then.
+    if (not VAbstractTool::data.HasObject(itemId))
+    {
+        return OToolTip::Table({MakeToolTip()});
+    }
+
     const QSharedPointer<VAbstractCurve> curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(itemId);
 
     // The result curve's name is the alias the user gave it — nothing when they gave none — then the curve's

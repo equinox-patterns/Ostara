@@ -421,7 +421,7 @@ void VPattern::ParseToolSplinePath(VMainGraphicsScene *scene, const QDomElement 
         // The nodes this path is cut on, and the alias of each run they make: a path cut once reads back cut,
         // with the names the user gave — this is the only place the two survive a close.
         initData.cutNodes = OSplinePathPortions::DecodeNodes(GetParametrEmptyString(domElement, AttrCutNodes));
-        initData.portionIds = OSplinePathPortions::DecodeIds(GetParametrEmptyString(domElement, AttrPortionIds));
+        initData.portionIds = OSplinePathPortions::DecodePieces(GetParametrEmptyString(domElement, AttrPortionIds));
 
         const QDomNodeList nodeList = domElement.childNodes();
         QDOM_LOOP(nodeList, i)

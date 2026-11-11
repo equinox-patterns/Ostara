@@ -104,6 +104,11 @@ public:
      */
     void SetSegmentAtCarrure(bool segment);
 
+    /// The node the curve is cut on when it is shown as its two pieces: the joint of its two cubic segments, counted
+    /// as the nodes of a path are (0 the armhole, 1 the chest/back width, 2 the shoulder). The copies an operation
+    /// makes of the curve are cut on the same node (see OCopyPieces).
+    static constexpr int CarrureNode = 1;
+
     void ShowVisualization(bool show) override;
     void AllowHover(bool enabled) override;
     void AllowSelecting(bool enabled) override;
