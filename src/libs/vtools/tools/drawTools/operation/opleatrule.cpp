@@ -675,6 +675,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 {
                     mark.point = curved.point;
                     mark.edgeId = curved.edgeId;
+                    mark.inward = curved.inward;
                     mark.length = curved.length;
                     mark.fromStart = curved.fromStart;
                     mark.place = secondSense ? rank + 1 : rank;

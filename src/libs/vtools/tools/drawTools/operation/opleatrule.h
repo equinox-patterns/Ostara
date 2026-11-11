@@ -196,6 +196,16 @@ struct OPleatMark
     /** @brief The curve the edge was read on, or NULL_ID when a line carries it. */
     quint32 edgeId{NULL_ID};
 
+    /** @brief The way the edge was read on it: the direction, from the point of the departure line, that chose
+     *  **which piece** of a path carries the edge.
+     *
+     *  A path of cubic beziers answers with the same tangent at its node as the two pieces it was cut into, so the
+     *  direction is the only thing that says which piece the cap was measured on — and the figure has to cut that
+     *  very piece. Without it, `OPleatCapRule::Sides` asked the path again with no direction at all and took the
+     *  piece it met first: the cap of one sense was then drawn for the other, and the length the plan had measured
+     *  fell on a piece it did not belong to. */
+    QPointF inward{};
+
     /** @brief Where the apex falls on that curve, measured from its start the way the cut tools measure. */
     qreal length{0.};
 

@@ -365,6 +365,9 @@ auto OPleatCapRule::Curved(const OPleatEnd &end, const QPointF &side, const QLin
         placement.edgeId = carrier.objectId;
         placement.length = length;
         placement.fromStart = fromStart;
+        // The way the edge was read travels with the apex: the figure cuts the sides on the piece this direction
+        // chose, and never on the one a path met first (see OPleatMark::inward).
+        placement.inward = carrier.inward;
     }
     catch (const VException &) // NOLINT(bugprone-empty-catch)
     {
@@ -470,7 +473,7 @@ auto OPleatCapRule::Sides(const OPleatMark &mark, const OPleatEnd &prise, const 
                 return sides;
     }
 
-    const QSharedPointer<VAbstractCurve> curve = EdgeAt(OEdgeCarrier{mark.edgeId, {}}, prise.position, data);
+    const QSharedPointer<VAbstractCurve> curve = EdgeAt(OEdgeCarrier{mark.edgeId, mark.inward}, prise.position, data);
     if (curve.isNull())
     {
                 return sides;

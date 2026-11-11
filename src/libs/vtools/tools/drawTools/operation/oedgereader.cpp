@@ -31,6 +31,7 @@
 #include "opleatrule.h"
 
 #include <algorithm>
+#include <utility>
 
 #include <QLineF>
 #include <QPair>
@@ -743,6 +744,34 @@ auto OEdgeReader::Carrier(quint32 pointId, const QPointF &side, const VContainer
                 }
             }
             candidates = carried;        }
+
+        // **A piece of a path answers for the edge, never the path itself, when the pattern holds the piece.** The
+        // two pieces a path was cut at a node into end at that very node, and each carries the edge the cap and the
+        // notch follow — the whole path does not: its own ends are elsewhere, so a notch read on it has nowhere to
+        // walk (OPleatNotchRule::Place asks for an end), and a cap has to be cut out of it again by a direction the
+        // sense no longer carries, which is how the cap of one sense came to be drawn for the other. Splitting the
+        // curve — `segmentAtCarrure`, and every cut that leaves two pieces beside its point — is exactly what makes
+        // those pieces exist, and this is where they are taken.
+        QVector<OEdgeCarrier> pieces;
+        for (const OEdgeCarrier &candidate : std::as_const(candidates))
+        {
+            if (candidate.objectId == NULL_ID || not data->HasObject(candidate.objectId))
+            {
+                continue; // a line, or an object the pattern no longer holds: the fallback below answers those
+            }
+
+            const QSharedPointer<VAbstractCurve> curve
+                = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(candidate.objectId));
+            if (curve.isNull() || qSharedPointerDynamicCast<VAbstractCubicBezierPath>(curve).isNull())
+            {
+                pieces.append(candidate); // a curve that is not a path is one piece already
+            }
+        }
+
+        if (const OEdgeCarrier chosen = ChosenCarrier(pieces, side); chosen.objectId != NULL_ID)
+        {
+            return chosen;
+        }
 
         if (const OEdgeCarrier chosen = ChosenCarrier(candidates, side); chosen.objectId != NULL_ID)
         {
