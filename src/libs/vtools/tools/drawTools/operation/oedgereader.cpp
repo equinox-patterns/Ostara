@@ -120,10 +120,12 @@ auto AgreedDirection(const QVector<QPointF> &directions) -> QPointF
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The tangent at one of the two ends of a path of cubic beziers: the handle leaving that end.
+/** @brief The tangent at a node of a path of cubic beziers: the handle leaving that node.
  *
- *  The sub-splines of a path are numbered from one — `GetSpline(0)` throws — and the last one carries the end of
- *  the path, not the one before it. */
+ *  The sub-splines of a path are numbered from one — `GetSpline(0)` throws — and every node of the path is the end
+ *  of one sub-spline and the start of the next. The edge that a cap is read on is the piece that ends at that node,
+ *  so a node in the middle of the path answers as well as its two ends: what a point merely passing through a
+ *  *curve* never gives, a point that is a node of a *path* always gives. */
 auto TangentAtPath(const VAbstractCubicBezierPath &path, const QPointF &point) -> QPointF
 {
     const vsizetype count = path.CountSubSpl();
@@ -132,16 +134,18 @@ auto TangentAtPath(const VAbstractCubicBezierPath &path, const QPointF &point) -
         return {};
     }
 
-    const VSpline first = path.GetSpline(1);
-    if (VFuzzyComparePoints(static_cast<QPointF>(first.GetP1()), point))
+    for (vsizetype i = 1; i <= count; ++i)
     {
-        return static_cast<QPointF>(first.GetP2()) - static_cast<QPointF>(first.GetP1());
-    }
+        const VSpline spline = path.GetSpline(i);
+        if (VFuzzyComparePoints(static_cast<QPointF>(spline.GetP1()), point))
+        {
+            return static_cast<QPointF>(spline.GetP2()) - static_cast<QPointF>(spline.GetP1());
+        }
 
-    const VSpline last = path.GetSpline(count);
-    if (VFuzzyComparePoints(static_cast<QPointF>(last.GetP4()), point))
-    {
-        return static_cast<QPointF>(last.GetP4()) - static_cast<QPointF>(last.GetP3());
+        if (VFuzzyComparePoints(static_cast<QPointF>(spline.GetP4()), point))
+        {
+            return static_cast<QPointF>(spline.GetP4()) - static_cast<QPointF>(spline.GetP3());
+        }
     }
 
     return {};

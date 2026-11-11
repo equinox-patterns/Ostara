@@ -36,4 +36,9 @@ void SetMacWindowAppearance(WId /*winId*/, bool /*dark*/)
     // is only compiled on Apple.
 }
 
+void DisableWindowCloseAnimation(WId /*winId*/)
+{
+    // Nothing to do: no window server animates a closing window here.
+}
+
 #endif // !Q_OS_MACOS

@@ -207,8 +207,27 @@ void ODockManager::init(VContainer *pattern, VPattern *doc)
     m_ui->dockWidgetDependencies->hide();
 
     // One tab for Layers and its messages: two docks of height instead of three.
-    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
+    EnsureTabified();
 
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief Puts the warnings under the layers, for the first time only.
+ *
+ *  `tabifyDockWidget` does not merely stack the two docks: it brings the **second** one to the front. Called
+ *  after `restoreState()`, it therefore took the tab the user had chosen and put the warnings back on top on
+ *  every open — the layer dock was selectable, saved, and never seen again. A state that already holds the two
+ *  tabified carries the active tab with it, and it is left alone.
+ */
+void ODockManager::EnsureTabified()
+{
+    if (m_host->tabifiedDockWidgets(m_ui->dockWidgetGroups).contains(m_ui->dockWidgetMessages))
+    {
+        return; // the restored state already stacks them, and its active tab is the user's
+    }
+
+    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
+    m_ui->dockWidgetGroups->raise(); // the layers are the front tab until the user says otherwise
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -319,7 +338,7 @@ void ODockManager::restoreDefaultDockVisibility()
     m_backgroundImagesActive = false;
     m_dependenciesActive = false;
     applyDockPreferences();
-    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
+    EnsureTabified();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -373,7 +392,7 @@ void ODockManager::restoreEditorDockState()
     // so they are applied again here, before anything syncs the flags back from the docks. The default tab —
     // Layers with its warning messages under it — is re-asserted for the same reason: restoreState() lays
     // the docks out again from the captured state, tabs included.
-    m_host->tabifyDockWidget(m_ui->dockWidgetGroups, m_ui->dockWidgetMessages);
+    EnsureTabified();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

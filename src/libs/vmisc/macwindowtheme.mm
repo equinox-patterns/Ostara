@@ -38,6 +38,21 @@ void SetMacWindowAppearance(WId /*winId*/, bool dark)
     }
 }
 
+void DisableWindowCloseAnimation(WId winId)
+{
+    if (winId == 0)
+    {
+        return;
+    }
+
+    // On macOS a WId is the NSView Qt draws into; the window it belongs to carries the animation.
+    NSView *view = reinterpret_cast<NSView *>(winId);
+    if (NSWindow *window = [view window]; window != nil)
+    {
+        window.animationBehavior = NSWindowAnimationBehaviorNone;
+    }
+}
+
 // Les autres plateformes ont leur propre définition, dans macwindowtheme_stub.cpp.
 // Ce fichier-ci n'est compilé que sur Apple : l'Objective-C++ ne se compile pas ailleurs.
 

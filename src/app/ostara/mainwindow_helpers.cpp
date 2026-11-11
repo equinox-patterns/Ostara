@@ -1354,12 +1354,38 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
 
         const QDomElement target = not saved.isNull() ? saved : (not unnamed.isNull() ? unnamed : first);
 
+        // **An active layer that is hidden is a trap**: everything the user creates lands in it and nothing of it
+        // is ever seen — the pattern looks like a canvas that refuses to draw. Hiding a layer is a deliberate
+        // gesture and it is kept, but the flag never stays on a closed eye: it goes to the first layer that is
+        // shown, and the hidden one keeps its eye closed. When the piece shows no layer at all, the one the file
+        // named is shown instead, because there has to be somewhere to draw.
+        QDomElement active = target;
+        if (target.attribute(VAbstractPattern::AttrVisible) == falseStr)
+        {
+            QDomElement shown;
+            for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+                 group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+            {
+                if (group.attribute(VAbstractPattern::AttrVisible) != falseStr)
+                {
+                    shown = group;
+                    break;
+                }
+            }
+
+            if (not shown.isNull())
+            {
+                active = shown;
+                changed = true;
+            }
+        }
+
         // Exactly one active layer: the flag is a marker, so it is removed from all the others. This also repairs
         // a hand-edited file carrying it twice.
         for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
              group = group.nextSiblingElement(VAbstractPattern::TagGroup))
         {
-            const bool isTarget = group == target;
+            const bool isTarget = group == active;
             if (isTarget && group.attribute(VAbstractPattern::AttrActive) != trueStr)
             {
                 group.setAttribute(VAbstractPattern::AttrActive, trueStr);
@@ -1372,15 +1398,30 @@ auto NormalizeActiveLayer(VAbstractPattern *doc) -> bool
             }
 
             // The active layer is always shown — otherwise the first object created would land in a hidden layer
-            // and never be seen. Same rule as SetActiveGroup. But ONLY when this pass is the one choosing the
-            // active layer: a file that names its own active layer has its visibility respected as written,
-            // because hiding the active layer is a deliberate gesture and it has to survive a save. Forcing it
-            // here made the eye flip back to visible on every open (measured: a file saved with its active layer
-            // hidden came back shown, while its other hidden layers stayed hidden).
-            if (isTarget && saved.isNull() && group.attribute(VAbstractPattern::AttrVisible) != trueStr)
+            // and never be seen. It only comes into play when the piece shows nothing at all: any shown layer is
+            // preferred above (see above), so a layer the user hid stays hidden and only loses the flag.
+            if (isTarget && group.attribute(VAbstractPattern::AttrVisible) != trueStr)
             {
                 group.setAttribute(VAbstractPattern::AttrVisible, trueStr);
                 changed = true;
+            }
+        }
+
+        // A layer folded inside its group is no layer at all: the dock shows a closed arrow and nothing else. The
+        // group of the layer the user is about to draw on is opened, so that the flag they work with can be seen.
+        const QString parent = active.attribute(VAbstractPattern::AttrLayerGroup);
+        if (not parent.isEmpty())
+        {
+            const QDomElement layerGroups = draw.firstChildElement(VAbstractPattern::TagLayerGroups);
+            for (QDomElement group = layerGroups.firstChildElement(VAbstractPattern::TagLayerGroup);
+                 not group.isNull(); group = group.nextSiblingElement(VAbstractPattern::TagLayerGroup))
+            {
+                if (group.attribute(VDomDocument::AttrId) == parent
+                    && group.attribute(VAbstractPattern::AttrCollapsed) == trueStr)
+                {
+                    group.removeAttribute(VAbstractPattern::AttrCollapsed);
+                    changed = true;
+                }
             }
         }
     }

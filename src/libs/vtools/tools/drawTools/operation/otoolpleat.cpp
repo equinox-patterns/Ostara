@@ -26,6 +26,7 @@
 
 #include "otoolpleat.h"
 
+
 #include <QDomNode>
 #include <QDomNodeList>
 #include <QMap>
@@ -179,7 +180,7 @@ void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
     OPleatDisplay::Create(initData.id, initData.display, plan, initData.departures, initData.source,
                           initData.destination, initData.data);
 
-    if (plan.failure != OPleatFailure::None || not initData.display.show)
+        if (plan.failure != OPleatFailure::None || not initData.display.show)
     {
         return; // no figure to draw: nothing was placed, and no line may be built on a point that is not there
     }
@@ -356,7 +357,8 @@ OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent
     InitOperatedObjects();
     HideNotchHalves(); // the two halves a notch cuts exist for the piece to be built through, and stay unseen
     ToolCreation(initData.typeCreation);
-}
+
+    }
 
 //---------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------
@@ -549,6 +551,16 @@ auto OToolPleat::Create(const QPointer<DialogTool> &dialog, VMainGraphicsScene *
 //---------------------------------------------------------------------------------------------------------------------
 auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
 {
+        // **A lite parse rebuilds nothing of this tool.** Its figure is objects of the pattern whose ids the parse
+    // hands out again: rebuilding them here would take those ids from the tool standing in the scene — which is
+    // not rebuilt, since only a full parse adds a tool — and leave it holding ids that name nothing. The pleat
+    // applied, then saved into its layer, reparses itself: that is the second pass that made the whole drawing
+    // vanish. A lite parse is a change of options elsewhere, and this figure has nothing to say about it.
+    if (initData.parse != Document::FullParse)
+    {
+                return nullptr;
+    }
+
     if (initData.typeCreation == Source::FromGui)
     {
         initData.destination.clear(); // Try to avoid mistake, value must be empty
@@ -634,8 +646,9 @@ auto OToolPleat::Create(OToolPleatInitData &initData) -> OToolPleat *
 
     if (initData.parse == Document::FullParse)
     {
-        return AddToolToScene<OToolPleat>(initData, Tool::Pleat, tr("pleat"),
-                                          [&initData]() { return new OToolPleat(initData); });
+        OToolPleat *const tool = AddToolToScene<OToolPleat>(initData, Tool::Pleat, tr("pleat"),
+                                                            [&initData]() { return new OToolPleat(initData); });
+                return tool;
     }
     return nullptr;
 }
@@ -733,7 +746,10 @@ void OToolPleat::AttachFigureToLayer()
     const quint32 active = doc->GetActiveGroup();
     if (active == NULL_ID)
     {
-        return; // the piece has no layer at all: nothing to draw into yet
+        // The piece has no layer at all: the figure exists in the container and enters none, and nothing else
+        // tells the caller. Written down, because a figure nobody can see is the one question this tool kept
+        // answering with silence.
+                return;
     }
 
     QVector<QPair<quint32, quint32>> objects;
@@ -982,7 +998,10 @@ void OToolPleat::GroupVisibility(quint32 object, bool visible)
     // question this override answers. The base class hides the single image a layer names (see its own comment).
     if (operatedObjects.contains(object))
     {
-        setVisible(visible);
+        // Who hides the figure, and for which of its objects: a layer names one part and the override takes the
+        // whole tool away with it, so one hidden id is enough to blank the drawing. Named here, because nothing
+        // else in the application says which layer did it.
+                setVisible(visible);
     }
 }
 
@@ -1113,13 +1132,15 @@ void OToolPleat::SaveDialog(QDomElement &domElement)
     m_display.foldTypeLine = dialogDisplay.foldTypeLine;
     m_display.foldColor = dialogDisplay.foldColor;
 
-    const QVector<DestinationItem> destination = SyncDestination(source);
+    // The table the figure pairs its ids with is the one this call has just built: keeping the old one made
+    // EnsureIds decide Own/Image on a stale pairing while the file was written with the new one.
+    m_destination = SyncDestination(source);
 
     SyncDisplay(source);
 
     m_lines = OOperationLines::SyncLines(getData(), m_lines, dialogTool->GetLineSources());
 
-    SaveSourceDestination(domElement, source, destination);
+    SaveSourceDestination(domElement, source, m_destination);
 
     AttachFigureToLayer(); // a pleat added, a cap that became oblique: what the figure now holds enters the layer
 

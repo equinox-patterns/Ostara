@@ -26,7 +26,10 @@
 
 #include "ovistoolpleat.h"
 
+
 #include <QSharedPointer>
+
+#include <utility>
 
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vcubicbezier.h"
@@ -135,8 +138,8 @@ void OVisToolPleat::RefreshGeometry()
         return;
     }
 
-    const OPleatPlan plan = OPleatRule::Compose(m_departures, Values(), Source(), GetData(), m_origin);
-    if (plan.failure != OPleatFailure::None)
+    OPleatPlan plan = OPleatRule::Compose(m_departures, Values(), Source(), GetData(), m_origin);
+        if (plan.failure != OPleatFailure::None)
     {
         // A pleat the rule refuses is no pleat: the objects that travel are shown as they are, and only the gesture
         // keeps its dots. The dialog never opens on such a plan, so this is a state the canvas alone can show.
@@ -144,7 +147,7 @@ void OVisToolPleat::RefreshGeometry()
         return;
     }
 
-    m_plan = plan;
+    m_plan = std::move(plan); // the plan is read again below through m_plan, and nothing else holds a copy
 
     const OPleatTransform transform(m_plan);
     CreateTransformedObjects(transform);
@@ -250,13 +253,15 @@ void OVisToolPleat::DrawDeparturePoints()
     // The line being picked: its first point is already a dot of the gesture, its second one is still to come.
     dot(m_firstDots, first++, VColorRole::VisSupportColor2, m_pending, 1.);
 
-    for (int i = first; i < m_firstDots.size(); ++i)
+    // A dot the gesture no longer asks for is taken out of the scene, not only hidden: the pool used to grow with
+    // every line of every refresh, and a preview that lives as long as its window kept them all.
+    while (m_firstDots.size() > first)
     {
-        m_firstDots.at(i)->setVisible(false);
+        delete m_firstDots.takeLast();
     }
-    for (int i = second; i < m_secondDots.size(); ++i)
+    while (m_secondDots.size() > second)
     {
-        m_secondDots.at(i)->setVisible(false);
+        delete m_secondDots.takeLast();
     }
 }
 
@@ -293,9 +298,9 @@ void OVisToolPleat::DrawNotchPoints()
         item->setVisible(true);
     }
 
-    for (int i = index; i < m_notchDots.size(); ++i)
+    while (m_notchDots.size() > index)
     {
-        m_notchDots.at(i)->setVisible(false);
+        delete m_notchDots.takeLast();
     }
 }
 

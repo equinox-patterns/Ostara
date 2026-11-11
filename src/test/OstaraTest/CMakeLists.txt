@@ -2,7 +2,7 @@
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
 # Un exécutable par fichier `tst_*.cpp` : la panne de l'un n'emporte pas les autres.
-set(OSTARA_TESTS tst_incrementtables tst_pieceenvelope tst_vbackgroundpatternimage tst_vpatternconverter tst_expressionwalkers tst_oomtconverter tst_linerolenames tst_foldermove tst_folderpathsignal tst_dialogfit tst_dialoginventory tst_rollpages)
+set(OSTARA_TESTS tst_incrementtables tst_pieceenvelope tst_vbackgroundpatternimage tst_vpatternconverter tst_expressionwalkers tst_oomtconverter tst_linerolenames tst_foldermove tst_folderpathsignal tst_dialogfit tst_dialoginventory tst_rollpages tst_pleat)
 
 # Les sources de l'application qu'un essai emporte avec lui. `OPieceDocument` n'est pas dans une bibliothèque — il
 # est compilé avec l'exécutable — et l'enveloppe d'une pièce ne se vérifie pas sans lui.
@@ -98,7 +98,8 @@ foreach(test IN LISTS OSTARA_TESTS)
         VMiscLib
         VPatternDBLib
         VTextStreamLib
-        VWidgetsLib)
+        VWidgetsLib
+        VToolsLib)
 
     if(TARGET OstaraApp)
         target_link_libraries(${test} PRIVATE OstaraApp)

@@ -126,6 +126,80 @@ auto AtAnEnd(qreal from, qreal full) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/** @brief The curve that carries the edge at a point: a sub-curve of a path when the point is one of its nodes.
+ *
+ *  A path of cubic beziers is one object made of sub-curves, and a point of the pattern that lies on it is the end
+ *  of two of them: the one that arrives and the one that leaves. The edge a cap is read on is one of those pieces,
+ *  never the whole path — the path's own ends are elsewhere, and a cap cut at a point of its middle would carry half
+ *  the outline away with it. A curve that is not a path, or a point that is not one of its nodes, is answered as it
+ *  stands. */
+auto EdgeAt(const OEdgeCarrier &carrier, const QPointF &position, const VContainer *data)
+    -> QSharedPointer<VAbstractCurve>
+{
+    if (carrier.objectId == NULL_ID || data == nullptr || not data->HasObject(carrier.objectId))
+    {
+        return {};
+    }
+
+    const QSharedPointer<VAbstractCurve> curve
+        = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carrier.objectId));
+    if (curve.isNull())
+    {
+        return {};
+    }
+
+    if (const auto path = qSharedPointerDynamicCast<VAbstractCubicBezierPath>(curve); not path.isNull())
+    {
+        // A node of a path is the end of one sub-curve and the start of the next, and the two go opposite ways:
+        // which of them carries the edge is what the side says, and nothing else. Taking the first one met was
+        // taking the edge of the other end — the cap then closed on the wrong side and the notch walked off it.
+        QSharedPointer<VAbstractCurve> chosen;
+        QSharedPointer<VAbstractCurve> fallback;
+        qreal best = 0.;
+
+        const auto dot = [&carrier](const QPointF &one, const QPointF &other) -> qreal
+        { return one.x() * other.x() + one.y() * other.y(); };
+
+        const vsizetype count = path->CountSubSpl();
+        for (vsizetype i = 1; i <= count; ++i)
+        {
+            const VSpline spline = path->GetSpline(i);
+
+            QPointF tangent;
+            if (VFuzzyComparePoints(static_cast<QPointF>(spline.GetP1()), position))
+            {
+                tangent = static_cast<QPointF>(spline.GetP2()) - static_cast<QPointF>(spline.GetP1());
+            }
+            else if (VFuzzyComparePoints(static_cast<QPointF>(spline.GetP4()), position))
+            {
+                tangent = static_cast<QPointF>(spline.GetP4()) - static_cast<QPointF>(spline.GetP3());
+            }
+            else
+            {
+                continue;
+            }
+
+            const auto candidate = QSharedPointer<VAbstractCurve>(new VSpline(spline));
+            if (fallback.isNull())
+            {
+                fallback = candidate;
+            }
+
+            const qreal along = dot(tangent, carrier.inward);
+            if (chosen.isNull() || along > best)
+            {
+                best = along;
+                chosen = candidate;
+            }
+        }
+
+        return chosen.isNull() ? fallback : chosen;
+    }
+
+    return curve;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /** @brief One curve of the figure, moved by a plain offset.
  *
  *  Every kind of curve knows how to be moved, and none of them answers through the base class: this is only the
@@ -242,7 +316,7 @@ auto OPleatCapRule::Curved(const OPleatEnd &end, const QPointF &side, const QLin
     const OEdgeCarrier carrier = OEdgeReader::Carrier(end.pointId, side, data);
     if (carrier.objectId != NULL_ID && data->HasObject(carrier.objectId))
     {
-        curve = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carrier.objectId));
+        curve = EdgeAt(carrier, end.position, data);
         if (not StandsOn(curve, end.position, &from, &fullLength) || not AtAnEnd(from, fullLength))
         {
             // The object the point was drawn from, and not the edge of that end: a cut leaves it beside its own
@@ -254,10 +328,10 @@ auto OPleatCapRule::Curved(const OPleatEnd &end, const QPointF &side, const QLin
 
     if (curve.isNull() || from < 0.)
     {
-        return placement; // a line carries the edge: the two straight tracings are exact there, and they stay
+                return placement; // a line carries the edge: the two straight tracings are exact there, and they stay
     }
 
-    const bool fromStart = from <= fullLength / 2.;
+        const bool fromStart = from <= fullLength / 2.;
 
     try
     {
@@ -284,10 +358,10 @@ auto OPleatCapRule::Curved(const OPleatEnd &end, const QPointF &side, const QLin
         {
             // The edge never meets the fold line on this curve: the two never cross before the curve runs out, and
             // the straight tracing stays — the same answer the figure gave before the edge was read as a shape.
-            return placement;
+                        return placement;
         }
 
-        placement.point = crossing + offset; // the apex, carried to the place the cap belongs to
+                placement.point = crossing + offset; // the apex, carried to the place the cap belongs to
         placement.edgeId = carrier.objectId;
         placement.length = length;
         placement.fromStart = fromStart;
@@ -319,8 +393,7 @@ auto OPleatCapRule::Portion(const OPleatEnd &end, const QPointF &side, const QLi
         return sides; // no curve carries the edge: the two straight tracings are exact, and they stay
     }
 
-    const QSharedPointer<VAbstractCurve> curve
-        = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(carrier.objectId));
+    const QSharedPointer<VAbstractCurve> curve = EdgeAt(carrier, end.position, data);
     qreal from = -1.;
     qreal fullLength = 0.;
     if (curve.isNull() || not StandsOn(curve, end.position, &from, &fullLength))
@@ -340,7 +413,11 @@ auto OPleatCapRule::Portion(const OPleatEnd &end, const QPointF &side, const QLi
             return sides; // the edge is shorter than the value: there is no portion to take
         }
 
-        const OPleatNotchHalves halves = OPleatNotchRule::Cut(curve, cut, QString(), {}, {});
+        // The name is what lets the cut name the point the two halves share; an empty one made Cut answer nothing,
+        // so the portion was never built and the cap of a pleat laid on the middle of a piece never existed. It
+        // names a junction no element of the pattern carries: the halves are curves, and the point dies with them.
+        const OPleatNotchHalves halves
+            = OPleatNotchRule::Cut(curve, cut, QStringLiteral("pleatPortion"), {}, {});
         const QSharedPointer<VAbstractCurve> portion = fromStart ? halves.first : halves.second;
         if (portion.isNull())
         {
@@ -390,14 +467,13 @@ auto OPleatCapRule::Sides(const OPleatMark &mark, const OPleatEnd &prise, const 
 
     if (mark.edgeId == NULL_ID || apexName.isEmpty() || data == nullptr || not data->HasObject(mark.edgeId))
     {
-        return sides;
+                return sides;
     }
 
-    const QSharedPointer<VAbstractCurve> curve
-        = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(mark.edgeId));
+    const QSharedPointer<VAbstractCurve> curve = EdgeAt(OEdgeCarrier{mark.edgeId, {}}, prise.position, data);
     if (curve.isNull())
     {
-        return sides;
+                return sides;
     }
 
     // The edge is cut where the apex stands, and the half that runs from the point of the departure line to it is
@@ -406,7 +482,7 @@ auto OPleatCapRule::Sides(const OPleatMark &mark, const OPleatEnd &prise, const 
     const QSharedPointer<VAbstractCurve> piece = mark.fromStart ? halves.first : halves.second;
     if (piece.isNull())
     {
-        return sides;
+                return sides;
     }
 
     // The edge is read where the pattern drew it, and a pleat only translates: what carries the piece to the place

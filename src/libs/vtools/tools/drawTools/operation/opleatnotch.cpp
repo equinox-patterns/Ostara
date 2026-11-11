@@ -86,12 +86,15 @@ auto EndsOf(const QSharedPointer<VAbstractCurve> &curve, QPointF *start, QPointF
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/** @brief The point of a curve at a length measured from its start, or the origin when its kind carries none.
+/** @brief The point of a curve at a length measured from its start, and whether the geometry answered one.
  *
  *  A cut is asked of the geometry itself, exactly as the cut tools ask it, and only its point is kept here: the
- *  halves are the business of Cut. */
-auto PointAtLength(const QSharedPointer<VAbstractCurve> &curve, qreal length) -> QPointF
+ *  halves are the business of Cut. The answer is a flag and not a position: a point at the origin of the pattern is
+ *  a point like any other, and it must not be read as a refusal. */
+auto PointAtLength(const QSharedPointer<VAbstractCurve> &curve, qreal length, QPointF *point) -> bool
 {
+    Q_ASSERT(point != nullptr);
+
     try
     {
         if (const auto bezier = qSharedPointerDynamicCast<VAbstractCubicBezier>(curve); not bezier.isNull())
@@ -100,7 +103,8 @@ auto PointAtLength(const QSharedPointer<VAbstractCurve> &curve, qreal length) ->
             QPointF firstP3;
             QPointF secondP2;
             QPointF secondP3;
-            return bezier->CutSpline(length, firstP2, firstP3, secondP2, secondP3);
+            *point = bezier->CutSpline(length, firstP2, firstP3, secondP2, secondP3);
+            return true;
         }
 
         if (const auto path = qSharedPointerDynamicCast<VAbstractCubicBezierPath>(curve); not path.isNull())
@@ -111,12 +115,14 @@ auto PointAtLength(const QSharedPointer<VAbstractCurve> &curve, qreal length) ->
             QPointF firstP3;
             QPointF secondP2;
             QPointF secondP3;
-            return path->CutSplinePath(length, first, second, firstP2, firstP3, secondP2, secondP3, QString());
+            *point = path->CutSplinePath(length, first, second, firstP2, firstP3, secondP2, secondP3, QString());
+            return true;
         }
 
         if (const auto arc = qSharedPointerDynamicCast<VAbstractArc>(curve); not arc.isNull())
         {
-            return arc->CutArc(length, QString());
+            *point = arc->CutArc(length, QString());
+            return true;
         }
     }
     catch (const VException &) // NOLINT(bugprone-empty-catch)
@@ -125,7 +131,7 @@ auto PointAtLength(const QSharedPointer<VAbstractCurve> &curve, qreal length) ->
         // marking a place that does not exist.
     }
 
-    return {};
+    return false;
 }
 } // namespace
 
@@ -168,7 +174,11 @@ auto OPleatNotchRule::Place(const QSharedPointer<VAbstractCurve> &curve, const Q
         }
 
         placement.length = atStart ? value : fullLength - value;
-        placement.point = PointAtLength(curve, placement.length);
+        if (not PointAtLength(curve, placement.length, &placement.point))
+        {
+            placement.length = -1.; // the geometry refused this cut: there is no place to mark
+            return placement;
+        }
     }
     catch (const VException &) // NOLINT(bugprone-empty-catch)
     {
@@ -192,8 +202,10 @@ auto OPleatNotchRule::Cut(const QSharedPointer<VAbstractCurve> &curve, qreal len
         return halves;
     }
 
-    const QPointF cut = PointAtLength(curve, length);
-    if (cut.isNull())
+    // The point is read by the geometry, and its success is what says a cut exists: a point at the origin of the
+    // pattern is a point like any other, and it used to be read as "no cut at all".
+    QPointF cut;
+    if (not PointAtLength(curve, length, &cut))
     {
         return halves;
     }

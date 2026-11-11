@@ -155,6 +155,7 @@ public:
     void setExportModeDockState(const QByteArray &state);
 
 private:
+    void EnsureTabified();
     void installTitleBar(QDockWidget *dock);
     void buildOptionsDock();
     void buildGroupsDock();

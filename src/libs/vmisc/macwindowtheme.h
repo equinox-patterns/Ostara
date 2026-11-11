@@ -35,4 +35,11 @@ using WId = quintptr;
 /// No-op on non-macOS platforms.
 void SetMacWindowAppearance(WId winId, bool dark);
 
+/// Turns off the closing animation of the window the handle belongs to.
+///
+/// The window server plays it from a snapshot of the window, taken after the content has stopped being
+/// drawn: on a window the size of a pattern editor, that snapshot is resampled and reads as a blurred
+/// fade. No animation, no snapshot, and the window is simply gone. No-op on non-macOS platforms.
+void DisableWindowCloseAnimation(WId winId);
+
 #endif // MACWINDOWTHEME_H

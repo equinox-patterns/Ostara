@@ -34,6 +34,7 @@
 
 #include <QHash>
 #include "core/vapplication.h"
+#include "macwindowtheme.h"
 #include "mainwindow.h"
 #include "widgets/InfoBlock/OInfoBlockResolver.h"
 #include "widgets/InfoBlock/OPieceCartoucheStorage.h"
@@ -223,6 +224,11 @@ auto main(int argc, char *argv[]) -> int
 
         mw->show();
 
+        // The main window closes without the window server's snapshot animation: that animation is played from an
+        // image of the window taken after it stopped drawing, and on this application it reads as a blurred fade
+        // (see macwindowtheme.h). Done once, on the window that carries the editor.
+        DisableWindowCloseAnimation(mw->winId());
+
         // Process command-line args (crash restore, file opens)
         QTimer::singleShot(0, mw, &MainWindow::ProcessCMD);
     }
@@ -235,6 +241,7 @@ auto main(int argc, char *argv[]) -> int
     }
 
     const int returnCode = VApplication::exec();
+
 
     if (not VApplication::IsGUIMode())
     {

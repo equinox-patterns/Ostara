@@ -122,7 +122,8 @@ enum class OPleatFailure : int
     UnresolvedEdge,  ///< an end has a cap but no edge to follow: the user has to designate one
     EdgeAlongFold,   ///< an edge runs along the fold line: it never meets it, so no cap can be built there
     NotchOffEdge,    ///< a notch falls past the end of the edge it should mark: the edge is shorter than the value
-    SplitDeparture   ///< two departure lines share a point: the folds do not carry that line together, so its cap has no axis
+    SplitDeparture,  ///< two departure lines share a point: the folds do not carry that line together, so its cap has no axis
+    EmptyRegion      ///< a point of a departure line is not part of the selected contour: the pleat would take nothing
 };
 
 /** @brief What a refusal means, in the words the user reads.

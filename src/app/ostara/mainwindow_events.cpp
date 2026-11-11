@@ -30,6 +30,9 @@
  *************************************************************************/
 
 #include "mainwindow.h"
+
+#include <QDateTime>
+#include <QFile>
 #include "ui_mainwindow.h"
 #include "mainwindow_helpers.h"
 #include "mainwindow_graded_helpers.h"
@@ -202,6 +205,7 @@ void MainWindow::changeEvent(QEvent *event)
  * @brief closeEvent handle after close window.
  * @param event close event.
  */
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     qCDebug(vMainWindow, "Closing main window");
@@ -223,7 +227,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if (MaybeSave())
     {
+        // **The window leaves before the teardown.** Closing the main window destroys everything it shows — the
+        // scene and its tools, the docks, the tab bars — and doing that while the window is still on screen let
+        // every one of them be repainted away one after another: the drawing seemed to fade out. Hidden first,
+        // the teardown is what it is, an internal matter, and the window disappears in one gesture.
+        hide();
+
         FileClosedCorrect();
+
 
         event->accept();
         QApplication::closeAllWindows();

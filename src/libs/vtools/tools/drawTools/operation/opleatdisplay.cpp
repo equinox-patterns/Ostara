@@ -760,7 +760,7 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
     // line carries keeps its two straight tracings, which the operation builds with the rest of its lines.
     for (int i = 0; i < display.marks.size() && i < plan.marks.size(); ++i)
     {
-        const OPleatMarkDisplay &mark = display.marks.at(i);
+        OPleatMarkDisplay &mark = display.marks[i];
         const OPleatMark &resolved = plan.marks.at(i);
         if (mark.curve1 == NULL_ID || mark.curve2 == NULL_ID || resolved.edgeId == NULL_ID)
         {
@@ -792,7 +792,11 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
                                    mark.name, data);
         if (sides.edge.isNull() || sides.image.isNull())
         {
-            continue; // the edge is gone, or of a kind no cut can split: there is no side to place
+            // No side to place: the ids EnsureIds handed out name nothing from here on, and the file, the layer and
+            // the parse decision must not keep them. A phantom id is an object the pattern believes it has.
+            mark.curve1 = NULL_ID;
+            mark.curve2 = NULL_ID;
+            continue;
         }
 
         // Each side is named after the points it joins, as the halves of a notch are — the point of the place it
@@ -821,8 +825,16 @@ void OPleatDisplay::Create(quint32 idTool, OPleatDisplay &display, const OPleatP
 
         data->UpdateGObject(mark.curve1, sides.edge);
         data->UpdateGObject(mark.curve2, sides.image);
-        RegisterCurve(data, sides.edge, mark.curve1);
-        RegisterCurve(data, sides.image, mark.curve2);
+        // The curve the container holds is the one the variables must be hung on: UpdateGObject copies, and the
+        // handle written here is a temporary the parse frees as soon as this loop ends (see OOperationDestination).
+        for (const quint32 id : {mark.curve1, mark.curve2})
+        {
+            if (const QSharedPointer<VAbstractCurve> kept
+                = qSharedPointerDynamicCast<VAbstractCurve>(data->GetGObject(id)); not kept.isNull())
+            {
+                RegisterCurve(data, kept, id);
+            }
+        }
     }
 
     // The notches: the mark itself, and, where a curve carries the edge, the two halves that curve is cut into.
