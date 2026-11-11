@@ -54,6 +54,7 @@
 template <class T> class QSharedPointer;
 class QDomElement;
 class QGraphicsSceneContextMenuEvent;
+class VContainer;
 class VFormula;
 
 struct OToolPleatInitData : VAbstractOperationInitData
@@ -168,12 +169,16 @@ public:
     auto KeptInPlace() const -> QSet<quint32> override;
 
 public slots:
-    /** @brief Give the figure the items of the objects the parse has just created, and take away those of the
-     *  objects it no longer holds.
+    /** @brief Put the copies and the figure back where the points they are read from now stand, then give the
+     *  figure the items of the objects the parse holds and take away those of the objects it no longer holds.
      *
-     *  A lite parse creates the objects of the figure in the container and never removes one — only a full parse
-     *  empties it — so the scene follows the *figure*, never what the container happens to hold: what the file no
-     *  longer names loses its item, and what it names gains one. */
+     *  Only a full parse builds this tool and the objects of its figure; a lite one — the parse every move of a
+     *  point asks for — leaves them with the ids the file gave, and with the places the last full parse computed.
+     *  A point the pleat is taken on moves, and the pleat does not follow it: the refresh below is what makes it
+     *  follow, and it may only reposition what the file has already named (see RefreshDerivedGeometry).
+     *
+     *  The scene then follows the *figure*, never what the container happens to hold: what the file no longer
+     *  names loses its item, and what it names gains one. */
     void FullUpdateFromFile() override;
 
 protected slots:
@@ -217,6 +222,24 @@ private:
     bool m_foldLine{true};
     OPleatOrigin m_origin{OPleatOrigin::FirstArm};
     OPleatDisplay m_display{};
+
+    /** @brief The container of the pattern — not the copy a tool keeps for itself.
+     *
+     *  The copies and the figure are objects the operation derives, and a tool's own copy detaches on its first
+     *  write: written there, they would be drawn, `HasObject` would answer for them, and the rest of the pattern
+     *  would ignore them (the same defect the portions of a spline path paid for). Kept from the creation, exactly
+     *  as VToolSplinePath keeps it for the pieces of a cut curve. */
+    VContainer *m_patternData{nullptr};
+
+    /** @brief Recompute the copies and the figure on the points they are read from, under the ids they already
+     *  carry, without handing out an id nor taking one away.
+     *
+     *  EnsureIds is asked first on a copy of the figure: it gives an id to every entry that has none and drops the
+     *  ones the plan no longer describes, so a figure it would re-letter is left exactly as it is — only a full
+     *  parse may rebuild it.
+     *
+     *  @return true when the container was written, false when the figure was left untouched. */
+    auto RefreshDerivedGeometry() -> bool;
 
     /** @brief The two points of the departure line of the first pleat: the fold the whole operation is taken on, and
      *  the pair a layer must leave where they are (see the override of KeptInPlace).

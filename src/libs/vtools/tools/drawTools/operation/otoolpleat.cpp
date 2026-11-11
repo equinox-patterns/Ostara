@@ -50,6 +50,7 @@
 #include "../vpatterndb/vcontainer.h"
 #include "../vpatterndb/vformula.h"
 #include "../vtoolline.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 #include "ooperationdestination.h"
 #include "ooperationlines.h"
 #include "opleatsupport.h"
@@ -173,6 +174,8 @@ auto DepartureOf(const QDomElement &item) -> OPleatDeparture
  *
  *  The points come first: a line is carried by two point ids, and the operation's own copy of a point of a departure
  *  line only exists once the destination has been built. */
+void CreateDisplayLines(OToolPleatInitData &initData, const OPleatPlan &plan, const OPleatDisplay &display);
+
 void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
 {
     OPleatDisplay::EnsureIds(initData.display, initData.departures, initData.foldLine, plan, initData.source,
@@ -180,29 +183,41 @@ void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
     OPleatDisplay::Create(initData.id, initData.display, plan, initData.departures, initData.source,
                           initData.destination, initData.data);
 
-        if (plan.failure != OPleatFailure::None || not initData.display.show)
+    if (plan.failure != OPleatFailure::None || not initData.display.show)
     {
         return; // no figure to draw: nothing was placed, and no line may be built on a point that is not there
     }
 
-    const auto endpoint = [&initData, &plan](int departure, int line, int end) -> quint32
+    CreateDisplayLines(initData, plan, initData.display);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The lines that join the points of the figure: the places of every departure line, the fold line of every
+ *  pleat and the two sides of every cap.
+ *
+ *  Kept apart from the points because the two answer different questions: a figure already in the container is moved
+ *  by placing its points again — under the ids the file gave — while the lines that join them have no element of
+ *  their own and are only ever refreshed here (see OOperationLines::BuildLine). */
+void CreateDisplayLines(OToolPleatInitData &initData, const OPleatPlan &plan, const OPleatDisplay &display)
+{
+    const auto endpoint = [&initData, &plan, &display](int departure, int line, int end) -> quint32
     {
-        return OPleatDisplay::Endpoint(initData.display, plan, initData.departures, departure, line, end,
-                                       initData.source, initData.destination);
+        return OPleatDisplay::Endpoint(display, plan, initData.departures, departure, line, end, initData.source,
+                                       initData.destination);
     };
 
     // The departure line of every pleat, and every place the folds carried it to: the same line, translated by one
     // pleat at a time. The last place of a line is its copy line — where the fabric lands — and the places between
     // the two folds of a double are the line they share.
     OOperationLine line;
-    line.typeLine = initData.display.lineTypeLine;
-    line.lineColor = initData.display.lineColor;
+    line.typeLine = display.lineTypeLine;
+    line.lineColor = display.lineColor;
 
     for (int departure = 0; departure < initData.departures.size(); ++departure)
     {
         for (int place = 0; place < OPleatDisplay::LineCount(initData.departures.at(departure)); ++place)
         {
-            line.result = initData.display.lines.value(OPleatDisplay::LineIndex(initData.departures, departure, place));
+            line.result = display.lines.value(OPleatDisplay::LineIndex(initData.departures, departure, place));
             OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, line, endpoint(departure, place, 0),
                                         endpoint(departure, place, 1), initData.parse);
         }
@@ -211,8 +226,8 @@ void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
     // The fold line of each pleat: what the pleat is pressed along, drawn from one cap to the other, and only where
     // both of them are there to be joined.
     OOperationLine fold;
-    fold.typeLine = initData.display.foldTypeLine;
-    fold.lineColor = initData.display.foldColor;
+    fold.typeLine = display.foldTypeLine;
+    fold.lineColor = display.foldColor;
 
     if (initData.foldLine)
     {
@@ -228,19 +243,19 @@ void CreateDisplayObjects(OToolPleatInitData &initData, const OPleatPlan &plan)
                     continue;
                 }
 
-                fold.result = initData.display.foldLines.value(pleat);
+                fold.result = display.foldLines.value(pleat);
                 OOperationLines::CreateLine(initData.doc, initData.data, initData.scene, fold,
-                                            MarkPoint(initData.display, pleat, 0),
-                                            MarkPoint(initData.display, pleat, 1), initData.parse);
+                                            MarkPoint(display, pleat, 0), MarkPoint(display, pleat, 1),
+                                            initData.parse);
             }
         }
     }
 
     // The two sides of every cap: its apex, the point of the departure line it was taken on, and the same point
     // carried by the move.
-    for (int i = 0; i < initData.display.marks.size() && i < plan.marks.size(); ++i)
+    for (int i = 0; i < display.marks.size() && i < plan.marks.size(); ++i)
     {
-        const OPleatMarkDisplay &mark = initData.display.marks.at(i);
+        const OPleatMarkDisplay &mark = display.marks.at(i);
         const OPleatMark &resolved = plan.marks.at(i);
         const int rank = resolved.pleat - plan.places.value(resolved.departure).firstPleat;
 
@@ -352,7 +367,8 @@ OToolPleat::OToolPleat(const OToolPleatInitData &initData, QGraphicsItem *parent
     m_departures(initData.departures),
     m_foldLine(initData.foldLine),
     m_origin(initData.origin),
-    m_display(initData.display)
+    m_display(initData.display),
+    m_patternData(initData.data)
 {
     InitOperatedObjects();
     HideNotchHalves(); // the two halves a notch cuts exist for the piece to be built through, and stay unseen
@@ -885,9 +901,90 @@ auto OToolPleat::SyncFigureItems() -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto OToolPleat::RefreshDerivedGeometry() -> bool
+{
+    if (m_patternData == nullptr)
+    {
+        m_patternData = getData();
+    }
+
+    if (doc == nullptr || m_patternData == nullptr)
+    {
+        return false;
+    }
+
+    OToolPleatInitData initData;
+    initData.id = m_id;
+    initData.departures = m_departures;
+    initData.foldLine = m_foldLine;
+    initData.origin = m_origin;
+    initData.display = m_display;
+    initData.source = m_source;
+    initData.destination = m_destination;
+    initData.lines = m_lines;
+    initData.doc = doc;
+    initData.data = m_patternData;
+    initData.scene = qobject_cast<VMainGraphicsScene *>(scene());
+    // A lite parse builds nothing: a line is given back the two places it joins, and no tool is added to the scene.
+    initData.parse = Document::LiteParse;
+    initData.typeCreation = Source::FromFile;
+
+    // Where the points of the departure lines are is never read from the file: it is asked of the container again,
+    // and the container is the one thing the move has changed.
+    for (OPleatDeparture &departure : initData.departures)
+    {
+        OPleatSupport::Resolve(departure.first, initData.data);
+        OPleatSupport::Resolve(departure.second, initData.data);
+    }
+
+    const OPleatPlan plan = MakePlan(initData.id, initData.departures, initData.source, initData.data, initData.origin);
+    if (plan.failure != OPleatFailure::None || not initData.display.show)
+    {
+        return false; // nothing is placed: the figure is left exactly as the last full parse drew it
+    }
+
+    // The ids of the figure are the file's, and a refresh moves them, never re-letters them. EnsureIds hands out an
+    // id for every entry that has none and empties the figure the plan no longer describes: its answer is taken only
+    // when it is the very figure the file holds, and the figure then runs as it stands, its ids untouched.
+    OPleatDisplay figure = initData.display;
+    OPleatDisplay probe = initData.display;
+    OPleatDisplay::EnsureIds(probe, initData.departures, initData.foldLine, plan, initData.source, initData.destination,
+                             initData.data);
+    if (SameDisplay(probe, figure))
+    {
+        figure = probe;
+    }
+
+    // The objects that travel, then the figure, then the lines that join its points — every one of them under the id
+    // the file gave it. The figure is drawn on a copy: a cap the rule can no longer build loses its id there, and not
+    // in the tool, which only a full parse may rebuild.
+    const OOperationDestination<OPleatTransform> destination((OPleatTransform(plan)));
+    destination.Update(m_id, initData.source, initData.data, initData.destination);
+
+    OPleatDisplay::Create(m_id, figure, plan, initData.departures, initData.source, initData.destination, initData.data);
+    CreateDisplayLines(initData, plan, figure);
+
+    // The tool keeps a copy of the pattern, and the writes above detached it: given back, or every other reader of
+    // this operation would go on asking a container that no longer holds the places just written.
+    doc->UpdateToolData(m_id, m_patternData);
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void OToolPleat::FullUpdateFromFile()
 {
     VAbstractOperation::FullUpdateFromFile();
+
+    // The copies and the figure are derived objects: the parse gives them their ids, and nothing but a full parse
+    // recomputes them. A point the pleat is taken on moves, the pleat stays where the last full parse drew it — the
+    // defect the figure answered with a frozen drawing. Repositioned here, once every element has been read, because
+    // a pleat may be taken on what another tool derives in this same signal (the portion of a curve, a moved copy):
+    // read during the parse, those places would still be the ones before the move.
+    if (RefreshDerivedGeometry())
+    {
+        // The items were given the places the container held before the refresh: handed the new ones now.
+        VAbstractOperation::FullUpdateFromFile();
+    }
 
     // The figure the parse has made: an object the operation parents itself has no element of its own, so nothing
     // but this call gives it an item — the constructor does it once, on the full parse, and a lite one goes here.
