@@ -24917,6 +24917,14 @@ Voulez-vous continuer ?</translation>
 <context>
     <name>VToolOptionsPropertyBrowser</name>
     <message>
+        <source>Segment the curve</source>
+        <translation>Segmenter la courbe</translation>
+    </message>
+    <message>
+        <source>Segment the curve at the chest/back width point</source>
+        <translation>Segmenter la courbe au niveau du point de carrure</translation>
+    </message>
+    <message>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="705"/>
         <location filename="../../src/app/ostara/core/vtoppb_points.cpp" line="708"/>
         <source>Draw the cap</source>

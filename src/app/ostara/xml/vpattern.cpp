@@ -340,6 +340,43 @@ void VPattern::Parse(const Document &parse)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+/**
+ * @brief The highest id one attribute value mentions.
+ *
+ * A value that is an id answers it directly. A value that is a list of pairs does not: `portionIds` writes
+ * `node=id;node=id`, so it never parses as one number, and the rule that reads every attribute a tool writes
+ * an id into passed it by without a word. The ids of the pieces of a cut curve were then unknown to the
+ * counter: a reparse restarted below them, the next object the parser built took one of them, and the piece
+ * was overwritten — the source an operation named was gone by the time its copy was built. Reading a value as
+ * widely as it can be costs nothing: an id read that is not one only leaves a gap in the numbering.
+ */
+auto MaxIdMentionedIn(const QString &value) -> quint32
+{
+    bool ok = false;
+    quint32 maxId = value.toUInt(&ok);
+
+    if (ok)
+    {
+        return maxId;
+    }
+
+    for (const QString &part : value.split(QLatin1Char(';'), Qt::SkipEmptyParts))
+    {
+        const quint32 id = part.section(QLatin1Char('='), -1).trimmed().toUInt(&ok);
+
+        if (ok)
+        {
+            maxId = qMax(maxId, id);
+        }
+    }
+
+    return maxId;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief The highest id the file mentions without declaring it.
  *
@@ -406,11 +443,15 @@ auto VPattern::MaxMentionedId() const -> quint32
             }
 
             bool ok = false;
-            const quint32 id = attribute.value().toUInt(&ok);
-            if (ok)
+            quint32 id = attribute.value().toUInt(&ok);
+            if (not ok)
             {
-                maxId = qMax(maxId, id);
+                // An attribute whose value is a list rather than an id — `portionIds` writes `node=id;…` —
+                // answers no single number: its ids are read one by one, since the counter has to start
+                // above the objects they name just as much as above the ones written as one number.
+                id = MaxIdMentionedIn(attribute.value());
             }
+            maxId = qMax(maxId, id);
         }
 
         for (QDomElement child = element.firstChildElement(); not child.isNull();
@@ -715,6 +756,20 @@ void VPattern::setCurrentData()
     // Delete special variables if exist
     data->RemoveVariable(currentLength);
     data->RemoveVariable(currentSeamAllowance);
+
+    // The container has just been replaced by a copy one tool took when it was read — before that tool, or any
+    // tool after it, built the objects it derives. Those objects are in the file, they are drawn, and this
+    // container no longer holds them: every lookup by id failed with `ExceptionBadId` — the preview of an
+    // operation skipped the piece it was told to show, and the operation copied nothing. Each tool puts back
+    // what it derived, under the ids the file gave, and the container agrees with the drawing again.
+    for (VDataTool *tool : std::as_const(tools))
+    {
+        if (tool != nullptr)
+        {
+            tool->RebuildDerivedObjects();
+        }
+    }
+
     qCDebug(vXML, "Data successfully updated.");
 }
 

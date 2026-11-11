@@ -31,7 +31,9 @@
 #ifndef OOPERATIONDESTINATION_H
 #define OOPERATIONDESTINATION_H
 
+#include <QFile>
 #include <QPointF>
+#include <QTextStream>
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -122,6 +124,16 @@ public:
      *  the name, the pen style and the colour of its source. */
     auto CreateObject(quint32 idTool, const SourceItem &sItem, VContainer *data) const -> DestinationItem
     {
+        // An id read from the pattern can be gone by the time the copy is built — a source picked before a
+        // reparse, an object a tool rebuilt under another id. GetGObject throws on a missing id and the throw
+        // would leave the operation half built, so the source is reported and skipped instead. The image list is
+        // positional: an empty entry keeps the ranks of the others.
+        if (not data->HasObject(sItem.id))
+        {
+            qCDebug(vTool, "Object %u is gone, its image is skipped", sItem.id);
+            return {};
+        }
+
         const QSharedPointer<VGObject> object = data->GetGObject(sItem.id);
 
         // This check helps to find missed objects in the switch
@@ -164,6 +176,15 @@ public:
     /** @brief Rewrite an existing image in place, keeping the id and the label position the file gave it. */
     void UpdateObject(quint32 idTool, const SourceItem &sItem, VContainer *data, const DestinationItem &item) const
     {
+        // Same rule as CreateObject: a source the container no longer holds is skipped, not fatal. A pattern
+        // written while a piece existed must still open after that piece is gone — the alternative is a file
+        // that cannot be read at all, which is what an unguarded GetGObject here produced.
+        if (not data->HasObject(sItem.id))
+        {
+            qCDebug(vTool, "Object %u is gone, its image is left as it was", sItem.id);
+            return;
+        }
+
         const QSharedPointer<VGObject> object = data->GetGObject(sItem.id);
 
         Q_STATIC_ASSERT_X(static_cast<int>(GOType::Unknown) == 8, "Not all objects were handled.");

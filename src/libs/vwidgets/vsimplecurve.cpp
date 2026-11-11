@@ -170,6 +170,10 @@ auto VSimpleCurve::itemChange(QGraphicsItem::GraphicsItemChange change, const QV
     }
     else if (change == QGraphicsItem::ItemSelectedHasChanged)
     {
+        // A curve picked for an operation was the one mark that never showed: the click reached the dialog —
+        // `Selected` is emitted below — but the curve kept its colour, so nothing on screen said it had been
+        // taken. ScalePenWidth paints the orange of the picked state, so it has to run when the state turns.
+        ScalePenWidth();
         emit Selected(value.toBool(), id);
     }
 
@@ -226,15 +230,17 @@ void VSimpleCurve::SetInLayer(bool inLayer)
 void VSimpleCurve::ScalePenWidth()
 {
     // The layer marks are read here rather than written into the pen, so that dropping them gives back exactly the
-    // width and the colour the curve had before.
-    const bool marked = m_layerSelected || m_inLayer;
+    // width and the colour the curve had before. The picked state is one of them: a curve the operation is going
+    // to act on shows it in the same orange the dock uses, whether it was picked from the dock or from the canvas.
+    const bool picked = isSelected();
+    const bool marked = m_layerSelected || m_inLayer || picked;
 
     qreal width = (m_isHovered || marked) ? VAbstractApplication::VApp()->Settings()->WidthBoldLine()
                                           : VAbstractApplication::VApp()->Settings()->WidthHairLine();
     width = ScaleWidth(width, SceneScale(scene()));
 
     QPen curvePen = pen();
-    if (m_layerSelected)
+    if (m_layerSelected || picked)
     {
         // Selected: orange, the colour that says what Enter will act on.
         curvePen.setColor(VSceneStylesheet::Color(VColorRole::ActivePointColor));

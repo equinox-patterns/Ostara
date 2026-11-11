@@ -231,6 +231,21 @@ auto VGObject::GetAliasSuffix() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The name the user reads: **the alias**, and the technical name only in parentheses.
+ *
+ * Ostara is built on the alias, not on the technical name — do not add a screen that shows @ref Name() alone,
+ * and do not name a new object from its technical half:
+ *
+ *  - the alias is what the pattern shows, what the dialogs suggest and what the user types; a curve read as
+ *    `Curve_dos` is an alias, and the label next to it in parentheses is the technical name;
+ *  - @a VarToUser passes both through @ref VTranslateVars, whose table (@ref SimplifiedName, ifcdef.cpp) is
+ *    where the old technical heads are **deliberately blocked**: `Spl_` and `SplPath_` both read `Curve_`,
+ *    and so do `Angle1Spl_`, `C1LengthSpl_`, `RadiusArc_`… A new object type is a new entry in that table, not
+ *    a new head on screen;
+ *  - a name without an alias is the technical name alone, which is why an object created without one never
+ *    looks like the others.
+ */
 auto VGObject::ObjectName() const -> QString
 {
     const QString alias = VAbstractApplication::VApp()->TrVars()->VarToUser(d->m_alias);

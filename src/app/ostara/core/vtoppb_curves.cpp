@@ -30,6 +30,10 @@
  *************************************************************************/
 
 #include "vtooloptionspropertybrowser.h"
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
 #include <QPushButton>
 #include "oaxisrows.h"
 #include "vtoppb_templates.h"
@@ -511,21 +515,54 @@ struct SplinePathHandle
     void (VSplinePoint::*angleSetter)(const qreal &, const QString &);
 };
 
+
 // A titled, collapsible group (collapsed by default) holding one or two handles, each rendered as
 // "Length:" then "Angle:". Used for the SplinePath point toggles: Start/End hold a single handle,
 // intermediate points hold two (incoming then outgoing), following the curve direction arrows.
 template <typename Tool>
 auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsizetype pointIndex,
-                              const QVector<SplinePathHandle> &handles) -> PropertyDesc
+                              const QVector<SplinePathHandle> &handles, int cutNode = -1) -> PropertyDesc
 {
+    // The box and the name are the first children of the point's own toggle, so they read as part of that point
+    // and not as another row of the dock. The handle rows therefore start after them, and every index below is
+    // taken from `leading` — writing them from zero silently pointed the setter at the box.
+    const int leading = (cutNode >= 0 ? 1 : 0);
+
     return {attrId, title,
-            [title, pointIndex, handles](VToolOptionsPropertyBrowser *browser, void *tool) -> VPE::VProperty * {
+            [title, pointIndex, handles, cutNode, leading](VToolOptionsPropertyBrowser *browser,
+                                                          void *tool) -> VPE::VProperty * {
                 auto *t = static_cast<Tool *>(tool);
                 const VSplinePoint point = t->getSplinePath().at(pointIndex);
 
                 auto *group = new VPE::VProperty(title);
                 group->setCollapsible(true);
                 group->setExpandedByDefault(false);
+
+                // The same box, and the same words, as the one the cut tools carry: it says what the curve is
+                // shown as once the node is cut, not what the box does.
+                //
+                // Wired by hand, like the axis row below: the dock only routes a **top-level** property to its
+                // desc (ChangeToolData looks the id up in its own table), so a child that waits to be routed
+                // through its group is a box that does nothing at all when clicked — which is exactly what it
+                // did.
+                if (cutNode >= 0)
+                {
+                    // The cut tool's words speak of "the two segments" because a cut has two. A curve with
+                    // three points has three segments, and twelve has twelve: here the box says what it does.
+                    const QString boxText = T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser",
+                                                                "Segment the curve"));
+                    auto *box = new QCheckBox(boxText);
+                    box->setChecked(t->IsCutNode(cutNode));
+                    QObject::connect(box, &QCheckBox::toggled, browser,
+                                     [browser, cutNode](bool checked)
+                                     {
+                                         if (auto *path = dynamic_cast<VToolSplinePath *>(browser->currentItem()))
+                                         {
+                                             path->SetCutNode(cutNode, checked);
+                                         }
+                                     });
+                    group->addChild(new VPE::VWidgetProperty(boxText, box));
+                }
 
                 for (int h = 0; h < handles.size(); ++h)
                 {
@@ -553,12 +590,16 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                             T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Axis:")));
                 return group;
             },
-            [pointIndex, handles](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+            [pointIndex, handles, leading](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                 {
                     const auto children = prop->getChildren();
-                    if (children.size() >= handles.size() * 2)
+                    if (children.size() >= leading + handles.size() * 2)
                     {
+                        // The box and the name answer for themselves, through the connections made above:
+                        // they are raw widgets, not properties, so nothing here may read them back — a
+                        // VWidgetProperty's data is not the widget's state, and reading it would cut a node
+                        // off every time a handle was edited.
                         VSplinePath path = t->getSplinePath();
 
                         // VSplinePoint copies alias the same shared data, so snapshot the handle
@@ -577,7 +618,7 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                         for (int h = 0; h < handles.size(); ++h)
                         {
                             const auto lenF =
-                                children[h * 2]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                                children[leading + h * 2]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
                             if (!lenF.error())
                             {
                                 (path[pointIndex].*handles[h].lengthSetter)(
@@ -593,7 +634,7 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                         for (int h = 0; h < handles.size(); ++h)
                         {
                             const auto angF =
-                                children[h * 2 + 1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
+                                children[leading + h * 2 + 1]->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).value<VFormula>();
                             if (angF.error())
                             {
                                 continue;
@@ -625,16 +666,16 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                             angF.setToolId(t->getId());
                             angF.setPostfix(degreeSymbol);
                             angF.Eval();
-                            QVariant va; va.setValue(angF); children[h * 2 + 1]->setValue(va);
+                            QVariant va; va.setValue(angF); children[leading + h * 2 + 1]->setValue(va);
                         }
                     }
                 }
             },
-            [pointIndex, handles](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+            [pointIndex, handles, leading](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
                 if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
                 {
                     const auto children = prop->getChildren();
-                    if (children.size() >= handles.size() * 2)
+                    if (children.size() >= leading + handles.size() * 2)
                     {
                         const VSplinePoint point = t->getSplinePath().at(pointIndex);
                         for (int h = 0; h < handles.size(); ++h)
@@ -643,13 +684,13 @@ auto MakeSplinePathPointGroup(const QString &attrId, const QString &title, vsize
                             lenF.setToolId(t->getId());
                             lenF.setPostfix(UnitsToStr(VAbstractValApplication::VApp()->patternUnits(), true));
                             lenF.Eval();
-                            QVariant v; v.setValue(lenF); children[h * 2]->setValue(v);
+                            QVariant v; v.setValue(lenF); children[leading + h * 2]->setValue(v);
 
                             VFormula angF((point.*handles[h].angleFormulaGetter)(), t->getData());
                             angF.setToolId(t->getId());
                             angF.setPostfix(degreeSymbol);
                             angF.Eval();
-                            QVariant va; va.setValue(angF); children[h * 2 + 1]->setValue(va);
+                            QVariant va; va.setValue(angF); children[leading + h * 2 + 1]->setValue(va);
                         }
 
                         RefreshAxisRows(prop, static_cast<int>(handles.size()) * 2, point.Axis());
@@ -1070,6 +1111,37 @@ auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<OToolArmholeCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &OToolArmholeCurve::GetAliasSuffix, &OToolArmholeCurve::SetAliasSuffix),
+
+        // The curve already carries the joint: its two cubic segments meet exactly at the chest/back width
+        // point. The box does not cut anything, it shows what the geometry is — armhole to chest/back width,
+        // then chest/back width to shoulder.
+        {QStringLiteral("segmentAtCarrure"),
+         T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Segment the curve at the chest/back width point")),
+         [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
+             auto *t = static_cast<OToolArmholeCurve *>(tool);
+             auto *p = new OCheckBoxRowProperty(
+                 T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser",
+                                     "Segment the curve at the chest/back width point")));
+             p->setValue(t->IsSegmentAtCarrure());
+             return p;
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolArmholeCurve *>(b->currentItem()))
+             {
+                 const bool value = prop->data(VPE::VProperty::DPC_Data, Qt::DisplayRole).toBool();
+                 if (value != t->IsSegmentAtCarrure())
+                 {
+                     t->SetSegmentAtCarrure(value);
+                 }
+             }
+         },
+         [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop) {
+             if (auto *t = qgraphicsitem_cast<OToolArmholeCurve *>(b->currentItem()))
+             {
+                 prop->setValue(t->IsSegmentAtCarrure());
+             }
+         }},
+
         MakeCurvePenStyle<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
         MakeLineColor<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
         MakeNotes<OToolArmholeCurve>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
@@ -1122,17 +1194,23 @@ auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDe
     {
         // Intermediate point: incoming handle (1) then outgoing handle (2), following the arrows.
         const QString title = VToolOptionsPropertyBrowser::tr("Point %1").arg(i + 1);
+
+        // The box is the point's own: it sits inside the toggle, above the handles, and the name under it is the
+        // piece that ends here. Both only exist for the point they belong to.
         descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
             QStringLiteral("point%1").arg(i + 1), title, i,
             {{&VSplinePoint::Length1Formula, &VSplinePoint::SetLength1, &VSplinePoint::Angle1,
               &VSplinePoint::Angle1Formula, &VSplinePoint::SetAngle1},
              {&VSplinePoint::Length2Formula, &VSplinePoint::SetLength2, &VSplinePoint::Angle2,
-              &VSplinePoint::Angle2Formula, &VSplinePoint::SetAngle2}}));
+              &VSplinePoint::Angle2Formula, &VSplinePoint::SetAngle2}},
+            static_cast<int>(i)));
     }
 
     if (count >= 2)
     {
-        // End point: only the incoming handle (Angle1/Length1) is used.
+        // End point: only the incoming handle (Angle1/Length1) is used. No box — the end cannot be cut — but the
+        // run that ends here still needs a name as soon as the path is cut anywhere, or the last piece would be
+        // the only one nobody could name.
         descs.push_back(MakeSplinePathPointGroup<VToolSplinePath>(
             QStringLiteral("endPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "End point")), count - 1,
             {{&VSplinePoint::Length1Formula, &VSplinePoint::SetLength1, &VSplinePoint::Angle1,

@@ -726,6 +726,18 @@
                           <xs:attribute name="axis2P1" type="xs:unsignedInt"/>
                           <xs:attribute name="axis2P2" type="xs:unsignedInt"/>
                           <xs:attribute name="axis2Sense" type="axisSenseType"/>
+                          <!-- The interior nodes this path is cut on — `2 3` — and the alias of every run
+                               those cuts make, in the order the runs are, `dos_P2;dos_P3`, an empty alias
+                               keeping its place. Absent on a path nobody cut, and absent from every pattern
+                               written before the boxes existed: nothing had to be converted. -->
+                          <xs:attribute name="cutNodes" type="xs:string"/>
+                          <xs:attribute name="portionIds" type="xs:string"/>
+                          <!-- The armhole curve, shown as the two pieces it is made of at the chest/back
+                               width point: the flag, and the ids the container gave those two pieces. Absent
+                               on a curve shown whole, and absent from every pattern written before. -->
+                          <xs:attribute name="segmentAtCarrure" type="xs:boolean"/>
+                          <xs:attribute name="segment1Id" type="xs:unsignedInt"/>
+                          <xs:attribute name="segment2Id" type="xs:unsignedInt"/>
                         </xs:complexType>
                       </xs:element>
                     </xs:choice>

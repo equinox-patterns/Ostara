@@ -69,7 +69,9 @@
 #include "../vwidgets/../vgeometry/vsplinepath.h"
 #include "../vwidgets/global.h"
 #include "../vwidgets/vcontrolpointspline.h"
+#include "../vwidgets/vsimplecurve.h"
 #include "../vwidgets/vmaingraphicsscene.h"
+#include "osplinepathportions.h"
 #include "vtoolabstractcurve.h"
 
 const QString VToolSplinePath::ToolType = QStringLiteral("pathInteractive");
@@ -92,6 +94,11 @@ VToolSplinePath::VToolSplinePath(const VToolSplinePathInitData &initData, QGraph
     const QSharedPointer<VSplinePath> splPath = initData.data->GeometricObject<VSplinePath>(initData.id);
     InitControlPoints(splPath.data());
     ToolCreation(initData.typeCreation);
+
+    m_patternData = initData.data;
+
+    m_cutNodes = initData.cutNodes;
+    m_portionIds = initData.portionIds;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -240,6 +247,9 @@ auto VToolSplinePath::Create(VToolSplinePathInitData &initData, const QSharedPoi
         initData.scene->addItem(spl);
         InitSplinePathToolConnections(initData.scene, spl);
         VAbstractPattern::AddTool(initData.id, spl);
+        // The runs need the tool's scene, so they are built once it is in one: before that, the items would
+        // exist without being drawn by anything.
+        spl->RebuildPortions();
         return spl;
     }
     return nullptr;
@@ -335,7 +345,18 @@ void VToolSplinePath::EnableToolMove(bool move)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolSplinePath::AllowHover(bool enabled)
 {
+    m_acceptHover = enabled;
     VToolAbstractBezier::AllowHover(enabled);
+
+    // Hover belongs to the hover question and to nothing else: mixing it into AllowSelecting turned it off the
+    // moment a tool started picking objects, and the pieces stopped answering the mouse.
+    for (VSimpleCurve *item : std::as_const(m_portionItems))
+    {
+        if (item != nullptr && not m_cutNodes.isEmpty())
+        {
+            item->setAcceptHoverEvents(enabled);
+        }
+    }
 
     for (auto *point : std::as_const(controlPoints))
     {
@@ -351,6 +372,16 @@ void VToolSplinePath::AllowSelecting(bool enabled)
     for (auto *point : std::as_const(controlPoints))
     {
         point->setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+    }
+
+    // The pieces are objects of the pattern: the tools that pick objects must be able to make them selectable,
+    // exactly as they do for the curve they were taken from.
+    for (VSimpleCurve *item : std::as_const(m_portionItems))
+    {
+        if (item != nullptr)
+        {
+            item->setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+        }
     }
 }
 
@@ -779,6 +810,15 @@ void VToolSplinePath::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &ob
     SCASSERT(splPath.isNull() == false)
 
     SetSplinePathAttributes(tag, *splPath);
+
+    doc->SetAttributeOrRemoveIf<QString>(tag,
+                                         AttrCutNodes,
+                                         OSplinePathPortions::EncodeNodes(m_cutNodes),
+                                         [](const QString &value) noexcept -> bool { return value.isEmpty(); });
+    doc->SetAttributeOrRemoveIf<QString>(tag,
+                                         AttrPortionIds,
+                                         OSplinePathPortions::EncodeIds(m_portionIds),
+                                         [](const QString &value) noexcept -> bool { return value.isEmpty(); });
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1083,5 +1123,367 @@ void VToolSplinePath::CurveReleased()
         newMoveSplinePath.clear();
 
         moved = false;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::FullUpdateFromFile()
+{
+
+    VToolAbstractBezier::FullUpdateFromFile();
+
+    // The runs are copies of this curve: when the curve moves or changes shape, they are stale until rebuilt.
+    // This is the same refresh the cut tools rely on (VToolCut::FullUpdateFromFile -> RefreshGeometry), and a
+    // lite parse — which is what ticking a box does — comes through here.
+    RebuildPortions();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::RebuildDerivedObjects()
+{
+    // The portions are the objects this tool creates beside itself: a container restored from another tool's copy
+    // has lost them, and the file still names their ids.
+    RebuildPortions();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::GroupVisibility(quint32 object, bool visible)
+{
+    VToolAbstractBezier::GroupVisibility(object, visible);
+
+    m_layerVisible = visible;
+
+    // The runs are drawn by items of their own, so the curve's own visibility answers for them too: a run shown
+    // while the layer of its curve is masked is exactly the trap of the seven copies (see m_objectVisible).
+    ApplyPortionVisibility();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSplinePath::IsCutNode(int node) const -> bool
+{
+    return m_cutNodes.contains(node);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::SetCutNode(int node, bool cut)
+{
+    const QSharedPointer<VSplinePath> path = VAbstractTool::data.GeometricObject<VSplinePath>(m_id);
+
+    if (path.isNull() || node <= 0 || node >= path->CountPoints() - 1)
+    {
+        return; // an end separates nothing: the piece before it or after it would be empty
+    }
+
+    if (IsCutNode(node) == cut)
+    {
+        return;
+    }
+
+    if (cut)
+    {
+        m_cutNodes.append(node);
+        std::sort(m_cutNodes.begin(), m_cutNodes.end());
+    }
+    else
+    {
+        m_cutNodes.removeOne(node);
+    }
+
+    // **Built here, now.** Ticking a box is the moment the pieces come into being: their ids are allocated by the
+    // rebuild below and written into the element by the SaveOption that follows, in the same gesture. The refresh
+    // of the lite parse then finds them, instead of inventing ids the file never carried.
+    RebuildPortions();
+
+    QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
+    SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VToolSplinePath::PortionRuns() const -> QVector<QPair<int, int>>
+{
+    QVector<QPair<int, int>> runs;
+
+    if (m_cutNodes.isEmpty())
+    {
+        return runs; // an uncut path is not "one run": it is the curve, and it has no pieces to speak of
+    }
+
+    const QSharedPointer<VSplinePath> path = VAbstractTool::data.GeometricObject<VSplinePath>(m_id);
+
+    if (path.isNull())
+    {
+        return runs;
+    }
+
+    for (const OSplinePathPortions::Run &run : OSplinePathPortions::Runs(m_cutNodes, path->CountPoints()))
+    {
+        runs.append({run.from, run.to});
+    }
+
+    return runs;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::RebuildPortions()
+{
+    // A tool built without a pattern container (a unit test, a dialog preview) keeps its own copy as the target.
+    if (m_patternData == nullptr)
+    {
+        m_patternData = getData();
+    }
+
+    // **Ask before reading.** `GeometricObject` throws on an id the container does not hold, and this runs from
+    // `setCurrentData()`: the pattern rebuilds the container from a tool's copy, and a curve read after that copy
+    // was taken is simply not there yet. Throwing from here escaped the parse and closed the whole file
+    // (`ExceptionBadId` in GlobalChangePP) — a rebuild that cannot find its curve has nothing to do, not a reason
+    // to fail.
+    if (not m_patternData->HasObject(m_id))
+    {
+        return;
+    }
+
+    const QSharedPointer<VSplinePath> path = m_patternData->GeometricObject<VSplinePath>(m_id);
+
+    if (path.isNull())
+    {
+        return;
+    }
+
+    // The ids the pieces had before this rebuild: the ones that do not come back leave the graph with them.
+    const QVector<quint32> previousIds = m_portionIds.values().toVector();
+
+    // The items are rebuilt from the state every time; only the container objects outlive a reparse.
+    for (VSimpleCurve *item : std::as_const(m_portionItems))
+    {
+        if (item != nullptr)
+        {
+            if (scene() != nullptr)
+            {
+                scene()->removeItem(item);
+            }
+
+            // A QObject child of this tool: it must be taken out of the child list as well, or the tool would
+            // delete it a second time when it dies.
+            item->setParent(nullptr);
+            delete item;
+        }
+    }
+
+    m_portionItems.clear();
+
+    // Nothing cut: the curve is the curve, whole. No run is built, and the ids are forgotten — the next check
+    // allocates a fresh object, which is what an object nobody can see or cite should be.
+    if (m_cutNodes.isEmpty())
+    {
+        m_portionIds.clear();
+        OSplinePathPortions::SyncGraph(doc, m_id, previousIds, {});
+        ApplyPortionVisibility();
+        return;
+    }
+
+    const QVector<OSplinePathPortions::Run> runs = OSplinePathPortions::Runs(m_cutNodes, path->CountPoints());
+
+    // A run keeps the object it already has, found by the node it ends on: an id written in the file is the
+    // same object after a reparse, so a name a formula cites keeps pointing at it.
+    QMap<int, quint32> ids;
+
+    int portionIndex = 0;
+
+    for (const OSplinePathPortions::Run &run : runs)
+    {
+        ++portionIndex;
+        // A run of one sub-spline is a curve in its own right, not a path: a path is built from two of them and
+        // refuses fewer. Refusing the single one here would silently drop the shortest pieces — a curve cut at
+        // its first interior node showed only its second half, because the first half was "not a path".
+        const bool single = (run.to - run.from) == 1;
+
+        VSplinePath portion;
+        VSpline spline;
+
+        if (single)
+        {
+            spline = path->GetSpline(run.from + 1);
+        }
+        else
+        {
+            portion = OSplinePathPortions::Take(*path, run);
+        }
+
+        if (not single && portion.CountPoints() < 2)
+        {
+            continue; // a path of one sub-spline has no geometry; the single case is a curve, not a path
+        }
+
+        // A piece is drawn with the pen of the curve it comes from — same colour, same style, same
+        // approximation: it IS that curve, piece by piece, and a piece that falls back on the default pen turns
+        // solid black the moment the curve is cut.
+        if (single)
+        {
+            spline.SetColor(path->GetColor());
+            spline.SetPenStyle(path->GetPenStyle());
+            spline.SetApproximationScale(path->GetApproximationScale());
+        }
+        else
+        {
+            portion.SetColor(path->GetColor());
+            portion.SetPenStyle(path->GetPenStyle());
+        }
+
+        // **Cut parity, and not a detail.** A piece of a curve is a derivative of it, exactly as the two halves
+        // a cut makes are: same flag, same rule for the name — the curve's name plus its own mark
+        // (`SplPath_A18_A28__c1__p2`). Named from the points the run happens to join, a piece takes the name of
+        // a curve that already exists in the pattern, and two objects answering to one name are one object for
+        // every reader of the pattern: a formula, a layer, an operation.
+        const QString portionSuffix = path->HeadlessName() + OSplinePathPortions::PortionSuffix(portionIndex);
+
+        if (single)
+        {
+            spline.SetDerivative(true);
+            spline.SetNameSuffix(portionSuffix);
+        }
+        else
+        {
+            portion.SetDerivative(true);
+            portion.SetNameSuffix(portionSuffix);
+        }
+
+        quint32 id = m_portionIds.value(run.to, NULL_ID);
+
+        QSharedPointer<VAbstractCurve> curve;
+
+        if (single)
+        {
+            spline.setIdObject(m_id);
+
+            // **The id comes first.** A known id is not a hint: it is the identity of this piece in the pattern,
+            // and the container adopts an object handed to it under a known id even when it holds nothing there
+            // yet — which is exactly the state a reparse leaves. Allocating a new id in that case broke the
+            // identity the dialog and the file already carried (see VContainer::UpdateObject).
+            if (id != NULL_ID)
+            {
+                spline.setId(id);
+                m_patternData->UpdateGObject(id, spline);
+            }
+            else
+            {
+                id = m_patternData->AddGObject(new VSpline(spline));
+            }
+
+            const QSharedPointer<VSpline> storedSpline = m_patternData->GeometricObject<VSpline>(id);
+
+            if (not storedSpline.isNull())
+            {
+                m_patternData->AddSpline(storedSpline, id);
+                curve = storedSpline;
+            }
+        }
+        else
+        {
+            portion.setIdObject(m_id);
+
+            // Same rule as the single piece above: a known id is the identity of the object, not a cache hit.
+            if (id != NULL_ID)
+            {
+                portion.setId(id);
+                m_patternData->UpdateGObject(id, portion);
+            }
+            else
+            {
+                id = m_patternData->AddGObject(new VSplinePath(portion));
+            }
+
+            const QSharedPointer<VSplinePath> stored = m_patternData->GeometricObject<VSplinePath>(id);
+
+            if (not stored.isNull())
+            {
+                m_patternData->AddCurveWithSegments(stored, id);
+                curve = stored;
+            }
+        }
+
+        if (curve.isNull())
+        {
+            continue;
+        }
+
+        ids.insert(run.to, id);
+
+        auto *item = new VSimpleCurve(id, curve, this);
+        item->SetType(curve->getType());
+        item->RefreshGeometry(curve);
+        item->setZValue(0);
+        item->setVisible(false);
+        m_portionItems.append(item);
+
+        // A piece is a thing of the pattern, so it answers a click like any other: it announces itself through
+        // the tool's own signal, which is what the scene carries to the dialog that is picking objects. Without
+        // this line a piece was drawn, hovered — and mute: no operation tool could take it.
+        const SceneObject type = curve->SceneObjectType();
+        connect(item,
+                &VSimpleCurve::Choosed,
+                this,
+                [this, id, type](quint32) -> void { emit ChoosedTool(id, type); });
+        connect(item,
+                &VSimpleCurve::Selected,
+                this,
+                [this, id](bool selected) -> void { emit ChangedToolSelection(selected, id, m_id); });
+        connect(item,
+                &VSimpleCurve::ShowContextMenu,
+                this,
+                [this](QGraphicsSceneContextMenuEvent *event, quint32) -> void { ShowContextMenu(event); });
+
+        if (scene() != nullptr)
+        {
+            scene()->addItem(item);
+        }
+    }
+
+    m_portionIds = ids;
+
+    // A piece is an object of the pattern: the graph holds it as one, with an edge from the curve it comes
+    // from, so a dependency tree, a deletion and an operation that asks what a source depends on all see it.
+    OSplinePathPortions::SyncGraph(doc, m_id, previousIds, ids.values().toVector());
+
+    // **The tool's own copy has to carry what the tool just built.** The pattern rebuilds the live container from
+    // that copy (`setCurrentData()`, `GetCompletePPData()`), and the copy was taken before these pieces existed —
+    // so every container rebuilt from it had lost them: drawn, clickable, and unfindable by id. The cut tools
+    // never meet this because their halves are made inside their own `Create`, before their copy is written.
+    doc->UpdateToolData(m_id, m_patternData);
+
+    // The ids are written straight into the tool's element, without touching the undo stack: they are not a
+    // decision of the user, and a parse that did not find them would allocate a new object beside each piece —
+    // every box tick, every reparse, a new set of orphan curves nobody asked for.
+    if (QDomElement element = doc->FindElementById(m_id, getTagName()); not element.isNull())
+    {
+        doc->SetAttribute(element, AttrPortionIds, OSplinePathPortions::EncodeIds(m_portionIds));
+    }
+
+    ApplyPortionVisibility();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSplinePath::ApplyPortionVisibility()
+{
+    const bool cut = not m_cutNodes.isEmpty();
+
+    SetReplacedBySegments(cut);
+
+    // A curve that has been cut is no longer the curve: the pieces answer for it. Leaving it hoverable made the
+    // parent win wherever a piece lies on it — the mouse found the whole curve on some parts of the drawing and
+    // the piece on others — and highlighted the curve the user had just replaced. It is hidden, and it stops
+    // taking the mouse at all; the control points stay live, since the handles are still how the curve is edited.
+    setAcceptHoverEvents(not cut && m_acceptHover);
+    setAcceptedMouseButtons(cut ? Qt::NoButton : (Qt::LeftButton | Qt::RightButton));
+    setFlag(QGraphicsItem::ItemIsSelectable, not cut);
+
+    for (VSimpleCurve *item : std::as_const(m_portionItems))
+    {
+        if (item != nullptr)
+        {
+            item->setVisible(cut && m_layerVisible);
+            // Above the curve's own item, never behind it: a piece drawn at -1 loses the mouse to the curve it
+            // was taken from, exactly where the two coincide.
+            item->setZValue(0);
+        }
     }
 }

@@ -32,10 +32,13 @@
 #define VTOOLSPLINEPATH_H
 
 #include <QGraphicsItem>
+#include <QMap>
 #include <QMetaObject>
 #include <QObject>
+#include <QPair>
 #include <QPointF>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QtGlobal>
 
@@ -45,6 +48,7 @@
 #include "vtoolabstractcurve.h"
 
 class VSplinePath;
+class VSimpleCurve;
 template <class T> class QSharedPointer;
 
 struct VToolSplinePathInitData : VToolAbstractCurveInitData
@@ -56,6 +60,11 @@ struct VToolSplinePathInitData : VToolAbstractCurveInitData
     QVector<QString> l2{};      // NOLINT(misc-non-private-member-variables-in-classes)
     QVector<OAxis> axes{}; // NOLINT(misc-non-private-member-variables-in-classes)
     quint32 duplicate{0};       // NOLINT(misc-non-private-member-variables-in-classes)
+
+    /** The interior nodes this path is cut on (see OSplinePathPortions), and the ids of the runs they make.
+     *  Read from the file on a parse, empty when the user has cut nothing. */
+    QVector<int> cutNodes{};         // NOLINT(misc-non-private-member-variables-in-classes)
+    QMap<int, quint32> portionIds{}; // NOLINT(misc-non-private-member-variables-in-classes)
 };
 
 /**
@@ -105,6 +114,27 @@ public:
     /** @brief Opens the edition dialog — the dock's "Edit curve" button calls it, as the pleat's own does. */
     void OpenOptionsDialog();
 
+    // ---- The runs the user cut this path into, at its own nodes -------------------------------------------
+    //
+    // A path carries the points it was drawn through; those points are frontiers already. Checking one of the
+    // interior ones in the dock does not cut anything: it says "the curve stops here", and the path is shown
+    // as the runs between the frontiers — n checked nodes, n + 1 runs, each exactly the sub-splines between
+    // two nodes. The mother curve is hidden while at least one node is cut, as a cut tool hides the curve it
+    // replaces; unchecking the last box gives it back whole.
+    //
+    // The runs are objects of the pattern in their own right (a name, a place in the container, a layer), but
+    // they have no tool of their own: they are derived from the mother on every parse, and the dock edits them
+    // through it. That is what keeps them impossible to leave orphaned or out of step with their curve.
+
+    /** @brief Is @a node cut? False for the two ends, which have nothing to separate. */
+    auto IsCutNode(int node) const -> bool;
+
+    /** @brief Cuts the path at @a node, or puts it back together there. Saved with the tool. */
+    void SetCutNode(int node, bool cut);
+
+    /** @brief The runs the path is shown as, in the order it runs; empty when no node is cut. */
+    auto PortionRuns() const -> QVector<QPair<int, int>>;
+
 signals:
     /**
      * @brief RefreshLine refresh control line.
@@ -127,6 +157,9 @@ protected slots:
     void CurveSelected(bool selected);
 
 protected:
+    void GroupVisibility(quint32 object, bool visible) override;
+    void FullUpdateFromFile() override;
+    void RebuildDerivedObjects() override;
     void SaveDialog(QDomElement &domElement) override;
     void SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -172,6 +205,39 @@ private:
     void InitControlPoints(const VSplinePath *splPath);
 
     auto GatherToolChanges() const -> ToolChanges;
+
+    /** @brief Rebuilds the runs after @ref m_cutNodes changed, or when the path itself changed. */
+    void RebuildPortions();
+
+    /** @brief Shows the runs, or the whole path, and hides whichever of the two is not meant right now. */
+    void ApplyPortionVisibility();
+
+    /** @brief Whether the application is asking curves to answer hover. Kept because a cut curve must not — and
+     *  unchecking the last box has to give the answer back, not force it on. */
+    /** @brief The pattern's container: what this tool writes into.
+     *
+     *  NOT `VDataTool::data`, which is only this tool's copy of the container — a snapshot taken when the tool was
+     *  read. A piece created there exists for this tool alone: drawn, `HasObject` true, and invisible to every
+     *  other reader of the pattern (a dialog's copy, an operation, a layer). The cut tools write with
+     *  `initData.data`, which is this pointer. */
+    VContainer *m_patternData{nullptr};
+
+    bool m_acceptHover{true};
+
+    /** @brief Whether the layer of this curve is shown. The base class keeps its own answer private, and the
+     *  runs must follow it: a run drawn under a masked layer is a curve nobody can hide. */
+    bool m_layerVisible{true};
+
+    /** @brief The interior nodes the user cut: always inside 1 .. CountPoints()-2, sorted. */
+    QVector<int> m_cutNodes{};
+
+    /** @brief The container object of each run, keyed by the node the run ends on. Written to the file, so a
+     *  reparse — and a ticked box is one — finds the same object instead of allocating a new one beside it. */
+    QMap<int, quint32> m_portionIds{};
+
+    /** @brief The items that draw the runs — children of this tool, but top-level items of the scene, so a
+     *  layer can show a run while the curve's own layer is hidden (see VToolCut, which does the same). */
+    QVector<VSimpleCurve *> m_portionItems{};
 };
 
 #endif // VTOOLSPLINEPATH_H

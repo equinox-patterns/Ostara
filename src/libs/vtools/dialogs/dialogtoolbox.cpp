@@ -1844,6 +1844,15 @@ auto GenerateDefOffsetCurveName(const VContainer *data, quint32 curveId, const Q
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief The name of a new curve — the one the user reads, so **the alias**, never a technical head.
+ *
+ * What is returned is @a pointName + @a base: the name, as the user will see it and as a formula will cite it.
+ * @a typeHead never appears in it — it exists only to test uniqueness against the objects that already carry
+ * that head. A caller that builds a name by hand instead of coming through here writes a technical name on
+ * screen, which is what Ostara spent its renaming to get rid of (`Spl_`, `SplPath_` → `Curve_`, see
+ * @ref SimplifiedName in ifcdef.cpp and @ref VGObject::ObjectName).
+ */
 auto GenerateUniqueCurveName(const VContainer *data,
                              const QString &typeHead,
                              const QString &base,

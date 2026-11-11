@@ -210,6 +210,12 @@ const QString AttrCurveName2 = QStringLiteral("curveName2");
 const QString AttrSegment1Id = QStringLiteral("segment1Id");
 const QString AttrSegment2Id = QStringLiteral("segment2Id");
 const QString AttrShowTwoSegments = QStringLiteral("showTwoSegments");
+// The nodes of a spline path the user cut on — `cutNodes="2 3"` — and the ids the container gave the runs they
+// make, keyed by the node each run ends on: `portionIds="2=101;3=102"`.
+const QString AttrCutNodes = QStringLiteral("cutNodes");
+// The armhole curve, shown as the two pieces it is made of at the chest/back width point.
+const QString AttrSegmentAtCarrure = QStringLiteral("segmentAtCarrure");
+const QString AttrPortionIds = QStringLiteral("portionIds");
 const QString AttrSegment3Id = QStringLiteral("segment3Id");
 const QString AttrSegment4Id = QStringLiteral("segment4Id");
 const QString AttrSegment1Mx = QStringLiteral("segment1Mx");

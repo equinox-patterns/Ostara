@@ -56,6 +56,22 @@ public:
 
     virtual void GroupVisibility(quint32 object, bool visible) = 0;
 
+    /**
+     * @brief Put back the objects this tool creates beside itself.
+     *
+     * A tool that derives objects — the pieces of a curve the user segmented, the halves a cut makes — adds them
+     * to the pattern's container, but **not** to the copy of it this class keeps: that copy is taken when the tool
+     * is read, before it builds anything. So a container restored from such a copy (`VPattern::setCurrentData`)
+     * has lost them, and the file still names them: the object is on the canvas, and every lookup by id fails —
+     * `Object 205 is gone` in the preview, no copy in the operation that cites it.
+     *
+     * Whoever restores the container therefore asks every tool to put its own back. The default is nothing: a
+     * tool that derives no object has nothing to rebuild.
+     */
+    virtual void RebuildDerivedObjects()
+    {
+    }
+
 protected:
     /** @brief data container with data */
     VContainer data;

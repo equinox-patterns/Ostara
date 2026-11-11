@@ -35,9 +35,13 @@
 #include "../ifc/exception/vexceptionbadid.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
 #include "../ifc/xml/vpatternconverter.h"
+#include <QFile>
+#include <QTextStream>
+
 #include "../vmisc/def.h"
 #include "../vmisc/vvalentinasettings.h"
 #include "../qmuparser/qmuparsererror.h"
+#include "../vtools/tools/drawTools/toolcurve/osplinepathportions.h"
 #include "../vtools/tools/drawTools/toolcurve/vtoolarc.h"
 #include "../vtools/tools/drawTools/toolcurve/otoolarmholecurve.h"
 #include "../vtools/tools/drawTools/toolcurve/otoolspiral.h"
@@ -286,6 +290,12 @@ void VPattern::ParseToolArmholeCurve(VMainGraphicsScene *scene, const QDomElemen
         const qreal approximationScale = GetParametrDouble(domElement, AttrAScale, QChar('0'));
         const QString alias = GetParametrEmptyString(domElement, AttrAlias);
 
+        // The curve shown as its two pieces at the chest/back width point, and the ids of those pieces: the only
+        // place the choice, and the objects it made, survive a close.
+        initData.segmentAtCarrure = GetParametrBool(domElement, AttrSegmentAtCarrure, falseStr);
+        initData.firstSegmentId = GetParametrUInt(domElement, AttrSegment1Id, NULL_ID_STR);
+        initData.secondSegmentId = GetParametrUInt(domElement, AttrSegment2Id, NULL_ID_STR);
+
         auto p1 = data->GeometricObject<VPointF>(point1); // armhole
         auto pCarrure = data->GeometricObject<VPointF>(point4); // chest/back width
         auto pEpaule = data->GeometricObject<VPointF>(point7); // shoulder
@@ -407,6 +417,11 @@ void VPattern::ParseToolSplinePath(VMainGraphicsScene *scene, const QDomElement 
         initData.duplicate = GetParametrUInt(domElement, AttrDuplicate, QChar('0'));
         initData.approximationScale = GetParametrDouble(domElement, AttrAScale, QChar('0'));
         initData.aliasSuffix = GetParametrEmptyString(domElement, AttrAlias);
+
+        // The nodes this path is cut on, and the alias of each run they make: a path cut once reads back cut,
+        // with the names the user gave — this is the only place the two survive a close.
+        initData.cutNodes = OSplinePathPortions::DecodeNodes(GetParametrEmptyString(domElement, AttrCutNodes));
+        initData.portionIds = OSplinePathPortions::DecodeIds(GetParametrEmptyString(domElement, AttrPortionIds));
 
         const QDomNodeList nodeList = domElement.childNodes();
         QDOM_LOOP(nodeList, i)
