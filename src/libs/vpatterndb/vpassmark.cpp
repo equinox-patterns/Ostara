@@ -1324,18 +1324,22 @@ auto VPassmark::PassmarkStraightforwardBaseLine(const QPointF &seamPassmarkSAPoi
     // la direction reste celle du calcul, seule la distance est remise juste.
 
 
-    if (line.isNull())
+    // **A manual angle is a decision, not a fallback.** It used to be read only when the line was null, and the
+    // zero-margin step moved the anchor a fraction of a millimetre off the node: the line was no longer null, the
+    // angle was never applied, and the notch took the direction anchor→node instead. Measured on
+    // TestSAPassmark, "Manual passmark angle." — 352.94° where the angle asked for 331.82°.
+    if (m_data.passmarkSAPoint.IsManualPasskmarkAngle())
     {
-        if (m_data.passmarkSAPoint.IsManualPasskmarkAngle())
-        {
-            line = QLineF(m_data.passmarkSAPoint.x(),
-                          m_data.passmarkSAPoint.y(),
-                          m_data.passmarkSAPoint.x() + 100,
-                          m_data.passmarkSAPoint.y());
-            line.setAngle(m_data.passmarkSAPoint.GetPasskmarkAngle() + 180);
-        }
-        else if (const QLineF seam(m_data.previousSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
-                 not seam.isNull())
+        line = QLineF(m_data.passmarkSAPoint.x(),
+                      m_data.passmarkSAPoint.y(),
+                      m_data.passmarkSAPoint.x() + 100,
+                      m_data.passmarkSAPoint.y());
+        line.setAngle(m_data.passmarkSAPoint.GetPasskmarkAngle() + 180);
+    }
+    else if (line.isNull())
+    {
+        if (const QLineF seam(m_data.previousSAPoint.ToQPointF(), m_data.nextSAPoint.ToQPointF());
+            not seam.isNull())
         {
             // No seam allowance on either side: the notch has no distance to run along, its base point being
             // the node itself. Take the direction from the seam and draw the notch across it — a marker is
