@@ -43,6 +43,7 @@
 #include "../vpatterndb/vpiecepath.h"
 #include "../vwidgets/vmaingraphicsview.h"
 #include "vundocommand.h"
+#include "../tools/vtooluniondetails.h"
 
 namespace
 {
@@ -175,6 +176,26 @@ void DeletePiece::CollectOwnedModeling(const QDomElement &detail)
         for (const QDomElement &path : refs.paths)
         {
             pathsUsedElsewhere.insert(path.attribute(VDomDocument::AttrId).toUInt());
+        }
+    }
+
+    // **A union declares what it needs.** The <det> blocks of a union tool name the objects it was built
+    // from; those are entries of the file exactly as another piece's nodes are. Taking them away with a piece
+    // leaves a union that can never be replayed: the piece it produced keeps nodes nothing answers for, and
+    // the pattern then refuses to open — which happened, on a union of two pieces, in November 2026.
+    const QDomNodeList unionTools = Doc()->elementsByTagName(VAbstractPattern::TagTools);
+    for (int i = 0; i < unionTools.size(); ++i)
+    {
+        const QDomElement tool = unionTools.at(i).toElement();
+        if (tool.isNull())
+        {
+            continue;
+        }
+
+        for (QDomElement det = tool.firstChildElement(VToolUnionDetails::TagDetail); not det.isNull();
+             det = det.nextSiblingElement(VToolUnionDetails::TagDetail))
+        {
+            CollectNodeIds(det.firstChildElement(VAbstractPattern::TagNodes), nodesUsedElsewhere);
         }
     }
 

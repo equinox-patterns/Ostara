@@ -38,6 +38,7 @@
 #include "../vtools/tools/vtoolseamallowance.h"
 #include "../vtools/tools/vtooluniondetails.h"
 #include "vpattern_helpers.h"
+#include "../ifc/xml/vdomdocument.h"
 
 #include <QFileInfo>
 
@@ -60,12 +61,49 @@ void VPattern::CollectGarbage()
 // They are handled separately in GCStaleUnionTools.
 auto VPattern::GCStaleModelingObjects(const VPatternGraph *graph) -> QSet<vidtype>
 {
+    // **An object a union declares is not garbage.** The <det> blocks of a union name what it was built
+    // from, and <children> names what it made; collecting either leaves the united piece with nodes nothing
+    // answers for, and the pattern then refuses to open — which happened in November 2026. The graph cannot
+    // see this dependency, for the reason above: the union's children keep the BFS path alive even when it
+    // leads nowhere. So the declaration is read from the file, where it is written.
+    QSet<vidtype> declared;
+    const QDomNodeList unionTools = elementsByTagName(VAbstractPattern::TagTools);
+    for (int i = 0; i < unionTools.size(); ++i)
+    {
+        const QDomElement tool = unionTools.at(i).toElement();
+        if (tool.isNull())
+        {
+            continue;
+        }
+
+        for (QDomElement det = tool.firstChildElement(VToolUnionDetails::TagDetail); not det.isNull();
+             det = det.nextSiblingElement(VToolUnionDetails::TagDetail))
+        {
+            const QDomElement nodes = det.firstChildElement(VAbstractPattern::TagNodes);
+            for (QDomElement node = nodes.firstChildElement(VAbstractPattern::TagNode); not node.isNull();
+                 node = node.nextSiblingElement(VAbstractPattern::TagNode))
+            {
+                const vidtype id = VDomDocument::GetParametrUInt(node, VToolUnionDetails::AttrIdObject, NULL_ID_STR);
+                if (id != NULL_ID)
+                {
+                    declared.insert(id);
+                }
+            }
+        }
+
+        for (const vidtype id : CollectUnionChildIds(tool))
+        {
+            declared.insert(id);
+        }
+    }
+
     QSet<vidtype> candidates = ConvertToSet(graph->GetVerticesByType(VNodeType::MODELING_OBJECT));
     EraseIf(candidates,
-            [graph, this](vidtype node) -> bool
+            [graph, this, &declared](vidtype node) -> bool
             {
                 auto const PieceFilter = [](const VNode &n) -> bool { return n.type == VNodeType::PIECE; };
-                return !graph->GetDependentNodes(node, PieceFilter).isEmpty() || FindElementById(node).isNull();
+                return declared.contains(node) || !graph->GetDependentNodes(node, PieceFilter).isEmpty()
+                       || FindElementById(node).isNull();
             });
     return candidates;
 }

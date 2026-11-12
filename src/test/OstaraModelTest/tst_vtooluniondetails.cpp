@@ -80,7 +80,8 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
     result.append(qMakePair(false, d2p0));
-    result.append(qMakePair(true, d1p4));
+    // The node of d1 that follows the rotation point is skipped: the last node of the inserted block is laid
+    // on it, and a corner needs one point, not two (CalcUnitedPath).
     result.append(qMakePair(true, d1p5));
 
     VPiecePath d1;
@@ -112,7 +113,8 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
     result.append(qMakePair(false, d2p0));
-    result.append(qMakePair(true, d1p4));
+    // The node of d1 that follows the rotation point is skipped: the last node of the inserted block is laid
+    // on it, and a corner needs one point, not two (CalcUnitedPath).
     result.append(qMakePair(true, d1p5));
     result.append(qMakePair(true, d1p0));
 
@@ -133,7 +135,8 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     result.append(qMakePair(false, d2p3));
     result.append(qMakePair(false, d2p4));
     result.append(qMakePair(false, d2p0));
-    result.append(qMakePair(true, d1p4));
+    // The node of d1 that follows the rotation point is skipped: the last node of the inserted block is laid
+    // on it, and a corner needs one point, not two (CalcUnitedPath).
     result.append(qMakePair(true, d1p5));
     result.append(qMakePair(true, d1p0));
     result.append(qMakePair(true, d1p1));
@@ -147,6 +150,29 @@ void TST_VToolUnionDetails::TestUnitingMainPaths_data()
     d1.Append(d1p1);
 
     QTest::newRow("Case 3") << d1 << d2 << indexD2 << pRotate << result;
+
+    // The rotation point sits on the second to last node: the block is inserted, the node it is laid on is the
+    // last one, and the walk must stop there instead of reading past the end of d1.
+    result.clear();
+    result.append(qMakePair(true, d1p0));
+    result.append(qMakePair(true, d1p1));
+    result.append(qMakePair(true, d1p2));
+    result.append(qMakePair(true, d1p3));
+    result.append(qMakePair(true, d1p4));
+    result.append(qMakePair(false, d2p2));
+    result.append(qMakePair(false, d2p3));
+    result.append(qMakePair(false, d2p4));
+    result.append(qMakePair(false, d2p0));
+
+    d1.Clear();
+    d1.Append(d1p0);
+    d1.Append(d1p1);
+    d1.Append(d1p2);
+    d1.Append(d1p3);
+    d1.Append(d1p4);
+    d1.Append(d1p5);
+
+    QTest::newRow("Last node skipped") << d1 << d2 << indexD2 << quint32(1209) << result;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -161,6 +187,11 @@ void TST_VToolUnionDetails::TestUnitingMainPaths()
     const QVector<UnitedPathNode> out = VToolUnionDetails::CalcUnitedPath(d1, d2, indexD2, pRotate);
 
     QVERIFY(result.size() == out.size());
+
+    // **A corner is one point.** The united contour holds one node fewer than the sum of both outlines: the node
+    // of the second piece that the placement lays on the rotation point, and the node of the first one it is
+    // laid upon. This is what keeps the seam allowance from merging two points and losing the widths they carry.
+    QCOMPARE(out.size(), d1.CountNodes() + d2.CountNodes() - 2);
 
     for (int i = 0; i < out.size(); ++i)
     {

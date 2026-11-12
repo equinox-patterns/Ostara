@@ -92,6 +92,29 @@ void DialogUnionDetails::ShowVisualization()
  * @param id id of point or detail
  * @param type type of object
  */
+/** @brief Which way a piece is walked: 1, -1, or 0 when it has no area.
+ *
+ *  The sign of the trapezoid sum is the winding direction, the same quantity the seam allowance uses to decide
+ *  on which side of the outline it lies (VAbstractPiece::IsAllowanceValid). */
+auto WindingOf(const VPiece &piece, const VContainer &data) -> int
+{
+    const QVector<VLayoutPoint> points = piece.MainPathPoints(&data);
+    QVector<QPointF> plain;
+    plain.reserve(points.size());
+    for (const VLayoutPoint &point : points)
+    {
+        plain.append(static_cast<QPointF>(point));
+    }
+
+    const qreal sum = VPiece::SumTrapezoids(plain);
+    if (qFuzzyIsNull(sum))
+    {
+        return 0;
+    }
+    return sum > 0 ? 1 : -1;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogUnionDetails::ChosenObject(quint32 id, const SceneObject &type)
 {
     if (numberD == 0)
@@ -105,6 +128,20 @@ void DialogUnionDetails::ChosenObject(quint32 id, const SceneObject &type)
             emit ToolTip(tr("Select unique detail"));
             return;
         }
+
+        // **Two outlines that turn in opposite directions cannot be joined into one.** The placement lays the
+        // second edge reversed on the first one, which only produces a simple contour when both pieces are
+        // walked the same way round; otherwise the united outline crosses itself, and the seam allowance is
+        // then computed on a figure that folds over. Refused here, where the user can still choose — the
+        // calculation itself has nothing to say about it.
+        if (type == SceneObject::Detail && d1 != NULL_ID
+            && WindingOf(data.GetPiece(d1), data) * WindingOf(data.GetPiece(id), data) < 0)
+        {
+            emit ToolTip(tr("These two pieces turn in opposite directions: their outlines cannot be joined. "
+                            "Choose another piece, or redraw one of them the same way round."));
+            return;
+        }
+
         ChoosedDetail(id, type, d2, indexD2);
     }
 

@@ -89,6 +89,12 @@ public:
 
     static auto CalcUnitedPath(const VPiecePath &d1Path, const VPiecePath &d2Path, quint32 indexD2, quint32 pRotate)
         -> QVector<QPair<bool, VPieceNode>>;
+
+    /** @brief Replays a union from its file record: recomputes the objects it made.
+     *
+     *  Exposed so that a test can run it on a document of its own — the replay is what decides whether a saved
+     *  union still follows its sources, and it had no way in from outside until now. */
+    static void Replay(const VToolUnionDetailsInitData &initData);
 public slots:
     /**
      * @brief FullUpdateFromFile update tool data form file.

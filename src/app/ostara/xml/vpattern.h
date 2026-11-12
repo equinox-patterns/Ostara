@@ -235,6 +235,7 @@ private:
     auto ParsePieceAnnotations(const QDomElement &domElement) const -> OAnnotationData;
     auto ParsePieceThumbnail(const QDomElement &domElement) const -> OThumbnailData;
     void ParseDetails(const QDomElement &domElement, const Document &parse);
+    void DropUnbuiltDetails();
     void ParsePieceGroups(const QDomElement &domElement);
     void ParseSizeRanges(const QDomElement &domElement);
     void ParsePointElement(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse,
@@ -400,6 +401,13 @@ private:
     auto GCStaleUnionTools(const VPatternGraph *graph) -> QSet<vidtype>;
     auto GCRemoveFromModeling(const QSet<vidtype> &candidates) -> QSet<vidtype>;
     void GCUpdateHistory(const QSet<vidtype> &removed);
+
+    /** @brief Pieces the file names and the container could not rebuild.
+     *
+     * Collected by ParseDetailElement and removed by DropUnbuiltDetails once the walk of <details> is over:
+     * taking an element out of the tree inside that walk cuts the sibling chain short, and the pieces written
+     * after it would never be read. */
+    QVector<QDomElement> m_unbuiltDetails;
 };
 
 #endif // VPATTERN_H
