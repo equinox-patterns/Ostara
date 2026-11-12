@@ -725,6 +725,7 @@ auto ArcProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<VToolArc>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Arc:")), &VToolArc::GetAliasSuffix, &VToolArc::SetAliasSuffix),
+        MakeReadOnlyLength<VToolArc>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolArc *>(tool);
@@ -1081,6 +1082,9 @@ auto SplineProperties() -> std::vector<PropertyDesc>
         // No read-only "Name:" row: it repeated the technical name the "Curve:" row already carries, and nothing
         // could be edited there (08-10-2026).
         MakeStringPropWithValidator<VToolSpline>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSpline::GetAliasSuffix, &VToolSpline::SetAliasSuffix),
+        // The handles below already carry a "Length:" of their own — the distance from the point to its handle.
+        // The curve's own length needs another name, or the two would read as the same thing.
+        MakeReadOnlyLength<VToolSpline>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve length:"))),
         MakeSplineHandleGroup<VToolSpline>(QStringLiteral("firstHandle"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "First handle:")),
                                            &VSpline::GetC1LengthFormula, &VSpline::SetC1Length,
                                            &VSpline::GetStartAngleFormula, &VSpline::SetStartAngle,
@@ -1100,6 +1104,7 @@ auto CubicBezierProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<VToolCubicBezier>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCubicBezier::GetAliasSuffix, &VToolCubicBezier::SetAliasSuffix),
+        MakeReadOnlyLength<VToolCubicBezier>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         MakeCurvePenStyle<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
         MakeLineColor<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
         MakeNotes<VToolCubicBezier>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
@@ -1111,6 +1116,7 @@ auto ArmholeCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<OToolArmholeCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &OToolArmholeCurve::GetAliasSuffix, &OToolArmholeCurve::SetAliasSuffix),
+        MakeReadOnlyLength<OToolArmholeCurve>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
 
         // The curve already carries the joint: its two cubic segments meet exactly at the chest/back width
         // point. The box does not cut anything, it shows what the geometry is — armhole to chest/back width,
@@ -1177,6 +1183,8 @@ auto SplinePathProperties(const VToolSplinePath *tool) -> std::vector<PropertyDe
          nullptr},
 
         MakeStringPropWithValidator<VToolSplinePath>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolSplinePath::GetAliasSuffix, &VToolSplinePath::SetAliasSuffix),
+        // Same reason as a spline: "Length:" already means a handle inside the groups of points.
+        MakeReadOnlyLength<VToolSplinePath>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve length:"))),
     };
 
     const vsizetype count = tool != nullptr ? tool->getSplinePath().CountPoints() : 0;
@@ -1229,6 +1237,7 @@ auto CubicBezierPathProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<VToolCubicBezierPath>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolCubicBezierPath::GetAliasSuffix, &VToolCubicBezierPath::SetAliasSuffix),
+        MakeReadOnlyLength<VToolCubicBezierPath>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         MakeCurvePenStyle<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Pen style:"))),
         MakeLineColor<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Color:"))),
         MakeNotes<VToolCubicBezierPath>(T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Notes:"))),
@@ -1240,6 +1249,7 @@ auto EllipticalArcProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<VToolEllipticalArc>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "ElArc:")), &VToolEllipticalArc::GetAliasSuffix, &VToolEllipticalArc::SetAliasSuffix),
+        MakeReadOnlyLength<VToolEllipticalArc>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolEllipticalArc *>(tool);
@@ -1500,6 +1510,7 @@ auto ParallelCurveProperties() -> std::vector<PropertyDesc>
 {
     return {
         MakeStringPropWithValidator<VToolParallelCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolParallelCurve::GetAliasSuffix, &VToolParallelCurve::SetAliasSuffix),
+        MakeReadOnlyLength<VToolParallelCurve>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolParallelCurve *>(tool);
@@ -1693,6 +1704,7 @@ auto GraduatedCurveProperties() -> std::vector<PropertyDesc>
 
         // The subName property stays auto-generated in the backend, it is just not shown any more.
         MakeStringPropWithValidator<VToolGraduatedCurve>(AttrAlias, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Curve:")), &VToolGraduatedCurve::GetAliasSuffix, &VToolGraduatedCurve::SetAliasSuffix),
+        MakeReadOnlyLength<VToolGraduatedCurve>(AttrLength, T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Length:"))),
         {QStringLiteral("createStartPoint"), T(QT_TRANSLATE_NOOP("VToolOptionsPropertyBrowser", "Create start point")),
          [](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty * {
              auto *t = static_cast<VToolGraduatedCurve *>(tool);

@@ -276,6 +276,22 @@ auto VToolAbstractCurve::MakeToolTip() const -> QString
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolAbstractCurve::GetLength() const -> std::optional<qreal>
+{
+    // Same lookup as the tooltip, guarded: an id the container no longer holds must not throw towards the options
+    // dock, which drops the row instead of dying with the event loop.
+    try
+    {
+        const QSharedPointer<VAbstractCurve> curve = VAbstractTool::data.GeometricObject<VAbstractCurve>(m_id);
+        return qAbs(curve->GetLength());
+    }
+    catch (const VExceptionBadId &)
+    {
+        return std::nullopt;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolAbstractCurve::RefreshGeometry()
 {
     InitDefShape();

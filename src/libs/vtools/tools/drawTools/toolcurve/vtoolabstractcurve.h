@@ -42,6 +42,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QtGlobal>
+#include <optional>
 
 #include "../vdrawtool.h"
 #include "../vgeometry/oaxis.h"
@@ -103,6 +104,16 @@ public:
 
     auto GetAliasSuffix() const -> QString;
     virtual void SetAliasSuffix(const QString &alias) = 0;
+
+    /** @brief GetLength the length of the curve, in pattern pixels, as a magnitude.
+     *
+     *  The curve is its geometry in the container: the value is read from it at every call and follows a
+     *  variable edit by itself. A curve the container no longer holds — a half a cut made, lost by a restored
+     *  container — has no length: the dock shows the row as « - » instead of throwing towards it.
+     *
+     *  The sign is dropped on purpose: an arc drawn the other way has a negative length in the model, which says
+     *  which way it turns, not how long it is. A length is a distance. */
+    auto GetLength() const -> std::optional<qreal>;
 
     void GroupVisibility(quint32 object, bool visible) override;
 

@@ -34,6 +34,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <optional>
 #include <type_traits>
 #include <vector>
 
@@ -64,6 +65,7 @@
 #include "ifcdef.h"
 #include "../vmisc/def.h"
 #include "../vtools/tools/vabstracttool.h"
+#include "../vtools/tools/otooltip.h"
 
 namespace VtoppbConstants
 {
@@ -277,8 +279,43 @@ void VToolOptionsPropertyBrowser::UpdateToolOptions(const std::vector<PropertyDe
     }
 }
 
-// ====== Shared Property Browser string-property factories ======
+// ====== Read-only rows ======
 
+/** @brief The text a read-only length row shows: the measure, or a dash when the object has none to give.
+ *
+ *  A dash, not a zero: a zero would read as a real value, and a length that cannot be read is not a length of
+ *  nothing (see VToolLine::GetLength and VToolAbstractCurve::GetLength, which both answer "no value"). */
+inline auto LengthText(const std::optional<qreal> &length) -> QString
+{
+    return length.has_value() ? OToolTip::Measure(*length) : QStringLiteral("-");
+}
+
+/** @brief A row that shows a length the user cannot edit.
+ *
+ *  A plain label (VLabelProperty): the value is not stored, it is read back from the geometry at every refresh, so
+ *  it follows a variable edit by itself. There is deliberately no apply — the dock cannot write anything through
+ *  this row (see ChangeToolData: a descriptor without apply does nothing). */
+template <typename Tool> auto MakeReadOnlyLength(const QString &attrId, const QString &label) -> PropertyDesc
+{
+    return {attrId, label,
+            [label](VToolOptionsPropertyBrowser *, void *tool) -> VPE::VProperty *
+            {
+                auto *t = static_cast<Tool *>(tool);
+                auto *p = new VPE::VLabelProperty(label);
+                p->setValue(LengthText(t->GetLength()));
+                return p;
+            },
+            nullptr,
+            [](VToolOptionsPropertyBrowser *b, VPE::VProperty *prop)
+            {
+                if (auto *t = qgraphicsitem_cast<Tool *>(b->currentItem()))
+                {
+                    prop->setValue(LengthText(t->GetLength()));
+                }
+            }};
+}
+
+// ====== Shared Property Browser string-property factories ======
 // Plain string property — setter is called directly, no validation.
 // String property with post-setter validation.
 // The setter internally validates uniqueness/format and silently rejects
