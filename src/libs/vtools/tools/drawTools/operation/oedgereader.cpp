@@ -465,18 +465,40 @@ void CandidatesFromSegments(const QPointF &position, const QPointF &side, const 
 /** @brief The candidate that leaves the point the way @a side points, or none.
  *
  *  At a cut both halves end at the point and leave it in opposite directions: the side is the only thing that tells
- *  which of the two the notch is cut into. */
+ *  which of the two the notch is cut into.
+ *
+ *  The one kept is the one that agrees with the side **the most**, and not the first one met: the candidates come
+ *  from a hash, whose order is the pattern's business and not the fold's, and a direction merely *touching* the side
+ *  — a candidate that leaves the point square to it, a dot of some ten thousand billionths — used to win by coming
+ *  first. A cap was then read on the piece the side never pointed at, and the same pattern answered two different
+ *  ways from one parse to the next. */
 auto ChosenCarrier(const QVector<OEdgeCarrier> &candidates, const QPointF &side) -> OEdgeCarrier
 {
+    const qreal sideLength = QLineF(QPointF(), side).length();
+    if (sideLength <= kDirectionTolerance)
+    {
+        return {};
+    }
+
+    OEdgeCarrier chosen;
+    qreal best = 0.; // a direction square to the side agrees with it not at all: it is no answer
     for (const OEdgeCarrier &candidate : candidates)
     {
-        if (Dot(candidate.inward, side) > 0.)
+        const qreal length = QLineF(QPointF(), candidate.inward).length();
+        if (length <= kDirectionTolerance)
         {
-            return candidate;
+            continue;
+        }
+
+        const qreal agreement = Dot(candidate.inward / length, side / sideLength);
+        if (agreement > best)
+        {
+            best = agreement;
+            chosen = candidate;
         }
     }
 
-    return {};
+    return chosen;
 }
 
 /** One block of the outline of a piece: a single point, or the samples of a curve. */

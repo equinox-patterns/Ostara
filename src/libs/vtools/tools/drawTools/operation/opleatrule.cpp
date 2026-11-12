@@ -265,6 +265,73 @@ auto SelectedLine(const OPleatPlan &plan, quint32 pointId, const QPointF &positi
 
     return {};
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief La droite du dessin que la sélection donne en un point : une autre de ses points sur la même verticale, ou
+ *  sur la même horizontale.
+ *
+ *  Un point posé par coordonnées — l'outil qui prend le X d'un point et le Y d'un autre — **est sur deux droites et n'en
+ *  trace aucune** : ni segment d'outil, ni courbe qui finit là, rien qui dise de quel côté court l'arête. Les points que
+ *  l'utilisatrice a sélectionnés, eux, le disent : l'un d'eux sur la même verticale fait courir le contour droit
+ *  **verticalement** en ce point, un autre sur la même horizontale le fait courir horizontalement. C'est la même
+ *  géométrie que le pli connaît déjà — il n'a pas besoin du point suivant, ni de sortir de la sélection.
+ *
+ *  Les deux points de la ligne de départ sont exclus : ils sont **sur** le pli, donc une droite qui les joint **est** le
+ *  pli, et une arête posée sur le pli ne le rencontre jamais (voir @a EdgeAlongFold). Et une seule des deux droites doit
+ *  porter un témoin : deux voudraient dire que le contour tourne en ce point, et rien dans la sélection ne dirait
+ *  laquelle des deux le pli longe.
+ */
+auto AxisLine(const OPleatPlan &plan, const OPleatDeparture &line, const QPointF &position, const VContainer *data)
+    -> QPointF
+{
+    if (data == nullptr)
+    {
+        return {};
+    }
+
+    int vertical = 0;
+    int horizontal = 0;
+
+    for (const quint32 id : std::as_const(plan.sources))
+    {
+        if (id == line.first.pointId || id == line.second.pointId || not data->HasObject(id))
+        {
+            continue;
+        }
+
+        const QSharedPointer<VPointF> point = qSharedPointerDynamicCast<VPointF>(data->GetGObject(id));
+        if (point.isNull())
+        {
+            continue;
+        }
+
+        const QPointF offset = static_cast<QPointF>(*point) - position;
+        if (QLineF(QPointF(), offset).length() <= kDirectionTolerance)
+        {
+            continue; // un point confondu avec le bout ne décrit aucune des deux droites
+        }
+
+        if (qAbs(offset.x()) <= kDirectionTolerance)
+        {
+            ++vertical;
+        }
+        if (qAbs(offset.y()) <= kDirectionTolerance)
+        {
+            ++horizontal;
+        }
+    }
+
+    if (vertical > 0 && horizontal == 0)
+    {
+        return QPointF(0., 1.);
+    }
+    if (horizontal > 0 && vertical == 0)
+    {
+        return QPointF(1., 0.);
+    }
+
+    return {}; // aucun témoin, ou les deux droites à la fois : le point reste à désigner
+}
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -421,7 +488,7 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
         const OPleatDeparture &departure = departures.at(index);
         OPleatPlace &place = plan.places[index];
 
-        const QVector<SourceItem> region = RegionOf(source, departure);
+        QVector<SourceItem> region = RegionOf(source, departure);
         if (region.isEmpty())
         {
             // A region the selection does not hold is no pleat at all: the two points of the line were not taken with
@@ -429,6 +496,19 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
             // was what it used to answer, with a copy laid exactly on the original.
                         plan.failure = OPleatFailure::EmptyRegion;
             return plan;
+        }
+
+        // A region that answers no side holds nothing but the departure line itself: every object of it lies on the
+        // line. The fabric is then the whole selection — the side is already read from it (`SideOfRegion`) — and the
+        // pleat takes it. A pair clicked at the head of the selection makes the run between its two points the pair
+        // and nothing else: the pleat then carried its own line alone, and every copy of the fabric was laid exactly
+        // on its original. One pleat is the case that has a single answer: with several, the run is what tells them
+        // apart, and widening it would hand the same objects to each of them.
+        if (departures.size() == 1 && origin == OPleatOrigin::FirstArm
+            && AnswerOf(SidesOf(region, departure.first.pointId, departure.second.pointId, data))
+                   == OPleatSide::Undetermined)
+        {
+            region = source;
         }
 
         place.start = SourceIndexOf(source, region.constFirst().id);
@@ -560,14 +640,10 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 const QPointF copy = origin + place.step;                 // and its copy, where the fabric arrives
 
                 const qreal directionLength = QLineF(QPointF(), edge.edgeDirection).length();
-                if (directionLength < kDirectionTolerance)
-                {
-                                        // No edge was read at that point: the cap cannot be built, and a pleat is never built
-                    // halfway. The caller asks the user to designate the point that carries the edge, and only
-                    // comes back when it has one — or says why it could not.
-                    plan.failure = OPleatFailure::UnresolvedEdge;
-                    return plan;
-                }
+                // **Ce que lit la cascade des trois replis est la même chose : une direction utilisable.** Elle se
+                // déclenche donc aussi quand rien n'a été lu du tout — sans quoi le refus tombait avant elle, et un
+                // point que le patron n'a jamais posé sur une arête était refusé sans que la sélection soit consultée.
+                const bool secondSense = edge.secondSense != (rank == 1);
 
                 // **The edge read at the point is the line the departure line is drawn on.** A construction line
                 // through the point is answered, because that is what the tool **of the point** draws — and such a
@@ -579,13 +655,13 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                 // chosen by that side. It happens only where the pleat would be refused, so nothing that is read
                 // today is read differently.
                 QPointF directionHere = edge.edgeDirection;
-                if (qAbs(Dot(directionHere / directionLength, u)) > kPleatParallelCosine)
+                if (directionLength < kDirectionTolerance
+                    || qAbs(Dot(directionHere / directionLength, u)) > kPleatParallelCosine)
                 {
                     // ① a curve carries the edge — the reader is asked with the side the fabric goes; ② the point's
                     // own tool may draw the edge itself. Both are read here.
-                    const bool sense = edge.secondSense != (rank == 1);
                     const QPointF read
-                        = OEdgeReader::Direction(edge.pointId, sense ? -place.normal : place.normal, data);
+                        = OEdgeReader::Direction(edge.pointId, secondSense ? -place.normal : place.normal, data);
                     if (not read.isNull())
                     {
                         directionHere = read;
@@ -601,22 +677,49 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     if (lengthHere <= kDirectionTolerance
                         || qAbs(Dot(directionHere / lengthHere, u)) > kPleatParallelCosine)
                     {
-                        const int way = sense ? 1 : -1; // the sense the cap follows: the point before it, or after
+                        const int way = secondSense ? 1 : -1; // the sense the cap follows: the point before it, or after
                         const QPointF selected = SelectedLine(plan, edge.pointId, edge.position, way, data);
                         if (not selected.isNull())
                         {
                             directionHere = selected;
                         }
                     }
+
+                    // ④ **The straight line the drawing itself gives.** The neighbour of ③ is sometimes on the fold
+                    // itself — the other point of the departure line, a few ranks away — and the line it makes is
+                    // then no edge at all. A point the pattern placed by coordinates alone (the tool that takes the
+                    // X of one point and the Y of another) is on two straight lines and draws none: the points of
+                    // the selection that share its X, or its Y, are what says which of the two the contour follows.
+                    // On a contour that runs straight there, this is the whole answer: the edge is that line, the
+                    // cap is flat, and the notch is walked along it.
+                    const qreal afterSelected = QLineF(QPointF(), directionHere).length();
+                    if (afterSelected <= kDirectionTolerance
+                        || qAbs(Dot(directionHere / afterSelected, u)) > kPleatParallelCosine)
+                    {
+                        const QPointF axis = AxisLine(plan, line, edge.position, data);
+                        if (not axis.isNull())
+                        {
+                            directionHere = axis;
+                        }
+                    }
                 }
 
-                const QPointF e = directionHere / QLineF(QPointF(), directionHere).length();
+                const qreal directionNow = QLineF(QPointF(), directionHere).length();
+                if (directionNow < kDirectionTolerance)
+                {
+                    // Aucune des quatre sources n'a rien donné : le chapeau ne peut pas être construit, et un pli ne
+                    // se construit pas à moitié. L'appelant demande alors le point qui porte l'arête, et ne revient
+                    // que lorsqu'il en a un — ou dit pourquoi il n'a pas pu.
+                    plan.failure = OPleatFailure::UnresolvedEdge;
+                    return plan;
+                }
+
+                const QPointF e = directionHere / directionNow;
                 // **Where a curve carries the edge, it decides first.** A tangent only meets a curve where it is
                 // taken: an edge whose tangent at the point is parallel to the move is *not* flat when the curve it
                 // belongs to bends away from it — and reading it flat would draw no cap at all on an edge that is
                 // plainly there (PleatMid.md, and the pleat taken on its first arm met this first). The flat edge is
                 // the one no curve carries: a straight tracing, whose tangent is the whole of it.
-                const bool secondSense = edge.secondSense != (rank == 1);
 
                 // Where a curve carries the edge, the cap is read on the curve itself: its apex is the point where
                 // that curve meets the fold line — the fold line then runs from edge to edge — and its two sides
@@ -834,6 +937,21 @@ auto OPleatRule::Compose(const QVector<OPleatDeparture> &departures, const QVect
                     if (inward.isNull())
                     {
                         inward = edge.edgeDirection; // the direction read at the point, when nothing else answers
+                    }
+
+                    // Le voisin de la sélection est parfois **sur le pli** — l'autre point de la ligne de départ — et
+                    // sa droite n'est alors aucune arête. La droite que le dessin donne passe avant le refus, comme
+                    // pour le chapeau : un point posé par coordonnées est sur deux droites, et les points de la
+                    // sélection qui partagent son X ou son Y disent laquelle le contour suit.
+                    const qreal hereLength = QLineF(QPointF(), inward).length();
+                    if (hereLength <= kDirectionTolerance
+                        || qAbs(Dot(inward / hereLength, u)) > kPleatParallelCosine)
+                    {
+                        const QPointF axis = AxisLine(plan, line, edge.position, data);
+                        if (not axis.isNull())
+                        {
+                            inward = axis;
+                        }
                     }
 
                     const qreal inwardLength = QLineF(QPointF(), inward).length();

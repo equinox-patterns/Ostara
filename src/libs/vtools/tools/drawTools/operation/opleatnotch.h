@@ -42,7 +42,7 @@
 #include <QString>
 #include <QtGlobal>
 
-#include "../../vgeometry/vabstractcurve.h"
+#include "vgeometry/vabstractcurve.h"
 
 class VContainer;
 class VPointF;

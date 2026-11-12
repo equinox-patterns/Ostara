@@ -48,7 +48,7 @@
 #include <QSharedPointer>
 #include <QtGlobal>
 
-#include "../../vgeometry/vabstractcurve.h"
+#include "vgeometry/vabstractcurve.h"
 #include "opleatrule.h"
 
 class VContainer;

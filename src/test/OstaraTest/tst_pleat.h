@@ -43,7 +43,13 @@ private slots:
     void DepartureLineStandsOnItself();
     void SecondLineIsOneStepOn();
     void PleatCountAddsTheFolds();
+    void TheSelectionTravelsWhenTheLineBoundsNothing();
+    void CapOnACoordinatePointFollowsItsAxis();
     void EveryRefusalSaysWhatToDo();
+    void CapReadsThePieceAndNeverThePath();
+    void CarrierFallsBackToThePathWhenNoPieceEndsThere();
+    void NotchCannotWalkAPathFromItsNode();
+    void CapSidesAreCutOnThePieceThePlanMeasured();
 };
 
 #endif // TST_PLEAT_H
