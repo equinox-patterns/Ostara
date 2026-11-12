@@ -738,6 +738,24 @@ void VToolLine::SetLineColor(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VToolLine::GetLength() const -> std::optional<qreal>
+{
+    // Same resolution as the tooltip: a point that cannot be found must not throw towards the options dock,
+    // which shows the row as empty instead (see VToolOptionsPropertyBrowser, LineProperties).
+    try
+    {
+        const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(firstPoint);
+        const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(secondPoint);
+
+        return QLineF(static_cast<QPointF>(*first), static_cast<QPointF>(*second)).length();
+    }
+    catch (const VExceptionBadId &)
+    {
+        return std::nullopt;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolLine::RefreshPenFromParse(const QString &typeLine, const QString &lineColor)
 {
     if (m_lineType == typeLine && this->lineColor == lineColor)

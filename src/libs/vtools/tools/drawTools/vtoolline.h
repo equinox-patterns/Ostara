@@ -37,6 +37,7 @@
 #include <QString>
 #include <QVariant>
 #include <QtGlobal>
+#include <optional>
 
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vmisc/def.h"
@@ -100,6 +101,13 @@ public:
 
     auto GetLineColor() const -> QString;
     void SetLineColor(const QString &value);
+
+    /** @brief GetLength the distance between the two points, in pattern pixels.
+     *
+     *  A line keeps nothing of its own: it is its two points, so its length is read from them at every call and
+     *  follows a variable edit by itself. A line whose endpoints cannot be resolved has no length, the same
+     *  case the tooltip shows nothing for. */
+    auto GetLength() const -> std::optional<qreal>;
 
     void SetNotes(const QString &notes) override;
 
