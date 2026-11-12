@@ -33,6 +33,8 @@
 
 #include <QScopeGuard>
 
+#include <optional>
+
 #include "../../../undocommands/deltool.h"
 #include "../../../undocommands/savetooloptions.h"
 #include "../../../undocommands/undogroup.h"
@@ -55,14 +57,45 @@ const QString VAbstractOperation::TagDestination = QStringLiteral("destination")
 namespace
 {
 /**
+ * @brief The pair a layer names one object with, or nothing when the tool it answers to names no such pair.
+ *
+ * A layer may only hold pairs (object, tool) the model can ADDRESS: the pairs a tool enumerates — what
+ * `LayerableObjectsOfTool` returns, and what the loading pass judges the file by (`CleanStaleLayerItems`). The
+ * object's own tool is the first place to look, but it is not where the answer always is: an object an operation
+ * BUILDS carries the operation as its id tool, and the figure that draws it enumerates it under its OWN id — the
+ * curve of a mark is `curve1`/`curve2`, the side of a cap likewise, the segment of a cut is `segment1`/`segment2`.
+ * Asked as (object, tool) alone, such an object finds no pair, and what used to be written in its place was the
+ * tool's WHOLE list: the layer then held every object of the operation, those outside the user's selection
+ * included, and `RemoveOriginalsFromOtherLayers` took them out of the layers that did hold them. Measured: a
+ * pleat built on a curve of an earlier pleat's figure put that whole figure in the new layer. The pair is
+ * therefore searched by OBJECT, whatever tool it answers to.
+ *
+ * @param addressable the pairs the tool enumerates
+ * @param objectId the object the layer must name
+ * @return the pair naming that object, or std::nullopt when no pair of the tool names it
+ */
+auto LayerEntryFor(const QVector<QPair<quint32, quint32>> &addressable, quint32 objectId)
+    -> std::optional<QPair<quint32, quint32>>
+{
+    for (const auto &[object, tool] : addressable)
+    {
+        if (object == objectId)
+        {
+            return QPair<quint32, quint32>{object, tool};
+        }
+    }
+
+    return std::nullopt;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
  * @brief VisibilityGroupDataFromSource converts source list to visibility group list.
  *
- * A layer may only hold pairs (object, tool) the model can ADDRESS: the pair a tool enumerates for that object,
- * or — when the tool cannot name that object alone — what the tool does enumerate. A cut point is the case that
- * matters: its two segments are not addressable (`VToolSinglePoint::GroupVisibility` ignores the object it is
- * handed, a cut hides as a whole), and writing the pair anyway is far from harmless — the loading pass judges it
- * stale (`CleanStaleLayerItems`) and deletes it from the file at the next open, in silence. Measured: a rotation
- * built on one segment of a cut put `(14, 13)` in its layer, and the entry was gone after a re-open.
+ * The layer an operation creates holds the objects that were moved, and nothing else: one entry per source, the
+ * pair that names it alone (see LayerEntryFor). An object no pair of its tool names enters no layer at all — a
+ * layer that cannot name it would hold an entry the loading pass deletes at the next open (`CleanStaleLayerItems`),
+ * in silence.
  *
  * @param doc pattern document
  * @param data container with pattern data
@@ -81,17 +114,9 @@ auto VisibilityGroupDataFromSource(VAbstractPattern *doc, const VContainer *data
             const quint32 toolId = data->GetGObject(sItem.id)->getIdTool();
             const QVector<QPair<quint32, quint32>> addressable = doc->LayerableObjectsOfTool(toolId);
 
-            if (addressable.contains({sItem.id, toolId}))
+            if (const auto entry = LayerEntryFor(addressable, sItem.id); entry.has_value())
             {
-                groupData.insert(sItem.id, toolId);
-                continue;
-            }
-
-            // The object itself cannot be named in a layer: what goes in is the tool that carries it, exactly
-            // as the tool creation path writes it.
-            for (const auto &[objectId, objectTool] : addressable)
-            {
-                groupData.insert(objectId, objectTool);
+                groupData.insert(entry->first, entry->second);
             }
         }
         catch (const VExceptionBadId &) // NOLINT(bugprone-empty-catch)
@@ -1243,6 +1268,63 @@ void VAbstractOperation::RefreshCopyPieces()
         {
             ApplyObjectVisibility(object.id); // the copy, then its pieces
         }
+    }
+
+    AttachPiecesToLayers();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VAbstractOperation::AttachPiecesToLayers()
+{
+    if (doc == nullptr || m_pieceOwner.isEmpty())
+    {
+        return;
+    }
+
+    // Which layers each piece has to join: the ones holding the copy it replaces. Collected first, because one
+    // layer may take many pieces and `AddItemsToGroup` re-parses the layers of the piece on every call.
+    QMap<quint32, QVector<QPair<quint32, quint32>>> byGroup;
+
+    for (auto it = m_pieceOwner.cbegin(); it != m_pieceOwner.cend(); ++it)
+    {
+        const quint32 pieceId = it.key();
+        const quint32 copyId = it.value();
+
+        // Only what the canvas draws is layer content: a piece the cut does not show stays out of every layer, and
+        // the copy it belongs to answers for it. The state is the tool's, not the file's (see OCopyPieces::Piece).
+        if (pieceId == NULL_ID || copyId == NULL_ID || not m_pieceShown.value(pieceId, false))
+        {
+            continue;
+        }
+
+        // A piece some layer already names is left exactly where it is — including the empty answer a parse gives
+        // before anything is written, which is why this pass costs nothing on a pattern it has already served.
+        if (not doc->GetGroupsContainingItem(m_id, pieceId, true).isEmpty())
+        {
+            continue;
+        }
+
+        const QMap<quint32, QString> holders = doc->GetGroupsContainingItem(m_id, copyId, true);
+
+        if (holders.isEmpty())
+        {
+            // The copy belongs to no layer either: the piece goes where a new object goes, the active layer.
+            if (const quint32 active = doc->GetActiveGroup(); active != NULL_ID)
+            {
+                byGroup[active].append({pieceId, m_id});
+            }
+            continue;
+        }
+
+        for (auto holder = holders.constBegin(); holder != holders.constEnd(); ++holder)
+        {
+            byGroup[holder.key()].append({pieceId, m_id});
+        }
+    }
+
+    for (auto it = byGroup.cbegin(); it != byGroup.cend(); ++it)
+    {
+        doc->AddItemsToGroup(it.value(), it.key());
     }
 }
 

@@ -1208,6 +1208,10 @@ void VToolSplinePath::SetCutNode(int node, bool cut)
 
     QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
     SaveOption(obj);
+
+    // A ticked node brings pieces into being, and they draw in place of the curve: nothing puts them in a layer
+    // once the tool exists, the load-time passes only run on a file. Ticking is a creation like any other.
+    AttachToActiveLayer();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

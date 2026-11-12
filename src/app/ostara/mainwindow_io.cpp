@@ -1209,16 +1209,22 @@ auto MainWindow::LoadPattern(QString fileName, const QString &customMeasureFile)
         // build carries it too, while the save schema no longer declares it. Silent by design, see the function.
         StripGroupTags(doc);
 
-        // First take out the layer items that no tool of the piece can produce — a pair naming a tool the file no
-        // longer holds, or an object its tool does not define. Both are acted on when a layer is hidden, and the
-        // second one can pin an object of a hidden layer on screen. Silent by design, and it runs BEFORE the two
-        // passes below so they count the orphans on what is left.
-        CleanStaleLayerItems(doc);
-
-        // A cut's two halves are objects of their own for the layers; a file written before that rule names
-        // neither. Give an unlayered half the layers of the curve it replaces, so it stays with the drawing it
-        // takes the place of instead of falling into the automatic "Unnamed" layer.
+        // A cut's two halves, the pieces of an armhole curve and of a segmented spline path, and the pieces a copy
+        // of a cut curve is drawn with are objects of their own for the layers; a file written before that rule
+        // names none of them. Give an unlayered piece the layers of the drawing it replaces, so it stays with it
+        // instead of falling into the automatic "Unnamed" layer.
+        //
+        // This runs FIRST, before the stale entries are taken out, and the order is the rule: a layer that still
+        // names the copy a piece replaces is exactly the layer that piece belongs to, and cutting the copy's entry
+        // beforehand would leave the pass nothing to inherit from.
         CoupleCutSegmentsToBaseLayers(doc);
+
+        // Then take out the layer items that no tool of the piece can produce — a pair naming a tool the file no
+        // longer holds, or an object its tool does not draw. Both are acted on when a layer is hidden, and the
+        // second one can pin an object of a hidden layer on screen; a copy the canvas replaced with its pieces is
+        // one of them, so it leaves the layers here. Silent by design, and it still runs BEFORE the two passes
+        // below so they count the orphans on what is left.
+        CleanStaleLayerItems(doc);
 
         // The automatic layer can be left empty by the pass above (a pair no tool can produce was its only
         // content): it is a technical remnant, not a layer of the piece, and it goes before the normalisation

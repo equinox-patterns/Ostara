@@ -512,8 +512,23 @@ public:
     /// element of its own for them; an operation hides the objects its `<destination>` declares, never its
     /// `<source>`. Pieces, unions and nodes answer to nothing at all and are deliberately left out, rather than
     /// parked in a layer that could never hide them.
-    static auto LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId)
-        -> QVector<QPair<quint32, quint32>>;
+    /// @param doc the pattern, for the one question the element cannot answer alone: a cut's halves are layerable
+    ///        only when that cut draws them, and whether it does is written on the cut's own element. Pass NULL only
+    ///        when no element can be looked up — the pieces a copy draws are then counted by their kind alone.
+    static auto LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId,
+                                       VAbstractPattern *doc = nullptr) -> QVector<QPair<quint32, quint32>>;
+
+    /// The pieces of a copy the canvas actually DRAWS, as its `pieceIds` names them.
+    ///
+    /// An operation's copy of a cut curve is replaced on the canvas by the pieces it was split into, and those
+    /// pieces are what a layer must hold — not the copy, which is then never drawn. Every piece is an object of
+    /// the pattern, but not every one is drawn: a run between two nodes always is, a cut's half only when that
+    /// cut shows its two segments (`showTwoSegments`), the rest of the time the cut replaces nothing and the whole
+    /// curve stays on the canvas.
+    ///
+    /// @param item the `<item>` of the operation's `<destination>` that carries the copy
+    /// @param doc the pattern, to read the cut that names a half — NULL counts the halves as not drawn
+    static auto DrawnPieceIds(const QDomElement &item, VAbstractPattern *doc) -> QVector<quint32>;
 
     /// Whether a `<point>` element is one of the three cut tools.
     ///

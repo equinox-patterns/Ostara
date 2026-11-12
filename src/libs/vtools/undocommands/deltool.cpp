@@ -57,7 +57,7 @@ DelTool::DelTool(VAbstractPattern *doc, quint32 id, QUndoCommand *parent)
     QSet<vidtype> produced{id};
     if (const QDomElement element = doc->FindElementById(id); not element.isNull())
     {
-        for (const auto &object : VAbstractPattern::LayerableObjectsOfTool(element, id))
+        for (const auto &object : VAbstractPattern::LayerableObjectsOfTool(element, id, doc))
         {
             produced.insert(object.second);
         }

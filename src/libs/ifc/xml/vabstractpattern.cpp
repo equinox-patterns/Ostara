@@ -3907,6 +3907,99 @@ auto VAbstractPattern::AddItemsToGroup(const QVector<QPair<quint32, quint32>> &i
     return true;
 }
 
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+/** @brief The ids an encoded piece list carries.
+ *
+ * A curve or a copy that a cut has split keeps the ids of the pieces it draws in an attribute — `portionIds` on a
+ * spline path, `pieceIds` on the item of an operation's destination — and the shape is `key=id` or `key=name=id`,
+ * parts joined by `;` (`OSplinePathPortions::EncodePieces` / `DecodePieces`). libs/ifc cannot reach that class (it
+ * belongs to libs/vtools), so the shape is read here, by the only rule the writer promises: the id is the LAST '='
+ * field of a part.
+ *
+ * @param value the attribute as the file holds it
+ * @return the ids, in the order the attribute names them
+ */
+auto EncodedPieceIds(const QString &value) -> QVector<quint32>
+{
+    QVector<quint32> ids;
+
+    for (const QString &part : value.split(QLatin1Char(';'), Qt::SkipEmptyParts))
+    {
+        const QStringList fields = part.split(QLatin1Char('='));
+        if (fields.size() < 2)
+        {
+            continue;
+        }
+
+        if (const quint32 id = fields.constLast().trimmed().toUInt(); id != NULL_ID)
+        {
+            ids.append(id);
+        }
+    }
+
+    return ids;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VAbstractPattern::DrawnPieceIds(const QDomElement &item, VAbstractPattern *doc) -> QVector<quint32>
+{
+    QVector<quint32> ids;
+
+    const QString value = item.attribute(QStringLiteral("pieceIds"));
+    if (value.isEmpty())
+    {
+        return ids;
+    }
+
+    for (const QString &part : value.split(QLatin1Char(';'), Qt::SkipEmptyParts))
+    {
+        const QStringList fields = part.split(QLatin1Char('='));
+        if (fields.size() < 2)
+        {
+            continue;
+        }
+
+        const QString key = fields.constFirst().trimmed();
+        const quint32 pieceId = fields.constLast().trimmed().toUInt();
+        if (key.isEmpty() || pieceId == NULL_ID)
+        {
+            continue;
+        }
+
+        // A run — the curve between two of its nodes — is always drawn: it IS the copy, cut into the pieces the
+        // figure asks for.
+        if (key.startsWith(QLatin1Char('n')))
+        {
+            ids.append(pieceId);
+            continue;
+        }
+
+        // A half of a cut is drawn only where that cut shows its two segments; otherwise the cut replaces nothing
+        // and the whole curve stays on the canvas. The keys are `c<cut id>-<half>` (OCopyPieces::CutKey), so the
+        // cut is read from the key and asked about its own element.
+        if (key.startsWith(QLatin1Char('c')) && doc != nullptr)
+        {
+            bool ok = false;
+            const quint32 cutId = key.mid(1).section(QLatin1Char('-'), 0, 0).toUInt(&ok);
+            if (not ok || cutId == NULL_ID)
+            {
+                continue;
+            }
+
+            const QDomElement cut = doc->FindElementById(cutId);
+            if (not cut.isNull() && cut.attribute(AttrShowTwoSegments) == trueStr)
+            {
+                ids.append(pieceId);
+            }
+        }
+    }
+
+    return ids;
+}
+
 //---------------------------------------------------------------------------------------------------------------------
 auto VAbstractPattern::IsCutPoint(const QDomElement &pointElement) -> bool
 {
@@ -3923,8 +4016,8 @@ auto VAbstractPattern::IsCutPoint(const QDomElement &pointElement) -> bool
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId)
-    -> QVector<QPair<quint32, quint32>>
+auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, quint32 toolId,
+                                              VAbstractPattern *doc) -> QVector<QPair<quint32, quint32>>
 {
     QVector<QPair<quint32, quint32>> objects;
     if (toolElement.isNull() || toolId == NULL_ID)
@@ -3962,7 +4055,11 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         // the other — so they are enumerated here like any other object of the tool. The loading pass and the
         // dock both read this list: a pair written by the transfer of a single half therefore stays valid.
         // The other point tools that write these attributes do NOT draw their segments (IsCutPoint).
-        if (IsCutPoint(toolElement))
+        //
+        // Only while the cut shows them, though: with the box off the cut replaces nothing, the whole base curve
+        // stays on the canvas and the two halves are not drawn. A layer holds what is drawn, so naming one of them
+        // would put in a layer an object the canvas never shows — the one thing that must not happen.
+        if (IsCutPoint(toolElement) && toolElement.attribute(AttrShowTwoSegments) == trueStr)
         {
             for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
             {
@@ -3980,6 +4077,41 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
     else if (tag == TagLine || tag == TagArc || tag == TagElArc || tag == TagSpline)
     {
         objects.append({toolId, toolId});
+
+        // The armhole curve splits itself at the carrure and DRAWS the two pieces in place of the whole curve
+        // (`segmentAtCarrure`): they are objects of the pattern, exactly as a cut's halves are, and they live as
+        // attributes of the very `<spline>` that draws them. That is the one tool writing them on a curve — every
+        // other one writes them on a `<point>`. Without this, the pieces belonged to no layer at all: no dock could
+        // name them, and the whole "nothing sits outside a layer" rule left them out.
+        //
+        // Only while the box is ticked, though. Unticking it keeps an id only for what was built on that piece,
+        // and a piece nothing draws is not layer content — the same answer the sub-curves of an intersection point
+        // get, and the reason a layer never counts an object the canvas cannot show.
+        if (tag != TagSpline || toolElement.attribute(AttrSegmentAtCarrure) == trueStr)
+        {
+            for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
+            {
+                if (not toolElement.hasAttribute(attribute))
+                {
+                    continue;
+                }
+                if (const quint32 segmentId = toolElement.attribute(attribute).toUInt(); segmentId != NULL_ID)
+                {
+                    objects.append({segmentId, toolId});
+                }
+            }
+        }
+
+        // A spline path segmented at its nodes draws pieces too, and keeps their ids in `portionIds`. Same reason as
+        // above: a drawn piece that no layer can name is a drawing no layer owns, and the loading passes cannot
+        // even see it.
+        if (toolElement.hasAttribute(AttrPortionIds))
+        {
+            for (const quint32 portionId : EncodedPieceIds(toolElement.attribute(AttrPortionIds)))
+            {
+                objects.append({portionId, toolId});
+            }
+        }
     }
     else if (tag == TagOperation)
     {
@@ -3989,6 +4121,19 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
         for (QDomElement item = destination.firstChildElement(QStringLiteral("item")); !item.isNull();
              item = item.nextSiblingElement(QStringLiteral("item")))
         {
+            // A copy a cut has split is not drawn at all: the canvas shows the pieces it was replaced with
+            // (OCopyPieces), and a layer holds what the canvas shows. The copy gives way to them — the runs the
+            // curve is cut into, and the halves of the cuts that show their two segments — so a layer never names
+            // an object nobody can see, and the delete of a layer never counts one either.
+            if (item.hasAttribute(QStringLiteral("pieceIds")))
+            {
+                for (const quint32 pieceId : DrawnPieceIds(item, doc))
+                {
+                    objects.append({pieceId, toolId});
+                }
+                continue;
+            }
+
             if (const quint32 objectId = item.attribute(AttrIdObject).toUInt(); objectId != NULL_ID)
             {
                 objects.append({objectId, toolId});
@@ -4003,6 +4148,20 @@ auto VAbstractPattern::LayerableObjectsOfTool(const QDomElement &toolElement, qu
                 resultId != NULL_ID)
             {
                 objects.append({resultId, resultId});
+            }
+        }
+
+        // The places a move by batch passes through are objects of the operation, written in an `intermediates`
+        // element of their own and named by their `point` attribute. They are drawn — the user asked for them —
+        // and they were the one family of operation objects no branch here knew: their pairs were judged stale
+        // and taken out of the layers at the next open, in silence.
+        const QDomElement intermediates = toolElement.firstChildElement(QStringLiteral("intermediates"));
+        for (QDomElement item = intermediates.firstChildElement(QStringLiteral("item")); !item.isNull();
+             item = item.nextSiblingElement(QStringLiteral("item")))
+        {
+            if (const quint32 pointId = item.attribute(QStringLiteral("point")).toUInt(); pointId != NULL_ID)
+            {
+                objects.append({pointId, toolId});
             }
         }
 
@@ -4078,7 +4237,7 @@ auto VAbstractPattern::LayerableObjectsOfTool(quint32 toolId) -> QVector<QPair<q
 
     if (const QDomElement element = FindElementById(toolId); not element.isNull())
     {
-        return LayerableObjectsOfTool(element, toolId);
+        return LayerableObjectsOfTool(element, toolId, this);
     }
 
     // No element of its own: only a line an operation produced is in that state. The tool exists — VToolLine was

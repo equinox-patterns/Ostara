@@ -900,8 +900,11 @@ auto CollectLayeredPairs(const QDomElement &draw) -> QMap<quint32, QSet<quint32>
 //---------------------------------------------------------------------------------------------------------------------
 // Every object of one piece that a layer can actually hold, as an (objectId, toolId) pair. The reading itself lives
 // on the model — VAbstractPattern::LayerableObjectsOfTool — because the tool creation path needs the very same rule.
+// The document goes with it: a copy's pieces are layerable, but only those the canvas actually draws, and that
+// question is answered by the cut each piece comes from.
 //---------------------------------------------------------------------------------------------------------------------
-auto ContainerObjects(const QDomElement &container) -> QVector<QPair<quint32, quint32>>
+auto ContainerObjects(const QDomElement &container, VAbstractPattern *doc)
+    -> QVector<QPair<quint32, quint32>>
 {
     QVector<QPair<quint32, quint32>> objects;
 
@@ -914,7 +917,7 @@ auto ContainerObjects(const QDomElement &container) -> QVector<QPair<quint32, qu
         {
             continue;
         }
-        objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId);
+        objects += VAbstractPattern::LayerableObjectsOfTool(element, toolId, doc);
     }
 
     return objects;
@@ -956,7 +959,7 @@ auto CleanStaleLayerItems(VAbstractPattern *doc) -> bool
         for (const QDomElement &container : {draw.firstChildElement(VAbstractPattern::TagCalculation),
                                              draw.firstChildElement(VAbstractPattern::TagModeling)})
         {
-            for (const auto &[objectId, toolId] : ContainerObjects(container))
+            for (const auto &[objectId, toolId] : ContainerObjects(container, doc))
             {
                 drawable[toolId].insert(objectId);
             }
@@ -1104,6 +1107,9 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
     // the curve they draw. This pass gives an unlayered half the layers of the base curve it replaces: the layers
     // of the drawing it takes the place of. It only seeds what no layer names, so a half the user has filed
     // somewhere is left exactly where it is.
+    //
+    // The two pieces of an armhole curve split at the carrure are in the same state, and for the same reason: a
+    // file written before the layers knew them names neither, and they draw the curve they belong to.
     if (doc == nullptr)
     {
         return false;
@@ -1132,7 +1138,7 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
         QMap<quint32, quint32> objectTool;
         for (const QDomElement &container : {calculation, modeling})
         {
-            for (const auto &[objectId, toolId] : ContainerObjects(container))
+            for (const auto &[objectId, toolId] : ContainerObjects(container, doc))
             {
                 objectTool.insert(objectId, toolId);
             }
@@ -1145,7 +1151,10 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
         {
             // The other point tools write segment1Id/segment2Id too, without drawing anything: their ids are
             // graph objects, and seeding them here would file objects nobody can see (point A13, Buste.ostara).
-            if (not VAbstractPattern::IsCutPoint(point))
+            // A cut that does not show its two segments draws neither half for the same reason: the whole base
+            // curve stays on the canvas, and the model does not offer the halves to a layer (LayerableObjectsOfTool).
+            if (not VAbstractPattern::IsCutPoint(point)
+                || point.attribute(AttrShowTwoSegments) != trueStr)
             {
                 continue;
             }
@@ -1198,6 +1207,114 @@ auto CoupleCutSegmentsToBaseLayers(VAbstractPattern *doc) -> bool
                 }
             }
         }
+
+        // The armhole curve splits itself at the carrure and DRAWS the two pieces in place of the whole curve; a
+        // spline path segmented at its nodes draws its own pieces the same way. Both keep them as attributes of
+        // the very `<spline>` that draws them (`segment1Id`/`segment2Id` for the first, `portionIds` for the
+        // second), and a file written before the layers knew them names neither — the rule being that nothing
+        // sits outside a layer, not even a piece a setting brought into being. Same treatment as a cut's halves,
+        // and for the same reason: an unlayered piece takes the layers of the curve it replaces, so it stays with
+        // the drawing it belongs to instead of falling into the automatic layer; a piece the user has filed
+        // somewhere is left exactly where it is.
+        for (QDomElement spline = calculation.firstChildElement(VAbstractPattern::TagSpline); !spline.isNull();
+             spline = spline.nextSiblingElement(VAbstractPattern::TagSpline))
+        {
+            const quint32 splineId = spline.attribute(VDomDocument::AttrId).toUInt();
+            if (splineId == NULL_ID)
+            {
+                continue;
+            }
+
+            QVector<quint32> pieces;
+            for (const QString &attribute : {AttrSegment1Id, AttrSegment2Id})
+            {
+                if (const quint32 pieceId = spline.attribute(attribute).toUInt(); pieceId != NULL_ID)
+                {
+                    pieces.append(pieceId);
+                }
+            }
+
+            if (spline.hasAttribute(AttrPortionIds))
+            {
+                // The shape `OSplinePathPortions::EncodePieces` writes: `key=id` or `key=name=id`, joined by `;`.
+                // libs/ifc reads the same string for the layers (LayerableObjectsOfTool); here the id is what the
+                // pass needs, and it is the last '=' field of a part.
+                const QStringList parts
+                    = spline.attribute(AttrPortionIds).split(QLatin1Char(';'), Qt::SkipEmptyParts);
+                for (const QString &part : parts)
+                {
+                    const QStringList fields = part.split(QLatin1Char('='));
+                    if (fields.size() < 2)
+                    {
+                        continue;
+                    }
+                    if (const quint32 pieceId = fields.constLast().trimmed().toUInt(); pieceId != NULL_ID)
+                    {
+                        pieces.append(pieceId);
+                    }
+                }
+            }
+
+            for (const quint32 pieceId : std::as_const(pieces))
+            {
+                if (layered.value(splineId).contains(pieceId))
+                {
+                    continue;
+                }
+
+                for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup); !group.isNull();
+                     group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+                {
+                    if (GroupHoldsPair(group, splineId, splineId))
+                    {
+                        changed = AppendPairIfMissing(doc, group, splineId, pieceId) || changed;
+                    }
+                }
+            }
+        }
+
+        // An operation's copy of a cut curve is drawn by the pieces it was split into, and a layer holds what is
+        // drawn — the copy itself is then invisible and has no business in one. The pieces take the layers of the
+        // copy they replace, and only the pieces actually drawn are named (DrawnPieceIds). The copy's own entry is
+        // left to CleanStaleLayerItems, which runs AFTER this pass for exactly that reason.
+        for (QDomElement operation = calculation.firstChildElement(VAbstractPattern::TagOperation);
+             !operation.isNull(); operation = operation.nextSiblingElement(VAbstractPattern::TagOperation))
+        {
+            const quint32 operationId = operation.attribute(VDomDocument::AttrId).toUInt();
+            if (operationId == NULL_ID || groups.isNull())
+            {
+                continue;
+            }
+
+            const QDomElement destination = operation.firstChildElement(QStringLiteral("destination"));
+            for (QDomElement item = destination.firstChildElement(QStringLiteral("item")); !item.isNull();
+                 item = item.nextSiblingElement(QStringLiteral("item")))
+            {
+                const quint32 copyId = item.attribute(AttrIdObject).toUInt();
+                const QVector<quint32> pieces = VAbstractPattern::DrawnPieceIds(item, doc);
+                if (copyId == NULL_ID || pieces.isEmpty())
+                {
+                    continue;
+                }
+
+                for (const quint32 pieceId : pieces)
+                {
+                    if (layered.value(operationId).contains(pieceId))
+                    {
+                        continue;
+                    }
+
+                    for (QDomElement group = groups.firstChildElement(VAbstractPattern::TagGroup);
+                         !group.isNull(); group = group.nextSiblingElement(VAbstractPattern::TagGroup))
+                    {
+                        if (GroupHoldsPair(group, operationId, copyId))
+                        {
+                            changed = AppendPairIfMissing(doc, group, operationId, pieceId) || changed;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     return changed;
@@ -1234,7 +1351,7 @@ auto NormalizeUnlayeredObjects(VAbstractPattern *doc) -> bool
         }
 
         // Every object of the piece a layer could hold, as (objectId, toolId).
-        const QVector<QPair<quint32, quint32>> objects = ContainerObjects(calculation);
+        const QVector<QPair<quint32, quint32>> objects = ContainerObjects(calculation, doc);
 
         if (objects.isEmpty())
         {

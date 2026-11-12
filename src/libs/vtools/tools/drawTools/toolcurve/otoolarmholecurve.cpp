@@ -132,6 +132,18 @@ auto OToolArmholeCurve::Create(OToolArmholeCurveInitData initData) -> OToolArmho
         InitSplineToolConnections(initData.scene, _spl);
         VAbstractPattern::AddTool(initData.id, _spl);
         _spl->RebuildSegments();
+
+        // The pieces are born HERE, after the constructor's ToolCreation has already attached what the tool holds
+        // to the active layer: at that moment the element carried no `segment1Id`/`segment2Id` (the rebuild below
+        // is what allocates and writes them), so the two sub-curves were left out and drew themselves outside
+        // every layer. They are drawn in place of the whole curve, so they belong where every object created from
+        // the interface goes. Only for a creation from the interface: a file's pieces are filed once, at load, by
+        // CoupleCutSegmentsToBaseLayers, which gives an unlayered piece the layers of the curve it replaces.
+        if (initData.typeCreation == Source::FromGui)
+        {
+            _spl->AttachToActiveLayer();
+        }
+
         return _spl;
     }
     return nullptr;
@@ -406,6 +418,10 @@ void OToolArmholeCurve::SetSegmentAtCarrure(bool segment)
 
     QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
     SaveOption(obj);
+
+    // The pieces a tick just brought into being are drawn in place of the curve, and nothing puts them in a layer
+    // once the tool exists: the load-time passes only run on a file. Ticking the box is a creation like any other.
+    AttachToActiveLayer();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

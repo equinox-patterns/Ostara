@@ -795,7 +795,8 @@ void OToolSpread::SetDisplayShown(bool show)
         QDomElement const element = doc->FindElementById(m_id, getTagName());
         if (element.isElement())
         {
-            doc->AddItemsToGroup(VAbstractPattern::LayerableObjectsOfTool(element, m_id), doc->GetActiveGroup());
+            doc->AddItemsToGroup(VAbstractPattern::LayerableObjectsOfTool(element, m_id, doc),
+                                 doc->GetActiveGroup());
         }
     }
 }

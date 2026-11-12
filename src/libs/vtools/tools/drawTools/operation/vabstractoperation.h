@@ -230,6 +230,14 @@ protected:
      *  click opens the operation. Called whenever the copies are drawn again. */
     void RefreshCopyPieces();
 
+    /** @brief Give every piece the canvas DRAWS the layers of the copy it replaces.
+     *
+     *  A layer holds what is drawn, and the pieces are what is drawn where their copy was. Filing them only at
+     *  load would leave them outside every layer until the file is reopened — the one state the layers exist to
+     *  prevent. Called from RefreshCopyPieces, which is where the pieces are born; a piece some layer already
+     *  names is left where it is, so a parse that changes nothing writes nothing. */
+    void AttachPiecesToLayers();
+
     /** @brief The pieces of the copies: the copy each one belongs to, and whether it is drawn. */
     QHash<quint32, quint32> m_pieceOwner{};
     QHash<quint32, bool> m_pieceShown{};

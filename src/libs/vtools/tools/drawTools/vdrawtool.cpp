@@ -632,7 +632,8 @@ auto VDrawTool::GroupObjects(quint32 itemId) const -> QVector<QPair<quint32, qui
     // to the object the menu was opened on, which is what this path has always written.
     if (const QDomElement element = doc->FindElementById(getId(), getTagName()); not element.isNull())
     {
-        const QVector<QPair<quint32, quint32>> objects = VAbstractPattern::LayerableObjectsOfTool(element, getId());
+        const QVector<QPair<quint32, quint32>> objects
+            = VAbstractPattern::LayerableObjectsOfTool(element, getId(), doc);
         if (not objects.isEmpty())
         {
             // An operation produces a SET of copies, each an object of its own, and a click works on the one it

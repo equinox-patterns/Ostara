@@ -227,6 +227,11 @@ void VToolCut::SetShowTwoSegments(bool value)
 
     QSharedPointer<VGObject> obj = VAbstractTool::data.GetGObject(m_id);
     SaveOption(obj);
+
+    // Ticking the box is the moment the two halves come onto the canvas, and a layer holds what the canvas draws:
+    // nothing else would put them in one once the tool exists, the loading passes only run on a file. Unticking
+    // attaches nothing, the halves no longer being layerable (LayerableObjectsOfTool).
+    AttachToActiveLayer();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
