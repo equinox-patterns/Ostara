@@ -185,6 +185,15 @@ public slots:
     /// viewport would be destroyed whenever the viewport is replaced.
     void SetCornerLabel(const QString &text);
 
+    /// @brief Ends any pan gesture and gives the pointer back to the arrow.
+    ///
+    /// A gesture lives in three flags and in the drag mode, and every one of them is cleared by the release
+    /// event that ends it. That event can be lost — a dialog takes it, the scene is rebuilt under the pointer,
+    /// the mode changes — and the closed hand it left behind then belongs to the one view all three modes
+    /// share, so it follows the user everywhere. A mode switch starts a gesture-free canvas; this is what makes
+    /// that true.
+    void ResetPanGesture();
+
     /// @brief ZoomFitBest, framed with @p marginRatio of the content left clear on each side.
     ///
     /// A true fit runs the content against all four edges of the viewport, because the scale

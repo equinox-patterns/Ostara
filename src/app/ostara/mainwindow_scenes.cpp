@@ -150,6 +150,11 @@ void MainWindow::switchScene(Draw mode)
 {
     const auto resource = QStringLiteral("icon");
 
+    // **On a quitté un canevas, pas un geste.** Les trois modes se partagent la même vue : un pan dont le
+    // relâchement s'est perdu dans le changement de mode laisserait sa main fermée sur les trois. La nouvelle
+    // scène part donc sans geste et sur la flèche.
+    ui->view->ResetPanGesture();
+
     switch (mode)
     {
         case Draw::Calculation:
