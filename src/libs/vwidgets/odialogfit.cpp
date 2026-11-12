@@ -72,6 +72,7 @@ const char kCapProperty[] = "oDialogFitCap";
 const char kCapWidthProperty[] = "oDialogFitCapWidth";
 const char kPendingProperty[] = "oDialogFitPending";
 const char kWrappedProperty[] = "oDialogFitWrapped";
+const char kMetProperty[] = "oDialogFitMet";
 
 // Every dialog the policy has met, with what it asked for and what it got. Written out once, when the
 // application quits: one block to read, instead of a hunt through the log for the ones that went wrong.
@@ -269,6 +270,12 @@ auto ODialogFit::Apply(QWidget *dialog, const QRect &available) -> Verdict
         ~Reset() { applying = false; }
     } const reset;
 
+    // **Met.** From here on the dialog is the policy's, whatever the verdict turns out to be: a frame that could
+    // not be measured at its show (a screen not resolved yet, an empty frame) must not be abandoned for the
+    // session, or a LayoutRequest would never bring it back here. The cap property is written at the END of this
+    // method, so it cannot be the marker a skipped pass leaves behind.
+    dialog->setProperty(kMetProperty, true);
+
     // Invariant 2 first: compacting a form row changes how tall the dialog wants to be, so it has
     // to happen before anything is measured.
     CompactFormRows(dialog);
@@ -369,8 +376,17 @@ bool ODialogFit::eventFilter(QObject *watched, QEvent *event)
             ScheduleRefit(widget);
             break;
         case QEvent::LayoutRequest:
+            // **At once.** The growth is over when this arrives, and a refit put off to the next turn of the loop
+            // is a refit the user — and a caller that waits — may never see: on cocoa the zero-timer was not
+            // served while the event queue still held the show and resize events of the rows just added, so a
+            // dialog that grew stayed too tall. `Apply` guards itself (`applying`), so coming in here is safe.
+            if (widget->property(kMetProperty).toBool())
+            {
+                Apply(widget, AvailableFor(widget));
+            }
+            break;
         case QEvent::ScreenChangeInternal:
-            if (widget->property(kCapProperty).isValid())
+            if (widget->property(kMetProperty).toBool())
             {
                 ScheduleRefit(widget);
             }

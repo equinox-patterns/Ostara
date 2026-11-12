@@ -397,13 +397,16 @@ void TST_DialogFit::AContentThatGrowsAfterTheShowIsFitted()
     {
         form->addRow(new QLabel(QStringLiteral("Late %1:").arg(i), &dialog), new QLineEdit(&dialog));
     }
-    QTest::qWait(200);
+    // The refit is asynchronous by nature: the dialog learns of its new size from a layout request, and the
+    // policy answers it in the event loop. Waiting a fixed 200 ms assumed the loop was idle then — on a machine
+    // running the whole suite in parallel it is not, and the test failed on a policy that had simply not been
+    // asked yet. The question is whether the dialog ENDS UP scrollable, so it is asked until the answer comes.
+    QTRY_VERIFY_WITH_TIMEOUT(dialog.findChild<QScrollArea *>() != nullptr, 5000);
 
     const QScreen *screen = dialog.screen();
     QVERIFY(screen != nullptr);
     const int available = screen->availableGeometry().height();
 
-    QVERIFY2(dialog.findChild<QScrollArea *>() != nullptr, "the grown content was not made scrollable");
     QVERIFY2(dialog.height() <= available,
              qPrintable(QStringLiteral("the dialog is %1 px tall on a %2 px screen").arg(dialog.height()).arg(available)));
 }
