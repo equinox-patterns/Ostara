@@ -259,17 +259,21 @@ void OPieceGroupHolderItem::RefreshMemberShapes(const OPieceGroup &group)
             }
 
             MemberShape shape;
-            shape.mainPath = tool->path();
-            shape.seamAllowance = tool->SeamAllowancePath();
-            shape.passmarks = tool->PassmarksPath();
-            shape.placeLabels = tool->PlaceLabelsPath();
+            // The stack draws the member as the group will export and print it. A member shown
+            // mirrored is therefore reflected here too — same axis, same paths, no second rule.
+            const QTransform mirror = tool->DisplayMirror();
+            shape.mirror = mirror;
+            shape.mainPath = mirror.map(tool->path());
+            shape.seamAllowance = mirror.map(tool->SeamAllowancePath());
+            shape.passmarks = mirror.map(tool->PassmarksPath());
+            shape.placeLabels = mirror.map(tool->PlaceLabelsPath());
             // **The group's fold line is the chosen member's.** Only that member gives its line to
             // the stack; the others keep theirs where their own piece is edited.
             if (group.m_foldLineMemberId == pieceId)
             {
-                shape.mirrorLine = tool->MirrorLinePath();
-                shape.foldLineMark = tool->FoldLineMarkPath();
-                shape.foldLineLabel = tool->FoldLineLabelPath();
+                shape.mirrorLine = mirror.map(tool->MirrorLinePath());
+                shape.foldLineMark = mirror.map(tool->FoldLineMarkPath());
+                shape.foldLineLabel = mirror.map(tool->FoldLineLabelPath());
                 shape.foldLineCaptions = tool->FoldLineCaptions();
             }
             shape.pen = tool->pen();
@@ -280,7 +284,7 @@ void OPieceGroupHolderItem::RefreshMemberShapes(const OPieceGroup &group)
             const QVector<QGraphicsPathItem *> internalPaths = tool->InternalPathItems();
             for (const QGraphicsPathItem *internalPath : internalPaths)
             {
-                shape.internalPaths.append(internalPath->path());
+                shape.internalPaths.append(mirror.map(internalPath->path()));
             }
             m_memberShapes.append(shape);
         }
@@ -310,7 +314,21 @@ void OPieceGroupHolderItem::RefreshMemberShapes(const OPieceGroup &group)
             item->setFont(caption.font);
             item->setText(caption.text);
             item->setBrush(QBrush(shape.pen.color()));
-            item->setTransform(caption.transform);
+            QTransform transform = caption.transform;
+            if (not shape.mirror.isIdentity())
+            {
+                // Same rule as on the piece: the caption follows the mirror, its words do not. The
+                // local reflection is appended (it acts in the caption's own frame, about its own
+                // centre), and the member's reflection is prefixed, which lands it on the mirrored
+                // side. Two reflections, one upright caption.
+                const QRectF rect = item->boundingRect();
+                QTransform local;
+                local.translate(rect.center().x(), 0.0);
+                local.scale(-1.0, 1.0);
+                local.translate(-rect.center().x(), 0.0);
+                transform = shape.mirror * transform * local;
+            }
+            item->setTransform(transform);
             item->setPos(shape.shift);
             item->show();
             ++captionIndex;

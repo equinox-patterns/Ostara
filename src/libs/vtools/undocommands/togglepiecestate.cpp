@@ -120,6 +120,8 @@ void TogglePieceForceFlipping::undo()
     {
         qDebug("Can't get detail by id = %u.", m_id);
     }
+
+    emit Toggled(m_id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -139,6 +141,8 @@ void TogglePieceForceFlipping::redo()
     {
         qDebug("Can't get detail by id = %u.", m_id);
     }
+
+    emit Toggled(m_id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

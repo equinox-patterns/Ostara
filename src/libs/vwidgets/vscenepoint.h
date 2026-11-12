@@ -32,6 +32,7 @@
 #define VSCENEPOINT_H
 
 #include <QGraphicsEllipseItem>
+#include <QTransform>
 #include <QtGlobal>
 
 #include "../vmisc/def.h"
@@ -104,6 +105,13 @@ public:
      */
     void SetPointFillEnabled(bool fill);
 
+    /** @brief Keep this point's label readable while its piece is shown mirrored.
+     *
+     * The tool reflects its children; the label's place follows the point, its words must not. Only
+     * the label is touched — the point itself is a mark, and a mark mirrored is a mark.
+     */
+    void SetLabelDisplayMirror(bool mirrored);
+
 protected:
     /** @brief namePoint point label. */
     VGraphicsSimpleTextItem *m_namePoint; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
@@ -136,6 +144,17 @@ private:
     Q_DISABLE_COPY_MOVE(VScenePoint) // NOLINT
 
     void ScaleMainPenWidth(qreal scale);
+
+    /** @brief Place the label on a mirrored piece: the mirrored box, the words upright.
+     *
+     * ⚠️ **About the middle of the label, never about its origin.** The label is counter-scaled to
+     * keep a constant size on screen, so its width in the piece's frame is its local width times that
+     * scale. Reflected about its own origin the name comes out exactly one label-width beside the
+     * place the leader line points at — the line right, the word next to it.
+     */
+    void ApplyLabelMirror();
+
+    bool m_labelMirrored{false}; // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 
     VColorRole m_role;
 };

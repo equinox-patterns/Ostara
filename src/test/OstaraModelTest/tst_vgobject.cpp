@@ -154,3 +154,33 @@ void TST_VGObject::TestIsPointOnLineviaPDP() const
     QCOMPARE(res, excpect);
 }
 
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VGObject::TestVerticalMirrorMapsAroundTheAxis() const
+{
+    const qreal axis = 40.0;
+    const QTransform mirror = VGObject::VerticalMirror(axis);
+
+    QCOMPARE(mirror.map(QPointF(10.0, 5.0)), QPointF(70.0, 5.0));
+    QCOMPARE(mirror.map(QPointF(axis, 0.0)), QPointF(axis, 0.0)); // a point on the axis does not move
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VGObject::TestVerticalMirrorLeavesARectInPlace() const
+{
+    const QRectF rect(10.0, 5.0, 60.0, 30.0);
+    const QTransform mirror = VGObject::VerticalMirror(rect.center().x());
+
+    // The piece turns over and stays exactly where it was: this is what lets the mirror be a state of
+    // DRAWING only, with no mx/my, no alignment and no stored coordinate to touch.
+    QCOMPARE(mirror.mapRect(rect), rect);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VGObject::TestVerticalMirrorIsItsOwnInverse() const
+{
+    const QTransform mirror = VGObject::VerticalMirror(12.5);
+    const QPointF point(3.0, -7.0);
+
+    QCOMPARE(mirror.map(mirror.map(point)), point);
+}

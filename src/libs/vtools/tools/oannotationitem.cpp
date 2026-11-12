@@ -27,6 +27,7 @@
 #include "oannotationitem.h"
 
 #include "../../vgeometry/ocontainment.h"
+#include "../../vwidgets/global.h"
 
 #include <QApplication>
 #include <QFontInfo>
@@ -151,6 +152,29 @@ void OAnnotationItem::SetReadOnly(bool readOnly)
 {
     setFlag(ItemIsMovable, not readOnly);
     setAcceptHoverEvents(not readOnly);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OAnnotationItem::SetDisplayMirror(bool mirrored)
+{
+    // Re-setting a transform re-indexes the whole item, so it only happens on a real change — and
+    // a resize IS one: the reflection is taken about the middle of the box, so its width is part of
+    // the matrix.
+    if (m_mirrored == mirrored && qFuzzyCompare(m_mirrorBoxWidth, rect().width()))
+    {
+        return;
+    }
+
+    m_mirrored = mirrored;
+    m_mirrorBoxWidth = rect().width();
+    m_displayMirror = QTransform();
+    if (mirrored)
+    {
+        // About the middle of the box, not its corner — see OInfoBlockItem::SetDisplayMirror.
+        m_displayMirror.translate(rect().width(), 0.0);
+        m_displayMirror.scale(-1.0, 1.0);
+    }
+    setTransform(m_displayMirror);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -415,7 +439,7 @@ void OAnnotationItem::FixAnchorPosition()
     // changed, so the fixed edge is at the new rect boundary. mapToScene
     // accounts for the full transform (pos + preview scale + rotation).
     const QPointF newAnchorScene = mapToScene(AnchorLocal(m_activeHandle, rect()));
-    setPos(pos() - (newAnchorScene - m_anchorScene));
+    setPos(pos() - ParentDelta(this, m_anchorScene, newAnchorScene));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -475,7 +499,7 @@ void OAnnotationItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             ratio = (std::max)(ratio, kMinSize / (std::max)(m_origH, 1.0));
             m_previewW = m_origW * ratio;
             m_previewH = m_origH * ratio;
-            setTransform(QTransform().fromScale(ratio, ratio));
+            setTransform(m_displayMirror * QTransform().fromScale(ratio, ratio));
         }
         else
         {
@@ -510,7 +534,7 @@ void OAnnotationItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         return;
     }
 
-    setPos(m_dragStartPos + (event->scenePos() - m_dragStartScene));
+    setPos(m_dragStartPos + ParentDelta(this, m_dragStartScene, event->scenePos()));
     ContainPosition();
     event->accept();
 }
@@ -522,7 +546,7 @@ void OAnnotationItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         const qreal finalW = m_previewW;
         const qreal finalH = m_previewH;
-        setTransform(QTransform());
+        setTransform(m_displayMirror);
         setRect(0, 0, finalW, finalH);
         m_activeHandle = Handle::None;
         if (qAbs(finalW - m_origW) > kMinResizeDelta || qAbs(finalH - m_origH) > kMinResizeDelta)

@@ -46,6 +46,23 @@ inline auto DefPointRadiusPixel() -> qreal
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto ParentDelta(const QGraphicsItem *item, const QPointF &fromScene, const QPointF &toScene) -> QPointF
+{
+    if (item == nullptr)
+    {
+        return toScene - fromScene;
+    }
+
+    const QGraphicsItem *parent = item->parentItem();
+    if (parent == nullptr)
+    {
+        return toScene - fromScene;
+    }
+
+    return parent->mapFromScene(toScene) - parent->mapFromScene(fromScene);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto SceneScale(QGraphicsScene *scene) -> qreal
 {
     qreal scale = 1;

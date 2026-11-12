@@ -26,6 +26,8 @@
 
 #include "oexportcanvas.h"
 
+#include "vgeometry/odisplaymirror.h"
+
 #include <QFontMetricsF>
 #include <QGraphicsLineItem>
 #include <QGraphicsPathItem>
@@ -793,13 +795,9 @@ struct MirroredDecor
 auto MirrorDecor(const QPointF &topLeft, const QSizeF &size, qreal rotation, qreal axisX)
     -> MirroredDecor
 {
-    QTransform turn;
-    turn.rotate(-rotation); // the child's own rotation, as it will be applied to it
-
-    // Where the box's top-right corner lands in the carrier's frame — the point that becomes the new
-    // top-left once the box is reflected.
-    const QPointF topRight = topLeft + turn.map(QPointF(size.width(), 0.0));
-    return {QPointF(2.0 * axisX - topRight.x(), topRight.y()), -rotation};
+    // One rule, three canvases: the arithmetic lives in ODisplayMirror so the Graded canvas places a
+    // cartouche exactly where this one does (see that header for the derivation).
+    return {ODisplayMirror::Placement(topLeft, size, rotation, axisX), -rotation};
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -26,6 +26,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "vgeometry/odisplaymirror.h"
 #include "core/savegradedrangecontent.h"
 #include "mainwindowsnogui.h"
 #include "mainwindow_graded_helpers.h"
@@ -132,10 +133,15 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
     // Shared builder: instantiate one OInfoBlockItem per active block of an owner, from the
     // Details base geometry or the per-range override, and wire move/resize to the range.
     constexpr qreal kBlockStackingGap = 12.0;
-    auto BuildOwnerBlocks = [this, &range](QGraphicsItem *owner, quint32 ownerId, bool isGroup,
-                                           const OInfoBlockData &baseData,
-                                           const OInfoBlockEffectiveState &state) {
+    auto BuildOwnerBlocks = [this, &range, piecesMap](QGraphicsItem *owner, quint32 ownerId, bool isGroup,
+                                                      const OInfoBlockData &baseData,
+                                                      const OInfoBlockEffectiveState &state) {
         const QPointF center = owner->boundingRect().center();
+        // A piece shown mirrored is drawn reflected, and its cartouche is a CHILD of it: the paths
+        // carry the reflection, the child does not. The box is therefore placed where the reflection
+        // would have put it and drawn upright — the axis is the piece's own centre, which the
+        // reflection leaves on itself.
+        const bool mirrored = isGroup ? false : GradedPieceIsMirrored(piecesMap, ownerId);
         const QList<int> blockNumbers = state.blockContent.keys();
         for (int block : blockNumbers)
         {
@@ -179,6 +185,13 @@ void MainWindow::RefreshGradedReferenceInfoBlocks(quint32 onlyPieceId, quint32 o
             if (!override.valid && !baseData.HasStoredGeometry(block))
             {
                 geom.pos = center + QPointF(0.0, (block - 1) * (geom.height + kBlockStackingGap));
+            }
+
+            if (mirrored)
+            {
+                geom.pos = ODisplayMirror::Placement(geom.pos, QSizeF(geom.width, geom.height), geom.rotation,
+                                                     center.x());
+                geom.rotation = -geom.rotation;
             }
 
             auto *blk = new OInfoBlockItem(block, owner);

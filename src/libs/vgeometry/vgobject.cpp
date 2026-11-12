@@ -572,6 +572,18 @@ auto VGObject::GetLengthContour(const QVector<QPointF> &contour, const QVector<Q
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto VGObject::VerticalMirror(qreal axisX) -> QTransform
+{
+    // A reflection, not a rotation: the piece is turned over, not spun. Written the way Qt reads it
+    // — the last call is the first applied — so that a point x lands on `2 * axisX - x`.
+    QTransform matrix;
+    matrix.translate(axisX, 0.0);
+    matrix.scale(-1.0, 1.0);
+    matrix.translate(-axisX, 0.0);
+    return matrix;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VGObject::FlippingMatrix(const QLineF &axis) -> QTransform
 {
     QTransform matrix;

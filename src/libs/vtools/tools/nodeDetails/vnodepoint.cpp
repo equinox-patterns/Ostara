@@ -493,7 +493,7 @@ auto VNodePoint::InitContextMenu(QMenu *menu, vidtype pieceId, RemoveStatus stat
         AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "In layout"), detail.IsInLayout());
     contextMenu.insert(static_cast<int>(ContextMenuOption::InLayout), inLayoutOption);
 
-    QAction *forceFlippingOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Force flipping"),
+    QAction *forceFlippingOption = AddNodeToggle(menu, QCoreApplication::translate("VNodePoint", "Show mirrored"),
                                                  detail.IsForceFlipping());
     contextMenu.insert(static_cast<int>(ContextMenuOption::ForceFlipping), forceFlippingOption);
 

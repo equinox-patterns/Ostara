@@ -40,6 +40,12 @@ public:
 private slots:
     void TestIsPointOnLineviaPDP_data();
     void TestIsPointOnLineviaPDP() const;
+    /** The reflection the canvases use to show a piece mirrored: it maps x on 2c - x, leaves a rect
+     *  about its own centre in place, and is its own inverse — three properties the whole feature
+     *  rests on (a piece that moved, or that did not come back, would be a silent disaster). */
+    void TestVerticalMirrorMapsAroundTheAxis() const;
+    void TestVerticalMirrorLeavesARectInPlace() const;
+    void TestVerticalMirrorIsItsOwnInverse() const;
 };
 
 #endif // TST_VGOBJECT_H

@@ -536,6 +536,9 @@ private slots:
      *               count on the document still standing there, and has to freeze the answer now.
      */
     void RefreshThumbnailSnapshots(bool freeze = false);
+
+    /** @brief What the miniatures would draw right now, and the size they are captured at. */
+    auto ThumbnailSnapshotDigest() const -> QString;
     /** @brief Stand the document on a size and rebuild every piece there. */
     void ApplyReferenceSize(qreal baseA, qreal baseB, qreal baseC);
     /** @brief Tell the miniature blocks whether the geometry to show is the live one. */
@@ -763,6 +766,14 @@ private:
     QTimer *m_thumbnailSnapshots{nullptr};
     /** @brief Guards the miniature capture against re-entrance: it parses the document twice. */
     bool m_thumbnailSnapshotBusy{false};
+    /** @brief What the miniatures drew at the last pass — what a pass would capture again.
+     *
+     *  A miniature shows the piece's DRAWING: contour, seam allowance, notches, internal paths, fold
+     *  mark. Moving a grainline, an annotation or a cartouche changes none of it, and yet each of
+     *  those edits used to relaunch a pass that parses the whole document twice — measured 1 247 to
+     *  1 466 ms of blocked event loop per committed edit, which the canvas pays as a lag between the
+     *  hand and the item. Same string, same drawings: there is nothing to freeze. */
+    QString m_thumbnailSnapshotDigest{};
     /** @brief Une génération est en cours : les miniatures n'ont rien à y faire.
      *
      *  Le minuteur est réarmé à chaque taille par `GradationChanged`, et l'export ouvre une boucle

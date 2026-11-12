@@ -11551,14 +11551,14 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="175"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="494"/>
-        <source>Force flipping</source>
-        <translation>Forcer le placement en miroir</translation>
+        <source>Show mirrored</source>
+        <translation>Afficher en miroir</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="176"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="495"/>
-        <source>Force piece to be always flipped in a layout.</source>
-        <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
+        <source>Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature.</source>
+        <translation>Afficher la pièce en miroir : sur le canevas, en mode de gradation, dans tous les exports et dans la miniature.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="179"/>
@@ -11569,8 +11569,8 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="180"/>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="498"/>
-        <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation>Lorsque le nombre de copies est supérieur à 1 et que « Forcer le placement en miroir » est coché, chaque copie paire de la pièce est retournée verticalement.</translation>
+        <source>When the number of copies is greater than 1 and &apos;Show mirrored&apos; is set, each even-numbered copy is flipped the other way.</source>
+        <translation>Lorsque le nombre de copies est supérieur à 1 et que « Afficher en miroir » est coché, chaque copie paire est retournée dans l&apos;autre sens.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailsgroupwidget.cpp" line="225"/>
@@ -11932,8 +11932,8 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="327"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="520"/>
-        <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation>Lorsque le nombre de copies est supérieur à 1 et que « Forcer le placement en miroir » est coché, chaque copie paire de la pièce est retournée verticalement.</translation>
+        <source>When the number of copies is greater than 1 and &apos;Show mirrored&apos; is set, each even-numbered copy is flipped the other way.</source>
+        <translation>Lorsque le nombre de copies est supérieur à 1 et que « Afficher en miroir » est coché, chaque copie paire est retournée dans l&apos;autre sens.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="341"/>
@@ -11983,8 +11983,8 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="323"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="514"/>
-        <source>Force piece to be always flipped in a layout.</source>
-        <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
+        <source>Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature.</source>
+        <translation>Afficher la pièce en miroir : sur le canevas, en mode de gradation, dans tous les exports et dans la miniature.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="346"/>
@@ -12135,8 +12135,8 @@ Il est peut-être ouvert dans un autre programme, ou le dossier n&apos;autorise 
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="322"/>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="510"/>
-        <source>Force flipping</source>
-        <translation>Forcer le placement en miroir</translation>
+        <source>Show mirrored</source>
+        <translation>Afficher en miroir</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/core/odetailspiecewidget.cpp" line="326"/>
@@ -17512,13 +17512,13 @@ Name the piece entering:</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="131"/>
-        <source>When the number of copies is greater than 1 and &apos;Force flipping&apos; is selected, each even-numbered copy of the piece will be flipped vertically.</source>
-        <translation>Si le nombre de copies est supérieur à 1 et que l&apos;option « Forcer le placement en miroir » est sélectionnée, chaque copie paire de la pièce sera retournée verticalement.</translation>
+        <source>When the number of copies is greater than 1 and &apos;Show mirrored&apos; is set, each even-numbered copy is flipped the other way.</source>
+        <translation>Lorsque le nombre de copies est supérieur à 1 et que « Afficher en miroir » est coché, chaque copie paire est retournée dans l&apos;autre sens.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="127"/>
-        <source>Force piece to be always flipped in a layout.</source>
-        <translation>Forcer le retournement de la pièce dans le plan de coupe.</translation>
+        <source>Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature.</source>
+        <translation>Afficher la pièce en miroir : sur le canevas, en mode de gradation, dans tous les exports et dans la miniature.</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="148"/>
@@ -17532,8 +17532,8 @@ Name the piece entering:</source>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="126"/>
-        <source>Force flipping</source>
-        <translation>Forcer le placement en miroir</translation>
+        <source>Show mirrored</source>
+        <translation>Afficher en miroir</translation>
     </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/opiecedialog_piecestep.cpp" line="130"/>
@@ -23612,8 +23612,8 @@ Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="496"/>
-        <source>Force flipping</source>
-        <translation>Forcer le placement en miroir</translation>
+        <source>Show mirrored</source>
+        <translation>Afficher en miroir</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/nodeDetails/vnodepoint.cpp" line="506"/>
@@ -26368,8 +26368,8 @@ Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2724"/>
-        <source>Force flipping</source>
-        <translation>Forcer le placement en miroir</translation>
+        <source>Show mirrored</source>
+        <translation>Afficher en miroir</translation>
     </message>
     <message>
         <location filename="../../src/libs/vtools/tools/vtoolseamallowance.cpp" line="2488"/>
@@ -27341,6 +27341,30 @@ Voulez-vous continuer ?</translation>
 </context>
 <context>
     <name>VWidgetDetails</name>
+    <message>
+        <source>All in layout</source>
+        <translation>Tout dans le plan</translation>
+    </message>
+    <message>
+        <source>None in layout</source>
+        <translation>Rien dans le plan</translation>
+    </message>
+    <message>
+        <source>Every piece goes in the layout.</source>
+        <translation>Toutes les pièces entrent dans le plan.</translation>
+    </message>
+    <message>
+        <source>No piece is put in the layout.</source>
+        <translation>Aucune pièce n&apos;entre dans le plan.</translation>
+    </message>
+    <message>
+        <source>all pieces in layout</source>
+        <translation>toutes les pièces dans le plan</translation>
+    </message>
+    <message>
+        <source>no piece in layout</source>
+        <translation>aucune pièce dans le plan</translation>
+    </message>
     <message>
         <location filename="../../src/app/ostara/dialogs/vwidgetdetails.ui" line="14"/>
         <source>Form</source>

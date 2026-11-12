@@ -172,12 +172,12 @@ ODetailsGroupWidget::ODetailsGroupWidget(QWidget *parent)
     flagsSeparator->setFrameShadow(QFrame::Sunken);
     generalLayout->addWidget(flagsSeparator);
 
-    m_forceFlippingCheck = new QCheckBox(tr("Force flipping"), generalPage);
-    m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+    m_forceFlippingCheck = new QCheckBox(tr("Show mirrored"), generalPage);
+    m_forceFlippingCheck->setToolTip(tr("Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature."));
     generalLayout->addWidget(m_forceFlippingCheck);
 
     m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"), generalPage);
-    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each even-numbered copy of the piece will be flipped vertically."));
+    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Show mirrored' is set, each even-numbered copy is flipped the other way."));
     generalLayout->addWidget(m_symmetricalCopyCheck);
 
     connect(m_forceFlippingCheck, &QCheckBox::toggled, this, [this](bool checked)
@@ -491,12 +491,12 @@ void ODetailsGroupWidget::RetranslateUI()
     m_alignOnPointCheck->setText(tr("Align on the common point"));
     m_showAlignPointCheck->setText(tr("Show alignment point"));
 
-    m_forceFlippingCheck->setText(tr("Force flipping"));
-    m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+    m_forceFlippingCheck->setText(tr("Show mirrored"));
+    m_forceFlippingCheck->setToolTip(tr("Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature."));
     m_symmetricalCopyCheck->setText(tr("Symmetrical copy"));
     m_symmetricalCopyCheck->setToolTip(
-        tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each "
-           "even-numbered copy of the piece will be flipped vertically."));
+        tr("When the number of copies is greater than 1 and 'Show mirrored' is set, each "
+           "even-numbered copy is flipped the other way."));
 
     m_foldLineSection->setTitle(tr("Fold line"));
     if (const auto *groups = m_data != nullptr ? m_data->DataPieceGroups() : nullptr;

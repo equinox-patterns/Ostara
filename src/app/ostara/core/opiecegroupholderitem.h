@@ -32,6 +32,7 @@
 #include <QBrush>
 #include <QHash>
 #include <QPainterPath>
+#include <QTransform>
 #include <QPen>
 #include <QVector>
 
@@ -143,6 +144,10 @@ private:
         QPen pen{};    // the piece's own pen, as drawn by its tool
         QBrush brush{}; // the piece's own fill
         QPointF shift{}; // where the member's tool stands → where its place in the stack is
+        // The member's own reflection, when it is shown mirrored: the stack shows the piece the
+        // group will draw, so it must not be the only place where a mirrored member still faces
+        // the other way. Identity for the ordinary case.
+        QTransform mirror{};
     };
 
     void RefreshMemberShapes(const OPieceGroup &group);

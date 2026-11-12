@@ -123,12 +123,12 @@ OPiecePieceStep::OPiecePieceStep(QWidget *parent)
     flagsSeparator->setFrameShadow(QFrame::Sunken);
     flagsLayout->addWidget(flagsSeparator);
 
-    m_forceFlippingCheck = new QCheckBox(tr("Force flipping"));
-    m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+    m_forceFlippingCheck = new QCheckBox(tr("Show mirrored"));
+    m_forceFlippingCheck->setToolTip(tr("Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature."));
     flagsLayout->addWidget(m_forceFlippingCheck);
 
     m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"));
-    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each even-numbered copy of the piece will be flipped vertically."));
+    m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Show mirrored' is set, each even-numbered copy is flipped the other way."));
     // A new piece is born with the symmetrical copy checked (cutting plan prerequisite).
     m_symmetricalCopyCheck->setChecked(true);
     flagsLayout->addWidget(m_symmetricalCopyCheck);

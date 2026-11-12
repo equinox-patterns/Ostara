@@ -35,6 +35,7 @@
 
 #include <QGraphicsPathItem>
 #include <QObject>
+#include <QTransform>
 #include <QtGlobal>
 
 #include "../vlayout/vfoldline.h"
@@ -55,6 +56,7 @@ class VNoBrushScalePathItem;
 class VPatternGraph;
 class OAnnotationItem;
 class OInfoBlockItem;
+class QGraphicsSimpleTextItem;
 class ONodePlaceLabel;
 
 struct VToolSeamAllowanceInitData : VAbstractToolInitData
@@ -177,6 +179,35 @@ public:
     void ReinitInternals(const VPiece &detail, VMainGraphicsScene *scene);
     void RefreshGeometry(bool updateChildren = true);
     void RefreshScale();
+
+    /** @brief Show this piece as the model says it must be seen: mirrored, or not.
+     *
+     * The piece is one item and its decorations are children of it, so ONE reflection on the item
+     * turns the whole thing over — contour, seam allowance, notches, internal paths, fold line,
+     * grainline, cartouche, annotations and miniature — and every child keeps its own position in
+     * the piece's frame, so nothing drifts and the bounding box does not move.
+     *
+     * What the reflection must NOT reach is what is read rather than looked at. The blocks and the
+     * annotations therefore receive the same reflection and compose it in front of their own, so
+     * they land mirrored and stay upright; the fold-line caption does the same through its own
+     * matrix. Call this after anything that rebuilds those children — a child that arrives later
+     * would otherwise sit unmirrored on a mirrored piece. */
+    void ApplyDisplayMirror();
+
+    /** @brief The vertical line the piece is reflected about, in the piece's own frame. */
+    auto MirrorAxisX() const -> qreal;
+
+    /** @brief Whether the piece has a contour to reflect at all — never mirror an empty one. */
+    auto HasGeometryToMirror() const -> bool;
+
+    /** @brief The reflection currently drawn with, identity when the piece is not shown mirrored. */
+    auto DisplayMirror() const -> QTransform;
+
+    /** @brief Give a fold-line caption its place on a mirrored piece without reversing its words.
+     *
+     * Called right after VFoldLine writes the caption's matrix, never later: the correction is
+     * appended to that fresh matrix, so it cannot drift from one pass to the next. */
+    void ApplyCaptionDisplayMirror(QGraphicsSimpleTextItem *caption) const;
     /** @brief Deselects every place-label handle of this piece (clears their Qt selection). */
     void ClearPlaceLabelSelection();
     /** @brief Sets a place label's Type through an undo command (canvas context menu).
@@ -440,6 +471,18 @@ private:
     /** @brief Drawing the miniature block shows: the piece outline with its seam allowances and
      *  notches, plus the internal paths, in this item's own coordinates. */
     auto ThumbnailContent() const -> QPainterPath;
+
+public:
+    /** @brief A cheap fingerprint of what this piece's miniature draws.
+     *
+     * The drawing itself, element by element — not a summary: a moved node leaves the bounding rect
+     * alone on a symmetric piece, and a summary would then claim the miniature has nothing new to
+     * capture. Used to spare the whole-document re-parse that a snapshot pass costs when nothing it
+     * draws has changed.
+     */
+    auto ThumbnailContentDigest() const -> QString;
+
+private:
     auto EvaluateAnnotationRotation(const QString &formula) const -> qreal;
 
     void AddToFile() override;

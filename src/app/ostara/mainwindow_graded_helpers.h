@@ -28,9 +28,12 @@
 #define MAINWINDOW_GRADED_HELPERS_H
 
 #include <QGraphicsItem>
+#include <QHash>
 #include <QVariant>
 #include <QtGlobal>
 #include <QtNumeric>
+
+#include "../../libs/vpatterndb/vpiece.h"
 
 class QColor;
 class QGraphicsScene;
@@ -132,6 +135,20 @@ inline auto GradedDecorOwnerPiece(const QGraphicsItem *item) -> quint32
     }
     const quint32 viewPiece = GradedMemberViewPiece(item);
     return viewPiece != 0 ? viewPiece : GradedPieceId(item);
+}
+
+/// True when a piece is shown mirrored — the flag its own page carries ("Show mirrored").
+///
+/// The Graded canvas reflects the piece's PATHS, not the piece item: its decorations are children, so
+/// they are not reflected with it and each has to be placed where the reflection would have put it.
+inline auto GradedPieceIsMirrored(const QHash<quint32, VPiece> *pieces, quint32 pieceId) -> bool
+{
+    if (pieces == nullptr || pieceId == 0)
+    {
+        return false;
+    }
+    const auto it = pieces->constFind(pieceId);
+    return it != pieces->constEnd() && it.value().IsForceFlipping();
 }
 
 /// Local X of the forced alignment point carried by an item, or NaN when it carries none.

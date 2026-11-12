@@ -108,6 +108,7 @@ void VScenePoint::RefreshScale()
     else if (not m_onlyPoint)
     {
         m_namePoint->setVisible(settings->GetShowAllLabels() || m_showLabel);
+        ApplyLabelMirror(); // the counter-scale changed, so the width to reflect about did too
         RefreshLine();
     }
 }
@@ -171,6 +172,37 @@ void VScenePoint::SetOnlyPoint(bool value)
 auto VScenePoint::IsOnlyPoint() const -> bool
 {
     return m_onlyPoint;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScenePoint::SetLabelDisplayMirror(bool mirrored)
+{
+    if (m_labelMirrored == mirrored)
+    {
+        return; // nothing changed, and re-setting a transform re-indexes the item in the scene
+    }
+    m_labelMirrored = mirrored;
+    ApplyLabelMirror();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VScenePoint::ApplyLabelMirror()
+{
+    QTransform wanted;
+    if (m_labelMirrored)
+    {
+        // About the middle of the label as it is DRAWN: the item is counter-scaled, so its width in the
+        // piece's frame is the local width times that scale.
+        const qreal width = m_namePoint->boundingRect().width() * m_namePoint->scale();
+        wanted.translate(width, 0.0);
+        wanted.scale(-1.0, 1.0);
+    }
+    if (m_namePoint->transform() != wanted)
+    {
+        m_namePoint->setTransform(wanted);
+    }
+    // The words moved: the leader line is computed from the label's own rectangle.
+    RefreshLine();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

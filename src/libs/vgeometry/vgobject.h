@@ -34,6 +34,7 @@
 #include <QPainterPath>
 #include <QSharedDataPointer>
 #include <QString>
+#include <QTransform>
 #include <QTypeInfo>
 #include <QVector>
 #include <QtGlobal>
@@ -127,6 +128,10 @@ public:
     template <class T> static auto PainterPath(const QVector<T> &points) -> QPainterPath;
 
     static auto FlippingMatrix(const QLineF &axis) -> QTransform;
+
+    /// @brief Reflection about the vertical line @c x == @p axisX — the piece is turned over, and a
+    /// rect keeps the same bounding box, so a mirrored piece never moves.
+    static auto VerticalMirror(qreal axisX) -> QTransform;
 
     static auto LinesIntersect(const QLineF &line1, const QLineF &line2, QPointF *intersectionPoint = nullptr)
         -> QLineF::IntersectionType;

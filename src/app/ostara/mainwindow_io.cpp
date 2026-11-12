@@ -722,6 +722,9 @@ void MainWindow::Clear()
     // cleared must not outlive it, or the next document's pieces — whose ids restart at 1 — would
     // paint them until the first snapshot round trip replaces them.
     OThumbnailCache::Clear();
+    // The remembered "what the miniatures draw" belongs to the document being cleared: keeping it
+    // would make the next file's first edit look unchanged, and no drawing would ever be captured.
+    m_thumbnailSnapshotDigest.clear();
     pattern->Clear();
     qCDebug(vMainWindow, "Clearing pattern.");
     if (not VAbstractValApplication::VApp()->GetPatternPath().isEmpty() && not doc->MPath().isEmpty())

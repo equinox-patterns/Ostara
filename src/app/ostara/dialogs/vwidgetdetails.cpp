@@ -126,6 +126,11 @@ VWidgetDetails::VWidgetDetails(VContainer *data, VAbstractPattern *doc, QWidget 
     connect(ui->treeWidget, &QTreeWidget::itemChanged, this, &VWidgetDetails::ItemChanged);
     connect(ui->treeWidget, &QTreeWidget::customContextMenuRequested, this, &VWidgetDetails::ShowContextMenu);
 
+    // The same rule the tree's context menu carries, where a hand reaches it: two plain buttons, no
+    // icon. One macro each, so a single Ctrl+Z gives the pattern back the way it was.
+    connect(ui->allInLayoutButton, &QPushButton::clicked, this, [this]() { SetAllPiecesInLayout(true); });
+    connect(ui->noneInLayoutButton, &QPushButton::clicked, this, [this]() { SetAllPiecesInLayout(false); });
+
     m_updateListTimer->setSingleShot(true);
     connect(m_updateListTimer, &QTimer::timeout, this, [this]() -> void { FillTree(); });
 }
@@ -391,6 +396,49 @@ void VWidgetDetails::ToggleSectionDetails(bool select)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VWidgetDetails::SetAllPiecesInLayout(bool select)
+{
+    if (m_data == nullptr)
+    {
+        return;
+    }
+
+    // Is there anything to do? An empty macro would leave a step in the history that undoes nothing,
+    // and the user would press Ctrl+Z for no visible reason.
+    bool anyChange = false;
+    if (const QHash<quint32, VPiece> *pieces = m_data->DataPieces(); pieces != nullptr)
+    {
+        for (auto it = pieces->cbegin(); it != pieces->cend() && not anyChange; ++it)
+        {
+            if (m_data->GetPieceGroupId(it.key()) != NULL_ID)
+            {
+                continue; // a member follows its group, which is counted below
+            }
+            anyChange = (it.value().IsInLayout() != select);
+        }
+    }
+    if (not anyChange)
+    {
+        if (const auto *groups = m_data->DataPieceGroups(); groups != nullptr)
+        {
+            for (auto it = groups->cbegin(); it != groups->cend() && not anyChange; ++it)
+            {
+                anyChange = (it.value().IsInLayout() != select);
+            }
+        }
+    }
+    if (not anyChange)
+    {
+        return;
+    }
+
+    QUndoStack *stack = VAbstractApplication::VApp()->getUndoStack();
+    stack->beginMacro(select ? tr("all pieces in layout") : tr("no piece in layout"));
+    ToggleSectionDetails(select);
+    stack->endMacro();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VWidgetDetails::ToggledPieceItem(QTreeWidgetItem *item)
 {
     SCASSERT(item != nullptr)
@@ -556,8 +604,10 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
         return action;
     };
 
-    QAction *actionSelectAll = menu->addAction(tr("Select all"));
-    QAction *actionSelectNone = menu->addAction(tr("Select none"));
+    // Same words as the two buttons of the dock: one rule, one name — "select" said nothing about
+    // what was being selected, and the column it drives is called "In layout".
+    QAction *actionSelectAll = menu->addAction(tr("All in layout"));
+    QAction *actionSelectNone = menu->addAction(tr("None in layout"));
 
     menu->addSeparator();
 
@@ -699,13 +749,13 @@ void VWidgetDetails::ShowContextMenu(const QPoint &pos)
     if (selectedAction == actionSelectAll)
     {
         select = true;
-        VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("select all details"));
+        VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("all pieces in layout"));
         ToggleSectionDetails(select);
         VAbstractApplication::VApp()->getUndoStack()->endMacro();
     }
     else if (selectedAction == actionSelectNone)
     {
-        VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("select none details"));
+        VAbstractApplication::VApp()->getUndoStack()->beginMacro(tr("no piece in layout"));
         ToggleSectionDetails(select);
         VAbstractApplication::VApp()->getUndoStack()->endMacro();
     }

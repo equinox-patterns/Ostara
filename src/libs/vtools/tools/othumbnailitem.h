@@ -39,6 +39,7 @@
 #include <QRectF>
 #include <QSizeF>
 #include <QString>
+#include <QTransform>
 #include <QVector>
 
 #include "../../vpatterndb/othumbnaildata.h"
@@ -95,6 +96,7 @@ public:
     void SetContent(const QPainterPath &content, const QRectF &contentBounds);
     /** @brief The frame of the block, in its parent's coordinates. */
     void SetBlockGeom(const OThumbnailGeom &geom);
+
     /**
      * @brief Completes a frame nobody ever chose: `width`/`height` at 0 → a third of the host box,
      * clamped between 5 and 15 cm; `placed == false` → centred on the host box.

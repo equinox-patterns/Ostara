@@ -1054,6 +1054,15 @@ void VLayoutPiece::Mirror()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VLayoutPiece::MirrorDisplayed()
+{
+    const QPointF centre = DetailBoundingRect().center();
+    // A vertical edge through the centre: `Mirror` reflects about the line that edge lies on, which
+    // is the vertical line x == centre.x() — the very axis the cutting plan uses.
+    Mirror(QLineF(centre.x(), centre.y(), centre.x(), centre.y() - 100.0));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 auto VLayoutPiece::DetailEdgesCount() const -> vsizetype
 {
     return DetailPath().count();

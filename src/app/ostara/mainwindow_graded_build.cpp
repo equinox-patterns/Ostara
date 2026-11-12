@@ -36,6 +36,7 @@
 #include "core/ocornertrace.h"
 #include "core/ogroupsuperpose.h"
 #include "core/osizetable.h"
+#include "core/opiececontentdigest.h"
 #include "xml/vpattern.h"
 #include "../ifc/xml/vabstractpattern.h"
 #include "../vformat/vmeasurements.h"
@@ -88,56 +89,10 @@ auto GradedBaseForLabel(const QStringList &axisValues, const QString &label) -> 
     return idx >= 0 ? static_cast<qreal>(idx + 1) : 1.0;
 }
 
-/// Deterministic "silhouette content" fingerprint of a piece for the graded structure
-/// signature. Covers the piece-content edits that must refresh the graded canvas (seam
-/// allowance/margins + hide/show main path, mounting notches, internal paths, place labels)
-/// but DELIBERATELY excludes mx/my (a plain Details move must not relocate the graded canvas)
-/// and excludes info-blocks/annotations (those refresh on every apply instead).
-auto GradedPieceContentDigest(const VPiece &piece) -> QString
-{
-    QStringList parts;
-    parts.append(QStringLiteral("sa=%1%2%3")
-                     .arg(piece.IsSeamAllowance() ? 1 : 0)
-                     .arg(piece.IsHideMainPath() ? 1 : 0)
-                     .arg(piece.IsShowFullPiece() ? 1 : 0));
-    parts.append(QStringLiteral("saw=%1").arg(piece.GetFormulaSAWidth()));
-
-    for (const CustomSARecord &record : piece.GetCustomSARecords())
-    {
-        parts.append(QStringLiteral("csa=%1,%2,%3,%4,%5")
-                         .arg(record.startPoint)
-                         .arg(record.path)
-                         .arg(record.endPoint)
-                         .arg(record.reverse ? 1 : 0)
-                         .arg(static_cast<int>(record.includeType)));
-    }
-
-    QVector<quint32> internalPaths = piece.GetInternalPaths();
-    std::sort(internalPaths.begin(), internalPaths.end());
-    for (quint32 id : internalPaths)
-    {
-        parts.append(QStringLiteral("ip=%1").arg(id));
-    }
-
-    QVector<quint32> placeLabels = piece.GetPlaceLabels();
-    std::sort(placeLabels.begin(), placeLabels.end());
-    for (quint32 id : placeLabels)
-    {
-        parts.append(QStringLiteral("pl=%1").arg(id));
-    }
-
-    // Mounting notches ("repère de montage") live on the main-path nodes (IsPassmark).
-    const QVector<VPieceNode> nodes = piece.GetPath().GetNodes();
-    for (const VPieceNode &node : nodes)
-    {
-        if (node.IsPassmark())
-        {
-            parts.append(QStringLiteral("nm=%1").arg(node.GetId()));
-        }
-    }
-
-    return parts.join(QLatin1Char('|'));
-}
+// The piece's "silhouette content" fingerprint was moved to OPieceContentDigest: the miniature
+// scheduling reads the very same notion (what a piece DRAWS), and one rule read by two places
+// cannot drift. It still excludes mx/my (a plain Details move must not relocate the graded canvas)
+// and the info-blocks/annotations (those refresh on every apply instead).
 } // namespace
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -187,7 +142,7 @@ void MainWindow::BuildGradedScene()
                 parts.append(QStringLiteral("gl%1=%2").arg(id).arg(piece.GetGrainlineGeometry().IsEnabled() ? 1 : 0));
                 // Piece-content digest: seam allowance/margins + hide/show main path, mounting
                 // notches, internal paths, place labels (mx/my deliberately excluded).
-                parts.append(GradedPieceContentDigest(piece));
+                parts.append(OPieceContentDigest::Of(piece));
                 // Forced alignment point: changing it (or undoing that change) while Graded is
                 // active must re-capture — the item roles carry the point's X per size.
                 parts.append(QStringLiteral("ap%1=%2").arg(id).arg(piece.GetGradedAlignPointId()));
@@ -344,6 +299,19 @@ void MainWindow::BuildGradedScene()
         {
             details = SortDetailsForLayout(pattern->DataPieces(), pattern);
             pieces = PrepareDetailsForLayout(details, doc, false);
+
+            // A piece the patternmaker shows mirrored is turned over here, before anything is drawn:
+            // the graded canvas shows the piece the group will export and print, and this is the only
+            // place those items are built (`VLayoutPiece::GetItem` below). The piece does not move —
+            // the axis passes through its own centre — so the per-size offsets that follow are the
+            // same for a mirrored piece and for an upright one.
+            for (VLayoutPiece &piece : pieces)
+            {
+                if (piece.IsForceFlipping())
+                {
+                    piece.MirrorDisplayed();
+                }
+            }
         }
         catch (const VException &e)
         {

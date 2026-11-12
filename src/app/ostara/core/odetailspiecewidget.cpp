@@ -319,12 +319,12 @@ ODetailsPieceWidget::ODetailsPieceWidget(QWidget *parent)
         flagsSeparator->setFrameShadow(QFrame::Sunken);
         layout->addWidget(flagsSeparator);
 
-        m_forceFlippingCheck = new QCheckBox(tr("Force flipping"));
-        m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+        m_forceFlippingCheck = new QCheckBox(tr("Show mirrored"));
+        m_forceFlippingCheck->setToolTip(tr("Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature."));
         layout->addWidget(m_forceFlippingCheck);
 
         m_symmetricalCopyCheck = new QCheckBox(tr("Symmetrical copy"));
-        m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each even-numbered copy of the piece will be flipped vertically."));
+        m_symmetricalCopyCheck->setToolTip(tr("When the number of copies is greater than 1 and 'Show mirrored' is set, each even-numbered copy is flipped the other way."));
         layout->addWidget(m_symmetricalCopyCheck);
 
         auto *flagsEndSeparator = new QFrame();
@@ -507,18 +507,18 @@ void ODetailsPieceWidget::RetranslateUI()
                                       : tr("- Remove marks"));
     if (m_forceFlippingCheck)
     {
-        m_forceFlippingCheck->setText(tr("Force flipping"));
+        m_forceFlippingCheck->setText(tr("Show mirrored"));
         // ⚠️ Les deux cases portent aussi une infobulle, posée à la construction du panneau. Une
         // infobulle n'est pas un widget : la classe de base ne la retouche jamais, donc sans ces deux
         // lignes la page Piece gardait les explications dans la langue du lancement.
-        m_forceFlippingCheck->setToolTip(tr("Force piece to be always flipped in a layout."));
+        m_forceFlippingCheck->setToolTip(tr("Show the piece mirrored: on the canvas, in Graded, in every export and in the miniature."));
     }
     if (m_symmetricalCopyCheck)
     {
         m_symmetricalCopyCheck->setText(tr("Symmetrical copy"));
         m_symmetricalCopyCheck->setToolTip(
-            tr("When the number of copies is greater than 1 and 'Force flipping' is selected, each "
-               "even-numbered copy of the piece will be flipped vertically."));
+            tr("When the number of copies is greater than 1 and 'Show mirrored' is set, each "
+               "even-numbered copy is flipped the other way."));
     }
     m_tabWidget->setTabText(0, tr("General"));
     m_tabWidget->setTabText(1, tr("Grainline"));

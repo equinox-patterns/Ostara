@@ -849,6 +849,7 @@ void OThumbnailItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void OThumbnailItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+
     if (m_readOnly || (event->buttons() & Qt::LeftButton) == 0)
     {
         event->ignore();
@@ -895,7 +896,7 @@ void OThumbnailItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
     else
     {
-        setPos(m_dragStartPos + (event->scenePos() - m_dragStartScenePos));
+        setPos(m_dragStartPos + ParentDelta(this, m_dragStartScenePos, event->scenePos()));
         m_geometryChanged = true;
     }
     update();

@@ -34,6 +34,7 @@
 
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QTransform>
 #include <QVector>
 
 #include "../../vpatterndb/oannotationdata.h"
@@ -68,6 +69,15 @@ public:
     void SetAnnotationGeom(const OAnnotationGeom &geom, qreal rotation);
 
     void SetReadOnly(bool readOnly);
+
+    /** @brief Keep this annotation readable while its piece is shown mirrored.
+     *
+     * Same contract as the cartouche block's: the host reflects its children, the annotation stores
+     * that flip and composes it in front of every transform it applies to itself, so its words stay
+     * upright and its resize preview keeps them so. False in the normal case.
+     */
+    void SetDisplayMirror(bool mirrored);
+
     /** @brief Show/hide the editing outline + resize handles (active on click). */
     void SetActive(bool active);
     auto IsActive() const -> bool;
@@ -149,6 +159,9 @@ private:
     QPointF m_anchorScene{};
     QPointF m_dragStartScene{};
     QPointF m_dragStartPos{};
+    QTransform m_displayMirror{};
+    bool m_mirrored{false};
+    qreal m_mirrorBoxWidth{-1.0}; // the box width the reflection was taken about
     qreal m_previewW{0.0};
     qreal m_previewH{0.0};
 

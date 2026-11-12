@@ -126,6 +126,11 @@ public:
     void undo() override;
     void redo() override;
 
+signals:
+    /// Emitted after either direction: the flag is no longer a layout-only one — it decides what the
+    /// piece LOOKS like, so the canvas has to be redrawn, exactly like a hidden main path.
+    void Toggled(quint32 id);
+
 private:
     Q_DISABLE_COPY_MOVE(TogglePieceForceFlipping) // NOLINT
     quint32 m_id;

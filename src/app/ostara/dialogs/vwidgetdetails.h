@@ -118,6 +118,11 @@ private:
     void AddChildrenRows(QTreeWidgetItem *parent, const VPiece &det);
     void AddChildrenRows(QTreeWidgetItem *parent, const OPieceGroup &group);
     void ToggleSectionDetails(bool select);
+    /** @brief Put every piece — or none — in the layout, in ONE undo step.
+     *
+     * The two buttons of the dock. A member of a group has no state of its own: it is the group that
+     * decides, so the group is toggled and its members follow, exactly as the tree shows it. */
+    void SetAllPiecesInLayout(bool select);
     void ToggledPieceItem(QTreeWidgetItem *item);
     void ToggledGroupItem(QTreeWidgetItem *item);
     void ToggleInLayout(quint32 id);

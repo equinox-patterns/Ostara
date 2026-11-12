@@ -34,6 +34,7 @@
 #include "mainwindow.h"
 
 #include "core/odetailspropertybrowser.h"
+#include "core/opiececontentdigest.h"
 #include "widgets/ODockManager.h"
 #include "xml/vpattern.h"
 #include "../ifc/xml/vabstractpattern.h"
@@ -44,6 +45,7 @@
 #include "../vtools/tools/othumbnailcache.h"
 #include "../vtools/tools/vtoolseamallowance.h"
 
+#include <QGuiApplication>
 #include <QScopeGuard>
 #include <QTimer>
 
@@ -78,6 +80,17 @@ void MainWindow::ScheduleThumbnailSnapshots()
     // The flag must be right before anything repaints: a block that would draw the live geometry
     // while a reference drawing is on its way is a block that changes size under the user's eyes.
     UpdateThumbnailReferenceFlag();
+
+    // ⚠️ **Nothing a miniature draws has changed — do not parse twice for nothing.** This is what
+    // made a grainline nudge cost 1,4 s of blocked event loop: the drawings are identical, and the
+    // pass would take the document to the reference size and back to capture them again. The canvas
+    // pays that as a lag between the hand and the item, felt only when the pass happens to still be
+    // running — hence "sometimes it is fluid, as if it were cached".
+    if (const QString digest = ThumbnailSnapshotDigest(); digest == m_thumbnailSnapshotDigest)
+    {
+        return;
+    }
+
     // A burst of edits (typing, dragging a node) must collapse into one round trip.
     m_thumbnailSnapshots->start();
 }
@@ -117,6 +130,71 @@ void MainWindow::ApplyReferenceSize(qreal baseA, qreal baseB, qreal baseC)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+auto MainWindow::ThumbnailSnapshotDigest() const -> QString
+{
+    if (pattern == nullptr)
+    {
+        return {};
+    }
+    const QHash<quint32, VPiece> *pieces = std::as_const(*pattern).DataPieces();
+    if (pieces == nullptr)
+    {
+        return {};
+    }
+
+    QStringList parts;
+
+    // The drawings are captured at the REFERENCE size: another reference is another drawing, even
+    // when no piece changed.
+    if (not m_m.isNull() && not m_m->Dimensions().isEmpty())
+    {
+        parts.append(QStringLiteral("ref=%1,%2,%3")
+                         .arg(ResolveReferenceBase(m_m->DimensionABase(), m_currentDimensionA), 0, 'f', 4)
+                         .arg(ResolveReferenceBase(m_m->DimensionBBase(), m_currentDimensionB), 0, 'f', 4)
+                         .arg(ResolveReferenceBase(m_m->DimensionCBase(), m_currentDimensionC), 0, 'f', 4));
+    }
+
+    // Only the pieces that SHOW a miniature, and only what one draws. A piece whose outline nobody
+    // captures has no business relaunching the pass.
+    const auto *groups = pattern->DataPieceGroups();
+    for (auto it = pieces->constBegin(); it != pieces->constEnd(); ++it)
+    {
+        bool shown = it.value().GetThumbnailData().IsActive();
+        if (not shown && groups != nullptr)
+        {
+            for (auto git = groups->constBegin(); git != groups->constEnd() && not shown; ++git)
+            {
+                shown = git.value().pieceIds.contains(it.key())
+                        && git.value().MemberThumbnail(it.key()).IsActive();
+            }
+        }
+        if (not shown)
+        {
+            continue;
+        }
+        // What the miniature DRAWS — the paths the tool composes for it, not the piece's settings.
+        // A node moved by a millimetre leaves every setting alone and still changes the drawing.
+        QString drawing;
+        try
+        {
+            if (const auto *tool = qobject_cast<VToolSeamAllowance *>(VAbstractPattern::getTool(it.key()));
+                tool != nullptr)
+            {
+                drawing = tool->ThumbnailContentDigest();
+            }
+        }
+        catch (const VException &)
+        {
+            drawing.clear(); // a stale id draws nothing; the piece's settings still describe it
+        }
+        parts.append(QStringLiteral("%1:%2").arg(it.key()).arg(
+            drawing.isEmpty() ? OPieceContentDigest::Of(it.value()) : drawing));
+    }
+
+    return parts.join(QLatin1Char('|'));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::RefreshThumbnailSnapshots(bool freeze)
 {
     if (doc == nullptr || m_m.isNull())
@@ -129,8 +207,26 @@ void MainWindow::RefreshThumbnailSnapshots(bool freeze)
     {
         return;
     }
+
+    // ⚠️ **Never under the hand.** A pass started while a drag is in flight takes the event loop away
+    // for more than a second: the mouse stops being read and the item catches up in one jump. A
+    // timer-driven pass is simply pushed back; an explicit one (the graded export asks for it) is not.
+    if (not freeze && QGuiApplication::mouseButtons() != Qt::NoButton)
+    {
+        m_thumbnailSnapshots->start();
+        return;
+    }
+
     m_thumbnailSnapshotBusy = true;
-    const auto busyGuard = qScopeGuard([this]() { m_thumbnailSnapshotBusy = false; });
+    const auto busyGuard = qScopeGuard(
+        [this]()
+        {
+            m_thumbnailSnapshotBusy = false;
+            // What was captured is now what the miniatures draw: the next pass is only worth it if
+            // something of it changes. Every return path lands here, so a pass that decided there
+            // was nothing to do is remembered as done, not retried on the next edit.
+            m_thumbnailSnapshotDigest = ThumbnailSnapshotDigest();
+        });
 
     const QHash<quint32, VPiece> *pieces = std::as_const(*pattern).DataPieces();
     if (pieces == nullptr || pieces->isEmpty())

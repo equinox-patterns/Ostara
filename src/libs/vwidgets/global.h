@@ -39,6 +39,7 @@ class QGraphicsItem;
 class QGraphicsEllipseItem;
 class QGraphicsLineItem;
 class QColor;
+class QPointF;
 class QRectF;
 class QPainterPath;
 class QPen;
@@ -56,6 +57,17 @@ auto ScaleWidth(qreal width, qreal scale) -> qreal;
 auto ItemShapeFromPath(const QPainterPath &path, const QPen &pen) -> QPainterPath;
 
 auto PixmapToPainterPath(const QPixmap &pixmap) -> QPainterPath;
+
+/** @brief A drag read in the PARENT's frame, not the scene's.
+ *
+ * A child of a mirrored parent navigates a reflected frame: a scene delta of +x there is a parent
+ * delta of -x. Adding the scene delta to `pos()` therefore walks the child the wrong way — the
+ * cartouche of a piece shown mirrored would slide left while the mouse goes right. Mapping both ends
+ * of the movement into the parent's own frame gives the delta that frame actually needs, and stays
+ * correct when the parent is not mirrored at all.
+ */
+auto ParentDelta(const QGraphicsItem *item, const QPointF &fromScene, const QPointF &toScene) -> QPointF;
+
 
 void GraphicsItemHighlightSelected(const QRectF &boundingRect, qreal itemPenWidth, QPainter *painter,
                                    const QStyleOptionGraphicsItem *option);

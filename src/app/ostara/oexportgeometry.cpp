@@ -979,39 +979,54 @@ void OExportGeometry::CollectPieces(OExportSizeLayer &layer) const
                 }
             }
 
-            // ── Le miroir — APRÈS la direction, jamais avant ──────────────────────────────────
+            // ── La direction, retournée si la pièce est retournée ────────────────────────────
             //
-            // Pas de miroir sauf demande explicite : `Force flipping` est le seul chemin. Décision
-            // — le legacy retournait une pièce sans qu'on demande rien, et un plan de
-            // coupe qui retourne tout seul est faux sans le dire.
-            //
-            // ⚠️ Le miroir va dans la MATRICE, et les deux lecteurs doivent l'appliquer : le moteur
-            // par le getter MAPPÉ du contour, l'écran en composant la matrice de placement au lieu
-            // de l'écraser. Poser le drapeau `SetVerticallyFlipped` ne mire rien — il ne fait que
-            // renverser l'ordre des points.
-            //
-            // ⚠️ Et il vient **après** la direction, parce qu'il en CHANGE l'angle : la matrice ne
-            // touche pas la ligne de droit-fil, donc le moteur lirait l'angle d'avant le miroir et
-            // tournerait la pièce comme si elle n'était pas retournée. Un biais à 45° sortait à
-            // l'horizontale au lieu de la verticale. Trouvé.
+            // ⚠️ **Le sens d'abord, le miroir ensuite** — et le miroir lui-même plus bas, pour tous
+            // les formats (voir « Le miroir »). Ce qui se joue ici est le SENS : la matrice du
+            // miroir ne touche pas la ligne de droit-fil, donc un sens lu après le miroir serait
+            // l'angle d'avant, et la pièce serait tournée comme si elle n'avait pas été retournée.
+            // Un biais à 45° sortait à l'horizontale au lieu de la verticale. Trouvé.
             if (piece.IsForceFlipping())
             {
-                const QPointF centre = geometry.piece.DetailBoundingRect().center();
-                const QLineF axis(centre.x(), centre.y(), centre.x(), centre.y() - 100.0);
-                geometry.piece.Mirror(axis);
-
-                // ⚠️ **Le MÊME axe pour les deux variantes.** Le centre est celui de la pièce AVEC ses
-                // marges : recalculé sur l'autre, il tomberait au centre de l'autre contour — les deux
-                // versions ne se mirroireraient plus autour de la même droite, et la pièce sans marges
-                // sortirait décalée de la valeur de couture.
-                if (geometry.withoutSeamAllowance.has_value())
-                {
-                    geometry.withoutSeamAllowance->Mirror(axis);
-                }
-
-                geometry.mirrorX = centre.x();
                 geometry.direction = OExportCuttingDirection::Mirrored(geometry.direction);
             }
+        }
+
+        // ── Le miroir — TOUS les formats, et APRÈS la direction ──────────────────────────────
+        //
+        // Pas de miroir sauf demande explicite : `Show mirrored` est le seul chemin. Décision — le
+        // legacy retournait une pièce sans qu'on demande rien, et un plan de coupe qui retourne tout
+        // seul est faux sans le dire.
+        //
+        // ⚠️ **Hors du bloc `IsCutting`.** Il y vivait, et une pièce retournée sortait donc
+        // retournée sur un plan de coupe mais PAS à l'impression ni au traceur — deux sorties du
+        // même patron qui ne montraient pas la même pièce. Or c'est la pièce qui est retournée, pas
+        // la façon de la poser : tous les formats la voient du même côté.
+        //
+        // ⚠️ Le miroir va dans la MATRICE, et les deux lecteurs doivent l'appliquer : le moteur par
+        // le getter MAPPÉ du contour, l'écran en composant la matrice de placement au lieu de
+        // l'écraser. Poser le drapeau `SetVerticallyFlipped` ne mire rien — il ne fait que renverser
+        // l'ordre des points.
+        //
+        // ⚠️ Et il vient après la direction (ci-dessus) ET avant `FragmentsOf` : un morceau de
+        // traceur est découpé dans le contour MAPPÉ, donc un miroir posé après lui laisserait les
+        // morceaux à l'endroit.
+        if (piece.IsForceFlipping())
+        {
+            const QPointF centre = geometry.piece.DetailBoundingRect().center();
+            const QLineF axis(centre.x(), centre.y(), centre.x(), centre.y() - 100.0);
+            geometry.piece.Mirror(axis);
+
+            // ⚠️ **Le MÊME axe pour les deux variantes.** Le centre est celui de la pièce AVEC ses
+            // marges : recalculé sur l'autre, il tomberait au centre de l'autre contour — les deux
+            // versions ne se mirroireraient plus autour de la même droite, et la pièce sans marges
+            // sortirait décalée de la valeur de couture.
+            if (geometry.withoutSeamAllowance.has_value())
+            {
+                geometry.withoutSeamAllowance->Mirror(axis);
+            }
+
+            geometry.mirrorX = centre.x();
         }
 
         // ── Le projecteur ne voit aucun groupe ────────────────────────────────────────────────

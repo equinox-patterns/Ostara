@@ -37,6 +37,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "vgeometry/odisplaymirror.h"
 #include "core/savegradedrangecontent.h"
 #include "mainwindow_graded_helpers.h"
 #include "xml/vpattern.h"
@@ -204,6 +205,16 @@ void MainWindow::RefreshGradedReferenceThumbnails(quint32 onlyPieceId, quint32 o
             geom = stored.Geom();
         }
         geom = OThumbnailItem::ResolveBlockGeom(geom, pieceBox, override.valid || stored.HasGeometry());
+
+        // A piece shown mirrored draws a mirrored piece inside its miniature, and the block itself is
+        // a child: it is placed where the reflection would have put it, and stays upright. The
+        // drawing inside already carries the reflection (`ThumbnailContent`), so the two together
+        // read as a mirrored piece, not as a mirrored picture.
+        if (GradedPieceIsMirrored(pattern->DataPieces(), pieceId))
+        {
+            const QPointF center = owner->boundingRect().center();
+            geom.pos = ODisplayMirror::Placement(geom.pos, QSizeF(geom.width, geom.height), 0.0, center.x());
+        }
 
         // The wording follows @p stored — the piece's own miniature for a lone piece, the group's
         // miniature of that member for a member: what is drawn is what is printed.

@@ -28,6 +28,30 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="layoutInLayoutButtons">
+     <item>
+      <widget class="QPushButton" name="allInLayoutButton">
+       <property name="toolTip">
+        <string>Every piece goes in the layout.</string>
+       </property>
+       <property name="text">
+        <string>All in layout</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="noneInLayoutButton">
+       <property name="toolTip">
+        <string>No piece is put in the layout.</string>
+       </property>
+       <property name="text">
+        <string>None in layout</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QPushButton" name="linkPiecesButton">
      <property name="text">
       <string>Merge pieces into one</string>

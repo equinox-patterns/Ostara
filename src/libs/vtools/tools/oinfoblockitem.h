@@ -31,6 +31,7 @@
 
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QTransform>
 #include <QVector>
 
 #include "../../vpatterndb/oinfoblockdata.h"
@@ -60,6 +61,15 @@ public:
     void SetBlockGeom(const OInfoBlockGeom &geom);
     auto BlockIndex() const -> int;
     void SetReadOnly(bool readOnly);
+
+    /** @brief Keep this block readable while its piece is shown mirrored.
+     *
+     * The host reflects its children; without this the block's words would come out reversed.
+     * Nothing here is re-laid or mirrored by hand: the flip is stored and composed in front of every
+     * transform the block applies to itself, so a resize preview keeps it and the words stay upright.
+     * False is the normal case.
+     */
+    void SetDisplayMirror(bool mirrored);
 
     /** @brief Rectangle the block may not leave, in the parent's frame. Null = unconstrained.
      *
@@ -130,6 +140,9 @@ private:
     QPointF m_anchorLocal{};
     QPointF m_dragStartScene{};
     QPointF m_dragStartPos{};
+    QTransform m_displayMirror{};
+    bool m_mirrored{false};
+    qreal m_mirrorBoxWidth{-1.0}; // the box width the reflection was taken about
     qreal m_previewW{0.0};
     qreal m_previewH{0.0};
 

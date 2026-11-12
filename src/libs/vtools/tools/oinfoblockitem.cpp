@@ -27,6 +27,7 @@
 #include "oinfoblockitem.h"
 
 #include "../../vgeometry/ocontainment.h"
+#include "../../vwidgets/global.h"
 
 #include <QApplication>
 #include <QGraphicsSceneHoverEvent>
@@ -121,6 +122,32 @@ void OInfoBlockItem::SetReadOnly(bool readOnly)
 {
     setFlag(ItemIsMovable, not readOnly);
     setAcceptHoverEvents(not readOnly);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void OInfoBlockItem::SetDisplayMirror(bool mirrored)
+{
+    // Re-setting a transform re-indexes the whole item, so it only happens on a real change — and
+    // a resize IS one: the reflection is taken about the middle of the box, so its width is part of
+    // the matrix.
+    if (m_mirrored == mirrored && qFuzzyCompare(m_mirrorBoxWidth, rect().width()))
+    {
+        return;
+    }
+
+    m_mirrored = mirrored;
+    m_mirrorBoxWidth = rect().width();
+    // The reflection is taken about the MIDDLE of the box, not about its corner: the box itself
+    // lands on the other side, and its words come out upright once the host's reflection is applied
+    // on top. About the corner, the box would land one width too far — enough to push a cartouche
+    // half out of the piece it belongs to.
+    m_displayMirror = QTransform();
+    if (mirrored)
+    {
+        m_displayMirror.translate(rect().width(), 0.0);
+        m_displayMirror.scale(-1.0, 1.0);
+    }
+    setTransform(m_displayMirror);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -400,9 +427,18 @@ void OInfoBlockItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
         // the anchor never drifts across successive move events.
         const qreal sxT = m_previewW / m_origW;
         const qreal syT = m_previewH / m_origH;
-        setTransform(QTransform().fromScale(sxT, syT));
+        setTransform(m_displayMirror * QTransform().fromScale(sxT, syT));
         const QPointF anchorLocal = m_anchorLocal;
-        setPos(m_dragStartPos + anchorLocal - QPointF(sxT * anchorLocal.x(), syT * anchorLocal.y()));
+        // The correction is a DISPLACEMENT in the ITEM's frame, while `pos()` lives in the parent's.
+        // A mirrored piece has those two frames reflected from one another, so the vector goes
+        // through the same reflection as everything else the block draws — the linear part only,
+        // never the translation that carries the box.
+        QPointF correction = anchorLocal - QPointF(sxT * anchorLocal.x(), syT * anchorLocal.y());
+        if (m_mirrored)
+        {
+            correction.setX(-correction.x());
+        }
+        setPos(m_dragStartPos + correction);
         event->accept();
         return;
     }
@@ -411,7 +447,7 @@ void OInfoBlockItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     // piece (the block's movable ancestor) instead of the block. The position is recomputed from
     // the press-time one on every event, so the block cannot walk out of the piece by accumulating
     // clamped deltas.
-    setPos(m_dragStartPos + (event->scenePos() - m_dragStartScene));
+    setPos(m_dragStartPos + ParentDelta(this, m_dragStartScene, event->scenePos()));
     ContainPosition();
     event->accept();
 }
@@ -423,7 +459,9 @@ void OInfoBlockItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     {
         const qreal finalW = m_previewW;
         const qreal finalH = m_previewH;
-        setTransform(QTransform());
+        // The box keeps the reflection it had; the owner restates it once the new width is in
+        // (`ApplyDisplayMirror`), and that is when the reflection is taken about the new middle.
+        setTransform(m_displayMirror);
         m_activeHandle = Handle::None;
         if (qAbs(finalW - m_origW) > kMinResizeDelta || qAbs(finalH - m_origH) > kMinResizeDelta)
         {

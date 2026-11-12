@@ -347,6 +347,18 @@ bool MainWindow::ExportGradedRangeTo(const QString &rangeName, const QString &fo
         // The very rule the canvas applies, on the pieces themselves (OGroupSuperpose).
         OGroupSuperpose::Snap(details, pieces, pattern);
 
+        // …and the other rule the canvas applies: a piece the patternmaker shows mirrored is turned
+        // over before it is drawn. Same call, same axis as `BuildGradedScene`, so the exported range
+        // and the canvas it was taken from cannot disagree — and this drawing is also the payload a
+        // PDF carries.
+        for (VLayoutPiece &piece : pieces)
+        {
+            if (piece.IsForceFlipping())
+            {
+                piece.MirrorDisplayed();
+            }
+        }
+
 
         const int layerPos = idx - minIdx;
         const int z = layerCount - layerPos;

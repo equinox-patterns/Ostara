@@ -26,6 +26,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "vgeometry/odisplaymirror.h"
 #include "core/savegradedrangecontent.h"
 #include "mainwindowsnogui.h"
 #include "mainwindow_graded_helpers.h"
@@ -194,10 +195,14 @@ void MainWindow::RefreshGradedReferenceAnnotations(quint32 onlyPieceId, quint32 
         }
     };
 
-    auto BuildOwnerAnnotations = [this, &range, &styleResolver, &RotationDeg](
+    auto BuildOwnerAnnotations = [this, &range, &styleResolver, &RotationDeg, piecesMap](
                                      QGraphicsItem *owner, quint32 ownerId, bool isGroup,
                                      const QList<OAnnotation> &annotations) {
         const QPointF center = owner->boundingRect().center();
+        // Same rule as the cartouche: the piece's paths are reflected, its children are not, so an
+        // annotation is re-laid where the reflection would have put it — box AND angle, never a
+        // negative scale, which would reverse the words.
+        const bool mirrored = isGroup ? false : GradedPieceIsMirrored(piecesMap, ownerId);
         const QString storedFp = isGroup ? range.groupContent.value(ownerId).annotationsFp
                                          : range.pieceContent.value(ownerId).annotationsFp;
         // If the annotation list changed in Details since the overrides were stored, drop them
@@ -246,7 +251,13 @@ void MainWindow::RefreshGradedReferenceAnnotations(quint32 onlyPieceId, quint32 
 
             OAnnotationRenderStyle style = styleResolver ? styleResolver(annotation.templateName)
                                                          : OAnnotationRenderStyle();
-            const qreal rotationDeg = RotationDeg(annotation.rotationFormula, isGroup);
+            qreal rotationDeg = RotationDeg(annotation.rotationFormula, isGroup);
+            if (mirrored)
+            {
+                geom.pos = ODisplayMirror::Placement(geom.pos, QSizeF(geom.boxWidth, geom.boxHeight),
+                                                     rotationDeg, center.x());
+                rotationDeg = -rotationDeg;
+            }
 
             auto *item = new OAnnotationItem(i, owner);
             item->setData(kGradedAnnotationRole, ownerId);

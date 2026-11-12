@@ -32,6 +32,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
+#include <QLineF>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QtMath>
@@ -330,7 +331,11 @@ void VGrainlineItem::mousePressEvent(QGraphicsSceneMouseEvent *pME)
  */
 void VGrainlineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *pME)
 {
-    QPointF const ptDiff = pME->scenePos() - m_ptStartMove;
+    // ⚠️ **Le déplacement se lit dans le repère du PARENT, jamais dans celui de la scène.** Sur une
+    // pièce affichée en miroir le parent est réfléchi : un déplacement de souris vers la droite y vaut
+    // un déplacement vers la gauche, et le droit-fil partait à l'opposé — jusqu'à sortir du cadre que
+    // `IsContained` lui impose, où il ne bougeait plus du tout.
+    QPointF const ptDiff = ParentDelta(this, m_ptStartMove, pME->scenePos());
     qreal dX;
     qreal dY;
     if (m_eMode == mMove && m_moveType & IsMovable)

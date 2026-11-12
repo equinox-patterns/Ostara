@@ -210,6 +210,15 @@ public:
     void Mirror(const QLineF &edge);
     void Mirror();
 
+    /** @brief Turn the piece over where it stands: reflect it about the vertical line through the
+     *  centre of its own outer contour.
+     *
+     * The axis is the one the cutting plan already reflects about (`OExportGeometry`), so a mirrored
+     * piece is in the same place on every canvas and on paper; and a rectangle reflected about its
+     * own centre does not move, so no placement has to be recomputed — `mx/my`, the bounding rect and
+     * the alignment are untouched. Nothing is written back: this is how the piece is SHOWN. */
+    void MirrorDisplayed();
+
     auto DetailEdgesCount() const -> vsizetype;
     auto LayoutEdgesCount() const -> vsizetype;
 
