@@ -48,16 +48,33 @@ void MainWindow::AddRecentMeasurementAndRefresh(const QString &path)
         return;
     }
     VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-    QStringList files = settings->GetRecentMeasurementFileList();
-    files.removeAll(path);
-    files.prepend(path);
-    while (files.size() > MaxRecentFilesStored)
-    {
-        files.removeLast();
-    }
-    settings->SetRecentMeasurementFileList(files);
+    // The table just opened becomes the first in its own list, and never a second time: the settings move
+    // the entry already holding this file (see VCommonSettings::AddRecentFile for why a path can differ).
+    settings->AddRecentMeasurementFile(path, MaxRecentFilesStored);
 
-    m_welcomeScreen->UpdateRecentItems(settings->GetRecentFileList(), files);
+    m_welcomeScreen->UpdateRecentItems(settings->GetRecentFileList(), settings->GetRecentMeasurementFileList());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::WelcomeRemoveRecentPattern(const QString &path)
+{
+    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    settings->RemoveRecentFile(path);
+
+    // The pattern list also feeds File > Open Recent: one history, so it is forgotten in both places.
+    m_welcomeScreen->UpdateRecentItems(settings->GetRecentFileList(),
+                                       settings->GetRecentMeasurementFileList());
+    UpdateRecentFileActions();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::WelcomeRemoveRecentMeasurement(const QString &path)
+{
+    VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
+    settings->RemoveRecentMeasurementFile(path);
+
+    m_welcomeScreen->UpdateRecentItems(settings->GetRecentFileList(),
+                                       settings->GetRecentMeasurementFileList());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -135,11 +152,15 @@ void MainWindow::InitWelcomePage()
     connect(m_welcomeScreen, &WelcomeScreen::OpenPatternClicked, this, &MainWindow::on_actionOpen_triggered);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentPattern, this,
             [this](const QString &path) { LoadPattern(path); });
+    connect(m_welcomeScreen, &WelcomeScreen::RemoveRecentPattern, this,
+            &MainWindow::WelcomeRemoveRecentPattern);
 
     // Measurement signals (implemented in mainwindow_welcome.cpp)
     connect(m_welcomeScreen, &WelcomeScreen::NewMeasurementClicked, this, &MainWindow::WelcomeNewMeasurement);
     connect(m_welcomeScreen, &WelcomeScreen::OpenMeasurementClicked, this, &MainWindow::WelcomeOpenMeasurement);
     connect(m_welcomeScreen, &WelcomeScreen::OpenRecentMeasurement, this, &MainWindow::WelcomeOpenRecentMeasurement);
+    connect(m_welcomeScreen, &WelcomeScreen::RemoveRecentMeasurement, this,
+            &MainWindow::WelcomeRemoveRecentMeasurement);
 
     // Features button (dev-only)
 

@@ -1186,6 +1186,10 @@ private:
     void WelcomeOpenRecentMeasurement(const QString &path);
     void AddRecentMeasurementAndRefresh(const QString &path);
 
+    // Recent lists (Welcome screen right-click): forget an entry, keep the file
+    void WelcomeRemoveRecentPattern(const QString &path);
+    void WelcomeRemoveRecentMeasurement(const QString &path);
+
     auto LoadMeasurements(const QString &patternPath, QString &path) -> bool;
     auto UpdateMeasurements(const QString &patternPath, QString &path, qreal baseA, qreal baseB, qreal baseC) -> bool;
     auto UpdateMeasurements(const QSharedPointer<VMeasurements> &mFile, qreal baseA, qreal baseB, qreal baseC,

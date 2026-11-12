@@ -35,6 +35,7 @@
 #include <QColor>
 #include <QDate>
 #include <QDir>
+#include <QFileInfo>
 #include <QFont>
 #include <QDebug>
 #include <QGlobalStatic>
@@ -43,6 +44,7 @@
 #include <QMessageLogger>
 #include <QProcess>
 #include <QRegularExpression>
+#include <QSet>
 #include <QString>
 #include <QVariant>
 #include <QtDebug>
@@ -1047,20 +1049,58 @@ void VCommonSettings::SetFreeCurveMode(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetRecentFileList() const -> QStringList
+auto VCommonSettings::RecentFileKey(const QString &path) -> QString
 {
-    const QStringList files = value(*settingGeneralRecentFileList).toStringList();
+    QFileInfo const info(path);
+    const QString canonical = info.canonicalFilePath();
+    return canonical.isEmpty() ? info.absoluteFilePath() : canonical;
+}
+
+namespace
+{
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ReadableRecentFiles the entries a reader may see: files that still exist, each one once, in their
+ *        stored order.
+ *
+ * A recent list is a history of files opened, so the same file must never hold two entries. The stored list
+ * cannot guarantee it by itself: it is written as strings, and one file has several spellings. macOS is case
+ * insensitive and keeps the case a file was created with, so ".../BustedeBase.ostara" and
+ * ".../BusteDeBase.ostara" reach the same file; a string comparison saw two files there and the second opening
+ * left the first entry in place and added a copy of it. Entries are therefore compared, and returned, on the
+ * canonical name — the one the disk carries. Cleaned here, on reading, so a list already holding duplicates is
+ * repaired without the reader having to touch anything.
+ */
+auto ReadableRecentFiles(const QStringList &files) -> QStringList
+{
     QStringList cleared;
+    QSet<QString> keys;
 
     for (const auto &f : files)
     {
-        if (QFileInfo::exists(f))
+        if (!QFileInfo::exists(f))
         {
-            cleared.append(f);
+            continue;
         }
+
+        const QString key = VCommonSettings::RecentFileKey(f);
+        if (key.isEmpty() || keys.contains(key))
+        {
+            continue;
+        }
+
+        keys.insert(key);
+        cleared.append(key);
     }
 
     return cleared;
+}
+} // namespace
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetRecentFileList() const -> QStringList
+{
+    return ReadableRecentFiles(value(*settingGeneralRecentFileList).toStringList());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1070,26 +1110,77 @@ void VCommonSettings::SetRecentFileList(const QStringList &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-auto VCommonSettings::GetRecentMeasurementFileList() const -> QStringList
+void VCommonSettings::AddRecentFile(const QString &path, int maxStored)
 {
-    const QStringList files = value(*settingGeneralRecentMeasurementFileList).toStringList();
-    QStringList cleared;
-
-    for (const auto &f : files)
+    if (path.isEmpty() || !QFileInfo::exists(path))
     {
-        if (QFileInfo::exists(f))
-        {
-            cleared.append(f);
-        }
+        return;
     }
 
-    return cleared;
+    QStringList files = GetRecentFileList();
+    const QString key = RecentFileKey(path);
+    files.removeAll(key);
+    files.prepend(key);
+
+    while (files.size() > maxStored)
+    {
+        files.removeLast();
+    }
+
+    SetRecentFileList(files);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::RemoveRecentFile(const QString &path)
+{
+    QStringList files = GetRecentFileList();
+    if (files.removeAll(RecentFileKey(path)) > 0)
+    {
+        SetRecentFileList(files);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+auto VCommonSettings::GetRecentMeasurementFileList() const -> QStringList
+{
+    return ReadableRecentFiles(value(*settingGeneralRecentMeasurementFileList).toStringList());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VCommonSettings::SetRecentMeasurementFileList(const QStringList &value)
 {
     setValue(*settingGeneralRecentMeasurementFileList, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::AddRecentMeasurementFile(const QString &path, int maxStored)
+{
+    if (path.isEmpty() || !QFileInfo::exists(path))
+    {
+        return;
+    }
+
+    QStringList files = GetRecentMeasurementFileList();
+    const QString key = RecentFileKey(path);
+    files.removeAll(key);
+    files.prepend(key);
+
+    while (files.size() > maxStored)
+    {
+        files.removeLast();
+    }
+
+    SetRecentMeasurementFileList(files);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VCommonSettings::RemoveRecentMeasurementFile(const QString &path)
+{
+    QStringList files = GetRecentMeasurementFileList();
+    if (files.removeAll(RecentFileKey(path)) > 0)
+    {
+        SetRecentMeasurementFileList(files);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

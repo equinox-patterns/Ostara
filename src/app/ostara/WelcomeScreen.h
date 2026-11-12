@@ -65,6 +65,9 @@ signals:
     void OpenMeasurementClicked();
     void OpenRecentPattern(const QString &path);
     void OpenRecentMeasurement(const QString &path);
+    /// An entry was asked to leave its recent list. The file is untouched: opening it again brings it back.
+    void RemoveRecentPattern(const QString &path);
+    void RemoveRecentMeasurement(const QString &path);
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -72,6 +75,8 @@ protected:
 private:
     void CreateHeader();
     void CreateSections();
+    /// Right-click on a recent entry: one action, "Remove from the list".
+    void InstallRecentContextMenu(QListWidget *list, bool patternList);
     void TrimListToFit(QListWidget *list);
 
     // Header

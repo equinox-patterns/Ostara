@@ -26,16 +26,28 @@
 
 #include "WelcomeScreen.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QFileInfo>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QListWidget>
+#include <QMenu>
 #include <QPushButton>
 #include <QResizeEvent>
 #include <QTimer>
 #include <QVBoxLayout>
+
+#include <algorithm>
+
+namespace
+{
+// How many entries a section's recent list may show. A history is a shortcut, not an archive: past this the
+// wanted file is no longer in sight, and the section grows past the screen. The settings keep more
+// (VAbstractMainWindow::MaxRecentFilesStored); the screen shows the most recent ones, and never more than this.
+constexpr int kMaxRecentRows = 20;
+} // namespace
 
 // ===== Helper to create a section frame =====
 
@@ -167,6 +179,7 @@ void WelcomeScreen::CreateSections()
                      this, [this](QListWidgetItem *item) {
                          emit OpenRecentPattern(item->data(Qt::UserRole).toString());
                      });
+    InstallRecentContextMenu(m_patternsSection.recentList, true);
 
     sectionsLayout->addWidget(m_patternsSection.frame, 13);
 
@@ -184,6 +197,7 @@ void WelcomeScreen::CreateSections()
                      this, [this](QListWidgetItem *item) {
                          emit OpenRecentMeasurement(item->data(Qt::UserRole).toString());
                      });
+    InstallRecentContextMenu(m_measurementsSection.recentList, false);
 
     sectionsLayout->addWidget(m_measurementsSection.frame, 13);
 
@@ -191,6 +205,44 @@ void WelcomeScreen::CreateSections()
 
     mainLayout->addLayout(sectionsLayout, 1);
 
+}
+
+void WelcomeScreen::InstallRecentContextMenu(QListWidget *list, const bool patternList)
+{
+    list->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    QObject::connect(list, &QListWidget::customContextMenuRequested, this,
+                     [this, list, patternList](const QPoint &pos)
+                     {
+                         // The signal reports the widget's own coordinates; the entries live in the viewport.
+                         const QPoint viewportPos = list->viewport()->mapFrom(list, pos);
+
+                         QListWidgetItem *item = list->itemAt(viewportPos);
+                         if (item == nullptr)
+                         {
+                             return; // Empty space: there is no entry to take out.
+                         }
+
+                         const QString path = item->data(Qt::UserRole).toString();
+
+                         QMenu menu(this);
+                         QAction *const removeAction = menu.addAction(tr("Remove from the list"));
+                         if (menu.exec(list->viewport()->mapToGlobal(viewportPos)) != removeAction)
+                         {
+                             return;
+                         }
+
+                         // Removing is not deleting: the file stays where it is, and opening it again puts it
+                         // back at the head of the list. Only the history forgets it.
+                         if (patternList)
+                         {
+                             emit RemoveRecentPattern(path);
+                         }
+                         else
+                         {
+                             emit RemoveRecentMeasurement(path);
+                         }
+                     });
 }
 
 void WelcomeScreen::RetranslateUI()
@@ -214,6 +266,10 @@ void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QSt
     m_patternsSection.recentList->clear();
     for (const QString &path : patternPaths)
     {
+        if (m_patternsSection.recentList->count() >= kMaxRecentRows)
+        {
+            break; // The limit is applied where the rows are made, so no refresh can ever show more.
+        }
         if (!path.endsWith(QStringLiteral(".ostara"), Qt::CaseInsensitive))
         {
             continue;
@@ -230,6 +286,10 @@ void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QSt
     m_measurementsSection.recentList->clear();
     for (const QString &path : measurementPaths)
     {
+        if (m_measurementsSection.recentList->count() >= kMaxRecentRows)
+        {
+            break;
+        }
         QFileInfo fi(path);
         auto *item = new QListWidgetItem(fi.fileName());
         item->setToolTip(path);
@@ -237,7 +297,11 @@ void WelcomeScreen::UpdateRecentItems(const QStringList &patternPaths, const QSt
         m_measurementsSection.recentList->addItem(item);
     }
 
-    // Defer the trim until the layout has settled so the viewport height is known.
+    // Fit the rows to the room each section has, right away and again once the layout has settled: the
+    // viewport height is only known then, but the entries must never be visible above their limit meanwhile.
+    TrimListToFit(m_patternsSection.recentList);
+    TrimListToFit(m_measurementsSection.recentList);
+
     QTimer::singleShot(0, this, [this]()
     {
         TrimListToFit(m_patternsSection.recentList);
@@ -260,23 +324,19 @@ void WelcomeScreen::resizeEvent(QResizeEvent *event)
 
 void WelcomeScreen::TrimListToFit(QListWidget *list)
 {
-    if (list->count() <= 1)
-    {
-        return;
-    }
+    // The section's room sets how many entries it can show, never more than the limit. The limit is the
+    // starting point, not a measurement: a viewport that cannot be measured (a hidden screen, a list just
+    // rebuilt) used to leave every entry in place, and the list then grew past what the history is for.
+    int maxVisible = kMaxRecentRows;
 
     const int itemHeight = list->sizeHintForRow(0);
     const int viewportHeight = list->viewport()->height();
-    if (itemHeight <= 0 || viewportHeight <= 0)
+    if (itemHeight > 0 && viewportHeight > 0)
     {
-        return;
+        maxVisible = std::min(maxVisible, viewportHeight / itemHeight);
     }
 
-    const int maxVisible = viewportHeight / itemHeight;
-    if (maxVisible <= 0)
-    {
-        return;
-    }
+    maxVisible = std::max(maxVisible, 1); // A window too short for one row scrolls; it does not empty the list.
 
     while (list->count() > maxVisible)
     {

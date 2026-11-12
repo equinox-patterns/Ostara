@@ -28384,6 +28384,11 @@ Voulez-vous continuer ?</translation>
         <source>Open table...</source>
         <translation>Ouvrir un tableau…</translation>
     </message>
+    <message>
+        <location filename="../../src/app/ostara/WelcomeScreen.cpp" line="216"/>
+        <source>Remove from the list</source>
+        <translation>Retirer de la liste</translation>
+    </message>
 </context>
 <context>
     <name>ZValueMoveBackgroundImage</name>

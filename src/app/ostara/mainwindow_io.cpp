@@ -483,15 +483,10 @@ void MainWindow::setCurrentFile(const QString &fileName)
     {
         qCDebug(vMainWindow, "Updating recent file list.");
         VValentinaSettings *settings = VAbstractValApplication::VApp()->ValentinaSettings();
-        QStringList files = settings->GetRecentFileList();
-        files.removeAll(fileName);
-        files.prepend(fileName);
-        while (files.size() > MaxRecentFilesStored)
-        {
-            files.removeLast();
-        }
-
-        settings->SetRecentFileList(files);
+        // One entry per file, and the file just opened becomes the first one: the settings move the entry
+        // that already holds this file instead of adding a second one (same file, another spelling of its
+        // path — macOS keeps the case it was created with).
+        settings->AddRecentFile(fileName, MaxRecentFilesStored);
         UpdateRecentFileActions();
 
         qCDebug(vMainWindow, "Updating restore file list.");

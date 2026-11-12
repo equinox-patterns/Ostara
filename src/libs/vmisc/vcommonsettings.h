@@ -227,10 +227,26 @@ public:
     auto IsFreeCurveMode() const -> bool;
     void SetFreeCurveMode(bool value);
 
+    /// @brief The one name the disk carries for this file, i.e. the identity of a recent entry.
+    ///        One file must hold one entry, and a file can be named several ways: macOS is case insensitive
+    ///        and keeps the case it was created with, so ".../BustedeBase.ostara" and ".../BusteDeBase.ostara"
+    ///        are the same file under two spellings. Canonicalising them gives that single name.
+    ///        Falls back on the absolute path for a file that is gone.
+    static auto RecentFileKey(const QString &path) -> QString;
+
     auto GetRecentFileList() const -> QStringList;
     void SetRecentFileList(const QStringList &value);
+    /// @brief Make @a path the most recent file, and only once: an entry already holding that file is moved
+    ///        to the head instead of a second one being added. The list is trimmed to @a maxStored entries.
+    void AddRecentFile(const QString &path, int maxStored);
+    /// @brief Take @a path out of the recent list. The file itself is untouched: opening it again puts it back.
+    void RemoveRecentFile(const QString &path);
     auto GetRecentMeasurementFileList() const -> QStringList;
     void SetRecentMeasurementFileList(const QStringList &value);
+    /// @brief Same as AddRecentFile, for the measurement tables' own list.
+    void AddRecentMeasurementFile(const QString &path, int maxStored);
+    /// @brief Same as RemoveRecentFile, for the measurement tables' own list.
+    void RemoveRecentMeasurementFile(const QString &path);
 
     auto GetRestoreFileList() const -> QStringList;
     void SetRestoreFileList(const QStringList &value);
